@@ -73,7 +73,7 @@ global.Collections.CommentsCollection = Backbone.Collection.extend({
     }
 }); 
 /***************************************/
-global.Collections.ConceptsColelction = Backbone.Collection.extend({
+global.Collections.ConceptsCollection = Backbone.Collection.extend({
     model : global.Models.Comment_model,
     url : "concept",
     comparator: function(m){

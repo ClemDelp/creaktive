@@ -177,7 +177,6 @@ global.Models.KnowledgeModel = Backbone.Model.extend({
         title : "",
         user : "",
         date : getDate(),
-        content : "",
         color : "",
         id_tags : "",
         id_post : ""

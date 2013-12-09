@@ -17,13 +17,55 @@ var global = {
    currentUser = new this.Models.UserModel();
    currentProject = new this.Models.ProjectModel();
     /*Collections*/
-      
+    this.collections.Projects = new this.Collections.ProjectsCollection();
+    this.collections.Concepts = new this.Collections.ConceptsCollection();
     /*Fetch*/
+    this.collections.Projects.fetch({
+      reset:true,
+      success : function(collection, response, options){},
+      complete : function(collection, response, options){},
+      error : function(collection, response, options){},
+    });
+    this.collections.Concepts.fetch({
+      reset:true,
+      success : function(collection, response, options){},
+      complete : function(collection, response, options){},
+      error : function(collection, response, options){},
+    });
 
     callback();
       
   }
 };
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// CONCEPTS PART
+/////////////////////////////////////////////////////////////////////////////////////////////
+var concepts = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    console.log("concepts loading...");
+    _this = this;
+    /*views*/
+    this.views.ConceptsView = new this.Views.ConceptsView({
+      model : new global.Models.ProjectModel({}),
+      collection : global.collections.Concepts
+    });
+
+    //this.views.ConceptsView.map();
+
+    /*Loads*/
+    //this.views.ConceptsView.render(this.views.ConceptsView.map);
+  }
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Document ready
@@ -42,42 +84,9 @@ $(document).ready(function () {
       ////////////////////////////////////////
       // Global Router
       ////////////////////////////////////////
-      var toLoad = [];
-      var pathname = $(location).attr('pathname').split('/');
-      /*Les routes sont à definir ici*/
-      if(_.indexOf(pathname,'manager') > -1){
-        toLoad.unshift("manager","topbar");
-      }
-      if(_.indexOf(pathname,'timeline') > -1){
-        toLoad.unshift("timela","topbar");
-      }
-      if(_.indexOf(pathname,'export') > -1){
-        toLoad.unshift("export","topbar");
-      }
-      if(_.indexOf(pathname,'note') > -1){
-        toLoad.unshift("note","topbar");
-      }
-      /*Chargement des modules*/
-      // Manager PART
-      if(_.indexOf(toLoad,'manager') > -1){
-        manager.init();
-      }
-      // TopBar PART
-      if(_.indexOf(toLoad,'topbar') > -1){
-        topbar.init();
-      }
-      // Timela PART
-      if(_.indexOf(toLoad,'timela') > -1){
-        timela.init();
-      }
-      // Export PART
-      if(_.indexOf(toLoad,'export') > -1){
-        exporter.init();
-      }
-      // Import PART
-      if(_.indexOf(toLoad,'note') > -1){
-        note.init();
-      }
+
+      concepts.init();
+     
       ////////////////////////////////////////
 
       /*activat of "hashchange events's monitoring"*/
