@@ -39,7 +39,7 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 				}
 			}
 			for (nodeId in currentLayout.nodes) {
-				nodeId = parseFloat(nodeId);
+				nodeId = nodeId;
 				oldNode = currentLayout.nodes[nodeId];
 				newNode = newLayout.nodes[nodeId];
 				if (!newNode) {
@@ -79,7 +79,6 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 			var newIdeaId, contextNodeId;
 			contextNodeId = command === 'updateAttr' ? args[0] : undefined;
 			updateCurrentLayout(layoutCalculator(idea), contextNodeId);
-			console.log(command, args);
 			if (command === 'addSubIdea') {
 				newIdeaId = args[2];
 				self.selectNode(newIdeaId);
@@ -171,6 +170,13 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 			idea.addSubIdea(target, getRandomTitle(titlesToRandomlyChooseFrom));
 		}
 	};
+	this.createFromDB = function (parentId, node) {
+		if(!parentId || !node){
+			return ;
+		};
+		analytic("createFromDB", "DB");
+		idea.createFromDB(parentId, node);
+	}
 	this.insertIntermediate = function (source) {
 		if (!isInputEnabled || currentlySelectedIdeaId === idea.id) {
 			return;
@@ -277,7 +283,7 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 				node = idea.id === currentlySelectedIdeaId ? idea : idea.findSubIdeaById(currentlySelectedIdeaId);
 				ensureNodeIsExpanded(source, node.id);
 				for (rank in node.ideas) {
-					rank = parseFloat(rank);
+					rank = rank;
 					if ((isRoot && rank < 0 && rank > targetRank) || (!isRoot && rank > 0 && rank < targetRank)) {
 						targetRank = rank;
 					}
@@ -299,7 +305,7 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 				node = idea.id === currentlySelectedIdeaId ? idea : idea.findSubIdeaById(currentlySelectedIdeaId);
 				ensureNodeIsExpanded(source, node.id);
 				for (rank in node.ideas) {
-					rank = parseFloat(rank);
+					rank = rank;
 					if (rank > 0 && rank < minimumPositiveRank) {
 						minimumPositiveRank = rank;
 					}
@@ -444,7 +450,7 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 		self.nodeDragMove = function (id, x, y) {
 			var nodeId, node;
 			for (nodeId in currentLayout.nodes) {
-				nodeId = parseFloat(nodeId);
+				nodeId = nodeId;
 				node = currentLayout.nodes[nodeId];
 				if (canDropOnNode(id, x, y, node)) {
 					updateCurrentDroppable(nodeId);

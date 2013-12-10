@@ -10,6 +10,9 @@ var global = {
   collections: {},
   models: {},
   views: {},
+  // Objects
+  currentUser : {},
+  currentProject : {},
   init: function (callback) {
     /*Init*/
     console.log("global object loading...");
@@ -28,9 +31,7 @@ var global = {
     });
     this.collections.Concepts.fetch({
       reset:true,
-      success : function(collection, response, options){
-        console.log(collection);
-      },
+      success : function(collection, response, options){},
       complete : function(collection, response, options){},
       error : function(collection, response, options){
         console.log(response)
@@ -55,22 +56,33 @@ var concepts = {
   models: {},
   views: {},
   // Objects
-  currentNode : {},
+  eventAggregator : {
+    selectedNode : {}
+  },
+
 
   init: function () {
     /*Init*/
     console.log("concepts loading...");
     _this = this;
+    _.extend(this.eventAggregator, Backbone.Events);
     /*views*/
-    this.views.ConceptsView = new this.Views.ConceptsView({
+    this.views.MapView = new this.Views.MapView({
+      currentUser : new global.Models.UserModel(),
       currentProject : new global.Models.ProjectModel({}),
-      collection : global.collections.Concepts
+      collection : global.collections.Concepts,
+      eventAggregator : this.eventAggregator
     });
 
-    //this.views.ConceptsView.map();
+    this.views.KnowledgeView = new this.Views.KnowledgeView({
+      concepts : global.collections.Concepts,
+      eventAggregator : this.eventAggregator
+    });
+
 
     /*Loads*/
-    //this.views.ConceptsView.render(this.views.ConceptsView.map);
+    //this.views.ConceptsView.render();
+    this.views.KnowledgeView.render();
   }
 }
 

@@ -2,8 +2,8 @@
 /****************************************************************/
 /*views*/
 /****************************************************************/
-concepts.Views.ConceptsView = Backbone.View.extend({
-    el : '#concepts-container',
+concepts.Views.MapView = Backbone.View.extend({
+    el : '#map-container',
     initialize : function(json){
         _.bindAll(this, 'render');
         /*Concepts*/
@@ -14,24 +14,38 @@ concepts.Views.ConceptsView = Backbone.View.extend({
         /*CurrentProject*/
         this.currentProject = json.currentProject;
 
-        this.template = _.template($('#concepts-template').html());
+        /*EventAgregator*/
+        this.eventAggregator = json.eventAggregator;
+
+        this.template = _.template($('#map-template').html());
+
     },
 
     render: function(){
-
-        var renderedContent = this.template({concepts : this.colletion});
+        var renderedContent = this.template({concepts : this.collection});
         $(this.el).html(renderedContent);
+        this.map();
+        return this;
+    },
 
-                
+    map : function(){
+        var c0; 
+        c0 = this.collection.findWhere({id_father : ""})                       
+        if(!c0){
+            c0 = new global.Models.ConceptModel({
+                id : guide(),
+                title : "c0",
+                user : this.currentUser,
+                // date, content, color
+            })
+        }
         window.onerror = alert;
         var container = $('#container'),
         mapRepository = observable({}),
         isTouch = false,
         renderImages = false;
-
-        var idea = MAPJS.content({title:this.currentProject.get('title')});
+        var idea = MAPJS.content(c0.toJSON());
         mapModel = new MAPJS.MapModel(mapRepository, MAPJS.KineticMediator.layoutCalculator);
-        console.log(container);
         container.mapWidget(console,mapModel, isTouch, renderImages);
         jQuery('body').mapToolbarWidget(mapModel);
         jQuery('body').attachmentEditorWidget(mapModel);
@@ -43,18 +57,89 @@ concepts.Views.ConceptsView = Backbone.View.extend({
         mapModel.addEventListener('analytic', console.log.bind(console));
         mapRepository.dispatchEvent('mapLoaded', idea);
         window.mapModel = mapModel;
+        window.idea = idea;
 
-        this.populate()
-        return this;
-    },
+        mapModel.addEventListener('nodeSelectionChanged', function(e){
+            _this.eventAggregator.selectedNode = e;
+            _this.eventAggregator.trigger("nodeSelectionChanged", e)
+        });
 
-    populate : function(json){
+        this.populate(c0.id, this.collection.where({id_father : c0.id}));
+
+        idea.addEventListener('changed', function(command, args){
+            console.log("******",command, args);
+            if (command === 'addSubIdea') {
+                new_concept = new global.Models.ConceptModel({
+                    id : guid(),
+                    title : args[1],
+                    user : this.currentUser,
+                    // date, content, color
+                });
+
+                new_concept.save();
+            }
+            if (command === 'updateTitle') {
+            }
+            // if (command === 'addSubIdea') {
+            // }
+            // if (command === 'addSubIdea') {
+            // }
+            // if (command === 'addSubIdea') {
+            // }
+            // if (command === 'addSubIdea') {
+            // }
+        });
         
     },
 
-     test_tree : function() {
-    return {"title":"1 should check all","id":1, "attr": { "style": { background: '#FF0000' }, attachment: { contentType: 'text/html', content: 'content <b>bold content</b>'}}, "ideas":{"1":{attr: {collapsed: true }, "title":"2 is very very lng www.google.com","id":2,"ideas":{"1":{"title":"3 is also very long","id":3}}},"11":{"title":"4","id":4,"ideas":{"1":{"title":"5","id":5,"ideas":{"1":{"title":"6","id":6},"2":{"title":"7 is long","id":7,"ideas":{"1":{"title":"8","id":8},"2":{"title":"9","id":9},"3":{"title":"10","id":10},"4":{"title":"11","id":11},"5":{"title":"12","id":12}}}}}}},"12":{"title":"A cunning plan...","id":15},"13":{"title":"A cunning plan...","id":17},"14":{"title":"We'll be famous...","id":19},"15":{"title":"A brilliant idea...","id":21,"ideas":{"1":{"title":"A brilliant idea...","id":24},"2":{"title":"A cunning plan...","id":25},"3":{"title":"A brilliant idea...","id":26},"4":{"title":"A brilliant idea...","id":27},"5":{"title":"A brilliant idea...","id":28},"6":{"title":"A cunning plan...","id":29},"7":{"title":"A brilliant idea...","id":30},"8":{"title":"A brilliant idea...","id":31}}},"16":{"title":"A cunning plan...","id":23},"-1":{"title":"A brilliant idea...","id":13},"-2":{"title":"A brilliant idea...","id":14},"-3":{"title":"A cunning plan...","id":16},"-4":{"title":"We'll be famous...","id":18},"-5":{"title":"We'll be famous...","id":20},"-6":{"title":"A brilliant idea...","id":22}}};
-}
+    populate : function(id_father, children){
+
+        for (var i = children.length - 1; i >= 0; i--) {
+            mapModel.createFromDB(id_father, children[i].toJSON())
+            var c = this.collection.where({id_father : children[i].id})
+            if(c.length > 0){
+                this.populate(children[i].id, c)
+            }
+        };
+        
+    },
 
 
+});
+/****************************************************************/
+concepts.Views.KnowledgeView = Backbone.View.extend({
+    el : '#knowledge-container',
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        _.bindAll(this, 'selectedNodeChange');
+
+        /*Concepts*/
+        this.concepts = json.concepts;
+        
+        /*EventAgregator*/
+        this.eventAggregator = json.eventAggregator;
+
+        this.eventAggregator.on("nodeSelectionChanged", this.selectedNodeChange);
+
+        this.template = _.template($('#knowledge-template').html());
+    },
+
+    selectedNodeChange : function(id_concept){
+        var currentConcept, renderedContent, _this;
+        _this = this;
+        try{
+            currentConcept = this.concepts.get(id_concept);
+            renderedContent = this.template({currentConcept : currentConcept.toJSON()});
+            $(this.el).html(renderedContent);
+        }catch(e){
+            console.log(e)
+        }
+
+    },
+
+    render: function(){
+        var renderedContent = this.template({currentConcept : {title : "null"}});
+        $(this.el).html(renderedContent);
+        return this;
+    }
 });
