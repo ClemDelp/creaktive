@@ -81,7 +81,7 @@ var concepts = {
 
 
     /*Loads*/
-    //this.views.ConceptsView.render();
+    //this.views.MapView.render();
     this.views.KnowledgeView.render();
   }
 }

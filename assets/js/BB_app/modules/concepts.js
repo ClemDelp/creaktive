@@ -19,9 +19,32 @@ concepts.Views.MapView = Backbone.View.extend({
 
         this.template = _.template($('#map-template').html());
 
+
+        var container = $('#container'),
+        mapRepository = observable({}),
+        isTouch = false,
+        renderImages = false;
+        var idea = MAPJS.content({});
+        mapModel = new MAPJS.MapModel(mapRepository, MAPJS.KineticMediator.layoutCalculator);
+        container.mapWidget(console,mapModel, isTouch, renderImages);
+        jQuery('body').mapToolbarWidget(mapModel);
+        jQuery('body').attachmentEditorWidget(mapModel);
+        var pngExporter = new MAPJS.PNGExporter(mapRepository);
+        $("[data-mm-action='export-image']").click(pngExporter.exportMap);
+        pngExporter.addEventListener('mapExported', function (url) {
+            $("<img/>").attr('src',url).appendTo('body');
+        });
+        mapModel.addEventListener('analytic', console.log.bind(console));
+
+        
+        window.mapRepository = mapRepository;
+        window.mapModel = mapModel;
+        window.idea = idea;
+
     },
 
     render: function(){
+        console.log("render");
         var renderedContent = this.template({concepts : this.collection});
         $(this.el).html(renderedContent);
         this.map();
@@ -39,28 +62,12 @@ concepts.Views.MapView = Backbone.View.extend({
                 user : this.currentUser,
                 // date, content, color
             });
-            c0.save()
-        }
-        window.onerror = alert;
-        var container = $('#container'),
-        mapRepository = observable({}),
-        isTouch = false,
-        renderImages = false;
-        var idea = MAPJS.content(c0.toJSON());
-        mapModel = new MAPJS.MapModel(mapRepository, MAPJS.KineticMediator.layoutCalculator);
-        container.mapWidget(console,mapModel, isTouch, renderImages);
-        jQuery('body').mapToolbarWidget(mapModel);
-        jQuery('body').attachmentEditorWidget(mapModel);
-        var pngExporter = new MAPJS.PNGExporter(mapRepository);
-        $("[data-mm-action='export-image']").click(pngExporter.exportMap);
-        pngExporter.addEventListener('mapExported', function (url) {
-            $("<img/>").attr('src',url).appendTo('body');
-        });
-        mapModel.addEventListener('analytic', console.log.bind(console));
-        mapRepository.dispatchEvent('mapLoaded', idea);
-        window.mapModel = mapModel;
-        window.idea = idea;
+            _this.collection.create(c0);
+        }        
 
+        idea = MAPJS.content(c0.toJSON());
+        
+        mapRepository.dispatchEvent('mapLoaded', idea);
         mapModel.addEventListener('nodeSelectionChanged', function(e){
             _this.eventAggregator.selectedNode = e;
             _this.eventAggregator.trigger("nodeSelectionChanged", e)
