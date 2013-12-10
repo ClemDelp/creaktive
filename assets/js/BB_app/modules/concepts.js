@@ -29,15 +29,17 @@ concepts.Views.MapView = Backbone.View.extend({
     },
 
     map : function(){
-        var c0; 
+        var c0, _this;
+        _this = this; 
         c0 = this.collection.findWhere({id_father : ""})                       
         if(!c0){
             c0 = new global.Models.ConceptModel({
-                id : guide(),
+                id : guid(),
                 title : "c0",
                 user : this.currentUser,
                 // date, content, color
-            })
+            });
+            c0.save()
         }
         window.onerror = alert;
         var container = $('#container'),
@@ -70,18 +72,25 @@ concepts.Views.MapView = Backbone.View.extend({
             console.log("******",command, args);
             if (command === 'addSubIdea') {
                 new_concept = new global.Models.ConceptModel({
-                    id : guid(),
+                    id : args[2],
                     title : args[1],
                     user : this.currentUser,
+                    id_father : args[0]
                     // date, content, color
                 });
 
-                new_concept.save();
+                _this.collection.create(new_concept);
             }
             if (command === 'updateTitle') {
+                c = _this.collection.get(args[0]);
+                c.set({title : args[1]});
+                c.save();
             }
-            // if (command === 'addSubIdea') {
-            // }
+            if (command === 'removeSubIdea') {
+                // c = _this.collection.get(args[0])
+                //_this.collection.remove(c);
+                // c.destroy();
+            }
             // if (command === 'addSubIdea') {
             // }
             // if (command === 'addSubIdea') {
