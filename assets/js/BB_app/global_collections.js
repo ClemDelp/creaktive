@@ -73,8 +73,8 @@ global.Collections.CommentsCollection = Backbone.Collection.extend({
     }
 }); 
 /***************************************/
-global.Collections.ConceptsColelction = Backbone.Collection.extend({
-    model : global.Models.ConcpetModel,
+global.Collections.ConceptsCollection = Backbone.Collection.extend({
+    model : global.Models.ConceptModel,
     url : "concept",
     comparator: function(m){
         return -m.get('date2');
