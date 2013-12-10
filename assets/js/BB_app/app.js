@@ -28,9 +28,13 @@ var global = {
     });
     this.collections.Concepts.fetch({
       reset:true,
-      success : function(collection, response, options){},
+      success : function(collection, response, options){
+        console.log(collection);
+      },
       complete : function(collection, response, options){},
-      error : function(collection, response, options){},
+      error : function(collection, response, options){
+        console.log(response)
+      },
     });
 
     callback();
@@ -50,13 +54,16 @@ var concepts = {
   collections: {},
   models: {},
   views: {},
+  // Objects
+  currentNode : {},
+
   init: function () {
     /*Init*/
     console.log("concepts loading...");
     _this = this;
     /*views*/
     this.views.ConceptsView = new this.Views.ConceptsView({
-      model : new global.Models.ProjectModel({}),
+      currentProject : new global.Models.ProjectModel({}),
       collection : global.collections.Concepts
     });
 

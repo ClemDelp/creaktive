@@ -11,6 +11,9 @@ concepts.Views.ConceptsView = Backbone.View.extend({
         this.collection.bind('reset', this.render);
         this.collection.bind('remove', this.remove);
 
+        /*CurrentProject*/
+        this.currentProject = json.currentProject;
+
         this.template = _.template($('#concepts-template').html());
     },
 
@@ -18,30 +21,18 @@ concepts.Views.ConceptsView = Backbone.View.extend({
 
         var renderedContent = this.template({concepts : this.colletion});
         $(this.el).html(renderedContent);
-        console.log('tuu')
-        
-        this.map();
 
-
-        // return this;
-    },
-
-    map : function(){
-
+                
         window.onerror = alert;
-        console.log('>>>>', $('#container'))
         var container = $('#container'),
         mapRepository = observable({}),
         isTouch = false,
         renderImages = false;
-        console.log('aaaaa');
-        var json = this.test_tree();
-        console.log("tututu", json);
-        var idea = MAPJS.content(json);
+
+        var idea = MAPJS.content({title:this.currentProject.get('title')});
         mapModel = new MAPJS.MapModel(mapRepository, MAPJS.KineticMediator.layoutCalculator);
         console.log(container);
         container.mapWidget(console,mapModel, isTouch, renderImages);
-        console.log('cccc');
         jQuery('body').mapToolbarWidget(mapModel);
         jQuery('body').attachmentEditorWidget(mapModel);
         var pngExporter = new MAPJS.PNGExporter(mapRepository);
@@ -52,6 +43,13 @@ concepts.Views.ConceptsView = Backbone.View.extend({
         mapModel.addEventListener('analytic', console.log.bind(console));
         mapRepository.dispatchEvent('mapLoaded', idea);
         window.mapModel = mapModel;
+
+        this.populate()
+        return this;
+    },
+
+    populate : function(json){
+        
     },
 
      test_tree : function() {

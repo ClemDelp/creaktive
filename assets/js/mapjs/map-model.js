@@ -79,6 +79,7 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 			var newIdeaId, contextNodeId;
 			contextNodeId = command === 'updateAttr' ? args[0] : undefined;
 			updateCurrentLayout(layoutCalculator(idea), contextNodeId);
+			console.log(command, args);
 			if (command === 'addSubIdea') {
 				newIdeaId = args[2];
 				self.selectNode(newIdeaId);
