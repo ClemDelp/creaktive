@@ -21,7 +21,7 @@ concepts.Views.ConceptsView = Backbone.View.extend({
         console.log('tuu')
         
         this.map();
-        //TODO : créer le json
+
 
         // return this;
     },
