@@ -5,6 +5,7 @@
 concepts.Views.MapView = Backbone.View.extend({
     el : '#map-container',
     initialize : function(json){
+        var container, mapRepository, isTouch, renderImages, idea, mapModel, pngExporter;
         _.bindAll(this, 'render');
         /*Concepts*/
         this.collection.bind('add', this.render);
@@ -14,22 +15,25 @@ concepts.Views.MapView = Backbone.View.extend({
         /*CurrentProject*/
         this.currentProject = json.currentProject;
 
+        /*CurrentUser*/
+        this.currentUser = json.currentUser;
+
         /*EventAgregator*/
         this.eventAggregator = json.eventAggregator;
 
         this.template = _.template($('#map-template').html());
 
-
-        var container = $('#container'),
-        mapRepository = observable({}),
-        isTouch = false,
+        /* Map */
+        container = $('#container');
+        mapRepository = observable({});
+        isTouch = false;
         renderImages = false;
-        var idea = MAPJS.content({});
+        idea = MAPJS.content({});
         mapModel = new MAPJS.MapModel(mapRepository, MAPJS.KineticMediator.layoutCalculator);
         container.mapWidget(console,mapModel, isTouch, renderImages);
         jQuery('body').mapToolbarWidget(mapModel);
         jQuery('body').attachmentEditorWidget(mapModel);
-        var pngExporter = new MAPJS.PNGExporter(mapRepository);
+        pngExporter = new MAPJS.PNGExporter(mapRepository);
         $("[data-mm-action='export-image']").click(pngExporter.exportMap);
         pngExporter.addEventListener('mapExported', function (url) {
             $("<img/>").attr('src',url).appendTo('body');
@@ -37,15 +41,16 @@ concepts.Views.MapView = Backbone.View.extend({
         mapModel.addEventListener('analytic', console.log.bind(console));
 
         
-        window.mapRepository = mapRepository;
-        window.mapModel = mapModel;
-        window.idea = idea;
+        this.mapRepository = mapRepository;
+        this.mapModel = mapModel;
+        this.idea = idea;
 
     },
 
     render: function(){
+        var renderedContent ;
         console.log("render");
-        var renderedContent = this.template({concepts : this.collection});
+        renderedContent = this.template({concepts : this.collection});
         $(this.el).html(renderedContent);
         this.map();
         return this;
@@ -65,17 +70,16 @@ concepts.Views.MapView = Backbone.View.extend({
             _this.collection.create(c0);
         }        
 
-        idea = MAPJS.content(c0.toJSON());
+        _this.idea = MAPJS.content(c0.toJSON());
         
-        mapRepository.dispatchEvent('mapLoaded', idea);
-        mapModel.addEventListener('nodeSelectionChanged', function(e){
-            _this.eventAggregator.selectedNode = e;
+        _this.mapRepository.dispatchEvent('mapLoaded', _this.idea);
+        _this.mapModel.addEventListener('nodeSelectionChanged', function(e){
             _this.eventAggregator.trigger("nodeSelectionChanged", e)
         });
 
-        this.populate(c0.id, this.collection.where({id_father : c0.id}));
+        _this.populate(c0.id, this.collection.where({id_father : c0.id}));
 
-        idea.addEventListener('changed', function(command, args){
+        _this.idea.addEventListener('changed', function(command, args){
             console.log("******",command, args);
             if (command === 'addSubIdea') {
                 new_concept = new global.Models.ConceptModel({
@@ -109,9 +113,11 @@ concepts.Views.MapView = Backbone.View.extend({
     },
 
     populate : function(id_father, children){
-
+        /*
+        * Populate the map with the DB objects
+        */
         for (var i = children.length - 1; i >= 0; i--) {
-            mapModel.createFromDB(id_father, children[i].toJSON())
+            this.mapModel.createFromDB(id_father, children[i].toJSON())
             var c = this.collection.where({id_father : children[i].id})
             if(c.length > 0){
                 this.populate(children[i].id, c)
@@ -154,7 +160,8 @@ concepts.Views.KnowledgeView = Backbone.View.extend({
     },
 
     render: function(){
-        var renderedContent = this.template({currentConcept : {title : "null"}});
+        var renderedContent ;
+        renderedContent = this.template({currentConcept : {title : "null"}});
         $(this.el).html(renderedContent);
         return this;
     }

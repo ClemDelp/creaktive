@@ -56,9 +56,7 @@ var concepts = {
   models: {},
   views: {},
   // Objects
-  eventAggregator : {
-    selectedNode : {}
-  },
+  eventAggregator : {},
 
 
   init: function () {
