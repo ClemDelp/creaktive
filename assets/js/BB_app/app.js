@@ -17,11 +17,76 @@ var global = {
    currentUser = new this.Models.UserModel();
    currentProject = new this.Models.ProjectModel();
     /*Collections*/
-      
+    this.collections.Users = new this.Collections.UsersCollection();
+    this.collections.Groups = new this.Collections.GroupsCollection();
+    this.collections.Permissions = new this.Collections.PermissionsCollection();
+    this.collections.Projects = new this.Collections.ProjectsCollection();
     /*Fetch*/
+    this.collections.Projects.fetch({
+      reset: true,
+      success : function(collection, response, options){},
+      complete : function(collection, response, options){},
+      error : function(collection, response, options){},
+    });
+    this.collections.Permissions.fetch({
+      reset: true,
+      success : function(collection, response, options){},
+      complete : function(collection, response, options){},
+      error : function(collection, response, options){},
+    });
+    this.collections.Users.fetch({
+      reset: true,
+      success : function(collection, response, options){},
+      complete : function(collection, response, options){},
+      error : function(collection, response, options){},
+    });
 
+    this.collections.Groups.fetch({
+      reset: true,
+      success : function(collection, response, options){},
+      complete : function(collection, response, options){},
+      error : function(collection, response, options){},
+    });
     callback();
       
+  }
+};
+/////////////////////////////////////////////////////////////////////////////////////////////
+// MANAGER PART
+/////////////////////////////////////////////////////////////////////////////////////////////
+var manager = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    console.log("manager loading...");
+    
+    /*views*/
+    this.views.Users_view = new this.Views.Users_view({
+      collection:global.collections.Users
+    });
+    this.views.Groups_view = new this.Views.Groups_view({
+      collection:global.collections.Groups,
+      users:global.collections.Users
+    });
+    this.views.Projects_view = new this.Views.Projects_view({
+      collection:global.collections.Projects,
+      groups:global.collections.Groups,
+      permissions:global.collections.Permissions
+    });
+    /*Loads*/
+    this.views.Projects_view.render();
+    this.views.Users_view.render();
+    this.views.Groups_view.render();
+
+    /*router initialisation*/
+    this.Router_manager = new manager.Router_manager(); 
   }
 };
 
@@ -42,44 +107,9 @@ $(document).ready(function () {
       ////////////////////////////////////////
       // Global Router
       ////////////////////////////////////////
-      var toLoad = [];
-      var pathname = $(location).attr('pathname').split('/');
-      /*Les routes sont à definir ici*/
-      if(_.indexOf(pathname,'manager') > -1){
-        toLoad.unshift("manager","topbar");
-      }
-      if(_.indexOf(pathname,'timeline') > -1){
-        toLoad.unshift("timela","topbar");
-      }
-      if(_.indexOf(pathname,'export') > -1){
-        toLoad.unshift("export","topbar");
-      }
-      if(_.indexOf(pathname,'note') > -1){
-        toLoad.unshift("note","topbar");
-      }
-      /*Chargement des modules*/
-      // Manager PART
-      if(_.indexOf(toLoad,'manager') > -1){
-        manager.init();
-      }
-      // TopBar PART
-      if(_.indexOf(toLoad,'topbar') > -1){
-        topbar.init();
-      }
-      // Timela PART
-      if(_.indexOf(toLoad,'timela') > -1){
-        timela.init();
-      }
-      // Export PART
-      if(_.indexOf(toLoad,'export') > -1){
-        exporter.init();
-      }
-      // Import PART
-      if(_.indexOf(toLoad,'note') > -1){
-        note.init();
-      }
-      ////////////////////////////////////////
+      manager.init();      
 
+      ////////////////////////////////////////
       /*activat of "hashchange events's monitoring"*/
       Backbone.history.start();
     });
