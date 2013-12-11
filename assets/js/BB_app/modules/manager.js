@@ -62,6 +62,7 @@ manager.Views.Users_view = Backbone.View.extend({
         console.log("Add user");
         _this = this;
         new_user = new global.Models.UserModel({
+            id : guid(),
             name : $("#users_view_name").val(),
             email : $("#users_view_email").val(),
             pw : $("#users_view_pw").val(),
@@ -251,7 +252,7 @@ manager.Views.Projects_view = Backbone.View.extend({
             new_permission = new global.Models.PermissionModel({
                 id : guid(),
                 right : right,
-                id_user : this.currentUser.id,
+                id_user : u,
                 id_project : id_project,
                 group : id_group
             });
