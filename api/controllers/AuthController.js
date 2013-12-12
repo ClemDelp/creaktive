@@ -25,7 +25,7 @@ var AuthController = {
 					return;
 				}
  
-				res.redirect('/manager');
+				res.redirect('/');
 				return;
 			});
 		})(req, res);

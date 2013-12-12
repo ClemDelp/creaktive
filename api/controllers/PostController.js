@@ -13,5 +13,22 @@ module.exports = {
   }
   */
   
+  update : function(req,res){
+		Post.findOne(req.body.id).done(function(err,post){
+			if (post){
+					Post.update({
+						id : req.body.id
+					},req.body).done(function(err,p){
+						if(err) res.send({err:err});
+						res.send(p);
+					})
+			}
+			else{
+				Post.create(req.body).done(function(err, p){
+					res.send(p)
+				})
+			}
+		})
+	},
 
 };

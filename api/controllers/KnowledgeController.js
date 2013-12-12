@@ -13,5 +13,21 @@ module.exports = {
   }
   */
   
-
+update : function(req,res){
+		Knowledge.findOne(req.body.id).done(function(err,knowledge){
+			if (knowledge){
+					Knowledge.update({
+						id : req.body.id
+					},req.body).done(function(err,k){
+						if(err) res.send({err:err});
+						res.send(k);
+					})
+			}
+			else{
+				Knowledge.create(req.body).done(function(err, k){
+					res.send(k)
+				})
+			}
+		})
+	},
 };

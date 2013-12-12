@@ -2,8 +2,6 @@
 module.exports = function(req, res, next) {
  
 	'use strict';
-
-	console.log("authenticated policy", req.url)
  
 	// Sockets
 	if(req.isSocket){

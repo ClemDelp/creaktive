@@ -13,5 +13,22 @@ module.exports = {
   }
   */
   
+  update : function(req,res){
+		Tag.findOne(req.body.id).done(function(err,tag){
+			if (tag){
+					Tag.update({
+						id : req.body.id
+					},req.body).done(function(err,t){
+						if(err) res.send({err:err});
+						res.send(t);
+					})
+			}
+			else{
+				Tag.create(req.body).done(function(err, t){
+					res.send(t)
+				})
+			}
+		})
+	},
 
 };

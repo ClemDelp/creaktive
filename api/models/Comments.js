@@ -6,14 +6,15 @@
  *
  */
 
-module.exports = {
+ module.exports = {
 
-  attributes: {
-  	
+ 	autoPK : false,
+ 	attributes: {
+ 		
   	/* e.g.
   	nickname: 'string'
   	*/
-    
+  	
   }
 
 };
