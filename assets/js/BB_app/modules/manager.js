@@ -168,7 +168,6 @@ manager.Views.Groups_view = Backbone.View.extend({
     },
     render : function() {
         list_groups_html = [];
-        users = this.users;
         this.collection.each(function(group){
             group_view = new manager.Views.Group_view({model:group,collection:this.users});
             this.list_groups_html.unshift(group_view.render().$el.html());
