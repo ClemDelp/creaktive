@@ -262,6 +262,12 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			return false;
 		};
 		idea = init(node);
+		idea.attr = {
+			style : {
+				background : node.color
+			}
+			
+		}
 		newRank = appendSubIdea(parent, idea);
 		notifyChange('addSubIdea', [parentId, idea.title, idea.id], function () {
 			delete parent.ideas[newRank];

@@ -22,6 +22,7 @@ var global = {
     /*Collections*/
     this.collections.Projects = new this.Collections.ProjectsCollection();
     this.collections.Concepts = new this.Collections.ConceptsCollection();
+    this.collections.Links = new this.Collections.LinksCollection();
     /*Fetch*/
     this.collections.Projects.fetch({
       reset:true,
@@ -37,6 +38,15 @@ var global = {
         console.log(response)
       },
     });
+    this.collections.Links.fetch({
+      reset:true,
+      success : function(collection, response, options){},
+      complete : function(collection, response, options){},
+      error : function(collection, response, options){
+        console.log(response)
+      },
+    });
+
 
     callback();
       
@@ -69,11 +79,12 @@ var concepts = {
       currentUser : new global.Models.UserModel(),
       currentProject : new global.Models.ProjectModel({}),
       collection : global.collections.Concepts,
-      eventAggregator : this.eventAggregator
+      eventAggregator : this.eventAggregator,
     });
 
     this.views.KnowledgeView = new this.Views.KnowledgeView({
       concepts : global.collections.Concepts,
+      links : this.collections.Links,
       eventAggregator : this.eventAggregator
     });
 
