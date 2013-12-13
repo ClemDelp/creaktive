@@ -98,8 +98,7 @@
 			<h5><b>GROUP : </b>{{= group.title }}</h5>
 			<table >
 				<tr><th>Name</th><th>Email</th></tr>	
-				{{ _.each(group.users, function(u) { }}
-					{{ user = _.findWhere(users, {id : u}) }}
+				{{ _.each(group.users, function(user) { }}
 		    		<tr><td>{{= user.name}}</td> <td>{{= user.email }}</td></tr>	
 		    	{{ }); }}
 			</table>
@@ -161,11 +160,12 @@
 			<label>Permissions</label>
 			<table style="width:100%;align:center">
 				<tr>
-					<th>Group</th><th>Right</th>
+					<th>User</th><th>Group</th><th>Right</th>
 				</tr>
-				{{ _.each(permissions, function(permission){ }}
+				{{ _.each(project.permissions, function(permission){ }}
 				<tr>
-					<td>{{= permission.group}}</td>
+					<td>{{= permission.user.name}}</td>
+					<td>{{= permission.group.title}}</td>
 					<td>{{= permission.right}}</td>
 				</tr>
 				{{ });}}

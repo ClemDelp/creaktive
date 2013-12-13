@@ -6,6 +6,7 @@ global.Models.ProjectModel = Backbone.Model.extend({
         id : "",
         title : "no projects",
         date : getDate(),
+        permissions : []
     },
     initialize : function Doc() {
         //console.log('Project Constructor');
@@ -89,7 +90,7 @@ global.Models.PermissionModel = Backbone.Model.extend({
         id : "",
         right : "",
         date:getDate(),
-        id_user : "",
+        user : "",
         id_project : ""
     },
     initialize : function Doc() {

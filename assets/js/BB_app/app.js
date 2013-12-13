@@ -77,6 +77,7 @@ var manager = {
     });
     this.views.Projects_view = new this.Views.Projects_view({
       collection:global.collections.Projects,
+      users : global.collections.Users,
       groups:global.collections.Groups,
       permissions:global.collections.Permissions
     });

@@ -139,7 +139,7 @@ manager.Views.Groups_view = Backbone.View.extend({
         user_id = $('#'+group_id+'_user_selected').val();
         group = this.collection.get(group_id);
         user = this.users.get(user_id);
-        group.get('users').unshift(user.id);
+        group.get('users').unshift(user);
         group.save();
         this.render();
     },
@@ -167,9 +167,10 @@ manager.Views.Groups_view = Backbone.View.extend({
         }else{alert("Group title can't be empty!")}
     },
     render : function() {
+        _this = this;
         list_groups_html = [];
         this.collection.each(function(group){
-            group_view = new manager.Views.Group_view({model:group,collection:this.users});
+            group_view = new manager.Views.Group_view({model:group,collection:_this.users});
             this.list_groups_html.unshift(group_view.render().$el.html());
         });
         var renderedContent = this.template({groups:list_groups_html});
@@ -188,25 +189,9 @@ manager.Views.Project_view = Backbone.View.extend({
     },
     render : function() {
         var _this = this;
-        // Ce qui suit est horrible mais j'ai pas encore trouvé mieux
-        var perms = [];
-        this.permissions.each(function(permission){
-            if(_.where(perms, {group : permission.get('group')}).length ===0){
-                perms.push({
-                    group : permission.get('group'), 
-                    right : permission.get('right')
-                })
-            }
-        });
-        if(_this.groups.length > 0){
-            _.each(perms, function(p){
-                p.group = _this.groups.get(p.group).get('title')
-            })
-        };
         var renderedContent = this.template({
             project:this.model.toJSON(),
             groups : this.groups.toJSON(),
-            permissions: perms
         });
         $(this.el).html(renderedContent);
         return this;
@@ -227,11 +212,16 @@ manager.Views.Projects_view = Backbone.View.extend({
         this.groups.bind('reset', this.render);
         this.groups.bind('add', this.render);
         this.groups.bind('remove', this.render);
-        /*Groups*/
+        /*Permissions*/
         this.permissions = json.permissions;
         this.permissions.bind('reset', this.render);
         this.permissions.bind('add', this.render);
         this.permissions.bind('remove', this.render);
+        /*Users*/
+        this.users = json.users;
+        this.users.bind('reset', this.render);
+        this.users.bind('add', this.render);
+        this.users.bind('remove', this.render);
         /*Template*/
         this.template = _.template($('#projects-template').html());
     },
@@ -242,23 +232,26 @@ manager.Views.Projects_view = Backbone.View.extend({
     },
     addPermission : function(e){
         console.log("Add permission");
+        _this = this;
         id_project = e.target.getAttribute("data-id-project");
         id_group = $('#'+id_project+'_group_selected').val();
         right = $('#'+id_project+'_right_selected').val();
+
+        project = _this.collection.get(id_project);
 
         group = this.groups.get(id_group);
         _.each(group.get('users'), function(u){
             new_permission = new global.Models.PermissionModel({
                 id : guid(),
                 right : right,
-                id_user : u,
+                user : _this.users.get(u),
                 id_project : id_project,
-                group : id_group
+                group : _this.groups.get(id_group)
             });
 
-            new_permission.save();
-        })
-
+            project.get('permissions').unshift(new_permission);
+        });
+        project.save();
         this.render();
     },
     addProject : function(e){
