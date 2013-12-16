@@ -51,6 +51,16 @@ global.Collections.GroupsCollection = Backbone.Collection.extend({
     }
 });
 /***************************************/
+global.Collections.UserGroup = Backbone.Collection.extend({
+    initialize : function() {
+        //console.log('Groups collection Constructor');
+        this.url = "usergroup";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+/***************************************/
 global.Collections.VersionsCollection = Backbone.Collection.extend({
     model : global.Models.VersionModel,
     url : "version",

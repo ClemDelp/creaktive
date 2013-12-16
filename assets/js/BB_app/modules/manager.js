@@ -95,14 +95,20 @@ manager.Views.Users_view = Backbone.View.extend({
 });
 /***********************************************/
 manager.Views.Group_view = Backbone.View.extend({
-    initialize : function() {
+    initialize : function(json) {
         console.log("group view initialise");
         this.template = _.template($('#group-template').html());
+        this.userGroups = json.userGroups
     },
     render : function() {
+        _this = this;
+        this.model.set({users :  []});
+        _.each(_this.userGroups, function(ug){
+            _this.model.get('users').unshift(_this.collection.get(ug.user_id))
+        })
         var renderedContent = this.template({
-            group:this.model.toJSON(),
-            users:this.collection.toJSON()
+            group:_this.model.toJSON(),
+            users:_this.collection.toJSON(),
         });
         $(this.el).html(renderedContent);
         $(document).foundation();
@@ -117,6 +123,7 @@ manager.Views.Groups_view = Backbone.View.extend({
         _.bindAll(this, 'render');
         /*Variables*/
         this.users = json.users;
+        this.userGroups = json.userGroups;
         /*Groups*/
         this.collection.bind('reset', this.render);
         this.collection.bind('add', this.render);
@@ -125,6 +132,13 @@ manager.Views.Groups_view = Backbone.View.extend({
         this.users.bind('reset', this.render);
         this.users.bind('add', this.render);
         this.users.bind('remove', this.render);
+        /*Users*/
+        this.userGroups.bind('reset', this.render);
+        this.userGroups.bind('add', this.render);
+        this.userGroups.bind('remove', this.render);
+       
+
+
         /*Template*/
         this.template = _.template($('#groups-template').html());
     },
@@ -137,10 +151,12 @@ manager.Views.Groups_view = Backbone.View.extend({
         console.log("Add a new User to the group");
         group_id = e.target.getAttribute("data-id-group");
         user_id = $('#'+group_id+'_user_selected').val();
-        group = this.collection.get(group_id);
-        user = this.users.get(user_id);
-        group.get('users').unshift(user);
-        group.save();
+        this.userGroups.create({
+            id : guid(),
+            group_id : group_id,
+            user_id : user_id
+        },{wait:true});
+
         this.render();
     },
     removeGroup : function(e){
@@ -170,8 +186,14 @@ manager.Views.Groups_view = Backbone.View.extend({
         _this = this;
         list_groups_html = [];
         this.collection.each(function(group){
-            group_view = new manager.Views.Group_view({model:group,collection:_this.users});
+            group_view = new manager.Views.Group_view({
+                model:group,
+                userGroups : _.where(_this.userGroups.toJSON(), {group_id : group.id}),
+                collection:_this.users
+            });
             this.list_groups_html.unshift(group_view.render().$el.html());
+            //console.log(this.list_groups_html)
+            //$(this.el).append(group_view.render().el);
         });
         var renderedContent = this.template({groups:list_groups_html});
         $(this.el).html(renderedContent);

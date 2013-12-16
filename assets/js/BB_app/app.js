@@ -19,6 +19,7 @@ var global = {
     /*Collections*/
     this.collections.Users = new this.Collections.UsersCollection();
     this.collections.Groups = new this.Collections.GroupsCollection();
+    this.collections.UserGroup = new this.Collections.UserGroup();
     this.collections.Permissions = new this.Collections.PermissionsCollection();
     this.collections.Projects = new this.Collections.ProjectsCollection();
     /*Fetch*/
@@ -42,6 +43,13 @@ var global = {
     });
 
     this.collections.Groups.fetch({
+      reset: true,
+      success : function(collection, response, options){},
+      complete : function(collection, response, options){},
+      error : function(collection, response, options){},
+    });
+
+    this.collections.UserGroup.fetch({
       reset: true,
       success : function(collection, response, options){},
       complete : function(collection, response, options){},
@@ -73,7 +81,8 @@ var manager = {
     });
     this.views.Groups_view = new this.Views.Groups_view({
       collection:global.collections.Groups,
-      users:global.collections.Users
+      users:global.collections.Users,
+      userGroups : global.collections.UserGroup
     });
     this.views.Projects_view = new this.Views.Projects_view({
       collection:global.collections.Projects,
