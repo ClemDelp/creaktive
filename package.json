@@ -12,9 +12,11 @@
     "sails-mongo": "0.9.5",
     "passport": "*",
     "passport-local": "*",
+    "chai": "~1.8.1",
     "superagent": "~0.15.7",
-    "expect.js": "~0.2.0",
-    "chai": "~1.8.1"
+    "chai-http": "~0.4.0",
+    "chai-spies": "~0.5.1"
+
   },
   "scripts": {
     "start": "node app.js",
