@@ -9,12 +9,12 @@
 module.exports = {
 
 	autoPK : false,
-  attributes: {
+  	attributes: {
   	
   	/* e.g.
   	nickname: 'string'
   	*/
     
-  }
+  	},
 
 };
