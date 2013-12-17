@@ -11,7 +11,12 @@
         "optimist": "0.3.4",
         "sails-mongo": "0.9.5",
         "passport": "*",
-        "passport-local": "*"
+        "passport-local": "*",
+            "chai": "~1.8.1",
+    "superagent": "~0.15.7",
+    "chai-http": "~0.4.0",
+    "chai-spies": "~0.5.1"
+
     },
     "scripts": {
         "start": "node app.js",

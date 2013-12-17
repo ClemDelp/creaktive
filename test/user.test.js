@@ -37,13 +37,26 @@ before(function(done) {
   
 }); 
 
-describe('UserController', function(){
-  it("test user controller", function(){
-    request.get('/user/create', function(u){
-      u.should.be.an('object');
-    })
+describe('UserController', function (done){
+  it("test user controller", function (done){
+    request.post('http://localhost:1337/user')
+      .send({name:"michel", password:"michel"})
+      .end(function (res){
+        res.body.should.not.be.null;
+        res.body.should.include.keys("name", "password", "pd");
+        done();
+      })
   })
 })
+
+describe('Routes', function (done) {
+  it('GET / should return 200', function (done) {
+    request.get('http://localhost:1337/').end(function (res){
+      res.should.have.status(200);
+      done();
+    });
+  });
+});
 
 
 
