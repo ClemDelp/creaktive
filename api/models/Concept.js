@@ -15,7 +15,7 @@ module.exports = {
   	nickname: 'string'
   	*/
 
-  	notificate : function(concept, req){
+  	notificate : function(concept, cb){
   		/*
   		* Create a Notification and broadcast to the project channel
   		*/
@@ -23,8 +23,8 @@ module.exports = {
   			type : "ConceptCreated",
   			model : concept
   		}).done(function (err, notification){ 
-  			if(err) console.log(err);			
-  			req.socket.broadcast.to(concept.id).emit("notification", notification);
+  			if(err) console.log(err);
+  			cb(notification);			
   		})
   	}
     

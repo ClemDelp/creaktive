@@ -32,6 +32,7 @@ var AuthController = {
 	},
 
 	openChannels : function(req,res){
+		console.log("Suscribing");
 		Permission.subscribe(req.socket);
 		Permission.find({
 			id_user : req.session.passport.user
@@ -41,6 +42,8 @@ var AuthController = {
 				req.socket.join(id_project)
 			})
 		})
+
+		res.send({msg:"Channels opened"});
 		
 
 

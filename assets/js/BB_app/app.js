@@ -95,8 +95,11 @@ function rt (io, callback) {
   // as soon as this file is loaded, connect automatically, 
   var socket = io.connect();
   socket.on('connect', function socketConnected() {
+    socket.get('/auth/openChannels', function(data){
+      console.log(data.msg)
+    });
     // Listen for Comet messages from Sails
-    socket.on('message', function messageReceived(message) {     
+    socket.on('notification', function messageReceived(message) {     
       console.log('New comet message received :: ', message);
     });
     console.log(

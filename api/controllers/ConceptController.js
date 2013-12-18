@@ -15,9 +15,12 @@ module.exports = {
 
   create : function(req, res){
   	Concept.create(req.body).done(function (err, concept){
-  		if(err) console.log(err)
-  		concept.notificate(concept, req);
-  		res.send(concept);
+  		if(err) res.send(err)
+  		concept.notificate(concept, function(notification){
+  			req.socket.broadcast.to(req.session.currentProject).emit("notification", notification);
+  			res.send(null,concept);
+  		});
+  		
   	})
   },
   
