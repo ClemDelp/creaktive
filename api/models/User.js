@@ -6,6 +6,8 @@
  *
  */
 
+ var bcrypt = require('bcrypt');
+
 module.exports = {
 autoPK : false,
   attributes: {
@@ -14,6 +16,14 @@ autoPK : false,
   	nickname: 'string'
   	*/
     
-  }
+  },
+
+  // beforeCreate: function(values, next) {
+  //   bcrypt.hash(values.password, 10, function(err, hash) {
+  //     if(err) return next(err);
+  //     values.password = hash;
+  //     next();
+  //   });
+  // }
 
 };

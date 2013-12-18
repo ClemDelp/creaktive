@@ -12,6 +12,14 @@ module.exports = {
     res.send('hello world!');
   }
   */
+
+  create : function(req, res){
+  	Concept.create(req.body).done(function (err, concept){
+  		if(err) console.log(err)
+  		concept.notificate(concept, req);
+  		res.send(concept);
+  	})
+  },
   
   update : function(req,res){
 		Concept.findOne(req.body.id).done(function(err,concept){

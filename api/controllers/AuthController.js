@@ -31,19 +31,19 @@ var AuthController = {
 		})(req, res);
 	},
 
-	getCurrentUser : function(req, res){
-		if(req.user){
-			res.send(req.user);
-		}else{
-			console.log("User not found");
-			res.send({
-		      name:"Timela user",
-		      signature:"Your personnal signature here",
-		      desc:"Your personnal description here",
-		      img:"assets/img/default-user-icon-profile.png"
+	openChannels : function(req,res){
+		Permission.subscribe(req.socket);
+		Permission.find({
+			id_user : req.session.passport.user
+		}).done(function (err, permissions){
+
+			_.each(_.pluck(permissions, "id_project"), function (id_project){
+				req.socket.join(id_project)
 			})
-		}
+		})
 		
+
+
 	},
  
 	logout: function(req, res) {
