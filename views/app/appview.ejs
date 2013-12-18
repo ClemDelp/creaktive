@@ -38,6 +38,62 @@
 <script src="js/BB_app/global_functions.js"></script>
 <!-- Interface client/server -->
 <script type="text/javascript" src="js/BB_app/app.js"></script>
+
+<script type="text/javascript">
+	/////////////////////////////////////////////////////////////////////////////////////////////
+// Document ready
+/////////////////////////////////////////////////////////////////////////////////////////////
+$(document).ready(function () {
+
+  Backbone.Model.prototype.toJSON = function() {
+    return JSON.parse(JSON.stringify(this.attributes));
+  };
+  // Initialisation de l'managerlication ici
+  console.log( "CreaKtive DOM loaded!" );
+
+  rt(io, function(){
+    // Globales variables
+    global.init(function(){
+      ////////////////////////////////////////
+      // Global Router
+      ////////////////////////////////////////
+
+      concepts.init();
+     
+      ////////////////////////////////////////
+
+      /*activat of "hashchange events's monitoring"*/
+      Backbone.history.start();
+    });
+
+  });
+
+}) ;
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+// Realtime connection
+/////////////////////////////////////////////////////////////////////////////////////////////
+function rt (io, callback) {
+  // as soon as this file is loaded, connect automatically, 
+  var socket = io.connect();
+  socket.on('connect', function socketConnected() {
+    // Listen for Comet messages from Sails
+    socket.on('message', function messageReceived(message) {     
+      console.log('New comet message received :: ', message);
+    });
+    console.log(
+        'Socket is now connected and globally accessible as `socket`.\n' + 
+        'e.g. to send a GET request to Sails, try \n' + 
+        '`socket.get("/", function (response) ' +
+        '{ console.log(response); })`'
+    );
+    callback();
+  });
+
+  window.socket = socket;
+
+};
+</script>
 <!-- Global objects -->
 <script src="js/BB_app/global_models.js"></script>
 <script src="js/BB_app/global_collections.js"></script>

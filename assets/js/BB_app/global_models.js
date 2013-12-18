@@ -1,7 +1,7 @@
 /*-----------------------------------------------------------------*/
 /*Model*/
 /*-----------------------------------------------------------------*/
-global.Models.ProjectModel = Backbone.Model.extend({
+globalObj.Models.ProjectModel = Backbone.Model.extend({
     defaults : {
         id : "",
         title : "no projects",
@@ -19,7 +19,7 @@ global.Models.ProjectModel = Backbone.Model.extend({
     }
 });
 /***************************************/
-global.Models.PostModel = Backbone.Model.extend({
+globalObj.Models.PostModel = Backbone.Model.extend({
     defaults : {
         id : "",
         title : "no post",
@@ -47,7 +47,7 @@ global.Models.PostModel = Backbone.Model.extend({
 });
 
 /***************************************/
-global.Models.NotificationModel = Backbone.Model.extend({
+globalObj.Models.NotificationModel = Backbone.Model.extend({
     defaults : {
         id:"",
         type:"",
@@ -66,7 +66,7 @@ global.Models.NotificationModel = Backbone.Model.extend({
     }
 });
 /***************************************/
-global.Models.UserModel = Backbone.Model.extend({
+globalObj.Models.UserModel = Backbone.Model.extend({
     defaults : {
         name : "",
         email : "",
@@ -84,7 +84,7 @@ global.Models.UserModel = Backbone.Model.extend({
     }
 });
 /***************************************/
-global.Models.PermissionModel = Backbone.Model.extend({
+globalObj.Models.PermissionModel = Backbone.Model.extend({
     defaults : {
         id : "",
         right : "",
@@ -101,7 +101,7 @@ global.Models.PermissionModel = Backbone.Model.extend({
     }
 });
 /***************************************/
-global.Models.GroupModel = Backbone.Model.extend({
+globalObj.Models.GroupModel = Backbone.Model.extend({
     defaults : {
         id:'',
         title : "",
@@ -117,7 +117,7 @@ global.Models.GroupModel = Backbone.Model.extend({
 });
 
 /***************************************/
-global.Models.VersionModel = Backbone.Model.extend({
+globalObj.Models.VersionModel = Backbone.Model.extend({
     defaults : {
         id:"",
         post: "",//id du post pere
@@ -136,7 +136,7 @@ global.Models.VersionModel = Backbone.Model.extend({
 });
 
 /***************************************/
-global.Models.CommentModel = Backbone.Model.extend({
+globalObj.Models.CommentModel = Backbone.Model.extend({
     model: this,
     defaults : {
         id :'',
@@ -152,7 +152,7 @@ global.Models.CommentModel = Backbone.Model.extend({
     }
 });
 /***************************************/
-global.Models.ConceptModel = Backbone.Model.extend({
+globalObj.Models.ConceptModel = Backbone.Model.extend({
     model: this,
     defaults : {
         id :'',
@@ -170,7 +170,7 @@ global.Models.ConceptModel = Backbone.Model.extend({
     }
 });
 /***************************************/
-global.Models.KnowledgeModel = Backbone.Model.extend({
+globalObj.Models.KnowledgeModel = Backbone.Model.extend({
     model: this,
     defaults : {
         id :'',
@@ -188,7 +188,7 @@ global.Models.KnowledgeModel = Backbone.Model.extend({
     }
 });
 /***************************************/
-global.Models.LinkModel = Backbone.Model.extend({
+globalObj.Models.LinkModel = Backbone.Model.extend({
     model: this,
     defaults : {
         id :'',
@@ -204,7 +204,7 @@ global.Models.LinkModel = Backbone.Model.extend({
     }
 });
 /***************************************/
-global.Models.TagModel = Backbone.Model.extend({
+globalObj.Models.TagModel = Backbone.Model.extend({
     model: this,
     defaults : {
         id :'',

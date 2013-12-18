@@ -79,7 +79,7 @@ concepts.Views.MapView = Backbone.View.extend({
         };  
         c0.set({attr:attr})                    
         if(!c0){
-            c0 = new global.Models.ConceptModel({
+            c0 = new globalObj.Models.ConceptModel({
                 id : guid(),
                 title : "c0",
                 user : this.currentUser,
@@ -111,7 +111,7 @@ concepts.Views.MapView = Backbone.View.extend({
         console.log("******",command, args);
         _this = this;
         if (command === 'addSubIdea') {
-            new_concept = new global.Models.ConceptModel({
+            new_concept = new globalObj.Models.ConceptModel({
                 id : args[2],
                 title : args[1],
                 user : this.currentUser,
