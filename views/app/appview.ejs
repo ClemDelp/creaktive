@@ -1,9 +1,23 @@
 <!-- Javascript libs -->
 
 
+
+  <link rel="stylesheet" type="text/css" href="styles/jquery.fullPage.css" />
+  <script type="text/javascript" src="js/vendor/jquery.fullPage.js"></script>
+  <!-- ******************************** -->
+  <!-- CKEditor -->
+  <script src="/js/ckeditor/ckeditor.js"></script>
+  <!-- ******************************** -->
+  <!-- tags input -->
+  <link rel="stylesheet" type="text/css" href="styles/jquery.tagsinput.css" />
+<script type="text/javascript" src="js/vendor/jquery.tagsinput.js"></script>
+  <!-- ******************************** -->
+  <link rel="stylesheet" type="text/css" href="styles/overlay_css_timela.css" /> 
+
 <!-- Templates to load -->
 <%- partial('./templates/concepts_template') %>
 <%- partial('./templates/knowledges_template') %>
+<%- partial('./templates/timela_template') %>
 <%- partial('./templates/visualization_template') %>
 
 
@@ -19,4 +33,8 @@
 <script src="js/BB_app/global_collections.js"></script>
 
 <!-- Modules situés dans assets/js/BB_app -->
+
+<script type="text/javascript" src="js/BB_app/modules/timela.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/explorer.js"></script>
+<script type="text/javascript" src="js/BB_app/interfaces/interface3.js"></script>
 
