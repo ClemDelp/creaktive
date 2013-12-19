@@ -4,7 +4,7 @@
 
 /***************************************/
 global.Collections.PostsCollection = Backbone.Collection.extend({
-    model : global.Models.Post_model,
+    model : global.Models.PostModel,
     url : "post",
     comparator: function(m){
         return -m.get('date2');
@@ -18,7 +18,7 @@ global.Collections.PostsCollection = Backbone.Collection.extend({
 });
 /***************************************/
 global.Collections.NotificationsCollection = Backbone.Collection.extend({
-    model : global.Models.Notification_model,
+    model : global.Models.NotificationModel,
     initialize : function() {
         //console.log('Notifications collection Constructor');
         this.url = "notification";
@@ -29,7 +29,7 @@ global.Collections.NotificationsCollection = Backbone.Collection.extend({
 });
 /***************************************/
 global.Collections.UsersCollection = Backbone.Collection.extend({
-    model : global.Models.User_model,
+    model : global.Models.UserModel,
     initialize : function() {
         //console.log('Users collection Constructor');
         this.url = "user";
@@ -41,7 +41,7 @@ global.Collections.UsersCollection = Backbone.Collection.extend({
 });
 /***************************************/
 global.Collections.GroupsCollection = Backbone.Collection.extend({
-    model : global.Models.Group_model,
+    model : global.Models.GroupModel,
     initialize : function() {
         //console.log('Groups collection Constructor');
         this.url = "group";
@@ -52,7 +52,7 @@ global.Collections.GroupsCollection = Backbone.Collection.extend({
 });
 /***************************************/
 global.Collections.VersionsCollection = Backbone.Collection.extend({
-    model : global.Models.Version_model,
+    model : global.Models.VersionModel,
     url : "version",
     comparator: function(m){
         return -m.get('date2');
@@ -63,7 +63,7 @@ global.Collections.VersionsCollection = Backbone.Collection.extend({
 });
 /***************************************/
 global.Collections.CommentsCollection = Backbone.Collection.extend({
-    model : global.Models.Comment_model,
+    model : global.Models.CommentModel,
     url : "comment",
     comparator: function(m){
         return -m.get('date2');
@@ -73,8 +73,8 @@ global.Collections.CommentsCollection = Backbone.Collection.extend({
     }
 }); 
 /***************************************/
-global.Collections.ConceptsColelction = Backbone.Collection.extend({
-    model : global.Models.Comment_model,
+global.Collections.ConceptsCollection = Backbone.Collection.extend({
+    model : global.Models.ConceptModel,
     url : "concept",
     comparator: function(m){
         return -m.get('date2');
@@ -85,7 +85,7 @@ global.Collections.ConceptsColelction = Backbone.Collection.extend({
 });
 /***************************************/
 global.Collections.KnowledgesCollection = Backbone.Collection.extend({
-    model : global.Models.Comment_model,
+    model : global.Models.KnowledgeModel,
     url : "knowledge",
     comparator: function(m){
         return -m.get('date2');
@@ -96,7 +96,7 @@ global.Collections.KnowledgesCollection = Backbone.Collection.extend({
 });    
 /***************************************/
 global.Collections.LinksCollection = Backbone.Collection.extend({
-    model : global.Models.Comment_model,
+    model : global.Models.LinkModel,
     url : "link",
     comparator: function(m){
         return -m.get('date2');
@@ -107,7 +107,7 @@ global.Collections.LinksCollection = Backbone.Collection.extend({
 }); 
 /***************************************/
 global.Collections.TagsCollection = Backbone.Collection.extend({
-    model : global.Models.Comment_model,
+    model : global.Models.TagModel,
     url : "tag",
     comparator: function(m){
         return -m.get('date2');
@@ -118,7 +118,7 @@ global.Collections.TagsCollection = Backbone.Collection.extend({
 });     
 /***************************************/
 global.Collections.PermissionsCollection = Backbone.Collection.extend({
-    model : global.Models.Comment_model,
+    model : global.Models.PermissionModel,
     url : "permission",
     comparator: function(m){
         return -m.get('date2');
@@ -129,7 +129,7 @@ global.Collections.PermissionsCollection = Backbone.Collection.extend({
 });  
 /***************************************/
 global.Collections.ProjectsCollection = Backbone.Collection.extend({
-    model : global.Models.Comment_model,
+    model : global.Models.ProjectModel,
     url : "project",
     comparator: function(m){
         return -m.get('date2');
