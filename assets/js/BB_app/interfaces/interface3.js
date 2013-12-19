@@ -40,7 +40,7 @@ interface3.Views.Explorer = Backbone.View.extend({
 });
 /****************************************************************/
 interface3.Views.Main = Backbone.View.extend({
-    el : $('#knowledge-container'),
+    el : $('#interface3-container'),
     initialize : function(json) {
         console.log("interface3 view initialise");
         _.bindAll(this, 'render');
@@ -53,10 +53,19 @@ interface3.Views.Main = Backbone.View.extend({
     },
     render : function() {
         // Timeline
-        timela_     = new interface3.Views.Timela({collection:this.timelines, model:this.model,user:this.user,current_selection:this.current_selection});// Posts, Current user, Knowledge
+        timela_     = new interface3.Views.Timela({
+            collection:this.timelines, 
+            model:this.model,
+            user:this.user,
+            current_selection:this.current_selection
+        });// Posts, Current user, Knowledge
         $(this.el).append(timela_.render().el);
         // Explorer
-        explorer_   = new interface3.Views.Explorer({collection:this.collection,poches:this.poches,current_selection:this.current_selection});// Knowledges, Poches
+        explorer_   = new interface3.Views.Explorer({
+            collection:this.collection,
+            poches:this.poches,
+            current_selection:this.current_selection
+        });// Knowledges, Poches
         $(this.el).append(explorer_.render().el);
         $(document).foundation();
 

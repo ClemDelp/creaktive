@@ -1,3 +1,4 @@
+
 /////////////////////////////////////////////////////////////////////
 /*Manager*/
 /////////////////////////////////////////////////////////////////////
@@ -146,3 +147,118 @@ global.Models.Comment = Backbone.Model.extend({
     }
 });
 /***************************************/
+
+/*-----------------------------------------------------------------*/
+/*Model*/
+/*-----------------------------------------------------------------*/
+global.Models.ProjectModel = Backbone.Model.extend({
+    defaults : {
+        id : "",
+        title : "no projects",
+        date : getDate(),
+    },
+    initialize : function Doc() {
+        //console.log('Project Constructor');
+        this.urlRoot = "project";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    },
+    addDocument : function(){
+        console.log("Add a document");
+    }
+});
+
+
+/***************************************/
+global.Models.NotificationModel = Backbone.Model.extend({
+    defaults : {
+        id:"",
+        type:"",
+        content : "",//description de la notification: "mise à jour sur le post"
+        to : "",//cible: projet, post, document, ...
+        from : "",//Qui est à l'origine: utilisateur, mise à jour, ...
+        date : getDate(),
+        state : ""
+    },
+    initialize : function Doc() {
+        //console.log('Notification part Constructor');
+        this.urlRoot = "notification";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+
+/***************************************/
+global.Models.PermissionModel = Backbone.Model.extend({
+    defaults : {
+        id : "",
+        right : "",
+        date:getDate(),
+        id_user : "",
+        id_project : ""
+    },
+    initialize : function Doc() {
+        //console.log('User Constructor');
+        this.urlRoot = "permission";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+/***************************************/
+global.Models.GroupModel = Backbone.Model.extend({
+    defaults : {
+        id:'',
+        title : "",
+        users : []
+    },
+    initialize : function Doc() {
+        //console.log('Group Constructor');
+        this.urlRoot = "group";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    },
+});
+
+
+
+
+/***************************************/
+global.Models.ConceptModel = Backbone.Model.extend({
+    model: this,
+    defaults : {
+        id :'',
+        title : "",
+        user : "",
+        date : getDate(),
+        content : "",
+        color : "",
+        id_father : ""
+    },
+    setText : function(value) {this.set({ text : value }); },
+    initialize : function Comment() {
+        this.urlRoot = "concept";
+        //console.log('Concept Constructor');
+    }
+});
+
+/***************************************/
+global.Models.LinkModel = Backbone.Model.extend({
+    model: this,
+    defaults : {
+        id :'',
+        user : "",
+        date : getDate(),
+        id_c : "",
+        id_k : ""
+    },
+    setText : function(value) {this.set({ text : value }); },
+    initialize : function Comment() {
+        this.urlRoot = "link";
+        //console.log('Concept Constructor');
+    }
+});
+

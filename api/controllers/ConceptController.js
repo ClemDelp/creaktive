@@ -16,7 +16,9 @@ module.exports = {
   	Concept.findOne(req.body.id).done(function(err, concept){
   		if(err) res.send(err);
   		if(concept){
-  			Concept.update({id: req.body.id}, req.body).done(function(err,c){
+  			Concept.update({
+          id: req.body.id
+        }, req.body).done(function(err,c){
   				if(err) res.send(err)
   				res.send(c);
   			});

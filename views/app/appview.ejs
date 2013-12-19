@@ -1,4 +1,28 @@
+<!-- CSS -->
+<link rel="stylesheet" href="styles/map.css">
+
 <!-- Javascript libs -->
+<script type="text/javascript" src="js/vendor/jquery.mousewheel-3.1.3.js"></script>
+<script src="js/vendor/jquery.hotkeys.js"></script>
+<script src="js/vendor/jquery.hammer.min.js"></script>
+<script type="text/javascript" src="js/vendor/kinetic-v4.4.3.js"></script>
+<script src="js/vendor/color-0.4.1.min.js"></script>
+<script type="text/javascript" src="js/mapjs/kinetic.clip.js"></script>
+<script type="text/javascript" src="js/mapjs/kinetic.idea.js"></script>
+<script type="text/javascript" src="js/mapjs/kinetic.idea.proxy.js"></script>
+<script type="text/javascript" src="js/mapjs/kinetic.connector.js"></script>
+<script type="text/javascript" src="js/mapjs/observable.js"></script>
+<script type="text/javascript" src="js/mapjs/mapjs.js"></script>
+<script type="text/javascript" src="js/mapjs/url-helper.js"></script>
+<script type="text/javascript" src="js/mapjs/content.js"></script>
+<script type="text/javascript" src="js/mapjs/layout.js"></script>
+<script type="text/javascript" src="js/mapjs/layout-compressor.js"></script>
+<script type="text/javascript" src="js/mapjs/map-model.js"></script>
+<script type="text/javascript" src="js/mapjs/kinetic-mediator.js"></script>
+<script type="text/javascript" src="js/mapjs/map-toolbar-widget.js"></script>
+<script type="text/javascript" src="js/mapjs/png-exporter.js"></script>
+<script type="text/javascript" src="js/mapjs/map-widget.js"></script>
+	
 
 
 
@@ -15,10 +39,27 @@
   <link rel="stylesheet" type="text/css" href="styles/overlay_css_timela.css" /> 
 
 <!-- Templates to load -->
-<%- partial('./templates/concepts_template') %>
-<%- partial('./templates/knowledges_template') %>
-<%- partial('./templates/timela_template') %>
-<%- partial('./templates/visualization_template') %>
+
+
+
+
+  <div class="section" id="section1">
+      <div class="slide active">
+         <%- partial('./templates/interface1_template') %>
+      </div>
+      <div class="slide">
+        <%- partial('./templates/visualization_template') %>
+      </div>
+      <div class="slide">
+        <%- partial('./templates/interface3_template') %>
+      </div>
+  </div>
+  <script type="text/javascript">var pepe = $.fn.fullpage();</script>
+
+  <%- partial('./templates/timela_template') %>
+  <%- partial('./templates/explorer_template') %>
+  <%- partial('./templates/concepts_template') %>
+  
 
 
 <!-- Javascript libs -->
@@ -28,13 +69,20 @@
 <script src="js/BB_app/global_functions.js"></script>
 <!-- Interface client/server -->
 <script type="text/javascript" src="js/BB_app/app.js"></script>
+
+
 <!-- Global objects -->
 <script src="js/BB_app/global_models.js"></script>
 <script src="js/BB_app/global_collections.js"></script>
 
 <!-- Modules situés dans assets/js/BB_app -->
 
+
 <script type="text/javascript" src="js/BB_app/modules/timela.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/explorer.js"></script>
+<script type="text/javascript" src="js/BB_app/interfaces/interface1.js"></script>
+<script type="text/javascript" src="js/BB_app/interfaces/interface2.js"></script>
 <script type="text/javascript" src="js/BB_app/interfaces/interface3.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/concepts.js"></script>
+
 

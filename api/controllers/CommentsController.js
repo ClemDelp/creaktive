@@ -13,5 +13,23 @@ module.exports = {
   }
   */
   
+    update : function(req, res){
+  	Comment.findOne(req.body.id).done(function(err, concept){
+  		if(err) res.send(err);
+  		if(concept){
+  			Comment.update({
+          id: req.body.id
+        }, req.body).done(function(err,c){
+  				if(err) res.send(err)
+  				res.send(c);
+  			});
+  		}else{
+  			Comment.create(req.body).done(function(err,c){
+  				if(err) res.send(err)
+  				res.send(c);
+  			})
+  		}
+  	})
+  }
 
 };

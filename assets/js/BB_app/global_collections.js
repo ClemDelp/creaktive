@@ -1,3 +1,4 @@
+
 /////////////////////////////////////////////////////////////////////
 /*Explorer Collections*/
 /////////////////////////////////////////////////////////////////////
@@ -65,3 +66,91 @@ global.Collections.CommentsCollection = Backbone.Collection.extend({
 }); 
 /***************************************/
     
+
+/*-----------------------------------------------------------------*/
+/*Collections*/
+/*-----------------------------------------------------------------*/
+
+
+/***************************************/
+global.Collections.NotificationsCollection = Backbone.Collection.extend({
+    model : global.Models.NotificationModel,
+    initialize : function() {
+        //console.log('Notifications collection Constructor');
+        this.url = "notification";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+/***************************************/
+global.Collections.UsersCollection = Backbone.Collection.extend({
+    model : global.Models.UserModel,
+    initialize : function() {
+        //console.log('Users collection Constructor');
+        this.url = "user";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+
+    }
+});
+/***************************************/
+global.Collections.GroupsCollection = Backbone.Collection.extend({
+    model : global.Models.GroupModel,
+    initialize : function() {
+        //console.log('Groups collection Constructor');
+        this.url = "group";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+
+/***************************************/
+global.Collections.ConceptsCollection = Backbone.Collection.extend({
+    model : global.Models.ConceptModel,
+    url : "concept",
+    comparator: function(m){
+        return -m.get('date2');
+    },
+    initialize : function() {
+        //console.log('Comments Collection Constructor');
+    }
+});
+   
+/***************************************/
+global.Collections.LinksCollection = Backbone.Collection.extend({
+    model : global.Models.LinkModel,
+    url : "link",
+    comparator: function(m){
+        return -m.get('date2');
+    },
+    initialize : function() {
+        //console.log('Comments Collection Constructor');
+    }
+}); 
+  
+/***************************************/
+global.Collections.PermissionsCollection = Backbone.Collection.extend({
+    model : global.Models.PermissionModel,
+    url : "permission",
+    comparator: function(m){
+        return -m.get('date2');
+    },
+    initialize : function() {
+        //console.log('Comments Collection Constructor');
+    }
+});  
+/***************************************/
+global.Collections.ProjectsCollection = Backbone.Collection.extend({
+    model : global.Models.ProjectModel,
+    url : "project",
+    comparator: function(m){
+        return -m.get('date2');
+    },
+    initialize : function() {
+        //console.log('Comments Collection Constructor');
+    }
+});  
+
