@@ -12,6 +12,7 @@ module.exports = {
     res.send('hello world!');
   }
   */
+
   
     update : function(req,res){
   	User.findOne(req.body.id).done(function(err, user){

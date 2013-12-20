@@ -32,7 +32,8 @@ module.exports.routes = {
   // located at `views/home/index.ejs`
   // 
   // (This would also work if you had a file at: `/views/home.ejs`)
-  '/': "AppController.appView"
+  '/': "AppController.appView",
+  '/manager' : "AppController.manager"
 
   /*
   // But what if you want your home page to display

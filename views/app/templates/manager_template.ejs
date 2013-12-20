@@ -151,6 +151,16 @@
 /*Project templates*/
 /////////////////////////////////////////////////////////////////////
 -->
+<script type="text/template" id="permission-template">
+	<tr>
+		<td>{{= permission.user.name }}</td>
+		<td>{{= permission.group.title }}</td>
+		<td>{{= permission.rigth }
+		</td>
+	</tr>
+
+</script>
+
 <script type="text/template" id="project-template">
 	<div class="row panel">
 		<h5><b>PROJECT : </b>{{= project.title }}</h5>

@@ -1,29 +1,3 @@
-$(function () {
-    $('#fileupload').fileupload({
-        dataType: 'json',
-        done: function (e, data) {
-            $.each(data.result.files, function (index, file) {
-                $('<p/>').text(file.name).appendTo("#importation_info");
-                new_document = new global.Models.DocumentModel(file.doc);
-                console.log(new_document)
-                /*On ajoute le doc au projet*/
-                project_id = $("#id_project_upload_input").val();
-                project = global.collections.Projects.get(project_id);
-                project.get('documents').unshift(new_document.id);
-                project.save();
-
-                global.collections.Documents.fetch();
-            });
-            /*On vide la liste des documents chargés*/
-            /*$("#importation_info").html("");*/
-            /*On ferme la modal boxe*/
-            $('#uploadModal').foundation('reveal', 'close');
-
-        }
-    });
-});
-
-
 /////////////////////////////////////////////////////////////////////
 /*-----------------------------------------------------------------*/
 /*Views*/
@@ -61,7 +35,7 @@ manager.Views.Users_view = Backbone.View.extend({
     addUser : function(e){
         console.log("Add user");
         _this = this;
-        new_user = new global.Models.UserModel({
+        new_user = new global.Models.User({
             id : guid(),
             name : $("#users_view_name").val(),
             email : $("#users_view_email").val(),
@@ -202,23 +176,68 @@ manager.Views.Groups_view = Backbone.View.extend({
     }
 });
 /***********************************************/
+manager.Views.Permission_view = Backbone.View.extend({
+    initialize : function(json){
+        console.log("Permission view initialize");
+
+        _.bindAll(this, 'render');
+
+        this.permission = json.permission;
+
+        this.template = _.template($('#permission-template').html());
+
+    },
+
+    render : function (){
+        var renderedContent = this.template({
+            permission : this.permission
+        })
+        $(this.el).html(renderedContent);
+        $(document).foundation();
+        return this;
+
+    } 
+
+});
+
+/***********************************************/
 manager.Views.Project_view = Backbone.View.extend({
     initialize : function(json) {
         console.log("Project view initialise");
+        _.bindAll(this, 'render');
+
         this.permissions = json.permissions;
         this.groups = json.groups;
+        this.users = json.users;
+
         this.template = _.template($('#project-template').html());
     },
     render : function() {
-        var _this = this;
+        _this=this;
+        project_el = this.el;
         var renderedContent = this.template({
             project:this.model.toJSON(),
             groups : this.groups.toJSON(),
         });
+
+        this.permissions.each(function (p){
+            perm = {
+                user : _this.users.get(p.get('id_user')),
+                group : _this.groups.get(p.get('id_group')),
+                right : p.right
+            }
+            permission_view = new manager.Views.Permission_view({permission : perm})
+            $(this.project_el).append(permission_view.render().el)
+        })
+
+
         $(this.el).html(renderedContent);
+        $(document).foundation();
         return this;
     }
 });
+
+
 /***********************************************/
 manager.Views.Projects_view = Backbone.View.extend({
     el : $('#projects-container'),
@@ -266,14 +285,14 @@ manager.Views.Projects_view = Backbone.View.extend({
             new_permission = new global.Models.PermissionModel({
                 id : guid(),
                 right : right,
-                user : _this.users.get(u),
+                id_user : u.id,
                 id_project : id_project,
-                group : _this.groups.get(id_group)
+                id_group : id_group
             });
 
-            project.get('permissions').unshift(new_permission);
+            new_permission.save();
         });
-        project.save();
+
         this.render();
     },
     addProject : function(e){
@@ -299,20 +318,22 @@ manager.Views.Projects_view = Backbone.View.extend({
         this.collection.get(project_id).destroy();
     },
     render : function() {
+        var renderedContent = this.template({
+            projects : this.projects
+        });
+        $(this.el).html(renderedContent);
         var _this = this;
-        list_projects_html = [];
+        projects_el = this.el;
 
         this.collection.each(function(project){
             project_view = new manager.Views.Project_view({
                 model:project,
                 groups : _this.groups,
-                permissions : _this.permissions /*_.where(_this.permissions, {id_project : project.id})*/
+                permissions : _this.permissions, /*_.where(_this.permissions, {id_project : project.id})*/
+                users : _this.users
             });
-            this.list_projects_html.unshift(project_view.render().$el.html());
+            $(this.projects_el).append(project_view.render().el);
         });
-        var renderedContent = this.template({projects:list_projects_html});
-        $(this.el).html(renderedContent);
-        $(document).foundation();
         return this;
     }
 });

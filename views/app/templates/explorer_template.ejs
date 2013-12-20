@@ -1,0 +1,39 @@
+<script type="text/template" id="knowledge-template">
+	<div id="{{= knowledge.id }}">
+		<input id="selector_{{= knowledge.id }}" type="checkbox" class="selectable" data-id-knowledge="{{= knowledge.id }}" style="float:left"/>
+		<div style="float:right">
+		    {{ _.each(knowledge.tag, function(tag) { }}
+				<a class="change button tiny success">{{= tag }}</a>
+			{{ }); }}
+		</div>
+		<h3>{{= knowledge.title }}</h3>
+	    <p>{{= knowledge.content }}</p>
+	</div>
+</script>
+
+<script type="text/template" id="knowledges-template">
+    <div class="panel">
+	    <div class="row">
+	    	<div class="small-10 columns"><input id="newK" type="text" placeholder="Knowledge"></div>
+	     	<div class="small-2 columns"><a href="#" class="button prefix add">+</a></div>
+	    </div>
+    </div>
+</script>
+
+<script type="text/template" id="poches-template">
+	<a id="notClassified" class="button small selectable" data-filter-title="notClassified">Not classified</a>
+	{{ _.each(poches, function(poche) { }}
+		<a id="{{= poche.id }}" class="button small selectable" data-filter-title="{{= poche.title }}">{{= poche.title }}</a>
+	{{ }); }}
+	<div class="large-4 columns">
+      <div class="row collapse">
+        <div class="small-10 columns">
+          <input type="text" id="newP" placeholder="Add a new knowledge space">
+        </div>
+        <div class="small-2 columns">
+          <a href="#" class="add button prefix">+</a>
+        </div>
+      </div>
+    </div>
+
+</script>

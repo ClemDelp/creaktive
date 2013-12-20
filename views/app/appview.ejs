@@ -1,13 +1,63 @@
+<!-- CSS -->
+<link rel="stylesheet" href="styles/map.css">
+
 <!-- Javascript libs -->
-<script src="js/vendor/jquery.ui.widget.js"></script>
-<script src="js/vendor/jquery.iframe-transport.js"></script>
-<script src="js/vendor/jquery.fileupload.js"></script>
+
+<script type="text/javascript" src="js/vendor/jquery.mousewheel-3.1.3.js"></script>
+<script src="js/vendor/jquery.hotkeys.js"></script>
+<script src="js/vendor/jquery.hammer.min.js"></script>
+<script type="text/javascript" src="js/vendor/kinetic-v4.4.3.js"></script>
+<script src="js/vendor/color-0.4.1.min.js"></script>
+<script type="text/javascript" src="js/mapjs/kinetic.clip.js"></script>
+<script type="text/javascript" src="js/mapjs/kinetic.idea.js"></script>
+<script type="text/javascript" src="js/mapjs/kinetic.idea.proxy.js"></script>
+<script type="text/javascript" src="js/mapjs/kinetic.connector.js"></script>
+<script type="text/javascript" src="js/mapjs/observable.js"></script>
+<script type="text/javascript" src="js/mapjs/mapjs.js"></script>
+<script type="text/javascript" src="js/mapjs/url-helper.js"></script>
+<script type="text/javascript" src="js/mapjs/content.js"></script>
+<script type="text/javascript" src="js/mapjs/layout.js"></script>
+<script type="text/javascript" src="js/mapjs/layout-compressor.js"></script>
+<script type="text/javascript" src="js/mapjs/map-model.js"></script>
+<script type="text/javascript" src="js/mapjs/kinetic-mediator.js"></script>
+<script type="text/javascript" src="js/mapjs/map-toolbar-widget.js"></script>
+<script type="text/javascript" src="js/mapjs/png-exporter.js"></script>
+<script type="text/javascript" src="js/mapjs/map-widget.js"></script>
+	
+
+
+  <link rel="stylesheet" type="text/css" href="styles/jquery.fullPage.css" />
+  <script type="text/javascript" src="js/vendor/jquery.fullPage.js"></script>
+  <!-- ******************************** -->
+  <!-- CKEditor -->
+  <script src="/js/ckeditor/ckeditor.js"></script>
+  <!-- ******************************** -->
+  <!-- tags input -->
+  <link rel="stylesheet" type="text/css" href="styles/jquery.tagsinput.css" />
+<script type="text/javascript" src="js/vendor/jquery.tagsinput.js"></script>
+  <!-- ******************************** -->
+  <link rel="stylesheet" type="text/css" href="styles/overlay_css_timela.css" /> 
 
 <!-- Templates to load -->
-<%- partial('./templates/concepts_template') %>
-<%- partial('./templates/knowledges_template') %>
-<%- partial('./templates/visualization_template') %>
-<%- partial('./templates/manager_template') %>
+
+  <div class="section" id="section1">
+      <div class="slide active">
+         <%- partial('./templates/interface1_template') %>
+      </div>
+      <div class="slide">
+        <%- partial('./templates/visualization_template') %>
+      </div>
+      <div class="slide">
+        <%- partial('./templates/interface3_template') %>
+      </div>
+  </div>
+  <script type="text/javascript">var pepe = $.fn.fullpage();</script>
+
+  <%- partial('./templates/timela_template') %>
+  <%- partial('./templates/explorer_template') %>
+  <%- partial('./templates/concepts_template') %>
+  
+
 
 
 <!-- Javascript libs -->
@@ -17,10 +67,20 @@
 <script src="js/BB_app/global_functions.js"></script>
 <!-- Interface client/server -->
 <script type="text/javascript" src="js/BB_app/app.js"></script>
+
+
 <!-- Global objects -->
 <script src="js/BB_app/global_models.js"></script>
 <script src="js/BB_app/global_collections.js"></script>
 
-<!-- Modules situés dans BB_app -->
+<!-- Modules situés dans assets/js/BB_app -->
 
- <script src="js/BB_app/modules/manager.js"></script>
+
+<script type="text/javascript" src="js/BB_app/modules/timela.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/explorer.js"></script>
+<script type="text/javascript" src="js/BB_app/interfaces/interface1.js"></script>
+<script type="text/javascript" src="js/BB_app/interfaces/interface2.js"></script>
+<script type="text/javascript" src="js/BB_app/interfaces/interface3.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/concepts.js"></script>
+
+

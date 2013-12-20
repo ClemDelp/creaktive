@@ -1,11 +1,48 @@
-/*-----------------------------------------------------------------*/
-/*Collections*/
-/*-----------------------------------------------------------------*/
 
+/////////////////////////////////////////////////////////////////////
+/*Explorer Collections*/
+/////////////////////////////////////////////////////////////////////
+global.Collections.Knowledges = Backbone.Collection.extend({
+    model : global.Models.Knowledge,
+    initialize : function() {
+        console.log('Knowleges collection Constructor');
+        this.url = "knowledge";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
 /***************************************/
-global.Collections.PostsCollection = Backbone.Collection.extend({
-    model : global.Models.PostModel,
-    url : "post",
+global.Collections.Poches = Backbone.Collection.extend({
+    model : global.Models.Poche,
+    initialize : function() {
+        console.log('Poches collection Constructor');
+        this.url = "poche";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+/////////////////////////////////////////////////////////////////////
+/*Timela Collections*/
+/////////////////////////////////////////////////////////////////////
+global.Collections.Timelines = Backbone.Collection.extend({
+    model : global.Models.Timeline,
+    comparator: function(m){
+        return -m.get('date2');
+    },
+    initialize : function() {
+        console.log('Timelines collection Constructor');
+        this.url = "timeline";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+/***************************************/
+global.Collections.Posts = Backbone.Collection.extend({
+    model : global.Models.Post,
+    /*url : "post",*/
     comparator: function(m){
         return -m.get('date2');
     },
@@ -16,6 +53,17 @@ global.Collections.PostsCollection = Backbone.Collection.extend({
         });
     }
 });
+/***************************************/
+global.Collections.CommentsCollection = Backbone.Collection.extend({
+    model : global.Models.Comment,
+    //url : "comment",
+    comparator: function(m){
+        return -m.get('date2');
+    },
+    initialize : function() {
+        //console.log('Comments Collection Constructor');
+    }
+}); 
 /***************************************/
 global.Collections.NotificationsCollection = Backbone.Collection.extend({
     model : global.Models.NotificationModel,
@@ -29,7 +77,7 @@ global.Collections.NotificationsCollection = Backbone.Collection.extend({
 });
 /***************************************/
 global.Collections.UsersCollection = Backbone.Collection.extend({
-    model : global.Models.UserModel,
+    model : global.Models.User,
     initialize : function() {
         //console.log('Users collection Constructor');
         this.url = "user";
@@ -50,38 +98,7 @@ global.Collections.GroupsCollection = Backbone.Collection.extend({
         });
     }
 });
-/***************************************/
-global.Collections.UserGroup = Backbone.Collection.extend({
-    initialize : function() {
-        //console.log('Groups collection Constructor');
-        this.url = "usergroup";
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    }
-});
-/***************************************/
-global.Collections.VersionsCollection = Backbone.Collection.extend({
-    model : global.Models.VersionModel,
-    url : "version",
-    comparator: function(m){
-        return -m.get('date2');
-    },
-    initialize : function() {
-        //console.log('Versions Collection Constructor');
-    }
-});
-/***************************************/
-global.Collections.CommentsCollection = Backbone.Collection.extend({
-    model : global.Models.CommentModel,
-    url : "comment",
-    comparator: function(m){
-        return -m.get('date2');
-    },
-    initialize : function() {
-        //console.log('Comments Collection Constructor');
-    }
-}); 
+
 /***************************************/
 global.Collections.ConceptsCollection = Backbone.Collection.extend({
     model : global.Models.ConceptModel,
@@ -94,16 +111,17 @@ global.Collections.ConceptsCollection = Backbone.Collection.extend({
     }
 });
 /***************************************/
-global.Collections.KnowledgesCollection = Backbone.Collection.extend({
-    model : global.Models.KnowledgeModel,
-    url : "knowledge",
+global.Collections.UserGroup = Backbone.Collection.extend({
+    model : global.Models.UserGroupModel,
+    url : "usergroup",
     comparator: function(m){
         return -m.get('date2');
     },
     initialize : function() {
         //console.log('Comments Collection Constructor');
     }
-});    
+});
+   
 /***************************************/
 global.Collections.LinksCollection = Backbone.Collection.extend({
     model : global.Models.LinkModel,
@@ -115,17 +133,7 @@ global.Collections.LinksCollection = Backbone.Collection.extend({
         //console.log('Comments Collection Constructor');
     }
 }); 
-/***************************************/
-global.Collections.TagsCollection = Backbone.Collection.extend({
-    model : global.Models.TagModel,
-    url : "tag",
-    comparator: function(m){
-        return -m.get('date2');
-    },
-    initialize : function() {
-        //console.log('Comments Collection Constructor');
-    }
-});     
+  
 /***************************************/
 global.Collections.PermissionsCollection = Backbone.Collection.extend({
     model : global.Models.PermissionModel,
@@ -148,3 +156,4 @@ global.Collections.ProjectsCollection = Backbone.Collection.extend({
         //console.log('Comments Collection Constructor');
     }
 });  
+

@@ -10,6 +10,10 @@ module.exports = {
   appview : function(req,res){
   	res.view();
   },
+
+  manager : function (req,res){
+  	res.view();
+  }
   
 
 };

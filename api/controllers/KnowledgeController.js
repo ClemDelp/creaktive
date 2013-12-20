@@ -14,9 +14,9 @@ module.exports = {
   */
   
   update : function(req, res){
-  	Knowledge.findOne(req.body.id).done(function(err, Knowledge){
+  	Knowledge.findOne(req.body.id).done(function(err, knowledge){
   		if(err) res.send(err);
-  		if(Knowledge){
+  		if(knowledge){
   			Knowledge.update({id: req.body.id}, req.body).done(function(err,c){
   				if(err) res.send(err)
   				res.send(c);
