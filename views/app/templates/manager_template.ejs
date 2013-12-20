@@ -155,8 +155,7 @@
 	<tr>
 		<td>{{= permission.user.name }}</td>
 		<td>{{= permission.group.title }}</td>
-		<td>{{= permission.rigth }
-		</td>
+		<td>{{= permission.right }}</td>
 	</tr>
 
 </script>
@@ -165,19 +164,15 @@
 	<div class="row panel">
 		<h5><b>PROJECT : </b>{{= project.title }}</h5>
 		<br>
-		<a class="button">Open</a>
+		<a class="button open" data-id-project="{{= project.id }}">Open</a>
 		<div class="row">
 			<label>Permissions</label>
 			<table style="width:100%;align:center">
 				<tr>
 					<th>User</th><th>Group</th><th>Right</th>
 				</tr>
-				{{ _.each(project.permissions, function(permission){ }}
-				<tr>
-					<td>{{= permission.user.name}}</td>
-					<td>{{= permission.group.title}}</td>
-					<td>{{= permission.right}}</td>
-				</tr>
+				{{ _.each(permissions, function(permission){ }}
+					{{= permission }}
 				{{ });}}
 			</table>
 		</div>
@@ -218,10 +213,6 @@
 
 <script type="text/template" id="projects-template">
 	<h3>Projects manager</h3>
-	<hr />
-    {{ _.each(projects, function(project) { }}
-    	{{= project }}
-    {{ }); }}
     <h5>New project</h5>
 	<form method="post" class="row">
 	      <div class="row collapse">
@@ -233,4 +224,5 @@
 	        </div>
 	      </div>
 	</form>
+	<hr />
 </script>

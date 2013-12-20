@@ -1,5 +1,6 @@
 <!-- Javascript libs -->
 
+<h1><%= currentUser.name %></h1>
 
 <!-- Templates to load -->
 <%- partial('./templates/manager_template') %>
@@ -18,3 +19,21 @@
 
 <!-- Modules situés dans BB_app -->
 <script src="js/BB_app/modules/manager.js"></script>
+
+<script>
+
+$(document).ready(function () {
+
+  Backbone.Model.prototype.toJSON = function() {
+    return JSON.parse(JSON.stringify(this.attributes));
+  };
+  // Initialisation de l'managerlication ici
+  console.log( "CreaKtive DOM loaded!" );
+  global.init("<%= currentUser %>");
+  manager.init();      
+  ////////////////////////////////////////
+  /*activat of "hashchange events's monitoring"*/
+  Backbone.history.start();
+}) ;
+
+</script>

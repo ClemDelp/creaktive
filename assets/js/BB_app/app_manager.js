@@ -7,27 +7,37 @@ var global = {
   collections: {},
   models: {},
   views: {},
-  init: function () {
+  init: function (currentUser) {
     /*Init*/
     console.log("manager loading...");
 
-        /*Models*/
-    currentUser = new this.Models.User();
-    currentProject = new this.Models.ProjectModel();
+    this.models.CurrentUser = new this.Models.User({id:currentUser}); 
+
     /*Collections*/
     this.collections.Users = new this.Collections.UsersCollection();
     this.collections.Groups = new this.Collections.GroupsCollection();
     this.collections.UserGroup = new this.Collections.UserGroup();
     this.collections.Permissions = new this.Collections.PermissionsCollection();
     this.collections.Projects = new this.Collections.ProjectsCollection();
+    
     /*Fetch*/
+    this.models.CurrentUser.fetch({
+      error: function(model, response, options){
+        console.log("'invité' doesn't exist yet, creating it now...")
+        model.set({id:"999999999", name : "invité", img:"img/default-user-icon-profile.png"});
+        model.save();
+      }
+    });
     this.collections.Projects.fetch({reset: true});
     this.collections.Permissions.fetch({reset: true});
     this.collections.Users.fetch({reset: true});
-
     this.collections.Groups.fetch({reset: true});
-
     this.collections.UserGroup.fetch({reset: true});
+
+    
+      
+
+
   }
 }
 
@@ -73,20 +83,5 @@ var manager = {
   }
 };
 
-/////////////////////////////////////////////////////////////////////////////////////////////
-// Document ready
-/////////////////////////////////////////////////////////////////////////////////////////////
-$(document).ready(function () {
 
-  Backbone.Model.prototype.toJSON = function() {
-    return JSON.parse(JSON.stringify(this.attributes));
-  };
-  // Initialisation de l'managerlication ici
-  console.log( "CreaKtive DOM loaded!" );
-  global.init();
-  manager.init();      
-  ////////////////////////////////////////
-  /*activat of "hashchange events's monitoring"*/
-  Backbone.history.start();
-}) ;
 

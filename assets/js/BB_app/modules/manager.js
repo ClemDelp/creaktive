@@ -120,7 +120,9 @@ manager.Views.Groups_view = Backbone.View.extend({
         "click .remove" : "removeGroup",
         "click .new" : "newGroup",
         "click .add" : "addUser",
+
     },
+
     addUser : function(e){
         console.log("Add a new User to the group");
         group_id = e.target.getAttribute("data-id-group");
@@ -209,27 +211,33 @@ manager.Views.Project_view = Backbone.View.extend({
         this.permissions = json.permissions;
         this.groups = json.groups;
         this.users = json.users;
-
+        
+        /*Template*/
         this.template = _.template($('#project-template').html());
     },
     render : function() {
         _this=this;
         project_el = this.el;
+
+        list_permissions_html = [];
+        this.permissions.each(function (p){
+            perm = {
+                user : _this.users.get(p.get('id_user')).toJSON(),
+                group : _this.groups.get(p.get('id_group')).toJSON(),
+                right : p.get('right')
+            };
+            permission_view = new manager.Views.Permission_view({
+                permission : perm
+            });
+            list_permissions_html.unshift(permission_view.render().$el.html());
+            
+        });
+
         var renderedContent = this.template({
             project:this.model.toJSON(),
             groups : this.groups.toJSON(),
+            permissions : list_permissions_html
         });
-
-        this.permissions.each(function (p){
-            perm = {
-                user : _this.users.get(p.get('id_user')),
-                group : _this.groups.get(p.get('id_group')),
-                right : p.right
-            }
-            permission_view = new manager.Views.Permission_view({permission : perm})
-            $(this.project_el).append(permission_view.render().el)
-        })
-
 
         $(this.el).html(renderedContent);
         $(document).foundation();
@@ -269,7 +277,11 @@ manager.Views.Projects_view = Backbone.View.extend({
     events : {
         "click .remove" : "removeProject",
         "click .new" : "addProject",
-        "click .add" : "addPermission"
+        "click .add" : "addPermission",
+                "click .open" : "openProject"
+    },
+    openProject : function (e){
+        document.location.href='/?projectId=' + e.target.getAttribute("data-id-project");
     },
     addPermission : function(e){
         console.log("Add permission");
@@ -290,10 +302,8 @@ manager.Views.Projects_view = Backbone.View.extend({
                 id_group : id_group
             });
 
-            new_permission.save();
+            _this.permissions.create(new_permission);
         });
-
-        this.render();
     },
     addProject : function(e){
         console.log("Add a new project");
