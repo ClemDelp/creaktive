@@ -34,31 +34,17 @@
   <!-- ******************************** -->
   <!-- tags input -->
   <link rel="stylesheet" type="text/css" href="styles/jquery.tagsinput.css" />
-<script type="text/javascript" src="js/vendor/jquery.tagsinput.js"></script>
+  <script type="text/javascript" src="js/vendor/jquery.tagsinput.js"></script>
   <!-- ******************************** -->
   <link rel="stylesheet" type="text/css" href="styles/overlay_css_timela.css" /> 
 
 <!-- Templates to load -->
 
 
-
-
-  <div class="section" id="section1">
-      <div class="slide active">
-         <%- partial('./templates/interface1_template') %>
-      </div>
-      <div class="slide">
-        <%- partial('./templates/visualization_template') %>
-      </div>
-      <div class="slide">
-        <%- partial('./templates/interface3_template') %>
-      </div>
-  </div>
-  <script type="text/javascript">var pepe = $.fn.fullpage();</script>
-
-  <%- partial('./templates/timela_template') %>
+  <%- partial('./templates/topBar_template') %>
+  <%- partial('./templates/interface3_template') %>
   <%- partial('./templates/explorer_template') %>
-  <%- partial('./templates/concepts_template') %>
+
   
 
 
@@ -78,7 +64,6 @@
 <!-- Modules situés dans assets/js/BB_app -->
 
 
-<script type="text/javascript" src="js/BB_app/modules/timela.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/explorer.js"></script>
 <script type="text/javascript" src="js/BB_app/interfaces/interface1.js"></script>
 <script type="text/javascript" src="js/BB_app/interfaces/interface2.js"></script>

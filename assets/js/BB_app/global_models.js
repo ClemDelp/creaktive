@@ -1,44 +1,35 @@
-
-/////////////////////////////////////////////////////////////////////
-/*Manager*/
-/////////////////////////////////////////////////////////////////////
-global.Models.User = Backbone.Model.extend({
-    defaults : {
-        id:"",
-        name : "",
-        email : "",
-        img : "",
-        color : "",
-        pw:"",
-        tags: []
-    },
-    initialize : function User() {
-        //console.log('User Constructor');
-        this.urlRoot = "user";
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    },
-    parse : function(model){
-
-        return model;
-    }
-});
 /////////////////////////////////////////////////////////////////////
 /*Explorer*/
 /////////////////////////////////////////////////////////////////////
-global.Models.Knowledge = Backbone.Model.extend({
+global.Models.Poche = Backbone.Model.extend({
     defaults : {
         id : "",
         title : "",
-        content : "",
         user : "",
-        date : "",
-        color : "",
-        tag : []
+        date : ""
     },
-    initialize : function Knwoledge() {
-        console.log('Knowledge Constructor');
+    initialize : function Poche() {
+        console.log('Poche Constructor');
+        this.urlRoot = "poche";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+/***************************************/
+global.Models.Knowledge = Backbone.Model.extend({
+    defaults : {
+        id:"",
+        user: "",
+        title : "",
+        content : "",/*use for url post type*/
+        tags : [],
+        comments:[],
+        date : "",
+        date2: ""
+    },
+    initialize : function Post() {
+        console.log('Post Constructor');
         this.urlRoot = "knowledge";
         this.bind("error", function(model, error){
             console.log( error );
@@ -54,73 +45,6 @@ global.Models.Knowledge = Backbone.Model.extend({
         var index = this.tag.indexOf(tag);
 
         /*this.save();*/
-    }
-});
-/***************************************/
-global.Models.Poche = Backbone.Model.extend({
-    defaults : {
-        id : guid(),
-        title : "",
-        user : "",
-        date : ""
-    },
-    initialize : function Poche() {
-        console.log('Poche Constructor');
-        this.urlRoot = "poche";
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    }
-});
-/////////////////////////////////////////////////////////////////////
-/*Timela*/
-/////////////////////////////////////////////////////////////////////
-global.Models.Timeline = Backbone.Model.extend({
-    defaults : {
-        id:"",
-        knowledge : "",
-        posts : [],
-        date : ""
-    },
-    initialize : function Timeline() {
-        console.log('Timeline Constructor');
-        this.urlRoot = "timeline";
-        //this.urlRoot = "version";
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    },
-    addPost : function(post){ 
-        this.get('posts').push(post);
-        this.save();
-    },
-    removePostByID : function(id_post){ 
-        array = this.get('posts');
-        array.forEach(function(post){
-            if(post.id == id_post){  
-                array.splice(array.indexOf(post),1)
-            }        
-        });        
-        this.save();
-    }
-});
-/***************************************/
-global.Models.Post = Backbone.Model.extend({
-    defaults : {
-        id:"",
-        user: "",
-        content : "",/*use for url post type*/
-        tags : [],
-        comments:[],
-        date : "",
-        date2: ""
-    },
-    initialize : function Post() {
-        console.log('Post Constructor');
-        /*this.urlRoot = "post";*/
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
     },
     addComment : function(com){ 
         this.get('comments').push(com);
@@ -146,8 +70,31 @@ global.Models.Comment = Backbone.Model.extend({
         //console.log('Comment Constructor');
     }
 });
-/***************************************/
+/////////////////////////////////////////////////////////////////////
+/*Manager*/
+/////////////////////////////////////////////////////////////////////
+global.Models.User = Backbone.Model.extend({
+    defaults : {
+        id:"",
+        name : "",
+        email : "",
+        img : "",
+        color : "",
+        pw:"",
+        tags: []
+    },
+    initialize : function User() {
+        //console.log('User Constructor');
+        this.urlRoot = "user";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    },
+    parse : function(model){
 
+        return model;
+    }
+});
 /*-----------------------------------------------------------------*/
 /*Model*/
 /*-----------------------------------------------------------------*/
