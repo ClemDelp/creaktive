@@ -1,21 +1,50 @@
-/*-----------------------------------------------------------------*/
-/*Collections*/
-/*-----------------------------------------------------------------*/
 
-/***************************************/
-global.Collections.PostsCollection = Backbone.Collection.extend({
-    model : global.Models.PostModel,
-    url : "post",
+/////////////////////////////////////////////////////////////////////
+/*Explorer Collections*/
+/////////////////////////////////////////////////////////////////////
+global.Collections.Poches = Backbone.Collection.extend({
+    model : global.Models.Poche,
+    initialize : function() {
+        console.log('Poches collection Constructor');
+        this.url = "poche";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+/////////////////////////////////////////////////////////////////////
+/*Timela Collections*/
+/////////////////////////////////////////////////////////////////////
+global.Collections.Knowledges = Backbone.Collection.extend({
+    model : global.Models.Knowledge,
+    /*url : "post",*/
     comparator: function(m){
         return -m.get('date2');
     },
     initialize : function() {
+        this.url = "Knowledge";
         //console.log('Post collection Constructor');
         this.bind("error", function(model, error){
             console.log( error );
         });
     }
 });
+/***************************************/
+global.Collections.Comments = Backbone.Collection.extend({
+    model : global.Models.Comment,
+    //url : "comment",
+    comparator: function(m){
+        return -m.get('date2');
+    },
+    initialize : function() {
+        //console.log('Comments Collection Constructor');
+    }
+}); 
+/*-----------------------------------------------------------------*/
+/*Collections*/
+/*-----------------------------------------------------------------*/
+
+
 /***************************************/
 global.Collections.NotificationsCollection = Backbone.Collection.extend({
     model : global.Models.NotificationModel,
@@ -50,28 +79,7 @@ global.Collections.GroupsCollection = Backbone.Collection.extend({
         });
     }
 });
-/***************************************/
-global.Collections.VersionsCollection = Backbone.Collection.extend({
-    model : global.Models.VersionModel,
-    url : "version",
-    comparator: function(m){
-        return -m.get('date2');
-    },
-    initialize : function() {
-        //console.log('Versions Collection Constructor');
-    }
-});
-/***************************************/
-global.Collections.CommentsCollection = Backbone.Collection.extend({
-    model : global.Models.CommentModel,
-    url : "comment",
-    comparator: function(m){
-        return -m.get('date2');
-    },
-    initialize : function() {
-        //console.log('Comments Collection Constructor');
-    }
-}); 
+
 /***************************************/
 global.Collections.ConceptsCollection = Backbone.Collection.extend({
     model : global.Models.ConceptModel,
@@ -83,17 +91,7 @@ global.Collections.ConceptsCollection = Backbone.Collection.extend({
         //console.log('Comments Collection Constructor');
     }
 });
-/***************************************/
-global.Collections.KnowledgesCollection = Backbone.Collection.extend({
-    model : global.Models.KnowledgeModel,
-    url : "knowledge",
-    comparator: function(m){
-        return -m.get('date2');
-    },
-    initialize : function() {
-        //console.log('Comments Collection Constructor');
-    }
-});    
+   
 /***************************************/
 global.Collections.LinksCollection = Backbone.Collection.extend({
     model : global.Models.LinkModel,
@@ -105,17 +103,7 @@ global.Collections.LinksCollection = Backbone.Collection.extend({
         //console.log('Comments Collection Constructor');
     }
 }); 
-/***************************************/
-global.Collections.TagsCollection = Backbone.Collection.extend({
-    model : global.Models.TagModel,
-    url : "tag",
-    comparator: function(m){
-        return -m.get('date2');
-    },
-    initialize : function() {
-        //console.log('Comments Collection Constructor');
-    }
-});     
+  
 /***************************************/
 global.Collections.PermissionsCollection = Backbone.Collection.extend({
     model : global.Models.PermissionModel,
@@ -138,3 +126,4 @@ global.Collections.ProjectsCollection = Backbone.Collection.extend({
         //console.log('Comments Collection Constructor');
     }
 });  
+

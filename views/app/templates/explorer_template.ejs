@@ -1,0 +1,135 @@
+<script type="text/template" id="knowledge-template">
+	<div id="{{= knowledge.id }}">
+		<input id="selector_{{= knowledge.id }}" type="checkbox" class="selectable" data-id-knowledge="{{= knowledge.id }}" style="float:left"/>
+		<div style="float:right">
+		    {{ _.each(knowledge.tag, function(tag) { }}
+				<a class="change button tiny success">{{= tag }}</a>
+			{{ }); }}
+		</div>
+		<h3>{{= knowledge.title }}</h3>
+	    <p>{{= knowledge.content }}</p>
+	</div>
+</script>
+
+<script type="text/template" id="input-knowledge-template">
+    <div class="panel">
+	    <div class="row">
+	    	<div class="small-10 columns"><input id="newK" type="text" placeholder="Knowledge"></div>
+	     	<div class="small-2 columns"><a href="#" class="button prefix add">+</a></div>
+	    </div>
+    </div>
+</script>
+
+<script type="text/template" id="poches-template">
+	<a id="notClassified" class="button small selectable expand" data-filter-title="notClassified">Not classified</a>
+	{{ _.each(poches, function(poche) { }}
+		<a id="{{= poche.id }}" class="button small selectable expand" data-filter-title="{{= poche.title }}">{{= poche.title }}</a>
+	{{ }); }}
+	
+    <input type="text" id="newP" class="expand" placeholder="Add a new knowledge space">
+    <a href="#" class="add button success expand">new</a>
+    
+</script>
+
+<script type="text/template" id="comment-template">
+	<div id="{{= comment.id }}_comment">
+		<div class="row comment">
+		  	<div class="small-2 large-1 columns">
+		  		<img class="" src="{{= comment.user.img }}">
+		  	</div>
+		  	<div class="small-8 large-9 columns">
+		  		<p>
+		      		<strong>{{= comment.user.name }}:</strong>
+		      		{{= comment.content }}
+		      	</p>
+		      	<p class="signature">{{= comment.user.signature }}</p>
+			</div>
+			<div class="small-2 large-2 columns">
+		  		<a style="float:right" class="remove button alert tiny" data-id-comment="{{= comment.id }}" >remove</a>
+			</div>
+		</div>
+		<hr>
+	</div>
+</script>
+
+<script type="text/template" id="comments-template">
+	<form id="{{= post.id }}_form_comment" action="/" method="post">
+		<ul class="inline-list">
+		    <li><h6>Comments:</h6></li>
+		    <li><a onclick="expand('#{{= post.id }}_comment');">Expand</a></li>
+		    <li><a onclick="collapse('#{{= post.id }}_comment');">Collapse</a></li>
+		</ul>
+
+		<div id="{{= post.id }}_comment" style="display: none;">
+		    {{ _.each(views, function(view) { }}  
+		        {{= view }}
+		    {{ }); }}
+		    <div class="row" id="input_comment_{{= post.id }}">
+		        <div class="small-2 large-1 columns">
+		          	<img class="nailthumb-container" src="{{= c_user.img }}">
+		        </div>
+		        <div class="small-10 large-11 columns">
+		            <div class="row collapse">
+		            	<div class="small-10 columns">
+		              		<input id="{{= post.id }}_input_comment" type="text" placeholder="your comment">
+		            	</div>
+		            	<div class="small-2 columns">
+		              		<input type="submit" class="button prefix" value="publish!">
+		            	</div>
+		          	</div>
+		        </div>
+		    </div>
+		</div>
+	</form>
+</script>
+
+
+<script type="text/template" id="post-template">
+	<li id="li_{{= post.id }}" class="li_{{= post.post }}">
+		<time style="display:inline" class="cbp_tmtime" datetime="{{= post.date }}">
+			<img class="small-2 large-1" src="{{= post.user.img }}"> 
+			<strong>{{= post.user.name }}</strong> 
+			<font class="signature">({{= post.date }})</font>
+		</time>
+		<a class="button alert tiny removePost" data-id-post="{{= post.id }}">remove</a>
+		<div class="cbp_tmlabel">
+		    <div class="panel post" data-age="{{= post.date }}" id="{{= post.id }}">
+		      <div class="small-12 large-12">  
+		    	{{ if(edit == "off"){}}
+			        <p>{{= post.content }}</p>
+		        	<hr />
+			    	tags: 
+				    {{ _.each(post.tags, function(tag) { }}
+				        <a onclick="searchByTag('{{= tag }}')" class="tiny success button">{{= tag }}</a>
+				    {{ }); }}
+		        {{ }else{ }}
+		        	<div id="edit_post_desc" class="editable panel" contenteditable="true">{{= post.content }}</div>
+			        <input id="edit_post_tags" name="tags" value="
+				      {{ _.each(post.tags, function(tag) { }}
+				        {{= tag }},
+				      {{ }); }}
+				    " />
+				    <a class="cancel button tiny alert">cancel</a>
+		    	{{ } }}
+			</div>
+		</div>
+	</li>
+</script>
+
+
+<script type="text/template" id="publish-module-template">
+	
+	<div class="panel">
+		<a style="float:right" onclick="collapse('#addText_row')" class="button tiny secondary">Close</a>
+		<a class="tiny secondary button" style="float:right" onclick="expand('#addText_row')">Open</a>
+		<h3>Add knowledge to </h3>
+		<div id="addText_row" style="display:none">
+			<input id="new_k_title" type="text" placeholder="title"/>
+			<textarea id="new_k_content" name="editor1" rows="10" cols="80"></textarea>
+			<input id="new_k_tags" name="tags" value="{{= user.name }}" />
+		    <a href="#" class="button small validate expand addPost">Add!</a>
+		</div>
+	</div>
+
+</script>
+

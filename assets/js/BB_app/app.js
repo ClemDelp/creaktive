@@ -1,6 +1,6 @@
-/////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////
 // Global object
-/////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////
 var global = {
   // Classes
   Collections: {},
@@ -10,87 +10,187 @@ var global = {
   collections: {},
   models: {},
   views: {},
-  init: function (callback) {
+  init: function () {
     /*Init*/
     console.log("global object loading...");
-    /*Models*/
-   currentUser = new this.Models.UserModel();
-   currentProject = new this.Models.ProjectModel();
     /*Collections*/
-      
-    /*Fetch*/
+    this.collections.Knowledges = new this.Collections.Knowledges();
+    this.collections.Poches = new this.Collections.Poches();
+    this.collections.Projects = new this.Collections.ProjectsCollection();
+    this.collections.Concepts = new this.Collections.ConceptsCollection();
+    this.collections.Links = new this.Collections.LinksCollection();
+    
+    /*Loads*/
+    this.collections.Knowledges.fetch({reset: true,complete:function(){}});
+    this.collections.Poches.fetch({reset: true,complete:function(){}});
+    this.collections.Projects.fetch({
+      reset:true,
+      success : function(collection, response, options){},
+      complete : function(collection, response, options){},
+      error : function(collection, response, options){},
+    });
+    this.collections.Concepts.fetch({
+      reset:true,
+      success : function(collection, response, options){},
+      complete : function(collection, response, options){},
+      error : function(collection, response, options){
+        console.log(response)
+      },
+    });
+    this.collections.Links.fetch({
+      reset:true,
+      success : function(collection, response, options){},
+      complete : function(collection, response, options){},
+      error : function(collection, response, options){
+        console.log(response)
+      },
+    });
 
-    callback();
-      
+    ///////////////////////////////
+    // Variables pour les tests
+    ///////////////////////////////
+    this.models.current_user = new this.Models.User({id:guid(),name:"clarth",email : "delpuech.clement@gmail.com",img:"img/default-user-icon-profile.png",color:"#FFF",pw:"clem"});
   }
 };
+/////////////////////////////////////////////////
+var explorer = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    console.log('Explorer Constructor');
+  }
+};
+/////////////////////////////////////////////////
+var concepts = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    console.log('Concepts Constructor');
+  }
 
-/////////////////////////////////////////////////////////////////////////////////////////////
-// Document ready
-/////////////////////////////////////////////////////////////////////////////////////////////
+};
+/////////////////////////////////////////////////
+var interface3 = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    console.log('interface3 Constructor');
+    /*views*/
+    this.views.Main = new this.Views.Main({
+      knowledges:global.collections.Knowledges,
+      user:global.models.current_user,
+      poches:global.collections.Poches
+    });
+    /*Renders*/
+    this.views.Main.render();
+        
+  }
+};
+/////////////////////////////////////////////////
+var interface2 = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+
+  init: function () {
+    /*Init*/
+    console.log('interface2 Constructor');
+    /*views*/
+    
+    /*Renders*/
+   
+  }
+};
+/////////////////////////////////////////////////
+var interface1 = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+
+    // Objects
+  
+  init: function () {
+    /*Init*/
+    console.log('interface1 Constructor');
+    /*views*/
+    
+    /*views*/
+    this.views.Main = new this.Views.Main({
+      currentUser : global.models.current_user,
+      currentProject : new global.Models.ProjectModel({}),
+      concepts : global.collections.Concepts,
+      links : this.collections.Links,
+      knowledges : global.collections.Knowledges,
+      poches : global.collections.Poches
+    });
+
+    /*Renders*/
+    this.views.Main.render();
+
+    
+  }
+};
+///////////////////////////////////////////////////
 $(document).ready(function () {
-
+  console.log( "CreaKtive DOM loaded!" );
+  ////////////////////////////////////////
   Backbone.Model.prototype.toJSON = function() {
     return JSON.parse(JSON.stringify(this.attributes));
   };
-  // Initialisation de l'managerlication ici
-  console.log( "CreaKtive DOM loaded!" );
+  ////////////////////////////////////////
+  global.init();
+  /*Modules*/
+  //timela.init();
+  explorer.init();
+  // concepts.init();
+  /*Interfaces*/
+  // interface1.init();
+  // interface2.init();
+  interface3.init();
+  ////////////////////////////////////////
+  /*activat of "hashchange events's monitoring"*/
 
-  rt(io, function(){
-    // Globales variables
-    global.init(function(){
-      ////////////////////////////////////////
-      // Global Router
-      ////////////////////////////////////////
-      var toLoad = [];
-      var pathname = $(location).attr('pathname').split('/');
-      /*Les routes sont à definir ici*/
-      if(_.indexOf(pathname,'manager') > -1){
-        toLoad.unshift("manager","topbar");
-      }
-      if(_.indexOf(pathname,'timeline') > -1){
-        toLoad.unshift("timela","topbar");
-      }
-      if(_.indexOf(pathname,'export') > -1){
-        toLoad.unshift("export","topbar");
-      }
-      if(_.indexOf(pathname,'note') > -1){
-        toLoad.unshift("note","topbar");
-      }
-      /*Chargement des modules*/
-      // Manager PART
-      if(_.indexOf(toLoad,'manager') > -1){
-        manager.init();
-      }
-      // TopBar PART
-      if(_.indexOf(toLoad,'topbar') > -1){
-        topbar.init();
-      }
-      // Timela PART
-      if(_.indexOf(toLoad,'timela') > -1){
-        timela.init();
-      }
-      // Export PART
-      if(_.indexOf(toLoad,'export') > -1){
-        exporter.init();
-      }
-      // Import PART
-      if(_.indexOf(toLoad,'note') > -1){
-        note.init();
-      }
-      ////////////////////////////////////////
+  Backbone.history.start();     
 
-      /*activat of "hashchange events's monitoring"*/
-      Backbone.history.start();
-    });
 
-  });
+});
 
-}) ;
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Realtime connection
 /////////////////////////////////////////////////////////////////////////////////////////////
+
 function rt (io, callback) {
   // as soon as this file is loaded, connect automatically, 
   var socket = io.connect();
@@ -111,3 +211,4 @@ function rt (io, callback) {
   window.socket = socket;
 
 };
+
