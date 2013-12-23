@@ -6,6 +6,8 @@ global.Models.Poche = Backbone.Model.extend({
         id : "",
         title : "",
         user : "",
+        color : "",
+        description : "",
         date : ""
     },
     initialize : function Poche() {
