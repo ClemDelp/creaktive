@@ -195,14 +195,14 @@ global.Models.ConceptModel = Backbone.Model.extend({
 });
 
 /***************************************/
-global.Models.LinkModel = Backbone.Model.extend({
+global.Models.CKLink = Backbone.Model.extend({
     model: this,
     defaults : {
         id :'',
         user : "",
         date : getDate(),
-        id_c : "",
-        id_k : ""
+        concept : "",
+        knowledge : ""
     },
     setText : function(value) {this.set({ text : value }); },
     initialize : function Comment() {

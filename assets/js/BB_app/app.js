@@ -18,7 +18,7 @@ var global = {
     this.collections.Poches = new this.Collections.Poches();
     this.collections.Projects = new this.Collections.ProjectsCollection();
     this.collections.Concepts = new this.Collections.ConceptsCollection();
-    this.collections.Links = new this.Collections.LinksCollection();
+    this.collections.Links = new this.Collections.CKLinks();
     
     /*Loads*/
     this.collections.Knowledges.fetch({reset: true,complete:function(){}});
@@ -65,6 +65,21 @@ var explorer = {
   init: function () {
     /*Init*/
     console.log('Explorer Constructor');
+  }
+};
+/////////////////////////////////////////////////
+var cklink = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    console.log('CKLink Constructor');
   }
 };
 /////////////////////////////////////////////////
@@ -150,7 +165,7 @@ var interface1 = {
       currentUser : global.models.current_user,
       currentProject : new global.Models.ProjectModel({}),
       concepts : global.collections.Concepts,
-      links : this.collections.Links,
+      links : global.collections.Links,
       knowledges : global.collections.Knowledges,
       poches : global.collections.Poches
     });
@@ -171,12 +186,11 @@ $(document).ready(function () {
   ////////////////////////////////////////
   global.init();
   /*Modules*/
-  //timela.init();
+  cklink.init();
   explorer.init();
   // concepts.init();
   /*Interfaces*/
-  // interface1.init();
-  // interface2.init();
+  interface1.init();
   interface3.init();
   ////////////////////////////////////////
   /*activat of "hashchange events's monitoring"*/

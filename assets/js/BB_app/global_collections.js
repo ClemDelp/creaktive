@@ -93,8 +93,8 @@ global.Collections.ConceptsCollection = Backbone.Collection.extend({
 });
    
 /***************************************/
-global.Collections.LinksCollection = Backbone.Collection.extend({
-    model : global.Models.LinkModel,
+global.Collections.CKLinks = Backbone.Collection.extend({
+    model : global.Models.CKLink,
     url : "link",
     comparator: function(m){
         return -m.get('date2');

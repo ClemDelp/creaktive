@@ -1,7 +1,7 @@
 /***********************************************/
 explorer.Views.Poches = Backbone.View.extend({
     tagName: "div",
-    className: "small-3 large-3 columns",
+    className: "small-2 large-2 columns",
     initialize : function(json) {
         console.log("Poches view initialise");
         _.bindAll(this, 'render');
@@ -261,7 +261,7 @@ explorer.Views.Search = Backbone.View.extend({
 /***************************************/
 explorer.Views.Posts = Backbone.View.extend({
     tagName : "ul",
-    className : "cbp_tmtimeline small-9 large-9 columns",
+    className : "cbp_tmtimeline small-10 large-10 columns",
     initialize : function(json) {
         console.log("Knowledges view initialise");
         _.bindAll(this, 'render');
@@ -410,7 +410,7 @@ explorer.Views.Posts = Backbone.View.extend({
 /***********************************************/
 explorer.Views.Main = Backbone.View.extend({
     tagName : "div",
-    className : "row",
+    //className : "row",
     initialize : function(json) {
         console.log("Explorer view initialise");
         _.bindAll(this, 'render');
