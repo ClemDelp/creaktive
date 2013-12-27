@@ -1,29 +1,105 @@
+/***********************************************/
+explorer.Views.Poches = Backbone.View.extend({
+    tagName: "div",
+    className: "small-3 large-3 columns",
+    initialize : function(json) {
+        console.log("Poches view initialise");
+        _.bindAll(this, 'render');
+        // Variables
+        this.poches = json.poches;
+        this.current_filters = json.currentFilters;
+        // Events
+        this.poches.bind('reset', this.render);
+        this.poches.bind('add', this.render);
+        this.poches.bind('remove', this.render);
+        // Template
+        this.template = _.template($('#poches-template').html());        
+    },
+    events : {
+        "change .color" : "changeColor",
+        "click .add" : "addPoche",
+        "click .removePoche" : "removePoche",
+        "click .selectable" : "selection"
+    },
+    removePoche: function(e){
+        var poche = this.poches.get(e.target.getAttribute('data-id-poche'));
+        poche.destroy();
+        this.current_filters.length = 0;
+    },
+    changeColor: function(e){
+        var poche = this.poches.get(e.target.getAttribute('data-id-poche'));
+        poche.set('color',e.target.value);
+        poche.save();
+    },
+    selection: function(e){
+        console.log("filter selected");
+        var Class = e.target.className.split(' ');
+        var index = Class.indexOf('alert');
+        if(index > -1){
+            /* Deselection */
+            var indexFilter = this.current_filters.indexOf(e.target.getAttribute("data-filter-title"));
+            if(indexFilter > -1){this.current_filters.splice(indexFilter,1);}
+            $("#"+e.target.id).removeClass('alert');
+            this.current_filters.trigger('change',e.target.getAttribute("data-filter-title"));
+        }
+        else{
+            /* Selection */
+            if(e.target.id !="notClassified"){$('#notClassified').removeClass('success');}// On deselectionne notClassified
+            this.current_filters.unshift(e.target.getAttribute("data-filter-title"));
+            if(e.target.getAttribute("data-filter-title") == "notClassified"){
+                this.current_filters.length=0;
+                this.render();
+                this.current_filters.trigger('notClassified');
+            }else{
+                this.current_filters.trigger('change',e.target.getAttribute("data-filter-title"));
+            }
+            $("#"+e.target.id).addClass('alert');
+        }
+        console.log("current filters",this.current_filters)
+    },
+    addPoche : function(e){
+        console.log("Add a new poche");
+        global.models.newP = new global.Models.Poche({
+            id: guid(),
+            title: $("#newP").val(),
+            user : "clem",
+            color : "#FF0000",
+            description : $("#newP_description").val(),
+            date : getDate()
+        });
+        global.models.newP.save();
+        this.poches.add(global.models.newP);
+        this.current_filters.length = 0;
+        this.current_filters.trigger('newPoche');
+    },   
+    render : function() {
+        var renderedContent = this.template({poches:this.poches.toJSON()});
+        $(this.el).html(renderedContent);
+        $(document).foundation();
+        return this;
+    }
+});
 /////////////////////////////////////////////////////////////////////
 /* Timela views*/
 /////////////////////////////////////////////////////////////////////
-explorer.Views.CommentView = Backbone.View.extend({
+explorer.Views.Comment = Backbone.View.extend({
     className : "comment",
     initialize : function(json) {
         console.log("comment view constructor");
         _.bindAll(this, 'render');
         // Variables
         this.comment = json.comment;
-        // Events
-        this.model.bind('remove', this.remove, this);
         // Template
         this.template = _.template($('#comment-template').html());
     },
-    remove : function(){
-        this.remove();
-    },
     render: function(){
-        var renderedContent = this.template({comment : this.model.toJSON()});
+        var renderedContent = this.template({comment : this.comment.toJSON()});
         $(this.el).html(renderedContent);
         return this;
     }
 });
 /***************************************/
-explorer.Views.CommentsView = Backbone.View.extend({
+explorer.Views.Comments = Backbone.View.extend({
     initialize : function(json) { 
         console.log("comments view constructor!");
         _.bindAll(this, 'render');
@@ -43,36 +119,36 @@ explorer.Views.CommentsView = Backbone.View.extend({
         console.log('addComment !'); 
         new_comment = new global.Models.Comment({
             id:guid(),
-            user : CurrentUser,
+            user : this.user,
             date : getDate(),
-            content : $("#"+this.model.get('id')+"_input_comment").val()
+            content : $("#"+this.post.get('id')+"_input_comment").val()
         });
         /*On ajoute le commentaire au model*/
-        id_post =this.model.gt('id');
-        this.timeline.get('posts')
-
-        this.model.addComment(new_comment);
-        /*On ajoute à la collection pour permettre la suppression*/
-        this.comments.unshift([new_comment]);
+        this.comments.add([new_comment]);
+        this.post.save();
         /*On ajoute le commentaire à la vue*/
-        new_comment_view = new explorer.Views.CommentView({model:new_comment});
-        $("#"+this.model.get('id')+"_comment").before(new_comment_view.render().el);
+        new_comment_view = new explorer.Views.Comment({comment:new_comment});
+        $("#"+this.post.get('id')+"_comment").before(new_comment_view.render().el);
         /*On vide le formulaire*/
-        $("#"+this.model.get('id')+"_input_comment").val("");
+        $("#"+this.post.get('id')+"_input_comment").val("");
     },
     removeComment : function(e){
         console.log('remove this comment !');
         e.preventDefault();
-        comment_to_remove = this.comments.get(e.target.getAttribute("data-id-comment"));
-        this.model.removeComment(comment_to_remove.toJSON());
-        collapse("#"+comment_to_remove.get('id')+"_comment");
+        comment = this.comments.get(e.target.getAttribute("data-id-comment"));
+        console.log(comment)
+        this.post.get('comments').remove(comment)
+        this.post.save();
+        collapse("#"+comment.get('id')+"_comment");
     },
     render : function() {
+        // Each comment
         list_comment_views = [];
         this.comments.each(function(comment_){
-            comment_view = new explorer.Views.CommentView({comment: comment_});
+            comment_view = new explorer.Views.Comment({comment: comment_});
             this.list_comment_views.unshift(comment_view.render().$el.html());
         });
+        // All templates: comments + input comment
         var renderedContent = this.template({
             views : list_comment_views, 
             post : this.post, 
@@ -85,43 +161,24 @@ explorer.Views.CommentsView = Backbone.View.extend({
 /////////////////////////////////////////////////////////////////////
 // Explorer views
 /////////////////////////////////////////////////////////////////////
-explorer.Views.Knowledge = Backbone.View.extend({
-    tagName : "ul",
-    className : "panel cbp_tmtimeline",
+explorer.Views.PostDetails = Backbone.View.extend({
+    tagName: "div",
+    className: "cbp_tmlabel",
     initialize : function(json) {
-        console.log("Knowedge view initialise");
+        console.log("Knowledge view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.knowledge = json.knowledge;
         this.user = json.user;
-        this.edit = "off";
         // Template
-        this.template = _.template($('#post-template').html());
+        this.template = _.template($('#post-content-template').html()); 
     },
-    // events : {
-    //     "click .remove" : "removeKnowledge",
-    //     "click .selectable" : "manageClass"
-    // },
-    // manageClass: function(){
-    //     if(_.indexOf($(this.el).context.className.split(" "),'callout') > -1){
-    //         $(this.el).removeClass("callout");
-    //     }else{
-    //         $(this.el).addClass("callout");
-    //     }
-    // },
-    // removeKnowledge : function(e){
-    //     conole.log("Remove the knowledge");
-    // },
-    render : function() {
-        // Post
-        var renderedContent = this.template({ 
-            post : this.knowledge.toJSON(), 
-            c_user: this.user.toJSON(),
-            edit : this.edit
-        });
+    render : function(){
+        // Knowledge title content and tags
+        var renderedContent = this.template({post:this.knowledge.toJSON()});
         $(this.el).html(renderedContent);
-        // Comments
-        comments_view = new explorer.Views.CommentsView({
+        // Knowledge comments
+        comments_view = new explorer.Views.Comments({
             comments: this.knowledge.get('comments'), 
             post:this.knowledge,
             user:this.user
@@ -132,78 +189,79 @@ explorer.Views.Knowledge = Backbone.View.extend({
     }
 });
 /***********************************************/
-explorer.Views.Poches = Backbone.View.extend({
-    tagName: "div",
-    className: "small-2 large-2 columns",
+explorer.Views.Post = Backbone.View.extend({
+    tagName : "li",
+    className: "panel",
     initialize : function(json) {
-        console.log("Poches view initialise");
+        console.log("Knowedge view initialise");
         _.bindAll(this, 'render');
         // Variables
-        this.poches = json.poches;
-        this.current_filters = json.currentFilters;
-        // Events
-        this.poches.bind('reset', this.render);
-        this.poches.bind('add', this.render);
-        this.poches.bind('remove', this.render);
+        this.knowledge = json.knowledge;
+        this.user = json.user;
+        this.edit = "off";
         // Template
-        this.template = _.template($('#poches-template').html());        
+        this.template = _.template($('#post-header-template').html());
     },
     events : {
-        "click .add" : "addPoche",
-        "click .remove" : "removePoche",
-        "click .selectable" : "filterSelected"
+        "click .selectable" : "changeClass"
     },
-    filterSelected: function(e){
-        console.log("filter selected");
-        var Class = e.target.className.split(' ');
-        var index = Class.indexOf('success');
-        if(index > -1){/* Deselection */
-            
-            var indexFilter = this.current_filters.indexOf(e.target.getAttribute("data-filter-title"));
-            if(indexFilter > -1){this.current_filters.splice(indexFilter,1);}
-            $("#"+e.target.id).removeClass('success');
-            this.current_filters.trigger('change',e.target.getAttribute("data-filter-title"));
+    changeClass : function(e){
+        var Class = this.el.className.split(' ');
+        var index = Class.indexOf('callout');
+        if(index > -1){
+            /* Deselection */
+            $(this.el).removeClass('callout')
         }
-        else{/* Selection */
-            if(e.target.id !="notClassified"){$('#notClassified').removeClass('success');}// On deselectionne notClassified
-            this.current_filters.unshift(e.target.getAttribute("data-filter-title"));
-            if(e.target.getAttribute("data-filter-title") == "notClassified"){
-                this.current_filters.length=0;
-                this.render();
-                this.current_filters.trigger('notClassified');
-            }else{
-                this.current_filters.trigger('change',e.target.getAttribute("data-filter-title"));
-            }
-            $("#"+e.target.id).addClass('success');
+        else{
+            /* Selection */
+            $(this.el).addClass('callout')
         }
     },
-    addPoche : function(e){
-        console.log("Add a new poche");
-        global.models.newP = new global.Models.Poche({
-            id: guid(),
-            title: $("#newP").val(),
-            user : "clem",
-            date : getDate()
-        });
-        global.models.newP.save();
-        this.poches.add(global.models.newP);
-        this.current_filters.length = 0;
-        this.current_filters.trigger('newPoche');
-    },
-    removePoche : function(e){
-        console.log("Remove the poche");
-    },    
     render : function() {
-        var renderedContent = this.template({poches:this.poches.toJSON()});
+        // Post header
+        var renderedContent = this.template({post:this.knowledge.toJSON()});
         $(this.el).html(renderedContent);
-        $(document).foundation();
+        // Post content
+        postDetails_view = new explorer.Views.PostDetails({
+            knowledge:this.knowledge,
+            user:this.user
+        });
+        $(this.el).append(postDetails_view.render().el);
+
         return this;
     }
 });
 /***********************************************/
-explorer.Views.Knowledges = Backbone.View.extend({
-    tagName: "div",
-    className: "small-10 large-10 columns",
+explorer.Views.Search = Backbone.View.extend({
+    initialize : function(json) {
+        console.log("Search view constructor");
+        _.bindAll(this, 'render');
+        // Variables
+        this.current_selection = json.current_selection;
+        this.knowledges = json.knowledges;
+        // Template
+        this.template = _.template($('#search-template').html());
+    },
+    events : {
+        "change .search" : "search",
+    },
+    search: function(e){
+        this.knowledges.each(function(k){
+            if(k.get('title').toLowerCase() == e.target.value.toLowerCase()){
+                alert("Match!");
+            }
+        });
+    },
+    render: function(){
+        var renderedContent = this.template();
+        $(this.el).html(renderedContent);
+        return this;
+    }
+});
+/***************************************/
+explorer.Views.Posts = Backbone.View.extend({
+    tagName : "ul",
+    className : "cbp_tmtimeline small-9 large-9 columns",
     initialize : function(json) {
         console.log("Knowledges view initialise");
         _.bindAll(this, 'render');
@@ -221,10 +279,6 @@ explorer.Views.Knowledges = Backbone.View.extend({
         this.current_filters.on('newPoche',this.render, this);
         this.current_filters.on('notClassified',this.displayNotClassified, this);
 
-        this.current_selection.on('create', function(){
-            alert("dlkfjslkfjdlskf")
-        });
-
         // Template
         this.template = _.template($('#publish-module-template').html());
         
@@ -234,12 +288,12 @@ explorer.Views.Knowledges = Backbone.View.extend({
         collection = this.knowledges;
         this.current_selection.forEach(function(k_id){
             k = this.collection.get(k_id);
-            if(_.union(k.get('tag'),this.current_filters).length == k.get('tag').length){
+            if(_.union(k.get('tags'),this.current_filters).length == k.get('tags').length){
                 console.log("On enlève le tag de K: "+pocheTitle);
-                k.get('tag').splice(_.indexOf(k.get('tag'),pocheTitle),1);
+                k.get('tags').splice(_.indexOf(k.get('tags'),pocheTitle),1);
             }else{
-                console.log("On update les tags de K avec: "+_.union(k.get('tag'),this.current_filters));
-                k.set('tag',_.union(k.get('tag'),this.current_filters));
+                console.log("On update les tags de K avec: "+_.union(k.get('tags'),this.current_filters));
+                k.set('tags',_.union(k.get('tags'),this.current_filters));
             }
             k.save();
         });
@@ -250,6 +304,7 @@ explorer.Views.Knowledges = Backbone.View.extend({
     },
     events : {
         "click .addPost" : "addKnowledge",
+        "click .removePost" : "removeKnowledge",
         "click .selectable" : "addToSelection"
     },
     addToSelection : function(e){
@@ -268,6 +323,10 @@ explorer.Views.Knowledges = Backbone.View.extend({
         }
         console.log(this.current_selection)
     },
+    removeKnowledge: function(e){
+        knowledge = this.knowledges.get(e.target.getAttribute('data-id-post'));
+        knowledge.destroy();
+    },
     addKnowledge : function(e){
         console.log("Add knowledge");
         var tags = [];
@@ -276,8 +335,8 @@ explorer.Views.Knowledges = Backbone.View.extend({
             id:guid(),
             user: this.user,
             title : $('#new_k_title').val(),
-            content : $('#new_k_title').val(),
-            tags: this.$('#new_k_tags').val().split(","),
+            content : CKEDITOR.instances.new_k_content.getData(),
+            tags: this.current_filters,
             comments:[],
             date: getDate(),
             date2:new Date().getTime()
@@ -287,37 +346,71 @@ explorer.Views.Knowledges = Backbone.View.extend({
         this.current_selection.trigger("create",global.models.newK.get('id'));
     },
     displayNotClassified: function(){
-        var renderedContent = this.template();
+        // Publish module template
+        var renderedContent = this.template({
+            filters:this.current_filters,
+            user:this.user.toJSON()
+        });        
         $(this.el).html(renderedContent);
+
+        // search Bar
+        search_view = new explorer.Views.Search({
+            current_selection:this.current_selection,
+            knowledges: this.knowledges
+        });
+        $(this.el).append(search_view.render().el);
+
+        
+        // Each Post
         knowledges_el = this.el;
+        user_ = this.user;
         this.knowledges.each(function(k){
-            if(k.get('tag').length == 0){
-                knowledge_v = new explorer.Views.Knowledge({knowledge:k});
+            // Si comments est un array on le transforme en collection ds le model
+            if($.type(k.get('comments')) == "array"){k.set('comments',new global.Collections.Comments(k.get('comments')));}
+            // Si le model n'a pas de tags
+            if(k.get('tags').length == 0){
+                knowledge_v = new explorer.Views.Post({knowledge:k,user:this.user_});
                 $(this.knowledges_el).append(knowledge_v.render().el);
             }
         });
         return this;
     },
     render : function(){
-        var renderedContent = this.template({user:this.user.toJSON()});
+        // Publish module template
+        var renderedContent = this.template({
+            filters:this.current_filters,
+            user:this.user.toJSON()
+        });
         $(this.el).html(renderedContent);
+
+        // search Bar
+        search_view = new explorer.Views.Search({
+            current_selection:this.current_selection,
+            knowledges: this.knowledges
+        });
+        $(this.el).append(search_view.render().el);
+
+        // Each Post
         knowledges_el = this.el;
         current_filters = this.current_filters;
         user_ = this.user;
         this.knowledges.each(function(k){
-            console.log('comments',k.get('comments'))
-            k.set('comments',new global.Collections.Comments(k.get('comments')))
-            if(_.intersection(k.get('tag'),this.current_filters).length == this.current_filters.length){
-                knowledge_v = new explorer.Views.Knowledge({knowledge:k,user:this.user_});
+            // Si comments est un array on le transforme en collection ds le model
+            if($.type(k.get('comments')) == "array"){k.set('comments',new global.Collections.Comments(k.get('comments')));}
+            // Si les filtres sont inclu ds les tag du model
+            if(_.intersection(k.get('tags'),this.current_filters).length == this.current_filters.length){
+                knowledge_v = new explorer.Views.Post({knowledge:k,user:this.user_});
                 $(this.knowledges_el).append(knowledge_v.render().el);
             }
         });
+        checkContainer();
         return this;
     }
 });
 /***********************************************/
 explorer.Views.Main = Backbone.View.extend({
     tagName : "div",
+    className : "row",
     initialize : function(json) {
         console.log("Explorer view initialise");
         _.bindAll(this, 'render');
@@ -329,7 +422,6 @@ explorer.Views.Main = Backbone.View.extend({
         this.current_filters = [];
         // EventsAggregator
         _.extend(this.current_filters, Backbone.Events);
-        this.current_selection = json.current_selection;
     },
     render : function() {
         // Poches
@@ -339,14 +431,15 @@ explorer.Views.Main = Backbone.View.extend({
         });
         $(this.el).append(filter.render().el);
         // Knowledges
-        knowledges = new explorer.Views.Knowledges({
+        knowledges = new explorer.Views.Posts({
             knowledges:this.knowledges,
             user:this.user,
             currentFilters:this.current_filters,
             current_selection:this.current_selection
         });
         $(this.el).append(knowledges.render().el);
-               
+        
+
         return this;
     }
 });

@@ -1,31 +1,12 @@
-body{
-		background:#ECF0F1;
-	}
-	#timeline_banner{
-		background-image:url(../img/pattern.png);
-	}
-	#header h1, .modal_header{
-		color:white;
-	}
-	#header,.modal_header{
-		background:#34495E;
-	}
-	.panel{
-		background:white;
-	}
-	#post-container{
-		list-style-type:none;
-	}
-	.signature{
-		font-size: 0.75em;
-		margin:0px;
-		line-height:0px;
-		font-style: italic;
-	}
+
+
+
+
+
 
 
 .cbp_tmtimeline {
-	/*margin: 30px 0 0 0;*/
+	margin: 0 0 0 0;
 	padding: 0;
 	list-style: none;
 	position: relative;
@@ -43,6 +24,10 @@ body{
 	margin-left: -10px;
 }
 
+.cbp_tmtimeline > li {
+	position: relative;
+}
+
 /* The date/time */
 .cbp_tmtimeline > li .cbp_tmtime {
 	display: block;
@@ -57,40 +42,40 @@ body{
 }
 
 .cbp_tmtimeline > li .cbp_tmtime span:first-child {
-	/*font-size: 0.9em;*/
-	/*color: #bdd0db;*/
+	font-size: 0.9em;
+	color: #bdd0db;
 }
 
 .cbp_tmtimeline > li .cbp_tmtime span:last-child {
-	/*font-size: 2.9em;*/
-	/*color: white;*/
+	font-size: 1em;
+	color: #3594cb;
 }
 
 .cbp_tmtimeline > li:nth-child(odd) .cbp_tmtime span:last-child {
-	/*color: white;*/
+	color: #6cbfee;
 }
 
 /* Right content */
 .cbp_tmtimeline > li .cbp_tmlabel {
 	margin: 0 0 15px 25%;
-	background: white;
-	/*color: #fff;*/
+	background: #3594cb;
+	color: #fff;
 	padding: 2em;
-	/*font-size: 1.2em;
-	font-weight: 300;*/
+	font-size: 1.2em;
+	font-weight: 300;
 	line-height: 1.4;
 	position: relative;
 	border-radius: 5px;
 }
 
 .cbp_tmtimeline > li:nth-child(odd) .cbp_tmlabel {
-	background: white;
+	background: #6cbfee;
 }
 
 .cbp_tmtimeline > li .cbp_tmlabel h2 { 
 	margin-top: 0px;
-	padding: 0 0 10px 0;
-	border-bottom: 1px solid rgba(255,255,255,0.4);
+	/*padding: 0 0 10px 0;
+	border-bottom: 1px solid rgba(255,255,255,0.4);*/
 }
 
 /* The triangle */
@@ -102,13 +87,13 @@ body{
 	width: 0;
 	position: absolute;
 	pointer-events: none;
-	border-right-color: white;
+	border-right-color: #3594cb;
 	border-width: 10px;
 	top: 10px;
 }
 
 .cbp_tmtimeline > li:nth-child(odd) .cbp_tmlabel:after {
-	border-right-color: white;
+	border-right-color: #6cbfee;
 }
 
 /* The icons */
@@ -125,7 +110,7 @@ body{
 	line-height: 40px;
 	-webkit-font-smoothing: antialiased;
 	position: absolute;
-	
+	color: #fff;
 	background: #46a4da;
 	border-radius: 50%;
 	box-shadow: 0 0 0 8px #afdcf8;
@@ -151,15 +136,7 @@ body{
 	content: "\e003";
 }
 
-/* Example Media Queries */
-/*@media screen and (max-width: 65.375em) {
 
-	.cbp_tmtimeline > li .cbp_tmtime span:last-child {
-		font-size: 1.5em;
-	}
-}*/
-
-@media screen  {
 	.cbp_tmtimeline:before {
 		display: none;
 	}
@@ -185,13 +162,13 @@ body{
 		right: auto;
 		left: 20px;
 		border-right-color: transparent;
-		border-bottom-color: white;
+		border-bottom-color: #3594cb;
 		top: -20px;
 	}
 
 	.cbp_tmtimeline > li:nth-child(odd) .cbp_tmlabel:after {
 		border-right-color: transparent;
-		border-bottom-color: white;
+		border-bottom-color: #6cbfee;
 	}
 
 	.cbp_tmtimeline > li .cbp_tmicon {
@@ -200,5 +177,5 @@ body{
 		left: auto;
 		margin: -55px 5px 0 0px;
 	}	
-}
+
 
