@@ -22,27 +22,41 @@
 <script type="text/javascript" src="js/mapjs/map-toolbar-widget.js"></script>
 <script type="text/javascript" src="js/mapjs/png-exporter.js"></script>
 <script type="text/javascript" src="js/mapjs/map-widget.js"></script>
-	
 
-
-
-  <link rel="stylesheet" type="text/css" href="styles/jquery.fullPage.css" />
-  <script type="text/javascript" src="js/vendor/jquery.fullPage.js"></script>
-  <!-- ******************************** -->
-  <!-- CKEditor -->
-  <script src="/js/ckeditor/ckeditor.js"></script>
-  <!-- ******************************** -->
-  <!-- tags input -->
-  <link rel="stylesheet" type="text/css" href="styles/jquery.tagsinput.css" />
-  <script type="text/javascript" src="js/vendor/jquery.tagsinput.js"></script>
-  <!-- ******************************** -->
+<!-- ******************************** -->
+<!-- CKEditor -->
+<script src="/js/ckeditor/ckeditor.js"></script>
+<!-- ******************************** -->
+<!-- tags input -->
+<link rel="stylesheet" type="text/css" href="styles/jquery.tagsinput.css" />
+<script type="text/javascript" src="js/vendor/jquery.tagsinput.js"></script>
+<!-- ******************************** -->
 
 <!-- Templates to load -->
+<%- partial('./templates/topBar_template') %>
+<div class="interface">
+  <dl class="tabs" data-tab>
+    <dd class="active"><a href="#panel2-1">Concept</a></dd>
+    <dd><a href="#panel2-2">Visualisation</a></dd>
+    <dd><a href="#panel2-3">Knowledge</a></dd>
+  </dl>
+  <div class="tabs-content">
+      <div class="content active" id="panel2-1">
+          <div id="interface1-container"></div>
+      </div>
+      <div class="content" id="panel2-2">
+          <p>Second panel content goes here...</p>
+      </div>
+      <div class="content" id="panel2-3">
+          <div id="interface3-container"></div>
+      </div>
+  </div>
+</div>
 
 
-  <%- partial('./templates/topBar_template') %>
-  <%- partial('./templates/interface3_template') %>
-  <%- partial('./templates/explorer_template') %>
+  
+<%- partial('./templates/cklink_template') %>
+<%- partial('./templates/explorer_template') %>
 
   
 
@@ -63,6 +77,7 @@
 <!-- Modules situés dans assets/js/BB_app -->
 
 
+<script type="text/javascript" src="js/BB_app/modules/cklink.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/explorer.js"></script>
 <script type="text/javascript" src="js/BB_app/interfaces/interface1.js"></script>
 <script type="text/javascript" src="js/BB_app/interfaces/interface2.js"></script>

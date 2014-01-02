@@ -1,5 +1,7 @@
 
-
+body{
+	background-image:url(/img/pattern.png);
+}
 
 
 
@@ -178,4 +180,8 @@
 		margin: -55px 5px 0 0px;
 	}	
 
-
+.interface{
+	width:90%;
+	margin-left: auto;
+  margin-right: auto;
+}
