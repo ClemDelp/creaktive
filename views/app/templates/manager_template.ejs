@@ -46,7 +46,11 @@
 		<td>{{= user.email }}</td>
 		<td>-</td>
 		<td style="background:{{= user.color }}">
-			{{= user.color }}</td><td><a data-id-user="{{= user.id }}" class="remove button small">remove</a>
+			{{= user.color }}
+		</td>
+		<td>
+			<a data-id-user="{{= user.id }}" class="edit button tiny">edit</a>
+			<a data-id-user="{{= user.id }}" class="remove button tiny alert">remove</a>
 		</td>
 	</tr>
 </script>
@@ -55,7 +59,7 @@
     <h3>Users manager</h3>
     <hr />
     <table style="width:100%;text-align:center">
-    	<tr><th>Name</th><th>Email</th><th>Password</th><th>Color</th><th>action</th></tr>
+    	<tr><th>Name</th><th>Email</th><th>Password</th><th>Color</th><th>Actions</th></tr>
 	    {{ _.each(users, function(user) { }}
 	    	{{= user }}	
 	    {{ }); }}
@@ -97,9 +101,13 @@
 		<div class="row panel">
 			<h5><b>GROUP : </b>{{= group.title }}</h5>
 			<table >
-				<tr><th>Name</th><th>Email</th></tr>	
+				<tr><th>Name</th><th>Email</th><th>Actions</th></tr>	
 				{{ _.each(group.users, function(user) { }}
-		    		<tr><td>{{= user.name}}</td> <td>{{= user.email }}</td></tr>	
+		    		<tr>
+			    		<td>{{= user.name}}</td> 
+			    		<td>{{= user.email }}</td>
+			    		<td><a data-id-user="{{= user.id }}" class="removeUser alert button tiny">Remove</a> </td>
+		    		</tr>	
 		    	{{ }); }}
 			</table>
 			<form class="custom row">
@@ -109,7 +117,7 @@
 			        <div class="small-10 columns">
 			            <select id="{{= group.id }}_user_selected" class="medium expand">
 					    	{{ _.each(users, function(user) { }}
-					        	<option value="{{= user.id }}">{{= user.email }}</option>
+					        	<option value="{{= user.id }}">{{= user.name }}</option>
 					        {{ }); }}
 					    </select>
 			        </div>
@@ -156,6 +164,7 @@
 		<td>{{= permission.user.name }}</td>
 		<td>{{= permission.group.title }}</td>
 		<td>{{= permission.right }}</td>
+		<td><a data-id-permission="{{= permission.id }}" class="removePermission alert button tiny">Remove</a></td>
 	</tr>
 
 </script>
@@ -169,7 +178,7 @@
 			<label>Permissions</label>
 			<table style="width:100%;align:center">
 				<tr>
-					<th>User</th><th>Group</th><th>Right</th>
+					<th>User</th><th>Group</th><th>Right</th><th>Actions</th>
 				</tr>
 				{{ _.each(permissions, function(permission){ }}
 					{{= permission }}

@@ -120,6 +120,7 @@ manager.Views.Groups_view = Backbone.View.extend({
         "click .remove" : "removeGroup",
         "click .new" : "newGroup",
         "click .add" : "addUser",
+        "click .removeUser" : "removeUser"
 
     },
 
@@ -135,6 +136,16 @@ manager.Views.Groups_view = Backbone.View.extend({
 
         this.render();
     },
+
+    removeUser : function(e){
+        console.log("Remove a User from a group");
+        _this = this;
+        user_id = e.target.getAttribute("data-id-user");
+        ug = this.userGroups.findWhere({"user_id" : user_id});
+        this.userGroups.remove(ug);
+        ug.destroy(); 
+    },
+
     removeGroup : function(e){
         console.log("Remove a group");
         group_id = e.target.getAttribute("data-id-group");
@@ -222,6 +233,7 @@ manager.Views.Project_view = Backbone.View.extend({
         list_permissions_html = [];
         this.permissions.each(function (p){
             perm = {
+                id : p.id,
                 user : _this.users.get(p.get('id_user')).toJSON(),
                 group : _this.groups.get(p.get('id_group')).toJSON(),
                 right : p.get('right')
@@ -278,7 +290,8 @@ manager.Views.Projects_view = Backbone.View.extend({
         "click .remove" : "removeProject",
         "click .new" : "addProject",
         "click .add" : "addPermission",
-                "click .open" : "openProject"
+        "click .open" : "openProject",
+        "click .removePermission" : "removePermission"
     },
     openProject : function (e){
         document.location.href='/?projectId=' + e.target.getAttribute("data-id-project");
@@ -304,6 +317,14 @@ manager.Views.Projects_view = Backbone.View.extend({
 
             _this.permissions.create(new_permission);
         });
+    },
+    removePermission : function(e){
+        console.log("Remove permission");
+        permission_id = e.target.getAttribute("data-id-permission");
+        permission = this.permissions.get(permission_id);
+        this.permissions.remove(permission);
+        permission.destroy();
+
     },
     addProject : function(e){
         console.log("Add a new project");

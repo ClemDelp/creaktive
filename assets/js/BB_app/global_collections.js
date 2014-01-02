@@ -84,8 +84,7 @@ global.Collections.UsersCollection = Backbone.Collection.extend({
         this.bind("error", function(model, error){
             console.log( error );
         });
-
-    }
+    },
 });
 /***************************************/
 global.Collections.GroupsCollection = Backbone.Collection.extend({
