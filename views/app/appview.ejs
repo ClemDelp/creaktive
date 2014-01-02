@@ -37,12 +37,13 @@
 <div class="interface">
   <dl class="tabs" data-tab>
     <dd class="active"><a href="#panel2-1">Concept</a></dd>
-    <dd><a href="#panel2-2">Visualisation</a></dd>
+    <dd><a href="#panel2-2">Visualization</a></dd>
     <dd><a href="#panel2-3">Knowledge</a></dd>
   </dl>
   <div class="tabs-content">
       <div class="content active" id="panel2-1">
           <div id="interface1-container"></div>
+          <div class="large-6 columns" id="container"></div>  
       </div>
       <div class="content" id="panel2-2">
           <p>Second panel content goes here...</p>
@@ -53,8 +54,7 @@
   </div>
 </div>
 
-
-  
+<%- partial('./templates/concepts_template') %>
 <%- partial('./templates/cklink_template') %>
 <%- partial('./templates/explorer_template') %>
 

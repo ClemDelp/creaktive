@@ -7,11 +7,12 @@ concepts.Views.MapView = Backbone.View.extend({
     initialize : function(json){
 
         _.bindAll(this, 'render');
+        _.bindAll(this, 'map');
         /*Concepts*/
         this.concepts = json.concepts;
-        this.concepts.bind('add', this.render);
-        this.concepts.bind('reset', this.render);
-        this.concepts.bind('remove', this.remove);
+        // this.concepts.bind('add', this.render);
+        this.concepts.bind('reset', this.map);
+        // this.concepts.bind('remove', this.remove);
 
         /*CurrentProject*/
         this.currentProject = json.currentProject;
@@ -21,9 +22,6 @@ concepts.Views.MapView = Backbone.View.extend({
 
         /*EventAgregator*/
         this.eventAggregator = json.eventAggregator;
-
-        /*currentNodeSelected*/
-        this.currentNodeSelected = {};
 
         this.template = _.template($('#map-template').html());
 
@@ -48,7 +46,6 @@ concepts.Views.MapView = Backbone.View.extend({
         this.mapRepository = mapRepository;
         this.mapModel = mapModel;
         this.idea = idea;
-
     },
 
     events : {
@@ -62,7 +59,6 @@ concepts.Views.MapView = Backbone.View.extend({
         console.log("render");
         renderedContent = this.template({concepts : this.concepts});
         $(this.el).html(renderedContent);
-        this.map();
         return this;
     },
 
@@ -74,32 +70,34 @@ concepts.Views.MapView = Backbone.View.extend({
         _this = this; 
         c0 = this.concepts.findWhere({id_father : ""});
                  
-        if(!c0){
-            c0 = new global.Models.ConceptModel({
-                id : guid(),
-                title : "c0",
-                user : this.currentUser,
-                // date, content, color
-            });
-            _this.concepts.create(c0);
-        }else{
-            attr = {
-                style : {
-                    background : c0.get('color')
-                } 
-            };  
-            c0.set({attr:attr})   
-        }        
+        // if(!c0){
+        //     c0 = new global.Models.ConceptModel({
+        //         id : guid(),
+        //         title : "c0",
+        //         user : this.currentUser,
+        //         // date, content, color
+        //     });
+        //     this.concepts.create(c0);
+        // }else{
+        //     attr = {
+        //         style : {
+        //             background : c0.get('color')
+        //         } 
+        //     };  
+        //     c0.set({attr:attr})   
+        // }   
 
-        _this.idea = MAPJS.content(c0.toJSON());
-        _this.mapRepository.dispatchEvent('mapLoaded', _this.idea);
 
-        _this.mapModel.addEventListener('nodeSelectionChanged', function(e){
+
+        this.idea = MAPJS.content(c0.toJSON());
+        this.mapRepository.dispatchEvent('mapLoaded', this.idea);
+        this.populate(c0.id, this.concepts.where({id_father : c0.id}));
+
+        this.mapModel.addEventListener('nodeSelectionChanged', function(e){
             _this.eventAggregator.trigger("nodeSelectionChanged", e);
-            _this.currentNodeSelected = e;
         });
 
-        _this.populate(c0.id, this.concepts.where({id_father : c0.id}));
+
 
         _this.idea.addEventListener('changed', function(command, args){
             _this.onMapChange(command, args);

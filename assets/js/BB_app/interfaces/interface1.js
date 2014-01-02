@@ -10,18 +10,18 @@ interface1.Views.Concept = Backbone.View.extend({
         this.currentUser = json.currentUser;
         this.currentProject = json.currentProject;
 	    this.concepts = json.concepts;
-	    this.current_concept = json.current_concept;
+	    this.eventAggregator = json.eventAggregator;
 	},
 
 	render : function (){
 		$(this.el).html("");//reset the view
-		// concept_ = new concepts.Views.MapView({
-  //   		currentUser : this.currentUser,
-  //   		currentProject : this.currentProject,
-  //   		current_concept : this.current_concept,
-  //   		concepts : this.concepts
-		// });
-		// $(this.el).append(concept_.render().el);
+		concept_ = new concepts.Views.MapView({
+    		currentUser : this.currentUser,
+    		currentProject : this.currentProject,
+    		eventAggregator : this.eventAggregator,
+    		concepts : this.concepts
+		});
+		$(this.el).append(concept_.render().el);
 		return this;
 	}
 });
@@ -32,10 +32,11 @@ interface1.Views.CKLink = Backbone.View.extend({
     initialize : function(json) {
         console.log("Interface3 Explorer view initialise");
         // Variables
-        this.current_concept = json.current_concept;
+        this.eventAggregator = json.eventAggregator;
         this.poches = json.poches;
         this.knowledges = json.knowledges;
         this.links = json.links;
+        this.concepts = json.concepts;
         // Events
         _.bindAll(this, 'render');
         
@@ -44,8 +45,9 @@ interface1.Views.CKLink = Backbone.View.extend({
         cklink_   = new cklink.Views.Main({
         	knowledges:this.knowledges,
         	poches:this.poches,
-        	current_concept:this.current_concept,
-            links:this.links
+        	eventAggregator:this.eventAggregator,
+            links:this.links,
+            concepts : this.concepts
         });
         $(this.el).append(cklink_.render().el);
         return this;
@@ -66,8 +68,8 @@ interface1.Views.Main = Backbone.View.extend({
 	    this.knowledges = json.knowledges;
 	    this.poches = json.poches;
 
-        this.current_concept = {};//this.concepts.first();
-        _.extend(this.current_concept, Backbone.Events);
+        this.eventAggregator = {};//this.concepts.first();
+        _.extend(this.eventAggregator, Backbone.Events);
         
     },
     render : function() {
@@ -75,7 +77,7 @@ interface1.Views.Main = Backbone.View.extend({
     	concept_ = new interface1.Views.Concept({
     		currentUser : this.currentUser,
     		currentProject : this.currentProject,
-    		current_concept : this.current_concept,
+    		eventAggregator : this.eventAggregator,
     		concepts : this.concepts
     	});
         $(this.el).append(concept_.render().el);
@@ -85,7 +87,8 @@ interface1.Views.Main = Backbone.View.extend({
         	knowledges:this.knowledges,
         	poches:this.poches,
             links:this.links,
-        	current_concept : this.current_concept
+        	eventAggregator : this.eventAggregator,
+            concepts : this.concepts
     	});
         $(this.el).append(cklink_view.render().el);
         $(document).foundation();

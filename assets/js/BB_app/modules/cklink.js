@@ -245,10 +245,12 @@ cklink.Views.Main = Backbone.View.extend({
         // Variables
         this.knowledges = json.knowledges;
         this.poches = json.poches;
-        this.current_concept = json.current_concept;
+        this.eventAggregator = json.eventAggregator;
         this.links = json.links;
+        this.concepts = json.concepts;
         // Events
         _.bindAll(this, 'render');
+        _.bindAll(this, 'onNodeSelectedChange')
 
         this.poches.bind('reset', this.render);
         this.poches.bind('add', this.render);
@@ -260,19 +262,18 @@ cklink.Views.Main = Backbone.View.extend({
         this.knowledges.bind('add', this.render);
         this.knowledges.bind('remove', this.render);
 
-        this.current_concept = new global.Models.ConceptModel({
-            id :guid(),
-            title : "Tutu le concept",
-            user : "clem",
-            date : getDate(),
-            content : "lalala le content",
-            color : "#FFF",
-            id_father : ""
-        });
-        this.current_concept.on('change',this.render);
+        this.current_concept = new global.Models.ConceptModel({title : "Select a concept"});
+        this.eventAggregator.on('nodeSelectionChanged',this.onNodeSelectedChange);
         // Template
         this.template = _.template($('#cklink-current-concept-template').html());       
     },
+
+    onNodeSelectedChange : function(e){
+        this.current_concept = this.concepts.get(e);
+        this.current_concept.trigger("change",e);
+        this.render();
+    },
+
     render : function() {
         // Current concept view
         var renderedContent = this.template({
