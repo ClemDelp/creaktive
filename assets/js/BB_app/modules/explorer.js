@@ -279,7 +279,7 @@ explorer.Views.Posts = Backbone.View.extend({
         this.current_filters.on('newPoche',this.render, this);
         this.current_filters.on('notClassified',this.displayNotClassified, this);
 
-        // Template
+
         this.template = _.template($('#publish-module-template').html());
         
     },

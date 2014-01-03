@@ -1,0 +1,237 @@
+ <div class="row">
+    <div class="large-12 columns">
+     <h1>Manager</h1>
+     <hr />
+   </div>
+</div>
+
+<div class="row">
+
+	<dl class="tabs vertical" data-tab>
+		<dd class="active"><a href="#panel-1">Projects</a></dd>
+		<dd><a href="#panel-2">Groups</a></dd>
+		<dd><a href="#panel-3">Users</a></dd>
+	</dl>
+
+	<div class="tabs-content vertical">
+	  <div class="content active" id="panel-1">
+	    	<div id='projects-container'></div>
+	  </div>
+	  <div class="content" id="panel-2">
+	    	<div id='groups-container'></div>
+	  </div>
+	  <div class="content" id="panel-3">
+	     	<div id='users-container'></div>
+	  </div>
+	</div>
+ </div>
+
+<div id="uploadModal" class="reveal-modal">
+  <h2>Upload</h2>
+  <label>Project id</label>
+  <input type="text" id="id_project_upload_input" value="">
+  <input id="fileupload" type="file" name="files[]" data-url="upload/uploadFile" multiple>
+  <span id="importation_info"></span>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
+
+<!--
+/////////////////////////////////////////////////////////////////////
+/*User templates*/
+/////////////////////////////////////////////////////////////////////
+-->
+<script type="text/template" id="user-template">
+	<tr>
+		<td>{{= user.name}}</td>
+		<td>{{= user.email }}</td>
+		<td>-</td>
+		<td style="background:{{= user.color }}">
+			{{= user.color }}
+		</td>
+		<td>
+			<a data-id-user="{{= user.id }}" class="edit button tiny">edit</a>
+			<a data-id-user="{{= user.id }}" class="remove button tiny alert">remove</a>
+		</td>
+	</tr>
+</script>
+
+<script type="text/template" id="users-template">
+    <h3>Users manager</h3>
+    <hr />
+    <table style="width:100%;text-align:center">
+    	<tr><th>Name</th><th>Email</th><th>Password</th><th>Color</th><th>Actions</th></tr>
+	    {{ _.each(users, function(user) { }}
+	    	{{= user }}	
+	    {{ }); }}
+	    <tr>
+	    	<td>
+	    		<input id="users_view_name" type="text" placeholder="name">
+		    	</td>
+		    <td>
+	        	<input id="users_view_email" type="text" placeholder="email">
+	      	</td>
+			<td>
+				<input id="users_view_pw" type="text" placeholder="password">
+			</td>
+			<td>
+				<div class="row collapse">
+					<div class="small-9 columns">
+						<input id="users_view_color" type="color">
+					</div>
+				</div>
+			</td>
+			<td>
+				<div class="row collapse">
+					<div class="small-9 columns">
+						<a type="submit" class="add button small alert expand">Add</a>
+					</div>
+				</div>
+			</td>
+	    </tr>
+    </table>
+</script>
+
+
+<!--
+/////////////////////////////////////////////////////////////////////
+/*groups templates*/
+/////////////////////////////////////////////////////////////////////
+-->
+<script type="text/template" id="group-template">
+		<div class="row panel">
+			<h5><b>GROUP : </b>{{= group.title }}</h5>
+			<table >
+				<tr><th>Name</th><th>Email</th><th>Actions</th></tr>	
+				{{ _.each(group.users, function(user) { }}
+		    		<tr>
+			    		<td>{{= user.name}}</td> 
+			    		<td>{{= user.email }}</td>
+			    		<td><a data-id-user="{{= user.id }}" class="removeUser alert button tiny">Remove</a> </td>
+		    		</tr>	
+		    	{{ }); }}
+			</table>
+			<form class="custom row">
+
+			      <div class="row collapse">
+			      	<label>Users</label>
+			        <div class="small-10 columns">
+			            <select id="{{= group.id }}_user_selected" class="medium expand">
+					    	{{ _.each(users, function(user) { }}
+					        	<option value="{{= user.id }}">{{= user.name }}</option>
+					        {{ }); }}
+					    </select>
+			        </div>
+			        <div class="small-2 columns">
+			          <a data-id-group="{{= group.id }}" class="add button prefix">Link</a>
+			        </div>
+			      </div>
+
+		    </form>
+		    <hr>
+			<a class="remove button tiny alert" data-id-group="{{= group.id }}">remove</a>
+    </div>
+</script>
+
+
+
+<script type="text/template" id="groups-template">
+    <h3>Groups manager</h3>
+    <hr>
+    {{ _.each(groups, function(group) { }}
+		{{= group }}
+    {{ }); }}
+    <h5>New group</h5>
+
+	      <div class="row collapse">
+	        <div class="small-10 columns">
+	          <input id="groups_view_title" type="text" placeholder="group name">
+	        </div>
+	        <div class="small-2 columns">
+	          <a class="new button prefix">Add</a>
+	        </div>
+	      </div>
+
+</script>
+
+
+<!--
+/////////////////////////////////////////////////////////////////////
+/*Project templates*/
+/////////////////////////////////////////////////////////////////////
+-->
+<script type="text/template" id="permission-template">
+	<tr>
+		<td>{{= permission.user.name }}</td>
+		<td>{{= permission.group.title }}</td>
+		<td>{{= permission.right }}</td>
+		<td><a data-id-permission="{{= permission.id }}" class="removePermission alert button tiny">Remove</a></td>
+	</tr>
+
+</script>
+
+<script type="text/template" id="project-template">
+	<div class="row panel">
+		<h5><b>PROJECT : </b>{{= project.title }}</h5>
+		<br>
+		<a class="button open" data-id-project="{{= project.id }}">Open</a>
+		<div class="row">
+			<label>Permissions</label>
+			<table style="width:100%;align:center">
+				<tr>
+					<th>User</th><th>Group</th><th>Right</th><th>Actions</th>
+				</tr>
+				{{ _.each(permissions, function(permission){ }}
+					{{= permission }}
+				{{ });}}
+			</table>
+		</div>
+
+		<form class="custom row">
+	      	<fieldset>
+	    		<legend>Add permission</legend>
+		        <div class="large-5 columns">
+		            <select id="{{= project.id }}_group_selected" class="medium expand">
+				    	{{ _.each(groups, function(group) { }}
+				        	<option value="{{= group.id }}">{{= group.title }}</option>
+				        {{ }); }}
+				    </select>
+		        </div>
+	        <div class="large-5 columns">
+
+	            <select id="{{= project.id }}_right_selected" class="medium expand">
+			    	<option value="rw">Read & Write</option>
+			    	<option value="r">Read</option>
+			    </select>
+	        </div>
+	        <div class="large-2 columns">
+
+	          <a data-id-project="{{= project.id }}" class="add button prefix">Add permisison</a>
+	        </div>
+	        </fieldset>
+	    </form>
+
+		<hr>
+		<a class="button tiny alert remove" data-id-project="{{= project.id }}">Remove project</a>
+		
+
+	</div>
+
+
+</script>
+
+
+<script type="text/template" id="projects-template">
+	<h3>Projects manager</h3>
+    <h5>New project</h5>
+	<form method="post" class="row">
+	      <div class="row collapse">
+	        <div class="small-10 columns">
+	          <input id="projects_view_title" type="text" placeholder="project name">
+	        </div>
+	        <div class="small-2 columns">
+	          <a class="new button prefix">Add</a>
+	        </div>
+	      </div>
+	</form>
+	<hr />
+</script>

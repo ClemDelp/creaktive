@@ -7,13 +7,31 @@
  */
 
 module.exports = {
-autoPK : false,
+
+	autoPK : false,
+
+
   attributes: {
   	
   	/* e.g.
   	nickname: 'string'
   	*/
     
+  },
+
+  beforeDestroy : function (values, cb){
+  	UserGroup.find({
+  		user_id : values.where.id
+  	}).done(function (err, userGroups){
+  		if(err) console.log(err);
+  		_.each(userGroups, function (userGroup){
+  			userGroup.destroy(function(err){
+  				if(err) console.log(err)
+  			})
+  		})
+  	})
+
+  	cb();
   }
 
 };

@@ -68,27 +68,8 @@ concepts.Views.MapView = Backbone.View.extend({
         */
         var c0, _this;
         _this = this; 
-        c0 = this.concepts.findWhere({id_father : ""});
+        c0 = this.concepts.findWhere({position : 0});
                  
-        // if(!c0){
-        //     c0 = new global.Models.ConceptModel({
-        //         id : guid(),
-        //         title : "c0",
-        //         user : this.currentUser,
-        //         // date, content, color
-        //     });
-        //     this.concepts.create(c0);
-        // }else{
-        //     attr = {
-        //         style : {
-        //             background : c0.get('color')
-        //         } 
-        //     };  
-        //     c0.set({attr:attr})   
-        // }   
-
-
-
         this.idea = MAPJS.content(c0.toJSON());
         this.mapRepository.dispatchEvent('mapLoaded', this.idea);
         this.populate(c0.id, this.concepts.where({id_father : c0.id}));

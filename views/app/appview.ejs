@@ -2,6 +2,7 @@
 <link rel="stylesheet" href="styles/map.css">
 
 <!-- Javascript libs -->
+
 <script type="text/javascript" src="js/vendor/jquery.mousewheel-3.1.3.js"></script>
 <script src="js/vendor/jquery.hotkeys.js"></script>
 <script src="js/vendor/jquery.hammer.min.js"></script>
@@ -23,12 +24,14 @@
 <script type="text/javascript" src="js/mapjs/png-exporter.js"></script>
 <script type="text/javascript" src="js/mapjs/map-widget.js"></script>
 
+
 <!-- ******************************** -->
 <!-- CKEditor -->
 <script src="/js/ckeditor/ckeditor.js"></script>
 <!-- ******************************** -->
 <!-- tags input -->
 <link rel="stylesheet" type="text/css" href="styles/jquery.tagsinput.css" />
+
 <script type="text/javascript" src="js/vendor/jquery.tagsinput.js"></script>
 <!-- ******************************** -->
 
@@ -61,6 +64,7 @@
   
 
 
+
 <!-- Javascript libs -->
 <script type="text/javascript" src="js/vendor/socket.io.js"></script>
 <script type="text/javascript" src="js/sails.io.js"></script>
@@ -83,5 +87,33 @@
 <script type="text/javascript" src="js/BB_app/interfaces/interface2.js"></script>
 <script type="text/javascript" src="js/BB_app/interfaces/interface3.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/concepts.js"></script>
+
+<script>
+  ///////////////////////////////////////////////////
+  $(document).ready(function () {
+    console.log( "CreaKtive DOM loaded!" );
+    ////////////////////////////////////////
+    Backbone.Model.prototype.toJSON = function() {
+      return JSON.parse(JSON.stringify(this.attributes));
+    };
+    ////////////////////////////////////////
+    global.init('<%- currentUser %>', function(){
+      /*Modules*/
+      cklink.init();
+      explorer.init();
+      // concepts.init();
+      /*Interfaces*/
+      interface1.init();
+      interface3.init();
+      ////////////////////////////////////////
+      /*activat of "hashchange events's monitoring"*/
+
+      Backbone.history.start();  
+    });
+       
+
+
+  });
+</script>
 
 

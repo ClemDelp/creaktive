@@ -10,9 +10,11 @@ var global = {
   collections: {},
   models: {},
   views: {},
-  init: function () {
+  init: function (currentUser, callback) {
     /*Init*/
     console.log("global object loading...");
+
+    this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
     /*Collections*/
     this.collections.Knowledges = new this.Collections.Knowledges();
     this.collections.Poches = new this.Collections.Poches();
@@ -21,35 +23,19 @@ var global = {
     this.collections.Links = new this.Collections.CKLinks();
     
     /*Loads*/
-    this.collections.Knowledges.fetch({reset: true,complete:function(){}});
-    this.collections.Poches.fetch({reset: true,complete:function(){}});
-    this.collections.Projects.fetch({
-      reset:true,
-      success : function(collection, response, options){},
-      complete : function(collection, response, options){},
-      error : function(collection, response, options){},
+    this.models.current_user.fetch({
+      error: function(model, response, options){
+        console.log("connected as a guest");
+      }
     });
-    this.collections.Concepts.fetch({
-      reset:true,
-      success : function(collection, response, options){},
-      complete : function(collection, response, options){},
-      error : function(collection, response, options){
-        console.log(response)
-      },
-    });
-    this.collections.Links.fetch({
-      reset:true,
-      success : function(collection, response, options){},
-      complete : function(collection, response, options){},
-      error : function(collection, response, options){
-        console.log(response)
-      },
-    });
+    this.collections.Knowledges.fetch({reset: true});
+    this.collections.Poches.fetch({reset: true});
+    this.collections.Projects.fetch({reset:true});
+    this.collections.Concepts.fetch({reset:true});
+    this.collections.Links.fetch({reset:true});
 
-    ///////////////////////////////
-    // Variables pour les tests
-    ///////////////////////////////
-    this.models.current_user = new this.Models.User({id:guid(),name:"clarth",email : "delpuech.clement@gmail.com",img:"img/default-user-icon-profile.png",color:"#FFF",pw:"clem"});
+    callback();
+
   }
 };
 /////////////////////////////////////////////////
@@ -176,30 +162,6 @@ var interface1 = {
     
   }
 };
-///////////////////////////////////////////////////
-$(document).ready(function () {
-  console.log( "CreaKtive DOM loaded!" );
-  ////////////////////////////////////////
-  Backbone.Model.prototype.toJSON = function() {
-    return JSON.parse(JSON.stringify(this.attributes));
-  };
-  ////////////////////////////////////////
-  global.init();
-  /*Modules*/
-  cklink.init();
-  explorer.init();
-  // concepts.init();
-  /*Interfaces*/
-  interface1.init();
-  interface3.init();
-  ////////////////////////////////////////
-  /*activat of "hashchange events's monitoring"*/
-
-  Backbone.history.start();     
-
-
-});
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Realtime connection

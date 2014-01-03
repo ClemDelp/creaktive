@@ -12,6 +12,26 @@ module.exports = {
     res.send('hello world!');
   }
   */
+
+  find : function (req,res){
+    Knowledge.find({
+      project : req.session.currentProject
+    }).done(function(err,knowledges){
+      if(err) res.send(err)
+      res.send(knowledges)
+    });
+
+  },
+
+  create : function (req,res){
+    var k = req.body;
+    k.project = req.session.currentProject
+    Knowledge.create(k).done(function(err, knowledge){
+      if(err) res.send(err);
+      res.send(knowledge);
+    });
+  },
+
   
   update : function(req, res){
   	Knowledge.findOne(req.body.id).done(function(err, knowledge){
@@ -22,7 +42,9 @@ module.exports = {
   				res.send(c);
   			});
   		}else{
-  			Knowledge.create(req.body).done(function(err,c){
+            var k = req.body;
+    k.project = req.session.currentProject
+  			Knowledge.create(k).done(function(err,c){
   				if(err) res.send(err)
   				res.send(c);
   			})

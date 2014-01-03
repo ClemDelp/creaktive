@@ -7,7 +7,10 @@
  */
 
 module.exports = {
-autoPK : false,
+
+	autoPK : false,
+
+
   attributes: {
   	
   	/* e.g.

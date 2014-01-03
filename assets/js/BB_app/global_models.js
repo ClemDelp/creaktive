@@ -104,7 +104,7 @@ global.Models.ProjectModel = Backbone.Model.extend({
     defaults : {
         id : "",
         title : "no projects",
-        date : getDate(),
+        date : getDate()
     },
     initialize : function Doc() {
         //console.log('Project Constructor');
@@ -172,6 +172,23 @@ global.Models.GroupModel = Backbone.Model.extend({
     },
 });
 
+/***************************************/
+global.Models.UserGroupModel = Backbone.Model.extend({
+    defaults : {
+        id:'',
+        group_id : "",
+        user_id : ""
+    },
+    initialize : function Doc() {
+        //console.log('Group Constructor');
+        this.urlRoot = "usergroup";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    },
+});
+
+
 
 
 
@@ -185,7 +202,8 @@ global.Models.ConceptModel = Backbone.Model.extend({
         date : getDate(),
         content : "",
         color : "",
-        id_father : ""
+        id_father : "",
+        position : null
     },
     setText : function(value) {this.set({ text : value }); },
     initialize : function Comment() {
