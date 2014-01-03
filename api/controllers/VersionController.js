@@ -1,5 +1,5 @@
 /**
- * PermissionController
+ * VersionController
  *
  * @module		:: Controller
  * @description	:: Contains logic for handling requests.
@@ -13,22 +13,21 @@ module.exports = {
   }
   */
   
-  update : function(req,res){
-		Tag.findOne(req.body.id).done(function(err,tag){
-			if (tag){
-					Tag.update({
+update : function(req,res){
+		Version.findOne(req.body.id).done(function(err,version){
+			if (version){
+					Version.update({
 						id : req.body.id
-					},req.body).done(function(err,t){
+					},req.body).done(function(err,v){
 						if(err) res.send({err:err});
-						res.send(t);
+						res.send(v);
 					})
 			}
 			else{
-				Tag.create(req.body).done(function(err, t){
-					res.send(t)
+				Version.create(req.body).done(function(err, v){
+					res.send(v)
 				})
 			}
 		})
 	},
-
 };

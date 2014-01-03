@@ -35,13 +35,16 @@
 <script type="text/javascript" src="js/vendor/jquery.tagsinput.js"></script>
 <!-- ******************************** -->
 
+
 <!-- Templates to load -->
+<div class="topbar-container"></div>
 <%- partial('./templates/topBar_template') %>
+
 <div class="interface">
   <dl class="tabs" data-tab>
-    <dd class="active"><a href="#panel2-1">Concept</a></dd>
-    <dd><a href="#panel2-2">Visualization</a></dd>
-    <dd><a href="#panel2-3">Knowledge</a></dd>
+    <dd id="panel-concept" class="active"><a href="#panel2-1">Concept</a></dd>
+    <dd id="panel-visualization"><a href="#panel2-2">Visualization</a></dd>
+    <dd id="panel-knowledge"><a href="#panel2-3">Knowledge</a></dd>
   </dl>
   <div class="tabs-content">
       <div class="content active" id="panel2-1">
@@ -64,6 +67,8 @@
   
 
 
+coucou
+
 
 <!-- Javascript libs -->
 <script type="text/javascript" src="js/vendor/socket.io.js"></script>
@@ -80,7 +85,7 @@
 
 <!-- Modules situés dans assets/js/BB_app -->
 
-
+<script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/cklink.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/explorer.js"></script>
 <script type="text/javascript" src="js/BB_app/interfaces/interface1.js"></script>
@@ -99,6 +104,7 @@
     ////////////////////////////////////////
     global.init('<%- currentUser %>', function(){
       /*Modules*/
+      topBar.init();
       cklink.init();
       explorer.init();
       // concepts.init();

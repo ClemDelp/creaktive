@@ -7,6 +7,7 @@
  */
 
 module.exports = {
+
 autoPK : false,
   attributes: {
   	
@@ -15,5 +16,6 @@ autoPK : false,
   	*/
     
   }
+
 
 };

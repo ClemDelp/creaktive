@@ -46,6 +46,8 @@ concepts.Views.MapView = Backbone.View.extend({
         this.mapRepository = mapRepository;
         this.mapModel = mapModel;
         this.idea = idea;
+
+        window.mapModel = mapModel;
     },
 
     events : {
@@ -56,7 +58,6 @@ concepts.Views.MapView = Backbone.View.extend({
 
     render: function(){
         var renderedContent ;
-        console.log("render");
         renderedContent = this.template({concepts : this.concepts});
         $(this.el).html(renderedContent);
         return this;
@@ -77,8 +78,6 @@ concepts.Views.MapView = Backbone.View.extend({
         this.mapModel.addEventListener('nodeSelectionChanged', function(e){
             _this.eventAggregator.trigger("nodeSelectionChanged", e);
         });
-
-
 
         _this.idea.addEventListener('changed', function(command, args){
             _this.onMapChange(command, args);

@@ -14,7 +14,6 @@ module.exports = {
   */
 
   
-
   update : function(req,res){
   	Group.findOne(req.body.id).done(function(err, group){
   		if(err) res.send(err);
@@ -31,6 +30,7 @@ module.exports = {
   		}
   	})
   },
+
 
 
 };

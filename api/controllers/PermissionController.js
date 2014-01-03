@@ -32,5 +32,21 @@ update : function(req,res){
   },
 
   
-
+update : function(req,res){
+		Permission.findOne(req.body.id).done(function(err,permission){
+			if (permission){
+					Permission.update({
+						id : req.body.id
+					},req.body).done(function(err,p){
+						if(err) res.send({err:err});
+						res.send(p);
+					})
+			}
+			else{
+				Permission.create(req.body).done(function(err, p){
+					res.send(p)
+				})
+			}
+		})
+	},
 };

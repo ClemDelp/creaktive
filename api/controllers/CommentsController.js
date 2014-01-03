@@ -12,7 +12,6 @@ module.exports = {
     res.send('hello world!');
   }
   */
-  
     update : function(req, res){
   	Comment.findOne(req.body.id).done(function(err, concept){
   		if(err) res.send(err);
@@ -31,5 +30,6 @@ module.exports = {
   		}
   	})
   }
+
 
 };

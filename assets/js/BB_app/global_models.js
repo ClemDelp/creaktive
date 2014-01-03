@@ -128,7 +128,7 @@ global.Models.NotificationModel = Backbone.Model.extend({
         to : "",//cible: projet, post, document, ...
         from : "",//Qui est à l'origine: utilisateur, mise à jour, ...
         date : getDate(),
-        state : ""
+        read : ""
     },
     initialize : function Doc() {
         //console.log('Notification part Constructor');

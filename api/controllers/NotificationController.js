@@ -13,7 +13,14 @@ module.exports = {
   }
   */
 
-    update : function(req, res){
+  find : function (req,res){
+    Notification.find().done(function(err, notifications){
+      if(err) res.send(err);
+      res.send(notifications);
+    });
+  },
+
+  update : function(req, res){
   	Notification.findOne(req.body.id).done(function(err, concept){
   		if(err) res.send(err);
   		if(concept){
@@ -32,5 +39,6 @@ module.exports = {
   	})
   }
   
+
 
 };

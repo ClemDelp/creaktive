@@ -4,6 +4,10 @@
  * @module		:: Controller
  * @description	:: Contains logic for handling requests.
  */
+function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
+function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
+function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
+
 
 module.exports = {
 
@@ -28,6 +32,16 @@ module.exports = {
     l.project = req.session.currentProject
     Link.create(l).done(function(err, link){
       if(err) res.send(err);
+        Notification.create({
+          id : guid(),
+          type : "createLink",
+          content : req.session.user.name + " linked a knowledge to a concept",
+          to : c.id,
+          date : getDate(),
+          read : false
+        }).done(function(err,n){
+          if(err) console.log(err)
+        })
       res.send(link);
     });
   },
@@ -40,7 +54,17 @@ module.exports = {
   			Link.update({
           id: req.body.id
         }, req.body).done(function(err,c){
-  				if(err) res.send(err)
+  				if(err) res.send(err);
+              Notification.create({
+                id : guid(),
+                type : "updateLink",
+                content : req.session.user.name + " midified a link",
+                to : c.id,
+                date : getDate(),
+                read : false
+              }).done(function(err,n){
+                if(err) console.log(err)
+              })
   				res.send(c);
   			});
   		}else{
@@ -48,11 +72,22 @@ module.exports = {
     l.project = req.session.currentProject
   			Link.create(l).done(function(err,c){
   				if(err) res.send(err)
+            Notification.create({
+              id : guid(),
+              type : "createLink",
+              content : req.session.user.name + " linked a knowledge to a concept",
+              to : c.id,
+              date : getDate(),
+              read : false
+            }).done(function(err,n){
+              if(err) console.log(err)
+            })
   				res.send(c);
   			})
   		}
   	})
   }
-  
 
 };
+  
+

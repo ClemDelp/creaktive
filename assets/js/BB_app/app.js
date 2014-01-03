@@ -21,7 +21,7 @@ var global = {
     this.collections.Projects = new this.Collections.ProjectsCollection();
     this.collections.Concepts = new this.Collections.ConceptsCollection();
     this.collections.Links = new this.Collections.CKLinks();
-    
+    this.collections.Notifications = new this.Collections.NotificationsCollection();
     /*Loads*/
     this.models.current_user.fetch({
       error: function(model, response, options){
@@ -33,9 +33,29 @@ var global = {
     this.collections.Projects.fetch({reset:true});
     this.collections.Concepts.fetch({reset:true});
     this.collections.Links.fetch({reset:true});
+    this.collections.Notifications.fetch({reset:true});
 
     callback();
 
+  }
+};
+/////////////////////////////////////////////////
+var topBar = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    console.log('TopBar Constructor');
+
+    this.views.Main = new this.Views.Main({
+      notifications : global.collections.Notifications
+    });
   }
 };
 /////////////////////////////////////////////////
@@ -187,4 +207,5 @@ function rt (io, callback) {
   window.socket = socket;
 
 };
+
 

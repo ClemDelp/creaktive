@@ -1,5 +1,4 @@
 {
-
   "name": "creaktive",
   "private": true,
   "version": "0.0.0",
@@ -13,7 +12,6 @@
     "sails-mongo": "0.9.5",
     "passport": "*",
     "passport-local": "*"
-
   },
   "scripts": {
     "start": "node app.js",
@@ -24,4 +22,3 @@
   "author": "CreaKtive",
   "license": ""
 }
-

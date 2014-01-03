@@ -4,6 +4,10 @@
  * @module		:: Controller
  * @description	:: Contains logic for handling requests.
  */
+function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
+function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
+function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
+
 
 module.exports = {
 
@@ -23,11 +27,21 @@ module.exports = {
 
   },
 
-    create : function (req,res){
+  create : function (req,res){
     var p = req.body;
     p.project = req.session.currentProject
     Poche.create(p).done(function(err, poche){
       if(err) res.send(err);
+      Notification.create({
+        id : guid(),
+        type : "createPoche",
+        content : req.session.user.name + " added a knowledge tag",
+        to : poche.id,
+        date : getDate(),
+        read : false
+      }).done(function(err,n){
+        if(err) console.log(err)
+      })
       res.send(poche);
     });
   },
@@ -38,14 +52,34 @@ module.exports = {
   		if(err) res.send(err);
   		if(concept){
   			Poche.update({id: req.body.id}, req.body).done(function(err,c){
-  				if(err) res.send(err)
+  				if(err) res.send(err);
+          Notification.create({
+            id : guid(),
+            type : "updatePoche",
+            content : req.session.user.name + " modified a knowledge tag",
+            to : poche.id,
+            date : getDate(),
+            read : false
+          }).done(function(err,n){
+            if(err) console.log(err)
+          })
   				res.send(c);
   			});
   		}else{
             var p = req.body;
     p.project = req.session.currentProject
   			Poche.create(p).done(function(err,c){
-  				if(err) res.send(err)
+  				if(err) res.send(err);
+          Notification.create({
+            id : guid(),
+            type : "createPoche",
+            content : req.session.user.name + " added a knowledge tag",
+            to : c.id,
+            date : getDate(),
+            read : false
+          }).done(function(err,n){
+            if(err) console.log(err)
+          })
   				res.send(c);
   			})
   		}

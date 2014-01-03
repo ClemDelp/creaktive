@@ -12,7 +12,6 @@ function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+no
 
 
 module.exports = {
-
 autoPK : false,
   attributes: {
   	
