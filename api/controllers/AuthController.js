@@ -24,29 +24,24 @@ var AuthController = {
 					res.send(err);
 					return;
 				}
- 
+				console.log(req.user)
+ 				req.session.user = req.user;
 				res.redirect('/');
 				return;
 			});
+
 		})(req, res);
 	},
 
+
 	openChannels : function(req,res){
-		console.log("Suscribing");
-		Permission.subscribe(req.socket);
-		Permission.find({
-			id_user : req.session.passport.user
-		}).done(function (err, permissions){
+		_.each(req.session.allowedProject, function(project){
+			req.socket.join(project)
+		})		
+		res.send({msg:"Channels opened", channels : req.session.allowedProject});
 
-			_.each(_.pluck(permissions, "id_project"), function (id_project){
-				req.socket.join(id_project)
-			})
-		})
 
-		res.send({msg:"Channels opened"});
 		
-
-
 	},
  
 	logout: function(req, res) {

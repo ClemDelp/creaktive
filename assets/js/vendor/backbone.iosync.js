@@ -75,7 +75,7 @@ Backbone.sync = function (method, model, options) {
     'update': 'update',
     'patch':  'PATCH',
     'delete': 'destroy',
-    'read':   'get'
+    'read':   'find'
   };
 
   var actionMap = {
@@ -97,14 +97,20 @@ Backbone.sync = function (method, model, options) {
   var defer = $.Deferred();
   io.emit(action, json, function (data) {
     console.log("*** SOCKET from ", json, "Response ", data, "***")
-    if (data.err) {
-      if(options.error) options.error(err);
-      defer.reject();
-    } else {
-      if(options.success) options.success(data.obj);
-      if(options.complete) defer.then(options.complete(data.obj));
+    // if (data.err) {
+    //   if(options.error) options.error(err);
+    //   defer.reject();
+    // } else {
+    //   if(options.success) options.success(data.obj);
+    //   if(options.complete) defer.then(options.complete(data.obj));
+    //   defer.resolve();
+    // }
+
+      if(options.success) options.success(data);
+      if(options.complete) defer.then(options.complete(data));
       defer.resolve();
-    }
+
+
   });
   var promise = defer.promise();
   model.trigger('request', model, promise, options);

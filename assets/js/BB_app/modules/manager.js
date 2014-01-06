@@ -37,6 +37,7 @@ manager.Views.Users_view = Backbone.View.extend({
         _this = this;
         new_user = new global.Models.User({
             id : guid(),
+            img : "/img/default-user-icon-profile.png",
             name : $("#users_view_name").val(),
             email : $("#users_view_email").val(),
             pw : $("#users_view_pw").val(),

@@ -19,7 +19,7 @@ module.exports = {
 
   find : function (req,res){
     Poche.find({
-      project : req.session.currentProject
+      project : req.session.currentProject.id
     }).done(function(err,poches){
       if(err) res.send(err)
       res.send(poches)
@@ -29,20 +29,24 @@ module.exports = {
 
   create : function (req,res){
     var p = req.body;
-    p.project = req.session.currentProject
+    p.project = req.session.currentProject.id
     Poche.create(p).done(function(err, poche){
       if(err) res.send(err);
       Notification.create({
         id : guid(),
         type : "createPoche",
-        content : req.session.user.name + " added a knowledge tag",
+        content : "Project : " + req.session.currentProject.title  + " - New poche",
         to : poche.id,
         date : getDate(),
-        read : false
+        read : [],
+          project_id : req.session.currentProject.id,
+          from : req.session.user
       }).done(function(err,n){
         if(err) console.log(err)
-      })
-      res.send(poche);
+req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+              res.send(c);
+            })
+          
     });
   },
 
@@ -59,15 +63,19 @@ module.exports = {
             content : req.session.user.name + " modified a knowledge tag",
             to : poche.id,
             date : getDate(),
-            read : false
+            read : [],
+          project_id : req.session.currentProject.id,
+          from : req.session.user
           }).done(function(err,n){
             if(err) console.log(err)
-          })
-  				res.send(c);
+req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+              res.send(c);
+            })
+          
   			});
   		}else{
             var p = req.body;
-    p.project = req.session.currentProject
+    p.project = req.session.currentProject.id
   			Poche.create(p).done(function(err,c){
   				if(err) res.send(err);
           Notification.create({
@@ -76,11 +84,16 @@ module.exports = {
             content : req.session.user.name + " added a knowledge tag",
             to : c.id,
             date : getDate(),
-            read : false
+            read : [],
+          project_id : req.session.currentProject.id,
+          from : req.session.user
           }).done(function(err,n){
             if(err) console.log(err)
-          })
-  				res.send(c);
+//req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+req.socket.in(req.session.currentProject.id).emit('notification:create', n);
+              res.send(c);
+            })
+          
   			})
   		}
   	})

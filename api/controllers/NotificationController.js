@@ -14,9 +14,10 @@ module.exports = {
   */
 
   find : function (req,res){
-    Notification.find().done(function(err, notifications){
+    Notification.find({
+    }).done(function(err, notifications){
       if(err) res.send(err);
-      res.send(notifications);
+      res.send(notifications );
     });
   },
 

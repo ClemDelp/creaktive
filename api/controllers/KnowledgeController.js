@@ -19,7 +19,7 @@ module.exports = {
 
   find : function (req,res){
     Knowledge.find({
-      project : req.session.currentProject
+      project : req.session.currentProject.id
     }).done(function(err,knowledges){
       if(err) res.send(err)
       res.send(knowledges)
@@ -29,7 +29,7 @@ module.exports = {
 
   create : function (req,res){
     var k = req.body;
-    k.project = req.session.currentProject
+    k.project = req.session.currentProject.id
     Knowledge.create(k).done(function(err, knowledge){
       if(err) res.send(err);
        Notification.create({
@@ -38,11 +38,15 @@ module.exports = {
           content : req.session.user.name + " added a new knowledge",
           to : knowledge.id,
           date : getDate(),
-          read : false
+          read : [],
+          project_id : req.session.currentProject.id,
+          from : req.session.user
         }).done(function(err,n){
           if(err) console.log(err)
-        })
-      res.send(knowledge);
+req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+              res.send(c);
+            })
+          
     });
   },
 
@@ -58,28 +62,37 @@ module.exports = {
             content : req.session.user.name + " updated a knowledge",
             to : c.id,
             date : getDate(),
-            read : false
+            read : [],
+          project_id : req.session.currentProject.id,
+          from : req.session.user
           }).done(function(err,n){
             if(err) console.log(err)
-          })
-  				res.send(c);
+req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+              res.send(c);
+            })
+          
   			});
   		}else{
             var k = req.body;
-    k.project = req.session.currentProject
+    k.project = req.session.currentProject.id
   			Knowledge.create(k).done(function(err,k){
   				if(err) res.send(err);
           Notification.create({
             id : guid(),
             type : "createKnowledge",
-            content : req.session.user.name + " added a new knowledge",
+            content : "Project : " + req.session.currentProject.title  + " - New knowledge",
             to : k.id,
             date : getDate(),
-            read : false
+            read : [],
+          project_id : req.session.currentProject.id,
+          from : req.session.user
           }).done(function(err,n){
-            if(err) console.log(err)
-          })
-  				res.send(k);
+            if(err) console.log(err);
+//req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+req.socket.in(req.session.currentProject.id).emit('notification:create', n);
+              res.send(k);
+            })
+          
   			})
   		}
   	})

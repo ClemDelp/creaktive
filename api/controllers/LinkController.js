@@ -19,7 +19,7 @@ module.exports = {
 
   find : function (req,res){
     Link.find({
-      project : req.session.currentProject
+      project : req.session.currentProject.id
     }).done(function(err,links){
       if(err) res.send(err)
       res.send(links)
@@ -29,20 +29,24 @@ module.exports = {
 
   create : function (req,res){
     var l = req.body;
-    l.project = req.session.currentProject
+    l.project = req.session.currentProject.id
     Link.create(l).done(function(err, link){
       if(err) res.send(err);
         Notification.create({
           id : guid(),
           type : "createLink",
-          content : req.session.user.name + " linked a knowledge to a concept",
+          content : "Project : " + req.session.currentProject.title  + " - New Link",
           to : c.id,
           date : getDate(),
-          read : false
+          read : [],
+          project_id : req.session.currentProject.id,
+          from : req.session.user
         }).done(function(err,n){
           if(err) console.log(err)
-        })
-      res.send(link);
+req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+              res.send(c);
+            })
+          
     });
   },
 
@@ -61,15 +65,19 @@ module.exports = {
                 content : req.session.user.name + " midified a link",
                 to : c.id,
                 date : getDate(),
-                read : false
+                read : [],
+          project_id : req.session.currentProject.id,
+          from : req.session.user
               }).done(function(err,n){
                 if(err) console.log(err)
-              })
-  				res.send(c);
+req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+              res.send(c);
+            })
+          
   			});
   		}else{
             var l = req.body;
-    l.project = req.session.currentProject
+    l.project = req.session.currentProject.id
   			Link.create(l).done(function(err,c){
   				if(err) res.send(err)
             Notification.create({
@@ -78,11 +86,16 @@ module.exports = {
               content : req.session.user.name + " linked a knowledge to a concept",
               to : c.id,
               date : getDate(),
-              read : false
+              read : [],
+          project_id : req.session.currentProject.id,
+          from : req.session.user
             }).done(function(err,n){
               if(err) console.log(err)
+//req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+req.socket.in(req.session.currentProject.id).emit('notification:create', n);
+              res.send(c);
             })
-  				res.send(c);
+          
   			})
   		}
   	})

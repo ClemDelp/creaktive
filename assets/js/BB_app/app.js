@@ -15,6 +15,7 @@ var global = {
     console.log("global object loading...");
 
     this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
+
     /*Collections*/
     this.collections.Knowledges = new this.Collections.Knowledges();
     this.collections.Poches = new this.Collections.Poches();
@@ -23,11 +24,13 @@ var global = {
     this.collections.Links = new this.Collections.CKLinks();
     this.collections.Notifications = new this.Collections.NotificationsCollection();
     /*Loads*/
-    this.models.current_user.fetch({
-      error: function(model, response, options){
-        console.log("connected as a guest");
-      }
-    });
+    // this.models.current_user.fetch({
+    //   reset : true,
+    //   error: function(model, response, options){
+    //     console.log("connected as a guest");
+    //   }
+    // });
+
     this.collections.Knowledges.fetch({reset: true});
     this.collections.Poches.fetch({reset: true});
     this.collections.Projects.fetch({reset:true});
@@ -54,7 +57,8 @@ var topBar = {
     console.log('TopBar Constructor');
 
     this.views.Main = new this.Views.Main({
-      notifications : global.collections.Notifications
+      notifications : global.collections.Notifications,
+      current_user : global.models.current_user
     });
   }
 };
@@ -181,31 +185,6 @@ var interface1 = {
 
     
   }
-};
-
-/////////////////////////////////////////////////////////////////////////////////////////////
-// Realtime connection
-/////////////////////////////////////////////////////////////////////////////////////////////
-
-function rt (io, callback) {
-  // as soon as this file is loaded, connect automatically, 
-  var socket = io.connect();
-  socket.on('connect', function socketConnected() {
-    // Listen for Comet messages from Sails
-    socket.on('message', function messageReceived(message) {     
-      console.log('New comet message received :: ', message);
-    });
-    console.log(
-        'Socket is now connected and globally accessible as `socket`.\n' + 
-        'e.g. to send a GET request to Sails, try \n' + 
-        '`socket.get("/", function (response) ' +
-        '{ console.log(response); })`'
-    );
-    callback();
-  });
-
-  window.socket = socket;
-
 };
 
 
