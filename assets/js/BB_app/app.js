@@ -133,26 +133,6 @@ var interface3 = {
   }
 };
 /////////////////////////////////////////////////
-var interface2 = {
-  // Classes
-  Collections: {},
-  Models: {},
-  Views: {},
-  // Instances
-  collections: {},
-  models: {},
-  views: {},
-
-  init: function () {
-    /*Init*/
-    console.log('interface2 Constructor');
-    /*views*/
-    
-    /*Renders*/
-   
-  }
-};
-/////////////////////////////////////////////////
 var interface1 = {
   // Classes
   Collections: {},

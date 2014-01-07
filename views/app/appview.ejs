@@ -28,6 +28,12 @@
 
 
 <!-- ******************************** -->
+<!-- VISU dependances -->
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript" src="js/d3.v3/d3.v3.js" charset="utf-8"></script>
+<script type="text/javascript" src="js/vendor/keshif.js" charset="utf-8"></script>
+<link rel="stylesheet" href="styles/keshif.css"/ type="text/css">
+<!-- ******************************** -->
 <!-- CKEditor -->
 <script src="/js/ckeditor/ckeditor.js"></script>
 <!-- ******************************** -->
@@ -47,14 +53,15 @@
     <dd id="panel-concept" class="active"><a href="#panel2-1">Concept</a></dd>
     <dd id="panel-visualization"><a href="#panel2-2">Visualization</a></dd>
     <dd id="panel-knowledge"><a href="#panel2-3">Knowledge</a></dd>
+
   </dl>
   <div class="tabs-content">
-      <div class="content active" id="panel2-1">
+      <div class="content" id="panel2-1">
           <div id="interface1-container"></div>
           <div class="large-6 columns" id="container"></div>  
       </div>
-      <div class="content" id="panel2-2">
-          <p>Second panel content goes here...</p>
+      <div class="content active" id="panel2-2">
+          <%- partial('./templates/visualisation_template') %>
       </div>
       <div class="content" id="panel2-3">
           <div id="interface3-container"></div>
@@ -67,10 +74,6 @@
 <%- partial('./templates/explorer_template') %>
 
   
-
-
-coucou
-
 
 <!-- Javascript libs -->
 <script type="text/javascript" src="js/vendor/socket.io.js"></script>
@@ -89,6 +92,7 @@ coucou
 
 <script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/cklink.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/visualisation.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/explorer.js"></script>
 <script type="text/javascript" src="js/BB_app/interfaces/interface1.js"></script>
 <script type="text/javascript" src="js/BB_app/interfaces/interface2.js"></script>
