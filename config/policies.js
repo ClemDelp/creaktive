@@ -17,16 +17,14 @@
   // Default policy for all controllers and actions
   // (`true` allows public access) 
   
-  //'*': "authenticated",
- // 'AuthController': {
-  //	'login' : true,
- // 	'logout' : true,
- // 	'process' : true
-//  },
+  '*': "authenticated",
+ 'AuthController': {
+  	'login' : true,
+ 	'logout' : true,
+ 	'process' : true,
+ 	"openChannels" : "allowedProject"
+ },
 
-	"AuthController" : {
-		"openChannels" : "allowedProject"
-	}
 
   /*
 	// Here's an example of adding some policies to a controller
