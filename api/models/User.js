@@ -6,7 +6,7 @@
  *
  */
 
- var bcrypt = require('bcrypt');
+ // var bcrypt = require('bcrypt');
 
 module.exports = {
   autoPK : false,

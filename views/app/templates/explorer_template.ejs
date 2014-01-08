@@ -1,11 +1,12 @@
+
+
 <script type="text/template" id="poches-template">
 	<a id="notClassified" class="button small selectable expand" data-filter-title="notClassified">Not classified</a>
 	<hr />
 	{{ _.each(poches, function(poche) { }}
-		<a id="{{= poche.id }}" class="button small selectable expand" data-filter-title="{{= poche.title }}" title="{{= poche.description }}">
+		<a id="{{= poche.id }}" class="button small selectable secondary expand" data-filter-title="{{= poche.title }}" title="{{= poche.description }}">
 			{{= poche.title }}
 			<input style="float:right" data-id-poche="{{= poche.id }}" type="submit" value="x" class="removePoche" />
-			<input style="float:left" id="background-color" data-id-poche="{{= poche.id }}" class="color" type="color" value="{{= poche.color }}" />
 		</a>
 	{{ }); }}
 	<hr />
@@ -22,52 +23,20 @@
 </script>
 
 
-<script type="text/template" id="comment-template">
-	<div id="{{= comment.id }}_comment">
-		<div class="row comment">
-		  	<div class="small-2 large-2 columns"><p><strong>{{= comment.user.name }}:</strong></p></div>
-		  	<div class="small-8 large-8 columns"><p><font style="font-size:X-small;">({{= comment.date }})</font> - {{= comment.content }}</p></div>
-			<div class="small-2 large-2 columns">
-		  		<a style="float:right" class="remove button alert tiny" data-id-comment="{{= comment.id }}" >remove</a>
-			</div>
-		</div>
-		<hr>
-	</div>
-</script>
-
-<script type="text/template" id="comments-template">
-	<form class="hide {{= post.id }}_hidden" id="{{= post.id }}_form_comment" action="/" method="post">
-		<div id="{{= post.id }}_comment">
-		    {{ _.each(views, function(view) { }}  
-		        {{= view }}
-		    {{ }); }}
-		    <div class="row" id="input_comment_{{= post.id }}">
-		        <div class="small-2 large-1 columns">
-		          	<img class="nailthumb-container" src="{{= c_user.img }}">
-		        </div>
-		        <div class="small-10 large-11 columns">
-		            <div class="row collapse">
-		            	<div class="small-10 columns">
-		              		<input id="{{= post.id }}_input_comment" type="text" placeholder="your comment">
-		            	</div>
-		            	<div class="small-2 columns">
-		              		<input type="submit" class="button prefix" value="publish!">
-		            	</div>
-		          	</div>
-		        </div>
-		    </div>
-		</div>
-	</form>
-</script>
 
 
-
-<script type="text/template" id="post-header-template">
-	<time class="cbp_tmtime" datetime="{{= post.date }}">
-		<span>{{= post.date }}</span>
-		<span>{{= post.user.name }}</span>
-	</time>
-	<div class="cbp_tmicon"><input id="selector_{{= post.id }}" class="selectable" data-id-knowledge="{{= post.id }}" type="checkbox"></div>
+<script type="text/template" id="post-template">
+	<ul class="pricing-table">
+	  <li class="title"><input type="checkbox" class="selectable" id="selector_{{= post.id }}" data-id-knowledge="{{= post.id }}"></li>
+	  <li class="price">{{= post.title}}</li>
+	  <li class="description">{{= post.user.name }} - {{= post.date }}</li>
+	  <li class="bullet-item">
+		{{ _.each(post.tags, function(tag) { }}
+	        <a onclick="searchByTag('{{= tag }}')" class="tiny success button">{{= tag }}</a>
+	    {{ }); }}
+	  </li>
+	  <li class="cta-button"><a class="button details" href="#">Details</a></li>
+	</ul>
 </script>
 
 
@@ -91,25 +60,14 @@
 
 
 <script type="text/template" id="publish-module-template">
-	<li class="panel">
-		<time class="cbp_tmtime" datetime="getDate()"><span>Now</span><span>{{= user.name }}</span></time>
-		<div class="cbp_tmicon">+</div>
-		<div class="cbp_tmlabel">
-			<div style="float:right">
-				<a href="#" onclick="expand('#addText_row')" class="tiny secondary button">Open</a>
-				<a href="#" onclick="collapse('#addText_row')" class="button tiny secondary">Close</a>
-			</div>
-			<h3>Add knowledge to 
-				{{ _.each(filters, function(filter) { }}
-		        	<a class="tiny success button">{{= filter }}</a>
-		    	{{ }); }}
-			</h3>
-			<div id="addText_row" style="display:none">
-				<input id="new_k_title" type="text" placeholder="title"/>
-				<textarea id="new_k_content" name="editor1" rows="10" cols="80"></textarea>
-			    <a href="#" class="button small validate expand addPost">Add!</a>
-			</div>
-		</div>
-	</li>
+	<div class="panel">
+		Add knowledge to 
+		{{ _.each(filters, function(filter) { }}
+        	<a class="tiny success button">{{= filter }}</a>
+    	{{ }); }}
+    	<input id="new_k_title" type="text" placeholder="title"/>
+		
+	    <a href="#" class="button small validate addPost">Add!</a>
+	</div>
 </script>
 

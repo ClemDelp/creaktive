@@ -4,10 +4,15 @@
       <li class="name">
         <h1><a href="/">CreaKtive</a></h1>
       </li>
+     
       <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
       <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
     </ul>
   	<section class="top-bar-section">
+	    <ul class="left" data-tab>
+			   
+    
+		</ul>
 	    <ul class="right ">
 	     	<li data-reveal-id="logModal"><a href="#">Activity Log</a></li>
 		    <li class="has-dropdown not-click">
@@ -30,18 +35,18 @@
 
 
 <script type="text/template" id="notification-template">
-		<a href="#" data-dropdown="drop{{= notification.id}}">{{= notification.content }}</a>
-		<div id="drop{{= notification.id}}" data-dropdown-content class="f-dropdown content">
-			<div class="row">
-				<img class="large-2 small-2 columns" src="{{= notification.from.img }}">
-				<strong class="large-10 small-10 columns">{{= notification.from.name}}</strong>
-			</div>
-			<blockquote>
-			{{= notification.content }}
-			</blockquote>
-			<a data-id-notification="{{= notification.id}}" class="button tiny clickNotification">Open</a>
-			<a data-id-notification="{{= notification.id}}" class="button tiny alert removeNotification">Hide</a>
+	<a href="#" data-dropdown="drop{{= notification.id}}">{{= notification.content }}</a>
+	<div id="drop{{= notification.id}}" data-dropdown-content class="f-dropdown content">
+		<div class="row">
+			<img class="large-2 small-2 columns" src="{{= notification.from.img }}">
+			<strong class="large-10 small-10 columns">{{= notification.from.name}}</strong>
 		</div>
+		<blockquote>
+		{{= notification.content }}
+		</blockquote>
+		<a data-id-notification="{{= notification.id}}" class="button tiny clickNotification">Open</a>
+		<a data-id-notification="{{= notification.id}}" class="button tiny alert removeNotification">Hide</a>
+	</div>
 </script>
 
 
