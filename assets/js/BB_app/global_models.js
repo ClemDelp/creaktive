@@ -145,8 +145,8 @@ global.Models.PermissionModel = Backbone.Model.extend({
         id : "",
         right : "",
         date:getDate(),
-        id_user : "",
-        id_project : ""
+        user_id : "",
+        project_id : ""
     },
     initialize : function Doc() {
         //console.log('User Constructor');

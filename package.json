@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "description": "CreaKtive",
   "dependencies": {
-    "sails": "0.9.4",
+    "sails": "0.9.8",
     "grunt": "0.4.1",
     "sails-disk": "~0.9.0",
     "ejs": "0.8.4",
@@ -12,7 +12,8 @@
     "sails-mongo": "0.9.5",
     "passport": "*",
     "passport-local": "*",
-    "bcrypt" : "*"
+    "bcrypt": "*"
+
   },
   "scripts": {
     "start": "node app.js",

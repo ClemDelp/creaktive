@@ -1,5 +1,5 @@
 {
-	"framework" : "mocha",
+	"framework" : "mocha+chai",
 	"src_files": [
 
 		"assets/js/vendor/jquery-1.9.1.js",
@@ -9,12 +9,15 @@
 		"assets/js/vendor/socket.io.js",
 		"assets/js/sails.io.js",
 
-		"assets/js/BB_app/*.js",
-		"assets/js/BB_app/modules/*.js",
+
+
+
+
+		"asstets/test/*.js",
+		"test/*.js"
 
 		
-		"assets/js/test/*.js",
-		"test/*.js"
+
 	
 	]
 }

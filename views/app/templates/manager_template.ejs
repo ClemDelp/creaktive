@@ -1,39 +1,18 @@
- <div class="row">
-    <div class="large-12 columns">
-     <h1>Manager</h1>
-     <hr />
-   </div>
-</div>
 
-<div class="row">
+ <script type="text/template" id="manager-template">
+	 	<div class="large-12 columns">
+	 		<h1>Manager</h1>
+	 		<hr />
+	 	</div>
 
-	<dl class="tabs vertical" data-tab>
-		<dd class="active"><a href="#panel-1">Projects</a></dd>
-		<dd><a href="#panel-2">Groups</a></dd>
-		<dd><a href="#panel-3">Users</a></dd>
-	</dl>
+	 	<dl class="tabs vertical" data-tab>
+	 		<dd><a href="#panel-1">Projects</a></dd>
+	 		<dd><a href="#panel-2">Groups</a></dd>
+	 		<dd><a class="active" href="#panel-3">Users</a></dd>
+	 	</dl>
 
-	<div class="tabs-content vertical">
-	  <div class="content active" id="panel-1">
-	    	<div id='projects-container'></div>
-	  </div>
-	  <div class="content" id="panel-2">
-	    	<div id='groups-container'></div>
-	  </div>
-	  <div class="content" id="panel-3">
-	     	<div id='users-container'></div>
-	  </div>
-	</div>
- </div>
+</script>
 
-<div id="uploadModal" class="reveal-modal">
-  <h2>Upload</h2>
-  <label>Project id</label>
-  <input type="text" id="id_project_upload_input" value="">
-  <input id="fileupload" type="file" name="files[]" data-url="upload/uploadFile" multiple>
-  <span id="importation_info"></span>
-  <a class="close-reveal-modal">&#215;</a>
-</div>
 
 <!--
 /////////////////////////////////////////////////////////////////////
@@ -41,54 +20,49 @@
 /////////////////////////////////////////////////////////////////////
 -->
 <script type="text/template" id="user-template">
-	<tr>
-		<td>{{= user.name}}</td>
-		<td>{{= user.email }}</td>
-		<td>-</td>
-		<td style="background:{{= user.color }}">
-			{{= user.color }}
-		</td>
-		<td>
-			<a data-id-user="{{= user.id }}" class="edit button tiny">edit</a>
-			<a data-id-user="{{= user.id }}" class="remove button tiny alert">remove</a>
-		</td>
-	</tr>
+	<td class="large-1"><img src="{{= user.img}}"></td>
+	<td>{{= user.name}}</td>
+	<td>{{= user.email}}</td>
+	<td bgcolor="{{= user.color}}"></td>
+	<td><a href="#" class="remove"><img data-id-user="{{= user.id}}" src="img/delete.png"></a></td>
+</script>
+
+<script type="text/template" id="usersTable-template">
+	<tr><th></th><th>Username</th><th>Email</th><th>Color</th></tr>
 </script>
 
 <script type="text/template" id="users-template">
-    <h3>Users manager</h3>
-    <hr />
-    <table style="width:100%;text-align:center">
-    	<tr><th>Name</th><th>Email</th><th>Password</th><th>Color</th><th>Actions</th></tr>
-	    {{ _.each(users, function(user) { }}
-	    	{{= user }}	
-	    {{ }); }}
-	    <tr>
-	    	<td>
-	    		<input id="users_view_name" type="text" placeholder="name">
-		    	</td>
-		    <td>
-	        	<input id="users_view_email" type="text" placeholder="email">
-	      	</td>
-			<td>
-				<input id="users_view_pw" type="text" placeholder="password">
-			</td>
-			<td>
-				<div class="row collapse">
-					<div class="small-9 columns">
-						<input id="users_view_color" type="color">
-					</div>
-				</div>
-			</td>
-			<td>
-				<div class="row collapse">
-					<div class="small-9 columns">
-						<a type="submit" class="add button small alert expand">Add</a>
-					</div>
-				</div>
-			</td>
-	    </tr>
-    </table>
+	<h3>Users manager</h3>
+
+	<a href="#" class="button radius" data-dropdown="drop1">Add User</a>
+
+	<div id="drop1" data-dropdown-content class="f-dropdown content">
+		<form data-abide>
+			<div class="name-field large-12 columns">
+				<label>Your name <small>required</small></label>
+				<input type="text" id="users_view_name" required pattern="[a-zA-Z]+">
+				<small class="error">Name is required and must be a string.</small>
+			</div>
+			<div class="email-field large-12 columns">
+				<label>Email <small>required</small></label>
+				<input type="email" id="users_view_email" required>
+				<small class="error">An email address is required.</small>
+			</div>
+			<div class="name-field large-12 columns">
+				<label>Password <small>required</small></label>
+				<input type="text" id="#users_view_pw" required pattern="[a-zA-Z]+">
+				<small class="error">Password is required and must be a string.</small>
+			</div>
+			<div class="large-12 columns">
+				<label>Color <small>required</small></label>
+				<input type="color" id="users_view_color" required>
+				<small class="error">Color is required</small>
+			</div> 
+		</form>
+		<hr>
+		<a class="button addUser" href="#">Submit</a>
+
+	</div>
 </script>
 
 
@@ -97,60 +71,53 @@
 /*groups templates*/
 /////////////////////////////////////////////////////////////////////
 -->
-<script type="text/template" id="group-template">
-		<div class="row panel">
-			<h5><b>GROUP : </b>{{= group.title }}</h5>
-			<table >
-				<tr><th>Name</th><th>Email</th><th>Actions</th></tr>	
-				{{ _.each(group.users, function(user) { }}
-		    		<tr>
-			    		<td>{{= user.name}}</td> 
-			    		<td>{{= user.email }}</td>
-			    		<td><a data-id-user="{{= user.id }}" class="removeUser alert button tiny">Remove</a> </td>
-		    		</tr>	
-		    	{{ }); }}
-			</table>
-			<form class="custom row">
+<script type="text/template" id="userGroup-template">
+	<td class="large-1"><img src="{{= user.img}}"></td>
+	<td>{{= user.name}}</td>
+	<td>{{= user.email}}</td>
+	<td><a href="#" class="removeFromGroup"><img data-user-id="{{= user.id}}" data-group-id="{{= group.id}}" src="img/delete.png"></a></td>
 
-			      <div class="row collapse">
-			      	<label>Users</label>
-			        <div class="small-10 columns">
-			            <select id="{{= group.id }}_user_selected" class="medium expand">
-					    	{{ _.each(users, function(user) { }}
-					        	<option value="{{= user.id }}">{{= user.name }}</option>
-					        {{ }); }}
-					    </select>
-			        </div>
-			        <div class="small-2 columns">
-			          <a data-id-group="{{= group.id }}" class="add button prefix">Link</a>
-			        </div>
-			      </div>
-
-		    </form>
-		    <hr>
-			<a class="remove button tiny alert" data-id-group="{{= group.id }}">remove</a>
-    </div>
 </script>
 
+<script type="text/template" id="userGroupTable-template">
+	<tr><th></th><th>Name</th><th>Email</th><th></th></tr>
+</script>
 
+<script type="text/template" id="group-template">
+	<h3>{{= group.title }}</h3>
+	<a href="#" class="button radius" data-dropdown="drop{{= group.id }}">Add User</a>
+
+	<div id="drop{{= group.id }}" data-dropdown-content class="f-dropdown content">
+		<ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+
+		{{ _.each(users, function(user) { }}
+			<li >
+				<img src="{{= user.img}}" data-user-id="{{= user.id}}" data-group-id="{{= group.id}}" class="addToGroup">
+				{{= user.name}}
+			</li>
+		{{ }) }}
+		</ul>
+	</div>
+	<a href='#' data-group-id='{{= group.id}}' class='button tiny alert removeGroup'>Remove Group</a>
+</script>
 
 <script type="text/template" id="groups-template">
-    <h3>Groups manager</h3>
-    <hr>
-    {{ _.each(groups, function(group) { }}
-		{{= group }}
-    {{ }); }}
-    <h5>New group</h5>
+	<h3>Groups manager</h3>
+	<a href="#" class="button radius" data-dropdown="drop2">Add Group</a>
 
-	      <div class="row collapse">
-	        <div class="small-10 columns">
-	          <input id="groups_view_title" type="text" placeholder="group name">
-	        </div>
-	        <div class="small-2 columns">
-	          <a class="new button prefix">Add</a>
-	        </div>
-	      </div>
+	<div id="drop2" data-dropdown-content class="f-dropdown content">
+		<form data-abide>
+			<div class="name-field large-12 columns">
+				<label>Title <small>required</small></label>
+				<input type="text" id="groups_view_title" required pattern="[a-zA-Z]+">
+				<small class="error">Title is required and must be a string.</small>
+			</div>
+		</form>
+		<hr>
+		<a class="button addGroup" href="#">Submit</a>
 
+
+	</div>
 </script>
 
 
@@ -159,79 +126,67 @@
 /*Project templates*/
 /////////////////////////////////////////////////////////////////////
 -->
-<script type="text/template" id="permission-template">
-	<tr>
-		<td>{{= permission.user.name }}</td>
-		<td>{{= permission.group.title }}</td>
-		<td>{{= permission.right }}</td>
-		<td><a data-id-permission="{{= permission.id }}" class="removePermission alert button tiny">Remove</a></td>
-	</tr>
 
+<script type="text/template" id="permission-template">
+	<td class="large-1"><img src="{{= permission.user.img}}"></td>
+	<td>{{= permission.user.name}}</td>
+	<td>{{= permission.right}}</td>
+	<td><a href="#" class="removePermission"><img data-user-id="{{= permission.user.id}}" data-project-id="{{= project.id}}" src="img/delete.png"></a></td>
 </script>
+
+
+
+<script type="text/template" id="permissionTable-template">
+	<tr><th></th<th>Group</th><th>Name</th><th>Right</th><th></th></tr>
+</script>
+
+
 
 <script type="text/template" id="project-template">
-	<div class="row panel">
-		<h5><b>PROJECT : </b>{{= project.title }}</h5>
-		<br>
-		<a class="button open" data-id-project="{{= project.id }}">Open</a>
+	<div class=row>
+	<h3>{{= project.title }}</h3>
+	<blockquote>{{= project.description }} </blockquote>
+	<a href="#" class="button radius" data-dropdown="drop{{= project.id }}">Add Permission</a>
+	
+	<div id="drop{{= project.id }}" data-dropdown-content class="f-dropdown content">
 		<div class="row">
-			<label>Permissions</label>
-			<table style="width:100%;align:center">
-				<tr>
-					<th>User</th><th>Group</th><th>Right</th><th>Actions</th>
-				</tr>
-				{{ _.each(permissions, function(permission){ }}
-					{{= permission }}
-				{{ });}}
-			</table>
+		{{ _.each(groups, function(group) { }}
+			<div class="panel addPermission" data-group-id="{{= group.id}}" data-project-id="{{= project.id}}">{{= group.title}}</div>
+		{{ }) }}	
 		</div>
 
-		<form class="custom row">
-	      	<fieldset>
-	    		<legend>Add permission</legend>
-		        <div class="large-5 columns">
-		            <select id="{{= project.id }}_group_selected" class="medium expand">
-				    	{{ _.each(groups, function(group) { }}
-				        	<option value="{{= group.id }}">{{= group.title }}</option>
-				        {{ }); }}
-				    </select>
-		        </div>
-	        <div class="large-5 columns">
-
-	            <select id="{{= project.id }}_right_selected" class="medium expand">
-			    	<option value="rw">Read & Write</option>
-			    	<option value="r">Read</option>
-			    </select>
-	        </div>
-	        <div class="large-2 columns">
-
-	          <a data-id-project="{{= project.id }}" class="add button prefix">Add permisison</a>
-	        </div>
-	        </fieldset>
-	    </form>
-
-		<hr>
-		<a class="button tiny alert remove" data-id-project="{{= project.id }}">Remove project</a>
-		
-
+		<div class="large-12 columns">
+	      <label>Select right :</label>
+	      <select id="permission_right">
+	        <option value="Read and Write">Read and Write</option>
+	        <option value="Read only">Read only</option>
+	      </select>
+	    </div>
 	</div>
 
-
+	<a href='#' data-project-id='{{= project.id}}' class='button tiny alert removeProject'>Remove Project</a>
+	</div>
 </script>
+
 
 
 <script type="text/template" id="projects-template">
-	<h3>Projects manager</h3>
-    <h5>New project</h5>
-	<form method="post" class="row">
-	      <div class="row collapse">
-	        <div class="small-10 columns">
-	          <input id="projects_view_title" type="text" placeholder="project name">
-	        </div>
-	        <div class="small-2 columns">
-	          <a class="new button prefix">Add</a>
-	        </div>
-	      </div>
-	</form>
-	<hr />
+	<h3>Project manager</h3>
+	<a href="#" class="button radius" data-dropdown="drop3">Add Project</a>
+
+	<div id="drop3" data-dropdown-content class="f-dropdown content">
+		<form data-abide>
+			<div class="name-field large-12 columns">
+				<label>Title <small>required</small></label>
+				<input type="text" id="project_title" required pattern="[a-zA-Z]+">
+				<small class="error">Title is required and must be a string.</small>
+			</div>
+		    <div class="large-12 columns">
+		      <label>Description</label>
+		      <textarea id="project_description"></textarea>
+		    </div>
+		</form>
+		<hr>
+		<a class="button addProject" href="#">Submit</a>
+	</div>
 </script>

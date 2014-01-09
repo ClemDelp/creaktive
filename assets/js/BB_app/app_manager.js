@@ -16,22 +16,14 @@ var global = {
     /*Collections*/
     this.collections.Users = new this.Collections.UsersCollection();
     this.collections.Groups = new this.Collections.GroupsCollection();
-    this.collections.UserGroup = new this.Collections.UserGroup();
     this.collections.Permissions = new this.Collections.PermissionsCollection();
     this.collections.Projects = new this.Collections.ProjectsCollection();
     
-    /*Fetch*/
-    this.models.CurrentUser.fetch({
-      error: function(model, response, options){
-        console.log("connected as a guest");
-        model.set({id:"999999999", name : "guest", img:"img/default-user-icon-profile.png"});
-      }
-    });
+
     this.collections.Projects.fetch({reset: true});
     this.collections.Permissions.fetch({reset: true});
     this.collections.Users.fetch({reset: true});
     this.collections.Groups.fetch({reset: true});
-    this.collections.UserGroup.fetch({reset: true});
 
   }
 }
@@ -51,30 +43,12 @@ var manager = {
   views: {},
   init: function () {
     /*Init*/
-    console.log("manager loading...");
-   
-    /*views*/
-    this.views.Users_view = new this.Views.Users_view({
-      collection:global.collections.Users
-    });
-    this.views.Groups_view = new this.Views.Groups_view({
-      collection:global.collections.Groups,
-      users:global.collections.Users,
-      userGroups : global.collections.UserGroup
-    });
-    this.views.Projects_view = new this.Views.Projects_view({
-      collection:global.collections.Projects,
+    this.views.Main = new this.Views.Main({
       users : global.collections.Users,
-      groups:global.collections.Groups,
-      permissions:global.collections.Permissions
-    });
-    /*Loads*/
-    this.views.Projects_view.render();
-    this.views.Users_view.render();
-    this.views.Groups_view.render();
-
-    /*router initialisation*/
-    this.Router_manager = new manager.Router_manager(); 
+      groups : global.collections.Groups,
+      projects : global.collections.Projects
+    }); 
+   
   }
 };
 
