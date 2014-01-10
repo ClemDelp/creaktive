@@ -26,9 +26,11 @@ autoPK : false,
     Concept.create({
   		id : guid(),
   		title : "c0",
+      content :"",
   		date : getDate(),
   		position : 0,
-  		project : values.id
+  		project : values.id,
+      comments : []
   	}).done(function(err, c0){
   		if(err) console.log(err);
   		cb();

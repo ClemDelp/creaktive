@@ -3,7 +3,7 @@
 
 
 
-<script type="text/template" id="comment-template">
+<script type="text/template" id="conceptModal-comment-template">
 	<div id="{{= comment.id }}_comment">
 		
 		<div class="row comment">
@@ -18,23 +18,23 @@
 </script>
 
 
-<script type="text/template" id="comments-template">
+<script type="text/template" id="conceptModal-comments-template">
 	<fieldset>
 		<legend>Activities</legend>
 		<hr>
-		<form class="{{= knowledge.id }}_hidden" id="{{= knowledge.id }}_form_comment" action="/" method="knowledge">
+		<form class="{{= concept.id }}_hidden" id="{{= concept.id }}_form_comment" action="/" method="concept">
 			{{ _.each(views, function(view) { }}  
 		        {{= view }}
 		    {{ }); }}
-		    <div id="{{= knowledge.id }}_comment">
-			    <div class="row" id="input_comment_{{= knowledge.id }}">
+		    <div id="{{= concept.id }}_comment">
+			    <div class="row" id="input_comment_{{= concept.id }}">
 			        <div class="small-2 large-1 columns">
 			          	<img class="nailthumb-container" src="{{= c_user.img }}">
 			        </div>
 			        <div class="small-10 large-11 columns">
 			            <div class="row collapse">
 			            	<div class="small-10 columns">
-			              		<input id="{{= knowledge.id }}_input_comment" type="text" placeholder="your comment">
+			              		<input id="{{= concept.id }}_input_comment" type="text" placeholder="your comment">
 			            	</div>
 			            	<div class="small-2 columns">
 			              		<input type="submit" class="button prefix" value="publish!">
@@ -48,7 +48,7 @@
 </script>
 
 
-<script type="text/template" id="label-members-actions-template">
+<script type="text/template" id="conceptModal-label-members-actions-template">
 	<fieldset>
 	    <legend>labels</legend>
 		<input id="background-color" class="color expand" type="color" />
@@ -63,11 +63,12 @@
 </script>
 
 
-<script type="text/template" id="title-ckeditor-template">
+<script type="text/template" id="conceptModal-title-ckeditor-template">
+
 	<fieldset>
 	    <legend>Informations</legend>
-		<input id="change_k_title" type="text" placeholder="title" value="{{= knowledge.title }}"/>
-	    <textarea id="change_k_content" name="editor1" rows="10" cols="80" placeholder="content">{{= knowledge.content }}</textarea>
+		<input id="change_c_title" type="text" placeholder="title" value="{{= concept.title }}"/>
+	    <textarea  class="ckeditor"  id="change_c_content" name="editor1" rows="10" cols="80">{{= concept.content }}</textarea>
 	    <a href="#" class="button small validate update_informations">Save</a>
     </fieldset>
 </script>

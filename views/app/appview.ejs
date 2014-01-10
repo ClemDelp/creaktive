@@ -102,6 +102,19 @@
 <script type="text/javascript" src="js/BB_app/modules/c_details.js"></script>
 
 <script>
+
+  $(document).on('opened', '[data-reveal]', function () {
+    var modal = $(this);
+    if(modal.attr('id')==="detailsModal"){
+      try{
+CKEDITOR.replace('change_c_content');
+      }catch(e){
+        
+      }
+      
+    };
+  });
+
   ///////////////////////////////////////////////////
   $(document).ready(function () {
     console.log( "CreaKtive DOM loaded!" );

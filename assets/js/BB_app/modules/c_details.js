@@ -12,7 +12,7 @@ c_details.Views.RightPart = Backbone.View.extend({
         this.concept = json.concept;
         this.user = json.user;
         // Template
-        this.template = _.template($('#label-members-actions-template').html()); 
+        this.template = _.template($('#conceptModal-label-members-actions-template').html()); 
     },
     render : function(){
         // Knowledge title content and tags
@@ -31,10 +31,10 @@ c_details.Views.Comment = Backbone.View.extend({
         // Variables
         this.comment = json.comment;
         // Template
-        this.template = _.template($('#comment-template').html());
+        this.template = _.template($('#conceptModal-comment-template').html());
     },
     render: function(){
-        var renderedContent = this.template({comment : this.comment.toJSON()});
+        var renderedContent = this.template({comment : this.comment});
         $(this.el).html(renderedContent);
         return this;
     }
@@ -45,11 +45,12 @@ c_details.Views.Comments = Backbone.View.extend({
         console.log("comments view constructor!");
         _.bindAll(this, 'render');
         // Variables
-        this.comments = json.comments;
         this.concept = json.concept;
+        this.concept.bind("change", this.render);
+        this.concept.bind("destroy", this.render);
         this.user = json.user;
         // Templates
-        this.template = _.template($('#comments-template').html());
+        this.template = _.template($('#conceptModal-comments-template').html());
     },
     events : {
         'submit form' : 'addComment',
@@ -58,18 +59,16 @@ c_details.Views.Comments = Backbone.View.extend({
     addComment: function(e){
         e.preventDefault(); 
         console.log('addComment !'); 
-        new_comment = new global.Models.Comment({
+        new_comment = {
             id:guid(),
             user : this.user,
             date : getDate(),
             content : $("#"+this.concept.get('id')+"_input_comment").val()
-        });
+        };
         /*On ajoute le commentaire au model*/
-        this.comments.add([new_comment]);
+        this.concept.get('comments').unshift(new_comment);
         this.concept.save();
-        /*On ajoute le commentaire à la vue*/
-        new_comment_view = new c_details.Views.Comment({comment:new_comment});
-        $("#"+this.concept.get('id')+"_comment").before(new_comment_view.render().el);
+
         /*On vide le formulaire*/
         $("#"+this.concept.get('id')+"_input_comment").val("");
     },
@@ -85,7 +84,7 @@ c_details.Views.Comments = Backbone.View.extend({
     render : function() {
         // Each comment
         list_comment_views = [];
-        this.comments.each(function(comment_){
+        _.each(this.concept.get('comments'), function(comment_){
             comment_view = new c_details.Views.Comment({comment: comment_});
             this.list_comment_views.unshift(comment_view.render().$el.html());
         });
@@ -104,32 +103,31 @@ c_details.Views.LeftPart = Backbone.View.extend({
     tagName: "div",
     className: "small-8 large-8 columns",
     initialize : function(json) {
-        console.log("Left part of details k view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.concept = json.concept;
         this.user = json.user;
         this.comments = json.comments;
         // Template
-        this.template = _.template($('#title-ckeditor-template').html()); 
+        this.template = _.template($('#conceptModal-title-ckeditor-template').html()); 
     },
     events : {
         "click .update_informations" : "update_informations",
     },
     update_informations : function(e){
         this.concept.set({
-            title:$("#change_k_title").val(),
-            content:CKEDITOR.instances.change_k_content.getData()
+            title:$("#change_c_title").val(),
+            content:CKEDITOR.instances.change_c_content.getData()
         });
         this.concept.save();
     },
     render : function(){
+        console.log("LEFT PART MODAL RENDER")
         // change k title and content template part
         var renderedContent = this.template({concept:this.concept.toJSON()});
         $(this.el).html(renderedContent);
         // Knowledge comments
         comments_view = new c_details.Views.Comments({
-            comments: this.concept.get('comments'), 
             concept:this.concept,
             user:this.user
         });
@@ -142,7 +140,6 @@ c_details.Views.LeftPart = Backbone.View.extend({
 c_details.Views.Main = Backbone.View.extend({
     el:"#c_details_container",
     initialize : function(json) {
-        console.log("c_details view initialise");
         _.bindAll(this, 'render', 'nodeSelectionChanged');
         // Variables
         this.eventAggregator = json.eventAggregator
@@ -161,36 +158,35 @@ c_details.Views.Main = Backbone.View.extend({
     render : function(){
         console.log("CONCEPT MODAL RENDER")
         $(this.el).html("");
-        // // Left part
-        // leftPart_view = new c_details.Views.LeftPart({
-        //     comments: this.concept.get('comments'), 
-        //     concept:this.concept,
-        //     user:this.user
-        // });
-        // $(this.el).html(leftPart_view.render().el);
-        // // right part
-        // rightPart_view = new c_details.Views.RightPart({
-        //     concept:this.concept,
-        //     user:this.user
-        // });
-        // $(this.el).append(rightPart_view.render().el);
+        // Left part
+        leftPart_view = new c_details.Views.LeftPart({
+            comments: this.concept.get('comments'), 
+            concept:this.concept,
+            user:this.user
+        });
+        $(this.el).html(leftPart_view.render().el);
+        // right part
+        rightPart_view = new c_details.Views.RightPart({
+            concept:this.concept,
+            user:this.user
+        });
+        $(this.el).append(rightPart_view.render().el);
 
-        $(this.el).append("<h5>"+this.concept.get('title')+"</h5>")
         return this;
     }
 });
 
 
 
-/***************************************/
-jQuery(document).ready(function() {
-  checkContainer();
-});
+// /***************************************/
+// jQuery(document).ready(function() {
+//   checkContainer();
+// });
 
-function checkContainer () {
-  if($('#change_k_content').is(':visible')){ //if the container is visible on the page
-    CKEDITOR.replace('change_k_content');  //Adds a grid to the html
-  } else {
-    setTimeout(checkContainer, 50); //wait 50 ms, then try again
-  }
-}
+// function checkContainer () {
+//   if($('#change_c_content').is(':visible')){ //if the container is visible on the page
+//     CKEDITOR.replace('change_c_content');  //Adds a grid to the html
+//   } else {
+//     setTimeout(checkContainer, 50); //wait 50 ms, then try again
+//   }
+// }

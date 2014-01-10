@@ -203,13 +203,15 @@ global.Models.ConceptModel = Backbone.Model.extend({
         content : "",
         color : "",
         id_father : "",
-        position : null
+        position : null,
+        comments:[],
     },
     setText : function(value) {this.set({ text : value }); },
     initialize : function Comment() {
         this.urlRoot = "concept";
         //console.log('Concept Constructor');
-    }
+    },
+    
 });
 
 /***************************************/
