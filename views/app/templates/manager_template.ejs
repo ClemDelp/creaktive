@@ -144,7 +144,8 @@
 
 <script type="text/template" id="project-template">
 	<div class=row>
-	<h3>{{= project.title }}</h3>
+	<h3>{{= project.title }}</h3> 
+	<a href="/proj?projectId={{= project.id}}">Open</a>
 	<blockquote>{{= project.description }} </blockquote>
 	<a href="#" class="button radius" data-dropdown="drop{{= project.id }}">Add Permission</a>
 	

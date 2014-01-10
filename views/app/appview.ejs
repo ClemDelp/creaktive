@@ -49,20 +49,20 @@
 
 <div class="interface">
   <dl class="tabs" data-tab>
-    <dd id="panel-concept"><a href="#panel2-1">Concept</a></dd>
+    <dd id="panel-concept" class="active"><a href="#panel2-1">Concept</a></dd>
     <dd id="panel-visualization"><a href="#panel2-2">Visualization</a></dd>
-    <dd id="panel-knowledge" class="active"><a href="#panel2-3">Knowledge</a></dd>
+    <dd id="panel-knowledge" ><a href="#panel2-3">Knowledge</a></dd>
 
   </dl>
   <div class="tabs-content">
-      <div class="content" id="panel2-1">
+      <div class="content active" id="panel2-1">
           <div id="interface1-container"></div>
           <div class="large-6 columns" id="container"></div>  
       </div>
       <div class="content" id="panel2-2">
           <%- partial('./templates/visualisation_template') %>
       </div>
-      <div class="content active" id="panel2-3">
+      <div class="content" id="panel2-3">
           <div id="interface3-container"></div>
       </div>
   </div>
