@@ -78,6 +78,21 @@ var k_details = {
   }
 };
 /////////////////////////////////////////////////
+var c_details = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    console.log('C_details Constructor');
+  }
+};
+/////////////////////////////////////////////////
 var explorer = {
   // Classes
   Collections: {},

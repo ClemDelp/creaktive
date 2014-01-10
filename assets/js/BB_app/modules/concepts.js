@@ -50,12 +50,6 @@ concepts.Views.MapView = Backbone.View.extend({
         window.mapModel = mapModel;
     },
 
-    events : {
-        "click .known" : "evaluate",
-        "click .reachable" : "evaluate",
-        "click .alternative" : "evaluate",
-    },
-
     render: function(){
         var renderedContent ;
         renderedContent = this.template({concepts : this.concepts});
@@ -76,7 +70,8 @@ concepts.Views.MapView = Backbone.View.extend({
         this.populate(c0.id, this.concepts.where({id_father : c0.id}));
 
         this.mapModel.addEventListener('nodeSelectionChanged', function(e){
-            _this.eventAggregator.trigger("nodeSelectionChanged", e);
+            var concept_id = e;
+            _this.eventAggregator.trigger("nodeSelectionChanged", concept_id);
         });
 
         _this.idea.addEventListener('changed', function(command, args){
@@ -140,30 +135,6 @@ concepts.Views.MapView = Backbone.View.extend({
         
     },
 
-    evaluation : [
-        {
-            level : "known",
-            color : "#01DFD7",
-        },
-        {
-            level : "reachable",
-            color : "#08298A",
-        },
-        {
-            level : "alternative",
-            color : "#088A68",
-        },
-
-    ],
-
-    evaluate : function (e) {
-        /*
-        * Color the concept with the color of the evaluation
-        */
-        e.preventDefault();
-        var color = _.findWhere(this.evaluation, {level : e.target.getAttribute("level")}).color ;
-        this.mapModel.updateStyle("Evaluation", "background", color);
-    },
 
 
 });

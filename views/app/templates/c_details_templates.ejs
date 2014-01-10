@@ -1,0 +1,73 @@
+ <div id="c_details_container"></div>
+
+
+
+
+<script type="text/template" id="comment-template">
+	<div id="{{= comment.id }}_comment">
+		
+		<div class="row comment">
+		  	<div class="small-2 large-2 columns"><p><strong>{{= comment.user.name }}:</strong></p></div>
+		  	<div class="small-8 large-8 columns"><p><font style="font-size:X-small;">({{= comment.date }})</font> - {{= comment.content }}</p></div>
+			<div class="small-2 large-2 columns">
+		  		<a style="float:right" class="remove button alert tiny" data-id-comment="{{= comment.id }}" >remove</a>
+			</div>
+		</div>
+		<hr>
+	</div>
+</script>
+
+
+<script type="text/template" id="comments-template">
+	<fieldset>
+		<legend>Activities</legend>
+		<hr>
+		<form class="{{= knowledge.id }}_hidden" id="{{= knowledge.id }}_form_comment" action="/" method="knowledge">
+			{{ _.each(views, function(view) { }}  
+		        {{= view }}
+		    {{ }); }}
+		    <div id="{{= knowledge.id }}_comment">
+			    <div class="row" id="input_comment_{{= knowledge.id }}">
+			        <div class="small-2 large-1 columns">
+			          	<img class="nailthumb-container" src="{{= c_user.img }}">
+			        </div>
+			        <div class="small-10 large-11 columns">
+			            <div class="row collapse">
+			            	<div class="small-10 columns">
+			              		<input id="{{= knowledge.id }}_input_comment" type="text" placeholder="your comment">
+			            	</div>
+			            	<div class="small-2 columns">
+			              		<input type="submit" class="button prefix" value="publish!">
+			            	</div>
+			          	</div>
+			        </div>
+			    </div>
+			</div>
+		</form>
+	</fieldset>
+</script>
+
+
+<script type="text/template" id="label-members-actions-template">
+	<fieldset>
+	    <legend>labels</legend>
+		<input id="background-color" class="color expand" type="color" />
+	</fieldset>
+	<fieldset>
+	    <legend>Members</legend>
+	</fieldset>
+	<fieldset>
+	    <legend>Actions</legend>
+		<a href="#" class="button alert tiny expand archive">Archive</a>
+	</fieldset>
+</script>
+
+
+<script type="text/template" id="title-ckeditor-template">
+	<fieldset>
+	    <legend>Informations</legend>
+		<input id="change_k_title" type="text" placeholder="title" value="{{= knowledge.title }}"/>
+	    <textarea id="change_k_content" name="editor1" rows="10" cols="80" placeholder="content">{{= knowledge.content }}</textarea>
+	    <a href="#" class="button small validate update_informations">Save</a>
+    </fieldset>
+</script>

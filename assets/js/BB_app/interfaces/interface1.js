@@ -3,7 +3,6 @@ interface1.Views.Concept = Backbone.View.extend({
 	tagName:"div",
 	className:"small-8 large-8 columns",
 	initialize : function (json){
-        console.log("Interface 1 Concept view initialise");
         _.bindAll(this, 'render');
 
         /*Variables*/
@@ -26,11 +25,38 @@ interface1.Views.Concept = Backbone.View.extend({
 	}
 });
 /****************************************************************/
+interface1.Views.Details = Backbone.View.extend({
+    tagName:"div",
+    className:"reveal-modal",
+    id :"detailsModal",
+    initialize : function(json) {
+        _.bindAll(this, 'render');
+        $(this.el).attr( "data-reveal","")
+        
+        // Variables
+        this.eventAggregator = json.eventAggregator;
+        this.concepts = json.concepts;
+        this.user = json.user; 
+    },
+
+    render : function() {
+
+        details_ = new c_details.Views.Main({
+            eventAggregator : this.eventAggregator,
+            concepts : this.concepts,
+            user : this.user
+        });
+        $(this.el).append(details_.render().el);
+
+        return this;
+    }
+});
+/****************************************************************/
 interface1.Views.CKLink = Backbone.View.extend({
     tagName:"div",
-    className:"small-4 large-4 columns",
+    className:"reveal-modal",
+    id :"linkModal",
     initialize : function(json) {
-        console.log("Interface3 Explorer view initialise");
         // Variables
         this.eventAggregator = json.eventAggregator;
         this.poches = json.poches;
@@ -38,6 +64,8 @@ interface1.Views.CKLink = Backbone.View.extend({
         this.links = json.links;
         this.concepts = json.concepts;
         // Events
+
+         $(this.el).attr( "data-reveal","")
         _.bindAll(this, 'render');
         
     },
@@ -57,7 +85,6 @@ interface1.Views.CKLink = Backbone.View.extend({
 interface1.Views.Main = Backbone.View.extend({
     el : $('#interface1-container'),
     initialize : function(json) {
-        console.log("interface1 view initialise");
         _.bindAll(this, 'render');
 
         /*Variables*/
@@ -83,14 +110,21 @@ interface1.Views.Main = Backbone.View.extend({
         $(this.el).append(concept_.render().el);
         
         // Explorer
-        cklink_view   = new interface1.Views.CKLink({
+        cklink_   = new interface1.Views.CKLink({
         	knowledges:this.knowledges,
         	poches:this.poches,
             links:this.links,
         	eventAggregator : this.eventAggregator,
             concepts : this.concepts
     	});
-        $(this.el).append(cklink_view.render().el);
+        $(this.el).append(cklink_.render().el);
+
+        details_ = new interface1.Views.Details({
+            eventAggregator : this.eventAggregator,
+            concepts : this.concepts,
+            user : this.currentUser
+        });
+        $(this.el).append(details_.render().el);
         $(document).foundation();
     
         return this;
