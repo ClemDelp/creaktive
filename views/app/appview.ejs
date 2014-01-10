@@ -43,16 +43,15 @@
 <script type="text/javascript" src="js/vendor/jquery.tagsinput.js"></script>
 <!-- ******************************** -->
 
-
 <!-- Templates to load -->
 <div class="topbar-container"></div>
 <%- partial('./templates/topBar_template') %>
 
 <div class="interface">
   <dl class="tabs" data-tab>
-    <dd id="panel-concept" class="active"><a href="#panel2-1">Concept</a></dd>
+    <dd id="panel-concept"><a href="#panel2-1">Concept</a></dd>
     <dd id="panel-visualization"><a href="#panel2-2">Visualization</a></dd>
-    <dd id="panel-knowledge"><a href="#panel2-3">Knowledge</a></dd>
+    <dd id="panel-knowledge" class="active"><a href="#panel2-3">Knowledge</a></dd>
 
   </dl>
   <div class="tabs-content">
@@ -60,10 +59,10 @@
           <div id="interface1-container"></div>
           <div class="large-6 columns" id="container"></div>  
       </div>
-      <div class="content active" id="panel2-2">
+      <div class="content" id="panel2-2">
           <%- partial('./templates/visualisation_template') %>
       </div>
-      <div class="content" id="panel2-3">
+      <div class="content active" id="panel2-3">
           <div id="interface3-container"></div>
       </div>
   </div>
@@ -72,6 +71,7 @@
 <%- partial('./templates/concepts_template') %>
 <%- partial('./templates/cklink_template') %>
 <%- partial('./templates/explorer_template') %>
+<%- partial('./templates/k_details_templates') %>
 
   
 
@@ -94,8 +94,8 @@
 <script type="text/javascript" src="js/BB_app/modules/cklink.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/visualisation.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/explorer.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/k_details.js"></script>
 <script type="text/javascript" src="js/BB_app/interfaces/interface1.js"></script>
-<script type="text/javascript" src="js/BB_app/interfaces/interface2.js"></script>
 <script type="text/javascript" src="js/BB_app/interfaces/interface3.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/concepts.js"></script>
 
@@ -111,9 +111,11 @@
     rt(io, function(){
       global.init('<%- currentUser %>', function(){
         /*Modules*/
+        k_details.init();
         topBar.init();
         cklink.init();
         explorer.init();
+        
         // concepts.init();
         /*Interfaces*/
         interface1.init();
@@ -124,11 +126,8 @@
         Backbone.history.start();  
       });
     });
-       
-
 
   });
-
   /////////////////////////////////////////////////////////////////////////////////////////////
 // Realtime connection
 /////////////////////////////////////////////////////////////////////////////////////////////

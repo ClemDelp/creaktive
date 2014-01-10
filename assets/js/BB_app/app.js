@@ -63,6 +63,21 @@ var topBar = {
   }
 };
 /////////////////////////////////////////////////
+var k_details = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    console.log('K_details Constructor');
+  }
+};
+/////////////////////////////////////////////////
 var explorer = {
   // Classes
   Collections: {},

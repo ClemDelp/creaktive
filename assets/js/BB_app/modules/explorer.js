@@ -1,4 +1,7 @@
-/***********************************************/
+
+/////////////////////////////////////////////////
+// Explorer
+/////////////////////////////////////////////////
 explorer.Views.Poches = Backbone.View.extend({
     tagName: "div",
     className: "small-2 large-2 columns",
@@ -79,119 +82,10 @@ explorer.Views.Poches = Backbone.View.extend({
         return this;
     }
 });
-/////////////////////////////////////////////////////////////////////
-/* Timela views*/
-/////////////////////////////////////////////////////////////////////
-explorer.Views.Comment = Backbone.View.extend({
-    className : "comment",
-    initialize : function(json) {
-        console.log("comment view constructor");
-        _.bindAll(this, 'render');
-        // Variables
-        this.comment = json.comment;
-        // Template
-        this.template = _.template($('#comment-template').html());
-    },
-    render: function(){
-        var renderedContent = this.template({comment : this.comment.toJSON()});
-        $(this.el).html(renderedContent);
-        return this;
-    }
-});
-/***************************************/
-explorer.Views.Comments = Backbone.View.extend({
-    initialize : function(json) { 
-        console.log("comments view constructor!");
-        _.bindAll(this, 'render');
-        // Variables
-        this.comments = json.comments;
-        this.post = json.post;
-        this.user = json.user;
-        // Templates
-        this.template = _.template($('#comments-template').html());
-    },
-    events : {
-        'submit form' : 'addComment',
-        'click .remove' : 'removeComment'
-    },
-    addComment: function(e){
-        e.preventDefault(); 
-        console.log('addComment !'); 
-        new_comment = new global.Models.Comment({
-            id:guid(),
-            user : this.user,
-            date : getDate(),
-            content : $("#"+this.post.get('id')+"_input_comment").val()
-        });
-        /*On ajoute le commentaire au model*/
-        this.comments.add([new_comment]);
-        this.post.save();
-        /*On ajoute le commentaire à la vue*/
-        new_comment_view = new explorer.Views.Comment({comment:new_comment});
-        $("#"+this.post.get('id')+"_comment").before(new_comment_view.render().el);
-        /*On vide le formulaire*/
-        $("#"+this.post.get('id')+"_input_comment").val("");
-    },
-    removeComment : function(e){
-        console.log('remove this comment !');
-        e.preventDefault();
-        comment = this.comments.get(e.target.getAttribute("data-id-comment"));
-        console.log(comment)
-        this.post.get('comments').remove(comment)
-        this.post.save();
-        collapse("#"+comment.get('id')+"_comment");
-    },
-    render : function() {
-        // Each comment
-        list_comment_views = [];
-        this.comments.each(function(comment_){
-            comment_view = new explorer.Views.Comment({comment: comment_});
-            this.list_comment_views.unshift(comment_view.render().$el.html());
-        });
-        // All templates: comments + input comment
-        var renderedContent = this.template({
-            views : list_comment_views, 
-            post : this.post, 
-            c_user : this.user.toJSON()
-        });
-        $(this.el).html(renderedContent);
-        return this;
-    }
-});
-/////////////////////////////////////////////////////////////////////
-// Explorer views
-/////////////////////////////////////////////////////////////////////
-explorer.Views.PostDetails = Backbone.View.extend({
-    tagName: "div",
-    className: "cbp_tmlabel",
-    initialize : function(json) {
-        console.log("Knowledge view initialise");
-        _.bindAll(this, 'render');
-        // Variables
-        this.knowledge = json.knowledge;
-        this.user = json.user;
-        // Template
-        this.template = _.template($('#post-content-template').html()); 
-    },
-    render : function(){
-        // Knowledge title content and tags
-        var renderedContent = this.template({post:this.knowledge.toJSON()});
-        $(this.el).html(renderedContent);
-        // Knowledge comments
-        comments_view = new explorer.Views.Comments({
-            comments: this.knowledge.get('comments'), 
-            post:this.knowledge,
-            user:this.user
-        });
-        $(this.el).append(comments_view.render().el);
 
-        return this;
-    }
-});
 /***********************************************/
 explorer.Views.Post = Backbone.View.extend({
-    tagName : "li",
-    className: "panel",
+    className: "small-2 large-2 columns",
     initialize : function(json) {
         console.log("Knowedge view initialise");
         _.bindAll(this, 'render');
@@ -200,10 +94,19 @@ explorer.Views.Post = Backbone.View.extend({
         this.user = json.user;
         this.edit = "off";
         // Template
-        this.template = _.template($('#post-header-template').html());
+        this.template = _.template($('#post-template').html());
     },
     events : {
-        "click .selectable" : "changeClass"
+        "click .selectable" : "changeClass",
+        "click .details" : "open_modal_details_box"
+    },
+    open_modal_details_box :function(e){
+        k_details.views.modal = new k_details.Views.Main({
+            knowledge:this.knowledge,
+            user:this.user
+        });
+        k_details.views.modal.render();
+        $('#detailsKnoledgeModal').foundation('reveal', 'open');
     },
     changeClass : function(e){
         var Class = this.el.className.split(' ');
@@ -222,11 +125,11 @@ explorer.Views.Post = Backbone.View.extend({
         var renderedContent = this.template({post:this.knowledge.toJSON()});
         $(this.el).html(renderedContent);
         // Post content
-        postDetails_view = new explorer.Views.PostDetails({
-            knowledge:this.knowledge,
-            user:this.user
-        });
-        $(this.el).append(postDetails_view.render().el);
+        // postDetails_view = new explorer.Views.PostDetails({
+        //     knowledge:this.knowledge,
+        //     user:this.user
+        // });
+        // $(this.el).append(postDetails_view.render().el);
 
         return this;
     }
@@ -260,8 +163,8 @@ explorer.Views.Search = Backbone.View.extend({
 });
 /***************************************/
 explorer.Views.Posts = Backbone.View.extend({
-    tagName : "ul",
-    className : "cbp_tmtimeline small-10 large-10 columns",
+    
+    className : "small-10 large-10 columns",
     initialize : function(json) {
         console.log("Knowledges view initialise");
         _.bindAll(this, 'render');
@@ -335,7 +238,7 @@ explorer.Views.Posts = Backbone.View.extend({
             id:guid(),
             user: this.user,
             title : $('#new_k_title').val(),
-            content : CKEDITOR.instances.new_k_content.getData(),
+            //content : CKEDITOR.instances.new_k_content.getData(),
             tags: this.current_filters,
             comments:[],
             date: getDate(),
@@ -384,11 +287,11 @@ explorer.Views.Posts = Backbone.View.extend({
         $(this.el).html(renderedContent);
 
         // search Bar
-        search_view = new explorer.Views.Search({
-            current_selection:this.current_selection,
-            knowledges: this.knowledges
-        });
-        $(this.el).append(search_view.render().el);
+        // search_view = new explorer.Views.Search({
+        //     current_selection:this.current_selection,
+        //     knowledges: this.knowledges
+        // });
+        // $(this.el).append(search_view.render().el);
 
         // Each Post
         knowledges_el = this.el;
@@ -490,15 +393,3 @@ function unset_foireux(array,com){
     });
 }
 
-
-jQuery(document).ready(function() {
-  checkContainer();
-});
-
-function checkContainer () {
-  if($('#new_k_content').is(':visible')){ //if the container is visible on the page
-    CKEDITOR.replace('new_k_content');  //Adds a grid to the html
-  } else {
-    setTimeout(checkContainer, 50); //wait 50 ms, then try again
-  }
-}
