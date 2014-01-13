@@ -18,8 +18,8 @@ global.Models.Poche = Backbone.Model.extend({
         });
     }
 });
-/***************************************/
-global.Models.Knowledge = Backbone.Model.extend({
+
+global.Models.CKObject = Backbone.Model.extend({
     defaults : {
         id:"",
         user: "",
@@ -28,34 +28,39 @@ global.Models.Knowledge = Backbone.Model.extend({
         tags : [],
         comments:[],
         date : "",
-        date2: ""
+        date2: "",
+        attachment: "",
+        color: "",
+        members:[]
     },
+    parse : function(serverObj){
+        serverObj.comments = new global.Collections.Comments();
+        serverObj.members = new global.Collections.UsersCollection();
+        return serverObj;
+    },
+
+});
+
+
+/***************************************/
+global.Models.Knowledge = global.Models.CKObject.extend({
     initialize : function Post() {
-        console.log('Post Constructor');
         this.urlRoot = "knowledge";
         this.bind("error", function(model, error){
             console.log( error );
         });
     },
-    addTag : function(tag){
-        console.log("Add a tag to the model knowledge");
-        this.tag.unshift(tag);
-        /*this.save();*/
-    },
-    removeTag : function(tag){
-        console.log("Remove knowledge model tag");
-        var index = this.tag.indexOf(tag);
 
-        /*this.save();*/
+});
+/***************************************/
+global.Models.ConceptModel = global.Models.CKObject.extend({
+    initialize : function Comment() {
+        this.urlRoot = "concept";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
     },
-    addComment : function(com){ 
-        this.get('comments').push(com);
-        //this.save();
-    },
-    removeComment : function(com){ 
-        unset_foireux(this.get('comments'),com);
-        //this.save();
-    }
+   
 });
 /***************************************/
 global.Models.Comment = Backbone.Model.extend({
@@ -92,10 +97,6 @@ global.Models.User = Backbone.Model.extend({
             console.log( error );
         });
     },
-    parse : function(model){
-
-        return model;
-    }
 });
 /*-----------------------------------------------------------------*/
 /*Model*/
@@ -113,9 +114,7 @@ global.Models.ProjectModel = Backbone.Model.extend({
             console.log( error );
         });
     },
-    addDocument : function(){
-        console.log("Add a document");
-    }
+
 });
 
 
@@ -187,33 +186,6 @@ global.Models.UserGroupModel = Backbone.Model.extend({
         });
     },
 });
-
-
-
-
-
-/***************************************/
-global.Models.ConceptModel = Backbone.Model.extend({
-    model: this,
-    defaults : {
-        id :'',
-        title : "",
-        user : "",
-        date : getDate(),
-        content : "",
-        color : "",
-        id_father : "",
-        position : null,
-        comments:[],
-    },
-    setText : function(value) {this.set({ text : value }); },
-    initialize : function Comment() {
-        this.urlRoot = "concept";
-        //console.log('Concept Constructor');
-    },
-    
-});
-
 /***************************************/
 global.Models.CKLink = Backbone.Model.extend({
     model: this,

@@ -30,7 +30,9 @@ autoPK : false,
   		date : getDate(),
   		position : 0,
   		project : values.id,
-      comments : []
+      comments : [],
+      members:[]
+
   	}).done(function(err, c0){
   		if(err) console.log(err);
   		cb();

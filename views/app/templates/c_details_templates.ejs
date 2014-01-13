@@ -22,19 +22,19 @@
 	<fieldset>
 		<legend>Activities</legend>
 		<hr>
-		<form class="{{= concept.id }}_hidden" id="{{= concept.id }}_form_comment" action="/" method="concept">
+		<form class="{{= model.id }}_hidden" id="{{= model.id }}_form_comment" action="/" method="model">
 			{{ _.each(views, function(view) { }}  
 		        {{= view }}
 		    {{ }); }}
-		    <div id="{{= concept.id }}_comment">
-			    <div class="row" id="input_comment_{{= concept.id }}">
+		    <div id="{{= model.id }}_comment">
+			    <div class="row" id="input_comment_{{= model.id }}">
 			        <div class="small-2 large-1 columns">
 			          	<img class="nailthumb-container" src="{{= c_user.img }}">
 			        </div>
 			        <div class="small-10 large-11 columns">
 			            <div class="row collapse">
 			            	<div class="small-10 columns">
-			              		<input id="{{= concept.id }}_input_comment" type="text" placeholder="your comment">
+			              		<input id="{{= model.id }}_input_comment" type="text" placeholder="your comment">
 			            	</div>
 			            	<div class="small-2 columns">
 			              		<input type="submit" class="button prefix" value="publish!">
@@ -67,8 +67,8 @@
 
 	<fieldset>
 	    <legend>Informations</legend>
-		<input id="change_c_title" type="text" placeholder="title" value="{{= concept.title }}"/>
-	    <textarea  class="ckeditor"  id="change_c_content" name="editor1" rows="10" cols="80">{{= concept.content }}</textarea>
+		<input id="change_c_title" type="text" placeholder="title" value="{{= model.title }}"/>
+	    <textarea  class="ckeditor"  id="change_c_content" name="editor1" rows="10" cols="80">{{= model.content }}</textarea>
 	    <a href="#" class="button small validate update_informations">Save</a>
     </fieldset>
 </script>

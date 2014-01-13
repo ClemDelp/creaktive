@@ -30,20 +30,28 @@ interface1.Views.Details = Backbone.View.extend({
     className:"reveal-modal",
     id :"detailsModal",
     initialize : function(json) {
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render', 'nodeSelectionChanged');
         $(this.el).attr( "data-reveal","")
         
         // Variables
         this.eventAggregator = json.eventAggregator;
         this.concepts = json.concepts;
         this.user = json.user; 
+
+        this.concept = new global.Models.ConceptModel();
+        this.eventAggregator.on("nodeSelectionChanged", this.nodeSelectionChanged);
+
+    },
+
+    nodeSelectionChanged : function (e){
+        this.concept = this.concepts.get(e);
+        this.render();
     },
 
     render : function() {
 
         details_ = new c_details.Views.Main({
-            eventAggregator : this.eventAggregator,
-            concepts : this.concepts,
+            model : this.concept,
             user : this.user
         });
         $(this.el).append(details_.render().el);

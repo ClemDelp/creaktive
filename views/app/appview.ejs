@@ -119,9 +119,9 @@ CKEDITOR.replace('change_c_content');
   $(document).ready(function () {
     console.log( "CreaKtive DOM loaded!" );
     ////////////////////////////////////////
-    Backbone.Model.prototype.toJSON = function() {
-      return JSON.parse(JSON.stringify(this.attributes));
-    };
+    // Backbone.Model.prototype.toJSON = function() {
+    //   return JSON.parse(JSON.stringify(this.attributes));
+    // };
     ////////////////////////////////////////
     rt(io, function(){
       global.init('<%- currentUser %>', function(){
