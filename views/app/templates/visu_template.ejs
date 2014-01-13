@@ -1,0 +1,19 @@
+<div id="visu_container"></div>
+
+<script type="text/template" id="visu-expert-template">
+	<a class="tiny success button addFilter" data-filter-id="{{=expert.name}}" data-filter-type="expert" data-filter-val="{{=expert.id}}">{{= expert.name }}</a>
+</script>
+
+<script type="text/template" id="visu-concept-template">
+	<a class="tiny success button addFilter" data-filter-id="{{=concept.title}}" data-filter-type="concept" data-filter-val="{{=concept.id}}">{{= concept.title }}</a>
+</script>
+
+<script type="text/template" id="visu-poche-template">
+	<a class="tiny success button addFilter" data-filter-id="{{=poche.name}}" data-filter-type="poche" data-filter-val="{{=poche.title}}">{{= poche.title }}</a>
+</script>
+
+<script type="text/template" id="visu-filters-template">
+	{{ _.each(filters, function(filter) { }}
+    	<a class="tiny success button">{{= filter }}</a>
+	{{ }); }}
+</script>

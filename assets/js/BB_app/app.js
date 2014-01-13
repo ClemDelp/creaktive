@@ -23,23 +23,42 @@ var global = {
     this.collections.Concepts = new this.Collections.ConceptsCollection();
     this.collections.Links = new this.Collections.CKLinks();
     this.collections.Notifications = new this.Collections.NotificationsCollection();
+    this.collections.users = new this.Collections.UsersCollection();
     /*Loads*/
-    // this.models.current_user.fetch({
-    //   reset : true,
-    //   error: function(model, response, options){
-    //     console.log("connected as a guest");
-    //   }
-    // });
-
     this.collections.Knowledges.fetch({reset: true});
     this.collections.Poches.fetch({reset: true});
     this.collections.Projects.fetch({reset:true});
     this.collections.Concepts.fetch({reset:true});
     this.collections.Links.fetch({reset:true});
     this.collections.Notifications.fetch({reset:true});
+    this.collections.users.fetch({reset:true});
 
     callback();
 
+  }
+};
+/////////////////////////////////////////////////
+var visu = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    console.log('VISU Constructor');
+    this.views.main = new this.Views.Main({
+      concepts    : global.collections.Concepts,
+      knowledges  : global.collections.Knowledges,
+      experts     : global.collections.users,
+      poches      : global.collections.Poches,
+      links       : global.collections.Links
+    });
+
+    this.views.main.render();
   }
 };
 /////////////////////////////////////////////////
@@ -60,6 +79,15 @@ var topBar = {
       notifications : global.collections.Notifications,
       current_user : global.models.current_user
     });
+    this.collections.Links.fetch({
+      reset:true,
+      success : function(collection, response, options){},
+      complete : function(collection, response, options){},
+      error : function(collection, response, options){
+        console.log(response)
+      },
+    });
+
   }
 };
 /////////////////////////////////////////////////
@@ -77,6 +105,7 @@ var k_details = {
     console.log('K_details Constructor');
   }
 };
+
 /////////////////////////////////////////////////
 var c_details = {
   // Classes
