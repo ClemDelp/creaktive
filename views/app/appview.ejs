@@ -51,19 +51,23 @@
   <dl class="tabs" data-tab>
     <dd id="panel-concept"><a href="#panel2-1">Concept</a></dd>
     <dd id="panel-visualization"><a href="#panel2-2">Visualization</a></dd>
-    <dd id="panel-knowledge" class="active"><a href="#panel2-3">Knowledge</a></dd>
+    <dd id="panel-knowledge" ><a href="#panel2-3">Knowledge</a></dd>
+    <dd id="panel-visu" class="active"><a href="#panel2-4">Visu quenelle</a></dd>
 
   </dl>
   <div class="tabs-content">
-      <div class="content" id="panel2-1">
+      <div class="content " id="panel2-1">
           <div id="interface1-container"></div>
           <div class="large-6 columns" id="container"></div>  
       </div>
-      <div class="content" id="panel2-2">
+      <div class="content " id="panel2-2">
           <%- partial('./templates/visualisation_template') %>
       </div>
-      <div class="content active" id="panel2-3">
+      <div class="content " id="panel2-3">
           <div id="interface3-container"></div>
+      </div>
+      <div class="content active" id="panel2-4">
+          <%- partial('./templates/visu_template') %>
       </div>
   </div>
 </div>
@@ -90,14 +94,20 @@
 
 <!-- Modules situés dans assets/js/BB_app -->
 
+
+
+<script type="text/javascript" src="js/BB_app/modules/timela.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/cklink.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/visu.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/visualisation.js"></script>
+
 <script type="text/javascript" src="js/BB_app/modules/explorer.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/k_details.js"></script>
 <script type="text/javascript" src="js/BB_app/interfaces/interface1.js"></script>
 <script type="text/javascript" src="js/BB_app/interfaces/interface3.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/concepts.js"></script>
+
 
 <script>
   ///////////////////////////////////////////////////
@@ -110,6 +120,7 @@
     ////////////////////////////////////////
     rt(io, function(){
       global.init('<%- currentUser %>', function(){
+<<<<<<< Updated upstream
         /*Modules*/
         k_details.init();
         topBar.init();
@@ -123,6 +134,22 @@
         ////////////////////////////////////////
         /*activat of "hashchange events's monitoring"*/
 
+=======
+        
+        /*Modules*/
+        //k_details.init();
+        visu.init();
+        //topBar.init();
+        //cklink.init();
+        //explorer.init();
+        //concepts.init();
+
+        /*Interfaces*/
+        // interface1.init();
+        // interface3.init();
+
+        /*activat of "hashchange events's monitoring"*/
+>>>>>>> Stashed changes
         Backbone.history.start();  
       });
     });
@@ -161,4 +188,8 @@ function rt (io, callback) {
 
 
 
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 

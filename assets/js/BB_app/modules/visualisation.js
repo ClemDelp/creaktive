@@ -53,7 +53,11 @@ google.setOnLoadCallback(function() {
                 catTableName: "Concepts",
                 timeTitle: "date",
                 timeBarShow: true,
+<<<<<<< Updated upstream
                 catLabelText: function(cpt){ return cpt.data[conceptsCol.title]+" - "+cpt.data[conceptsCol.State]; },
+=======
+                catLabelText: function(cpt){ return cpt.data[conceptsCol.title]; },//+" - "+cpt.data[conceptsCol.State]
+>>>>>>> Stashed changes
 //                selectType:"Single",
                 barClassFunc: function(k){ return "bar_style_conceptState_"+k.data[conceptsCol.State];},
                 sortingFuncs : [
