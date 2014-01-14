@@ -87,7 +87,7 @@ topBar.Views.Notifications = Backbone.View.extend({
             });
         }
 
-        if(notification.get('type') === "createKnowledge" || notification.get('type') === "creatLink" || notification.get('type') === "createPoche"){
+        if(notification.get('type') === "createKnowledge" || notification.get('type') === "createLink" || notification.get('type') === "createPoche"){
             $("#panel-concept").removeClass('active');
             $("#panel-visualization").removeClass('active');
             $("#panel-knowledge").addClass( "active" );

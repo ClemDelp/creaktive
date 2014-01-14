@@ -47,7 +47,7 @@
   		if(concept){
   			Poche.update({id: req.body.params.id}, req.body.params).done(function(err,c){
   				if(err) res.send(err);
-          Notification.objectUpdated(req,res,"Link", c[0].id, function(notification){
+          Notification.objectUpdated(req,res,"Poche", c[0].id, function(notification){
             res.send(notification);
           });
 
@@ -60,7 +60,7 @@
         p.project = req.session.currentProject.id
         Poche.create(p).done(function(err,c){
           if(err) res.send(err);
-          Notification.objectCreated(req,res,"Link", c.id, function(notification){
+          Notification.objectCreated(req,res,"Poche", c.id, function(notification){
             res.send(notification);
           });
           res.send(c);
