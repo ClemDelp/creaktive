@@ -1,19 +1,78 @@
 <div id="visu_container"></div>
 
 <script type="text/template" id="visu-expert-template">
-	<a class="tiny success button addFilter" data-filter-id="{{=expert.name}}" data-filter-type="expert" data-filter-val="{{=expert.id}}">{{= expert.name }}</a>
+	<a class="tiny alert button addFilter expand" data-filter-id="{{=expert.id}}" data-filter-type="expert" data-filter-model="{{=expert.id}}">{{= expert.name }}</a>
 </script>
 
 <script type="text/template" id="visu-concept-template">
-	<a class="tiny success button addFilter" data-filter-id="{{=concept.title}}" data-filter-type="concept" data-filter-val="{{=concept.id}}">{{= concept.title }}</a>
+	<div class="row">
+		<div class="small-6 large-6 columns">
+			<a class="tiny button addFilter expand" data-filter-type="concept" data-filter-model="{{=concept.id}}" data-filter-id="{{=concept.id}}">
+				{{= concept.title }} - <font style="color:red">({{= rec }})</font>
+			</a>
+		</div>
+		<div class="progress small-6 large-6 columns">
+		  <span class="meter" style="width: {{=per}}%"></span>
+		</div>
+	</div>
 </script>
 
 <script type="text/template" id="visu-poche-template">
-	<a class="tiny success button addFilter" data-filter-id="{{=poche.name}}" data-filter-type="poche" data-filter-val="{{=poche.title}}">{{= poche.title }}</a>
+	<div class="row">
+		<div class="small-6 large-6 columns">
+			<a class="tiny success button addFilter expand" data-filter-id="{{=poche.id}}" data-filter-type="poche" data-filter-model="{{=poche.id}}">
+				{{= poche.title }} - <font style="color:red">({{= rec }})</font>
+			</a>
+		</div>
+		<div class="progress small-6 large-6 columns">
+		  <span class="meter" style="width: {{=per}}%"></span>
+		</div>
+	</div>
 </script>
 
 <script type="text/template" id="visu-filters-template">
+	Filters: 
 	{{ _.each(filters, function(filter) { }}
-    	<a class="tiny success button">{{= filter }}</a>
+    	{{ if(filter.type == "concept"){ }}
+    		<a class="tiny button remove" data-id-filter="{{=filter.id}}">{{= filter.model.get('title') }}</a> +
+    	{{ }else if(filter.type == "poche"){ }}
+    		<a class="tiny success button remove" data-id-filter="{{=filter.id}}">{{= filter.model.get('title') }}</a> +
+    	{{ }else if(filter.type == "expert"){ }}	
+    		<a class="tiny alert button remove" data-id-filter="{{=filter.id}}">{{= filter.model.get('name') }}</a> +
+    	{{ } }}
 	{{ }); }}
+</script>
+
+<script type="text/template" id="visu-knowledge-template">
+	<div class="small-2 large-2 columns ">
+		<ul class="pricing-table">
+		  <li class="title"><input type="checkbox" class="selectable" id="selector_{{= knowledge.id }}" data-id-knowledge="{{= knowledge.id }}"></li>
+		  <li class="price">{{= knowledge.title}}</li>
+		  <li class="description">{{= knowledge.user.name }} - {{= knowledge.date }}</li>
+		  <li class="bullet-item">
+			{{ _.each(knowledge.tags, function(tag) { }}
+		        <a onclick="searchByTag('{{= tag }}')" class="tiny success button">{{= tag }}</a>
+		    {{ }); }}
+		  </li>
+		  <li class="cta-button"><a class="button details" href="#" data-id-knowledge="{{= knowledge.id }}">Details</a></li>
+		</ul>
+	</div>
+</script>
+
+<script type="text/template" id="visu-publish-module-template">
+	<div class="panel">
+		Add knowledge to 
+		{{ _.each(filters, function(filter) { }}
+	    	{{ if(filter.type == "concept"){ }}
+	    		<a class="tiny button remove" data-id-filter="{{=filter.id}}">{{= filter.model.get('title') }}</a> +
+	    	{{ }else if(filter.type == "poche"){ }}
+	    		<a class="tiny success button remove" data-id-filter="{{=filter.id}}">{{= filter.model.get('title') }}</a> +
+	    	{{ }else if(filter.type == "expert"){ }}	
+	    		<a class="tiny alert button remove" data-id-filter="{{=filter.id}}">{{= filter.model.get('name') }}</a> +
+	    	{{ } }}
+		{{ }); }}
+    	<input id="visu_new_k_title" type="text" placeholder="title"/>
+		
+	    <a href="#" class="button small validate addKnowledge">Add!</a>
+	</div>
 </script>

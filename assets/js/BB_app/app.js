@@ -31,7 +31,7 @@ var global = {
     this.collections.Concepts.fetch({reset:true});
     this.collections.Links.fetch({reset:true});
     this.collections.Notifications.fetch({reset:true});
-    this.collections.users.fetch({reset:true});
+    this.collections.users.fetch({reset:true,complete:function(collection){console.log("tuuuuuuuuuuuuuuuuuuuuu",collection)}});
 
     callback();
 
@@ -55,10 +55,11 @@ var visu = {
       knowledges  : global.collections.Knowledges,
       experts     : global.collections.users,
       poches      : global.collections.Poches,
-      links       : global.collections.Links
+      links       : global.collections.Links,
+      user        : global.models.current_user
     });
 
-    this.views.main.render();
+    //this.views.main.render();
   }
 };
 /////////////////////////////////////////////////
@@ -79,14 +80,14 @@ var topBar = {
       notifications : global.collections.Notifications,
       current_user : global.models.current_user
     });
-    this.collections.Links.fetch({
-      reset:true,
-      success : function(collection, response, options){},
-      complete : function(collection, response, options){},
-      error : function(collection, response, options){
-        console.log(response)
-      },
-    });
+    // this.collections.Links.fetch({
+    //   reset:true,
+    //   success : function(collection, response, options){},
+    //   complete : function(collection, response, options){},
+    //   error : function(collection, response, options){
+    //     console.log(response)
+    //   },
+    // });
 
   }
 };
