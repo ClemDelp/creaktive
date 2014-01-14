@@ -1,7 +1,7 @@
 /***********************************************/
 cklink.Views.Poches = Backbone.View.extend({
     initialize : function(json) {
-        console.log("KLINKED view initialise");
+        //console.log("KLINKED view initialise");
         // Variables
         this.current_filters = json.current_filters;
         this.poches = json.poches;
@@ -20,7 +20,7 @@ cklink.Views.Poches = Backbone.View.extend({
           filters[i] = $(selected).val(); 
         });
         this.current_filters.trigger('change')
-        console.log(this.current_filters)
+        //console.log(this.current_filters)
     },
     render : function() {
         // Poches template
@@ -89,7 +89,7 @@ cklink.Views.Acc2 = Backbone.View.extend({
     className:"content",
     id:"panel2",
     initialize : function(json) {
-        console.log("Acc2 view initialise");
+        //console.log("Acc2 view initialise");
         // Variables
         this.current_concept = json.current_concept;
         this.knowledges = json.knowledges;
@@ -126,7 +126,7 @@ cklink.Views.Acc2 = Backbone.View.extend({
 cklink.Views.Explorer = Backbone.View.extend({
     tagName: "dd",
     initialize : function(json) {
-        console.log("KLINKED view initialise");
+        //console.log("KLINKED view initialise");
         // Variables
         this.current_concept = json.current_concept;
         this.knowledges = json.knowledges;
@@ -154,7 +154,7 @@ cklink.Views.Explorer = Backbone.View.extend({
 cklink.Views.Klinked = Backbone.View.extend({
     tagName: "dd",
     initialize : function(json) {
-        console.log("KLINKED view initialise");
+        //console.log("KLINKED view initialise");
         // Variables
         this.current_concept = json.current_concept;
         this.knowledges = json.knowledges;
@@ -241,7 +241,7 @@ cklink.Views.Accordion = Backbone.View.extend({
 /***********************************************/
 cklink.Views.Main = Backbone.View.extend({
     initialize : function(json) {
-        console.log("CKLINK MAIN view initialise");
+        //console.log("CKLINK MAIN view initialise");
         // Variables
         this.knowledges = json.knowledges;
         this.poches = json.poches;

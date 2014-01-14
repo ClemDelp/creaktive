@@ -26,16 +26,16 @@ global.Models.CKObject = Backbone.Model.extend({
         title : "",
         content : "",/*use for url post type*/
         tags : [],
-        comments:[],
+        comments: [],
         date : "",
         date2: "",
         attachment: "",
         color: "",
-        members:[]
+        members:[],
     },
     parse : function(serverObj){
-        serverObj.comments = new global.Collections.Comments();
-        serverObj.members = new global.Collections.UsersCollection();
+        serverObj.comments = new global.Collections.Comments(serverObj.comments);
+        serverObj.members = new global.Collections.UsersCollection(serverObj.members);
         return serverObj;
     },
 
@@ -66,10 +66,10 @@ global.Models.ConceptModel = global.Models.CKObject.extend({
 global.Models.Comment = Backbone.Model.extend({
     model: this,
     defaults : {
+        id:"",
         user : "",
         date : "",
         content : "",
-        post : ""
     },
     setText : function(value) {this.set({ text : value }); },
     initialize : function Comment() {

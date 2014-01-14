@@ -28,31 +28,45 @@ interface1.Views.Concept = Backbone.View.extend({
 interface1.Views.Details = Backbone.View.extend({
     tagName:"div",
     className:"reveal-modal",
-    id :"detailsModal",
+    id :"cDetailsModal",
     initialize : function(json) {
-        _.bindAll(this, 'render', 'nodeSelectionChanged');
+        _.bindAll(this, 'render', 'nodeSelectionChanged','youhou');
         $(this.el).attr( "data-reveal","")
         
         // Variables
         this.eventAggregator = json.eventAggregator;
         this.concepts = json.concepts;
         this.user = json.user; 
+        this.users = json.users;
 
         this.concept = new global.Models.ConceptModel();
+        this.concept.set({comments : new global.Collections.Comments()});
+        this.concept.set({members : new global.Collections.UsersCollection()});
         this.eventAggregator.on("nodeSelectionChanged", this.nodeSelectionChanged);
+        this.eventAggregator.on("youhou", this.youhou);
+    },
 
+    youhou : function(e){
+        this.concept = this.concepts.get(e);
+        this.render();
+         $('#cDetailsModal').foundation('reveal', 'open');
     },
 
     nodeSelectionChanged : function (e){
         this.concept = this.concepts.get(e);
         this.render();
+
     },
 
     render : function() {
-
-        details_ = new c_details.Views.Main({
+        $(this.el).attr( "data-model-id",this.concept.id);
+        details_ = new details.Views.Main({
+            el:"#c_details_container",
+            templateId : "#details-title-ckeditor-template",
             model : this.concept,
-            user : this.user
+            user : this.user,
+            users : this.users,
+            eventAggregator : this.eventAggregator
         });
         $(this.el).append(details_.render().el);
 
@@ -102,9 +116,9 @@ interface1.Views.Main = Backbone.View.extend({
 	    this.links = json.links;
 	    this.knowledges = json.knowledges;
 	    this.poches = json.poches;
+        this.users = json.users;
+        this.eventAggregator = json.eventAggregator;
 
-        this.eventAggregator = {};//this.concepts.first();
-        _.extend(this.eventAggregator, Backbone.Events);
         
     },
     render : function() {
@@ -130,7 +144,8 @@ interface1.Views.Main = Backbone.View.extend({
         details_ = new interface1.Views.Details({
             eventAggregator : this.eventAggregator,
             concepts : this.concepts,
-            user : this.currentUser
+            user : this.currentUser,
+            users : this.users
         });
         $(this.el).append(details_.render().el);
         $(document).foundation();

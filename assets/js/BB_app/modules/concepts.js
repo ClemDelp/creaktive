@@ -2,11 +2,12 @@
 /****************************************************************/
 /*views*/
 /****************************************************************/
+
 concepts.Views.MapView = Backbone.View.extend({
     tagName: "div",
     initialize : function(json){
 
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render','colorChanged',"titleChanged");
         _.bindAll(this, 'map');
         /*Concepts*/
         this.concepts = json.concepts;
@@ -20,8 +21,13 @@ concepts.Views.MapView = Backbone.View.extend({
         /*CurrentUser*/
         this.currentUser = json.currentUser;
 
+        /*Current concept*/
+        this.currentConcept = new global.Models.ConceptModel();
+
         /*EventAgregator*/
         this.eventAggregator = json.eventAggregator;
+        this.eventAggregator.on("colorChanged", this.colorChanged);
+        this.eventAggregator.on("titleChanged", this.titleChanged);
 
         this.template = _.template($('#map-template').html());
 
@@ -50,6 +56,17 @@ concepts.Views.MapView = Backbone.View.extend({
         window.mapModel = mapModel;
     },
 
+    titleChanged : function(e){
+        console.log(e)
+        mapModel.updateTitle(e.id, e.get('title'))
+    },
+
+    colorChanged : function(e){
+        console.log(e);
+        this.idea.updateAttr(e.id, "style", {background: e.get('color')});
+        
+    },
+
     render: function(){
         var renderedContent ;
         renderedContent = this.template({concepts : this.concepts});
@@ -64,7 +81,8 @@ concepts.Views.MapView = Backbone.View.extend({
         var c0, _this;
         _this = this; 
         c0 = this.concepts.findWhere({position : 0});
-                 
+        this.currentConcept = c0;
+
         this.idea = MAPJS.content(c0.toJSON());
         this.mapRepository.dispatchEvent('mapLoaded', this.idea);
         this.populate(c0.id, this.concepts.where({id_father : c0.id}));
@@ -72,6 +90,7 @@ concepts.Views.MapView = Backbone.View.extend({
         this.mapModel.addEventListener('nodeSelectionChanged', function(e){
             var concept_id = e;
             _this.eventAggregator.trigger("nodeSelectionChanged", concept_id);
+            _this.currentConcept = _this.concepts.get(concept_id);
         });
 
         _this.idea.addEventListener('changed', function(command, args){
@@ -97,24 +116,24 @@ concepts.Views.MapView = Backbone.View.extend({
 
             _this.concepts.create(new_concept);
         }
-        if (command === 'updateTitle') {
-            c = _this.concepts.get(args[0]);
-            c.set({title : args[1]});
-            c.save();
-        }
+        // if (command === 'updateTitle') {
+        //     c = _this.concepts.get(args[0]);
+        //     c.set({title : args[1]});
+        //     c.save();
+        // }
         if (command === 'removeSubIdea') {
             c = _this.concepts.get(args[0]);
             $.get('/concept/destroy/' + args[0]);
             console.log(_this.concepts)
             
         }
-        if (command === 'updateAttr') {
-            if(args[1] === "style"){
-                c = _this.concepts.get(args[0]);
-                c.set({color:args[2].background});
-                c.save();
-            }
-        }
+        // if (command === 'updateAttr') {
+        //     if(args[1] === "style"){
+        //         c = _this.concepts.get(args[0]);
+        //         c.set({color:args[2].background});
+        //         c.save();
+        //     }
+        // }
         // if (command === 'addSubIdea') {
         // }
         // if (command === 'addSubIdea') {
@@ -132,6 +151,8 @@ concepts.Views.MapView = Backbone.View.extend({
                 this.populate(children[i].id, c)
             }
         };
+
+
         
     },
 

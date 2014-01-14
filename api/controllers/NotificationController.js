@@ -22,17 +22,17 @@ module.exports = {
   },
 
   update : function(req, res){
-  	Notification.findOne(req.body.id).done(function(err, concept){
+  	Notification.findOne(req.body.params.id).done(function(err, concept){
   		if(err) res.send(err);
   		if(concept){
   			Notification.update({
-          id: req.body.id
-        }, req.body).done(function(err,c){
+          id: req.body.params.id
+        }, req.body.params).done(function(err,c){
   				if(err) res.send(err)
   				res.send(c);
   			});
   		}else{
-  			Notification.create(req.body).done(function(err,c){
+  			Notification.create(req.body.params).done(function(err,c){
   				if(err) res.send(err)
   				res.send(c);
   			})

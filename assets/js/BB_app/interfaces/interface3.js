@@ -3,12 +3,13 @@ interface3.Views.Explorer = Backbone.View.extend({
     tagName:"div",
     className:"expand",
     initialize : function(json) {
-        console.log("Interface3 Explorer view initialise");
+
         _.bindAll(this, 'render');
         // Variables
         this.knowledges = json.knowledges;
         this.user = json.user;
         this.poches = json.poches;
+        this.users = json.users;
         this.current_selection = json.current_selection;
     },
     render : function() {
@@ -16,7 +17,8 @@ interface3.Views.Explorer = Backbone.View.extend({
             knowledges:this.knowledges,
             user:this.user,
             poches:this.poches,
-            current_selection:this.current_selection
+            current_selection:this.current_selection,
+            users : this.users
         });
         $(this.el).append(explorer_.render().el);
         return this;
@@ -26,12 +28,13 @@ interface3.Views.Explorer = Backbone.View.extend({
 interface3.Views.Main = Backbone.View.extend({
     el : $('#interface3-container'),
     initialize : function(json) {
-        console.log("interface3 view initialise");
+
         _.bindAll(this, 'render');
         // Variables
         this.knowledges = json.knowledges;
         this.user = json.user;
         this.poches = json.poches;
+        this.users = json.users
         // Event aggregator
         this.current_selection = [];
         _.extend(this.current_selection, Backbone.Events);
@@ -42,7 +45,8 @@ interface3.Views.Main = Backbone.View.extend({
             knowledges:this.knowledges,
             user:this.user,
             poches:this.poches,
-            current_selection:this.current_selection
+            current_selection:this.current_selection,
+            users : this.users
         });
         $(this.el).append(explorer_.render().el);
         $(document).foundation();

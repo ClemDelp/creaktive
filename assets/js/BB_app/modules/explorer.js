@@ -6,7 +6,7 @@ explorer.Views.Poches = Backbone.View.extend({
     tagName: "div",
     className: "small-2 large-2 columns",
     initialize : function(json) {
-        console.log("Poches view initialise");
+        //console.log("Poches view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.poches = json.poches;
@@ -35,7 +35,7 @@ explorer.Views.Poches = Backbone.View.extend({
         poche.save();
     },
     selection: function(e){
-        console.log("filter selected");
+        //console.log("filter selected");
         var Class = e.target.className.split(' ');
         var index = Class.indexOf('alert');
         if(index > -1){
@@ -58,10 +58,10 @@ explorer.Views.Poches = Backbone.View.extend({
             }
             $("#"+e.target.id).addClass('alert');
         }
-        console.log("current filters",this.current_filters)
+        //console.log("current filters",this.current_filters)
     },
     addPoche : function(e){
-        console.log("Add a new poche");
+        //console.log("Add a new poche");
         global.models.newP = new global.Models.Poche({
             id: guid(),
             title: $("#newP").val(),
@@ -87,11 +87,12 @@ explorer.Views.Poches = Backbone.View.extend({
 explorer.Views.Post = Backbone.View.extend({
     className: "small-2 large-2 columns",
     initialize : function(json) {
-        console.log("Knowedge view initialise");
+        //console.log("Knowedge view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.knowledge = json.knowledge;
         this.user = json.user;
+        this.users = json.users;
         this.edit = "off";
         // Template
         this.template = _.template($('#post-template').html());
@@ -101,12 +102,15 @@ explorer.Views.Post = Backbone.View.extend({
         "click .details" : "open_modal_details_box"
     },
     open_modal_details_box :function(e){
-        k_details.views.modal = new k_details.Views.Main({
-            knowledge:this.knowledge,
-            user:this.user
+        details.views.kModal = new details.Views.Main({
+            el : "#k_details_container",
+            templateId : "#k-details-title-ckeditor-template",
+            model:this.knowledge,
+            user:this.user,
+            users : this.users
         });
-        k_details.views.modal.render();
-        $('#detailsKnoledgeModal').foundation('reveal', 'open');
+        details.views.kModal.render();
+        $('#kDetailsModal').foundation('reveal', 'open');
     },
     changeClass : function(e){
         var Class = this.el.className.split(' ');
@@ -137,7 +141,7 @@ explorer.Views.Post = Backbone.View.extend({
 /***********************************************/
 explorer.Views.Search = Backbone.View.extend({
     initialize : function(json) {
-        console.log("Search view constructor");
+        //console.log("Search view constructor");
         _.bindAll(this, 'render');
         // Variables
         this.current_selection = json.current_selection;
@@ -166,13 +170,14 @@ explorer.Views.Posts = Backbone.View.extend({
     
     className : "small-10 large-10 columns",
     initialize : function(json) {
-        console.log("Knowledges view initialise");
+        //console.log("Knowledges view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.knowledges = json.knowledges;
         this.user = json.user;
         this.current_filters = json.currentFilters;
         this.current_selection = json.current_selection;
+        this.users = json.users;
         // Events
         this.knowledges.bind('reset', this.render);
         this.knowledges.bind('add', this.render);
@@ -187,15 +192,15 @@ explorer.Views.Posts = Backbone.View.extend({
         
     },
     applyFilterToSelection: function(pocheTitle){
-        console.log("Manage filters");
+        //console.log("Manage filters");
         collection = this.knowledges;
         this.current_selection.forEach(function(k_id){
             k = this.collection.get(k_id);
             if(_.union(k.get('tags'),this.current_filters).length == k.get('tags').length){
-                console.log("On enlève le tag de K: "+pocheTitle);
+                //console.log("On enlève le tag de K: "+pocheTitle);
                 k.get('tags').splice(_.indexOf(k.get('tags'),pocheTitle),1);
             }else{
-                console.log("On update les tags de K avec: "+_.union(k.get('tags'),this.current_filters));
+                //console.log("On update les tags de K avec: "+_.union(k.get('tags'),this.current_filters));
                 k.set('tags',_.union(k.get('tags'),this.current_filters));
             }
             k.save();
@@ -211,27 +216,27 @@ explorer.Views.Posts = Backbone.View.extend({
         "click .selectable" : "addToSelection"
     },
     addToSelection : function(e){
-        console.log("Knowledge added to selection");
+        //console.log("Knowledge added to selection");
         if($("#selector_"+e.target.getAttribute('data-id-knowledge')).is(':checked')){
-            console.log("Add this K to selection");
+            //console.log("Add this K to selection");
             this.current_selection.unshift(e.target.getAttribute('data-id-knowledge'));
             this.current_selection.trigger('change');
         }else{
-            console.log("Remove this K to selection");
+            //console.log("Remove this K to selection");
             var indexFilter = this.current_selection.indexOf(e.target.getAttribute('data-id-knowledge'));
             if(indexFilter > -1){
                 this.current_selection.splice(indexFilter,1);
                 this.current_selection.trigger('change');
             }
         }
-        console.log(this.current_selection)
+        //console.log(this.current_selection)
     },
     removeKnowledge: function(e){
         knowledge = this.knowledges.get(e.target.getAttribute('data-id-post'));
         knowledge.destroy();
     },
     addKnowledge : function(e){
-        console.log("Add knowledge");
+        //console.log("Add knowledge");
         var tags = [];
         this.current_filters.forEach(function(f){tags.unshift(f)})
         global.models.newK = new global.Models.Knowledge({
@@ -267,12 +272,13 @@ explorer.Views.Posts = Backbone.View.extend({
         // Each Post
         knowledges_el = this.el;
         user_ = this.user;
+        users_ = this.users;
         this.knowledges.each(function(k){
             // Si comments est un array on le transforme en collection ds le model
             if($.type(k.get('comments')) == "array"){k.set('comments',new global.Collections.Comments(k.get('comments')));}
             // Si le model n'a pas de tags
             if(k.get('tags').length == 0){
-                knowledge_v = new explorer.Views.Post({knowledge:k,user:this.user_});
+                knowledge_v = new explorer.Views.Post({knowledge:k,user:this.user_,users:this.users_});
                 $(this.knowledges_el).append(knowledge_v.render().el);
             }
         });
@@ -297,16 +303,15 @@ explorer.Views.Posts = Backbone.View.extend({
         knowledges_el = this.el;
         current_filters = this.current_filters;
         user_ = this.user;
+        users_ = this.users;
         this.knowledges.each(function(k){
-            // Si comments est un array on le transforme en collection ds le model
-            if($.type(k.get('comments')) == "array"){k.set('comments',new global.Collections.Comments(k.get('comments')));}
             // Si les filtres sont inclu ds les tag du model
             if(_.intersection(k.get('tags'),this.current_filters).length == this.current_filters.length){
-                knowledge_v = new explorer.Views.Post({knowledge:k,user:this.user_});
+                knowledge_v = new explorer.Views.Post({knowledge:k,user:this.user_, users : this.users_});
                 $(this.knowledges_el).append(knowledge_v.render().el);
             }
         });
-        checkContainer();
+
         return this;
     }
 });
@@ -315,7 +320,7 @@ explorer.Views.Main = Backbone.View.extend({
     tagName : "div",
     //className : "row",
     initialize : function(json) {
-        console.log("Explorer view initialise");
+        //console.log("Explorer view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.knowledges = json.knowledges;
@@ -323,6 +328,7 @@ explorer.Views.Main = Backbone.View.extend({
         this.poches = json.poches;
         this.current_selection = json.current_selection;
         this.current_filters = [];
+        this.users = json.users;
         // EventsAggregator
         _.extend(this.current_filters, Backbone.Events);
     },
@@ -338,7 +344,8 @@ explorer.Views.Main = Backbone.View.extend({
             knowledges:this.knowledges,
             user:this.user,
             currentFilters:this.current_filters,
-            current_selection:this.current_selection
+            current_selection:this.current_selection,
+            users : this.users
         });
         $(this.el).append(knowledges.render().el);
         

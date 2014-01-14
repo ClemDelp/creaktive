@@ -91,7 +91,10 @@ Backbone.sync = function (method, model, options) {
 
   var json = {
     url : '/' + namespace + '/' + type,
-    data : params.data
+    data : {
+      params : params.data,
+      action : model.changed
+    }
   }
 
   var defer = $.Deferred();
