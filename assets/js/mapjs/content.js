@@ -269,7 +269,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 			
 		}
 		newRank = appendSubIdea(parent, idea);
-		notifyChange('addSubIdea', [parentId, idea.title, idea.id], function () {
+		notifyChange('createFromDB', [parentId, idea.title, idea.id], function () {
 			delete parent.ideas[newRank];
 		});
 		return true;

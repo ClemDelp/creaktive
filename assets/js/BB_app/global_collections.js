@@ -5,7 +5,6 @@
 global.Collections.Poches = Backbone.Collection.extend({
     model : global.Models.Poche,
     initialize : function() {
-        console.log('Poches collection Constructor');
         this.url = "poche";
         this.bind("error", function(model, error){
             console.log( error );

@@ -6,16 +6,64 @@
  *
  */
 
-module.exports = {
+ function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
+ function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
+ function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
 
-autoPK : false,
-  attributes: {
-  	
+
+ module.exports = {
+
+ 	autoPK : false,
+ 	attributes: {
+
   	/* e.g.
   	nickname: 'string'
   	*/
-    
-  }
+
+  },
+
+  objectCreated : function(req,res, object, to, cb){
+  	Notification.create({
+  		id : guid(),
+  		type : "create"+object,
+  		content : "Project : " + req.session.currentProject.title  + " - New " + object,
+  		to : to,
+  		date : getDate(),
+  		read : [],
+  		project_id : req.session.currentProject.id,
+  		from : req.session.user
+  	}).done(function(err,n){
+  		if(err) console.log(err);
+  		req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+  		cb(n);
+  	})
+  },
+
+  objectUpdated : function(req,res, object, to, cb){
+
+  	console.log(req.body.action);
+  	var action ="Color";
+  	if(req.body.action.title) action = "Title";
+  	if(req.body.action.color) action = "Color";
+  	if(req.body.action.content) action = "Content";
+  	if(req.body.action.members) action = "Members";
+  	if(req.body.action.comments) action = "Comments";
+
+  	Notification.create({
+  		id : guid(),
+  		type : "update" + object+action,
+  		content : "Project : " + req.session.currentProject.title  + " - " + object + " " + action + " updated",
+  		to : to,
+  		date : getDate(),
+  		read : [],
+  		project_id : req.session.currentProject.id,
+  		from : req.session.user
+  	}).done(function(err,n){
+  		if(err) console.log(err);
+  		req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+  		cb(n);
+  	})
+  },
 
 
 };

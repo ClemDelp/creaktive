@@ -4,12 +4,12 @@
  * @module		:: Controller
  * @description	:: Contains logic for handling requests.
  */
-function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
-function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
-function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
+ function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
+ function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
+ function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
 
 
-module.exports = {
+ module.exports = {
 
   /* e.g.
   sayHello: function (req, res) {
@@ -22,81 +22,52 @@ module.exports = {
       project : req.session.currentProject.id
     }).done(function(err,poches){
       if(err) res.send(err)
-      res.send(poches)
+        res.send(poches)
     });
 
   },
 
   create : function (req,res){
-    var p = req.body;
+    var p = req.body.params;
     p.project = req.session.currentProject.id
     Poche.create(p).done(function(err, poche){
       if(err) res.send(err);
-      Notification.create({
-        id : guid(),
-        type : "createPoche",
-        content : "Project : " + req.session.currentProject.title  + " - New poche",
-        to : poche.id,
-        date : getDate(),
-        read : [],
-          project_id : req.session.currentProject.id,
-          from : req.session.user
-      }).done(function(err,n){
-        if(err) console.log(err)
-req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
-              res.send(c);
-            })
-          
+      Notification.objectCreated(req,res,"Poche", poche.id, function(notification){
+        res.send(notification);
+      });
+      res.send(poche);
+      
     });
   },
 
 
   update : function(req, res){
-  	Poche.findOne(req.body.id).done(function(err, concept){
+  	Poche.findOne(req.body.params.id).done(function(err, concept){
   		if(err) res.send(err);
   		if(concept){
-  			Poche.update({id: req.body.id}, req.body).done(function(err,c){
+  			Poche.update({id: req.body.params.id}, req.body.params).done(function(err,c){
   				if(err) res.send(err);
-          Notification.create({
-            id : guid(),
-            type : "updatePoche",
-            content : req.session.user.name + " modified a knowledge tag",
-            to : poche.id,
-            date : getDate(),
-            read : [],
-          project_id : req.session.currentProject.id,
-          from : req.session.user
-          }).done(function(err,n){
-            if(err) console.log(err)
-req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
-              res.send(c);
-            })
+          Notification.objectUpdated(req,res,"Poche", c[0].id, function(notification){
+            res.send(notification);
+          });
+
+          res.send(c[0]);   
           
-  			});
+          
+        });
   		}else{
-            var p = req.body;
-    p.project = req.session.currentProject.id
-  			Poche.create(p).done(function(err,c){
-  				if(err) res.send(err);
-          Notification.create({
-            id : guid(),
-            type : "createPoche",
-            content : req.session.user.name + " added a knowledge tag",
-            to : c.id,
-            date : getDate(),
-            read : [],
-          project_id : req.session.currentProject.id,
-          from : req.session.user
-          }).done(function(err,n){
-            if(err) console.log(err)
-//req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
-req.socket.in(req.session.currentProject.id).emit('notification:create', n);
-              res.send(c);
-            })
+        var p = req.body.params;
+        p.project = req.session.currentProject.id
+        Poche.create(p).done(function(err,c){
+          if(err) res.send(err);
+          Notification.objectCreated(req,res,"Poche", c.id, function(notification){
+            res.send(notification);
+          });
+          res.send(c);
           
-  			})
-  		}
-  	})
+        })
+      }
+    })
   }
   
 

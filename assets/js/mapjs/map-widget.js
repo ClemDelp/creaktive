@@ -45,12 +45,12 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 				'ctrl+shift+v meta+shift+v': 'pasteStyle'
 			},
 			onScroll = function (event, delta, deltaX, deltaY) {
-				if (event.target === jQuery(stage.getContainer()).find('canvas')[0]) {
-					mapModel.move('mousewheel', -1 * deltaX, deltaY);
-					if (event.preventDefault) { // stop the back button
-						event.preventDefault();
-					}
-				}
+				// if (event.target === jQuery(stage.getContainer()).find('canvas')[0]) {
+				// 	mapModel.move('mousewheel', -1 * deltaX, deltaY);
+				// 	if (event.preventDefault) { // stop the back button
+				// 		event.preventDefault();
+				// 	}
+				// }
 			};
 		jQuery.hotkeys.specialKeys[187] = 'plus';
 		jQuery.hotkeys.specialKeys[189] = 'minus';
@@ -89,7 +89,8 @@ jQuery.fn.mapWidget = function (activityLog, mapModel, touchEnabled, imageRender
 					mapModel.move('touch', event.gesture.deltaX, event.gesture.deltaY);
 				}
 			}).on('doubletap', function () {
-				mapModel.resetView();
+				//mapModel.resetView();
+				mapModel.openDetails();
 			}).on('touch', function () {
 				jQuery('.topbar-color-picker:visible').hide();
 				jQuery('.ideaInput:visible').blur();

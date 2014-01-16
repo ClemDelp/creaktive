@@ -12,16 +12,14 @@ var global = {
     console.log("manager loading...");
 
     this.models.CurrentUser = new this.Models.User(JSON.parse(currentUser)); 
-
+    console.log("******* Connected as ", this.models.CurrentUser.get("name"))
     /*Collections*/
     this.collections.Users = new this.Collections.UsersCollection();
     this.collections.Groups = new this.Collections.GroupsCollection();
-    this.collections.Permissions = new this.Collections.PermissionsCollection();
     this.collections.Projects = new this.Collections.ProjectsCollection();
     
 
     this.collections.Projects.fetch({reset: true});
-    this.collections.Permissions.fetch({reset: true});
     this.collections.Users.fetch({reset: true});
     this.collections.Groups.fetch({reset: true});
 

@@ -30,18 +30,6 @@
 	</div>
 </script>
 
-<script type="text/template" id="visu-filters-template">
-	Filters: 
-	{{ _.each(filters, function(filter) { }}
-    	{{ if(filter.type == "concept"){ }}
-    		<a class="tiny button remove" data-id-filter="{{=filter.id}}">{{= filter.model.get('title') }}</a> +
-    	{{ }else if(filter.type == "poche"){ }}
-    		<a class="tiny success button remove" data-id-filter="{{=filter.id}}">{{= filter.model.get('title') }}</a> +
-    	{{ }else if(filter.type == "expert"){ }}	
-    		<a class="tiny alert button remove" data-id-filter="{{=filter.id}}">{{= filter.model.get('name') }}</a> +
-    	{{ } }}
-	{{ }); }}
-</script>
 
 <script type="text/template" id="visu-knowledge-template">
 	<div class="small-2 large-2 columns ">
@@ -64,11 +52,11 @@
 		Add knowledge to 
 		{{ _.each(filters, function(filter) { }}
 	    	{{ if(filter.type == "concept"){ }}
-	    		<a class="tiny button remove" data-id-filter="{{=filter.id}}">{{= filter.model.get('title') }}</a> +
+	    		<a class="tiny button remove" data-id-filter="{{=filter.id}}">{{= filter.model }}</a> +
 	    	{{ }else if(filter.type == "poche"){ }}
-	    		<a class="tiny success button remove" data-id-filter="{{=filter.id}}">{{= filter.model.get('title') }}</a> +
+	    		<a class="tiny success button remove" data-id-filter="{{=filter.id}}">{{= filter.model }}</a> +
 	    	{{ }else if(filter.type == "expert"){ }}	
-	    		<a class="tiny alert button remove" data-id-filter="{{=filter.id}}">{{= filter.model.get('name') }}</a> +
+	    		<a class="tiny alert button remove" data-id-filter="{{=filter.id}}">{{= filter.model }}</a> +
 	    	{{ } }}
 		{{ }); }}
     	<input id="visu_new_k_title" type="text" placeholder="title"/>

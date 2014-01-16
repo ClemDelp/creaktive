@@ -13,6 +13,16 @@ module.exports = {
   }
   */
 
+  find : function (req,res){
+    User.find({
+
+    }).done(function(err,users){
+      if(err) res.send(err)
+      res.send(users)
+    });
+
+  },
+
   
     update : function(req,res){
   	User.findOne(req.body.id).done(function(err, user){

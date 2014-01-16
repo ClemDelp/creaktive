@@ -49,13 +49,14 @@
 
 <div class="interface">
   <dl class="tabs" data-tab>
-    <dd id="panel-concept" ><a href="#panel2-1">Concept</a></dd>
+    <dd id="panel-concept" class="active"><a href="#panel2-1">Concept</a></dd>
     <dd id="panel-visualization"><a href="#panel2-2">Visualization</a></dd>
     <dd id="panel-knowledge" ><a href="#panel2-3">Knowledge</a></dd>
-    <dd id="panel-visu" class="active"><a href="#panel2-4">Visu quenelle</a></dd>
+    <dd id="panel-visu" ><a href="#panel2-4">Knowledge2</a></dd>
 
   </dl>
   <div class="tabs-content">
+
       <div class="content active " id="panel2-1">
           <div id="interface1-container"></div>
           <div class="large-6 columns" id="container"></div>  
@@ -69,16 +70,17 @@
       <div class="content " id="panel2-4">
           <%- partial('./templates/visu_template') %>
       </div>
+
   </div>
 </div>
 
 <%- partial('./templates/concepts_template') %>
 <%- partial('./templates/cklink_template') %>
 <%- partial('./templates/explorer_template') %>
-<%- partial('./templates/k_details_templates') %>
-<%- partial('./templates/c_details_templates') %>
 
-  
+<%- partial('./templates/details_templates') %>
+
+
 
 <!-- Javascript libs -->
 <script type="text/javascript" src="js/vendor/socket.io.js"></script>
@@ -103,39 +105,51 @@
 <script type="text/javascript" src="js/BB_app/modules/visualisation.js"></script>
 
 <script type="text/javascript" src="js/BB_app/modules/explorer.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/k_details.js"></script>
 <script type="text/javascript" src="js/BB_app/interfaces/interface1.js"></script>
 <script type="text/javascript" src="js/BB_app/interfaces/interface3.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/concepts.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/c_details.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/details.js"></script>
 
 
 <script>
 
   $(document).on('opened', '[data-reveal]', function () {
     var modal = $(this);
-    if(modal.attr('id')==="detailsModal"){
+    if(modal.attr('id')==="cDetailsModal"){
       try{
-CKEDITOR.replace('change_c_content');
+        CKEDITOR.replaceAll('ckeditor');
+
       }catch(e){
-        
-      }
-      
+
+      }  
+    };
+
+      if(modal.attr('id')==="kDetailsModal"){
+
+      try{
+
+        CKEDITOR.replaceAll('ckeditor2');
+      }catch(e){
+
+      }  
     };
   });
+
+
+  
 
   ///////////////////////////////////////////////////
   $(document).ready(function () {
     console.log( "CreaKtive DOM loaded!" );
     ////////////////////////////////////////
-    // Backbone.Model.prototype.toJSON = function() {
-    //   return JSON.parse(JSON.stringify(this.attributes));
-    // };
+    Backbone.Model.prototype.toJSON = function() {
+      return JSON.parse(JSON.stringify(this.attributes));
+    };
     ////////////////////////////////////////
     rt(io, function(){
       global.init('<%- currentUser %>', function(){
         /*Modules*/
-        k_details.init();
+        details.init();
         topBar.init();
         cklink.init();
         explorer.init();
@@ -162,17 +176,17 @@ function rt (io, callback) {
   var socket = io.connect();
   socket.on('connect', function socketConnected() {
     socket.get("/auth/openChannels", function(data){
-      console.log(data.msg);
-      console.log(data.channels);
+      // console.log(data.msg);
+      // console.log(data.channels);
     })
     // Listen for Comet messages from Sails
     socket.on('message', function messageReceived(message) {     
       console.log('New comet message received :: ', message);
     });
     console.log(
-        'Socket is now connected and globally accessible as `socket`.\n' + 
-        'e.g. to send a GET request to Sails, try \n' + 
-        '`socket.get("/", function (response) ' +
+      'Socket is now connected and globally accessible as `socket`.\n' + 
+      'e.g. to send a GET request to Sails, try \n' + 
+      '`socket.get("/", function (response) ' +
         '{ console.log(response); })`'
     );
     callback();

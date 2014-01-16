@@ -12,26 +12,31 @@ var global = {
   views: {},
   init: function (currentUser, callback) {
     /*Init*/
-    console.log("global object loading...");
 
     this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
-
+    console.log("******* Connected as ", this.models.current_user.get("name"))
     /*Collections*/
     this.collections.Knowledges = new this.Collections.Knowledges();
+    this.collections.Users = new this.Collections.UsersCollection();
     this.collections.Poches = new this.Collections.Poches();
     this.collections.Projects = new this.Collections.ProjectsCollection();
     this.collections.Concepts = new this.Collections.ConceptsCollection();
     this.collections.Links = new this.Collections.CKLinks();
     this.collections.Notifications = new this.Collections.NotificationsCollection();
-    this.collections.users = new this.Collections.UsersCollection();
+
     /*Loads*/
+
+
+    this.collections.Users.fetch({reset:true}); 
     this.collections.Knowledges.fetch({reset: true});
     this.collections.Poches.fetch({reset: true});
     this.collections.Projects.fetch({reset:true});
     this.collections.Concepts.fetch({reset:true});
     this.collections.Links.fetch({reset:true});
     this.collections.Notifications.fetch({reset:true});
-    this.collections.users.fetch({reset:true,complete:function(collection){console.log("tuuuuuuuuuuuuuuuuuuuuu",collection)}});
+
+      this.eventAggregator = {};//this.concepts.first();
+      _.extend(this.eventAggregator, Backbone.Events);
 
     callback();
 
@@ -53,7 +58,7 @@ var visu = {
     this.views.main = new this.Views.Main({
       concepts    : global.collections.Concepts,
       knowledges  : global.collections.Knowledges,
-      experts     : global.collections.users,
+      experts     : global.collections.Users,
       poches      : global.collections.Poches,
       links       : global.collections.Links,
       user        : global.models.current_user
@@ -74,11 +79,11 @@ var topBar = {
   views: {},
   init: function () {
     /*Init*/
-    console.log('TopBar Constructor');
 
     this.views.Main = new this.Views.Main({
       notifications : global.collections.Notifications,
-      current_user : global.models.current_user
+      current_user : global.models.current_user,
+      eventAggregator : global.eventAggregator
     });
     // this.collections.Links.fetch({
     //   reset:true,
@@ -91,37 +96,7 @@ var topBar = {
 
   }
 };
-/////////////////////////////////////////////////
-var k_details = {
-  // Classes
-  Collections: {},
-  Models: {},
-  Views: {},
-  // Instances
-  collections: {},
-  models: {},
-  views: {},
-  init: function () {
-    /*Init*/
-    console.log('K_details Constructor');
-  }
-};
 
-/////////////////////////////////////////////////
-var c_details = {
-  // Classes
-  Collections: {},
-  Models: {},
-  Views: {},
-  // Instances
-  collections: {},
-  models: {},
-  views: {},
-  init: function () {
-    /*Init*/
-    console.log('C_details Constructor');
-  }
-};
 /////////////////////////////////////////////////
 var explorer = {
   // Classes
@@ -134,7 +109,7 @@ var explorer = {
   views: {},
   init: function () {
     /*Init*/
-    console.log('Explorer Constructor');
+
   }
 };
 /////////////////////////////////////////////////
@@ -149,7 +124,7 @@ var cklink = {
   views: {},
   init: function () {
     /*Init*/
-    console.log('CKLink Constructor');
+
   }
 };
 /////////////////////////////////////////////////
@@ -164,7 +139,7 @@ var concepts = {
   views: {},
   init: function () {
     /*Init*/
-    console.log('Concepts Constructor');
+
   }
 
 };
@@ -180,12 +155,13 @@ var interface3 = {
   views: {},
   init: function () {
     /*Init*/
-    console.log('interface3 Constructor');
+
     /*views*/
     this.views.Main = new this.Views.Main({
       knowledges:global.collections.Knowledges,
       user:global.models.current_user,
-      poches:global.collections.Poches
+      poches:global.collections.Poches,
+      users : global.collections.Users,
     });
     /*Renders*/
     this.views.Main.render();
@@ -207,17 +183,19 @@ var interface1 = {
   
   init: function () {
     /*Init*/
-    console.log('interface1 Constructor');
+
     /*views*/
     
     /*views*/
     this.views.Main = new this.Views.Main({
+      users : global.collections.Users,
       currentUser : global.models.current_user,
       currentProject : new global.Models.ProjectModel({}),
       concepts : global.collections.Concepts,
       links : global.collections.Links,
       knowledges : global.collections.Knowledges,
-      poches : global.collections.Poches
+      poches : global.collections.Poches,
+      eventAggregator : global.eventAggregator
     });
 
     /*Renders*/
@@ -228,3 +206,28 @@ var interface1 = {
 };
 
 
+/////////////////////////////////////////////////
+var details = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    
+    details_ = new details.Views.Main({
+      user : global.models.current_user,
+      users : global.collections.Users,
+      knowledges : global.collections.Knowledges,
+      concepts : global.collections.Concepts,
+      eventAggregator : global.eventAggregator,
+      poches      : global.collections.Poches,
+      links       : global.collections.Links,
+    });
+
+      
+  }
+};
