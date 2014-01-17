@@ -73,7 +73,7 @@ manager.Views.Project = Backbone.View.extend({
             project : this.project,
         });
         $(project_el).append(permissionTable_.render().el);
-        $(project_el).append("<a href='#' data-project-id='{{= project.id}}' class='button tiny alert removeProject'>Remove Project</a>");
+        $(project_el).append("<a href='#' data-project-id='"+this.project.id+"' class='button tiny alert removeProject'>Remove Project</a>");
         $(document).foundation();
         return this;
     }
@@ -262,7 +262,7 @@ manager.Views.Groups = Backbone.View.extend({
         console.log("Add a user to a group");
         group_id = e.target.getAttribute("data-group-id");
         user_id = e.target.getAttribute("data-user-id");
-        $.post('/group/addUserToGroup', {user_id : user_id, group_id : group_id});
+        socket.post('/group/addUserToGroup', {user_id : user_id, group_id : group_id});
         group = this.groups.get(group_id);
         user = this.users.get(user_id).toJSON();
         group_users = group.get('users');
@@ -274,7 +274,7 @@ manager.Views.Groups = Backbone.View.extend({
         _this = this;
         user_id = e.target.getAttribute("data-user-id");
         group_id = e.target.getAttribute("data-group-id");
-        $.post('/group/removeUserFromGroup', {user_id : user_id, group_id : group_id});
+        socket.post('/group/removeUserFromGroup', {user_id : user_id, group_id : group_id});
         group = this.groups.get(group_id);
         group.set({users: _.reject(group.get('users'), function(num){ if(num.id === user_id) return num; }) });
        

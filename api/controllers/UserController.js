@@ -25,20 +25,30 @@ module.exports = {
 
   
     update : function(req,res){
-  	User.findOne(req.body.id).done(function(err, user){
+  	User.findOne(req.body.params.id).done(function(err, user){
   		if(err) res.send(err);
   		if(user){
-  			User.update({id: req.body.id}, req.body).done(function(err,c){
+  			User.update({id: req.body.params.id}, req.body.params).done(function(err,c){
   				if(err) res.send(err)
   				res.send(c);
   			});
   		}else{
-  			User.create(req.body).done(function(err,p){
+  			User.create(req.body.params).done(function(err,p){
   				if(err) res.send(err)
   				res.send(p);
   			})
   		}
   	})
+  },
+
+    destroy : function(req,res){
+    User.findOne(req.body.params.id).done(function(err,user){
+      if(err) console.log(err);
+      user.destroy(function(err){
+        if(err) console.log(err)
+          res.send({msg:"destroyed"})
+      })
+    });
   },
 
 };

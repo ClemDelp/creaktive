@@ -79,9 +79,10 @@ notifications.Views.Notifications = Backbone.View.extend({
             global.collections.Concepts.fetch({
                 reset : true,
                 success : function(){
-                    _this.eventAggregator.trigger("youhou", notification.get('to'))
+                    
                 }
             });
+            _this.eventAggregator.trigger("youhou", notification.get('to'))
         }
 
         if(notification.get('type') === "createKnowledge" || notification.get('type') === "createLink" || notification.get('type') === "createPoche"){
@@ -108,7 +109,7 @@ notifications.Views.Notifications = Backbone.View.extend({
     },
 
     
-    render : function() {
+    render : function(cb) {
 
         $(this.el).html('');
 		_this = this;
@@ -129,6 +130,7 @@ notifications.Views.Notifications = Backbone.View.extend({
         })      
         $(document).foundation();
         return this;
+
     }
 });
 /****************************************************************/
@@ -155,7 +157,6 @@ notifications.Views.Log = Backbone.View.extend({
 });
 /****************************************************************/
 notifications.Views.Logs = Backbone.View.extend({
-    el : $('#log-activity-list'),
     initialize : function(json){
         _.bindAll(this, 'render');
 
@@ -164,14 +165,13 @@ notifications.Views.Logs = Backbone.View.extend({
     },
 
     render : function(){
-     $(this.el).html("");
      _this = this;
-
+	$('#log-activity-list').html("");
      this.notifications.each(function(notification){
         notification_ = new notifications.Views.Log({
             notification : notification
         });
-        $(_this.el).append(notification_.render().el);
+        $('#log-activity-list').append(notification_.render().el);
     }) 
      $(document).foundation();
      return this;

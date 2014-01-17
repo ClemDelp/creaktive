@@ -480,7 +480,7 @@ details.Views.Main = Backbone.View.extend({
     youhou : function(e){
         this.model = this.concepts.get(e);
         this.render();
-         $('#cDetailsModal').foundation('reveal', 'open');
+         $('#detailsModal').foundation('reveal', 'open');
     },
     nodeSelectionChanged : function (e){
         this.model = this.concepts.get(e);

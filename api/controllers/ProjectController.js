@@ -40,15 +40,15 @@ module.exports = {
   },
 
   update : function(req,res){
-  	Project.findOne(req.body.id).done(function(err, project){
+  	Project.findOne(req.body.params.id).done(function(err, project){
   		if(err) res.send(err);
   		if(project){
-  			Project.update({id: req.body.id}, req.body).done(function(err,c){
+  			Project.update({id: req.body.params.id}, req.body.params).done(function(err,c){
   				if(err) res.send(err)
   				res.send(c);
   			});
   		}else{
-  			Project.create(req.body).done(function(err,p){
+  			Project.create(req.body.params).done(function(err,p){
   				if(err) res.send(err)
   				res.send(p);
   			})
@@ -57,22 +57,14 @@ module.exports = {
   },
 
   
-  update : function(req,res){
-		Project.findOne(req.body.id).done(function(err,project){
-			if (project){
-					Project.update({
-						id : req.body.id
-					},req.body).done(function(err,p){
-						if(err) res.send({err:err});
-						res.send(p);
-					})
-			}
-			else{
-				Project.create(req.body).done(function(err, p){
-					res.send(p)
-				})
-			}
-		})
+  destroy : function(req,res){
+		Project.findOne(req.body.params.id).done(function(err,project){
+		  if(err) console.log(err);
+      project.destroy(function(err){
+        if(err) console.log(err)
+          res.send({msg:"destroyed"})
+      })
+    });
 	},
 
 
@@ -84,16 +76,16 @@ module.exports = {
 */
 createPermission : function (req,res){
   UserGroup.find({
-    group_id : req.body.group_id
+    group_id : req.body.params.group_id
   }).done(function (err, usergroups){
     users_id = _.pluck(usergroups, "user_id");
     _.each(users_id, function(user_id){
       Permission.create({
         id : guid(),
         user_id : user_id,
-        project_id : req.body.project_id,
-        right : req.body.right,
-        group_id : req.body.group_id
+        project_id : req.body.params.project_id,
+        right : req.body.params.right,
+        group_id : req.body.params.group_id
 
       }).done(function (err, p){
         if(err) console.log(err);
@@ -112,8 +104,8 @@ createPermission : function (req,res){
 */
 removePermission : function (req,res){
   Permission.find({
-    user_id : req.body.user_id,
-    project_id : req.body.project_id
+    user_id : req.body.params.user_id,
+    project_id : req.body.params.project_id
   }).done(function (err, permissions){
     _.each(permissions, function(perm){
       perm.destroy(function (err){

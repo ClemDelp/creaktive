@@ -44,20 +44,30 @@ module.exports = {
   },
   
   update : function(req,res){
-  	Group.findOne(req.body.id).done(function(err, group){
+  	Group.findOne(req.body.params.id).done(function(err, group){
   		if(err) res.send(err);
   		if(group){
-  			Group.update({id: req.body.id}, req.body).done(function(err,c){
+  			Group.update({id: req.body.params.id}, req.body.params).done(function(err,c){
   				if(err) res.send(err)
   				res.send(c);
   			});
   		}else{
-  			Group.create(req.body).done(function(err,g){
+  			Group.create(req.body.params).done(function(err,g){
   				if(err) res.send(err)
   				res.send(g);
   			})
   		}
   	})
+  },
+
+  destroy : function(req,res){
+    Group.findOne(req.body.params.id).done(function(err,group){
+      if(err) console.log(err);
+      group.destroy(function(err){
+        if(err) console.log(err)
+          res.send({msg:"destroyed"})
+      })
+    });
   },
 
   /*
