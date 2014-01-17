@@ -13,11 +13,9 @@ notifications.Views.Notification = Backbone.View.extend({
     render : function(){
         var renderedContent = "";
 
-        if( _.indexOf(this.model.get("read"), this.current_user.id) === -1 ) {
             renderedContent = this.template({
                 notification : this.model.toJSON()
             });  
-        }
         
         $(this.el).append(renderedContent);
         return this;
@@ -34,6 +32,8 @@ notifications.Views.Notifications = Backbone.View.extend({
         this.eventAggregator = json.eventAggregator;
         this.notifications.ioBind("create", this.serverCreate, this);
 
+        this.notificationsCounter = 0;
+
         this.template = _.template($('#notifications-template').html());
     },
 
@@ -43,6 +43,8 @@ notifications.Views.Notifications = Backbone.View.extend({
             console.log("CHAMPAGNE SHOWER !!!")
         }else {
             this.notifications.add(e);
+            this.notificationsCounter++;
+    		$('#notificationsCounter').html(this.notificationsCounter); 
         }       
     },
 
@@ -118,7 +120,13 @@ notifications.Views.Notifications = Backbone.View.extend({
 		$(this.el).append(renderedContent);
         
         renderedNotification = _this.notifications.filter( function (n){
-            if(n.get('from').id !== _this.current_user.id) return n;
+            if(n.get('from').id !== _this.current_user.id){
+				if( _.indexOf(n.get("read"), _this.current_user.id) === -1 ) {
+					return n;
+				}
+            }          
+
+            	
         });
 
         _.each(renderedNotification, function(notification){
@@ -127,7 +135,10 @@ notifications.Views.Notifications = Backbone.View.extend({
                 current_user : _this.current_user
             });
             $(_this.el).append(notification_.render().el);
-        })      
+        })  
+
+        this.notificationsCounter = renderedNotification.length;
+        $('#notificationsCounter').html(this.notificationsCounter);    
         $(document).foundation();
         return this;
 

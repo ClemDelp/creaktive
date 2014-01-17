@@ -479,6 +479,7 @@ details.Views.Main = Backbone.View.extend({
 
     youhou : function(e){
         this.model = this.concepts.get(e);
+        this.type = "concept";
         this.render();
          $('#detailsModal').foundation('reveal', 'open');
     },
