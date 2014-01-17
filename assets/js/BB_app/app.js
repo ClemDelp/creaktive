@@ -85,14 +85,27 @@ var topBar = {
       current_user : global.models.current_user,
       eventAggregator : global.eventAggregator
     });
-    // this.collections.Links.fetch({
-    //   reset:true,
-    //   success : function(collection, response, options){},
-    //   complete : function(collection, response, options){},
-    //   error : function(collection, response, options){
-    //     console.log(response)
-    //   },
-    // });
+  }
+};
+
+/////////////////////////////////////////////////
+var notifications = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+
+    this.views.Main = new this.Views.Main({
+      notifications : global.collections.Notifications,
+      current_user : global.models.current_user,
+      eventAggregator : global.eventAggregator
+    });
 
   }
 };

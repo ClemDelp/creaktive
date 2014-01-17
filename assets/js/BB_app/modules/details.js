@@ -411,7 +411,7 @@ details.Views.ModalTabsContent = Backbone.View.extend({
 details.Views.Modal = Backbone.View.extend({
     tagName:"div",
     className:"reveal-modal",
-    id :"cDetailsModal",
+    id :"detailsModal",
     initialize : function(json) {
         _.bindAll(this, 'render');
         $(this.el).attr( "data-reveal","")
@@ -486,7 +486,7 @@ details.Views.Main = Backbone.View.extend({
         this.model = this.concepts.get(e);
         this.type = "concept";
         this.render(function(){
-           $('#cDetailsModal').foundation('reveal', 'open'); 
+           $('#detailsModal').foundation('reveal', 'open'); 
         });
         
 

@@ -1,5 +1,5 @@
 /****************************************************************/
-topBar.Views.Notification = Backbone.View.extend({
+notifications.Views.Notification = Backbone.View.extend({
     tagName:"li",
     initialize : function(json){
         _.bindAll(this, 'render');
@@ -12,32 +12,29 @@ topBar.Views.Notification = Backbone.View.extend({
 
     render : function(){
         var renderedContent = "";
-        
-        if( _.indexOf(this.model.get("read"), this.current_user.id) === -1 ) {
 
+        if( _.indexOf(this.model.get("read"), this.current_user.id) === -1 ) {
             renderedContent = this.template({
                 notification : this.model.toJSON()
             });  
-
         }
         
         $(this.el).append(renderedContent);
         return this;
     }
 });
-topBar.Views.Notifications = Backbone.View.extend({
+notifications.Views.Notifications = Backbone.View.extend({
     el : $('#notificationsList'),
     initialize : function(json) {
         _.bindAll(this, 'render','onNotificationClicked','removeNotification', 'serverCreate');
 
         // Variables
         this.current_user = json.current_user;
-
         this.notifications = json.notifications;
-
         this.eventAggregator = json.eventAggregator;
-
         this.notifications.ioBind("create", this.serverCreate, this);
+
+        this.template = _.template($('#notifications-template').html());
     },
 
     serverCreate : function(e){
@@ -113,14 +110,18 @@ topBar.Views.Notifications = Backbone.View.extend({
     
     render : function() {
 
-        $(this.el).html("");
-        _this = this;
+        $(this.el).html('');
+		_this = this;
+
+        var renderedContent = this.template();
+		$(this.el).append(renderedContent);
+        
         renderedNotification = _this.notifications.filter( function (n){
             if(n.get('from').id !== _this.current_user.id) return n;
         });
 
         _.each(renderedNotification, function(notification){
-            notification_ = new topBar.Views.Notification({
+            notification_ = new notifications.Views.Notification({
                 model : notification,
                 current_user : _this.current_user
             });
@@ -131,7 +132,7 @@ topBar.Views.Notifications = Backbone.View.extend({
     }
 });
 /****************************************************************/
-topBar.Views.Log = Backbone.View.extend({
+notifications.Views.Log = Backbone.View.extend({
     tagName:"div",
     className:"panel",
     initialize : function(json){
@@ -153,7 +154,7 @@ topBar.Views.Log = Backbone.View.extend({
 
 });
 /****************************************************************/
-topBar.Views.Logs = Backbone.View.extend({
+notifications.Views.Logs = Backbone.View.extend({
     el : $('#log-activity-list'),
     initialize : function(json){
         _.bindAll(this, 'render');
@@ -167,7 +168,7 @@ topBar.Views.Logs = Backbone.View.extend({
      _this = this;
 
      this.notifications.each(function(notification){
-        notification_ = new topBar.Views.Log({
+        notification_ = new notifications.Views.Log({
             notification : notification
         });
         $(_this.el).append(notification_.render().el);
@@ -179,7 +180,7 @@ topBar.Views.Logs = Backbone.View.extend({
 });
 
 /****************************************************************/
-topBar.Views.Main = Backbone.View.extend({
+notifications.Views.Main = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
 
@@ -192,16 +193,16 @@ topBar.Views.Main = Backbone.View.extend({
     },
 
     render : function(){
-    //  notifications_ = new topBar.Views.Notifications({
-    //     notifications : this.notifications,
-    //     current_user : this.current_user,
-    //     eventAggregator : this.eventAggregator
-    // }); 
-    //  notifications_.render();
+     notifications_ = new notifications.Views.Notifications({
+        notifications : this.notifications,
+        current_user : this.current_user,
+        eventAggregator : this.eventAggregator
+    }); 
+     notifications_.render();
 
-    //  logs_ = new topBar.Views.Logs({
-    //     notifications : this.notifications,
-    // })
-    //  logs_.render();
+     logs_ = new notifications.Views.Logs({
+        notifications : this.notifications,
+    })
+     logs_.render();
  }
 });
