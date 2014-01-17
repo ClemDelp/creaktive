@@ -26,6 +26,9 @@
 <script type="text/javascript" src="js/mapjs/png-exporter.js"></script>
 <script type="text/javascript" src="js/mapjs/map-widget.js"></script>
 
+<script type="text/javascript" src="js/mapjs/kinetic.link.js"></script>
+<script type="text/javascript" src="js/mapjs/link-edit-widget.js"></script>
+
 
 <!-- ******************************** -->
 <!-- VISU dependances -->
@@ -57,19 +60,34 @@
   </dl>
   <div class="tabs-content">
 
-      <div class="content active " id="panel2-1">
-          <div id="interface1-container"></div>
-          <div class="large-6 columns" id="container"></div>  
+    <div class="content active " id="panel2-1">
+      <div >
+        <div id="interface1-container" class="columns large-1">
+          <a href="#" title="Center" class="panel button tiny resetView"><img src="img/centrer.png"></a>
+          <a href="#" title="Zoom" class="panel button tiny scaleUp"><img src="img/plus.png"></a>
+          <a href="#" title="Zoom" class="panel button tiny scaleDown"><img src="img/moins.png"></a>
+          <a href="#" title="Add" class="panel button tiny addSubIdea"><img src="img/add.png"></a>
+          <a href="#" title="Delete" class="panel button tiny removeSubIdea"><img src="img/sup.png"></a>
+          <a href="#" title="Insert" class="panel button tiny insertIntermediate"><img src="img/insertparent.png"></a>
+          <a href="#" title="Expand" class="panel button tiny toggleCollapse"><img src="img/expand.png"></a>
+          <a href="#" title="Undo" class="panel button tiny undo"><img src="img/undo.png"></a>
+          <a href="#" title="Redo" class="panel button tiny redo"><img src="img/redo.png"></a>
+          <a href="#" title="Cut" class="panel button tiny cut"><img src="img/couper.png"></a>
+          <a href="#" title="Copy" class="panel button tiny copy"><img src="img/copy.png"></a>
+          <a href="#" title="Paste" class="panel button tiny paste"><img src="img/coller.png"></a>
+        </div>
+        <div class="large-11 columns" id="container"></div>  
       </div>
-      <div class="content " id="panel2-2">
-          <%- partial('./templates/visualisation_template') %>
-      </div>
-      <div class="content " id="panel2-3">
-          <div id="interface3-container"></div>
-      </div>
-      <div class="content " id="panel2-4">
-          <%- partial('./templates/visu_template') %>
-      </div>
+    </div>
+    <div class="content " id="panel2-2">
+      <%- partial('./templates/visualisation_template') %>
+    </div>
+    <div class="content " id="panel2-3">
+      <div id="interface3-container"></div>
+    </div>
+    <div class="content " id="panel2-4">
+      <%- partial('./templates/visu_template') %>
+    </div>
 
   </div>
 </div>
@@ -124,7 +142,7 @@
       }  
     };
 
-      if(modal.attr('id')==="kDetailsModal"){
+    if(modal.attr('id')==="kDetailsModal"){
 
       try{
 

@@ -1,11 +1,15 @@
 <!-- Javascript libs -->
 
 <!-- Templates to load -->
+<div class="topbar-container"></div>
+<%- partial('./templates/topBar_template') %>
 <%- partial('./templates/manager_template') %>
 
- <div class="row" id="manager-container"></div>
+<div class="row" id="manager-container"></div>
 
 <!-- Javascript libs -->
+<script src="/js/vendor/backbone.iosync.js"></script>
+<script src="/js/vendor/backbone.iobind.js"></script>
 <script type="text/javascript" src="js/vendor/socket.io.js"></script>
 <script type="text/javascript" src="js/sails.io.js"></script>
 
@@ -18,21 +22,54 @@
 
 <!-- Modules situés dans BB_app -->
 <script src="js/BB_app/modules/manager.js"></script>
+<script src="js/BB_app/modules/topbar.js"></script>
 
 <script>
 
-$(document).ready(function () {
+	$(document).ready(function () {
 
-  Backbone.Model.prototype.toJSON = function() {
-    return JSON.parse(JSON.stringify(this.attributes));
-  };
+		Backbone.Model.prototype.toJSON = function() {
+			return JSON.parse(JSON.stringify(this.attributes));
+		};
+
+		rt(io, function(){
   // Initialisation de l'managerlication ici
   console.log( "CreaKtive DOM loaded!" );
   global.init('<%- currentUser %>');
+
+  topBar.init();
   manager.init();      
   ////////////////////////////////////////
   /*activat of "hashchange events's monitoring"*/
   Backbone.history.start();
-}) ;
+})
+	}) ;
+
+
+
+	function rt (io, callback) {
+  // as soon as this file is loaded, connect automatically, 
+  var socket = io.connect();
+  socket.on('connect', function socketConnected() {
+  	socket.get("/auth/openChannels", function(data){
+      // console.log(data.msg);
+      // console.log(data.channels);
+  })
+    // Listen for Comet messages from Sails
+    socket.on('message', function messageReceived(message) {     
+    	console.log('New comet message received :: ', message);
+    });
+    console.log(
+    	'Socket is now connected and globally accessible as `socket`.\n' + 
+    	'e.g. to send a GET request to Sails, try \n' + 
+    	'`socket.get("/", function (response) ' +
+    		'{ console.log(response); })`'
+    );
+    callback();
+});
+
+  window.socket = socket;
+
+};
 
 </script>

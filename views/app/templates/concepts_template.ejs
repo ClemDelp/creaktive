@@ -1,32 +1,29 @@
 <script type="text/javascript">
 	jQuery.fn.attachmentEditorWidget = function (mapModel) {
-				'use strict';
-				return this.each(function () {
-					var element = jQuery(this);
-					mapModel.addEventListener('attachmentOpened', function (nodeId, attachment) {
-						mapModel.setAttachment(
-							'attachmentEditorWidget',
-							nodeId, {
-								contentType: 'text/html',
-								content: prompt('attachment', attachment && attachment.content)
-							}
-						);
-					});
-				});
-			};
+		'use strict';
+		return this.each(function () {
+			var element = jQuery(this);
+			mapModel.addEventListener('attachmentOpened', function (nodeId, attachment) {
+				mapModel.setAttachment(
+					'attachmentEditorWidget',
+					nodeId, {
+						contentType: 'text/html',
+						content: prompt('attachment', attachment && attachment.content)
+					}
+					);
+			});
+		});
+	};
 </script>
 
 
 <script type="text/template" id="map-template">
 
-	<a href="#" class="button details" data-reveal-id="cDetailsModal">Show concept details</a>
-	<a href="#" class="button link" data-reveal-id="linkModal">Link knowledge to concept</a>		  
 </script>
 
 
 <script type="text/template" id="map-button-template">
-	
-		<div class="button-bar">
+	<div class="button-bar">
 		<ul class="button-group round">
 			<li><a href="#" class="resetView button tiny" > 0</a></li>
 			<li><a href="#" class="scaleUp button tiny" >+</a></li>
@@ -34,24 +31,25 @@
 
 		</ul>
 		<ul class="button-group round">
-			<li><a href="#" class="addSubIdea button tiny" >add</a></li>
+		<li><a href="#" title="Add" class="addSubIdea button tiny" >add</a></li>
 			<li><a href="#" class="editNode button tiny" >edit</a></li>
 			<li><a href="#" class="removeSubIdea button tiny" >delete</a></li>
 			<li><a href="#" class="insertIntermediate button tiny" >insert parent</a></li>
 		</ul>
+		<ul class="button-group round">
+			<li><a href="#" class="toggleCollapse button tiny" >exp/col</a></li>
+			<li><a href="#" class="button tiny" onclick="mapModel.setInputEnabled(false)" >disable</a></li>
+			<li><a href="#" class="button tiny" onclick="mapModel.setInputEnabled(true)" >enable</a></li>
+			<li><a href="#" class="undo button tiny" >undo</a></li>
+			<li><a href="#" class="redo button tiny" >redo</a></li>
+			<li><a href="#" class="button tiny" data-mm-action="export-image">Export To Image </a></li>
+			<li><a href="#" class="cut button tiny" >cut</a></li>
+			<li><a href="#" class="copy button tiny" >copy</a></li>
+			<li><a href="#" class="paste button tiny" >paste</a></li>
+			<li><a href="#" class="openAttachment button tiny" >open attachment</a></li>
+		</ul>	
 	</div>
-	<ul class="button-group round">
-		<li><a href="#" class="toggleCollapse button tiny" >exp/col</a></li>
-		<li><a href="#" class="button tiny" onclick="mapModel.setInputEnabled(false)" >disable</a></li>
-		<li><a href="#" class="button tiny" onclick="mapModel.setInputEnabled(true)" >enable</a></li>
-		<li><a href="#" class="undo button tiny" >undo</a></li>
-		<li><a href="#" class="redo button tiny" >redo</a></li>
-		<li><a href="#" class="button tiny" data-mm-action="export-image">Export To Image </a></li>
-		<li><a href="#" class="cut button tiny" >cut</a></li>
-		<li><a href="#" class="copy button tiny" >copy</a></li>
-		<li><a href="#" class="paste button tiny" >paste</a></li>
-		<li><a href="#" class="openAttachment button tiny" >open attachment</a></li>
-	</ul>
+
 
 </script>
 

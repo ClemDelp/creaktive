@@ -449,6 +449,7 @@ details.Views.Modal = Backbone.View.extend({
             concepts : this.concepts
         });
         $(this.el).append(tabs.render().el);
+        $(this.el).append('<a class="close-reveal-modal">&#215;</a>');
         return this;
     }
 });
@@ -484,11 +485,13 @@ details.Views.Main = Backbone.View.extend({
     nodeSelectionChanged : function (e){
         this.model = this.concepts.get(e);
         this.type = "concept";
-        this.render();
-        $('#cDetailsModal').foundation('reveal', 'open');
+        this.render(function(){
+           $('#cDetailsModal').foundation('reveal', 'open'); 
+        });
+        
 
     },
-    render : function(){
+    render : function(callback){
         
         //console.log("CONCEPT MODAL RENDER")
         $(this.el).html("");
@@ -505,6 +508,7 @@ details.Views.Main = Backbone.View.extend({
         });
         $(this.el).append(modal.render().el);
         $(document).foundation();
+        if(callback) callback();
     }
 });
 

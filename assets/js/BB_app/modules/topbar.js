@@ -189,7 +189,6 @@ topBar.Views.Main = Backbone.View.extend({
         this.current_user = json.current_user;
         this.eventAggregator = json.eventAggregator;
 
-        this.template = _.template($('#log-template').html());
     },
 
     render : function(){

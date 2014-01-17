@@ -73,7 +73,7 @@ manager.Views.Project = Backbone.View.extend({
             project : this.project,
         });
         $(project_el).append(permissionTable_.render().el);
-
+        $(project_el).append("<a href='#' data-project-id='{{= project.id}}' class='button tiny alert removeProject'>Remove Project</a>");
         $(document).foundation();
         return this;
     }
@@ -459,7 +459,6 @@ manager.Views.Main = Backbone.View.extend({
    
     },
     render : function() {
-        console.log("On render tout !")
         var renderedContent = this.template();
         $(this.el).html(renderedContent);
 
