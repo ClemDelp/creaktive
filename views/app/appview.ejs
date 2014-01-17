@@ -73,13 +73,14 @@
       <!-- content goes here -->
 
       <div class="interface">
-        <dl class="tabs" data-tab>
-          <dd id="panel-concept" class="active"><a href="#panel2-1">Concept</a></dd>
-          <dd id="panel-visualization"><a href="#panel2-2">Visualization</a></dd>
-          <dd id="panel-knowledge" ><a href="#panel2-3">Knowledge</a></dd>
-          <dd id="panel-visu" ><a href="#panel2-4">Knowledge2</a></dd>
-
-        </dl>
+        <div class="expand panel" style="text-align:center">
+          <h2>Title</h2>
+          <dl class="tabs" style="width : 30%; margin : auto;" data-tab>
+              <dd id="panel-concept" class="active"><a href="#panel2-1">Concept</a></dd>
+              <dd id="panel-knowledge" ><a href="#panel2-3">Knowledge</a></dd>
+              <dd id="panel-visu" ><a href="#panel2-4">Knowledge2</a></dd>
+          </dl>
+        </div>
         <div class="tabs-content">
 
           <div class="content active " id="panel2-1">
@@ -100,9 +101,6 @@
               </div>
               <div class="large-11 columns" id="container"></div>  
             </div>
-          </div>
-          <div class="content " id="panel2-2">
-            <%- partial('./templates/visualisation_template') %>
           </div>
           <div class="content " id="panel2-3">
             <div id="interface3-container"></div>
@@ -149,7 +147,6 @@
 <script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/cklink.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/visu.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/visualisation.js"></script>
 
 <script type="text/javascript" src="js/BB_app/modules/explorer.js"></script>
 <script type="text/javascript" src="js/BB_app/interfaces/interface1.js"></script>
