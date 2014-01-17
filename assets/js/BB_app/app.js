@@ -141,6 +141,21 @@ var cklink = {
   }
 };
 /////////////////////////////////////////////////
+var tagK = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+
+  }
+};
+/////////////////////////////////////////////////
 var concepts = {
   // Classes
   Collections: {},
@@ -175,6 +190,7 @@ var interface3 = {
       user:global.models.current_user,
       poches:global.collections.Poches,
       users : global.collections.Users,
+      eventAggregator : global.eventAggregator
     });
     /*Renders*/
     this.views.Main.render();

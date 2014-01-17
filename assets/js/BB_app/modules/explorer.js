@@ -88,12 +88,13 @@ explorer.Views.Post = Backbone.View.extend({
     className: "small-2 large-2 columns",
     initialize : function(json) {
         //console.log("Knowedge view initialise");
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render','open_modal_details_box');
         // Variables
         this.knowledge = json.knowledge;
         this.user = json.user;
         this.users = json.users;
         this.edit = "off";
+        this.eventAggregator = json.eventAggregator;
         // Template
         this.template = _.template($('#post-template').html());
     },
@@ -102,15 +103,16 @@ explorer.Views.Post = Backbone.View.extend({
         "click .details" : "open_modal_details_box"
     },
     open_modal_details_box :function(e){
-        details.views.kModal = new details.Views.Main({
-            el : "#k_details_container",
-            templateId : "#k-details-title-ckeditor-template",
-            model:this.knowledge,
-            user:this.user,
-            users : this.users
-        });
-        details.views.kModal.render();
-        $('#kDetailsModal').foundation('reveal', 'open');
+        // details.views.kModal = new details.Views.Main({
+        //     el : "#k_details_container",
+        //     templateId : "#k-details-title-ckeditor-template",
+        //     model:this.knowledge,
+        //     user:this.user,
+        //     users : this.users
+        // });
+        // details.views.kModal.render();
+        // $('#kDetailsModal').foundation('reveal', 'open');
+        this.eventAggregator.trigger("kSelected", this.knowledge)
     },
     changeClass : function(e){
         var Class = this.el.className.split(' ');
@@ -178,6 +180,7 @@ explorer.Views.Posts = Backbone.View.extend({
         this.current_filters = json.currentFilters;
         this.current_selection = json.current_selection;
         this.users = json.users;
+        this.eventAggregator = json.eventAggregator;
         // Events
         this.knowledges.bind('reset', this.render);
         this.knowledges.bind('add', this.render);
@@ -303,10 +306,16 @@ explorer.Views.Posts = Backbone.View.extend({
         current_filters = this.current_filters;
         user_ = this.user;
         users_ = this.users;
+        eventAggregator_ = this.eventAggregator
         this.knowledges.each(function(k){
             // Si les filtres sont inclu ds les tag du model
             if(_.intersection(k.get('tags'),this.current_filters).length == this.current_filters.length){
-                knowledge_v = new explorer.Views.Post({knowledge:k,user:this.user_, users : this.users_});
+                knowledge_v = new explorer.Views.Post({
+                    knowledge:k,
+                    user:this.user_, 
+                    users : this.users_,
+                    eventAggregator : eventAggregator_
+                });
                 $(this.knowledges_el).append(knowledge_v.render().el);
             }
         });
@@ -328,6 +337,7 @@ explorer.Views.Main = Backbone.View.extend({
         this.current_selection = json.current_selection;
         this.current_filters = [];
         this.users = json.users;
+        this.eventAggregator = json.eventAggregator;
         // EventsAggregator
         _.extend(this.current_filters, Backbone.Events);
     },
@@ -344,7 +354,8 @@ explorer.Views.Main = Backbone.View.extend({
             user:this.user,
             currentFilters:this.current_filters,
             current_selection:this.current_selection,
-            users : this.users
+            users : this.users,
+            eventAggregator : this.eventAggregator
         });
         $(this.el).append(knowledges.render().el);
         

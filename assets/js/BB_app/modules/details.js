@@ -343,7 +343,8 @@ details.Views.ActionTab = Backbone.View.extend({
         this.knowledges = json.knowledges;
         this.poches = json.poches;
         this.links = json.links;
-        this.model = json.model
+        this.model = json.model;
+        this.user = json.user;
 
     },
 
@@ -359,6 +360,16 @@ details.Views.ActionTab = Backbone.View.extend({
                 concepts : this.concepts
             });
             $(this.el).append(cklink_.render().el);
+        }
+
+        if(this.type === "knowledge"){
+            tagK_ = new tagK.Views.Main({
+                current_knowledge : this.model,
+                currentUser : this.user,
+                poches:this.poches,
+                eventAggregator:this.eventAggregator,
+            });
+            $(this.el).append(tagK_.render().el);
         }
 
         return this;
@@ -401,7 +412,8 @@ details.Views.ModalTabsContent = Backbone.View.extend({
                 eventAggregator:this.eventAggregator,
                 links:this.links,
                 concepts : this.concepts,
-                type : this.type
+                type : this.type,
+                user : this.user
         });
         $(this.el).append(actionTab.render().el);
         return this;
@@ -460,7 +472,7 @@ details.Views.Modal = Backbone.View.extend({
 details.Views.Main = Backbone.View.extend({
     el:"#details_container",
     initialize : function(json) {
-        _.bindAll(this, 'render', 'nodeSelectionChanged','youhou');
+        _.bindAll(this, 'render', 'nodeSelectionChanged','youhou',"onKSelected");
         // Variables
         this.user = json.user;
         this.users = json.users;
@@ -474,6 +486,7 @@ details.Views.Main = Backbone.View.extend({
         this.type = "concept";
         this.eventAggregator.on("nodeSelectionChanged", this.nodeSelectionChanged);
         this.eventAggregator.on("youhou", this.youhou);
+        this.eventAggregator.on("kSelected", this.onKSelected)
 
     },
 
@@ -488,9 +501,14 @@ details.Views.Main = Backbone.View.extend({
         this.type = "concept";
         this.render(function(){
            $('#detailsModal').foundation('reveal', 'open'); 
-        });
-        
-
+        });       
+    },
+    onKSelected : function(e){
+        this.model = e;
+        this.type = "knowledge",
+        this.render(function(){
+           $('#detailsModal').foundation('reveal', 'open'); 
+        });  
     },
     render : function(callback){
         
