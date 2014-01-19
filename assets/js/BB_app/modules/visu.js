@@ -93,7 +93,6 @@ visu.Views.RightPart = Backbone.View.extend({
         // Save the new knowledge
         newK.save();
         this.knowledges.add(newK);
-        alert("aaaaa")
     },
     render : function(){
         $(this.el).html('');
@@ -109,25 +108,93 @@ visu.Views.RightPart = Backbone.View.extend({
 /////////////////////////////////////////
 // Left part
 /////////////////////////////////////////
+visu.Views.ExpertsList = Backbone.View.extend({
+    initialize : function(json) {
+        console.log("Visu experts liste view initialise");
+        _.bindAll(this, 'render');
+        // Variables
+        this.experts = json.experts;
+        this.experts_render = this.experts;
+        this.knowledges = json.knowledges;
+        this.eventAggregator = json.eventAggregator;
+        // Events
+        this.eventAggregator.on('expert_search', this.expertSearch, this);
+        // Templates
+        this.template = _.template($('#visu-expert-template').html());
+        // Styles
+        $(this.el).attr( "style","overflow: auto;max-height:200px");
+    },
+    expertSearch: function(matched_experts){
+        this.experts_render = matched_experts;
+        this.render();
+    },
+    render : function(){
+        // Init
+        $(this.el).html('');
+        el_experts_part=this.el;
+        template = this.template;
+        knowledges = this.knowledges;
+        // Get the total_connections
+        total_connections = 0;
+        this.experts_render.each(function(expert){
+            knowledges.each(function(k){
+                if(k.get('user').id == expert.get('id')){total_connections+=1;}
+            });  
+        });
+        // For each expert
+        this.experts_render.each(function(expert_){
+            // Get the recurrence
+            recurrence = 0;
+            knowledges.each(function(k){
+                if(k.get('user').id == expert_.get('id')){recurrence+=1;}
+            });
+            if((recurrence == 0)&&(total_connections == 0)){percentage = 0;}else{percentage = (recurrence*100)/total_connections;}
+            var renderedContent = template({expert:expert_.toJSON(),rec:recurrence,per:percentage});
+            $(el_experts_part).append(renderedContent);
+        });
+
+        return this;
+    }
+});
+/***************************************/
 visu.Views.ExpertsPart = Backbone.View.extend({
     initialize : function(json) {
         console.log("Visu experts part view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.experts = json.experts;
-        console.log("experts visu -",this.experts);
+        this.knowledges = json.knowledges;
+        this.eventAggregator = json.eventAggregator;
         // Template
-        this.template = _.template($('#visu-expert-template').html());
+        this.template_search = _.template($('#visu-search-template').html());
+    },
+    events : {
+        "keyup .search" : "search",
+    },
+    search: function(e){
+        var research = e.target.value;
+        var research_size = research.length;
+        var matched = new Backbone.Collection();
+        this.experts.each(function(c){
+            if(research == c.get('name').substr(0,research_size)){
+                matched.add(c);
+            }
+        });
+        this.eventAggregator.trigger('expert_search',matched);
     },
     render : function(){
+        // Init
         $(this.el).html('');
-        // For each expert
-        el_experts_part=this.el;
-        template = this.template;
-        this.experts.each(function(expert_){
-            var renderedContent = template({expert:expert_.toJSON()});
-            $(el_experts_part).append(renderedContent);
+        // Input search
+        $(this.el).append(this.template_search({title:"Experts"}));
+        // Poche list
+        experts_list_view = new visu.Views.ExpertsList({
+            experts:this.experts,
+            knowledges:this.knowledges,
+            eventAggregator:this.eventAggregator
         });
+        $(this.el).append(experts_list_view.render().el);
+        
         return this;
     }
 });
@@ -143,8 +210,9 @@ visu.Views.PochesList = Backbone.View.extend({
         this.eventAggregator = json.eventAggregator;
         // Events
         this.eventAggregator.on('poche_search', this.pocheSearch, this);
-        // Template
+        // Templates
         this.template = _.template($('#visu-poche-template').html());
+        this.template_new_poche = _.template($('#visu-new-poche-template').html());
         // Styles
         $(this.el).attr( "style","overflow: auto;max-height:200px");
     },
@@ -180,6 +248,9 @@ visu.Views.PochesList = Backbone.View.extend({
             var renderedContent = template({poche:poche_.toJSON(),rec:recurrence,per:percentage});
             $(el_poches_part).append(renderedContent);
         });
+        // New poche
+        $(this.el).append(this.template_new_poche());
+
         return this;
     }
 });
@@ -192,12 +263,18 @@ visu.Views.PochesPart = Backbone.View.extend({
         this.poches = json.poches;
         this.knowledges = json.knowledges;
         this.eventAggregator = json.eventAggregator;
+        // Events
+        this.poches.bind("add",this.render);
+        this.poches.bind("remove",this.render);
+        this.poches.bind("change",this.render);
         // Templates
         this.template_search = _.template($('#visu-search-template').html());
-        this.template = _.template($('#visu-poche-template').html());
+        
     },
     events : {
-        "keyup .search" : "search"
+        "keyup .search" : "search",
+        "click .add" : "addPoche",
+        "click .removePoche" : "removePoche",
     },
     search: function(e){
         var research = e.target.value;
@@ -210,23 +287,27 @@ visu.Views.PochesPart = Backbone.View.extend({
         });
         this.eventAggregator.trigger('poche_search',matched);
     },
+    removePoche: function(e){
+        var poche = this.poches.get(e.target.getAttribute('data-id-poche'));
+        poche.destroy();
+    },
+    addPoche : function(e){
+        global.models.newP = new global.Models.Poche({
+            id: guid(),
+            title: $("#visu_newP").val(),
+            user : "clem",
+            color : "#FF0000",
+            description : $("#visu_newP_description").val(),
+            date : getDate()
+        });
+        global.models.newP.save();
+        this.poches.add(global.models.newP);
+    },
     render : function(){
         // Init
         $(this.el).html('');
-        el_poches_part=this.el;
-        template = this.template;
-        knowledges = this.knowledges;
         // Input search
-        $(this.el).append(this.template_search({title:"Experts"}));
-        // Get the total_connections
-        total_connections = 0;
-        this.poches.each(function(poche_){
-            knowledges.each(function(k){
-                k.get('tags').forEach(function(tag){
-                    if(tag == poche_.get('title')){total_connections+=1;}
-                });
-            });  
-        });
+        $(this.el).append(this.template_search({title:"Poches"}));
         // Poche list
         poches_list_view = new visu.Views.PochesList({
             poches:this.poches,
@@ -234,7 +315,7 @@ visu.Views.PochesPart = Backbone.View.extend({
             eventAggregator:this.eventAggregator
         });
         $(this.el).append(poches_list_view.render().el);
-
+        
         return this;
     }
 });
@@ -252,7 +333,6 @@ visu.Views.ConceptList = Backbone.View.extend({
         // Events
         this.eventAggregator.on('concept_search', this.conceptSearch, this);
         // Templates
-        this.template_search = _.template($('#visu-search-template').html());
         this.template = _.template($('#visu-concept-template').html());
         // Styles
         $(this.el).attr( "style","overflow: auto;max-height:200px");
@@ -308,6 +388,10 @@ visu.Views.ConceptsPart = Backbone.View.extend({
         this.knowledges = json.knowledges;
         this.links = json.links;
         this.eventAggregator = json.eventAggregator;
+        // Events
+        this.concepts.bind("add",this.render);
+        this.concepts.bind("remove",this.render);
+        this.concepts.bind("change",this.render);
         // Template
         this.template_search = _.template($('#visu-search-template').html());
     },
@@ -405,6 +489,13 @@ visu.Views.LeftPart = Backbone.View.extend({
             eventAggregator:this.eventAggregator
         });
         $(this.el).append(poches_part_view.render().el);
+        // Experts part
+        experts_part_view = new visu.Views.ExpertsPart({
+            experts:this.experts,
+            knowledges:this.knowledges,
+            eventAggregator:this.eventAggregator
+        });
+        $(this.el).append(experts_part_view.render().el);
 
 
         return this;
@@ -466,17 +557,17 @@ visu.Views.Main = Backbone.View.extend({
                 }
                 ////////////////////////
                 if(f.get('type') == "expert"){
-                    // if(k.user.get('id') == f.val){
-                    //     ks_filtered.add(k);
-                    //     return false;
-                    // }
+                    if(k.get('user').id == f.get('model').get('id')){
+                        ks_filtered.add(k);
+                        return false;
+                    }
                 }
                 ////////////////////////
             });
         });
         return ks_filtered;
     },
-    render : function(){
+    render : function(){alert("render")
         if(this.filters.length == 0){ks=this.knowledges;}else{ks = this.quenelle();}
         // Left part
         leftPart_view = new visu.Views.LeftPart({
