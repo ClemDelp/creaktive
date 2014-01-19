@@ -567,7 +567,7 @@ visu.Views.Main = Backbone.View.extend({
         });
         return ks_filtered;
     },
-    render : function(){alert("render")
+    render : function(){
         if(this.filters.length == 0){ks=this.knowledges;}else{ks = this.quenelle();}
         // Left part
         leftPart_view = new visu.Views.LeftPart({
