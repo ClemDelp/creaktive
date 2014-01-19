@@ -4,7 +4,7 @@
 <!-- Left part -->
 <script type="text/template" id="visu-search-template">
 	<div class="panel expand"><p>{{=title}}</p></div>
-	<input type="text" class="search" placeholder="search...">
+	<input type="text" class="search" placeholder="search in {{=title}}...">
 </script>
 
 
@@ -59,6 +59,22 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Right part -->
 <script type="text/template" id="visu-knowledges-template">
+	<div class="small-3 large-3 columns">
+		<ul class="pricing-table">
+		  	<li class="price">
+				<div class="row collapse">
+			        <div class="small-10 columns">
+			          <input id="visu_new_k_title" type="text" placeholder="Add a knowledge in the current context..."/>
+			        </div>
+			        <div class="small-2 columns">
+			          <a href="#" class="button postfix addKnowledge">Add</a>
+			        </div>
+			    </div>
+			</li>
+			<li class="description">{{= user.name }} - {{= getDate() }}</li>
+		</ul>
+	</div>
+
 	{{ _.each(knowledges, function(knowledge) { }}
 		<div class="small-3 large-3 columns openModal" data-id-knowledge="{{= knowledge.id }}">
 			<ul class="pricing-table" data-id-knowledge="{{= knowledge.id }}">
@@ -73,27 +89,18 @@
 </script>
 
 <script type="text/template" id="visu-publish-module-template">
-	<div class="">
-		<div class="row">
-			Context :  
-			{{ _.each(filters, function(filter) { }}
-		    	{{ if(filter.type == "concept"){ }}
-		    		<a class="tiny button remove" data-id-filter="{{=filter.id}}">{{= filter.model.title }}</a> +
-		    	{{ }else if(filter.type == "poche"){ }}
-		    		<a class="tiny success button remove" data-id-filter="{{=filter.id}}">{{= filter.model.title }}</a> +
-		    	{{ }else if(filter.type == "expert"){ }}	
-		    		<a class="tiny alert button remove" data-id-filter="{{=filter.id}}">{{= filter.model.name }}</a> +
-		    	{{ } }}
-			{{ }); }}
-		</div>
-		<div class="row collapse">
-	        <div class="small-10 columns">
-	          <input id="visu_new_k_title" type="text" placeholder="Add a knowledge in the current context..."/>
-	        </div>
-	        <div class="small-2 columns">
-	          <a href="#" class="button postfix addKnowledge">Add</a>
-	        </div>
-	    </div>
+	<div class="small-12 large-12 columns">
+		Context :  
+		{{ _.each(filters, function(filter) { }}
+	    	{{ if(filter.type == "concept"){ }}
+	    		<a class="tiny button remove" data-id-filter="{{=filter.id}}">{{= filter.model.title }}</a> +
+	    	{{ }else if(filter.type == "poche"){ }}
+	    		<a class="tiny success button remove" data-id-filter="{{=filter.id}}">{{= filter.model.title }}</a> +
+	    	{{ }else if(filter.type == "expert"){ }}	
+	    		<a class="tiny alert button remove" data-id-filter="{{=filter.id}}">{{= filter.model.name }}</a> +
+	    	{{ } }}
+		{{ }); }}
+		<input type="text" class="search" placeholder="Search in Knowledges..."/>
 	</div>
 
 </script>
