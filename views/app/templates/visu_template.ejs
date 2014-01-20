@@ -15,7 +15,7 @@
 				{{= expert.name }} - <font style="color:white">({{= rec }})</font>
 			</a>
 		</div>
-		<div class="progress small-0 large-4 columns">
+		<div class="progress alert small-0 large-4 columns">
 		  <span class="meter" style="width: {{=per}}%"></span>
 		</div>
 	</div>
@@ -35,11 +35,14 @@
 </script>
 
 <script type="text/template" id="visu-new-poche-template">
-	<div class="row">
-	    <input type="text" id="visu_newP" class="expand" placeholder="Name">
-	    <input type="text" id="visu_newP_description" class="expand" placeholder="Description">
-	    <a href="#" class="add button success expand">new</a>
-	</div>
+	<div class="row collapse">
+        <div class="small-10 columns">
+          <input type="text" id="visu_newP" class="expand" placeholder="New poche...">
+        </div>
+        <div class="small-2 columns">
+          <a href="#" class="button success postfix add">Add</a>
+        </div>
+    </div>
 </script>
 
 <script type="text/template" id="visu-poche-template">
@@ -50,7 +53,7 @@
 				<input style="float:right" data-id-poche="{{= poche.id }}" type="submit" value="x" class="removePoche" />
 			</a>
 		</div>
-		<div class="progress small-0 large-4 columns">
+		<div class="progress success small-0 large-4 columns">
 		  <span class="meter" style="width: {{=per}}%"></span>
 		</div>
 	</div>
