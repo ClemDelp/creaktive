@@ -77,10 +77,12 @@ visu.Views.KnowledgesList = Backbone.View.extend({
         _this = this
         user_ = this.user;
         // For each knowledge
-        // var renderedContent = this.template_knowledge({
-        //     knowledges:this.knowledges_render.toJSON(),
-        //     user:this.user
-        // });
+        var renderedContent = this.template_knowledge({
+            knowledges:this.knowledges_render.toJSON(),
+            user:this.user
+        });
+        $(this.el).append(renderedContent);
+        
         this.knowledges_render.each(function(k){
             k_ = new visu.Views.Knowledge({
                 knowledge : k,
