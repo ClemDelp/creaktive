@@ -45,8 +45,8 @@ module.exports.adapters = {
   mongo: {
     module: 'sails-mongo',
     schema: false,
-    url: 'mongodb://localhost:27017/creaktive'
+    url: 'mongodb://localhost:27017/creaktive' || process.env.MONGOLAB_URI
   },
-  //process.env.MONGOLAB_URI
+  //
 
 };
