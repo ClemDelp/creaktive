@@ -42,20 +42,14 @@
 <!-- ******************************** -->
 <!-- tags input -->
 <link rel="stylesheet" type="text/css" href="styles/jquery.tagsinput.css" />
-
 <script type="text/javascript" src="js/vendor/jquery.tagsinput.js"></script>
 <!-- ******************************** -->
 
 <!-- Templates to load -->
-<div class="topbar-container"></div>
-<%- partial('./templates/topBar_template') %>
 
 <div class="off-canvas-wrap">
   <div class="inner-wrap">
     <nav class="tab-bar">
-
-
-
       <section class="middle tab-bar-section">
         <h1>Notifications (<span id="notificationsCounter">0</span>)</h1>
       </section>
@@ -78,15 +72,15 @@
       <!-- content goes here -->
 
       <div class="interface">
-        <dl class="tabs" data-tab>
-          <dd id="panel-concept" class="active"><a href="#panel2-1">Concept</a></dd>
-          <dd id="panel-visualization"><a href="#panel2-2">Visualization</a></dd>
-          <dd id="panel-knowledge" ><a href="#panel2-3">Knowledge</a></dd>
-          <dd id="panel-visu" ><a href="#panel2-4">Knowledge2</a></dd>
-
-        </dl>
+              <div class="expand panel" style="text-align:center">
+          <h2>Title</h2>
+          <dl class="tabs" style="width : 30%; margin : auto;" data-tab>
+              <dd id="panel-concept" class="active"><a href="#panel2-1">Concept</a></dd>
+              <dd id="panel-knowledge" ><a href="#panel2-3">Visualisation</a></dd>
+              <dd id="panel-visu" ><a href="#panel2-4">Knowledge</a></dd>
+          </dl>
+        </div>
         <div class="tabs-content">
-
           <div class="content active " id="panel2-1">
             <div >
               <div id="interface1-container" class="columns large-1">
@@ -106,11 +100,8 @@
               <div class="large-11 columns" id="container"></div>  
             </div>
           </div>
-          <div class="content " id="panel2-2">
-            <%- partial('./templates/visualisation_template') %>
-          </div>
           <div class="content " id="panel2-3">
-            <div id="interface3-container"></div>
+
           </div>
           <div class="content " id="panel2-4">
             <%- partial('./templates/visu_template') %>
@@ -121,7 +112,6 @@
 
       <%- partial('./templates/concepts_template') %>
       <%- partial('./templates/cklink_template') %>
-      <%- partial('./templates/explorer_template') %>
       <%- partial('./templates/notifications_template') %>
       <%- partial('./templates/details_templates') %>
       <%- partial('./templates/tagK_templates') %>
@@ -155,11 +145,8 @@
 <script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/cklink.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/visu.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/visualisation.js"></script>
 
-<script type="text/javascript" src="js/BB_app/modules/explorer.js"></script>
 <script type="text/javascript" src="js/BB_app/interfaces/interface1.js"></script>
-<script type="text/javascript" src="js/BB_app/interfaces/interface3.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/concepts.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/details.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/notifications.js"></script>
@@ -209,12 +196,10 @@
         notifications.init();
         //topBar.init();
         cklink.init();
-        explorer.init();
         visu.init();
 
         /*Interfaces*/
         interface1.init();
-        interface3.init();
         ////////////////////////////////////////
         /*activat of "hashchange events's monitoring"*/
 

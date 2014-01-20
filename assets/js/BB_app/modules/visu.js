@@ -27,6 +27,38 @@ visu.Collections.Filters = Backbone.Collection.extend({
 /////////////////////////////////////////
 // Right part
 /////////////////////////////////////////
+visu.Views.KnowledgesList = Backbone.View.extend({
+    initialize : function(json) {
+        console.log("Visu knwoledges liste view initialise");
+        _.bindAll(this, 'render');
+        // Variables
+        this.knowledges = json.knowledges;
+        this.knowledges_render = this.knowledges;
+        this.user = json.user;
+        this.eventAggregator = json.eventAggregator;
+        // Events
+        this.eventAggregator.on('knowledge_search', this.knowledge_search, this);
+        // Templates
+        this.template_knowledge = _.template($('#visu-knowledges-template').html());
+    },
+    knowledge_search: function(matched_knowledges){
+        this.knowledges_render = matched_knowledges;
+        this.render();
+    },
+    render : function(){
+        // Init
+        $(this.el).html('');
+        // For each knowledge
+        var renderedContent = this.template_knowledge({
+            knowledges:this.knowledges_render.toJSON(),
+            user:this.user
+        });
+        $(this.el).append(renderedContent);
+
+        return this;
+    }
+});
+/***************************************/
 visu.Views.RightPart = Backbone.View.extend({
     tagName: "div",
     className: "small-10 large-10 columns",
@@ -38,26 +70,33 @@ visu.Views.RightPart = Backbone.View.extend({
         this.filters = json.filters;
         this.user = json.user;
         this.links = json.links;
+        this.eventAggregator = json.eventAggregator;
         // Template
-        this.template1 = _.template($('#visu-publish-module-template').html());
-        this.template2 = _.template($('#visu-knowledge-template').html());
+        this.template_context = _.template($('#visu-publish-module-template').html());
+
     },
     events : {
-        "click .details" : "open_modal_details_box",
+        "click .openModal" : "open_modal_details_box",
         "click .remove" : "removeFilter",
         "click .addKnowledge" : "addKnowledge",
+        "keyup .search" : "search"
+    },
+    search: function(e){
+        var research = e.target.value;
+        var research_size = research.length;
+        var matched = new Backbone.Collection();
+        this.knowledges.each(function(k){
+            if(research == k.get('title').substr(0,research_size)){
+                matched.add(k);
+            }
+        });
+        this.eventAggregator.trigger('knowledge_search',matched);
     },
     removeFilter: function(e){
         this.filters.remove(this.filters.get(e.target.getAttribute('data-id-filter')));
     },
     open_modal_details_box :function(e){
-        knowledge_ = this.knowledges.get(e.target.getAttribute('data-id-knowledge'));
-        k_details.views.modal = new k_details.Views.Main({
-            knowledge:knowledge_,
-            user:this.user
-        });
-        k_details.views.modal.render();
-        $('#detailsKnoledgeModal').foundation('reveal', 'open');
+        alert(e.target.getAttribute("data-id-knowledge"))
     },
     addKnowledge : function(e){
         console.log("Add knowledge");
@@ -99,58 +138,136 @@ visu.Views.RightPart = Backbone.View.extend({
         // Save the new knowledge
         newK.save();
         this.knowledges.add(newK);
-        alert("new")
     },
     render : function(){
         $(this.el).html('');
         // Input 
-        var renderedContent = this.template1({filters:this.filters.toJSON()});
-        $(this.el).append(renderedContent);
-        // For each knowledge
-        el_knowledge_part=this.el;
-        template2 = this.template2;
-        this.knowledges.each(function(knowledge_){
-            var renderedContent = template2({knowledge:knowledge_.toJSON()});
-            $(el_knowledge_part).append(renderedContent);
+        $(this.el).append(this.template_context({filters:this.filters.toJSON()}));
+        // knowledge list
+        knowledge_list_view = new visu.Views.KnowledgesList({
+            knowledges:this.knowledges,
+            user:this.user,
+            eventAggregator:this.eventAggregator
         });
+        $(this.el).append(knowledge_list_view.render().el);
+        
         return this;
     }
 });
 /////////////////////////////////////////
 // Left part
 /////////////////////////////////////////
+visu.Views.ExpertsList = Backbone.View.extend({
+    initialize : function(json) {
+        console.log("Visu experts liste view initialise");
+        _.bindAll(this, 'render');
+        // Variables
+        this.experts = json.experts;
+        this.experts_render = this.experts;
+        this.knowledges = json.knowledges;
+        this.eventAggregator = json.eventAggregator;
+        // Events
+        this.eventAggregator.on('expert_search', this.expertSearch, this);
+        // Templates
+        this.template = _.template($('#visu-expert-template').html());
+        // Styles
+        $(this.el).attr( "style","overflow: auto;max-height:200px");
+    },
+    expertSearch: function(matched_experts){
+        this.experts_render = matched_experts;
+        this.render();
+    },
+    render : function(){
+        // Init
+        $(this.el).html('');
+        el_experts_part=this.el;
+        template = this.template;
+        knowledges = this.knowledges;
+        // Get the total_connections
+        total_connections = 0;
+        this.experts_render.each(function(expert){
+            knowledges.each(function(k){
+                if(k.get('user').id == expert.get('id')){total_connections+=1;}
+            });  
+        });
+        // For each expert
+        this.experts_render.each(function(expert_){
+            // Get the recurrence
+            recurrence = 0;
+            knowledges.each(function(k){
+                if(k.get('user').id == expert_.get('id')){recurrence+=1;}
+            });
+            if((recurrence == 0)&&(total_connections == 0)){percentage = 0;}else{percentage = (recurrence*100)/total_connections;}
+            var renderedContent = template({expert:expert_.toJSON(),rec:recurrence,per:percentage});
+            $(el_experts_part).append(renderedContent);
+        });
+
+        return this;
+    }
+});
+/***************************************/
 visu.Views.ExpertsPart = Backbone.View.extend({
     initialize : function(json) {
         console.log("Visu experts part view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.experts = json.experts;
-        console.log("experts visu -",this.experts);
+        this.knowledges = json.knowledges;
+        this.eventAggregator = json.eventAggregator;
         // Template
-        this.template = _.template($('#visu-expert-template').html());
+        this.template_search = _.template($('#visu-search-template').html());
+    },
+    events : {
+        "keyup .search" : "search",
+    },
+    search: function(e){
+        var research = e.target.value;
+        var research_size = research.length;
+        var matched = new Backbone.Collection();
+        this.experts.each(function(c){
+            if(research == c.get('name').substr(0,research_size)){
+                matched.add(c);
+            }
+        });
+        this.eventAggregator.trigger('expert_search',matched);
     },
     render : function(){
+        // Init
         $(this.el).html('');
-        // For each expert
-        el_experts_part=this.el;
-        template = this.template;
-        this.experts.each(function(expert_){
-            var renderedContent = template({expert:expert_.toJSON()});
-            $(el_experts_part).append(renderedContent);
+        // Input search
+        $(this.el).append(this.template_search({title:"Experts"}));
+        // Poche list
+        experts_list_view = new visu.Views.ExpertsList({
+            experts:this.experts,
+            knowledges:this.knowledges,
+            eventAggregator:this.eventAggregator
         });
+        $(this.el).append(experts_list_view.render().el);
+        
         return this;
     }
 });
 /***************************************/
-visu.Views.PochesPart = Backbone.View.extend({
+visu.Views.PochesList = Backbone.View.extend({
     initialize : function(json) {
         console.log("Visu poches part view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.poches = json.poches;
+        this.poches_render = this.poches;
         this.knowledges = json.knowledges;
-        // Template
+        this.eventAggregator = json.eventAggregator;
+        // Events
+        this.eventAggregator.on('poche_search', this.pocheSearch, this);
+        // Templates
         this.template = _.template($('#visu-poche-template').html());
+        this.template_new_poche = _.template($('#visu-new-poche-template').html());
+        // Styles
+        $(this.el).attr( "style","overflow: auto;max-height:200px");
+    },
+    pocheSearch: function(matched_poches){
+        this.poches_render = matched_poches;
+        this.render();
     },
     render : function(){
         // Init
@@ -160,7 +277,7 @@ visu.Views.PochesPart = Backbone.View.extend({
         knowledges = this.knowledges;
         // Get the total_connections
         total_connections = 0;
-        this.poches.each(function(poche_){
+        this.poches_render.each(function(poche_){
             knowledges.each(function(k){
                 k.get('tags').forEach(function(tag){
                     if(tag == poche_.get('title')){total_connections+=1;}
@@ -168,7 +285,7 @@ visu.Views.PochesPart = Backbone.View.extend({
             });  
         });
         // For each poche
-        this.poches.each(function(poche_){
+        this.poches_render.each(function(poche_){
             // Get the recurrence
             recurrence = 0;
             knowledges.each(function(k){
@@ -180,20 +297,98 @@ visu.Views.PochesPart = Backbone.View.extend({
             var renderedContent = template({poche:poche_.toJSON(),rec:recurrence,per:percentage});
             $(el_poches_part).append(renderedContent);
         });
+        // New poche
+        $(this.el).append(this.template_new_poche());
+
         return this;
     }
 });
 /***************************************/
-visu.Views.ConceptsPart = Backbone.View.extend({
+visu.Views.PochesPart = Backbone.View.extend({
+    initialize : function(json) {
+        console.log("Visu poches part view initialise");
+        _.bindAll(this, 'render');
+        // Variables
+        this.poches = json.poches;
+        this.knowledges = json.knowledges;
+        this.eventAggregator = json.eventAggregator;
+        // Events
+        this.poches.bind("add",this.render);
+        this.poches.bind("remove",this.render);
+        this.poches.bind("change",this.render);
+        // Templates
+        this.template_search = _.template($('#visu-search-template').html());
+        
+    },
+    events : {
+        "keyup .search" : "search",
+        "click .add" : "addPoche",
+        "click .removePoche" : "removePoche",
+    },
+    search: function(e){
+        var research = e.target.value;
+        var research_size = research.length;
+        var matched = new Backbone.Collection();
+        this.poches.each(function(c){
+            if(research == c.get('title').substr(0,research_size)){
+                matched.add(c);
+            }
+        });
+        this.eventAggregator.trigger('poche_search',matched);
+    },
+    removePoche: function(e){
+        var poche = this.poches.get(e.target.getAttribute('data-id-poche'));
+        poche.destroy();
+    },
+    addPoche : function(e){
+        global.models.newP = new global.Models.Poche({
+            id: guid(),
+            title: $("#visu_newP").val(),
+            user : "clem",
+            color : "#FF0000",
+            description : $("#visu_newP_description").val(),
+            date : getDate()
+        });
+        global.models.newP.save();
+        this.poches.add(global.models.newP);
+    },
+    render : function(){
+        // Init
+        $(this.el).html('');
+        // Input search
+        $(this.el).append(this.template_search({title:"Poches"}));
+        // Poche list
+        poches_list_view = new visu.Views.PochesList({
+            poches:this.poches,
+            knowledges:this.knowledges,
+            eventAggregator:this.eventAggregator
+        });
+        $(this.el).append(poches_list_view.render().el);
+        
+        return this;
+    }
+});
+/***************************************/
+visu.Views.ConceptList = Backbone.View.extend({
     initialize : function(json) {
         console.log("Visu concept part view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.concepts = json.concepts;
+        this.concepts_render = this.concepts;
+        this.eventAggregator = json.eventAggregator;
         this.knowledges = json.knowledges;
         this.links = json.links;
-        // Template
+        // Events
+        this.eventAggregator.on('concept_search', this.conceptSearch, this);
+        // Templates
         this.template = _.template($('#visu-concept-template').html());
+        // Styles
+        $(this.el).attr( "style","overflow: auto;max-height:200px");
+    },
+    conceptSearch: function(matched_concepts){
+        this.concepts_render = matched_concepts;
+        this.render();
     },
     render : function(){
         // Init
@@ -204,7 +399,7 @@ visu.Views.ConceptsPart = Backbone.View.extend({
         knowledges = this.knowledges;
         // Get the total_connections
         total_connections = 0;
-        this.concepts.each(function(concept_){
+        this.concepts_render.each(function(concept_){
             links.filter(function(link){
                 if(link.get('concept') == concept_.get('id')){
                     total_connections+=1;return false;
@@ -213,7 +408,7 @@ visu.Views.ConceptsPart = Backbone.View.extend({
             });  
         });
         // For each concept
-        this.concepts.each(function(concept_){
+        this.concepts_render.each(function(concept_){
             // Get the recurrence
             recurrence = 0;
             knowledges.each(function(k){
@@ -232,8 +427,61 @@ visu.Views.ConceptsPart = Backbone.View.extend({
     }
 });
 /***************************************/
+visu.Views.ConceptsPart = Backbone.View.extend({
+    initialize : function(json) {
+        console.log("Visu concept part view initialise");
+        _.bindAll(this, 'render');
+        _.bindAll(this, 'search');
+        // Variables
+        this.concepts = json.concepts;
+        this.knowledges = json.knowledges;
+        this.links = json.links;
+        this.eventAggregator = json.eventAggregator;
+        // Events
+        this.concepts.bind("add",this.render);
+        this.concepts.bind("remove",this.render);
+        this.concepts.bind("change",this.render);
+        // Template
+        this.template_search = _.template($('#visu-search-template').html());
+    },
+    events : {
+        "keyup .search" : "search"
+    },
+    search: function(e){
+        var research = e.target.value;
+        var research_size = research.length;
+        var matched = new Backbone.Collection();
+        this.concepts.each(function(c){
+            if(research == c.get('title').substr(0,research_size)){
+                matched.add(c);
+            }
+        });
+        this.eventAggregator.trigger('concept_search',matched);
+    },
+    render : function(){
+        // Init
+        $(this.el).html('');
+        el_concepts_part=this.el;
+        template = this.template;
+        links = this.links;
+        knowledges = this.knowledges;
+        // Input search
+        $(this.el).append(this.template_search({title:"Concepts"}));
+        // Concepts list
+        concept_list_view = new visu.Views.ConceptList({
+            concepts:this.concepts,
+            eventAggregator:this.eventAggregator,
+            knowledges:this.knowledges,
+            links:this.links
+        });
+        $(this.el).append(concept_list_view.render().el);
+        
+        
+        return this;
+    }
+});
+/***************************************/
 visu.Views.LeftPart = Backbone.View.extend({
-    tagName: "div",
     className: "small-2 large-2 columns",
     initialize : function(json) {
         console.log("Left part of visu view initialise");
@@ -247,6 +495,7 @@ visu.Views.LeftPart = Backbone.View.extend({
         this.experts = json.experts;
         this.links = json.links;
         this.filters = json.filters;
+        this.eventAggregator = json.eventAggregator;
     },
     events : {
         "click .addFilter" : "addFilter",
@@ -276,18 +525,25 @@ visu.Views.LeftPart = Backbone.View.extend({
         concepts_part_view = new visu.Views.ConceptsPart({
             concepts:this.concepts,
             knowledges:this.knowledges,
-            links:this.links
+            links:this.links,
+            eventAggregator:this.eventAggregator
         });
         $(this.el).append(concepts_part_view.render().el);
         // Poches part
         poches_part_view = new visu.Views.PochesPart({
             poches:this.poches,
-            knowledges:this.knowledges
+            knowledges:this.knowledges,
+            eventAggregator:this.eventAggregator
         });
         $(this.el).append(poches_part_view.render().el);
         // Experts part
-        // experts_part_view = new visu.Views.ExpertsPart({experts:this.experts});
-        // $(this.el).append(experts_part_view.render().el);
+        experts_part_view = new visu.Views.ExpertsPart({
+            experts:this.experts,
+            knowledges:this.knowledges,
+            eventAggregator:this.eventAggregator
+        });
+        $(this.el).append(experts_part_view.render().el);
+
 
         return this;
     }
@@ -309,7 +565,9 @@ visu.Views.Main = Backbone.View.extend({
         this.links = json.links;
         this.user = json.user;
         this.filters = new visu.Collections.Filters();
+        this.eventAggregator = {};
         // Events
+        _.extend(this.eventAggregator, Backbone.Events);
         this.concepts.bind("reset", this.render);
         this.knowledges.bind("reset", this.render);
         this.experts.bind("reset", this.render);
@@ -348,10 +606,10 @@ visu.Views.Main = Backbone.View.extend({
                 }
                 ////////////////////////
                 if(f.get('type') == "expert"){
-                    // if(k.user.get('id') == f.val){
-                    //     ks_filtered.add(k);
-                    //     return false;
-                    // }
+                    if(k.get('user').id == f.get('model').get('id')){
+                        ks_filtered.add(k);
+                        return false;
+                    }
                 }
                 ////////////////////////
             });
@@ -367,7 +625,8 @@ visu.Views.Main = Backbone.View.extend({
             links:this.links,
             poches:this.poches,
             experts:this.experts,
-            filters:this.filters
+            filters:this.filters,
+            eventAggregator:this.eventAggregator
         });
         $(this.el).html(leftPart_view.render().el);
         // right part
@@ -375,7 +634,8 @@ visu.Views.Main = Backbone.View.extend({
             knowledges:ks,
             filters:this.filters,
             user:this.user,
-            links:this.links
+            links:this.links,
+            eventAggregator:this.eventAggregator
         });
         $(this.el).append(rightPart_view.render().el);
 
