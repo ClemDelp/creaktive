@@ -27,6 +27,36 @@ visu.Collections.Filters = Backbone.Collection.extend({
 /////////////////////////////////////////
 // Middle part
 /////////////////////////////////////////
+// visu.Views.Knowledge = Backbone.View.extend({
+//     initialize : function(json) {
+//         console.log("Visu knwoledges liste view initialise");
+//         _.bindAll(this, 'render');
+//         // Variables
+//         this.knowledge = json.knowledge;
+//         this.user = json.user;
+//         this.style = json.style;
+//         // Events
+//         this.knowledge.bind("change", this.render);
+//         this.knowledge.bind("destroy", this.render);
+//         // Templates
+//         this.template_knowledge = _.template($('#visu-knowledge-template').html());
+//     },
+
+//     render : function(){
+//         // Init
+//         $(this.el).html('');
+//         // For each knowledge
+//         var renderedContent = this.template_knowledge({
+//             knowledge : this.knowledge.toJSON(),
+//             user:this.user,
+//             style:_this.style
+//         });
+//         $(this.el).append(renderedContent);
+
+//         return this;
+//     }
+// });
+
 visu.Views.KnowledgesList = Backbone.View.extend({
     initialize : function(json) {
         console.log("Visu knwoledges liste view initialise");
@@ -39,6 +69,8 @@ visu.Views.KnowledgesList = Backbone.View.extend({
         this.style = json.style;
         // Events
         this.eventAggregator.on('knowledge_search', this.knowledge_search, this);
+        this.eventAggregator.on("kColorChanged", this.render)
+        this.eventAggregator.on("kTitleChanged", this.render)
         // Templates
         this.template_knowledge = _.template($('#visu-knowledges-template').html());
     },
@@ -352,19 +384,19 @@ visu.Views.RightPart = Backbone.View.extend({
     addFilter: function(e){
         model_ = "";
         if(e.target.getAttribute("data-filter-type") == "expert"){model_ = this.experts.get(e.target.getAttribute("data-filter-model"))}
-        else if(e.target.getAttribute("data-filter-type") == "poche"){model_ = this.poches.get(e.target.getAttribute("data-filter-model"))}
-        if(model_ != ""){
-            new_filter = new visu.Models.Filter({
-                id:e.target.getAttribute("data-filter-id"),
-                type:e.target.getAttribute("data-filter-type"),
-                model:model_
-            });
-            this.filters.add(new_filter);
-            console.log("filters: ",this.filters);
-        }
-    },
-    render : function(){
-        $(this.el).html('');
+            else if(e.target.getAttribute("data-filter-type") == "poche"){model_ = this.poches.get(e.target.getAttribute("data-filter-model"))}
+                if(model_ != ""){
+                    new_filter = new visu.Models.Filter({
+                        id:e.target.getAttribute("data-filter-id"),
+                        type:e.target.getAttribute("data-filter-type"),
+                        model:model_
+                    });
+                    this.filters.add(new_filter);
+                    console.log("filters: ",this.filters);
+                }
+            },
+            render : function(){
+                $(this.el).html('');
         // Poches part
         poches_part_view = new visu.Views.PochesPart({
             poches:this.poches,
@@ -576,8 +608,9 @@ visu.Views.Main = Backbone.View.extend({
         this.links.bind('remove', this.render);
         this.filters.bind('add', this.render);
         this.filters.bind('remove', this.render);
-        // this.knowledges.bind('add', this.render);
-        // this.knowledges.bind('remove', this.render);
+        this.knowledges.bind('add', this.render);
+        this.knowledges.bind('remove', this.render);
+        this.eventAggregator.on("Ktagged", this.render);
     },
     events : {
         "click .addKnowledge" : "addKnowledge",
@@ -640,7 +673,7 @@ visu.Views.Main = Backbone.View.extend({
         filters = this.filters;
         links = this.links;
         this.knowledges.each(function(k){
-                      
+
             filters.each(function(f){
                 ////////////////////////
                 if(f.get('type') == "concept"){
@@ -670,16 +703,15 @@ visu.Views.Main = Backbone.View.extend({
                 }
                 ////////////////////////
             });
-        });
-        return ks_filtered;
-    },
-    render : function(){
-        if(this.filters.length == 0){
-            ks=this.knowledges;
-        }else{
-            ks = this.quenelle();
-        }
-        console.log("RENDER EN FOLIE", this.links, ks)
+});
+return ks_filtered;
+},
+render : function(){
+    if(this.filters.length == 0){
+        ks=this.knowledges;
+    }else{
+        ks = this.quenelle();
+    }
         // Left part
         leftPart_view = new visu.Views.LeftPart({
             concepts:this.concepts,

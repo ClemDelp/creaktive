@@ -1,12 +1,5 @@
  <div id="details_container"></div>
 
- <div id="kDetailsModal" class="reveal-modal" data-reveal>
- 	<div id="k_details_container"></div>
- 	<a class="close-reveal-modal">&#215;</a>
- </div>
-
-
-
  <script type="text/template" id="details-comment-template">
  	<div id="{{= comment.id }}_comment">
 
@@ -80,18 +73,18 @@
  		<div id="dropColor{{= model.id}}" data-dropdown-content class="f-dropdown content">  
  			<table>
  				<tr>
-	 				<td bgcolor="#FF0000" data-color="#FF0000" class="setLabel" ></td>
-	 				<td>Color 1</td>
+	 				<td bgcolor="{{= labels[0].color }}" data-color="#FF0000" class="setLabel" ></td>
+	 				<td>{{= labels[0].label }}</td>
 	 				<td>{{= chosenLabel[0] }}</td>
  				</tr>
  				<tr>
-	 				<td bgcolor="#FFF000" data-color="#FFF000" class="setLabel" ></td>
-	 				<td>Color 2</td>
+	 				<td bgcolor="{{= labels[1].color }}" data-color="#FFF000" class="setLabel" ></td>
+	 				<td>{{= labels[1].label }}</td>
 	 				<td>{{= chosenLabel[1] }}</td>
  				</tr>
  				<tr>
-	 				<td bgcolor="#04B404" data-color="#04B404" class="setLabel" ></td>
-	 				<td>Color 3</td>
+	 				<td bgcolor="{{= labels[2].color }}" data-color="#04B404" class="setLabel" ></td>
+	 				<td>{{= labels[2].label }}</td>
 	 				<td>{{= chosenLabel[2] }}</td>
  				</tr>
  			</table>
@@ -103,6 +96,7 @@
 	 	<legend>Actions</legend>
 	 	<a href="#" class="button tiny expand archive">Suscribe</a>
 	 	<a href="#" class="button alert tiny expand archive">Archive</a>
+	 	<a href="#" class="button alert tiny expand destroy">Enculer sauvagement</a>
  </script>
 
 <script type="text/template" id="details-modal-template">
