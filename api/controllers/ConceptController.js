@@ -69,9 +69,15 @@
 },
 
 
-notificate : function(req, res){
-
-}
+    destroy : function(req,res){
+    Concept.findOne(req.body.params.id).done(function(err,concept){
+      if(err) console.log(err);
+      concept.destroy(function(err){
+        if(err) console.log(err)
+          res.send({msg:"destroyed"})
+      })
+    });
+  },
 
 
 

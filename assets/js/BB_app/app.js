@@ -10,11 +10,12 @@ var global = {
   collections: {},
   models: {},
   views: {},
-  init: function (currentUser, callback) {
+  init: function (currentUser, currentProject, callback) {
     /*Init*/
 
     this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
-    console.log("******* Connected as ", this.models.current_user.get("name"))
+    this.models.currentProject = new this.Models.ProjectModel(JSON.parse(currentProject)); 
+    console.log("******* Connected as ", this.models.current_user.get("name"), " on ", this.models.currentProject.get("title"))
     /*Collections*/
     this.collections.Knowledges = new this.Collections.Knowledges();
     this.collections.Users = new this.Collections.UsersCollection();
@@ -256,6 +257,7 @@ var details = {
       eventAggregator : global.eventAggregator,
       poches      : global.collections.Poches,
       links       : global.collections.Links,
+      currentProject : global.models.currentProject
     });
 
       

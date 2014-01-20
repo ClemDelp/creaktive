@@ -69,7 +69,17 @@
        })
       }
     })
-  }
+  },
+
+      destroy : function(req,res){
+    Link.findOne(req.body.params.id).done(function(err,link){
+      if(err) console.log(err);
+      link.destroy(function(err){
+        if(err) console.log(err)
+          res.send({msg:"destroyed"})
+      })
+    });
+  },
 
 };
 
