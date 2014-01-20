@@ -52,7 +52,7 @@ cklink.Views.Knowledges = Backbone.View.extend({
         var index = Class.indexOf('alert');
         if(index > -1){/* Deselection */$("#"+e.target.id).removeClass('alert');}
         else{/* Selection */$("#"+e.target.id).addClass('alert')}
-        collapse("#"+e.target.id)
+        //collapse("#"+e.target.id)
         // Create a new link
         var concept_id = this.current_concept.get('id');
         global.models.newLink = new global.Models.CKLink({
@@ -79,7 +79,7 @@ cklink.Views.Knowledges = Backbone.View.extend({
             }
         });
 
-        
+        $(document).foundation();
         return this;
     }
 });

@@ -117,11 +117,11 @@ concepts.Views.MapView = Backbone.View.extend({
 
             _this.concepts.create(new_concept);
         }
-        // if (command === 'updateTitle') {
-        //     c = _this.concepts.get(args[0]);
-        //     c.set({title : args[1]});
-        //     c.save();
-        // }
+        if (command === 'updateTitle') {
+            c = _this.concepts.get(args[0]);
+            c.set({title : args[1]});
+            c.save();
+        }
         if (command === 'removeSubIdea') {
             c = _this.concepts.get(args[0]);
             $.get('/concept/destroy/' + args[0]);

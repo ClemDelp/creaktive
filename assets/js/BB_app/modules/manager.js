@@ -104,7 +104,7 @@ manager.Views.Projects = Backbone.View.extend({
         project_id = e.target.getAttribute("data-project-id");
         group_id = e.target.getAttribute("data-group-id");
         right = $("#permission_right").val();
-        $.post('/project/createPermission', {group_id : group_id, project_id : project_id, right : right});
+        socket.post('/project/createPermission', {group_id : group_id, project_id : project_id, right : right});
         
         // _.each(this.groups.get(project_id).get('users'), function (user){
         //     this.projects.get("permissions").unshift({right : right, user : user})
@@ -118,7 +118,7 @@ manager.Views.Projects = Backbone.View.extend({
         _this = this;
         project_id = e.target.getAttribute("data-project-id");
         user_id = e.target.getAttribute("data-user-id");
-        $.post('/project/removePermission', {user_id : user_id, project_id : project_id});
+        socket.post('/project/removePermission', {user_id : user_id, project_id : project_id});
         
         global.collections.Projects.fetch();
   

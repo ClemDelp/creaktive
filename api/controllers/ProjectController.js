@@ -75,17 +75,18 @@ module.exports = {
 * @param : project_id
 */
 createPermission : function (req,res){
+  console.log(req.body)
   UserGroup.find({
-    group_id : req.body.params.group_id
+    group_id : req.body.group_id
   }).done(function (err, usergroups){
     users_id = _.pluck(usergroups, "user_id");
     _.each(users_id, function(user_id){
       Permission.create({
         id : guid(),
         user_id : user_id,
-        project_id : req.body.params.project_id,
-        right : req.body.params.right,
-        group_id : req.body.params.group_id
+        project_id : req.body.project_id,
+        right : req.body.right,
+        group_id : req.body.group_id
 
       }).done(function (err, p){
         if(err) console.log(err);
@@ -104,8 +105,8 @@ createPermission : function (req,res){
 */
 removePermission : function (req,res){
   Permission.find({
-    user_id : req.body.params.user_id,
-    project_id : req.body.params.project_id
+    user_id : req.body.user_id,
+    project_id : req.body.project_id
   }).done(function (err, permissions){
     _.each(permissions, function(perm){
       perm.destroy(function (err){
