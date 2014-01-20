@@ -96,7 +96,8 @@ visu.Views.RightPart = Backbone.View.extend({
         this.filters.remove(this.filters.get(e.target.getAttribute('data-id-filter')));
     },
     open_modal_details_box :function(e){
-        alert(e.target.getAttribute("data-id-knowledge"))
+        //alert(e.target.getAttribute("data-id-knowledge"))
+        this.eventAggregator.trigger("kSelected", e.target.getAttribute("data-id-knowledge"))
     },
     addKnowledge : function(e){
         console.log("Add knowledge");
@@ -120,6 +121,7 @@ visu.Views.RightPart = Backbone.View.extend({
             date: getDate(),
             date2:new Date().getTime()
         });
+
         // For each concept create cklinks (if concepts are in context)
         if(concepts.length > 0){
             concepts.forEach(function(concept){
@@ -136,8 +138,11 @@ visu.Views.RightPart = Backbone.View.extend({
             });
         }
         // Save the new knowledge
-        newK.save();
-        this.knowledges.add(newK);
+        // newK.save();
+        // this.knowledges.add(newK);
+
+        this.knowledges.create(newK);
+        
     },
     render : function(){
         $(this.el).html('');
@@ -565,18 +570,20 @@ visu.Views.Main = Backbone.View.extend({
         this.links = json.links;
         this.user = json.user;
         this.filters = new visu.Collections.Filters();
-        this.eventAggregator = {};
+        this.eventAggregator = json.eventAggregator;
         // Events
-        _.extend(this.eventAggregator, Backbone.Events);
         this.concepts.bind("reset", this.render);
         this.knowledges.bind("reset", this.render);
         this.experts.bind("reset", this.render);
         this.poches.bind("reset", this.render);
         this.links.bind("reset", this.render);
+        this.links.bind('add', this.render);
+        this.links.bind('remove', this.render);
         this.filters.bind('add', this.render);
         this.filters.bind('remove', this.render);
-        this.knowledges.bind('add', this.render);
-        this.knowledges.bind('remove', this.render);
+        
+        // this.knowledges.bind('add', this.render);
+        // this.knowledges.bind('remove', this.render);
     },
     quenelle: function(){
         ks_filtered = new global.Collections.Knowledges();
@@ -617,7 +624,12 @@ visu.Views.Main = Backbone.View.extend({
         return ks_filtered;
     },
     render : function(){
-        if(this.filters.length == 0){ks=this.knowledges;}else{ks = this.quenelle();}
+        if(this.filters.length == 0){
+            ks=this.knowledges;
+        }else{
+            ks = this.quenelle();
+        }
+        console.log("RENDER EN FOLIE", this.links, ks)
         // Left part
         leftPart_view = new visu.Views.LeftPart({
             concepts:this.concepts,

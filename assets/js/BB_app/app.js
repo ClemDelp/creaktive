@@ -61,7 +61,8 @@ var visu = {
       experts     : global.collections.Users,
       poches      : global.collections.Poches,
       links       : global.collections.Links,
-      user        : global.models.current_user
+      user        : global.models.current_user,
+      eventAggregator : global.eventAggregator
     });
 
     //this.views.main.render();

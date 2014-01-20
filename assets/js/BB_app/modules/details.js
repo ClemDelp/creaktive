@@ -497,6 +497,7 @@ details.Views.Main = Backbone.View.extend({
          $('#detailsModal').foundation('reveal', 'open');
     },
     nodeSelectionChanged : function (e){
+        console.log("C selected");
         this.model = this.concepts.get(e);
         this.type = "concept";
         this.render(function(){
@@ -504,7 +505,8 @@ details.Views.Main = Backbone.View.extend({
         });       
     },
     onKSelected : function(e){
-        this.model = e;
+        console.log("K selected");
+        this.model = this.knowledges.get(e);
         this.type = "knowledge",
         this.render(function(){
            $('#detailsModal').foundation('reveal', 'open'); 
