@@ -72,12 +72,12 @@
       <!-- content goes here -->
 
       <div class="interface">
-              <div class="expand panel" style="text-align:center">
+        <div class="expand panel" style="text-align:center">
           <a href="/"><h2><%- currentProject %></h2></a>
           <dl class="tabs" style="width : 30%; margin : auto;" data-tab>
               <dd id="panel-concept" class="active"><a href="#panel2-1">Concept</a></dd>
-              <dd id="panel-knowledge" ><a href="#panel2-3">Visualisation</a></dd>
-              <dd id="panel-visu" ><a href="#panel2-4">Knowledge</a></dd>
+              <dd id="panel-visualization" ><a href="#panel2-2">Visualisation</a></dd>
+              <dd id="panel-knowledge" ><a href="#panel2-3">Knowledge</a></dd>
           </dl>
         </div>
         <div class="tabs-content">
@@ -100,10 +100,10 @@
               <div class="large-11 columns" id="container"></div>  
             </div>
           </div>
-          <div class="content " id="panel2-3">
+          <div class="content " id="panel2-2">
 
           </div>
-          <div class="content " id="panel2-4">
+          <div class="content " id="panel2-3">
             <%- partial('./templates/visu_template') %>
           </div>
 
@@ -155,30 +155,19 @@
 
 <script>
 
-  $(document).on('opened', '[data-reveal]', function () {
+  $(document).on('open', '[data-reveal]', function () {
     var modal = $(this);
     if(modal.attr('id')==="detailsModal"){
       try{
         CKEDITOR.replaceAll('ckeditor');
 
       }catch(e){
-        console.log(e)
-      }  
-    };
-
-    if(modal.attr('id')==="kDetailsModal"){
-
-      try{
-
-        CKEDITOR.replaceAll('ckeditor2');
-      }catch(e){
-
+        console.log("####******#######", e)
       }  
     };
   });
 
-
-  
+ 
 
   ///////////////////////////////////////////////////
   $(document).ready(function () {

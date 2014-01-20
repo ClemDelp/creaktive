@@ -34,10 +34,19 @@ tagK.Views.Poches = Backbone.View.extend({
         this.eventAggregator = json.eventAggregator;
         this.current_knowledge = json.current_knowledge;
 
+        this.poches_render = this.poches;
+
+        this.eventAggregator.on("details_poche_search", this.poche_search, this);
+
     },
     events : {
         "click .selectTag" : "onTagSelected",
         "click .unSelectTag" : "onTagDeSelected"
+    },
+
+    poche_search : function(matched){
+        this.poches_render = matched;
+        this.render();
     },
 
     onTagSelected : function(e){
@@ -58,7 +67,7 @@ tagK.Views.Poches = Backbone.View.extend({
     render : function(){
         _this = this;
         $(_this.el).html("");
-        this.poches.each(function(poche){
+        this.poches_render.each(function(poche){
             poche_ = new tagK.Views.Poche({
                 poche : poche,
                 current_knowledge : _this.current_knowledge
@@ -89,6 +98,22 @@ tagK.Views.Main = Backbone.View.extend({
       
         // Template
         this.template = _.template($('#tagK-template').html());       
+    },
+
+    events : {
+        "keyup .searchDetails" : "search"
+    },
+
+    search: function(e){
+        var research = e.target.value;
+        var research_size = research.length;
+        var matched = new Backbone.Collection();
+        this.poches.each(function(k){
+            if(research == k.get('title').substr(0,research_size)){
+                matched.add(k);
+            }
+        });
+        this.eventAggregator.trigger('details_poche_search',matched);
     },
 
 
