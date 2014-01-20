@@ -62,7 +62,9 @@ var visu = {
       poches      : global.collections.Poches,
       links       : global.collections.Links,
       user        : global.models.current_user,
-      eventAggregator : global.eventAggregator
+      eventAggregator : global.eventAggregator,
+      style       : "grid"
+
     });
 
     //this.views.main.render();
@@ -256,6 +258,7 @@ var details = {
       eventAggregator : global.eventAggregator,
       poches      : global.collections.Poches,
       links       : global.collections.Links,
+      currentProject : global.models.currentProject
     });
 
       
