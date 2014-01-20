@@ -472,7 +472,7 @@ details.Views.Modal = Backbone.View.extend({
 details.Views.Main = Backbone.View.extend({
     el:"#details_container",
     initialize : function(json) {
-        _.bindAll(this, 'render', 'nodeSelectionChanged','youhou',"onKSelected");
+        _.bindAll(this, 'render', 'nodeSelectionChanged','youhou',"onKSelected","onNotificationOpenK");
         // Variables
         this.user = json.user;
         this.users = json.users;
@@ -487,14 +487,19 @@ details.Views.Main = Backbone.View.extend({
         this.eventAggregator.on("nodeSelectionChanged", this.nodeSelectionChanged);
         this.eventAggregator.on("youhou", this.youhou);
         this.eventAggregator.on("kSelected", this.onKSelected)
+            this.eventAggregator.on("notificationOpenK", this.onNotificationOpenK)
+
 
     },
 
     youhou : function(e){
+        console.log("Notification open C");
         this.model = this.concepts.get(e);
         this.type = "concept";
         this.render();
-         $('#detailsModal').foundation('reveal', 'open');
+                this.render(function(){
+           $('#detailsModal').foundation('reveal', 'open'); 
+        }); 
     },
     nodeSelectionChanged : function (e){
         console.log("C selected");
@@ -511,6 +516,16 @@ details.Views.Main = Backbone.View.extend({
         this.render(function(){
            $('#detailsModal').foundation('reveal', 'open'); 
         });  
+    },
+
+    onNotificationOpenK : function(e){
+            console.log("Notification open K");
+                    this.model = this.knowledges.get(e);
+        this.type = "knowledge";
+        this.render();
+                this.render(function(){
+           $('#detailsModal').foundation('reveal', 'open'); 
+        }); 
     },
     render : function(callback){
         

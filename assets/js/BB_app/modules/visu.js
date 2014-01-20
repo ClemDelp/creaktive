@@ -27,6 +27,32 @@ visu.Collections.Filters = Backbone.Collection.extend({
 /////////////////////////////////////////
 // Middle part
 /////////////////////////////////////////
+visu.Views.Knowledge = Backbone.View.extend({
+    initialize : function(json) {
+        console.log("Visu knwoledges liste view initialise");
+        _.bindAll(this, 'render');
+        // Variables
+        this.knowledge = json.knowledge;
+        this.user = json.user;
+        // Events
+        this.knowledge.bind("change", this.render);
+        // Templates
+        this.template_knowledge = _.template($('#visu-knowledge-template').html());
+    },
+
+    render : function(){
+        // Init
+        $(this.el).html('');
+        // For each knowledge
+        var renderedContent = this.template_knowledge({
+            knowledge : this.knowledge.toJSON(),
+            user:this.user
+        });
+        $(this.el).append(renderedContent);
+
+        return this;
+    }
+});
 visu.Views.KnowledgesList = Backbone.View.extend({
     initialize : function(json) {
         console.log("Visu knwoledges liste view initialise");
@@ -48,14 +74,22 @@ visu.Views.KnowledgesList = Backbone.View.extend({
     render : function(){
         // Init
         $(this.el).html('');
+        _this = this
+        user_ = this.user;
         // For each knowledge
-        var renderedContent = this.template_knowledge({
-            knowledges:this.knowledges_render.toJSON(),
-            user:this.user
+        // var renderedContent = this.template_knowledge({
+        //     knowledges:this.knowledges_render.toJSON(),
+        //     user:this.user
+        // });
+        this.knowledges_render.each(function(k){
+            k_ = new visu.Views.Knowledge({
+                knowledge : k,
+                user : _this.user
+            })
+            $(_this.el).append(k_.render().el);
         });
-        $(this.el).append(renderedContent);
 
-        return this;
+    return this;
     }
 });
 /***************************************/
@@ -348,19 +382,19 @@ visu.Views.RightPart = Backbone.View.extend({
     addFilter: function(e){
         model_ = "";
         if(e.target.getAttribute("data-filter-type") == "expert"){model_ = this.experts.get(e.target.getAttribute("data-filter-model"))}
-        else if(e.target.getAttribute("data-filter-type") == "poche"){model_ = this.poches.get(e.target.getAttribute("data-filter-model"))}
-        if(model_ != ""){
-            new_filter = new visu.Models.Filter({
-                id:e.target.getAttribute("data-filter-id"),
-                type:e.target.getAttribute("data-filter-type"),
-                model:model_
-            });
-            this.filters.add(new_filter);
-            console.log("filters: ",this.filters);
-        }
-    },
-    render : function(){
-        $(this.el).html('');
+            else if(e.target.getAttribute("data-filter-type") == "poche"){model_ = this.poches.get(e.target.getAttribute("data-filter-model"))}
+                if(model_ != ""){
+                    new_filter = new visu.Models.Filter({
+                        id:e.target.getAttribute("data-filter-id"),
+                        type:e.target.getAttribute("data-filter-type"),
+                        model:model_
+                    });
+                    this.filters.add(new_filter);
+                    console.log("filters: ",this.filters);
+                }
+            },
+            render : function(){
+                $(this.el).html('');
         // Poches part
         poches_part_view = new visu.Views.PochesPart({
             poches:this.poches,
@@ -621,7 +655,7 @@ visu.Views.Main = Backbone.View.extend({
         filters = this.filters;
         links = this.links;
         this.knowledges.each(function(k){
-                      
+
             filters.each(function(f){
                 ////////////////////////
                 if(f.get('type') == "concept"){
@@ -651,16 +685,16 @@ visu.Views.Main = Backbone.View.extend({
                 }
                 ////////////////////////
             });
-        });
-        return ks_filtered;
-    },
-    render : function(){
-        if(this.filters.length == 0){
-            ks=this.knowledges;
-        }else{
-            ks = this.quenelle();
-        }
-        console.log("RENDER EN FOLIE", this.links, ks)
+});
+return ks_filtered;
+},
+render : function(){
+    if(this.filters.length == 0){
+        ks=this.knowledges;
+    }else{
+        ks = this.quenelle();
+    }
+    console.log("RENDER EN FOLIE", this.links, ks)
         // Left part
         leftPart_view = new visu.Views.LeftPart({
             concepts:this.concepts,

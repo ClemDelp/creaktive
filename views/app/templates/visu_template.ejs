@@ -60,6 +60,17 @@
 </script>
 
 <!-- //////////////////////////////////////////////////////////////////////: -->
+<script type="text/template" id="visu-knowledge-template">
+<div class="small-3 large-3 columns openModal" data-id-knowledge="{{= knowledge.id }}">
+			<ul class="pricing-table" data-id-knowledge="{{= knowledge.id }}">
+				<li class="title" data-id-knowledge="{{= knowledge.id }}"></li>
+			  	<li class="price" data-id-knowledge="{{= knowledge.id }}">
+					{{= knowledge.title.substr(0,10)}}{{ if(knowledge.title.length > 10){ }}...{{ } }}
+				</li>
+				<li class="description" data-id-knowledge="{{= knowledge.id }}">{{= knowledge.user.name }} - {{= knowledge.date }}</li>
+			</ul>
+		</div>
+</script>
 <!-- Right part -->
 <script type="text/template" id="visu-knowledges-template">
 	<div class="small-3 large-3 columns">
@@ -78,17 +89,7 @@
 		</ul>
 	</div>
 
-	{{ _.each(knowledges, function(knowledge) { }}
-		<div class="small-3 large-3 columns openModal" data-id-knowledge="{{= knowledge.id }}">
-			<ul class="pricing-table" data-id-knowledge="{{= knowledge.id }}">
-				<li class="title" data-id-knowledge="{{= knowledge.id }}"></li>
-			  	<li class="price" data-id-knowledge="{{= knowledge.id }}">
-					{{= knowledge.title.substr(0,10)}}{{ if(knowledge.title.length > 10){ }}...{{ } }}
-				</li>
-				<li class="description" data-id-knowledge="{{= knowledge.id }}">{{= knowledge.user.name }} - {{= knowledge.date }}</li>
-			</ul>
-		</div>
-	{{ }); }}
+
 </script>
 
 <script type="text/template" id="visu-publish-module-template">

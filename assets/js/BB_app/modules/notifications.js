@@ -80,14 +80,13 @@ notifications.Views.Notifications = Backbone.View.extend({
 
             global.collections.Concepts.fetch({
                 reset : true,
-                success : function(){
-                    
+                success : function(){                   
                 }
             });
             _this.eventAggregator.trigger("youhou", notification.get('to'))
         }
 
-        if(notification.get('type') === "createKnowledge" || notification.get('type') === "createLink" || notification.get('type') === "createPoche"){
+        if(notification.get('type') === "createKnowledge"  || notification.get('type') === "createLink" || notification.get('type') === "createPoche"){
             $("#panel-concept").removeClass('active');
             $("#panel-visualization").removeClass('active');
             $("#panel-knowledge").addClass( "active" );
@@ -97,6 +96,23 @@ notifications.Views.Notifications = Backbone.View.extend({
             $("#panel2-1").removeClass('active');
 
             global.collections.Knowledges.fetch({reset : true});
+        }
+
+        if(notification.get('type') === "updateKnowledgeComments"|| notification.get('type') === "updateKnowledgeColor" || notification.get('type') === "updateKnowledgeTitle"|| notification.get('type') === "updateKnowledgeMembers"|| notification.get('type') === "updateKnowledgeContent" ){
+            $("#panel-concept").removeClass('active');
+            $("#panel-visualization").removeClass('active');
+            $("#panel-knowledge").addClass( "active" );
+
+            $("#panel2-2").removeClass("active");
+            $("#panel2-3").addClass("active");
+            $("#panel2-1").removeClass('active');
+
+            global.collections.Knowledges.fetch({
+                reset : true,
+                success : function(){                   
+                }
+            });
+            _this.eventAggregator.trigger("notificationOpenK", notification.get('to'))
         }
 
 
