@@ -68,7 +68,17 @@
         })
       }
     })
-  }
+  },
+
+      destroy : function(req,res){
+    Poche.findOne(req.body.params.id).done(function(err,poche){
+      if(err) console.log(err);
+      poche.destroy(function(err){
+        if(err) console.log(err)
+          res.send({msg:"destroyed"})
+      })
+    });
+  },
   
 
 };

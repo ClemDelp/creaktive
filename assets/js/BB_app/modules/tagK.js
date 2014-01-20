@@ -55,6 +55,7 @@ tagK.Views.Poches = Backbone.View.extend({
         this.current_knowledge.get('tags').unshift(poche.get('title'));
         this.current_knowledge.trigger("change");
         this.current_knowledge.save();
+        this.eventAggregator.trigger("Ktagged",e)
     },
     onTagDeSelected : function(e){
         poche_id = e.target.getAttribute("data-id-poche");
@@ -62,6 +63,7 @@ tagK.Views.Poches = Backbone.View.extend({
         tags = _.without(this.current_knowledge.get('tags'), poche.get('title'));
         this.current_knowledge.set({tags : tags});
         this.current_knowledge.save();
+        this.eventAggregator.trigger("Ktagged",e)
 
     },
     render : function(){

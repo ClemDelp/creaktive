@@ -6,7 +6,9 @@ details.Views.Labels = Backbone.View.extend({
     tagName:"fieldset",
     initialize : function(json){
         _.bindAll(this, 'render');
-        this.model = json.model
+        this.model = json.model;
+        this.type = json.type;
+        this.currentProject = json.currentProject;
         
         this.model.bind("change", this.render);
 
@@ -17,12 +19,27 @@ details.Views.Labels = Backbone.View.extend({
         $(this.el).html("");
         var chosenLabel = ["#FF0000","#FFF000","#04B404"];
         var modelColor = this.model.get('color');
+        
         for (var i =0;  i<chosenLabel.length ; i++) {
             if(modelColor == chosenLabel[i]) chosenLabel[i] = "<img src='img/tick.png'></img>";
             else chosenLabel[i] ="";
         };
+        
+        var labels = []
+        if(this.type === "concept") {
+            labels[0] = {color :this.currentProject.get('cLabels')[0].color, label:this.currentProject.get('cLabels')[0].label};
+            labels[1] = {color :this.currentProject.get('cLabels')[1].color, label:this.currentProject.get('cLabels')[1].label};
+            labels[2] = {color :this.currentProject.get('cLabels')[2].color, label:this.currentProject.get('cLabels')[2].label};
+        }
+        if(this.type  === "knowledge") {
+            labels[0] = {color :this.currentProject.get('kLabels')[0].color, label:this.currentProject.get('kLabels')[0].label};
+            labels[1] = {color :this.currentProject.get('kLabels')[1].color, label:this.currentProject.get('kLabels')[1].label};
+            labels[2] = {color :this.currentProject.get('kLabels')[2].color, label:this.currentProject.get('kLabels')[2].label};
+        }
+
         var renderedContent = this.template({
             model:this.model.toJSON(),
+            labels : labels,
             chosenLabel : chosenLabel
         });
          $(this.el).append(renderedContent);
@@ -132,6 +149,8 @@ details.Views.RightPart = Backbone.View.extend({
         this.user = json.user;
         this.users = json.users;
         this.users.bind("reset", this.render);
+        this.type = json.type;
+        this.currentProject = json.currentProject;
     },
     events : {
         "click .setLabel" : "setLabel",
@@ -147,6 +166,8 @@ details.Views.RightPart = Backbone.View.extend({
         $(this.el).html("");
         labels = new details.Views.Labels({
             model : this.model,
+            type : this.type,
+            currentProject : this.currentProject
         });
         $(this.el).append(labels.render().el);
 
@@ -303,6 +324,8 @@ details.Views.DetailsTab = Backbone.View.extend({
         this.model = json.model;
         this.user = json.user; 
         this.users = json.users;
+        this.type = json.type;
+        this.currentProject = json.currentProject;
     },
 
     render : function() {              
@@ -321,7 +344,9 @@ details.Views.DetailsTab = Backbone.View.extend({
             model:this.model,
             user:this.user,
             users : this.users,
-            eventAggregator : this.eventAggregator
+            eventAggregator : this.eventAggregator,
+            type : this.type,
+            currentProject : this.currentProject
         });
         $(this.el).append(rightPart_view.render().el);
         return this;
@@ -393,7 +418,20 @@ details.Views.ModalTabsContent = Backbone.View.extend({
         this.poches = json.poches;
         this.links = json.links;
         this.type = json.type;
+        this.currentProject = json.currentProject;
 
+    },
+    events : {
+        "click .destroy" : "destroyModel"
+    },
+
+    destroyModel : function(e){
+        if(this.type==="concept") this.concepts.remove(this.model);
+        if(this.type==="knowledge") this.knowledges.remove(this.model);
+        this.model.destroy();
+        $('#detailsModal').foundation('reveal', 'close'); 
+
+          
     },
     render : function(){
         $(this.el).html("");
@@ -401,7 +439,9 @@ details.Views.ModalTabsContent = Backbone.View.extend({
             eventAggregator : this.eventAggregator,
             model : this.model,
             user : this.user, 
-            users : this.users
+            users : this.users,
+            type : this.type,
+            currentProject : this.currentProject
         });
         $(this.el).append(detailsTab.render().el);
 
@@ -438,6 +478,7 @@ details.Views.Modal = Backbone.View.extend({
         this.poches = json.poches;
         this.links = json.links;
         this.type = json.type;
+        this.currentProject = json.currentProject;
 
         this.template = _.template($("#details-modal-template").html()); 
 
@@ -458,7 +499,8 @@ details.Views.Modal = Backbone.View.extend({
             poches : this.poches,
             links : this.links,
             knowledges : this.knowledges,
-            concepts : this.concepts
+            concepts : this.concepts,
+            currentProject : this.currentProject
         });
         $(this.el).append(tabs.render().el);
         $(this.el).append('<a class="close-reveal-modal">&#215;</a>');
@@ -481,6 +523,7 @@ details.Views.Main = Backbone.View.extend({
         this.eventAggregator = json.eventAggregator;
         this.poches = json.poches;
         this.links = json.links;
+        this.currentProject = json.currentProject;
 
         this.model = {};
         this.type = "concept";
@@ -540,7 +583,8 @@ details.Views.Main = Backbone.View.extend({
             poches : this.poches,
             links : this.links,
             knowledges : this.knowledges,
-            concepts : this.concepts
+            concepts : this.concepts,
+            currentProject : this.currentProject
         });
         $(this.el).append(modal.render().el);
         $(document).foundation();

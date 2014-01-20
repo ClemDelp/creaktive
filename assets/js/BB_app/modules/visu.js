@@ -36,6 +36,7 @@ visu.Views.Knowledge = Backbone.View.extend({
         this.user = json.user;
         // Events
         this.knowledge.bind("change", this.render);
+        this.knowledge.bind("destroy", this.render);
         // Templates
         this.template_knowledge = _.template($('#visu-knowledge-template').html());
     },
@@ -603,8 +604,9 @@ visu.Views.Main = Backbone.View.extend({
         this.links.bind('remove', this.render);
         this.filters.bind('add', this.render);
         this.filters.bind('remove', this.render);
-        // this.knowledges.bind('add', this.render);
-        // this.knowledges.bind('remove', this.render);
+        this.knowledges.bind('add', this.render);
+        this.knowledges.bind('remove', this.render);
+        this.eventAggregator.on("Ktagged", this.render);
     },
     events : {
         "click .addKnowledge" : "addKnowledge",
@@ -696,7 +698,6 @@ render : function(){
     }else{
         ks = this.quenelle();
     }
-    console.log("RENDER EN FOLIE", this.links, ks)
         // Left part
         leftPart_view = new visu.Views.LeftPart({
             concepts:this.concepts,
