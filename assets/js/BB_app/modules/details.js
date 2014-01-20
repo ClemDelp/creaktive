@@ -160,7 +160,8 @@ details.Views.RightPart = Backbone.View.extend({
         //console.log("Set label");
         this.model.set({color: e.target.getAttribute('data-color')});
         this.model.save({color: e.target.getAttribute('data-color')});
-        if(this.eventAggregator) this.eventAggregator.trigger("colorChanged", this.model);
+        this.eventAggregator.trigger("colorChanged", this.model);
+        this.eventAggregator.trigger("kColorChanged", this.model);
     },
     render : function(){
         $(this.el).html("");
@@ -290,7 +291,8 @@ details.Views.LeftPart = Backbone.View.extend({
             content:CKEDITOR.instances.editor.getData()
         });
         this.model.save();
-        if(this.eventAggregator) this.eventAggregator.trigger("titleChanged", this.model);
+        this.eventAggregator.trigger("titleChanged", this.model);
+        this.eventAggregator.trigger("kTitleChanged", this.model);
 
     },
     render : function(){

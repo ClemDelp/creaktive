@@ -27,33 +27,36 @@ visu.Collections.Filters = Backbone.Collection.extend({
 /////////////////////////////////////////
 // Middle part
 /////////////////////////////////////////
-visu.Views.Knowledge = Backbone.View.extend({
-    initialize : function(json) {
-        console.log("Visu knwoledges liste view initialise");
-        _.bindAll(this, 'render');
-        // Variables
-        this.knowledge = json.knowledge;
-        this.user = json.user;
-        // Events
-        this.knowledge.bind("change", this.render);
-        this.knowledge.bind("destroy", this.render);
-        // Templates
-        this.template_knowledge = _.template($('#visu-knowledge-template').html());
-    },
+// visu.Views.Knowledge = Backbone.View.extend({
+//     initialize : function(json) {
+//         console.log("Visu knwoledges liste view initialise");
+//         _.bindAll(this, 'render');
+//         // Variables
+//         this.knowledge = json.knowledge;
+//         this.user = json.user;
+//         this.style = json.style;
+//         // Events
+//         this.knowledge.bind("change", this.render);
+//         this.knowledge.bind("destroy", this.render);
+//         // Templates
+//         this.template_knowledge = _.template($('#visu-knowledge-template').html());
+//     },
 
-    render : function(){
-        // Init
-        $(this.el).html('');
-        // For each knowledge
-        var renderedContent = this.template_knowledge({
-            knowledge : this.knowledge.toJSON(),
-            user:this.user
-        });
-        $(this.el).append(renderedContent);
+//     render : function(){
+//         // Init
+//         $(this.el).html('');
+//         // For each knowledge
+//         var renderedContent = this.template_knowledge({
+//             knowledge : this.knowledge.toJSON(),
+//             user:this.user,
+//             style:_this.style
+//         });
+//         $(this.el).append(renderedContent);
 
-        return this;
-    }
-});
+//         return this;
+//     }
+// });
+
 visu.Views.KnowledgesList = Backbone.View.extend({
     initialize : function(json) {
         console.log("Visu knwoledges liste view initialise");
@@ -63,8 +66,11 @@ visu.Views.KnowledgesList = Backbone.View.extend({
         this.knowledges_render = this.knowledges;
         this.user = json.user;
         this.eventAggregator = json.eventAggregator;
+        this.style = json.style;
         // Events
         this.eventAggregator.on('knowledge_search', this.knowledge_search, this);
+        this.eventAggregator.on("kColorChanged", this.render)
+        this.eventAggregator.on("kTitleChanged", this.render)
         // Templates
         this.template_knowledge = _.template($('#visu-knowledges-template').html());
     },
@@ -75,30 +81,21 @@ visu.Views.KnowledgesList = Backbone.View.extend({
     render : function(){
         // Init
         $(this.el).html('');
-        _this = this
-        user_ = this.user;
         // For each knowledge
         var renderedContent = this.template_knowledge({
             knowledges:this.knowledges_render.toJSON(),
-            user:this.user
+            user:this.user,
+            style:this.style
         });
         $(this.el).append(renderedContent);
-        
-        this.knowledges_render.each(function(k){
-            k_ = new visu.Views.Knowledge({
-                knowledge : k,
-                user : _this.user
-            })
-            $(_this.el).append(k_.render().el);
-        });
 
-    return this;
+        return this;
     }
 });
 /***************************************/
 visu.Views.MiddlePart = Backbone.View.extend({
     tagName: "div",
-    className: "small-8 large-8 columns",
+    className: "small-12 medium-6 large-8 columns",
     initialize : function(json) {
         console.log("Right part of visu view initialise");
         _.bindAll(this, 'render');
@@ -108,6 +105,7 @@ visu.Views.MiddlePart = Backbone.View.extend({
         this.user = json.user;
         this.links = json.links;
         this.eventAggregator = json.eventAggregator;
+        this.style=json.style;
         // Template
         this.template_context = _.template($('#visu-publish-module-template').html());
 
@@ -115,14 +113,14 @@ visu.Views.MiddlePart = Backbone.View.extend({
     events : {
         "click .openModal" : "open_modal_details_box",
         "click .remove" : "removeFilter",
-        "keyup .search" : "search"
+        "keyup .search" : "search",
     },
     search: function(e){
         var research = e.target.value;
         var research_size = research.length;
         var matched = new Backbone.Collection();
         this.knowledges.each(function(k){
-            if(research == k.get('title').substr(0,research_size)){
+            if(research.toLowerCase() == k.get('title').substr(0,research_size).toLowerCase()){
                 matched.add(k);
             }
         });
@@ -143,7 +141,8 @@ visu.Views.MiddlePart = Backbone.View.extend({
         knowledge_list_view = new visu.Views.KnowledgesList({
             knowledges:this.knowledges,
             user:this.user,
-            eventAggregator:this.eventAggregator
+            eventAggregator:this.eventAggregator,
+            style:this.style
         });
         $(this.el).append(knowledge_list_view.render().el);
         
@@ -221,7 +220,7 @@ visu.Views.ExpertsPart = Backbone.View.extend({
         var research_size = research.length;
         var matched = new Backbone.Collection();
         this.experts.each(function(c){
-            if(research == c.get('name').substr(0,research_size)){
+            if(research.toLowerCase() == c.get('name').substr(0,research_size).toLowerCase()){
                 matched.add(c);
             }
         });
@@ -326,7 +325,7 @@ visu.Views.PochesPart = Backbone.View.extend({
         var research_size = research.length;
         var matched = new Backbone.Collection();
         this.poches.each(function(c){
-            if(research == c.get('title').substr(0,research_size)){
+            if(research.toLowerCase() == c.get('title').substr(0,research_size).toLowerCase()){
                 matched.add(c);
             }
         });
@@ -366,7 +365,7 @@ visu.Views.PochesPart = Backbone.View.extend({
 });
 /***************************************/
 visu.Views.RightPart = Backbone.View.extend({
-    className: "small-2 large-2 columns",
+    className: "show-for-medium-up medium-3 large-2 columns",
     initialize : function(json) {
         console.log("Right part of visu view initialise");
         _.bindAll(this, 'render');
@@ -451,12 +450,15 @@ visu.Views.ConceptList = Backbone.View.extend({
         // Get the total_connections
         total_connections = 0;
         this.concepts_render.each(function(concept_){
-            links.filter(function(link){
-                if(link.get('concept') == concept_.get('id')){
-                    total_connections+=1;return false;
-                }
-                else{return false;}   
-            });  
+            // Get the recurrence
+            knowledges.each(function(k){
+                links.filter(function(link){
+                    if((link.get('concept') == concept_.get('id'))&&(link.get('knowledge') == k.get('id'))){
+                        total_connections+=1;return false;
+                    }
+                    else{return false;}   
+                });  
+            });
         });
         // For each concept
         this.concepts_render.each(function(concept_){
@@ -503,7 +505,7 @@ visu.Views.ConceptsPart = Backbone.View.extend({
         var research_size = research.length;
         var matched = new Backbone.Collection();
         this.concepts.each(function(c){
-            if(research == c.get('title').substr(0,research_size)){
+            if(research.toLowerCase() == c.get('title').substr(0,research_size).toLowerCase()){
                 matched.add(c);
             }
         });
@@ -533,7 +535,7 @@ visu.Views.ConceptsPart = Backbone.View.extend({
 });
 /***************************************/
 visu.Views.LeftPart = Backbone.View.extend({
-    className: "small-2 large-2 columns",
+    className: "show-for-medium-up medium-3 large-2 columns",
     initialize : function(json) {
         console.log("Left part of visu view initialise");
         _.bindAll(this, 'render');
@@ -594,6 +596,8 @@ visu.Views.Main = Backbone.View.extend({
         this.user = json.user;
         this.filters = new visu.Collections.Filters();
         this.eventAggregator = json.eventAggregator;
+        this.style=json.style;
+
         // Events
         this.concepts.bind("reset", this.render);
         this.knowledges.bind("reset", this.render);
@@ -610,6 +614,16 @@ visu.Views.Main = Backbone.View.extend({
     },
     events : {
         "click .addKnowledge" : "addKnowledge",
+        "click .list" : "putInList",
+        "click .grid" : "putInGrid",
+    },
+    putInList: function(e){
+        this.style = "list";
+        this.render();
+    },
+    putInGrid: function(e){
+        this.style = "grid";
+        this.render();
     },
     addKnowledge : function(e){
         console.log("Add knowledge");
@@ -713,7 +727,8 @@ render : function(){
             filters:this.filters,
             user:this.user,
             links:this.links,
-            eventAggregator:this.eventAggregator
+            eventAggregator:this.eventAggregator,
+            style:this.style
         });
         $(this.el).append(middlePart_view.render().el);
         // right part
