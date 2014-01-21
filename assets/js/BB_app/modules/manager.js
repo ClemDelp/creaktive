@@ -130,8 +130,8 @@ manager.Views.Projects = Backbone.View.extend({
             id:guid(),
             title: $("#project_title").val(),
             description : $("#project_description").val(),
-            kLabels : [{color : "#FF0000", label:"Validated"},  {color : "#FFF000", label:"Processing"}, {color : "#04B404", label:"Missing"}],
-            cLabels : [{color : "#FF0000", label:"Known"}, {color : "#FFF000", label:"Reachable"}, {color : "#04B404", label:"Alternative"}],
+            kLabels : [{color : "#27AE60", label:"Validated"},  {color : "#F39C12", label:"Processing"}, {color : "#C0392B", label:"Missing"}],
+            cLabels : [{color : "#27AE60", label:"Known"}, {color : "#F39C12", label:"Reachable"}, {color : "#C0392B", label:"Alternative"}],
         });
     },
 

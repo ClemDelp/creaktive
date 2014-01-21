@@ -17,7 +17,7 @@ details.Views.Labels = Backbone.View.extend({
 
     render : function(){
         $(this.el).html("");
-        var chosenLabel = ["#FF0000","#FFF000","#04B404"];
+        var chosenLabel = ["#27AE60","#F39C12","#C0392B"];
         var modelColor = this.model.get('color');
         
         for (var i =0;  i<chosenLabel.length ; i++) {
