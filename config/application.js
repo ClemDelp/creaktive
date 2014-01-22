@@ -38,7 +38,7 @@ function(username, password, done) {
 
 
 			User.find({
-				name : username,
+				email : username,
 			}).done(function(err, users){
 				if(err) {
 					return done(err);

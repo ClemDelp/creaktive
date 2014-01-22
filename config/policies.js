@@ -17,7 +17,7 @@
   // Default policy for all controllers and actions
   // (`true` allows public access) 
   
-  // '*': "authenticated",
+ // '*': "authenticated",
  'AuthController': {
   	'login' : true,
  	'logout' : true,
