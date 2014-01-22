@@ -20,7 +20,7 @@
 /////////////////////////////////////////////////////////////////////
 -->
 <script type="text/template" id="user-template">
-	<td class="large-1"><img src="{{= user.img}}"></td>
+	<td class="large-1 medium-1 small-1"><img src="{{= user.img}}"></td>
 	<td>{{= user.name}}</td>
 	<td>{{= user.email}}</td>
 	<td bgcolor="{{= user.color}}"></td>
@@ -72,7 +72,7 @@
 /////////////////////////////////////////////////////////////////////
 -->
 <script type="text/template" id="userGroup-template">
-	<td class="large-1"><img src="{{= user.img}}"></td>
+	<td class="large-1 medium-1 small-1"><img src="{{= user.img}}"></td>
 	<td>{{= user.name}}</td>
 	<td>{{= user.email}}</td>
 	<td><a href="#" class="removeFromGroup"><img data-user-id="{{= user.id}}" data-group-id="{{= group.id}}" src="img/delete.png"></a></td>
@@ -128,7 +128,7 @@
 -->
 
 <script type="text/template" id="permission-template">
-	<td class="large-1"><img src="{{= permission.user.img}}"></td>
+	<td class="large-1 medium-1 small-1"><img src="{{= permission.user.img}}"></td>
 	<td>{{= permission.user.name}}</td>
 	<td>{{= permission.right}}</td>
 	<td><a href="#" class="removePermission"><img data-user-id="{{= permission.user.id}}" data-project-id="{{= project.id}}" src="img/delete.png"></a></td>
