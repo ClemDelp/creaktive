@@ -130,7 +130,8 @@ concepts.Views.MapView = Backbone.View.extend({
         }
         if (command === 'removeSubIdea') {
             c = _this.concepts.get(args[0]);
-            $.get('/concept/destroy/' + args[0]);
+            _this.concepts.remove(c)
+            c.destroy();
             console.log(_this.concepts)
             
         }
