@@ -13,6 +13,7 @@ concepts.Views.MapView = Backbone.View.extend({
         this.concepts = json.concepts;
         // this.concepts.bind('add', this.render);
         this.concepts.bind('reset', this.map);
+        this.concepts.bind('remove', this.map);
         // this.concepts.bind('remove', this.remove);
 
         /*CurrentProject*/
