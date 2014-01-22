@@ -424,16 +424,31 @@ details.Views.ModalTabsContent = Backbone.View.extend({
 
     },
     events : {
-        "click .destroy" : "destroyModel"
+        "click .destroy" : "destroyModel",
+        "submit form" : "attachFile"
     },
+
+    attachFile : function(event){
+
+        var values = {};
+
+        if(event){ event.preventDefault(); }
+
+        _.each(this.$('#upload_form').serializeArray(), function(input){
+          values[ input.name ] = input.value;
+        })
+
+        this.model.save(values, { iframe: true,
+                                  files: this.$('form :file'),
+                                  data: values });
+      },
+
 
     destroyModel : function(e){
         if(this.type==="concept") this.concepts.remove(this.model);
         if(this.type==="knowledge") this.knowledges.remove(this.model);
         this.model.destroy();
-        $('#detailsModal').foundation('reveal', 'close'); 
-
-          
+        $('#detailsModal').foundation('reveal', 'close');    
     },
     render : function(){
         $(this.el).html("");
