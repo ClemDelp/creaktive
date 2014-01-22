@@ -7,7 +7,7 @@ concepts.Views.MapView = Backbone.View.extend({
     tagName: "div",
     initialize : function(json){
 
-        _.bindAll(this, 'render','colorChanged',"titleChanged");
+        _.bindAll(this, 'render','colorChanged',"titleChanged","onConceptRemoved");
         _.bindAll(this, 'map');
         /*Concepts*/
         this.concepts = json.concepts;
@@ -28,6 +28,7 @@ concepts.Views.MapView = Backbone.View.extend({
         this.eventAggregator = json.eventAggregator;
         this.eventAggregator.on("colorChanged", this.colorChanged);
         this.eventAggregator.on("titleChanged", this.titleChanged);
+        this.eventAggregator.on("conceptRemoved", this.onConceptRemoved);
 
         this.template = _.template($('#map-template').html());
 
@@ -54,6 +55,10 @@ concepts.Views.MapView = Backbone.View.extend({
         this.idea = idea;
 
         window.mapModel = mapModel;
+    },
+
+    onConceptRemoved : function(e){
+        global.collections.Concepts.fetch({reset:true});
     },
 
     titleChanged : function(e){
