@@ -527,7 +527,7 @@ MAPJS.content = function (contentAggregate, sessionKey) {
 		if (topEvent && topEvent.undoFunction) {
 			topEvent.undoFunction();
 			redoStack.push(topEvent);
-			contentAggregate.dispatchEvent('changed', 'undo', []);
+			contentAggregate.dispatchEvent('changed', 'undo', topEvent);
 			return true;
 		}
 		return false;
