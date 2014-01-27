@@ -161,6 +161,22 @@ concepts.Views.MapView = Backbone.View.extend({
         if (command === 'redo') {
             console.log("REDO ", command, args)
         }
+        if (command === 'insertIntermediate') {
+            console.log("insertIntermediate ", command, args)
+            c = _this.concepts.get(args[0]);
+            _this.concepts.create({
+                id : args[2],
+                title : args[1],
+                user : this.currentUser,
+                id_father : c.get('id_father')
+                // date, content, color
+            })
+
+            c.set({id_father : args[2]});
+            c.save();
+        }
+
+
     },
 
     populate : function(id_father, children){
