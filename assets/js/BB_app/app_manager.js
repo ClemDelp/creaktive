@@ -80,6 +80,8 @@ var manager = {
       groups : global.collections.Groups,
       projects : global.collections.Projects
     }); 
+
+    this.views.Main.render();
   
   }
 };

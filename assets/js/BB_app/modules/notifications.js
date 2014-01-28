@@ -207,6 +207,58 @@ notifications.Views.Logs = Backbone.View.extend({
 });
 
 /****************************************************************/
+notifications.Views.ConnectedUser = Backbone.View.extend({
+    initialize : function(json){
+
+        _.bindAll(this, 'render');
+        this.connectedUser = json.connectedUser;
+        this.template = _.template($('#connectedUser-template').html());
+    },
+
+    render : function(){
+        var renderedContent = this.template({
+            user : this.connectedUser.toJSON()
+        });
+        $(this.el).html(renderedContent);
+        return this;
+    }
+});
+/****************************************************************/
+notifications.Views.ConnectedUsers = Backbone.View.extend({
+     el : $('#connectedUsers_container'),
+    initialize : function(json){
+
+        _.bindAll(this, 'render');
+
+        this.current_user = json.current_user;
+        this.connectedUsers = json.connectedUsers;
+        this.eventAggregator = json.eventAggregator;
+
+        this.connectedUsers.ioBind("create", this.newUser, this);
+
+        this.connectedUsers.bind("add", this.render)
+
+    },
+
+    newUser : function(e){
+        console.log("#### NEW USER CONNECTED", e);
+        this.connectedUsers.create(e);
+    },
+
+    render : function(){
+        _this = this;
+        this.connectedUsers.each(function(user){
+            user_ = new notifications.Views.ConnectedUser({
+                connectedUser : user
+            });
+            $(_this.el).append(user_.render().el);
+        })
+
+        return this;
+    }
+});
+
+/****************************************************************/
 notifications.Views.Main = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
@@ -215,6 +267,7 @@ notifications.Views.Main = Backbone.View.extend({
         this.notifications.bind("add", this.render);
         this.notifications.bind("reset", this.render);
         this.current_user = json.current_user;
+        this.connectedUsers = json.connectedUsers;
         this.eventAggregator = json.eventAggregator;
 
     },
@@ -231,5 +284,11 @@ notifications.Views.Main = Backbone.View.extend({
         notifications : this.notifications,
     })
      logs_.render();
+
+    connectedUsers_ = new notifications.Views.ConnectedUsers({
+        current_user : this.current_user,
+        eventAggregator : this.eventAggregator,
+        connectedUsers : this.connectedUsers
+    }); 
  }
 });

@@ -8,9 +8,9 @@ visu.Models.Filter = Backbone.Model.extend({
         model : ""
     },
     initialize : function Poche() {
-        console.log('Filter visu Constructor');
+        //console.log('Filter visu Constructor');
         this.bind("error", function(model, error){
-            console.log( error );
+            //console.log( error );
         });
     }
 });
@@ -18,9 +18,9 @@ visu.Models.Filter = Backbone.Model.extend({
 visu.Collections.Filters = Backbone.Collection.extend({
     model : visu.Models.Filter,
     initialize : function() {
-        console.log('Filters visu collection Constructor');
+        //console.log('Filters visu collection Constructor');
         this.bind("error", function(model, error){
-            console.log( error );
+            //console.log( error );
         });
     }
 });
@@ -29,7 +29,7 @@ visu.Collections.Filters = Backbone.Collection.extend({
 /////////////////////////////////////////
 // visu.Views.Knowledge = Backbone.View.extend({
 //     initialize : function(json) {
-//         console.log("Visu knwoledges liste view initialise");
+//         //console.log("Visu knwoledges liste view initialise");
 //         _.bindAll(this, 'render');
 //         // Variables
 //         this.knowledge = json.knowledge;
@@ -59,7 +59,7 @@ visu.Collections.Filters = Backbone.Collection.extend({
 
 visu.Views.KnowledgesList = Backbone.View.extend({
     initialize : function(json) {
-        console.log("Visu knwoledges liste view initialise");
+        //console.log("Visu knwoledges liste view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.knowledges = json.knowledges;
@@ -97,7 +97,7 @@ visu.Views.MiddlePart = Backbone.View.extend({
     tagName: "div",
     className: "small-12 medium-6 large-8 columns",
     initialize : function(json) {
-        console.log("Right part of visu view initialise");
+        //console.log("Right part of visu view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.knowledges = json.knowledges;
@@ -154,7 +154,7 @@ visu.Views.MiddlePart = Backbone.View.extend({
 /////////////////////////////////////////
 visu.Views.ExpertsList = Backbone.View.extend({
     initialize : function(json) {
-        console.log("Visu experts liste view initialise");
+        //console.log("Visu experts liste view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.experts = json.experts;
@@ -203,7 +203,7 @@ visu.Views.ExpertsList = Backbone.View.extend({
 /***************************************/
 visu.Views.ExpertsPart = Backbone.View.extend({
     initialize : function(json) {
-        console.log("Visu experts part view initialise");
+        //console.log("Visu experts part view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.experts = json.experts;
@@ -245,7 +245,7 @@ visu.Views.ExpertsPart = Backbone.View.extend({
 /***************************************/
 visu.Views.PochesList = Backbone.View.extend({
     initialize : function(json) {
-        console.log("Visu poches part view initialise");
+        //console.log("Visu poches part view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.poches = json.poches;
@@ -301,7 +301,7 @@ visu.Views.PochesList = Backbone.View.extend({
 /***************************************/
 visu.Views.PochesPart = Backbone.View.extend({
     initialize : function(json) {
-        console.log("Visu poches part view initialise");
+        //console.log("Visu poches part view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.poches = json.poches;
@@ -367,7 +367,7 @@ visu.Views.PochesPart = Backbone.View.extend({
 visu.Views.RightPart = Backbone.View.extend({
     className: "show-for-medium-up medium-3 large-2 columns",
     initialize : function(json) {
-        console.log("Right part of visu view initialise");
+        //console.log("Right part of visu view initialise");
         _.bindAll(this, 'render');
         _.bindAll(this, 'addFilter');
         // Variables
@@ -392,7 +392,7 @@ visu.Views.RightPart = Backbone.View.extend({
                         model:model_
                     });
                     this.filters.add(new_filter);
-                    console.log("filters: ",this.filters);
+                    //console.log("filters: ",this.filters);
                 }
             },
             render : function(){
@@ -421,7 +421,7 @@ visu.Views.RightPart = Backbone.View.extend({
 /////////////////////////////////////////
 visu.Views.ConceptList = Backbone.View.extend({
     initialize : function(json) {
-        console.log("Visu concept part view initialise");
+        //console.log("Visu concept part view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.concepts = json.concepts;
@@ -482,7 +482,7 @@ visu.Views.ConceptList = Backbone.View.extend({
 /***************************************/
 visu.Views.ConceptsPart = Backbone.View.extend({
     initialize : function(json) {
-        console.log("Visu concept part view initialise");
+        //console.log("Visu concept part view initialise");
         _.bindAll(this, 'render');
         _.bindAll(this, 'search');
         // Variables
@@ -537,7 +537,7 @@ visu.Views.ConceptsPart = Backbone.View.extend({
 visu.Views.LeftPart = Backbone.View.extend({
     className: "show-for-medium-up medium-3 large-2 columns",
     initialize : function(json) {
-        console.log("Left part of visu view initialise");
+        //console.log("Left part of visu view initialise");
         _.bindAll(this, 'render');
         _.bindAll(this, 'addFilter');
         // Variables
@@ -560,7 +560,7 @@ visu.Views.LeftPart = Backbone.View.extend({
                 model:model_
             });
             this.filters.add(new_filter);
-            console.log("filters: ",this.filters);
+            //console.log("filters: ",this.filters);
         }
     },
     render : function(){
@@ -584,7 +584,7 @@ visu.Views.LeftPart = Backbone.View.extend({
 visu.Views.Main = Backbone.View.extend({
     el:"#visu_container",
     initialize : function(json) {
-        console.log("Main visu view initialise");
+        //console.log("Main visu view initialise");
         _.bindAll(this, 'render');
         _.bindAll(this, 'quenelle');
         // Variables
@@ -626,7 +626,7 @@ visu.Views.Main = Backbone.View.extend({
         this.render();
     },
     addKnowledge : function(e){
-        console.log("Add knowledge");
+        //console.log("Add knowledge");
         // Init
         user_ = this.user;
         // Get the context

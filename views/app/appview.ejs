@@ -57,6 +57,9 @@
         <a class="left-off-canvas-toggle menu-icon" ><span></span></a>
       </section>
       
+      <section class="right-small">
+        <a href="#" data-dropdown="connectedUsers_container" class="menu-icon"><span></span></a>
+      </section>
 
     </nav>
 
@@ -208,7 +211,7 @@ function rt (io, callback) {
       // console.log(data.channels);
     })
     // Listen for Comet messages from Sails
-    socket.on('message', function messageReceived(message) {     
+    socket.on('users', function messageReceived(message) {     
       console.log('New comet message received :: ', message);
     });
     console.log(
