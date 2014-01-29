@@ -13,8 +13,8 @@
          */
         defaults: {
             templates: {
-                main: 'js/backbone-upload-manager/templates/upload-manager.main',
-                file: 'js/backbone-upload-manager/templates/upload-manager.file'
+                main: 'templates/upload-manager.main',
+                file: 'templates/upload-manager.file'
             },
             uploadUrl: 'file/upload',
             autoUpload: false,
