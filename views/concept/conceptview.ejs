@@ -51,7 +51,7 @@
     <nav class="top-bar" data-topbar>
       <ul class="title-area">
         <li class="name">
-          <h1><a href="#">CreaKtive</a></h1>
+          <h1><a href="/">CreaKtive</a></h1>
         </li>
         <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
       </ul>
@@ -59,15 +59,15 @@
       <section class="top-bar-section">        
         <!-- Left Nav Section -->
         <ul class="left">
-          <li><a href="concepts">Concepts</a></li>
-          <li><a href="knowledges">Knowledges</a></li>
+          <li><a href="concepts?projectId=<%- projectId %>">Concepts</a></li>
+          <li><a href="knowledges?projectId=<%- projectId %>">Knowledges</a></li>
         </ul>
       </section>
     </nav>
 
     <nav class="tab-bar">
       <section class="middle tab-bar-section">
-        <h1>Notifications (<span id="notificationsCounter">0</span>)</h1>
+        <h1><%- projectTitle %> (<span id="notificationsCounter">0</span>)</h1>
       </section>
 
       <section class="left-small">
@@ -89,18 +89,7 @@
 
       <div class="interface">
 
-        <div class="expand panel" style="text-align:center">
-          <div class="row">
-            <a href="/"><h2><%- projectTitle %></h2></a>
-            <dl class="tabs" style="" data-tab>
-                <dd id="panel-concept" class="active"><a href="#panel2-1">Concept</a></dd>
-                <dd id="panel-visualization" ><a href="#panel2-2">Visualisation</a></dd>
-                <dd id="panel-knowledge" ><a href="#panel2-3">Knowledge</a></dd>
-            </dl>
-          </div>
-        </div>
-        <div class="tabs-content">
-          <div class="content active " id="panel2-1">
+        
             <div >
               <div id="interface1-container" class="columns large-1">
                 <a href="#" title="Center" class="panel button tiny resetView"><img src="img/centrer.png"></a>
@@ -116,22 +105,18 @@
               </div>
               <div class="large-11 columns" id="container"></div>  
             </div>
-          </div>
-          <div class="content " id="panel2-2">
-          <img src="img/visu_pour_maquette.jpg">
-          </div>
-          <div class="content " id="panel2-3">
-            <%- partial('./templates/visu_template') %>
-          </div>
+
+        
+
 
         </div>
       </div>
 
-      <%- partial('./templates/concepts_template') %>
-      <%- partial('./templates/cklink_template') %>
-      <%- partial('./templates/notifications_template') %>
-      <%- partial('./templates/details_templates') %>
-      <%- partial('./templates/tagK_templates') %>
+      <%- partial('../app/templates/concepts_template') %>
+      <%- partial('../app/templates/cklink_template') %>
+      <%- partial('../app/templates/notifications_template') %>
+      <%- partial('../app/templates/details_templates') %>
+      <%- partial('../app/templates/tagK_templates') %>
     </section>
 
     <a class="exit-off-canvas"></a>
@@ -161,7 +146,6 @@
 
 <script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/cklink.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/visu.js"></script>
 
 <script type="text/javascript" src="js/BB_app/interfaces/interface1.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/concepts.js"></script>
@@ -200,7 +184,6 @@
         notifications.init();
         //topBar.init();
         cklink.init();
-        visu.init();
 
         /*Interfaces*/
         interface1.init();

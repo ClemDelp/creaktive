@@ -33,6 +33,8 @@ module.exports.routes = {
   // 
   // (This would also work if you had a file at: `/views/home.ejs`)
 
+  '/knowledges': "KnowledgeController.knowledgeview",
+  '/concepts': "ConceptController.conceptview",
   '/': "AppController.managerview",
   '/proj' : "AppController.appView",
   'get /login' : 'AuthController.login',
