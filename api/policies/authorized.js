@@ -10,9 +10,6 @@ module.exports = function(req, res, next) {
 		if(err) next(err);
 		if(perm.length !== 0) next();
 		else res.json(401);
-
-		
-
 	})
 
 	

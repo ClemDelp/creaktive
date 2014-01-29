@@ -126,13 +126,18 @@ details.Views.Actions = Backbone.View.extend({
     tagName:"fieldset",
     initialize : function(json){
         _.bindAll(this, 'render');
-        this.model = json.model
+        this.model = json.model;
+
+
+
         this.template = _.template($('#details-actions-template').html()); 
     },
     render : function(){
         $(this.el).html("");
         var renderedContent = this.template({model:this.model.toJSON()});
+        
          $(this.el).append(renderedContent);
+
         return this;
     }
 });
@@ -268,6 +273,69 @@ details.Views.Comments = Backbone.View.extend({
     }
 });
 /***************************************/
+details.Views.AttachedFiles = Backbone.View.extend({
+    tagName : "fieldset",
+initialize : function(json) { 
+        //console.log("comments view constructor!");
+        _.bindAll(this, 'render', 'fileAdded');
+        // Variables
+
+        this.model = json.model;
+
+        this.files = this.model.get('attachment');
+
+        this.eventAggregator = json.eventAggregator
+
+        this.eventAggregator.on("uploadCompleted", this.fileAdded, this);
+        // Templates
+        this.template = _.template($('#details-files-template').html());
+    },
+
+    events : {
+        "click .openFile" : "openFile",
+        "click .removeFile" : "removeFile"
+    },
+
+    removeFile : function(e){
+        console.log(e.target.getAttribute('data-file-id'))
+        var i = {};
+        _.each(this.files, function(f){
+            if(f.id === e.target.getAttribute('data-file-id')) i = f
+        })
+        this.files =  _.without(this.files, i);
+        this.model.set({attachment : this.files})
+        this.model.save();
+        socket.post("/file/destroy", {file : i});
+        this.render();
+    },
+
+    openFile : function(e){
+        console.log(e.target.getAttribute('data-file-path'));
+        $.download('file/get',{path : e.target.getAttribute('data-file-path')} );
+
+    },
+
+    fileAdded : function (e){
+        console.log("File : ", e);
+        if(e.result === "success"){
+            this.files.unshift({
+                id : e.id,
+                name : e.name,
+                path : e.path
+            });
+            this.model.save();
+            this.render();
+        };
+
+    },
+    render : function(){
+        $(this.el).html("")
+        var renderedContent = this.template({files : this.files});
+        $(this.el).append(renderedContent)
+        return this;
+    }
+});
+/***************************************/
 details.Views.LeftPart = Backbone.View.extend({
     tagName: "div",
     className: "small-8 large-8 columns",
@@ -301,6 +369,12 @@ details.Views.LeftPart = Backbone.View.extend({
         // change k title and content template part
         var renderedContent = this.template({model:this.model.toJSON()});
         $(this.el).html(renderedContent);
+        
+        files_ = new details.Views.AttachedFiles({
+            eventAggregator : this.eventAggregator,
+            model : this.model
+        });
+        $(this.el).append(files_.render().el);
         // Knowledge comments
         comments_view = new details.Views.Comments({
             comments:this.comments,
@@ -328,6 +402,8 @@ details.Views.DetailsTab = Backbone.View.extend({
         this.users = json.users;
         this.type = json.type;
         this.currentProject = json.currentProject;
+
+
     },
 
     render : function() {              
@@ -351,6 +427,7 @@ details.Views.DetailsTab = Backbone.View.extend({
             currentProject : this.currentProject
         });
         $(this.el).append(rightPart_view.render().el);
+
         return this;
 
     }
@@ -425,23 +502,7 @@ details.Views.ModalTabsContent = Backbone.View.extend({
     },
     events : {
         "click .destroy" : "destroyModel",
-        "submit form" : "attachFile"
     },
-
-    attachFile : function(event){
-
-        var values = {};
-
-        if(event){ event.preventDefault(); }
-
-        _.each(this.$('#upload_form').serializeArray(), function(input){
-          values[ input.name ] = input.value;
-        })
-
-        this.model.save(values, { iframe: true,
-                                  files: this.$('form :file'),
-                                  data: values });
-      },
 
 
     destroyModel : function(e){
@@ -479,7 +540,7 @@ details.Views.ModalTabsContent = Backbone.View.extend({
 /****************************************************************/
 details.Views.Modal = Backbone.View.extend({
     tagName:"div",
-    className:"reveal-modal",
+    className:"reveal-modal xlarge",
     id :"detailsModal",
     initialize : function(json) {
         _.bindAll(this, 'render');
@@ -532,6 +593,7 @@ details.Views.Main = Backbone.View.extend({
     el:"#details_container",
     initialize : function(json) {
         _.bindAll(this, 'render', 'nodeSelectionChanged','youhou',"onKSelected","onNotificationOpenK");
+        _this = this;
         // Variables
         this.user = json.user;
         this.users = json.users;
@@ -547,7 +609,22 @@ details.Views.Main = Backbone.View.extend({
         this.eventAggregator.on("nodeSelectionChanged", this.nodeSelectionChanged);
         this.eventAggregator.on("youhou", this.youhou);
         this.eventAggregator.on("kSelected", this.onKSelected)
-            this.eventAggregator.on("notificationOpenK", this.onNotificationOpenK)
+        this.eventAggregator.on("notificationOpenK", this.onNotificationOpenK)
+
+        // Reset the baseUrl of template manager
+        Backbone.TemplateManager.baseUrl = '{name}';
+        
+        // Create the upload manager object
+        this.uploadManager = new Backbone.UploadManager();
+
+        eventAggregator_ = this.eventAggregator;
+
+        this.uploadManager.on('filedone', function (e,f,g) {
+            eventAggregator_.trigger("uploadCompleted",f._response.result);
+            $('#uploadModal').foundation('reveal', 'close');
+        });
+
+        this.uploadManager.renderTo($('div#upload-container'));
 
 
     },
@@ -604,7 +681,11 @@ details.Views.Main = Backbone.View.extend({
             currentProject : this.currentProject
         });
         $(this.el).append(modal.render().el);
+                
+        
+        
         $(document).foundation();
+        // Render it in our div
         if(callback) callback();
     }
 });

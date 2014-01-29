@@ -35,6 +35,11 @@
 <script src="js/vendor/jquery.ui.widget.js"></script>
 <script src="js/vendor/jquery.iframe-transport.js"></script>
 <script src="js/vendor/jquery.fileupload.js"></script>
+
+<script type="text/javascript" src="/js/vendor/backbone-defered-view-loader.js"></script>
+<script type="text/javascript" src="js/backbone-upload-manager/js/backbone.upload-manager.js"></script>
+
+<script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
 <!-- ******************************** -->
 <!-- CKEditor -->
 <script src="/js/ckeditor/ckeditor.js"></script>
@@ -129,6 +134,9 @@
 
 
 <!-- Javascript libs -->
+
+
+
 <script type="text/javascript" src="js/vendor/socket.io.js"></script>
 <script type="text/javascript" src="js/sails.io.js"></script>
 
@@ -161,8 +169,8 @@
   $(document).on('open', '[data-reveal]', function () {
     var modal = $(this);
     if(modal.attr('id')==="detailsModal"){
-
         CKEDITOR.replaceAll('ckeditor');
+
 
 
     };
