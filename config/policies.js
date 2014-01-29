@@ -17,18 +17,18 @@
   // Default policy for all controllers and actions
   // (`true` allows public access) 
   
-  '*' : true
 
- // '*': "authenticated",
- // "AppController" : {
- //  	'login' : true,
- // 	'logout' : true,
- // 	'process' : true,
- // 	"openChannels" : "allowedProject"
- // },
- // "ProjectController" : {
- // 	"createPermission" : "canAuthorizeProject"
- // },
+
+ '*': "authenticated",
+ "AppController" : {
+  	'login' : true,
+ 	'logout' : true,
+ 	'process' : true,
+ 	"openChannels" : "allowedProject"
+ },
+ "ProjectController" : {
+ 	"createPermission" : "canAuthorizeProject"
+ },
 //   "ConceptController" : {
 //  	"*" : "authorized"
 //  },
