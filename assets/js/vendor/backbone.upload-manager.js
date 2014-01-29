@@ -13,8 +13,8 @@
          */
         defaults: {
             templates: {
-                main: 'templates/upload-manager.main',
-                file: 'templates/upload-manager.file'
+                main: 'js/templates/upload-manager.main',
+                file: 'js/templates/upload-manager.file'
             },
             uploadUrl: 'file/upload',
             autoUpload: false,
