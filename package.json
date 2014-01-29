@@ -12,8 +12,9 @@
     "sails-mongo": "0.9.5",
     "passport": "*",
     "passport-local": "*",
-    "bcrypt": "*"
-
+    "bcrypt": "*",
+    "mkdirp": "~0.3.5",
+    "rimraf": "~2.2.6"
   },
   "scripts": {
     "start": "node app.js",

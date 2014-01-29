@@ -132,20 +132,56 @@ concepts.Views.MapView = Backbone.View.extend({
             c = _this.concepts.get(args[0]);
             _this.concepts.remove(c)
             c.destroy();
-            console.log(_this.concepts)
             
         }
-        // if (command === 'updateAttr') {
-        //     if(args[1] === "style"){
-        //         c = _this.concepts.get(args[0]);
-        //         c.set({color:args[2].background});
-        //         c.save();
-        //     }
-        // }
-        // if (command === 'addSubIdea') {
-        // }
-        // if (command === 'addSubIdea') {
-        // }
+        if (command === 'changeParent') {
+            c = _this.concepts.get(args[0]);
+            c.set({id_father : args[1], old_father : c.get('id_father')});
+            c.save();
+        }
+        if (command === 'undo') {
+            console.log("UNDO ", command, args)
+            
+
+            if(args.eventMethod === "changeParent"){
+                c = _this.concepts.get(args.eventArgs[0]);
+                c.set({id_father : c.get('old_father')})
+                c.save();
+            }
+            if(args.eventMethod === "addSubIdea"){
+                c = _this.concepts.get(args.eventArgs[2]);
+                _this.concepts.remove(c)
+                c.destroy();
+            }
+            if(args.eventMethod === "updateTitle"){
+                c = _this.concepts.get(args.eventArgs[0]);
+                c.save();
+            }
+            if(args.eventMethod === "removeSubIdea"){
+                c = _this.concepts.get(args.eventArgs[2]);
+                c.save();
+            }
+            
+        }
+        if (command === 'redo') {
+            console.log("REDO ", command, args)
+        }
+        if (command === 'insertIntermediate') {
+            console.log("insertIntermediate ", command, args)
+            c = _this.concepts.get(args[0]);
+            _this.concepts.create({
+                id : args[2],
+                title : args[1],
+                user : this.currentUser,
+                id_father : c.get('id_father')
+                // date, content, color
+            })
+
+            c.set({id_father : args[2]});
+            c.save();
+        }
+
+
     },
 
     populate : function(id_father, children){

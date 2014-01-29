@@ -44,6 +44,15 @@ module.exports = {
     destroy : function(req,res){
     User.findOne(req.body.params.id).done(function(err,user){
       if(err) console.log(err);
+      UserGroup.find({
+        user_id : user.id
+      }).done(function (err, usergroups){
+        _.each(usergroups, function(ug){
+          ug.destroy(function(err){
+            if(err) console.log(err);
+          });
+        })
+      })
       user.destroy(function(err){
         if(err) console.log(err)
           res.send({msg:"destroyed"})

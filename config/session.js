@@ -15,7 +15,7 @@ module.exports.session = {
   // Session secret is automatically generated when your new app is created
   // Replace at your own risk in production-- you will invalidate the cookies of your users,
   // forcing them to log in again. 
-  secret: 'c17007f333b6f77636f34e979f2ccbcf'
+  secret: 'c17007f333b6f77636f34e979f2ccbcf',
 
 
   // In production, uncomment the following lines to set up a shared redis session store
@@ -35,12 +35,10 @@ module.exports.session = {
 
 
   // Uncomment the following lines to use your Mongo adapter as a session store
-  // adapter: 'mongo',
-  //
-  // host: 'localhost',
-  // port: 27017,
-  // db: 'sails',
-  // collection: 'sessions',
+  adapter: 'mongo',
+  url : 'mongodb://localhost:27017/creaktive' || process.env.MONGOLAB_URI,
+  db: 'creaktive',
+  collection: 'sessions',
   //
   // Optional Values:
   //

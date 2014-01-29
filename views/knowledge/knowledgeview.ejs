@@ -1,5 +1,3 @@
-<!-- CSS -->
-<link rel="stylesheet" href="styles/map.css">
 
 <!-- Javascript libs -->
 <script src="/js/vendor/backbone.iosync.js"></script>
@@ -10,36 +8,17 @@
 <script src="js/vendor/jquery.hammer.min.js"></script>
 <script type="text/javascript" src="js/vendor/kinetic-v4.4.3.js"></script>
 <script src="js/vendor/color-0.4.1.min.js"></script>
-<script type="text/javascript" src="js/mapjs/kinetic.clip.js"></script>
-<script type="text/javascript" src="js/mapjs/kinetic.idea.js"></script>
-<script type="text/javascript" src="js/mapjs/kinetic.idea.proxy.js"></script>
-<script type="text/javascript" src="js/mapjs/kinetic.connector.js"></script>
-<script type="text/javascript" src="js/mapjs/observable.js"></script>
-<script type="text/javascript" src="js/mapjs/mapjs.js"></script>
-<script type="text/javascript" src="js/mapjs/url-helper.js"></script>
-<script type="text/javascript" src="js/mapjs/content.js"></script>
-<script type="text/javascript" src="js/mapjs/layout.js"></script>
-<script type="text/javascript" src="js/mapjs/layout-compressor.js"></script>
-<script type="text/javascript" src="js/mapjs/map-model.js"></script>
-<script type="text/javascript" src="js/mapjs/kinetic-mediator.js"></script>
-<script type="text/javascript" src="js/mapjs/map-toolbar-widget.js"></script>
-<script type="text/javascript" src="js/mapjs/png-exporter.js"></script>
-<script type="text/javascript" src="js/mapjs/map-widget.js"></script>
 
-<script type="text/javascript" src="js/mapjs/kinetic.link.js"></script>
-<script type="text/javascript" src="js/mapjs/link-edit-widget.js"></script>
+<script type="text/javascript" src="/js/vendor/backbone-defered-view-loader.js"></script>
+<script type="text/javascript" src="js/backbone-upload-manager/js/backbone.upload-manager.js"></script>
 
+<script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
 
 <!-- ******************************** -->
 <!-- FileUpload -->
 <script src="js/vendor/jquery.ui.widget.js"></script>
 <script src="js/vendor/jquery.iframe-transport.js"></script>
 <script src="js/vendor/jquery.fileupload.js"></script>
-
-<script type="text/javascript" src="/js/vendor/backbone-defered-view-loader.js"></script>
-<script type="text/javascript" src="js/backbone-upload-manager/js/backbone.upload-manager.js"></script>
-
-<script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
 <!-- ******************************** -->
 <!-- CKEditor -->
 <script src="/js/ckeditor/ckeditor.js"></script>
@@ -56,7 +35,7 @@
     <nav class="top-bar" data-topbar>
       <ul class="title-area">
         <li class="name">
-          <h1><a href="#">CreaKtive</a></h1>
+          <h1><a href="/">CreaKtive</a></h1>
         </li>
         <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
       </ul>
@@ -64,24 +43,21 @@
       <section class="top-bar-section">        
         <!-- Left Nav Section -->
         <ul class="left">
-          <li><a href="concepts">Concepts</a></li>
-          <li><a href="knowledges">Knowledges</a></li>
+          <li><a href="concepts?projectId=<%- projectId %>">Concepts</a></li>
+          <li><a href="knowledges?projectId=<%- projectId %>">Knowledges</a></li>
         </ul>
       </section>
     </nav>
 
     <nav class="tab-bar">
       <section class="middle tab-bar-section">
-        <h1>Notifications (<span id="notificationsCounter">0</span>)</h1>
+        <h1><%- projectTitle %> (<span id="notificationsCounter">0</span>)</h1>
       </section>
 
       <section class="left-small">
         <a class="left-off-canvas-toggle menu-icon" ><span></span></a>
       </section>
       
-      <section class="right-small">
-        <a href="#" data-dropdown="connectedUsers_container" class="menu-icon"><span></span></a>
-      </section>
 
     </nav>
 
@@ -96,50 +72,14 @@
       <!-- content goes here -->
 
       <div class="interface">
-
-        <div class="expand panel" style="text-align:center">
-          <div class="row">
-            <a href="/"><h2><%- projectTitle %></h2></a>
-            <dl class="tabs" style="" data-tab>
-                <dd id="panel-concept" class="active"><a href="#panel2-1">Concept</a></dd>
-                <dd id="panel-visualization" ><a href="#panel2-2">Visualisation</a></dd>
-                <dd id="panel-knowledge" ><a href="#panel2-3">Knowledge</a></dd>
-            </dl>
-          </div>
-        </div>
-        <div class="tabs-content">
-          <div class="content active " id="panel2-1">
-            <div >
-              <div id="interface1-container" class="columns large-1">
-                <a href="#" title="Center" class="panel button tiny resetView"><img src="img/centrer.png"></a>
-                <a href="#" title="Zoom" class="panel button tiny scaleUp"><img src="img/plus.png"></a>
-                <a href="#" title="Zoom" class="panel button tiny scaleDown"><img src="img/moins.png"></a>
-                <a href="#" title="Add" class="panel button tiny addSubIdea"><img src="img/add.png"></a>
-                <a href="#" title="Delete" class="panel button tiny removeSubIdea"><img src="img/sup.png"></a>
-                <a href="#" title="Insert" class="panel button tiny insertIntermediate"><img src="img/insertparent.png"></a>
-                <a href="#" title="Expand" class="panel button tiny toggleCollapse"><img src="img/expand.png"></a>
-                <a href="#" title="Undo" class="panel button tiny undo"><img src="img/undo.png"></a>
-                <a href="#" title="Redo" class="panel button tiny redo"><img src="img/redo.png"></a>
-
-              </div>
-              <div class="large-11 columns" id="container"></div>  
-            </div>
-          </div>
-          <div class="content " id="panel2-2">
-          <img src="img/visu_pour_maquette.jpg">
-          </div>
-          <div class="content " id="panel2-3">
-            <%- partial('./templates/visu_template') %>
-          </div>
-
-        </div>
+        <br />
+         <%- partial('../app/templates/visu_template') %>
       </div>
 
-      <%- partial('./templates/concepts_template') %>
-      <%- partial('./templates/cklink_template') %>
-      <%- partial('./templates/notifications_template') %>
-      <%- partial('./templates/details_templates') %>
-      <%- partial('./templates/tagK_templates') %>
+      <%- partial('../app/templates/cklink_template') %>
+      <%- partial('../app/templates/notifications_template') %>
+      <%- partial('../app/templates/details_templates') %>
+      <%- partial('../app/templates/tagK_templates') %>
     </section>
 
     <a class="exit-off-canvas"></a>
@@ -151,9 +91,6 @@
 
 
 <!-- Javascript libs -->
-
-
-
 <script type="text/javascript" src="js/vendor/socket.io.js"></script>
 <script type="text/javascript" src="js/sails.io.js"></script>
 
@@ -170,12 +107,9 @@
 
 
 
-<script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/cklink.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/visu.js"></script>
 
-<script type="text/javascript" src="js/BB_app/interfaces/interface1.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/concepts.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/details.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/notifications.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/tagK.js"></script>
@@ -186,8 +120,8 @@
   $(document).on('open', '[data-reveal]', function () {
     var modal = $(this);
     if(modal.attr('id')==="detailsModal"){
-        CKEDITOR.replaceAll('ckeditor');
 
+        CKEDITOR.replaceAll('ckeditor');
 
 
     };
@@ -209,12 +143,8 @@
         /*Modules*/
         details.init();
         notifications.init();
-        //topBar.init();
         cklink.init();
         visu.init();
-
-        /*Interfaces*/
-        interface1.init();
         ////////////////////////////////////////
         /*activat of "hashchange events's monitoring"*/
 
@@ -236,7 +166,7 @@ function rt (io, callback) {
       // console.log(data.channels);
     })
     // Listen for Comet messages from Sails
-    socket.on('users', function messageReceived(message) {     
+    socket.on('message', function messageReceived(message) {     
       console.log('New comet message received :: ', message);
     });
     console.log(

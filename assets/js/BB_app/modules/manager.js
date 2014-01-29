@@ -58,7 +58,10 @@ manager.Views.Project = Backbone.View.extend({
         this.project.bind("change", this.render);
         this.project.bind("destroy", this.render);
 
-        this.groups = json.groups;
+        this.users = json.users;
+        this.users.bind("add", this.render);
+        this.users.bind("remove", this.render);
+        this.users.bind("reset", this.render); 
 
         this.template = _.template($('#project-template').html());            
     },
@@ -66,7 +69,10 @@ manager.Views.Project = Backbone.View.extend({
     render : function() {
         $(this.el).html("");
         project_el = this.el;
-        var renderedContent = this.template({project: this.project.toJSON(), groups : this.groups.toJSON()});
+        var renderedContent = this.template({
+            project: this.project.toJSON(),
+            users : this.users.toJSON()
+        });
         $(project_el).append(renderedContent);
 
         permissionTable_ = new manager.Views.PermissionTable({
@@ -80,14 +86,16 @@ manager.Views.Project = Backbone.View.extend({
 });
 /***********************************************/
 manager.Views.Projects = Backbone.View.extend({
-    tagName : "div",
-    className :"content",
-    id :"panel-1",
+    el : "#panel-1",
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Params
         this.projects = json.projects;
-        this.groups = json.groups;
+        this.projects.bind("add", this.render);
+        this.projects.bind("remove", this.render);
+        this.projects.bind("reset", this.render); 
+        
+        this.users = json.users;
   
         this.template = _.template($('#projects-template').html());            
     },
@@ -102,13 +110,9 @@ manager.Views.Projects = Backbone.View.extend({
     addPermission : function(e){
         console.log("Add a permission");
         project_id = e.target.getAttribute("data-project-id");
-        group_id = e.target.getAttribute("data-group-id");
+        user_id = e.target.getAttribute("data-user-id");
         right = $("#permission_right").val();
-        socket.post('/project/createPermission', {group_id : group_id, project_id : project_id, right : right});
-        
-        // _.each(this.groups.get(project_id).get('users'), function (user){
-        //     this.projects.get("permissions").unshift({right : right, user : user})
-        // })
+        socket.post('/project/createPermission', {user_id : user_id, project_id : project_id, right : right});
         
         global.collections.Projects.fetch();
 
@@ -151,12 +155,12 @@ manager.Views.Projects = Backbone.View.extend({
         this.projects.each(function (project){
             project_ = new manager.Views.Project({
                 project : project,
-                groups : _this.groups
+                users : _this.users
             })
             $(_this.el).append(project_.render().el);
         });
 
-
+        $(document).foundation();
         return this;
     }
 });
@@ -241,9 +245,7 @@ manager.Views.Group = Backbone.View.extend({
 });
 /***********************************************/
 manager.Views.Groups = Backbone.View.extend({
-    tagName : "div",
-    className :"content",
-    id :"panel-2",
+    
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Params
@@ -355,13 +357,14 @@ manager.Views.UsersTable = Backbone.View.extend({
 
 /***********************************************/
 manager.Views.Users = Backbone.View.extend({
-    tagName : "div",
-    className : "content",
-    id :"panel-3",
+    el : '#panel-3',
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Params
-        this.users = json.users;   
+        this.users = json.users;  
+        this.users.bind("add", this.render);
+        this.users.bind("remove", this.render);
+        this.users.bind("reset", this.render);  
         this.template = _.template($('#users-template').html());    
     },
     events : {
@@ -395,45 +398,10 @@ manager.Views.Users = Backbone.View.extend({
             users : this.users
         });
         $(this.el).append(usersTable_.render().el);
+        $(document).foundation();
         return this;
     }
 });
-
-manager.Views.TabsContent = Backbone.View.extend({
-    tagName : "div",
-    className : "tabs-content vertical",
-    initialize : function(json){
-        _.bindAll(this, 'render');
-
-        // Params
-        this.users = json.users;
-        this.groups = json.groups;
-        this.projects = json.projects
-
-    }, 
-    render : function(){
-        users_ = new manager.Views.Users({
-            users : this.users
-        });
-        $(this.el).append(users_.render().el);
-
-        groups_ = new manager.Views.Groups({
-            users : this.users,
-            groups : this.groups,  
-        })
-        $(this.el).append(groups_.render().el);
-
-
-        projects_ = new manager.Views.Projects({
-            projects : this.projects,
-            groups : this.groups 
-        })
-        $(this.el).append(projects_.render().el);
-
-        return this;
-    }
-
-})
 
 /***********************************************/
 manager.Views.Main = Backbone.View.extend({
@@ -443,35 +411,26 @@ manager.Views.Main = Backbone.View.extend({
 
         // Params
         this.users = json.users;
-        this.users.bind("add", this.render);
-        this.users.bind("remove", this.render);
-        this.users.bind("reset", this.render); 
 
-        this.groups = json.groups;
-        this.groups.bind("add", this.render);
-        this.groups.bind("remove", this.render);
-        this.groups.bind("reset", this.render); 
+        // this.groups = json.groups;
+        // this.groups.bind("add", this.render);
+        // this.groups.bind("remove", this.render);
+        // this.groups.bind("reset", this.render); 
 
-        this.projects = json.projects;
-        this.projects.bind("add", this.render);
-        this.projects.bind("remove", this.render);
-        this.projects.bind("reset", this.render); 
-
-        this.template = _.template($('#manager-template').html());   
+        this.projects = json.projects;       
    
     },
     render : function() {
-        var renderedContent = this.template();
-        $(this.el).html(renderedContent);
 
-        tabsContent = new manager.Views.TabsContent({
-            users : this.users,
+        panel1 = new manager.Views.Projects({
+            projects :this.projects,
             groups : this.groups,
-            projects : this.projects
+            users : this.users
         });
-        $(this.el).append(tabsContent.render().el);
+        panel1.render();
 
-        $(document).foundation();
+        panel3 = new manager.Views.Users({users : this.users});
+        panel3.render();
         return this;
     }
 });

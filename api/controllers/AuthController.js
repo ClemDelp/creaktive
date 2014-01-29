@@ -35,11 +35,16 @@ var AuthController = {
 
 
 	openChannels : function(req,res){
+		req.socket.join("users")
+
+		console.log(sails.io.sockets.clients("general"));
 		_.each(req.session.allowedProject, function(project){
 			req.socket.join(project)
 		})		
-		res.send({msg:"Channels opened", channels : req.session.allowedProject});
-
+		
+		req.socket.broadcast.to("users").emit("user:create", req.session.user);
+		
+		//res.send({msg:"Channels opened", channels : req.session.allowedProject});
 
 		
 	},

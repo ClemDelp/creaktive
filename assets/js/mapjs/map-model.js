@@ -176,7 +176,7 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 		if(!parentId || !node){
 			return ;
 		};
-		analytic("createFromDB", "DB");
+		//analytic("createFromDB", "DB");
 		idea.createFromDB(parentId, node);
 	}
 	this.insertIntermediate = function (source) {

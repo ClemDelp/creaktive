@@ -1,5 +1,13 @@
  <div id="details_container"></div>
 
+ <div id="uploadModal" class="reveal-modal tiny" data-reveal>
+ 	<div id="upload-container"></div>
+ 	<a class="close-reveal-modal">&#215;</a>
+ </div>
+
+ <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+ <!-- COMMENTS -->
+ <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
  <script type="text/template" id="details-comment-template">
  	<div id="{{= comment.id }}_comment">
 
@@ -44,6 +52,25 @@
  	</fieldset>
  </script>
 
+ <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+ <!-- FILES -->
+ <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+ <script type="text/template" id="details-files-template">
+ 		<legend>Attached files</legend>
+ 		<table>
+ 		{{ _.each(files, function(file) { }}
+ 			<tr>
+ 				<td><a href="#" class="openFile" data-file-path="{{= file.path}}">{{= file.name }}</a></td>
+ 				<td><a href="#" class="removeFile"><img data-file-id="{{= file.id}}" src="img/delete.png"></a></td>
+				</tr>
+ 		{{ }) }}
+ 		</table>	
+ </script>
+
+
+ <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+ <!-- MEMBERS -->
+ <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
  <script type="text/template" id="details-member-template">
  	<img src="{{= member.img}}" data-member-id="{{= member.id}}">
  	{{= member.name}}
@@ -54,17 +81,22 @@
  	<legend>Members</legend>
  	<a href="#" class="button" data-dropdown="dropUser{{= model.id}}">Add members</a>
  	<div id="dropUser{{= model.id}}" data-dropdown-content class="f-dropdown content">  		
- 		<ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+ 		<div class="row">
  			{{ _.each(users, function(user) { }}
- 				<li >
- 					<img src="{{= user.img}}" data-user-id="{{= user.id}}" class="addMember">
- 				</li>
+ 				<p class="addMember">
+ 					<img class="large-4 medium-4 small-4 columns" src="{{= user.img}}" data-user-id="{{= user.id}}" class="addMember">
+ 					<p class="large-8 medium-8 small-8 columns" >{{= user.name}}</p>
+ 				</p>
  				{{ }) }}
- 		</ul>
+ 		</div>
  	</div>
 
  </script>
 
+
+ <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+ <!-- LABEL -->
+ <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
  <script type="text/template" id="details-labels-template">
 
  	<legend>labels</legend>
@@ -90,13 +122,17 @@
  	</div>
  </script>
 
+ <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+ <!-- ACTIONS -->
+ <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
  <script type="text/template" id="details-actions-template">
-
  	<legend>Actions</legend>
- 	<a href="#" class="button tiny expand">Suscribe</a>
- 	<a href="#" class="button tiny expand">Attach File...</a>
- 	<a href="#" class="button alert tiny expand archive">Archive</a>
- 	<a href="#" class="button alert tiny expand destroy">Destroy</a>
+ 	
+ 	<a href="#" class="button tiny expand" data-reveal-id="uploadModal" data-reveal>Attach File...</a>
+ 	 	<a href="#" class="button alert tiny expand destroy">Destroy</a>
+ 	<a href="#" class="button tiny expand disabled">Suscribe</a>
+ 	<a href="#" class="button alert tiny expand archive disabled">Archive</a>
+
  </script>
 
  <script type="text/template" id="details-modal-template">
@@ -117,12 +153,3 @@
  	</fieldset>
  </script>
 
- <script type="text/template" id="k-details-title-ckeditor-template">
-
- 	<fieldset>
- 		<legend>Informations</legend>
- 		<input id="change_k_title" type="text" placeholder="title" value="{{= model.title }}"/>
- 		<textarea  class="ckeditor2"  name="editor" rows="10" cols="80">{{= model.content }}</textarea>
- 		<a href="#" class="button small validate update_informations" data-action="change_k_title">Save</a>
- 	</fieldset>
- </script>

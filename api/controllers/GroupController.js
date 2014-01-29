@@ -38,9 +38,6 @@ module.exports = {
       })
     })
 
-      
-
-
   },
   
   update : function(req,res){
@@ -63,6 +60,15 @@ module.exports = {
   destroy : function(req,res){
     Group.findOne(req.body.params.id).done(function(err,group){
       if(err) console.log(err);
+      UserGroup.find({
+        group_id : group.id
+      }).done(function (err, usergroups){
+        _.each(usergroups, function(ug){
+          ug.destroy(function(err){
+            if(err) console.log(err);
+          });
+        })
+      })
       group.destroy(function(err){
         if(err) console.log(err)
           res.send({msg:"destroyed"})
