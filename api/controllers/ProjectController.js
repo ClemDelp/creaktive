@@ -4,7 +4,7 @@
  * @module		:: Controller
  * @description	:: Contains logic for handling requests.
  */
- function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
+function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
 function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
 function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
 
@@ -21,7 +21,7 @@ module.exports = {
   find : function(req,res){
     Project.find().done(function (err,projects){   
       Permission.find().done(function (err, permissions){
-        User.find().done(function (err, users){
+        User.find().done(function (err, users){        
           _.each(projects, function(project){
             project.permissions = [];
             perms = _.where(permissions, {project_id : project.id});
@@ -39,6 +39,21 @@ module.exports = {
 
   },
 
+  create : function (req,res){
+    Project.create(req.body.params).done(function(err, project){
+      Permission.create({
+        id: guid(),
+        user_id : req.session.user.id,
+        project_id : project.id,
+        right : "Read and Write"
+      }).done(function(err, perm){
+        if(err) res.send(err)
+        res.send(project)
+      })
+    })
+
+  },
+
   update : function(req,res){
   	Project.findOne(req.body.params.id).done(function(err, project){
   		if(err) res.send(err);
@@ -48,9 +63,17 @@ module.exports = {
   				res.send(c);
   			});
   		}else{
-  			Project.create(req.body.params).done(function(err,p){
+  			Project.create(req.body.params).done(function(err,project){
   				if(err) res.send(err)
-  				res.send(p);
+  				Permission.create({
+            id: guid(),
+            user_id : req.session.user.id,
+            project_id : project.id,
+            right : "Read and Write"
+          }).done(function(err, perm){
+            if(err) res.send(err)
+            res.send(project)
+          })
   			})
   		}
   	})
@@ -85,23 +108,33 @@ module.exports = {
 */
 createPermission : function (req,res){
   console.log(req.body)
-  UserGroup.find({
-    group_id : req.body.group_id
-  }).done(function (err, usergroups){
-    users_id = _.pluck(usergroups, "user_id");
-    _.each(users_id, function(user_id){
-      Permission.create({
-        id : guid(),
-        user_id : user_id,
-        project_id : req.body.project_id,
-        right : req.body.right,
-        group_id : req.body.group_id
+  // UserGroup.find({
+  //   group_id : req.body.group_id
+  // }).done(function (err, usergroups){
+  //   users_id = _.pluck(usergroups, "user_id");
+  //   _.each(users_id, function(user_id){
+  //     Permission.create({
+  //       id : guid(),
+  //       user_id : user_id,
+  //       project_id : req.body.project_id,
+  //       right : req.body.right,
+  //       group_id : req.body.group_id
 
-      }).done(function (err, p){
-        if(err) console.log(err);
-      })
-      res.send({msg:"Permissions granted"});
-    })
+  //     }).done(function (err, p){
+  //       if(err) console.log(err);
+  //     })
+  //     res.send({msg:"Permissions granted"});
+  //   })
+  // })
+
+  Permission.create({
+    id : guid(),
+    user_id : req.body.user_id,
+    project_id : req.body.project_id,
+    right : req.body.right
+  }).done(function (err, perm){
+    if(err) console.log(err);
+    res.send({msg:"Permissions granted"});
   })
 
 },

@@ -35,6 +35,11 @@
 <script src="js/vendor/jquery.ui.widget.js"></script>
 <script src="js/vendor/jquery.iframe-transport.js"></script>
 <script src="js/vendor/jquery.fileupload.js"></script>
+
+<script type="text/javascript" src="/js/vendor/backbone-defered-view-loader.js"></script>
+<script type="text/javascript" src="js/backbone-upload-manager/js/backbone.upload-manager.js"></script>
+
+<script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
 <!-- ******************************** -->
 <!-- CKEditor -->
 <script src="/js/ckeditor/ckeditor.js"></script>
@@ -74,6 +79,9 @@
         <a class="left-off-canvas-toggle menu-icon" ><span></span></a>
       </section>
       
+      <section class="right-small">
+        <a href="#" data-dropdown="connectedUsers_container" class="menu-icon"><span></span></a>
+      </section>
 
     </nav>
 
@@ -143,6 +151,9 @@
 
 
 <!-- Javascript libs -->
+
+
+
 <script type="text/javascript" src="js/vendor/socket.io.js"></script>
 <script type="text/javascript" src="js/sails.io.js"></script>
 
@@ -175,8 +186,8 @@
   $(document).on('open', '[data-reveal]', function () {
     var modal = $(this);
     if(modal.attr('id')==="detailsModal"){
-
         CKEDITOR.replaceAll('ckeditor');
+
 
 
     };
@@ -225,7 +236,7 @@ function rt (io, callback) {
       // console.log(data.channels);
     })
     // Listen for Comet messages from Sails
-    socket.on('message', function messageReceived(message) {     
+    socket.on('users', function messageReceived(message) {     
       console.log('New comet message received :: ', message);
     });
     console.log(

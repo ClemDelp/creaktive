@@ -19,6 +19,15 @@ global.Models.Poche = Backbone.Model.extend({
     }
 });
 
+global.Models.File = Backbone.Model.extend({
+    defaults : {
+        id : "",
+        name : "",
+        path : "",
+    },
+
+});
+
 global.Models.CKObject = Backbone.Model.extend({
     defaults : {
         id:"",
@@ -32,6 +41,7 @@ global.Models.CKObject = Backbone.Model.extend({
         attachment: "",
         color: "",
         members:[],
+        attachment:[]
     },
     parse : function(serverObj){
         serverObj.comments = new global.Collections.Comments(serverObj.comments);

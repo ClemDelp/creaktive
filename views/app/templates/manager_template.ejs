@@ -1,18 +1,19 @@
-
- <script type="text/template" id="manager-template">
+<div class="row" id="manager-container">
 	 	<div class="large-12 columns">
 	 		<h1>Manager</h1>
 	 		<hr />
 	 	</div>
 
 	 	<dl class="tabs vertical" data-tab>
-	 		<dd><a href="#panel-1">Projects</a></dd>
-	 		<dd><a href="#panel-2">Groups</a></dd>
-	 		<dd><a class="active" href="#panel-3">Users</a></dd>
+	 		<dd><a class="active" href="#panel-1">Projects</a></dd>
+	 		<dd><a  href="#panel-3">Users</a></dd>
 	 	</dl>
 
-</script>
-
+	 	<div class="tabs-content vertical">
+		 	<div class="content active" id="panel-1"></div>
+			<div class="content" id="panel-3"></div>
+	 	</div>
+</div>
 
 <!--
 /////////////////////////////////////////////////////////////////////
@@ -149,19 +150,22 @@
 		<blockquote>{{= project.description }} </blockquote>
 		<a href="#" data-dropdown="drop{{= project.id }}">Add Permission -></a>
 		<div id="drop{{= project.id }}" data-dropdown-content class="f-dropdown content">
-			<div class="row">
-			{{ _.each(groups, function(group) { }}
-				<div class="panel addPermission" data-group-id="{{= group.id}}" data-project-id="{{= project.id}}">{{= group.title}}</div>
-			{{ }) }}	
-			</div>
-
 			<div class="large-12 columns">
 		      <label>Select right :</label>
 		      <select id="permission_right">
 		        <option value="Read and Write">Read and Write</option>
 		        <option value="Read only">Read only</option>
 		      </select>
-		    </div>
+		    
+
+		    {{ _.each(users, function(user) { }}
+		    	<div class="panel addPermission" data-user-id="{{= user.id }}" data-project-id="{{= project.id}}">
+		    		{{= user.name }}
+	    		</div>
+	    	{{ }) }}
+
+	    	</div>
+
 		</div>
 	</div>
 </script>

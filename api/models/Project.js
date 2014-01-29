@@ -31,7 +31,8 @@ autoPK : false,
   		position : 0,
   		project : values.id,
       comments : [],
-      members:[]
+      members:[],
+      attachment:[]
 
   	}).done(function(err, c0){
   		if(err) console.log(err);
