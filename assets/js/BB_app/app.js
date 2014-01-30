@@ -56,7 +56,6 @@ var visu = {
   views: {},
   init: function () {
     /*Init*/
-    console.log('VISU Constructor');
     this.views.main = new this.Views.Main({
       concepts    : global.collections.Concepts,
       knowledges  : global.collections.Knowledges,

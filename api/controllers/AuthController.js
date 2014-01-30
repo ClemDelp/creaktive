@@ -42,7 +42,6 @@ var AuthController = {
 			for (var socketId in sails.io.sockets.sockets) {
 			    sails.io.sockets.sockets[socketId].get('user', function(err, u) {
 			        if(err) console.log(err)
-			        console.log("**** ",u);
 			    	connectedUsers.push(u);
 			    });
 			}

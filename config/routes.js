@@ -33,6 +33,13 @@ module.exports.routes = {
   // 
   // (This would also work if you had a file at: `/views/home.ejs`)
 
+
+  '*' : function(req,res,next){
+    if(req.headers['x-forwarded-proto']!='https')
+      res.redirect('https://creaktive.herokuapp.com/'+req.url)
+    else
+      next() /* Continue to other routes if we're not redirecting */
+  },
   '/knowledges': "KnowledgeController.knowledgeview",
   '/concepts': "ConceptController.conceptview",
   '/': "AppController.managerview",

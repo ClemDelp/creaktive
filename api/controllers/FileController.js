@@ -12,7 +12,8 @@
 
  var fs = require('fs');
  var mkdirp = require('mkdirp');
- var rimraf = require('rimraf')
+ var rimraf = require('rimraf');
+
 //var io = require('socket.io');
 
 var UPLOAD_PATH = 'upload';
@@ -67,37 +68,63 @@ module.exports = {
   },
 
   upload: function(req, res) {
-  	var file = req.files.files[0],
-  	id = guid(),
-  	fileName = safeFilename(file.name),
-  	dirPath = UPLOAD_PATH + '/' + id,
-  	filePath = dirPath + '/' + fileName;
+  	var file = req.files.files[0];
 
-  	try {
-  		mkdirp.sync(dirPath, 0755);
-  	} catch (e) {
-  		console.log(e);
-  	}
+    async.auto({
+      metadata : function(next){
+        id = guid(),
+        fileName = safeFilename(file.name),
+        dirPath = UPLOAD_PATH + '/' + id,
+        filePath = dirPath + '/' + fileName;
 
-  	fs.readFile(file.path, function (err, data) {
-  		if (err) {
-  			res.json({'error': 'could not read file'});
-  		} else {
-  			fs.writeFile(filePath, data, function (err) {
-  				if (err) {
-  					res.json({'error': 'could not write file to storage'});
-  				} else {
-  					processImage(id, fileName, filePath, function (err, data) {
-  						if (err) {
-  							res.json(err);
-  						} else {
-  							res.json(data);
-  						}
-  					});
-  				}
-  			})
-  		}
-  	});
+        next(null,{
+          id: id,
+          fileName : fileName,
+          dirPath : dirPath,
+          filePath : filePath
+        })
+      },
+
+      writeFile : ["metadata", function(next, r){
+
+
+      try {
+            mkdirp.sync(dirPath, 0755);
+          } catch (e) {
+            console.log(e);
+          }
+
+          fs.readFile(file.path, function (err, data) {
+            if (err) {
+              res.json({'error': 'could not read file'});
+            } else {
+              fs.writeFile(r.metadata.filePath, data, function (err) {
+                if (err) {
+                  res.json({'error': 'could not write file to storage'});
+                } else {
+                  processImage(id, r.metadata.fileName, r.metadata.filePath, function (err, data) {
+                    if (err) {
+                      res.json(err);
+                    } else {
+                      res.json(data);
+                      next()
+                    }
+                  });
+                }
+              })
+            }
+          });
+      }]
+
+    },function(err){
+      if(err) res.send(err)
+    })
+
+
+  	
+  
+
+
   },
 
 };

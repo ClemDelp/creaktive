@@ -2,7 +2,7 @@
   "name": "creaktive",
   "private": true,
   "version": "0.0.0",
-    "engines": {
+  "engines": {
     "node": "0.10.20"
   },
   "description": "CreaKtive",
@@ -17,7 +17,8 @@
     "passport-local": "*",
     "bcrypt": "*",
     "mkdirp": "~0.3.5",
-    "rimraf": "~2.2.6"
+    "rimraf": "~2.2.6",
+    "node-async": "0.0.1"
   },
   "scripts": {
     "start": "node app.js",

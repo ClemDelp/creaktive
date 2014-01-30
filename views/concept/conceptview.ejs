@@ -219,10 +219,6 @@ function rt (io, callback) {
       // console.log(data.msg);
       // console.log(data.channels);
     });
-    // Listen for Comet messages from Sails
-    socket.on('connectedUsers', function messageReceived(message) {     
-      console.log('New comet message received :: ', message);
-    });
     console.log(
       'Socket is now connected and globally accessible as `socket`.\n' + 
       'e.g. to send a GET request to Sails, try \n' + 
