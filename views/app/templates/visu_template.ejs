@@ -11,7 +11,7 @@
 <script type="text/template" id="visu-expert-template">
         <div class="row">
                 <div class="small-12 medium-12 large-8 columns">
-                        <a class="tiny button alert addFilter expand" data-filter-type="expert" data-filter-model="{{=expert.id}}" data-filter-id="{{=expert.id}}">
+                        <a class="tiny button alert addFilter expand" data-filter-type="expert" data-filter-model="{{=expert.id}}">
                                 {{= expert.name }} - <font style="color:white">({{= rec }})</font>
                         </a>
                 </div>
@@ -24,7 +24,7 @@
 <script type="text/template" id="visu-concept-template">
     <div class="row">
                 <div class="small-12 medium-12 large-8 columns">
-                        <a class="tiny button addFilter expand" data-filter-type="concept" data-filter-model="{{=concept.id}}" data-filter-id="{{=concept.id}}">
+                        <a class="tiny button addFilter expand" data-filter-type="concept" data-filter-model="{{=concept.id}}">
                                 {{= concept.title }} - <font style="color:red">({{= rec }})</font>
                         </a>
                 </div>
@@ -48,7 +48,7 @@
 <script type="text/template" id="visu-poche-template">
     <div class="row">
                 <div class="small-12 medium-12 large-8 columns">
-                        <a class="tiny success button addFilter expand" data-filter-id="{{=poche.id}}" data-filter-type="poche" data-filter-model="{{=poche.id}}">
+                        <a class="tiny success button addFilter expand" data-filter-type="poche" data-filter-model="{{=poche.id}}">
                                 {{= poche.title }} - <font style="color:red">({{= rec }})</font>
                                 <input style="float:right" data-id-poche="{{= poche.id }}" type="submit" value="x" class="removePoche" />
                         </a>
@@ -98,6 +98,8 @@
 
 <script type="text/template" id="visu-publish-module-template">
         <div class="show-for-medium-up medium-12 large-12 columns">
+                <input type="text" class="search" placeholder="Search in Knowledges..."/>
+
                 Context :  
                 {{ _.each(filters, function(filter) { }}
                     {{ if(filter.type == "concept"){ }}
@@ -106,14 +108,29 @@
                             <a class="tiny success button remove" data-id-filter="{{=filter.id}}">{{= filter.model.title }}</a> +
                     {{ }else if(filter.type == "expert"){ }}        
                             <a class="tiny alert button remove" data-id-filter="{{=filter.id}}">{{= filter.model.name }}</a> +
+                    {{ }else if(filter.type == "state"){ }}
+                        {{ var name="Validated"; if(filter.model == "#F39C12"){name="Missing"}else if(filter.model == "#C0392B"){name="Processing";} }}
+                        <a class="tiny button remove" style="background-color : {{= filter.model}} " data-id-filter="{{=filter.id}}">{{= name }}</a> +
+                    {{ }else if(filter.type == "notLinked"){ }}
+                        <a class="tiny button remove" data-id-filter="{{=filter.id}}">not linked</a> +
+                    {{ }else if(filter.type == "notCategorised"){ }}
+                        <a class="tiny button success remove" data-id-filter="{{=filter.id}}">not categorised</a> +
                     {{ } }}
                 {{ }); }}
                 <ul class="button-group" style="float:right">
                   <li><a href="#" class="button secondary tiny grid">Grid</a></li>
                   <li><a href="#" class="button secondary tiny list">List</a></li>
+
+                  <li><a href="#" class="button tiny addFilter" data-filter-type="notLinked">not linked</a></li>
+                  <li><a href="#" class="button tiny success addFilter" data-filter-type="notCategorised">not categorised</a></li>
+
+                  <li><a href="#" class="button tiny addFilter" style="background-color : #27AE60 " data-filter-type="state" data-filter-model="#27AE60">V</a></li>
+                  <li><a href="#" class="button tiny addFilter" style="background-color : #C0392B " data-filter-type="state" data-filter-model="#C0392B">P</a></li>
+                  <li><a href="#" class="button tiny addFilter" style="background-color : #F39C12 " data-filter-type="state" data-filter-model="#F39C12">M</a></li>
+
                 </ul>
 
-                <input type="text" class="search" placeholder="Search in Knowledges..."/>
+                
         </div>
 
 </script>
