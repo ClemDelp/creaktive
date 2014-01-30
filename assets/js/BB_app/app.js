@@ -24,7 +24,7 @@ var global = {
     this.collections.Concepts = new this.Collections.ConceptsCollection();
     this.collections.Links = new this.Collections.CKLinks();
     this.collections.Notifications = new this.Collections.NotificationsCollection();
-    this.collections.ConnectedUsers = new this.Collections.UsersCollection();
+
 
     /*Loads*/
 
@@ -109,7 +109,7 @@ var notifications = {
     this.views.Main = new this.Views.Main({
       notifications : global.collections.Notifications,
       current_user : global.models.current_user,
-      connectedUsers : global.collections.ConnectedUsers,
+      users : global.collections.Users,
       eventAggregator : global.eventAggregator
     });
 

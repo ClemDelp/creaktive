@@ -35,18 +35,37 @@ var AuthController = {
 
 
 	openChannels : function(req,res){
-		req.socket.join("users")
 
-		console.log(sails.io.sockets.clients("general"));
+		req.socket.join("users")
+		req.socket.set('user', req.session.user.id, function(args){
+			var connectedUsers = []
+			for (var socketId in sails.io.sockets.sockets) {
+			    sails.io.sockets.sockets[socketId].get('user', function(err, u) {
+			        if(err) console.log(err)
+			        console.log("**** ",u);
+			    	connectedUsers.push(u);
+			    });
+			}
+			sails.io.sockets.emit("connectedUsers", _.compact(_.uniq(connectedUsers)));
+			req.socket.set('connectedUsers', _.compact( _.uniq(connectedUsers)));
+
+		})
+
+		req.socket.on("disconnect", function(){
+			console.log("DISCONNECTED")
+			req.socket.get('connectedUsers', function(err, connectedUsers){
+				var i = connectedUsers.indexOf(req.session.user.id);
+				delete connectedUsers[i];
+				sails.io.sockets.emit("connectedUsers", _.compact(_.uniq(connectedUsers)));
+			});	
+		});
+		
 		_.each(req.session.allowedProject, function(project){
 			req.socket.join(project)
 		})		
 		
-		req.socket.broadcast.to("users").emit("user:create", req.session.user);
-		
 		//res.send({msg:"Channels opened", channels : req.session.allowedProject});
-
-		
+	
 	},
  
 	logout: function(req, res) {

@@ -79,7 +79,9 @@
         <a class="left-off-canvas-toggle menu-icon" ><span></span></a>
       </section>
       
-
+<section class="right-small">
+        <a class="right-off-canvas-toggle menu-icon" ><span></span></a>
+      </section>
     </nav>
 
     <aside class="left-off-canvas-menu" >
@@ -88,9 +90,15 @@
       </ul>
     </aside>
 
+    <aside class="right-off-canvas-menu">
+      <ul class="off-canvas-list" id="connectedUsersList">
+      </ul>
+    </aside>
+
 
     <section class="main-section">
       <!-- content goes here -->
+
 
       <div class="interface">
 
@@ -115,7 +123,6 @@
 
 
         </div>
-      </div>
 
       <%- partial('../app/templates/concepts_template') %>
       <%- partial('../app/templates/cklink_template') %>
@@ -206,14 +213,14 @@
 
 function rt (io, callback) {
   // as soon as this file is loaded, connect automatically, 
-  var socket = io.connect();
+  var socket = io.connect("/",{'sync disconnect on unload ': true});
   socket.on('connect', function socketConnected() {
     socket.get("/auth/openChannels", function(data){
       // console.log(data.msg);
       // console.log(data.channels);
-    })
+    });
     // Listen for Comet messages from Sails
-    socket.on('message', function messageReceived(message) {     
+    socket.on('connectedUsers', function messageReceived(message) {     
       console.log('New comet message received :: ', message);
     });
     console.log(

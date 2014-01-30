@@ -61,6 +61,7 @@ global.Collections.UsersCollection = Backbone.Collection.extend({
         });
     },
 });
+
 /***************************************/
 global.Collections.GroupsCollection = Backbone.Collection.extend({
     model : global.Models.GroupModel,
