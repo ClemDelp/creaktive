@@ -19,7 +19,6 @@
 
   find : function (req,res){
     Knowledge.find({
-      project : req.session.currentProject.id
     }).done(function(err,knowledges){
       if(err) res.send(err)
         res.send(knowledges)
