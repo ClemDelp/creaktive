@@ -11,7 +11,7 @@ module.exports = function(req, res, next) {
 		console.log(req.query.projectId)
 		if(err) next(err);
 		if(perm.length !== 0) next();
-		else res.json(401);
+		else res.redirect("/")
 	})
 
 	

@@ -17,26 +17,25 @@
   // Default policy for all controllers and actions
   // (`true` allows public access) 
   
- '*': "authenticated",
- "AppController" : {
- 	"appview" : "authorized"
- },
- "ProjectController" : {
- 	"createPermission" : "canAuthorizeProject"
- },
-//   "ConceptController" : {
-//  	"*" : "authorized"
-//  },
-// "KnowledgeController" : {
-//  	"*" : "authorized"
-//  },
-
- 'AuthController': {
+  '*': "authenticated",
+  "AppController" : {
+  	"appview" : "authorized"
+  },
+  "ProjectController" : {
+  	"createPermission" : "canAuthorizeProject"
+  },
+  "ConceptController" : {
+  	"conceptview" : "authorized"
+  },
+  "KnowledgeController" : {
+  	"knowledgeview" : "authorized"
+  },
+  'AuthController': {
   	'login' : true,
- 	'logout' : true,
- 	'process' : true,
- 	"openChannels" : "allowedProject"
- },
+  	'logout' : true,
+  	'process' : true,
+  	"openChannels" : "allowedProject"
+  },
 
 
   /*
