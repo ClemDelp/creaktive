@@ -27,36 +27,6 @@ visu.Collections.Filters = Backbone.Collection.extend({
 /////////////////////////////////////////
 // Middle part
 /////////////////////////////////////////
-// visu.Views.Knowledge = Backbone.View.extend({
-//     initialize : function(json) {
-//         console.log("Visu knwoledges liste view initialise");
-//         _.bindAll(this, 'render');
-//         // Variables
-//         this.knowledge = json.knowledge;
-//         this.user = json.user;
-//         this.style = json.style;
-//         // Events
-//         this.knowledge.bind("change", this.render);
-//         this.knowledge.bind("destroy", this.render);
-//         // Templates
-//         this.template_knowledge = _.template($('#visu-knowledge-template').html());
-//     },
-
-//     render : function(){
-//         // Init
-//         $(this.el).html('');
-//         // For each knowledge
-//         var renderedContent = this.template_knowledge({
-//             knowledge : this.knowledge.toJSON(),
-//             user:this.user,
-//             style:_this.style
-//         });
-//         $(this.el).append(renderedContent);
-
-//         return this;
-//     }
-// });
-
 visu.Views.KnowledgesList = Backbone.View.extend({
     initialize : function(json) {
         console.log("Visu knwoledges liste view initialise");
@@ -112,7 +82,6 @@ visu.Views.MiddlePart = Backbone.View.extend({
     },
     events : {
         "click .openModal" : "open_modal_details_box",
-        "click .remove" : "removeFilter",
         "keyup .search" : "search",
     },
     search: function(e){
@@ -125,9 +94,6 @@ visu.Views.MiddlePart = Backbone.View.extend({
             }
         });
         this.eventAggregator.trigger('knowledge_search',matched);
-    },
-    removeFilter: function(e){
-        this.filters.remove(this.filters.get(e.target.getAttribute('data-id-filter')));
     },
     open_modal_details_box :function(e){
         //alert(e.target.getAttribute("data-id-knowledge"))
@@ -369,34 +335,15 @@ visu.Views.RightPart = Backbone.View.extend({
     initialize : function(json) {
         console.log("Right part of visu view initialise");
         _.bindAll(this, 'render');
-        _.bindAll(this, 'addFilter');
         // Variables
         this.knowledges = json.knowledges;    
         this.poches = json.poches;
         this.experts = json.experts;
         this.links = json.links;
-        this.filters = json.filters;
         this.eventAggregator = json.eventAggregator;
     },
-    events : {
-        "click .addFilter" : "addFilter",
-    },
-    addFilter: function(e){
-        model_ = "";
-        if(e.target.getAttribute("data-filter-type") == "expert"){model_ = this.experts.get(e.target.getAttribute("data-filter-model"))}
-            else if(e.target.getAttribute("data-filter-type") == "poche"){model_ = this.poches.get(e.target.getAttribute("data-filter-model"))}
-                if(model_ != ""){
-                    new_filter = new visu.Models.Filter({
-                        id:e.target.getAttribute("data-filter-id"),
-                        type:e.target.getAttribute("data-filter-type"),
-                        model:model_
-                    });
-                    this.filters.add(new_filter);
-                    console.log("filters: ",this.filters);
-                }
-            },
-            render : function(){
-                $(this.el).html('');
+    render : function(){
+        $(this.el).html('');
         // Poches part
         poches_part_view = new visu.Views.PochesPart({
             poches:this.poches,
@@ -539,29 +486,11 @@ visu.Views.LeftPart = Backbone.View.extend({
     initialize : function(json) {
         console.log("Left part of visu view initialise");
         _.bindAll(this, 'render');
-        _.bindAll(this, 'addFilter');
         // Variables
         this.concepts = json.concepts;
         this.knowledges = json.knowledges;    
         this.links = json.links;
-        this.filters = json.filters;
         this.eventAggregator = json.eventAggregator;
-    },
-    events : {
-        "click .addFilter" : "addFilter",
-    },
-    addFilter: function(e){
-        model_ = "";
-        model_ = this.concepts.get(e.target.getAttribute("data-filter-model"));
-        if(model_ != ""){
-            new_filter = new visu.Models.Filter({
-                id:e.target.getAttribute("data-filter-id"),
-                type:e.target.getAttribute("data-filter-type"),
-                model:model_
-            });
-            this.filters.add(new_filter);
-            console.log("filters: ",this.filters);
-        }
     },
     render : function(){
         $(this.el).html('');
@@ -586,7 +515,6 @@ visu.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         console.log("Main visu view initialise");
         _.bindAll(this, 'render');
-        _.bindAll(this, 'quenelle');
         // Variables
         this.concepts = json.concepts;
         this.knowledges = json.knowledges;
@@ -600,22 +528,52 @@ visu.Views.Main = Backbone.View.extend({
 
         // Events
         this.concepts.bind("reset", this.render);
-        this.knowledges.bind("reset", this.render);
+        
         this.experts.bind("reset", this.render);
+
         this.poches.bind("reset", this.render);
+
         this.links.bind("reset", this.render);
         this.links.bind('add', this.render);
         this.links.bind('remove', this.render);
+
         this.filters.bind('add', this.render);
         this.filters.bind('remove', this.render);
+
+        this.knowledges.bind("reset", this.render);
         this.knowledges.bind('add', this.render);
         this.knowledges.bind('remove', this.render);
+
         this.eventAggregator.on("Ktagged", this.render);
     },
     events : {
         "click .addKnowledge" : "addKnowledge",
         "click .list" : "putInList",
         "click .grid" : "putInGrid",
+        "click .addFilter" : "addFilter",
+        "click .remove" : "removeFilter",
+    },
+    removeFilter: function(e){
+        this.filters.remove(this.filters.get(e.target.getAttribute('data-id-filter')));
+    },
+    addFilter: function(e){
+        model_ = "";
+        if(e.target.getAttribute("data-filter-type") == "expert"){model_ = this.experts.get(e.target.getAttribute("data-filter-model"))}
+        else if(e.target.getAttribute("data-filter-type") == "poche"){model_ = this.poches.get(e.target.getAttribute("data-filter-model"))}
+        else if(e.target.getAttribute("data-filter-type") == "concept"){ model_ = this.concepts.get(e.target.getAttribute("data-filter-model")); }
+        else if(e.target.getAttribute("data-filter-type") == "state"){ model_ = e.target.getAttribute("data-filter-model"); }
+        else if(e.target.getAttribute("data-filter-type") == "notLinked"){ model_ = "notLinked"; }
+        else if(e.target.getAttribute("data-filter-type") == "notCategorised"){ model_ = "notCategorised"; }
+        if(model_ != ""){
+            new_filter = new visu.Models.Filter({
+                id:guid(),//e.target.getAttribute("data-filter-id"),
+                type:e.target.getAttribute("data-filter-type"),
+                model:model_
+            });
+            console.log("new filter: ",new_filter);
+            this.filters.add(new_filter);
+            console.log("filters: ",this.filters);
+        }
     },
     putInList: function(e){
         this.style = "list";
@@ -668,82 +626,134 @@ visu.Views.Main = Backbone.View.extend({
         this.render();
 
     },
+    ///////////////////////////////////////////////////////
+    // Session quenelle power
+    ///////////////////////////////////////////////////////
     quenelle: function(){
-        ks_filtered = new global.Collections.Knowledges();
+        knowledges_q = new global.Collections.Knowledges();
+        this.knowledges.each(function(k){knowledges_q.add(k)})
         filters = this.filters;
         links = this.links;
-        this.knowledges.each(function(k){
-
-            filters.each(function(f){
-                ////////////////////////
-                if(f.get('type') == "concept"){
-                    links.filter(function(link){
-                        if((link.get('concept') == f.get('model').get('id'))&&(link.get('knowledge') == k.get('id'))){
-                            ks_filtered.add(k);return false;
-                        }
-                        else{return false;}   
-                    });
+        v = this;
+        filters.each(function(f){
+            if(f.get('type') == "concept"){        knowledges_q = v.filterByConcept(knowledges_q,links,f);}
+            if(f.get('type') == "poche"){          knowledges_q = v.filterByPoche(knowledges_q,links,f);}
+            if(f.get('type') == "expert"){         knowledges_q = v.filterByExpert(knowledges_q,links,f);}
+            if(f.get('type') == "state"){          knowledges_q = v.filterByState(knowledges_q,links,f);}
+            if(f.get('type') == "notLinked"){      knowledges_q = v.filterByNotLinked(knowledges_q,links,f);}
+            if(f.get('type') == "notCategorised"){ knowledges_q = v.filterByNotCategorised(knowledges_q,links,f);}
+        });
+        return knowledges_q;
+    },
+    filterByNotLinked : function(knowledges,links,f){
+        list_to_remove = [];
+        knowledges.each(function(k){
+            links.filter(function(link){
+                if(link.get('knowledge') == k.get('id')){
+                    list_to_remove.unshift(k);
                 }
-                ////////////////////////
-                if(f.get('type') == "poche"){
-                    b = k.get('tags').forEach(function(tag){
-                        if(tag == f.get('model').get('title')){
-                            ks_filtered.add(k);
-                            return false;
-                        }
-                    });
-                    if(b == false){return false;}
+            });  
+        }); 
+        list_to_remove.forEach(function(k){
+            knowledges.remove(k);
+        }); 
+        return knowledges;
+    },
+    filterByNotCategorised : function(knowledges,links,f){
+        list_to_remove = [];
+        knowledges.each(function(k){
+            if(k.get('tags').length > 0){
+                list_to_remove.unshift(k);
+            }   
+        });
+        list_to_remove.forEach(function(k){
+            knowledges.remove(k);
+        });
+        return knowledges;
+    },
+    filterByConcept : function(knowledges,links,f){
+        ks_filtered = new global.Collections.Knowledges();
+        knowledges.each(function(k){
+            links.filter(function(link){
+                if((link.get('concept') == f.get('model').get('id'))&&(link.get('knowledge') == k.get('id'))){
+                    ks_filtered.add(k);return false;
                 }
-                ////////////////////////
-                if(f.get('type') == "expert"){
-                    if(k.get('user').id == f.get('model').get('id')){
-                        ks_filtered.add(k);
-                        return false;
-                    }
+                else{return false;}   
+            });  
+        });  
+        return ks_filtered;
+    },
+    filterByPoche : function(knowledges,links,f){
+        ks_filtered = new global.Collections.Knowledges();
+        knowledges.each(function(k){
+            b = k.get('tags').forEach(function(tag){
+                if(tag == f.get('model').get('title')){
+                    ks_filtered.add(k);
+                    return false;
                 }
-                ////////////////////////
             });
-});
-return ks_filtered;
-},
-render : function(){
-    if(this.filters.length == 0){
-        ks=this.knowledges;
-    }else{
-        ks = this.quenelle();
-    }
-        // Left part
-        leftPart_view = new visu.Views.LeftPart({
-            concepts:this.concepts,
-            knowledges:ks,
-            links:this.links,
-            filters:this.filters,
-            eventAggregator:this.eventAggregator
+            if(b == false){return false;}   
         });
-        $(this.el).html(leftPart_view.render().el);
-        // middle part
-        middlePart_view = new visu.Views.MiddlePart({
-            knowledges:ks,
-            filters:this.filters,
-            user:this.user,
-            links:this.links,
-            eventAggregator:this.eventAggregator,
-            style:this.style
+        return ks_filtered;
+    },
+    filterByExpert : function(knowledges,links,f){
+        ks_filtered = new global.Collections.Knowledges();
+        knowledges.each(function(k){
+            if(k.get('user').id == f.get('model').get('id')){
+                ks_filtered.add(k);
+                return false;
+            }
         });
-        $(this.el).append(middlePart_view.render().el);
-        // right part
-        rightPart_view = new visu.Views.RightPart({
-            knowledges:ks,
-            links:this.links,
-            poches:this.poches,
-            experts:this.experts,
-            filters:this.filters,
-            eventAggregator:this.eventAggregator
+        return ks_filtered;
+    },
+    filterByState : function(knowledges,links,f){
+        ks_filtered = new global.Collections.Knowledges();
+        knowledges.each(function(k){
+            if(k.get('color') == f.get('model')){
+                ks_filtered.add(k);
+                return false;
+            } 
         });
-        $(this.el).append(rightPart_view.render().el);
+        return ks_filtered;
+    },
+    ///////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////
+    render : function(){
+        if(this.filters.length == 0){
+            ks=this.knowledges;
+        }else{
+            ks = this.quenelle();
+        }
+            // Left part
+            leftPart_view = new visu.Views.LeftPart({
+                concepts:this.concepts,
+                knowledges:ks,
+                links:this.links,
+                eventAggregator:this.eventAggregator
+            });
+            $(this.el).html(leftPart_view.render().el);
+            // middle part
+            middlePart_view = new visu.Views.MiddlePart({
+                knowledges:ks,
+                filters:this.filters,
+                user:this.user,
+                links:this.links,
+                eventAggregator:this.eventAggregator,
+                style:this.style
+            });
+            $(this.el).append(middlePart_view.render().el);
+            // right part
+            rightPart_view = new visu.Views.RightPart({
+                knowledges:ks,
+                links:this.links,
+                poches:this.poches,
+                experts:this.experts,
+                eventAggregator:this.eventAggregator
+            });
+            $(this.el).append(rightPart_view.render().el);
 
-        return this;
-    }
-});
+            return this;
+        }
+    });
 
 /***************************************/
