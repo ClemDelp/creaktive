@@ -6,7 +6,7 @@
  *
  */
 
- // var bcrypt = require('bcrypt');
+ var bcrypt = require('bcrypt');
 
 module.exports = {
   autoPK : false,
@@ -16,6 +16,23 @@ module.exports = {
   	/* e.g.
   	nickname: 'string'
   	*/
+
+    pw: {
+      type: 'string',
+      required: true
+    },
+
+    confirmed : {
+      type : 'boolean',
+      required : true,
+      defaultsTo : false
+    },
+
+    toJSON: function() {
+      var obj = this.toObject();
+      delete obj.pw;
+      return obj;
+    }
     
   },
 
@@ -32,15 +49,21 @@ module.exports = {
   	})
 
   	cb();
-  }
+  },
 
-  // beforeCreate: function(values, next) {
-  //   bcrypt.hash(values.password, 10, function(err, hash) {
-  //     if(err) return next(err);
-  //     values.password = hash;
-  //     next();
-  //   });
-  // }
+beforeCreate: function(user, cb) {
+    bcrypt.genSalt(10, function(err, salt) {
+      bcrypt.hash(user.pw, salt, function(err, hash) {
+        if (err) {
+          console.log(err);
+          cb(err);
+        }else{
+          user.pw = hash;
+          cb(null, user);
+        }
+      });
+    });
+  }
 
 
 };

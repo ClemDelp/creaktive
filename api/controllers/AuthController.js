@@ -7,6 +7,10 @@
 var passport = require('passport');
  
 var AuthController = {
+
+	register : function(req,res){
+		res.view();
+	},
  
 	login: function(req, res) {
 		res.view();

@@ -38,6 +38,8 @@ module.exports.routes = {
   '/': "AppController.managerview",
   '/proj' : "AppController.appView",
   'get /login' : 'AuthController.login',
+  'get /register' : 'AuthController.register',
+  'post /register' : "UserController.register",
   'post /login' : 'AuthController.process',
   'get /logout' : 'AuthController.logout',
 
