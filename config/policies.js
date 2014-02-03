@@ -25,7 +25,7 @@
   	"createPermission" : "canAuthorizeProject"
   },
   "ConceptController" : {
-  	"conceptview" : "authorized", ["authorized", "forceHTTPs"]
+  	"conceptview" : "authorized", /* ["authorized", "forceHTTPs"] */
   },
   "KnowledgeController" : {
   	"knowledgeview" : "authorized", /*["authorized", "forceHTTPs"]*/
