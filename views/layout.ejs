@@ -23,6 +23,7 @@
     <script src="js/vendor/underscore.js"></script>
     <script>
       _.templateSettings = {
+        escape: /\{\{\-(.+?)\}\}/g,
         interpolate: /\{\{\=(.+?)\}\}/g,
         evaluate: /\{\{(.+?)\}\}/g
       };
