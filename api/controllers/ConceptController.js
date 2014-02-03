@@ -8,13 +8,92 @@
 
  module.exports = {
 
+  generateTree : function(req,res){
+    this.concepts = [];
+    this.tree = "";
+    this.rank = 0;
+
+    generateRank = function(rank){
+      if(rank ===0){
+        this.rank = 1;
+        return this.rank;
+      }
+      this.rank++;
+      return this.rank;
+      // if(rank<0){
+      //   this.rank = -this.rank + 1;
+      //   return this.rank
+      // } 
+      // if(rank>0){
+      //   this.rank = -this.rank;
+      //   return this.rank
+      // } 
+    };
+
+    createIdea = function(concept){
+      idea = concept;
+      idea.attr = {
+        style : {
+          background : concept.color
+        },
+      };
+      idea.ideas={};
+      return idea;
+    }
+
+    createChildren = function (father, child){
+        generateRank(this.rank);
+        console.log(this.rank)
+        father.ideas[this.rank] = child;
+
+    };
+
+    populate = function(father, children){
+      for (var i = children.length - 1; i >= 0; i--) {
+        
+        createChildren(father, children[i])
+        
+        var c = _.where(this.concepts, {id_father : children[i].id})
+        
+        if(c.length > 0){
+            this.rank=0;
+            this.populate(children[i], c)
+        }
+      };
+
+    };
+
+
+    Concept.find({
+      project : req.session.currentProject.id
+    }).done(function(err,concepts){
+      if(err) res.send(err);
+      this.concepts = concepts;
+      //transform all concept in map idea
+      _.each(concepts, function(concept){
+        createIdea(concept);
+      })
+      c0 = _.findWhere(concepts, {position : 0});
+      children = _.where(concepts, {id_father : c0.id});
+      
+      populate(c0, children)
+      
+      console.log(c0)
+
+      res.send({tree : c0});
+    });
+  },
+
 
   find : function (req,res){
 
     Concept.find({
       project : req.session.currentProject.id
     }).done(function(err,concepts){
-      if(err) res.send(err)
+      if(err) res.send(err);
+      this.concepts = concepts;
+      c0 = _.findWhere(concepts, {position : 0});
+     
         res.send(concepts)
     });
 
@@ -38,7 +117,6 @@
     Concept.findOne(req.body.params.id).done(function(err, concept){
       if(err) res.send(err);
       if(concept){
-        console.log("Concept found");
         Concept.update({
           id: req.body.params.id
         }, req.body.params).done(function(err,c){
@@ -53,7 +131,6 @@
           res.send(c[0]);
       });
       }else{
-        console.log("Concept not found creating it")
         var concept = req.body.params;
         concept.project = req.session.currentProject.id;
         Concept.create(concept).done(function(err,c){

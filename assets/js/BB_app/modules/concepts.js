@@ -89,20 +89,24 @@ concepts.Views.MapView = Backbone.View.extend({
         c0 = this.concepts.findWhere({position : 0});
         this.currentConcept = c0;
 
-        this.idea = MAPJS.content(c0.toJSON());
-        this.mapRepository.dispatchEvent('mapLoaded', this.idea);
-        this.populate(c0.id, this.concepts.where({id_father : c0.id}));
 
+        
+        //this.populate(c0.id, this.concepts.where({id_father : c0.id}));
+        socket.get("/concept/generateTree", function(data){
+            _this.idea = MAPJS.content(data.tree);
+            _this.mapRepository.dispatchEvent('mapLoaded', _this.idea);
+            _this.mapModel.addEventListener("openDetails", function(e){
+                var concept_id = e;
+                _this.eventAggregator.trigger("nodeSelectionChanged", concept_id);
+                _this.currentConcept = _this.concepts.get(concept_id);
+            })
 
-        this.mapModel.addEventListener("openDetails", function(e){
-            var concept_id = e;
-            _this.eventAggregator.trigger("nodeSelectionChanged", concept_id);
-            _this.currentConcept = _this.concepts.get(concept_id);
+            _this.idea.addEventListener('changed', function(command, args){
+                _this.onMapChange(command, args);
+            });
         })
 
-        _this.idea.addEventListener('changed', function(command, args){
-            _this.onMapChange(command, args);
-        });
+
         
     },
 
