@@ -241,7 +241,6 @@ notifications.Views.ConnectedUsers = Backbone.View.extend({
     },
 
     newUser : function(connectedUsers){
-        console.log("lalalala")
         _this = this;
         var cUsers = []
         _.each(connectedUsers, function(cu){

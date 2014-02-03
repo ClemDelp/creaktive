@@ -9,13 +9,13 @@
  <!-- COMMENTS -->
  <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
  <script type="text/template" id="details-comment-template">
- 	<div id="{{= comment.id }}_comment">
+ 	<div id="{{- comment.id }}_comment">
 
  		<div class="row comment">
- 			<div class="small-2 large-2 columns"><p><strong>{{= comment.user.name }}:</strong></p></div>
- 			<div class="small-8 large-8 columns"><p><font style="font-size:X-small;">({{= comment.date }})</font> - {{= comment.content }}</p></div>
+ 			<div class="small-2 large-2 columns"><p><strong>{{- comment.user.name }}:</strong></p></div>
+ 			<div class="small-8 large-8 columns"><p><font style="font-size:X-small;">({{- comment.date }})</font> - {{- comment.content }}</p></div>
  			<div class="small-2 large-2 columns">
- 				<a style="float:right" class="remove button alert tiny" data-id-comment="{{= comment.id }}" >remove</a>
+ 				<a style="float:right" class="remove button alert tiny" data-id-comment="{{- comment.id }}" >remove</a>
  			</div>
  		</div>
  		<hr>
@@ -27,19 +27,19 @@
  	<fieldset>
  		<legend>Activities</legend>
  		<hr>
- 		<form class="{{= model.id }}_hidden" id="{{= model.id }}_form_comment" action="/" method="model">
+ 		<form class="{{- model.id }}_hidden" id="{{- model.id }}_form_comment" action="/" method="model">
  			{{ _.each(views, function(view) { }}  
- 				{{= view }}
+ 				{{- view }}
  				{{ }); }}
- 			<div id="{{= model.id }}_comment">
- 				<div class="row" id="input_comment_{{= model.id }}">
+ 			<div id="{{- model.id }}_comment">
+ 				<div class="row" id="input_comment_{{- model.id }}">
  					<div class="small-2 large-1 columns">
- 						<img class="nailthumb-container" src="{{= c_user.img }}">
+ 						<img class="nailthumb-container" src="{{- c_user.img }}">
  					</div>
  					<div class="small-10 large-11 columns">
  						<div class="row collapse">
  							<div class="small-10 columns">
- 								<input id="{{= model.id }}_input_comment" type="text" placeholder="your comment">
+ 								<input id="{{- model.id }}_input_comment" type="text" placeholder="your comment">
  							</div>
  							<div class="small-2 columns">
  								<input type="submit" class="button prefix" value="publish!">
@@ -72,21 +72,21 @@
  <!-- MEMBERS -->
  <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
  <script type="text/template" id="details-member-template">
- 	<img src="{{= member.img}}" data-member-id="{{= member.id}}">
- 	{{= member.name}}
+ 	<img src="{{- member.img}}" data-member-id="{{- member.id}}">
+ 	{{- member.name}}
  </script>
 
  <script type="text/template" id="details-members-template">
 
  	<legend>Members</legend>
- 	<a href="#" class="button" data-dropdown="dropUser{{= model.id}}">Add members</a>
- 	<div id="dropUser{{= model.id}}" data-dropdown-content class="f-dropdown content">  		
- 		<div class="row">
+
+ 	<a href="#" class="button" data-dropdown="dropUser{{- model.id}}">Add members</a>
+ 	<div id="dropUser{{- model.id}}" data-dropdown-content class="f-dropdown content">  		
+ 		<ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
  			{{ _.each(users, function(user) { }}
- 				<p class="addMember">
- 					<img class="large-4 medium-4 small-4 columns" src="{{= user.img}}" data-user-id="{{= user.id}}" class="addMember">
- 					<p class="large-8 medium-8 small-8 columns" >{{= user.name}}</p>
- 				</p>
+ 				<li >
+ 					<img src="{{- user.img}}" data-user-id="{{- user.id}}" class="addMember">
+ 				</li>
  				{{ }) }}
  		</div>
  	</div>
@@ -100,23 +100,23 @@
  <script type="text/template" id="details-labels-template">
 
  	<legend>labels</legend>
- 	<a href="#" class="button" data-dropdown="dropColor{{= model.id}}">Edit label</a>
- 	<div id="dropColor{{= model.id}}" data-dropdown-content class="f-dropdown content">  
+ 	<a href="#" class="button" data-dropdown="dropColor{{- model.id}}">Edit label</a>
+ 	<div id="dropColor{{- model.id}}" data-dropdown-content class="f-dropdown content">  
  		<table>
  			<tr>
- 				<td bgcolor="{{= labels[0].color }}" data-color="{{= labels[0].color }}" class="setLabel" ></td>
- 				<td>{{= labels[0].label }}</td>
- 				<td>{{= chosenLabel[0] }}</td>
+ 				<td bgcolor="{{- labels[0].color }}" data-color="{{- labels[0].color }}" class="setLabel" ></td>
+ 				<td>{{- labels[0].label }}</td>
+ 				<td>{{- chosenLabel[0] }}</td>
  			</tr>
  			<tr>
- 				<td bgcolor="{{= labels[1].color }}" data-color="{{= labels[1].color }}" class="setLabel" ></td>
- 				<td>{{= labels[1].label }}</td>
- 				<td>{{= chosenLabel[1] }}</td>
+ 				<td bgcolor="{{- labels[1].color }}" data-color="{{- labels[1].color }}" class="setLabel" ></td>
+ 				<td>{{- labels[1].label }}</td>
+ 				<td>{{- chosenLabel[1] }}</td>
  			</tr>
  			<tr>
- 				<td bgcolor="{{= labels[2].color }}" data-color="{{= labels[2].color }}" class="setLabel" ></td>
- 				<td>{{= labels[2].label }}</td>
- 				<td>{{= chosenLabel[2] }}</td>
+ 				<td bgcolor="{{- labels[2].color }}" data-color="{{- labels[2].color }}" class="setLabel" ></td>
+ 				<td>{{- labels[2].label }}</td>
+ 				<td>{{- chosenLabel[2] }}</td>
  			</tr>
  		</table>
  	</div>
@@ -147,9 +147,10 @@
 
  	<fieldset>
  		<legend>Informations</legend>
- 		<input id="change_c_title" type="text" placeholder="title" value="{{= model.title }}"/>
- 		<textarea  class="ckeditor"  name="editor" rows="10" cols="80">{{= model.content }}</textarea>
+ 		<input id="change_c_title" type="text" placeholder="title" value="{{- model.title }}"/>
+ 		<textarea  class="ckeditor"  name="editor" rows="10" cols="80">{{- model.content }}</textarea>
  		<a href="#" class="button small validate update_informations" data-action="change_c_title">Save</a>
  	</fieldset>
  </script>
+
 

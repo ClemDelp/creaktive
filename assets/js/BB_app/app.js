@@ -57,6 +57,7 @@ var visu = {
   init: function () {
     /*Init*/
     this.views.main = new this.Views.Main({
+      projects    : global.collections.Projects,
       concepts    : global.collections.Concepts,
       knowledges  : global.collections.Knowledges,
       experts     : global.collections.Users,
