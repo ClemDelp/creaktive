@@ -31,7 +31,7 @@
   	"knowledgeview" : ["authorized", "forceHTTPs"]
   },
   'AuthController': {
-  	'login' : true,
+  	'login' : "forceHTTPs",
   	'logout' : true,
   	'process' : true,
   	"openChannels" : "allowedProject"
