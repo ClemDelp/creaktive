@@ -19,16 +19,16 @@
   
   '*': "authenticated",
   "AppController" : {
-  	"appview" : "authorized", /*["authorized", "forceHTTPs"]*/
+  	"appview" : ["authorized", "forceHTTPs"]
   },
   "ProjectController" : {
   	"createPermission" : "canAuthorizeProject"
   },
   "ConceptController" : {
-  	"conceptview" : "authorized", /* ["authorized", "forceHTTPs"] */
+  	"conceptview" : ["authorized", "forceHTTPs"] 
   },
   "KnowledgeController" : {
-  	"knowledgeview" : "authorized", /*["authorized", "forceHTTPs"]*/
+  	"knowledgeview" : ["authorized", "forceHTTPs"]
   },
   'AuthController': {
   	'login' : true,
