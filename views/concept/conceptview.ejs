@@ -225,7 +225,7 @@
 
 function rt (io, callback) {
   // as soon as this file is loaded, connect automatically, 
-  var socket = io.connect("https://creaktive.herokuapp.com/",{'sync disconnect on unload ': true});
+  var socket = io.connect("/",{'sync disconnect on unload ': true});
   socket.on('connect', function socketConnected() {
     socket.get("/auth/openChannels", function(data){
       // console.log(data.msg);
