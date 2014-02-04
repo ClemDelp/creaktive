@@ -1,4 +1,5 @@
 module.exports = function(req,res,next){
+	if(req.headers.renderer == "http://localhost:1337/") return next()
     if(req.headers['x-forwarded-proto']!='https')
       res.redirect('https://creaktive.herokuapp.com'+req.url)
     else
