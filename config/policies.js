@@ -19,7 +19,8 @@
   
   '*': "authenticated",
   "AppController" : {
-  	"appview" : ["authorized", "forceHTTPs"]
+  	"appview" : ["authorized", "forceHTTPs"],
+  	"managerview" : "forceHTTPs"
   },
   "ProjectController" : {
   	"createPermission" : "canAuthorizeProject"
