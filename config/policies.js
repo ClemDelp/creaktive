@@ -19,23 +19,23 @@
   
   '*': "authenticated",
   "AppController" : {
-  	"appview" : ["authorized", "forceHTTPs"],
-  	"managerview" : "forceHTTPs"
+  	"appview" : ["authenticated","authorized", "forceHTTPs"],
+  	"managerview" : ["authenticated", "forceHTTPs"]
   },
   "ProjectController" : {
-  	"createPermission" : "canAuthorizeProject"
+  	"createPermission" : ["authenticated","canAuthorizeProject"]
   },
   "ConceptController" : {
-  	"conceptview" : ["authorized", "forceHTTPs"] 
+  	"conceptview" : ["authenticated","authorized", "forceHTTPs"] 
   },
   "KnowledgeController" : {
-  	"knowledgeview" : ["authorized", "forceHTTPs"]
+  	"knowledgeview" : ["authenticated","authorized", "forceHTTPs"]
   },
   'AuthController': {
   	'login' : "forceHTTPs",
   	'logout' : true,
   	'process' : true,
-  	"openChannels" : "allowedProject"
+  	"openChannels" : ["authenticated","allowedProject"]
   },
 
 
