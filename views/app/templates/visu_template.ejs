@@ -3,20 +3,34 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Left part -->
 <script type="text/template" id="visu-search-template">
-        <div class="panel expand"><p>{{=title}}</p></div>
-        <input type="text" class="search" placeholder="search in {{=title}}...">
+        <div class="panel expand"><p>{{-title}}</p></div>
+        <input type="text" class="search" placeholder="search in {{-title}}...">
+</script>
+
+
+<script type="text/template" id="visu-project-template">
+    <div class="row">
+        <div class="small-12 medium-12 large-8 columns">
+                <a class="tiny button alert addFilter expand" data-filter-type="project" data-filter-model="{{-project.id}}">
+                        {{- project.title }} - <font style="color:white">({{- rec }})</font>
+                </a>
+        </div>
+        <div class="progress alert show-for-large-up large-4 large-4 columns">
+          <span class="meter" style="width: {{-per}}%"></span>
+        </div>
+    </div>
 </script>
 
 
 <script type="text/template" id="visu-expert-template">
         <div class="row">
                 <div class="small-12 medium-12 large-8 columns">
-                        <a class="tiny button alert addFilter expand" data-filter-type="expert" data-filter-model="{{=expert.id}}">
-                                {{= expert.name }} - <font style="color:white">({{= rec }})</font>
+                        <a class="tiny button alert addFilter expand" data-filter-type="expert" data-filter-model="{{-expert.id}}">
+                                {{- expert.name }} - <font style="color:white">({{- rec }})</font>
                         </a>
                 </div>
                 <div class="progress alert show-for-large-up large-4 large-4 columns">
-                  <span class="meter" style="width: {{=per}}%"></span>
+                  <span class="meter" style="width: {{-per}}%"></span>
                 </div>
         </div>
 </script>
@@ -24,12 +38,12 @@
 <script type="text/template" id="visu-concept-template">
     <div class="row">
                 <div class="small-12 medium-12 large-8 columns">
-                        <a class="tiny button addFilter expand" data-filter-type="concept" data-filter-model="{{=concept.id}}">
-                                {{= concept.title }} - <font style="color:red">({{= rec }})</font>
+                        <a class="tiny button addFilter expand" data-filter-type="concept" data-filter-model="{{-concept.id}}">
+                                {{- concept.title }} - <font style="color:red">({{- rec }})</font>
                         </a>
                 </div>
                 <div class="progress show-for-large-up large-4 columns">
-                  <span class="meter" style="width: {{=per}}%"></span>
+                  <span class="meter" style="width: {{-per}}%"></span>
                 </div>
         </div>
 </script>
@@ -48,13 +62,13 @@
 <script type="text/template" id="visu-poche-template">
     <div class="row">
                 <div class="small-12 medium-12 large-8 columns">
-                        <a class="tiny success button addFilter expand" data-filter-type="poche" data-filter-model="{{=poche.id}}">
-                                {{= poche.title }} - <font style="color:red">({{= rec }})</font>
-                                <input style="float:right" data-id-poche="{{= poche.id }}" type="submit" value="x" class="removePoche" />
+                        <a class="tiny success button addFilter expand" data-filter-type="poche" data-filter-model="{{-poche.id}}">
+                                {{- poche.title }} - <font style="color:red">({{- rec }})</font>
+                                <input style="float:right" data-id-poche="{{- poche.id }}" type="submit" value="x" class="removePoche" />
                         </a>
                 </div>
                 <div class="progress success show-for-large-up large-4 large-4 columns">
-                  <span class="meter" style="width: {{=per}}%"></span>
+                  <span class="meter" style="width: {{-per}}%"></span>
                 </div>
         </div>
 </script>
@@ -64,7 +78,7 @@
 <script type="text/template" id="visu-knowledges-template">
         {{ var mode = "small-12 medium-12 large-3 columns";var limit=10;}}
         {{ if(style == "list"){ mode="small-12 large-12 columns";limit=100; } }}
-                <div class="{{=mode}}">
+                <div class="{{-mode}}">
                         <ul class="pricing-table">
                                   <li class="price">
                                         <div class="row collapse">
@@ -76,19 +90,19 @@
                                         </div>
                                     </div>
                                 </li>
-                                <li class="description">{{= user.name }} - {{= getDate() }}</li>
+                                <li class="description">{{- user.name }} - {{- getDate() }}</li>
                         </ul>
                 </div>
 
                 {{ _.each(knowledges, function(knowledge) { }}
-                        <div class="{{=mode}} openModal" data-id-knowledge="{{= knowledge.id }}">
-                                <ul class="pricing-table" data-id-knowledge="{{= knowledge.id }}">
-                                        <li style="background-color : {{= knowledge.color}} " class="title" data-id-knowledge="{{= knowledge.id }}"></li>
-                                          <li title="{{= knowledge.title}}" class="price" data-id-knowledge="{{= knowledge.id }}">
-                                                {{= knowledge.title.substr(0,limit)}}{{ if((knowledge.title.length > 10)&&(limit==10)){ }}...{{ } }}
+                        <div class="{{-mode}} openModal" data-id-knowledge="{{- knowledge.id }}">
+                                <ul class="pricing-table" data-id-knowledge="{{- knowledge.id }}">
+                                        <li style="background-color : {{- knowledge.color}} " class="title" data-id-knowledge="{{- knowledge.id }}"></li>
+                                          <li title="{{- knowledge.title}}" class="price" data-id-knowledge="{{- knowledge.id }}">
+                                                {{- knowledge.title.substr(0,limit)}}{{ if((knowledge.title.length > 10)&&(limit==10)){ }}...{{ } }}
                                         </li>
-                                        <li title="{{= knowledge.user.name }} - {{= knowledge.date }}" class="description" data-id-knowledge="{{= knowledge.id }}">
-                                                {{ if(limit==10){ }} {{=knowledge.user.name.substr(0,10)}} {{ }else{ }} {{=knowledge.user.name}} {{ } }} - {{= knowledge.date }}
+                                        <li title="{{- knowledge.user.name }} - {{- knowledge.date }}" class="description" data-id-knowledge="{{- knowledge.id }}">
+                                                {{ if(limit==10){ }} {{-knowledge.user.name.substr(0,10)}} {{ }else{ }} {{-knowledge.user.name}} {{ } }} - {{- knowledge.date }}
                                         </li>
                                 </ul>
                         </div>
@@ -103,18 +117,20 @@
                 Context :  
                 {{ _.each(filters, function(filter) { }}
                     {{ if(filter.type == "concept"){ }}
-                            <a class="tiny button remove" data-id-filter="{{=filter.id}}">{{= filter.model.title }}</a> +
+                            <a class="tiny button remove" data-id-filter="{{-filter.id}}">{{- filter.model.title }}</a> +
+                    {{ }else if(filter.type == "project"){ }}
+                            <a class="tiny alert button remove" data-id-filter="{{-filter.id}}">{{- filter.model.title }}</a> +
                     {{ }else if(filter.type == "poche"){ }}
-                            <a class="tiny success button remove" data-id-filter="{{=filter.id}}">{{= filter.model.title }}</a> +
+                            <a class="tiny success button remove" data-id-filter="{{-filter.id}}">{{- filter.model.title }}</a> +
                     {{ }else if(filter.type == "expert"){ }}        
-                            <a class="tiny alert button remove" data-id-filter="{{=filter.id}}">{{= filter.model.name }}</a> +
+                            <a class="tiny alert button remove" data-id-filter="{{-filter.id}}">{{- filter.model.name }}</a> +
                     {{ }else if(filter.type == "state"){ }}
                         {{ var name="Validated"; if(filter.model == "#F39C12"){name="Missing"}else if(filter.model == "#C0392B"){name="Processing";} }}
-                        <a class="tiny button remove" style="background-color : {{= filter.model}} " data-id-filter="{{=filter.id}}">{{= name }}</a> +
+                        <a class="tiny button remove" style="background-color : {{- filter.model}} " data-id-filter="{{-filter.id}}">{{- name }}</a> +
                     {{ }else if(filter.type == "notLinked"){ }}
-                        <a class="tiny button remove" data-id-filter="{{=filter.id}}">not linked</a> +
+                        <a class="tiny button remove" data-id-filter="{{-filter.id}}">not linked</a> +
                     {{ }else if(filter.type == "notCategorised"){ }}
-                        <a class="tiny button success remove" data-id-filter="{{=filter.id}}">not categorised</a> +
+                        <a class="tiny button success remove" data-id-filter="{{-filter.id}}">not categorised</a> +
                     {{ } }}
                 {{ }); }}
                 <ul class="button-group" style="float:right">

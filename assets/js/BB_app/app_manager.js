@@ -31,7 +31,7 @@ var global = {
 }
 
 /////////////////////////////////////////////////
-var topBar = {
+var notifications = {
   // Classes
   Collections: {},
   Models: {},
@@ -46,16 +46,9 @@ var topBar = {
     this.views.Main = new this.Views.Main({
       notifications : global.collections.Notifications,
       current_user : global.models.CurrentUser,
+      users : global.collections.Users,
       eventAggregator : global.eventAggregator
     });
-    // this.collections.Links.fetch({
-    //   reset:true,
-    //   success : function(collection, response, options){},
-    //   complete : function(collection, response, options){},
-    //   error : function(collection, response, options){
-    //     console.log(response)
-    //   },
-    // });
 
   }
 };

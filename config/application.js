@@ -1,6 +1,6 @@
 var passport = require('passport'),
 	LocalStrategy = require('passport-local').Strategy;
- 
+  var bcrypt = require('bcrypt');
  
 // Passport session setup.
 // To support persistent login sessions, Passport needs to be able to
@@ -47,14 +47,19 @@ function(username, password, done) {
 						message: 'Unknown user ' + username
 					});
 				};
+
 				for (var i = 0; i < users.length; i++) {
-					if(users[i].pw == password){
-						return done(null, users[i]);
-					}else{
-						return done(null, false, {
-							message: 'Invalid password'
-						});					
-					}
+					var user = users[i];
+					if(!user.confirmed) return done(null,false, {message : "Not confirmed"})
+		        	bcrypt.compare(password, user.pw, function (err, res) {
+			          if (!res)
+			            return done(null, false, {
+			              message: 'Invalid Password'
+			            });
+						console.log(user)
+			          return done(null, user);
+			        });
+
 				};
 			})
 		

@@ -18,25 +18,27 @@
   // (`true` allows public access) 
   
 
-  // '*': "authenticated",
-  // "AppController" : {
-  // 	"appview" : ["authorized", "forceHTTPs"] 
-  // },
-  // "ProjectController" : {
-  // 	"createPermission" : "canAuthorizeProject"
-  // },
-  // "ConceptController" : {
-  // 	"conceptview" : ["authorized", "forceHTTPs"] 
-  // },
-  // "KnowledgeController" : {
-  // 	"knowledgeview" :["authorized", "forceHTTPs"] 
-  // },
-  // 'AuthController': {
-  // 	'login' : true,
-  // 	'logout' : true,
-  // 	'process' : true,
-  // 	"openChannels" : "allowedProject"
-  // },
+  '*': "authenticated",
+  "AppController" : {
+  	"appview" : ["authenticated","authorized", "forceHTTPs"],
+  	"managerview" : ["authenticated", "forceHTTPs"]
+  },
+  "ProjectController" : {
+  	"createPermission" : ["authenticated","canAuthorizeProject"]
+  },
+  "ConceptController" : {
+  	"conceptview" : ["authenticated","authorized", "forceHTTPs"] 
+  },
+  "KnowledgeController" : {
+  	"knowledgeview" : ["authenticated","authorized", "forceHTTPs"]
+  },
+  'AuthController': {
+  	'login' : "forceHTTPs",
+  	'logout' : true,
+  	'process' : true,
+  	"openChannels" : ["authenticated","allowedProject"]
+  },
+
 
 
   /*

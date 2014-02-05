@@ -1,0 +1,29 @@
+<div class="row">
+    <h1> Register </h1>
+    <hr>
+    <form data-abide action="/register" method="post">
+
+        <div class="large-4 medium-4 small-4 name-field">
+            <label>Name <small>required</small></label>
+            <input type="text" name="username" />
+        </div>
+        <div class="large-4 medium-4 small-4 email-field">
+            <label>Email adress <small>required</small></label>
+            <input type="email" name="email" required>
+            <small class="error">A valid email address is required.</small>
+        </div>
+
+
+        <div class="large-4 medium-4 small-4 password-field">
+            <label>Password <small>required</small></label>
+            <input type="password" id="password" required >
+            <small class="error">Passwords must be at least 8 characters with 1 capital letter, 1 number, and one special character.</small>
+        </div>
+
+            <button class="button" type="submit">Submit</button>
+
+
+
+    </form>
+
+</div>

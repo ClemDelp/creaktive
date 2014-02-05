@@ -13,6 +13,15 @@ module.exports = {
   }
   */
 
+  register : function (req,res){
+    console.log(req.body)
+
+    User.create(req.body.params).done(function(err, user){
+      if(err) console.log(err);
+      res.send(user);
+    })
+  },
+
   find : function (req,res){
     User.find({
 
@@ -35,7 +44,11 @@ module.exports = {
   		}else{
   			User.create(req.body.params).done(function(err,p){
   				if(err) res.send(err)
-  				res.send(p);
+          p.confirmed = true;
+        p.save(function(err, u){
+          res.send(u);
+        })
+  				
   			})
   		}
   	})

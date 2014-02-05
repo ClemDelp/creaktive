@@ -23,8 +23,10 @@
     <script src="js/vendor/underscore.js"></script>
     <script>
       _.templateSettings = {
+        escape: /\{\{\-(.+?)\}\}/g,
         interpolate: /\{\{\=(.+?)\}\}/g,
-        evaluate: /\{\{(.+?)\}\}/g
+        evaluate: /\{\{(.+?)\}\}/g,
+        escape: /\{\{\-(.+?)\}\}/g
       };
     </script>
     <script src="js/vendor/backbone.js"></script>
@@ -55,6 +57,7 @@
     --> 
 
     <script src="js/foundation.min.js"></script>
+    <script src="js/foundation/foundation.abide.js"></script>
     <script>
       $(document).foundation();
     </script>

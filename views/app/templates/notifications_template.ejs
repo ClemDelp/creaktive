@@ -18,30 +18,34 @@
 </script>
 
 <script type="text/template" id="notification-template">
-	<a href="#" data-dropdown="drop{{= notification.id}}">{{= notification.content }}</a>
-	<div id="drop{{= notification.id}}" data-dropdown-content class="f-dropdown content">
+	<a href="#" data-dropdown="drop{{- notification.id}}">{{- notification.content }}</a>
+	<div id="drop{{- notification.id}}" data-dropdown-content class="f-dropdown content">
 		<div class="row">
-			<img class="large-2 small-2 columns" src="{{= notification.from.img }}">
-			<strong class="large-10 small-10 columns">{{= notification.from.name}}</strong>
+			<img class="large-2 small-2 columns" src="{{- notification.from.img }}">
+			<strong class="large-10 small-10 columns">{{- notification.from.name}}</strong>
 		</div>
 		<blockquote>
-			{{= notification.content }}
+
+		{{- notification.content }}
+
 		</blockquote>
-		<a data-id-notification="{{= notification.id}}" class="button tiny clickNotification">Open</a>
-		<a data-id-notification="{{= notification.id}}" class="button tiny alert removeNotification">Hide</a>
+		<a data-id-notification="{{- notification.id}}" class="button tiny clickNotification">Open</a>
+		<a data-id-notification="{{- notification.id}}" class="button tiny alert removeNotification">Hide</a>
 	</div>
 </script>
 
 
 
 <script type="text/template" id="log-template">
-	<div class="row">
-		<img class="large-1 columns" src="{{= notification.from.img }}">
-		<strong class="large-11 columns">{{= notification.from.name}}</strong>
-	</div>
+
+<div class="row">
+	<img class="large-1 columns" src="{{- notification.from.img }}">
+	<strong class="large-11 columns">{{- notification.from.name}}</strong>
+</div>
+
 	<blockquote>
-		{{= notification.content }}
-		<cite>{{= notification.date}}</cite>
+		{{- notification.content }}
+		<cite>{{- notification.date}}</cite>
 	</blockquote>
 
 </script>

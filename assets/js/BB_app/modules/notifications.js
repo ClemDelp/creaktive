@@ -57,63 +57,28 @@ notifications.Views.Notifications = Backbone.View.extend({
         _this = this;
         notification_id = e.target.getAttribute('data-id-notification')
         notification = this.notifications.get(notification_id);
-        if(notification.get('type') === "createConcept" || notification.get('type') === "updateConceptTitle" || notification.get('type') === "updateConceptColor"){
-            $("#panel-knowledge").removeClass('active');
-            $("#panel-visualization").removeClass('active');
-            $("#panel-concept").addClass( "active" );
+        project_id = notification.get("project_id")
+        if(notification.get('type') === "createConcept" || notification.get('type') === "updateConceptTitle" || notification.get('type') === "updateConceptColor" 
+            || notification.get('type') === "updateConceptComments" || notification.get('type') === "updateConceptMembers"|| notification.get('type') === "updateConceptContent"){
 
-            $("#panel2-2").removeClass("active");
-            $("#panel2-3").removeClass("active");
-            $("#panel2-1").addClass('active');
+            window.location.href= '/concepts?projectId='+project_id
 
-            global.collections.Concepts.fetch({reset : true});
+            //_this.eventAggregator.trigger("youhou", notification.get('to'))
+            //global.collections.Concepts.fetch({reset : true});
         }
 
-        if(notification.get('type') === "updateConceptComments" || notification.get('type') === "updateConceptMembers"|| notification.get('type') === "updateConceptContent" ){
-            $("#panel-knowledge").removeClass('active');
-            $("#panel-visualization").removeClass('active');
-            $("#panel-concept").addClass( "active" );
 
-            $("#panel2-2").removeClass("active");
-            $("#panel2-3").removeClass("active");
-            $("#panel2-1").addClass('active');
+        if(notification.get('type') === "createKnowledge"  || notification.get('type') === "createLink" || notification.get('type') === "createPoche" ||
+            notification.get('type') === "updateKnowledgeComments"|| notification.get('type') === "updateKnowledgeColor" || notification.get('type') === "updateKnowledgeTitle"|| 
+            notification.get('type') === "updateKnowledgeMembers"|| notification.get('type') === "updateKnowledgeContent"){
 
-            global.collections.Concepts.fetch({
-                reset : true,
-                success : function(){                   
-                }
-            });
-            _this.eventAggregator.trigger("youhou", notification.get('to'))
+            window.location.href= '/knowledges?projectId='+project_id
+
+            //global.collections.Knowledges.fetch({reset : true});
+         //_this.eventAggregator.trigger("notificationOpenK", notification.get('to'))
         }
 
-        if(notification.get('type') === "createKnowledge"  || notification.get('type') === "createLink" || notification.get('type') === "createPoche"){
-            $("#panel-concept").removeClass('active');
-            $("#panel-visualization").removeClass('active');
-            $("#panel-knowledge").addClass( "active" );
-
-            $("#panel2-2").removeClass("active");
-            $("#panel2-3").addClass("active");
-            $("#panel2-1").removeClass('active');
-
-            global.collections.Knowledges.fetch({reset : true});
-        }
-
-        if(notification.get('type') === "updateKnowledgeComments"|| notification.get('type') === "updateKnowledgeColor" || notification.get('type') === "updateKnowledgeTitle"|| notification.get('type') === "updateKnowledgeMembers"|| notification.get('type') === "updateKnowledgeContent" ){
-            $("#panel-concept").removeClass('active');
-            $("#panel-visualization").removeClass('active');
-            $("#panel-knowledge").addClass( "active" );
-
-            $("#panel2-2").removeClass("active");
-            $("#panel2-3").addClass("active");
-            $("#panel2-1").removeClass('active');
-
-            global.collections.Knowledges.fetch({
-                reset : true,
-                success : function(){                   
-                }
-            });
-            _this.eventAggregator.trigger("notificationOpenK", notification.get('to'))
-        }
+        
 
 
     },
@@ -241,7 +206,6 @@ notifications.Views.ConnectedUsers = Backbone.View.extend({
     },
 
     newUser : function(connectedUsers){
-        console.log("lalalala")
         _this = this;
         var cUsers = []
         _.each(connectedUsers, function(cu){

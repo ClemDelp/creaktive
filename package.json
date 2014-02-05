@@ -15,7 +15,7 @@
     "sails-mongo": "*",
     "passport": "*",
     "passport-local": "*",
-    "bcrypt": "*",
+    "bcrypt": "~0.7.7",
     "mkdirp": "~0.3.5",
     "rimraf": "~2.2.6",
     "node-async": "0.0.1"

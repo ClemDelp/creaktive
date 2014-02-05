@@ -21,11 +21,11 @@
 /////////////////////////////////////////////////////////////////////
 -->
 <script type="text/template" id="user-template">
-	<td class="large-1 medium-1 small-1"><img src="{{= user.img}}"></td>
-	<td>{{= user.name}}</td>
-	<td>{{= user.email}}</td>
-	<td bgcolor="{{= user.color}}"></td>
-	<td><a href="#" class="remove"><img data-id-user="{{= user.id}}" src="img/delete.png"></a></td>
+	<td class="large-1 medium-1 small-1"><img src="{{- user.img}}"></td>
+	<td>{{- user.name}}</td>
+	<td>{{- user.email}}</td>
+	<td bgcolor="{{- user.color}}"></td>
+	<td><a href="#" class="remove"><img data-id-user="{{- user.id}}" src="img/delete.png"></a></td>
 </script>
 
 <script type="text/template" id="usersTable-template">
@@ -73,10 +73,10 @@
 /////////////////////////////////////////////////////////////////////
 -->
 <script type="text/template" id="userGroup-template">
-	<td class="large-1 medium-1 small-1"><img src="{{= user.img}}"></td>
-	<td>{{= user.name}}</td>
-	<td>{{= user.email}}</td>
-	<td><a href="#" class="removeFromGroup"><img data-user-id="{{= user.id}}" data-group-id="{{= group.id}}" src="img/delete.png"></a></td>
+	<td class="large-1 medium-1 small-1"><img src="{{- user.img}}"></td>
+	<td>{{- user.name}}</td>
+	<td>{{- user.email}}</td>
+	<td><a href="#" class="removeFromGroup"><img data-user-id="{{- user.id}}" data-group-id="{{- group.id}}" src="img/delete.png"></a></td>
 
 </script>
 
@@ -85,21 +85,21 @@
 </script>
 
 <script type="text/template" id="group-template">
-	<h3>{{= group.title }}</h3>
-	<a href="#" class="button radius" data-dropdown="drop{{= group.id }}">Add User</a>
+	<h3>{{- group.title }}</h3>
+	<a href="#" class="button radius" data-dropdown="drop{{- group.id }}">Add User</a>
 
-	<div id="drop{{= group.id }}" data-dropdown-content class="f-dropdown content">
+	<div id="drop{{- group.id }}" data-dropdown-content class="f-dropdown content">
 		<ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
 
 		{{ _.each(users, function(user) { }}
 			<li >
-				<img src="{{= user.img}}" data-user-id="{{= user.id}}" data-group-id="{{= group.id}}" class="addToGroup">
-				{{= user.name}}
+				<img src="{{- user.img}}" data-user-id="{{- user.id}}" data-group-id="{{- group.id}}" class="addToGroup">
+				{{- user.name}}
 			</li>
 		{{ }) }}
 		</ul>
 	</div>
-	<a href='#' data-group-id='{{= group.id}}' class='button tiny alert removeGroup'>Remove Group</a>
+	<a href='#' data-group-id='{{- group.id}}' class='button tiny alert removeGroup'>Remove Group</a>
 </script>
 
 <script type="text/template" id="groups-template">
@@ -129,10 +129,10 @@
 -->
 
 <script type="text/template" id="permission-template">
-	<td class="large-1 medium-1 small-1"><img src="{{= permission.user.img}}"></td>
-	<td>{{= permission.user.name}}</td>
-	<td>{{= permission.right}}</td>
-	<td><a href="#" class="removePermission"><img data-user-id="{{= permission.user.id}}" data-project-id="{{= project.id}}" src="img/delete.png"></a></td>
+	<td class="large-1 medium-1 small-1"><img src="{{- permission.user.img}}"></td>
+	<td>{{- permission.user.name}}</td>
+	<td>{{- permission.right}}</td>
+	<td><a href="#" class="removePermission"><img data-user-id="{{- permission.user.id}}" data-project-id="{{- project.id}}" src="img/delete.png"></a></td>
 </script>
 
 
@@ -145,11 +145,12 @@
 
 <script type="text/template" id="project-template">
 	<div class=row>
-		<a href="/concepts?projectId={{= project.id}}"><h3>{{= project.title }}</h3> </a>
+		<a href="/concepts?projectId={{- project.id}}"><h3>{{- project.title }}</h3> </a>
 
 		<blockquote>{{= project.description }} </blockquote>
 		<a href="#" data-dropdown="drop{{= project.id }}">Add Permission -></a>
 		<div id="drop{{= project.id }}" data-dropdown-content class="f-dropdown content">
+
 			<div class="large-12 columns">
 		      <label>Select right :</label>
 		      <select id="permission_right">
