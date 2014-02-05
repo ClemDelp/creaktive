@@ -55,8 +55,8 @@
     <section class="main-section">
 <!-- Templates to load -->
 
-<%- partial('templates/manager_template') %>
-
+<%- partial('./templates/manager_template') %>
+<%- partial('../app/templates/notifications_template') %>
 
 
 
@@ -67,11 +67,21 @@
 
 
 <!-- Javascript libs -->
+<script src="/js/vendor/backbone.iosync.js"></script>
+<script src="/js/vendor/backbone.iobind.js"></script>
+<script type="text/javascript" src="js/vendor/socket.io.js"></script>
+<script type="text/javascript" src="js/sails.io.js"></script>
 
+<script src="js/BB_app/global_functions.js"></script>
+<!-- Interface client/server -->
+<script type="text/javascript" src="js/BB_app/app_manager.js"></script>
+<!-- Global objects -->
+<script src="js/BB_app/global_models.js"></script>
+<script src="js/BB_app/global_collections.js"></script>
 
 <!-- Modules situés dans BB_app -->
 <script src="js/BB_app/modules/manager.js"></script>
-
+<script type="text/javascript" src="js/BB_app/modules/notifications.js"></script>
 
 <script>
 
@@ -84,7 +94,7 @@
 		rt(io, function(){
   // Initialisation de l'managerlication ici
   console.log( "CreaKtive DOM loaded!" );
-  global.initManager('<%- currentUser %>');
+  global.init('<%- currentUser %>');
 
   notifications.init();
   manager.init();      
