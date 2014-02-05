@@ -19,7 +19,7 @@
 
   find : function (req,res){
     Poche.find({
-      project : req.session.currentProject.id
+     
     }).done(function(err,poches){
       if(err) res.send(err)
         res.send(poches)

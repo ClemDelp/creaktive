@@ -17,25 +17,26 @@
   // Default policy for all controllers and actions
   // (`true` allows public access) 
   
-  '*': "authenticated",
-  "AppController" : {
-  	"appview" : ["authorized", "forceHTTPs"]
-  },
-  "ProjectController" : {
-  	"createPermission" : "canAuthorizeProject"
-  },
-  "ConceptController" : {
-  	"conceptview" : ["authorized", "forceHTTPs"]
-  },
-  "KnowledgeController" : {
-  	"knowledgeview" : ["authorized", "forceHTTPs"]
-  },
-  'AuthController': {
-  	'login' : true,
-  	'logout' : true,
-  	'process' : true,
-  	"openChannels" : "allowedProject"
-  },
+
+  // '*': "authenticated",
+  // "AppController" : {
+  // 	"appview" : ["authorized", "forceHTTPs"] 
+  // },
+  // "ProjectController" : {
+  // 	"createPermission" : "canAuthorizeProject"
+  // },
+  // "ConceptController" : {
+  // 	"conceptview" : ["authorized", "forceHTTPs"] 
+  // },
+  // "KnowledgeController" : {
+  // 	"knowledgeview" :["authorized", "forceHTTPs"] 
+  // },
+  // 'AuthController': {
+  // 	'login' : true,
+  // 	'logout' : true,
+  // 	'process' : true,
+  // 	"openChannels" : "allowedProject"
+  // },
 
 
   /*
