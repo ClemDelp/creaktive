@@ -17,6 +17,7 @@
   // Default policy for all controllers and actions
   // (`true` allows public access) 
   
+
   '*': "authenticated",
   "AppController" : {
   	"appview" : ["authenticated","authorized", "forceHTTPs"],
@@ -37,6 +38,7 @@
   	'process' : true,
   	"openChannels" : ["authenticated","allowedProject"]
   },
+
 
 
   /*

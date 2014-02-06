@@ -1,0 +1,195 @@
+<div class="row" id="manager-container">
+	 	<div class="large-12 columns">
+	 		<h1>Manager</h1>
+	 		<hr />
+	 	</div>
+
+	 	<dl class="tabs vertical" data-tab>
+	 		<dd><a class="active" href="#panel-1">Projects</a></dd>
+	 		<dd><a  href="#panel-3">Users</a></dd>
+	 	</dl>
+
+	 	<div class="tabs-content vertical">
+		 	<div class="content active" id="panel-1"></div>
+			<div class="content" id="panel-3"></div>
+	 	</div>
+</div>
+
+<!--
+/////////////////////////////////////////////////////////////////////
+/*User templates*/
+/////////////////////////////////////////////////////////////////////
+-->
+<script type="text/template" id="user-template">
+	<td class="large-1 medium-1 small-1"><img src="{{- user.img}}"></td>
+	<td>{{- user.name}}</td>
+	<td>{{- user.email}}</td>
+	<td bgcolor="{{- user.color}}"></td>
+	<td><a href="#" class="remove"><img data-id-user="{{- user.id}}" src="img/delete.png"></a></td>
+</script>
+
+<script type="text/template" id="usersTable-template">
+	<tr><th></th><th>Username</th><th>Email</th><th>Color</th></tr>
+</script>
+
+<script type="text/template" id="users-template">
+	<h3>Users manager</h3>
+
+	<a href="#" class="button radius" data-dropdown="drop1">Add User</a>
+
+	<div id="drop1" data-dropdown-content class="f-dropdown content">
+		<form data-abide>
+			<div class="name-field large-12 columns">
+				<label>Your name <small>required</small></label>
+				<input type="text" id="users_view_name" required pattern="[a-zA-Z]+">
+				<small class="error">Name is required and must be a string.</small>
+			</div>
+			<div class="email-field large-12 columns">
+				<label>Email <small>required</small></label>
+				<input type="email" id="users_view_email" required>
+				<small class="error">An email address is required.</small>
+			</div>
+			<div class="name-field large-12 columns">
+				<label>Password <small>required</small></label>
+				<input type="text" id="users_view_pw" required pattern="[a-zA-Z]+">
+				<small class="error">Password is required and must be a string.</small>
+			</div>
+			<div class="large-12 columns">
+				<label>Color <small>required</small></label>
+				<input type="color" id="users_view_color" required>
+				<small class="error">Color is required</small>
+			</div> 
+		</form>
+		<hr>
+		<a class="button addUser" href="#">Submit</a>
+
+	</div>
+</script>
+
+
+<!--
+/////////////////////////////////////////////////////////////////////
+/*groups templates*/
+/////////////////////////////////////////////////////////////////////
+-->
+<script type="text/template" id="userGroup-template">
+	<td class="large-1 medium-1 small-1"><img src="{{- user.img}}"></td>
+	<td>{{- user.name}}</td>
+	<td>{{- user.email}}</td>
+	<td><a href="#" class="removeFromGroup"><img data-user-id="{{- user.id}}" data-group-id="{{- group.id}}" src="img/delete.png"></a></td>
+
+</script>
+
+<script type="text/template" id="userGroupTable-template">
+	<tr><th></th><th>Name</th><th>Email</th><th></th></tr>
+</script>
+
+<script type="text/template" id="group-template">
+	<h3>{{- group.title }}</h3>
+	<a href="#" class="button radius" data-dropdown="drop{{- group.id }}">Add User</a>
+
+	<div id="drop{{- group.id }}" data-dropdown-content class="f-dropdown content">
+		<ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4">
+
+		{{ _.each(users, function(user) { }}
+			<li >
+				<img src="{{- user.img}}" data-user-id="{{- user.id}}" data-group-id="{{- group.id}}" class="addToGroup">
+				{{- user.name}}
+			</li>
+		{{ }) }}
+		</ul>
+	</div>
+	<a href='#' data-group-id='{{- group.id}}' class='button tiny alert removeGroup'>Remove Group</a>
+</script>
+
+<script type="text/template" id="groups-template">
+	<h3>Groups manager</h3>
+	<a href="#" class="button radius" data-dropdown="drop2">Add Group</a>
+
+	<div id="drop2" data-dropdown-content class="f-dropdown content">
+		<form data-abide>
+			<div class="name-field large-12 columns">
+				<label>Title <small>required</small></label>
+				<input type="text" id="groups_view_title" required pattern="[a-zA-Z]+">
+				<small class="error">Title is required and must be a string.</small>
+			</div>
+		</form>
+		<hr>
+		<a class="button addGroup" href="#">Submit</a>
+
+
+	</div>
+</script>
+
+
+<!--
+/////////////////////////////////////////////////////////////////////
+/*Project templates*/
+/////////////////////////////////////////////////////////////////////
+-->
+
+<script type="text/template" id="permission-template">
+	<td class="large-1 medium-1 small-1"><img src="{{- permission.user.img}}"></td>
+	<td>{{- permission.user.name}}</td>
+	<td>{{- permission.right}}</td>
+	<td><a href="#" class="removePermission"><img data-user-id="{{- permission.user.id}}" data-project-id="{{- project.id}}" src="img/delete.png"></a></td>
+</script>
+
+
+
+<script type="text/template" id="permissionTable-template">
+	<tr><th></th<th>Group</th><th>Name</th><th>Right</th><th></th></tr>
+</script>
+
+
+
+<script type="text/template" id="project-template">
+	<div class=row>
+		<a href="/concepts?projectId={{- project.id}}"><h3>{{- project.title }}</h3> </a>
+
+		<blockquote>{{= project.description }} </blockquote>
+		<a href="#" data-dropdown="drop{{= project.id }}">Add Permission -></a>
+		<div id="drop{{= project.id }}" data-dropdown-content class="f-dropdown content">
+
+			<div class="large-12 columns">
+		      <label>Select right :</label>
+		      <select id="permission_right">
+		        <option value="Read and Write">Read and Write</option>
+		        <option value="Read only">Read only</option>
+		      </select>
+		    
+
+		    {{ _.each(users, function(user) { }}
+		    	<div class="panel addPermission" data-user-id="{{= user.id }}" data-project-id="{{= project.id}}">
+		    		{{= user.name }}
+	    		</div>
+	    	{{ }) }}
+
+	    	</div>
+
+		</div>
+	</div>
+</script>
+
+
+
+<script type="text/template" id="projects-template">
+	<h3>Project manager</h3>
+	<a href="#" class="button radius" data-dropdown="drop3">Add Project</a>
+
+	<div id="drop3" data-dropdown-content class="f-dropdown content">
+		<form data-abide>
+			<div class="name-field large-12 columns">
+				<label>Title <small>required</small></label>
+				<input type="text" id="project_title" required pattern="[a-zA-Z]+">
+				<small class="error">Title is required and must be a string.</small>
+			</div>
+		    <div class="large-12 columns">
+		      <label>Description</label>
+		      <textarea id="project_description"></textarea>
+		    </div>
+		</form>
+		<hr>
+		<a class="button addProject" href="#">Submit</a>
+	</div>
+</script>

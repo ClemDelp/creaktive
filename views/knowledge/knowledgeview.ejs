@@ -89,13 +89,12 @@
 
       <div class="interface">
         <br />
-         <%- partial('../app/templates/visu_template') %>
+         <%- partial('templates/visu_template') %>
       </div>
 
-      <%- partial('../app/templates/cklink_template') %>
-      <%- partial('../app/templates/notifications_template') %>
+
       <%- partial('../app/templates/details_templates') %>
-      <%- partial('../app/templates/tagK_templates') %>
+      <%- partial('templates/tagK_templates') %>
     </section>
 
     <a class="exit-off-canvas"></a>
@@ -107,27 +106,15 @@
 
 
 <!-- Javascript libs -->
-<script type="text/javascript" src="js/vendor/socket.io.js"></script>
-<script type="text/javascript" src="js/sails.io.js"></script>
 
-<script src="js/BB_app/global_functions.js"></script>
-<!-- Interface client/server -->
-<script type="text/javascript" src="js/BB_app/app.js"></script>
-
-
-<!-- Global objects -->
-<script src="js/BB_app/global_models.js"></script>
-<script src="js/BB_app/global_collections.js"></script>
 
 <!-- Modules situés dans assets/js/BB_app -->
 
 
 
-<script type="text/javascript" src="js/BB_app/modules/cklink.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/visu.js"></script>
 
+<script type="text/javascript" src="js/BB_app/modules/visu.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/details.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/notifications.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/tagK.js"></script>
 
 
