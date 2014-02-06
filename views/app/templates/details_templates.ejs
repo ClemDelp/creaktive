@@ -29,7 +29,7 @@
  		<hr>
  		<form class="{{- model.id }}_hidden" id="{{- model.id }}_form_comment" action="/" method="model">
  			{{ _.each(views, function(view) { }}  
- 				{{- view }}
+ 				{{= view }}
  				{{ }); }}
  			<div id="{{- model.id }}_comment">
  				<div class="row" id="input_comment_{{- model.id }}">
@@ -105,18 +105,18 @@
  		<table>
  			<tr>
  				<td bgcolor="{{- labels[0].color }}" data-color="{{- labels[0].color }}" class="setLabel" ></td>
- 				<td>{{- labels[0].label }}</td>
- 				<td>{{- chosenLabel[0] }}</td>
+ 				<td>{{= labels[0].label }}</td>
+ 				<td>{{= chosenLabel[0] }}</td>
  			</tr>
  			<tr>
  				<td bgcolor="{{- labels[1].color }}" data-color="{{- labels[1].color }}" class="setLabel" ></td>
- 				<td>{{- labels[1].label }}</td>
- 				<td>{{- chosenLabel[1] }}</td>
+ 				<td>{{= labels[1].label }}</td>
+ 				<td>{{= chosenLabel[1] }}</td>
  			</tr>
  			<tr>
  				<td bgcolor="{{- labels[2].color }}" data-color="{{- labels[2].color }}" class="setLabel" ></td>
- 				<td>{{- labels[2].label }}</td>
- 				<td>{{- chosenLabel[2] }}</td>
+ 				<td>{{= labels[2].label }}</td>
+ 				<td>{{= chosenLabel[2] }}</td>
  			</tr>
  		</table>
  	</div>
