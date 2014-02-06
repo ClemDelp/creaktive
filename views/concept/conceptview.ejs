@@ -51,100 +51,60 @@
 
 <!-- Templates to load -->
 
-<div class="off-canvas-wrap">
-  <div class="inner-wrap">
-    <nav class="top-bar" data-topbar>
-      <ul class="title-area">
-        <li class="name">
-          <h1><a href="/">CreaKtive</a></h1>
-        </li>
-        <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
-      </ul>
+<nav class="top-bar" data-topbar>
+  <ul class="title-area">
+    <li class="name">
+      <h1><a href="/">CreaKtive</a></h1>
+    </li>
+    <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
+  </ul>
 
-      <section class="top-bar-section">        
-        <!-- Left Nav Section -->
-        <ul class="left">
-          <li><a href="concepts?projectId=<%- projectId %>">Concepts</a></li>
-          <li><a href="knowledges?projectId=<%- projectId %>">Knowledges</a></li>
-        </ul>
-        <ul class="right">
-        <li class="divider"></li>
-          <li><h5><a class="active" href="/logout">Logout</a></h5></li>
-<li class="divider"></li>
-          <li class="has-form">
-            <a href="http://creaktive.fr/contact/" class="button">FeedBack</a>
-          </li>
+  <section class="top-bar-section">        
+    <!-- Left Nav Section -->
+    <ul class="left">
+      <li><a href="concepts?projectId=<%- projectId %>">Concepts</a></li>
+      <li><a href="knowledges?projectId=<%- projectId %>">Knowledges</a></li>
+    </ul>
+    <ul class="right">
 
-        </ul>
-      </section>
+
+      <li class="divider"></li>
+      <li class="has-form"><a href="http://creaktive.fr/contact/" class="button">FeedBack</a></li>
+      <li class="divider"></li>
+      <li><a class="active" href="/logout">Logout</a></li>
+    </ul>
+  </section>
+</nav>
 
 
 
-    </nav>
-
-    <nav class="tab-bar">
-      <section class="middle tab-bar-section">
-        <h1><%- projectTitle %> (<span id="notificationsCounter">0</span>)</h1>
-      </section>
-
-      <section class="left-small">
-        <a class="left-off-canvas-toggle menu-icon" ><span></span></a>
-      </section>
-      
-<section class="right-small">
-        <a class="right-off-canvas-toggle menu-icon" ><span></span></a>
-      </section>
-    </nav>
-
-    <aside class="left-off-canvas-menu" >
-      <ul class="off-canvas-list" id="notificationsList">
-        ...
-      </ul>
-    </aside>
-
-    <aside class="right-off-canvas-menu">
-      <ul class="off-canvas-list" id="connectedUsersList">
-      </ul>
-    </aside>
+<div class="interface">
 
 
-    <section class="main-section">
-      <!-- content goes here -->
-
-
-      <div class="interface">
-
-        
-            <div >
-              <div id="interface1-container" class="columns large-1">
-                <a href="#" title="Center" class="panel button tiny resetView"><img src="img/centrer.png"></a>
-                <a href="#" title="Zoom" class="panel button tiny scaleUp"><img src="img/plus.png"></a>
-                <a href="#" title="Zoom" class="panel button tiny scaleDown"><img src="img/moins.png"></a>
-                <a href="#" title="Add" class="panel button tiny addSubIdea"><img src="img/add.png"></a>
-                <a href="#" title="Delete" class="panel button tiny removeSubIdea"><img src="img/sup.png"></a>
-                <a href="#" title="Insert" class="panel button tiny insertIntermediate"><img src="img/insertparent.png"></a>
-                <a href="#" title="Expand" class="panel button tiny toggleCollapse"><img src="img/expand.png"></a>
-                <a href="#" title="Undo" class="panel button tiny undo"><img src="img/undo.png"></a>
-                <a href="#" title="Redo" class="panel button tiny redo"><img src="img/redo.png"></a>
-                <a href="#" title="Export" class="panel button tiny" data-mm-action="export-image" value="Export To Image"><img src="img/export.png"></a>
-              </div>
-              <div class="large-11 columns" id="container"></div>  
-            </div>
-
-        
-
-
-        </div>
-
-      <%- partial('templates/concepts_template') %>
-      <%- partial('templates/cklink_template') %>
-      <%- partial('../app/templates/details_templates') %>
-    </section>
-
-    <a class="exit-off-canvas"></a>
-
+  <div >
+    <div id="interface1-container" class="columns large-1">
+      <a href="#" title="Center" class="panel button tiny resetView"><img src="img/centrer.png"></a>
+      <a href="#" title="Zoom" class="panel button tiny scaleUp"><img src="img/plus.png"></a>
+      <a href="#" title="Zoom" class="panel button tiny scaleDown"><img src="img/moins.png"></a>
+      <a href="#" title="Add" class="panel button tiny addSubIdea"><img src="img/add.png"></a>
+      <a href="#" title="Delete" class="panel button tiny removeSubIdea"><img src="img/sup.png"></a>
+      <a href="#" title="Insert" class="panel button tiny insertIntermediate"><img src="img/insertparent.png"></a>
+      <a href="#" title="Expand" class="panel button tiny toggleCollapse"><img src="img/expand.png"></a>
+      <a href="#" title="Undo" class="panel button tiny undo"><img src="img/undo.png"></a>
+      <a href="#" title="Redo" class="panel button tiny redo"><img src="img/redo.png"></a>
+      <a href="#" title="Export" class="panel button tiny" data-mm-action="export-image" value="Export To Image"><img src="img/export.png"></a>
+    </div>
+    <div class="large-11 columns" id="container"></div>  
   </div>
+
+
+
+
 </div>
+
+<%- partial('templates/concepts_template') %>
+<%- partial('templates/cklink_template') %>
+<%- partial('../app/templates/details_templates') %>
 
 
 
@@ -170,13 +130,13 @@
     var modal = $(this);
     if(modal.attr('id')==="detailsModal"){
 
-        CKEDITOR.replaceAll('ckeditor');
+      CKEDITOR.replaceAll('ckeditor');
 
 
     };
   });
 
- 
+
 
   ///////////////////////////////////////////////////
   $(document).ready(function () {
@@ -188,7 +148,7 @@
     ////////////////////////////////////////
     rt(io, function(){
       global.init('<%- currentUser %>', '<%- currentProject %>', function(){
-        
+
         /*Modules*/
         details.init();
         notifications.init();
