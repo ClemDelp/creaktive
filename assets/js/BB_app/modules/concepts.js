@@ -45,9 +45,42 @@ concepts.Views.MapView = Backbone.View.extend({
         jQuery('body').attachmentEditorWidget(mapModel);
         pngExporter = new MAPJS.PNGExporter(mapRepository);
         $("[data-mm-action='export-image']").click(pngExporter.exportMap);
+        
         pngExporter.addEventListener('mapExported', function (url) {
-            $("<img/>").attr('src',url).appendTo('body');
+            window.location = url;
+
+            // var oImage = document.getElementById(url);
+            // var imgCanvas = document.createElement("canvas");
+            // document.body.appendChild(imgCanvas);
+            // if (typeof imgCanvas.getContext == "undefined" || !imgCanvas.getContext) {
+            //     alert("browser does not support this action, sorry");
+            //     return false;
+            // }
+
+            // try {
+            //     var context = imgCanvas.getContext("2d");
+            //     var width = oImage.width;
+            //     var height = oImage.height;
+            //     imgCanvas.width = width;
+            //     imgCanvas.height = height;
+            //     imgCanvas.style.width = width + "px";
+            //     imgCanvas.style.height = height + "px";
+            //     context.drawImage(oImage, 0, 0, width, height);
+            //     var rawImageData = imgCanvas.toDataURL("image/png;base64");
+            //     rawImageData = rawImageData.replace("image/png", "image/octet-stream");
+            //     document.location.href = rawImageData;
+            //     document.body.removeChild(imgCanvas);
+            // }
+            // catch (err) {
+            //     console.log(err)
+            //     document.body.removeChild(imgCanvas);
+            //     alert("Sorry, can't download");
+            // }
+
+            // return true;
+
         });
+
         mapModel.addEventListener('analytic', console.log.bind(console));
 
         
