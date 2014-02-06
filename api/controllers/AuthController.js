@@ -5,6 +5,7 @@
 	-> controller
 ---------------------*/
 var passport = require('passport');
+var xss = require('node-xss').clean;
  
 var AuthController = {
 
@@ -17,6 +18,7 @@ var AuthController = {
 	},
  
 	process : function(req, res) {
+		req.body = xss(req.body);
 		passport.authenticate('local', function(err, user, info) {
 			if ((err) || (!user)) {
 				console.log("Login error")
