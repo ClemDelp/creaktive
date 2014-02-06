@@ -1,7 +1,14 @@
+var xss = require('node-xss').clean;
 // We use passport to determine if we're authenticated
 module.exports = function(req, res, next) {
  
 	'use strict';
+
+	console.log(req.body)
+
+	req.body = xss(req.body)
+
+	console.log(req.body)
  
 	// Sockets
 	if(req.isSocket){
