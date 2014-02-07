@@ -23,8 +23,12 @@
   	"appview" : ["authenticated","authorized", "forceHTTPs"],
   	"managerview" : ["authenticated", "forceHTTPs"]
   },
+
   "ProjectController" : {
   	"createPermission" : ["authenticated","canAuthorizeProject"]
+  },
+    "ManagerController" : {
+  	"managerview" : ["authenticated","authorized", "forceHTTPs"] 
   },
   "ConceptController" : {
   	"conceptview" : ["authenticated","authorized", "forceHTTPs"] 
