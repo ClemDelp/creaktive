@@ -18,26 +18,26 @@
   // (`true` allows public access) 
   
 
-  '*': "authenticated",
-  "AppController" : {
-  	"appview" : ["authenticated","authorized", "forceHTTPs"],
-  	"managerview" : ["authenticated", "forceHTTPs"]
-  },
-  "ProjectController" : {
-  	"createPermission" : ["authenticated","canAuthorizeProject"]
-  },
-  "ConceptController" : {
-  	"conceptview" : ["authenticated","authorized", "forceHTTPs"] 
-  },
-  "KnowledgeController" : {
-  	"knowledgeview" : ["authenticated","authorized", "forceHTTPs"]
-  },
-  'AuthController': {
-  	'login' : "forceHTTPs",
-  	'logout' : true,
-  	'process' : true,
-  	"openChannels" : ["authenticated","allowedProject"]
-  },
+  // '*': "authenticated",
+  // "AppController" : {
+  // 	"appview" : ["authenticated","authorized", "forceHTTPs"],
+  // 	"managerview" : ["authenticated", "forceHTTPs"]
+  // },
+  // "ProjectController" : {
+  // 	"createPermission" : ["authenticated","canAuthorizeProject"]
+  // },
+  // "ConceptController" : {
+  // 	"conceptview" : ["authenticated","authorized", "forceHTTPs"] 
+  // },
+  // "KnowledgeController" : {
+  // 	"knowledgeview" : ["authenticated","authorized", "forceHTTPs"]
+  // },
+  // 'AuthController': {
+  // 	'login' : "forceHTTPs",
+  // 	'logout' : true,
+  // 	'process' : true,
+  // 	"openChannels" : ["authenticated","allowedProject"]
+  // },
 
 
 
