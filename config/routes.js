@@ -35,7 +35,7 @@ module.exports.routes = {
 
   '/knowledges': "KnowledgeController.knowledgeview",
   '/concepts': "ConceptController.conceptview",
-  '/': "AppController.managerview",
+  '/': "ManagerController.managerview",
   '/proj' : "AppController.appView",
   'get /login' : 'AuthController.login',
   // 'get /register' : 'AuthController.register',
