@@ -36,7 +36,7 @@ module.exports.session = {
 
   // Uncomment the following lines to use your Mongo adapter as a session store
   adapter: 'mongo',
-  url : process.env.MONGOHQ_URL || 'mongodb://localhost:27017/creaktive' ,
+  url : process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost:27017/creaktive' ,
   collection: 'sessions',
   //
   // Optional Values:
