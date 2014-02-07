@@ -27,8 +27,9 @@
   "ProjectController" : {
   	"createPermission" : ["authenticated","canAuthorizeProject"]
   },
-    "ManagerController" : {
-  	"managerview" : ["authenticated","authorized", "forceHTTPs"] 
+  
+  "ManagerController" : {
+  	"managerview" : ["authenticated", "forceHTTPs"] 
   },
   "ConceptController" : {
   	"conceptview" : ["authenticated","authorized", "forceHTTPs"] 
