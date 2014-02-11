@@ -3,7 +3,7 @@ module.exports = function(req, res, next) {
  
 	'use strict';
 
-	if(req.session.user.id != req.session.user.id){
+
 		Permission.find({
 			user_id : req.session.user.id,
 			project_id : req.body.project_id
@@ -12,11 +12,6 @@ module.exports = function(req, res, next) {
 			if(perm.length !== 0) next();
 			else res.json(401);
 		})
-	}
-	else{
-		next();
-	}
-
 	
  
 };

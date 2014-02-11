@@ -43,15 +43,15 @@ module.exports = {
     Project.create(req.body.params).done(function(err, project){
       if(err) res.send(err)
       res.send(project)
-      // Permission.create({
-      //   id: guid(),
-      //   user_id : req.session.user.id,
-      //   project_id : project.id,
-      //   right : "Read and Write"
-      // }).done(function(err, perm){
-      //   if(err) res.send(err)
-      //   res.send(project)
-      // })
+      Permission.create({
+        id: guid(),
+        user_id : req.session.user.id,
+        project_id : project.id,
+        right : "Read and Write"
+      }).done(function(err, perm){
+        if(err) res.send(err)
+        res.send(project)
+      })
     })
 
   },
@@ -67,16 +67,16 @@ module.exports = {
   		}else{
   			Project.create(req.body.params).done(function(err,project){
   				if(err) res.send(err)
-                        res.send(project)
-  				// Permission.create({
-      //       id: guid(),
-      //       user_id : req.session.user.id,
-      //       project_id : project.id,
-      //       right : "Read and Write"
-      //     }).done(function(err, perm){
-      //       if(err) res.send(err)
 
-      //     })
+  				Permission.create({
+            id: guid(),
+            user_id : req.session.user.id,
+            project_id : project.id,
+            right : "Read and Write"
+          }).done(function(err, perm){
+            if(err) res.send(err)
+              res.send(project)
+          })
   			})
   		}
   	})

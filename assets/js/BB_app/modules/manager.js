@@ -142,10 +142,7 @@ manager.Views.Projects = Backbone.View.extend({
             cLabels : [{color : "#27AE60", label:"Known"}, {color : "#F39C12", label:"Reachable"}, {color : "#C0392B", label:"Alternative"}],
         },{
             success : function(){
-                        socket.post('/project/createPermission', {user_id : _this.currentUser.id, project_id : id_, right : "Read and Write"}, function(data){
-            console.log(data);
-            global.collections.Projects.fetch();
-        });
+                       global.collections.Projects.fetch();
             }
         });
 
