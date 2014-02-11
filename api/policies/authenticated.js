@@ -4,12 +4,10 @@ module.exports = function(req, res, next) {
  
 	'use strict';
 
-	// console.log(req.body)
-
-	// req.body = xss(req.body)
-
-	// console.log(req.body)
- 
+	_.each(req.body, function(p){
+		console.log("******", p)
+		xss(p)
+	})
 	// Sockets
 	if(req.isSocket){
 		if(req.session && req.session.passport && req.session.passport.user){
