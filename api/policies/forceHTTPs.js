@@ -4,8 +4,14 @@ module.exports = function(req,res,next){
 		next()
 	} 
 	else{
-		    if(req.headers['x-forwarded-proto']!='https')
-      res.redirect(req.baseUrl.replace("http","https")+req.url)
+		    if(req.headers['x-forwarded-proto']!='https'){
+		    	var u = req.baseUrl.replace("http","https");
+		    	u.slice(0, u.lastIndexOf(":"))
+				res.redirect(u+req.url)
+		    }
+
+      
+		    }
     else
       next() /* Continue to other routes if we're not redirecting */
 	}
