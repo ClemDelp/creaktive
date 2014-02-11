@@ -96,6 +96,8 @@ manager.Views.Projects = Backbone.View.extend({
         this.projects.bind("reset", this.render); 
         
         this.users = json.users;
+
+        this.currentUser = json.currentUser;
   
         this.template = _.template($('#projects-template').html());            
     },
@@ -130,13 +132,28 @@ manager.Views.Projects = Backbone.View.extend({
 
     addProject : function (e){
         console.log("Add a new project");
+        _this= this;
+        var id_ = guid();
         this.projects.create({
-            id:guid(),
+            id:id_,
             title: $("#project_title").val(),
             description : $("#project_description").val(),
             kLabels : [{color : "#27AE60", label:"Validated"},  {color : "#F39C12", label:"Processing"}, {color : "#C0392B", label:"Missing"}],
             cLabels : [{color : "#27AE60", label:"Known"}, {color : "#F39C12", label:"Reachable"}, {color : "#C0392B", label:"Alternative"}],
+        },{
+            success : function(){
+                        socket.post('/project/createPermission', {user_id : _this.currentUser.id, project_id : id_, right : "Read and Write"}, function(data){
+            console.log(data);
+            global.collections.Projects.fetch();
         });
+            }
+        });
+
+
+
+
+
+        
     },
 
     removeProject : function (e){
@@ -411,6 +428,7 @@ manager.Views.Main = Backbone.View.extend({
 
         // Params
         this.users = json.users;
+        this.currentUser = json.currentUser;
 
         // this.groups = json.groups;
         // this.groups.bind("add", this.render);
@@ -425,7 +443,8 @@ manager.Views.Main = Backbone.View.extend({
         panel1 = new manager.Views.Projects({
             projects :this.projects,
             groups : this.groups,
-            users : this.users
+            users : this.users,
+            currentUser : this.currentUser
         });
         panel1.render();
 

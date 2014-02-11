@@ -4,11 +4,11 @@ module.exports = function(req, res, next) {
  
 	'use strict';
 
-	console.log(req.body)
+	// console.log(req.body)
 
-	req.body = xss(req.body)
+	// req.body = xss(req.body)
 
-	console.log(req.body)
+	// console.log(req.body)
  
 	// Sockets
 	if(req.isSocket){

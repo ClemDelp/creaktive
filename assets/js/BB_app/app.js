@@ -84,7 +84,8 @@ var manager = {
     this.views.Main = new this.Views.Main({
       users : global.collections.Users,
       groups : global.collections.Groups,
-      projects : global.collections.Projects
+      projects : global.collections.Projects,
+      currentUser : global.models.current_user
     }); 
 
     this.views.Main.render();
@@ -120,48 +121,48 @@ var visu = {
   }
 };
 /////////////////////////////////////////////////
-var topBar = {
-  // Classes
-  Collections: {},
-  Models: {},
-  Views: {},
-  // Instances
-  collections: {},
-  models: {},
-  views: {},
-  init: function () {
-    /*Init*/
+// var topBar = {
+//   // Classes
+//   Collections: {},
+//   Models: {},
+//   Views: {},
+//   // Instances
+//   collections: {},
+//   models: {},
+//   views: {},
+//   init: function () {
+//     /*Init*/
 
-    this.views.Main = new this.Views.Main({
-      notifications : global.collections.Notifications,
-      current_user : global.models.current_user,
-      eventAggregator : global.eventAggregator
-    });
-  }
-};
+//     this.views.Main = new this.Views.Main({
+//       notifications : global.collections.Notifications,
+//       current_user : global.models.current_user,
+//       eventAggregator : global.eventAggregator
+//     });
+//   }
+// };
 
 /////////////////////////////////////////////////
-var notifications = {
-  // Classes
-  Collections: {},
-  Models: {},
-  Views: {},
-  // Instances
-  collections: {},
-  models: {},
-  views: {},
-  init: function () {
-    /*Init*/
+// var notifications = {
+//   // Classes
+//   Collections: {},
+//   Models: {},
+//   Views: {},
+//   // Instances
+//   collections: {},
+//   models: {},
+//   views: {},
+//   init: function () {
+//     /*Init*/
 
-    this.views.Main = new this.Views.Main({
-      notifications : global.collections.Notifications,
-      current_user : global.models.current_user,
-      users : global.collections.Users,
-      eventAggregator : global.eventAggregator
-    });
+//     this.views.Main = new this.Views.Main({
+//       notifications : global.collections.Notifications,
+//       current_user : global.models.current_user,
+//       users : global.collections.Users,
+//       eventAggregator : global.eventAggregator
+//     });
 
-  }
-};
+//   }
+// };
 
 /////////////////////////////////////////////////
 var explorer = {
