@@ -1,0 +1,79 @@
+<div id="category_container"></div>
+
+<!-- //////////////////////////////////////////////////////////////////////: -->
+<!-- Left part -->
+<script type="text/template" id="category-searchTags-template">
+    <div class="panel expand"><p>{{-title}}</p></div>
+    <input type="text" class="search" placeholder="search in {{-title}}...">
+</script>
+
+<script type="text/template" id="category-tag-template">
+    <div class="row">
+        <div class="small-12 medium-12 large-8 columns">
+                <a class="tiny success button addFilter expand" data-filter-type="poche" data-filter-model="{{-poche.id}}">
+                        {{- poche.title }} - <font style="color:red">({{- rec }})</font>
+                        <input style="float:right" data-id-poche="{{- poche.id }}" type="submit" value="x" class="removePoche" />
+                </a>
+        </div>
+        <div class="progress success show-for-large-up large-4 large-4 columns">
+          <span class="meter" style="width: {{-per}}%"></span>
+        </div>
+    </div>    
+</script>
+
+<script type="text/template" id="category-new-poche-template">
+        <div class="row collapse">
+        <div class="small-10 columns">
+          <input type="text" id="category_newP" class="expand" placeholder="New poche...">
+        </div>
+        <div class="small-2 columns">
+          <a href="#" class="button success postfix add">Add</a>
+        </div>
+    </div>
+</script>
+<!-- //////////////////////////////////////////////////////////////////////: -->
+<!-- Right part -->
+<script type="text/template" id="category-filters-template">
+    <div>
+        <hr>
+            context: 
+            {{ _.each(filters, function(filter) { }}
+                <a class="button success tiny remove" data-id-filter="{{-filter.id}}">{{- filter.model.title }}</a> +
+            {{ }); }}
+        <hr>
+    </div>
+</script>
+
+<script type="text/template" id="category-searchKnowledges-template">
+    <input type="text" placeholder="search knowledge by keywords"/>
+</script>
+
+<script type="text/template" id="category-list-template">
+    <div class="small-3 medium-3 large-3 columns" style="float:left">    
+        <ul class="pricing-table">
+            <li style="background-color : secondary " class="title">{{- category.title}}</li>
+            <li class="price">
+                <div class="row collapse">
+                    <div class="small-10 columns">
+                      <input class="category_new_k_title" type="text" placeholder="new knowledge..."/>
+                    </div>
+                    <div class="small-2 columns">
+                      <a href="#" class="button postfix addKnowledge" data-title-category="{{- category.title}}">Add</a>
+                    </div>
+                </div>
+            </li>
+            <li class="bullet-item">
+                <table style="width:100%">
+                  <tbody>
+                    {{ _.each(knowledges, function(knowledge) { }}
+                        <tr>
+                            <td>{{-knowledge.title}}</td>
+                            <td><a href="#" class="button secondary tiny" style="float:right">details</a></td>
+                        </tr>
+                    {{ }); }} 
+                  </tbody>
+                </table>
+            </li>
+        </ul>
+    </div>
+</script>

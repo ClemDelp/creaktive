@@ -78,35 +78,35 @@
 <script type="text/template" id="visu-knowledges-template">
         {{ var mode = "small-12 medium-12 large-3 columns";var limit=10;}}
         {{ if(style == "list"){ mode="small-12 large-12 columns";limit=100; } }}
-                <div class="{{-mode}}">
-                        <ul class="pricing-table">
-                                  <li class="price">
-                                        <div class="row collapse">
-                                        <div class="small-10 columns">
-                                          <input id="visu_new_k_title" type="text" placeholder="Add a knowledge in the current context..."/>
-                                        </div>
-                                        <div class="small-2 columns">
-                                          <a href="#" class="button postfix addKnowledge">Add</a>
-                                        </div>
-                                    </div>
+        <div class="{{-mode}}">
+                <ul class="pricing-table">
+                          <li class="price">
+                            <div class="row collapse">
+                                <div class="small-10 columns">
+                                  <input id="visu_new_k_title" type="text" placeholder="Add a knowledge in the current context..."/>
+                                </div>
+                                <div class="small-2 columns">
+                                  <a href="#" class="button postfix addKnowledge">Add</a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="description">{{- user.name }} - {{- getDate() }}</li>
+                </ul>
+        </div>
+
+        {{ _.each(knowledges, function(knowledge) { }}
+                <div  style="float:left" class="{{-mode}} openModal" data-id-knowledge="{{- knowledge.id }}">
+                        <ul class="pricing-table" data-id-knowledge="{{- knowledge.id }}">
+                                <li style="background-color : {{- knowledge.color}} " class="title" data-id-knowledge="{{- knowledge.id }}"></li>
+                                  <li title="{{- knowledge.title}}" class="price" data-id-knowledge="{{- knowledge.id }}">
+                                        {{- knowledge.title.substr(0,limit)}}{{ if((knowledge.title.length > 10)&&(limit==10)){ }}...{{ } }}
                                 </li>
-                                <li class="description">{{- user.name }} - {{- getDate() }}</li>
+                                <li title="{{- knowledge.user.name }} - {{- knowledge.date }}" class="description" data-id-knowledge="{{- knowledge.id }}">
+                                        {{ if(limit==10){ }} {{-knowledge.user.name.substr(0,10)}} {{ }else{ }} {{-knowledge.user.name}} {{ } }} - {{- knowledge.date }}
+                                </li>
                         </ul>
                 </div>
-
-                {{ _.each(knowledges, function(knowledge) { }}
-                        <div class="{{-mode}} openModal" data-id-knowledge="{{- knowledge.id }}">
-                                <ul class="pricing-table" data-id-knowledge="{{- knowledge.id }}">
-                                        <li style="background-color : {{- knowledge.color}} " class="title" data-id-knowledge="{{- knowledge.id }}"></li>
-                                          <li title="{{- knowledge.title}}" class="price" data-id-knowledge="{{- knowledge.id }}">
-                                                {{- knowledge.title.substr(0,limit)}}{{ if((knowledge.title.length > 10)&&(limit==10)){ }}...{{ } }}
-                                        </li>
-                                        <li title="{{- knowledge.user.name }} - {{- knowledge.date }}" class="description" data-id-knowledge="{{- knowledge.id }}">
-                                                {{ if(limit==10){ }} {{-knowledge.user.name.substr(0,10)}} {{ }else{ }} {{-knowledge.user.name}} {{ } }} - {{- knowledge.date }}
-                                        </li>
-                                </ul>
-                        </div>
-                {{ }); }}
+        {{ }); }}
         
 </script>
 

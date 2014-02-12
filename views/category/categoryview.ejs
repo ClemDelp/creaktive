@@ -42,8 +42,8 @@
     <!-- Left Nav Section -->
     <ul class="left">
       <li><a href="concepts?projectId=<%- projectId %>">Concepts</a></li>
-      <li class="active"><a href="knowledges?projectId=<%- projectId %>">Knowledges</a></li>
-      <li><a href="categories?projectId=<%- projectId %>">Categories</a></li>
+      <li><a href="knowledges?projectId=<%- projectId %>">Knowledges</a></li>
+      <li class="active"><a href="categories?projectId=<%- projectId %>">Categories</a></li>
     </ul>
     <ul class="right">
       <li class="divider"></li>
@@ -59,17 +59,16 @@
     </ul>
   </section>
 </nav>
+  <%- partial('../app/templates/title_templates') %>
 
-<%- partial('../app/templates/title_templates') %>
 
       <div class="interface">
         <br />
-         <%- partial('templates/visu_template') %>
+         <%- partial('templates/category_template') %>
       </div>
 
 
       <%- partial('../app/templates/details_templates') %>
-      <%- partial('templates/tagK_templates') %>
 
 
 
@@ -78,14 +77,9 @@
 
 
 <!-- Modules situés dans assets/js/BB_app -->
-
-
-
-
-<script type="text/javascript" src="js/BB_app/modules/visu.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/details.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/tagK.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/title.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/category.js"></script>
 
 
 <script>
@@ -112,12 +106,10 @@
     ////////////////////////////////////////
     rt(io, function(){
       global.init('<%- currentUser %>', '<%- currentProject %>', function(){
-        title.init('<%- projectTitle %>');
         /*Modules*/
         details.init();
-        //notifications.init();
-        cklink.init();
-        visu.init();
+        title.init('<%- projectTitle %>');
+        category.init();
         ////////////////////////////////////////
         /*activat of "hashchange events's monitoring"*/
 

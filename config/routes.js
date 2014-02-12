@@ -33,6 +33,7 @@ module.exports.routes = {
   // 
   // (This would also work if you had a file at: `/views/home.ejs`)
 
+  '/categories': "CategoryController.categoryview",
   '/knowledges': "KnowledgeController.knowledgeview",
   '/concepts': "ConceptController.conceptview",
   '/': "ManagerController.managerview",

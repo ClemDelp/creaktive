@@ -668,9 +668,11 @@ visu.Views.Main = Backbone.View.extend({
         "click .remove" : "removeFilter",
     },
     removeFilter: function(e){
+        event.preventDefault();
         this.filters.remove(this.filters.get(e.target.getAttribute('data-id-filter')));
     },
     addFilter: function(e){
+        event.preventDefault();
         model_ = "";
         if(e.target.getAttribute("data-filter-type") == "expert"){model_ = this.experts.get(e.target.getAttribute("data-filter-model"))}
         else if(e.target.getAttribute("data-filter-type") == "poche"){model_ = this.poches.get(e.target.getAttribute("data-filter-model"))}
