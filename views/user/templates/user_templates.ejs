@@ -1,13 +1,15 @@
-<div id="user_container"></div>
+<div id="user_container" class="small-12 medium-12 large-12 columns"></div>
 
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Left part -->
-<script type="text/template" id="user-on-template">
-    
-</script>
-
-<script type="text/template" id="user-out-template">
-    
+<script type="text/template" id="user-profil-template">
+    <div class="small-1 medium-1 large-1 columns" style="float:left">    
+        <ul class="pricing-table">
+            <li style="background-color : secondary " class="title">{{- user.name }}</li>
+            <li class="price"><img src="{{- user.img }}"/></li>
+            <li class="cta-button"><a class="button" href="#">Link</a></li>
+        </ul>
+    </div>
 </script>
 
 <script type="text/template" id="user-new-template">
@@ -15,5 +17,5 @@
 </script>
 
 <script type="text/template" id="user-search-template">
-    
+    <input type="text" placeholder="search users by keywords"/>
 </script>

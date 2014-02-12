@@ -32,6 +32,7 @@ category.Views.Category = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Variable
         this.knowledges         = json.knowledges;
+        this.poches             = json.poches;
         this.poche              = json.poche;
         this.user               = json.user;
         this.eventAggregator    = json.eventAggregator;
@@ -64,7 +65,11 @@ category.Views.Category = Backbone.View.extend({
     },
     render:function(){
         $(this.el).html('');
-        $(this.el).append(this.template_list({knowledges : this.knowledges.toJSON(), category : this.poche.toJSON()}));
+        $(this.el).append(this.template_list({
+            knowledges : this.knowledges.toJSON(), 
+            category : this.poche.toJSON(),
+            categories : this.poches.toJSON()
+        }));
 
         return this;
     }
@@ -86,6 +91,7 @@ category.Views.Categories = Backbone.View.extend({
         //init
         knowledges = this.knowledges;
         user = this.user;
+        poches = this.poches;
         template_list = this.template_list;
         el = this.el;
         eventAggregator_ = this.eventAggregator;
@@ -100,6 +106,7 @@ category.Views.Categories = Backbone.View.extend({
             list_view = new category.Views.Category({
                 knowledges      : list_of_knowledges,
                 poche           : poche,
+                poches          : poches,
                 user            : user,
                 eventAggregator : eventAggregator_
             });
@@ -110,9 +117,8 @@ category.Views.Categories = Backbone.View.extend({
     }
 });
 /***************************************/
-category.Views.RightPart = Backbone.View.extend({
-    tagName: "div",
-    className: "small-11 medium-10 large-10 columns",
+category.Views.MiddlePart = Backbone.View.extend({
+    className: "small-9 medium-8 large-8 columns",
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
@@ -147,9 +153,92 @@ category.Views.RightPart = Backbone.View.extend({
     }
 });
 /////////////////////////////////////////
+// Right Part
+/////////////////////////////////////////
+category.Views.NotCategorized = Backbone.View.extend({
+    initialize : function(json) {
+        _.bindAll(this, 'render');
+        // Variables
+        this.knowledges = json.knowledges;
+        this.knowledges_render = this.knowledges;
+        this.poches = json.poches;
+        this.eventAggregator = json.eventAggregator;
+        // Events
+        this.eventAggregator.on('knowledge_search', this.knowledgeSearch, this);
+        // Templates
+        this.template = _.template($('#category-notcategorized-template').html());
+        // Styles
+        //$(this.el).attr( "style","overflow: auto;max-height:200px");
+    },
+    knowledgeSearch: function(matched_knowledges){
+        this.knowledges_render = matched_knowledges;
+        this.render();
+    },
+    render : function(){
+        // Init
+        $(this.el).html('');
+        el_notcategorized_part=this.el;
+        template = this.template;
+        knowledges = this.knowledges;
+        poches_ = this.poches;
+        // For each poche
+        this.knowledges_render.each(function(knowledge_){
+            if(knowledge_.get('tags').length == 0){
+                $(el_notcategorized_part).append(template({
+                    knowledge : knowledge_.toJSON(),
+                    poches : poches_.toJSON()
+                }));
+            }
+        });
+
+        return this;
+    }
+});
+/***************************************/
+category.Views.RightPart = Backbone.View.extend({
+    className: "small-2 medium-2 large-2 columns",
+    initialize : function(json) {
+        _.bindAll(this, 'render');
+        // Variables
+        this.knowledges = json.knowledges; 
+        this.poches = json.poches;   
+        this.eventAggregator = json.eventAggregator;
+        // Templates
+        this.template_search = _.template($('#category-search-template').html());
+    },
+    events : {
+        "keyup .search" : "search",
+    },
+    search: function(e){
+        event.preventDefault();
+        var research = e.target.value;
+        var research_size = research.length;
+        var matched = new Backbone.Collection();
+        this.knowledges.each(function(c){
+            if(research.toLowerCase() == c.get('title').substr(0,research_size).toLowerCase()){
+                matched.add(c);
+            }
+        });
+        this.eventAggregator.trigger('knowledge_search',matched);
+    },
+    render : function(){
+        $(this.el).html('');
+        // Input search
+        $(this.el).append(this.template_search({title:"K not categorized"}));
+        // Poches part
+        notcategorized_view = new category.Views.NotCategorized({
+            knowledges:this.knowledges,
+            poches : this.poches,
+            eventAggregator:this.eventAggregator
+        });
+        $(this.el).append(notcategorized_view.render().el);
+
+        return this;
+    }
+});
+/////////////////////////////////////////
 // Left Part
 /////////////////////////////////////////
-/***************************************/
 category.Views.PochesCategory = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
@@ -167,6 +256,7 @@ category.Views.PochesCategory = Backbone.View.extend({
         //$(this.el).attr( "style","overflow: auto;max-height:200px");
     },
     pocheSearch: function(matched_poches){
+        event.preventDefault();
         this.poches_render = matched_poches;
         this.render();
     },
@@ -217,7 +307,7 @@ category.Views.PochesPart = Backbone.View.extend({
         this.poches.bind("remove",this.render);
         this.poches.bind("change",this.render);
         // Templates
-        this.template_search = _.template($('#category-searchTags-template').html());
+        this.template_search = _.template($('#category-search-template').html());
         
     },
     events : {
@@ -226,6 +316,7 @@ category.Views.PochesPart = Backbone.View.extend({
         "click .removePoche" : "removePoche",
     },
     search: function(e){
+        event.preventDefault();
         var research = e.target.value;
         var research_size = research.length;
         var matched = new Backbone.Collection();
@@ -237,10 +328,12 @@ category.Views.PochesPart = Backbone.View.extend({
         this.eventAggregator.trigger('poche_search',matched);
     },
     removePoche: function(e){
+        event.preventDefault();
         var poche = this.poches.get(e.target.getAttribute('data-id-poche'));
         poche.destroy();
     },
     addPoche : function(e){
+        event.preventDefault();
         global.models.newP = new global.Models.Poche({
             id: guid(),
             title: $("#category_newP").val(),
@@ -319,6 +412,14 @@ category.Views.Main = Backbone.View.extend({
     events : {
         "click .addFilter" : "addFilter",
         "click .remove" : "removeFilter",
+        "click .moveTo" : "moveTo",
+    },
+    moveTo : function(e){
+        event.preventDefault();
+        knowledgeToSet = this.knowledges.get(e.target.getAttribute("data-knowledge-id"));
+        knowledgeToSet.get('tags').unshift(e.target.getAttribute("data-catg-title"));
+        knowledgeToSet.save();
+        this.render();
     },
     removeFilter: function(e){
         event.preventDefault();
@@ -356,16 +457,25 @@ category.Views.Main = Backbone.View.extend({
             eventAggregator:this.eventAggregator
         });
         $(this.el).append(leftPart_view.render().el);
-        // right part
-        rightPart_view = new category.Views.RightPart({
+        // Middle part
+        middlePart_view = new category.Views.MiddlePart({
             knowledges:this.knowledges,
             poches : poches_to_render,
             filters : this.filters,
             user : this.user,
             eventAggregator:this.eventAggregator
         });
-        $(this.el).append(rightPart_view.render().el);
+        $(this.el).append(middlePart_view.render().el);
+        // Right part
+        right_part = new category.Views.RightPart({
+            knowledges:this.knowledges,
+            poches : this.poches,
+            eventAggregator:this.eventAggregator
+        });
+        $(this.el).append(right_part.render().el);
+
         $(document).foundation();
+        
         return this;
     }
 });

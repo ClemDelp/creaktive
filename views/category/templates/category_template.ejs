@@ -2,7 +2,7 @@
 
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Left part -->
-<script type="text/template" id="category-searchTags-template">
+<script type="text/template" id="category-search-template">
     <div class="panel expand"><p>{{-title}}</p></div>
     <input type="text" class="search" placeholder="search in {{-title}}...">
 </script>
@@ -33,6 +33,17 @@
 </script>
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Right part -->
+<script type="text/template" id="category-notcategorized-template">
+    <a href="#" class="button tiny split expand">{{- knowledge.title }}<span data-dropdown="drop{{- knowledge.id }}"></span></a><br>
+    <ul id="drop{{- knowledge.id }}" class="f-dropdown" data-dropdown-content>
+        {{ _.each(poches, function(poche) { }}
+            <li><a href="#" class="moveTo" data-knowledge-id="{{- knowledge.id }}" data-catg-title="{{-poche.title}}">move to {{-poche.title}}</a></li>
+        {{ }); }}
+    </ul>
+</script>
+
+<!-- //////////////////////////////////////////////////////////////////////: -->
+<!-- Middle part -->
 <script type="text/template" id="category-filters-template">
     <div>
         <hr>
@@ -63,16 +74,14 @@
                 </div>
             </li>
             <li class="bullet-item">
-                <table style="width:100%">
-                  <tbody>
-                    {{ _.each(knowledges, function(knowledge) { }}
-                        <tr>
-                            <td>{{-knowledge.title}}</td>
-                            <td><a href="#" class="button secondary tiny" style="float:right">details</a></td>
-                        </tr>
-                    {{ }); }} 
-                  </tbody>
-                </table>
+                {{ _.each(knowledges, function(knowledge) { }}
+                    <a href="#" class="button tiny split expand" style="background:{{-knowledge.color}}">{{- knowledge.title }}<span data-dropdown="drop{{- knowledge.id }}"></span></a><br>
+                    <ul id="drop{{- knowledge.id }}" class="f-dropdown" data-dropdown-content>
+                        {{ _.each(categories, function(category) { }}
+                            <li><a href="#" class="moveTo" data-knowledge-id="{{- knowledge.id }}" data-catg-title="{{-category.title}}">move to {{-category.title}}</a></li>
+                        {{ }); }}
+                    </ul>
+                {{ }); }}   
             </li>
         </ul>
     </div>
