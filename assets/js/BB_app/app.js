@@ -139,6 +139,33 @@ var title = {
   }
 };
 /////////////////////////////////////////////////
+var user = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function (projectTitle) {
+    /*Init*/
+    this.views.Main = new this.Views.Main({
+      projects    : global.collections.Projects,
+      project     : projectTitle,
+      concepts    : global.collections.Concepts,
+      knowledges  : global.collections.Knowledges,
+      experts     : global.collections.Users,
+      poches      : global.collections.Poches,
+      links       : global.collections.Links,
+      users       : global.collections.Users,
+      user        : global.models.current_user,
+      eventAggregator : global.eventAggregator
+    });  
+
+  }
+};
+/////////////////////////////////////////////////
 var visu = {
   // Classes
   Collections: {},

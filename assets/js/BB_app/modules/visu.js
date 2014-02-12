@@ -884,5 +884,4 @@ visu.Views.Main = Backbone.View.extend({
             return this;
         }
     });
-
 /***************************************/

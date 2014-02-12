@@ -43,8 +43,8 @@
     <ul class="left">
       <li><a href="concepts?projectId=<%- projectId %>">Concepts</a></li>
       <li><a href="knowledges?projectId=<%- projectId %>">Knowledges</a></li>
-      <li class="active"><a href="categories?projectId=<%- projectId %>">Categories</a></li>
-      <li><a href="user?projectId=<%- projectId %>">Members</a></li>
+      <li><a href="categories?projectId=<%- projectId %>">Categories</a></li>
+      <li class="active"><a href="user?projectId=<%- projectId %>">Members</a></li>
     </ul>
     <ul class="right">
       <li class="divider"></li>
@@ -65,11 +65,10 @@
 
       <div class="interface">
         <br />
-         <%- partial('templates/category_template') %>
+         <%- partial('templates/user_template') %>
       </div>
 
 
-      <%- partial('../app/templates/details_templates') %>
 
 
 
@@ -78,9 +77,8 @@
 
 
 <!-- Modules situés dans assets/js/BB_app -->
-<script type="text/javascript" src="js/BB_app/modules/details.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/title.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/category.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/user.js"></script>
 
 
 <script>
@@ -108,9 +106,8 @@
     rt(io, function(){
       global.init('<%- currentUser %>', '<%- currentProject %>', function(){
         /*Modules*/
-        details.init();
         title.init('<%- projectTitle %>');
-        category.init();
+        user.init();
         ////////////////////////////////////////
         /*activat of "hashchange events's monitoring"*/
 
