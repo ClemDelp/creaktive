@@ -12,6 +12,7 @@
     this.concepts = [];
     this.tree = "";
     this.rank = 0;
+    this.compteur = 0;
 
     generateRank = function(rank){
       if(rank ===0){
@@ -19,15 +20,9 @@
         return this.rank;
       }
       this.rank++;
+      this.compteur++;
+      if(this.compteur%2 ===1) return -this.rank;
       return this.rank;
-      // if(rank<0){
-      //   this.rank = -this.rank + 1;
-      //   return this.rank
-      // } 
-      // if(rank>0){
-      //   this.rank = -this.rank;
-      //   return this.rank
-      // } 
     };
 
     createIdea = function(concept){
@@ -42,9 +37,9 @@
     }
 
     createChildren = function (father, child){
-        generateRank(this.rank);
-        console.log(this.rank)
-        father.ideas[this.rank] = child;
+        var rank = generateRank(this.rank);
+        console.log(rank)
+        father.ideas[rank] = child;
 
     };
 
@@ -56,7 +51,7 @@
         var c = _.where(this.concepts, {id_father : children[i].id})
         
         if(c.length > 0){
-            this.rank=0;
+            //this.rank=0;
             this.populate(children[i], c)
         }
       };
@@ -78,7 +73,7 @@
       
       populate(c0, children)
       
-      console.log(c0)
+
 
       res.send({tree : c0});
     });
@@ -102,7 +97,7 @@
   create : function (req,res){
     var c = req.body.params;
     c.project = req.session.currentProject.id;
-    console.log(c)
+
     Concept.create(c).done(function(err, concept){
       if(err) res.send(err);
       Notification.objectCreated(req,res,"Concept", c.id, function(notification){
@@ -113,7 +108,7 @@
   },
 
   update : function(req, res){
-    console.log(req.body.params.id);
+
     Concept.findOne(req.body.params.id).done(function(err, concept){
       if(err) res.send(err);
       if(concept){
