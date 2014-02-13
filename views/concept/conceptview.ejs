@@ -82,7 +82,7 @@
   </section>
 </nav>
 <%- partial('../app/templates/title_templates') %>
-
+<%- partial('../category/templates/category_template') %>
 
 <div class="interface">
 
@@ -109,7 +109,7 @@
 </div>
 
 <%- partial('templates/concepts_template') %>
-<%- partial('templates/cklink_template') %>
+<%- partial('../app/templates/cklink_template') %>
 <%- partial('../app/templates/details_templates') %>
 
 
@@ -128,6 +128,7 @@
 <script type="text/javascript" src="js/BB_app/modules/concepts.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/details.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/title.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/category.js"></script>
 
 
 
@@ -161,7 +162,8 @@
         //notifications.init();
         //topBar.init();
         cklink.init();
-        title.init('<%- projectTitle %>');
+        title.init(<%- currentProject %>.title);
+        category.init();        
         /*Interfaces*/
         interface1.init();
         ////////////////////////////////////////

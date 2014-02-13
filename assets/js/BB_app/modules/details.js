@@ -659,7 +659,7 @@ details.Views.Main = Backbone.View.extend({
             console.log("Notification open K");
                     this.model = this.knowledges.get(e);
         this.type = "knowledge";
-        this.render();
+        // this.render();
                 this.render(function(){
            $('#detailsModal').foundation('reveal', 'open'); 
         }); 

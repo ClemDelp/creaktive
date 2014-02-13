@@ -25,11 +25,11 @@ category.Collections.Filters = Backbone.Collection.extend({
     }
 });
 /////////////////////////////////////////
-// Left Part
+// Middle Part
 /////////////////////////////////////////
 category.Views.Category = Backbone.View.extend({
     initialize : function(json){
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render',"openModal");
         // Variable
         this.knowledges         = json.knowledges;
         this.poches             = json.poches;
@@ -41,6 +41,11 @@ category.Views.Category = Backbone.View.extend({
     },
     events : {
         "click .addKnowledge" : "addKnowledge",
+        "click .openModal"  : "openModal"
+    },
+    openModal: function(e){
+        event.preventDefault();
+        this.eventAggregator.trigger("openModal",e.target.getAttribute("data-knowledge-id"));
     },
     addKnowledge : function(e){
         // Init
@@ -126,6 +131,7 @@ category.Views.MiddlePart = Backbone.View.extend({
         this.poches             = json.poches;
         this.filters            = json.filters;
         this.user               = json.user;
+        this.eventAggregator    = json.eventAggregator;
         // Events 
 
         // Templates
@@ -388,6 +394,53 @@ category.Views.LeftPart = Backbone.View.extend({
     }
 });
 /////////////////////////////////////////
+// Modal
+/////////////////////////////////////////
+category.Views.Modal = Backbone.View.extend({
+    el:"#category_modal_container",
+    initialize:function(json){
+        _.bindAll(this, 'render', 'openModal');
+        // Variables
+        this.knowledge = new Backbone.Model();
+        this.knowledges = json.knowledges;
+        this.poches = json.poches;
+        this.eventAggregator = json.eventAggregator;
+        // Events
+        this.eventAggregator.on("openModal", this.openModal);
+        // Templates
+        this.template_modal = _.template($('#category-modal-template').html()); 
+    },
+    events: {
+        "click .moveToCatg" : "moveToCatg",
+        "click .copyToCatg" : "CopyToCatg"
+    },
+    openModal : function(e){
+        this.knowledge = this.knowledges.get(e);
+        this.render(function(){
+            $('#category_modal_container').foundation('reveal', 'open'); 
+             $(document).foundation();
+        }); 
+    },
+    moveToCatg : function(e){
+
+    },
+    copyToCatg : function(e){
+
+    },
+    render:function(callback){
+        $(this.el).html('');
+        $(this.el).append(this.template_modal({
+            knowledge:this.knowledge.toJSON(),
+            poches : this.poches.toJSON()
+        }));
+
+       
+        // Render it in our div
+        if(callback) callback();
+
+    }
+});
+/////////////////////////////////////////
 // Main
 /////////////////////////////////////////
 category.Views.Main = Backbone.View.extend({
@@ -408,6 +461,8 @@ category.Views.Main = Backbone.View.extend({
         this.filters.bind('remove', this.render);
 
         this.knowledges.bind("reset", this.render);
+        this.knowledges.bind("add", this.render);
+        this.knowledges.bind("remove", this.render);
     },
     events : {
         "click .addFilter" : "addFilter",
@@ -473,9 +528,16 @@ category.Views.Main = Backbone.View.extend({
             eventAggregator:this.eventAggregator
         });
         $(this.el).append(right_part.render().el);
+        //Modal
+        modal_view = new category.Views.Modal({
+            poches: this.poches,
+            knowledges : this.knowledges,
+            eventAggregator : this.eventAggregator
+        });
+        $(this.el).append(modal_view.render());
 
         $(document).foundation();
-        
+
         return this;
     }
 });

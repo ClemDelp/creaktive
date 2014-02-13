@@ -662,8 +662,8 @@ visu.Views.Main = Backbone.View.extend({
     },
     events : {
         "click .addKnowledge" : "addKnowledge",
-        "click .list" : "putInList",
-        "click .grid" : "putInGrid",
+        // "click .list" : "putInList",
+        // "click .grid" : "putInGrid",
         "click .addFilter" : "addFilter",
         "click .remove" : "removeFilter",
     },
@@ -692,14 +692,14 @@ visu.Views.Main = Backbone.View.extend({
             console.log("filters: ",this.filters);
         }
     },
-    putInList: function(e){
-        this.style = "list";
-        this.render();
-    },
-    putInGrid: function(e){
-        this.style = "grid";
-        this.render();
-    },
+    // putInList: function(e){
+    //     this.style = "list";
+    //     this.render();
+    // },
+    // putInGrid: function(e){
+    //     this.style = "grid";
+    //     this.render();
+    // },
     addKnowledge : function(e){
         //console.log("Add knowledge");
         // Init

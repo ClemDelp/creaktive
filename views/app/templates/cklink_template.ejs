@@ -1,15 +1,11 @@
-<script type="text/template" id="cklink-klinked-template">
-	<a href="#panel1">K linked to ...</a>
-	<div id="panel1" class="content active">
-		{{ _.each(knowledges, function(knowledge) { }}
-			<a class="button tiny success expand">
-				{{-knowledge.title}}
-				<input type="submit" style="float:right" value="x" class="removeKtoC" data-id-knowledge="{{-knowledge.id}}">
-			</a>
-		{{ }); }}
-	</div>
+<script type="text/template" id="cklink-knowledges-template">
+	{{ _.each(k_linked, function(knowledge) { }}
+		<a id="cklink_{{-knowledge.id}}" data-id-knowledge="{{-knowledge.id}}" class="button alert radius round selectable">{{-knowledge.title}}</a>
+	{{ }); }}
+	{{ _.each(k_notlinked, function(knowledge) { }}
+		<a id="cklink_{{-knowledge.id}}" data-id-knowledge="{{-knowledge.id}}" class="button radius round selectable">{{-knowledge.title}}</a>
+	{{ }); }}
 </script>
-
 
 <script type="text/template" id="cklink-current-concept-template">
 	<div class="panel">
@@ -17,15 +13,6 @@
 	</div>
 </script>
 
-
-<script type="text/template" id="cklink-poches-template">
-	<SELECT id="cklink_poches" MULTIPLE SIZE=5>
-		<OPTION class="" VALUE="">Not classified</OPTION>
-		{{ _.each(poches, function(poche) { }}
-			<OPTION class="" VALUE="{{-poche.title}}">{{-poche.title}}</OPTION>
-		{{ }); }}
-	</SELECT>
-</script>
 
 
 

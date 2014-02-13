@@ -1,244 +1,121 @@
-/***********************************************/
-cklink.Views.Poches = Backbone.View.extend({
-    initialize : function(json) {
-        //console.log("KLINKED view initialise");
-        // Variables
-        this.current_filters = json.current_filters;
-        this.poches = json.poches;
-        // Events
-        _.bindAll(this, 'render');
-        // Template
-        this.template = _.template($('#cklink-poches-template').html());  
-    },
-    events : {
-        "change #cklink_poches" : "updateFilter"
-    },
-    updateFilter : function(e){
-        this.current_filters.length = 0;
-        filters = this.current_filters;
-        $('#'+e.target.id+' :selected').each(function(i, selected){ 
-          filters[i] = $(selected).val(); 
-        });
-        this.current_filters.trigger('change')
-        //console.log(this.current_filters)
-    },
-    render : function() {
-        // Poches template
-        var renderedContent = this.template({
-            poches:this.poches.toJSON()
-        });
-        $(this.el).append(renderedContent);
-        return this;
-    }
-});
-/***********************************************/
+/////////////////////////////////////////////////
+// Right Part
+/////////////////////////////////////////////////
 cklink.Views.Knowledges = Backbone.View.extend({
     initialize : function(json) {
+        _.bindAll(this, 'render');
         // Variables
         this.current_concept = json.current_concept;
         this.knowledges = json.knowledges;
-        this.current_filters = json.current_filters;
         this.links = json.links;
-        // Events
-        _.bindAll(this, 'render');
-        this.current_filters.on('change',this.render);
+        // Template
+        this.template = _.template($('#cklink-knowledges-template').html()); 
     },
     events : {
-        "click .selectable" : "newLink",
+        "click .selectable" : "linkAndUnlink",
     },
-    newLink: function(e){
+    linkAndUnlink: function(e){
+        event.preventDefault();
+        // Init
+        current_concept = this.current_concept;
         // Change the background color
-        var Class = e.target.className.split(',');
+        var Class = e.target.className.split(' ');
         var index = Class.indexOf('alert');
-        if(index > -1){/* Deselection */$("#"+e.target.id).removeClass('alert');}
-        else{/* Selection */$("#"+e.target.id).addClass('alert')}
-        //collapse("#"+e.target.id)
-        // Create a new link
-        var concept_id = this.current_concept.get('id');
-        global.models.newLink = new global.Models.CKLink({
-            id :guid(),
-            user : "",
-            date : getDate(),
-            concept : concept_id,
-            knowledge : e.target.getAttribute('data-id-knowledge')
-        });
-        // Save the new link and add it to links collection
-        global.models.newLink.save();
-        this.links.add([global.models.newLink]);
+        if(index > -1){
+            /* Deselection */
+            $("#"+e.target.id).removeClass('alert');
+            var links_to_remove = this.links.filter(function(link){
+                return (
+                    link.get('knowledge') == e.target.getAttribute('data-id-knowledge') &&
+                    link.get('concept') == this.current_concept.get('id')
+                );
+            });
+            links_to_remove.forEach(function(link){
+                link.destroy();
+            });
+        }else{
+            /* Selection */
+            $("#"+e.target.id).addClass('alert');
+            // Create a new link
+            var concept_id = this.current_concept.get('id');
+            global.models.newLink = new global.Models.CKLink({
+                id :guid(),
+                user : "",
+                date : getDate(),
+                concept : concept_id,
+                knowledge : e.target.getAttribute('data-id-knowledge')
+            });
+            // Save the new link and add it to links collection
+            global.models.newLink.save();
+            this.links.add([global.models.newLink]);
+        }
 
     },
     render : function() {
         $(this.el).html("");
-        // Each Knowledge
-        knowledges_el = this.el;
-        current_filters = this.current_filters;
-        this.knowledges.each(function(k){
-            // Si les filtres sont inclu ds les tag du model
-            if((_.intersection(k.get('tags'),this.current_filters).length == this.current_filters.length)||(this.current_filters[0] == "")){
-                $(this.knowledges_el).append('<a id="cklink_'+k.get('id')+'" data-id-knowledge="'+k.get('id')+'" class="button tiny expand selectable">'+k.get('title')+'</a>');
+        // Init
+        knowledges = this.knowledges;
+        current_concept = this.current_concept;
+        k_linked    = new Backbone.Collection();
+        k_notlinked = new Backbone.Collection();
+        // Set k_linked
+        this.links.filter(function(link){
+            if((!k_linked.contains(knowledges.get(link.get('knowledge'))))&&(link.get('concept')==current_concept.get('id'))){
+                k_linked.add(knowledges.get(link.get('knowledge')));
             }
         });
+        // Set k_notlinked
+        knowledges.each(function(knowledge){
+            if(!k_linked.contains(knowledge)){k_notlinked.add(knowledge);}
+        });
+        // Knowledges
+        $(this.el).append(this.template({
+            k_linked : k_linked.toJSON(),
+            k_notlinked : k_notlinked.toJSON()
+        }));
 
-        $(document).foundation();
         return this;
     }
 });
 /***********************************************/
-cklink.Views.Acc2 = Backbone.View.extend({
-    tagName:"div",
-    className:"content",
-    id:"panel2",
+cklink.Views.RightPart = Backbone.View.extend({
+    className: "small-10 medium-10 large-10 columns",
     initialize : function(json) {
-        //console.log("Acc2 view initialise");
+        _.bindAll(this, 'render');
         // Variables
         this.current_concept = json.current_concept;
-        this.knowledges = json.knowledges;
-        this.poches = json.poches;
+        this.knowledges         = json.knowledges;
+        this.filters            = json.filters;
         this.links = json.links;
+        this.eventAggregator = json.eventAggregator;
+        // Events 
 
-        this.current_filters = [];
-        _.extend(this.current_filters, Backbone.Events); 
-
-        // Events
-        _.bindAll(this, 'render');
-    },
-    render : function() {
-        // Poches view
-        p_view = new cklink.Views.Poches({
-            current_filters:this.current_filters,
-            poches:this.poches
-        });
-        $(this.el).append(p_view.render().el);
-        // Knowledges view
-        // Accrodion klinked header
-       
-        k_view = new cklink.Views.Knowledges({
-            current_filters:this.current_filters,
-            knowledges:this.knowledges,
-            current_concept: this.current_concept,
-            links:this.links
-        });
-        $(this.el).append(k_view.render().el);
-        return this;
-    }
-});
-/***********************************************/
-cklink.Views.Explorer = Backbone.View.extend({
-    tagName: "dd",
-    initialize : function(json) {
-        //console.log("KLINKED view initialise");
-        // Variables
-        this.current_concept = json.current_concept;
-        this.knowledges = json.knowledges;
-        this.poches = json.poches;
-        this.links = json.links;
-
-        // Events
-        _.bindAll(this, 'render');
-    },
-    render : function() {
-        $(this.el).html('<a href="#panel2">Link K to ...</a> ');
-        // Poches view
-        acc2_view = new cklink.Views.Acc2({
-            current_concept:this.current_concept,
-            knowledges:this.knowledges,
-            poches:this.poches,
-            links:this.links
-        });
-        $(this.el).append(acc2_view.render().el);
+        // Templates
+        this.template_search = _.template($('#category-searchKnowledges-template').html());
+        this.template_filters = _.template($('#category-filters-template').html());
         
-        return this;
-    }
-});
-/***********************************************/
-cklink.Views.Klinked = Backbone.View.extend({
-    tagName: "dd",
-    initialize : function(json) {
-        //console.log("KLINKED view initialise");
-        // Variables
-        this.current_concept = json.current_concept;
-        this.knowledges = json.knowledges;
-        this.links = json.links;
-        // Events
-        _.bindAll(this, 'render');
-        this.links.bind('add', this.render);
-        this.links.bind('remove', this.render);
-        // Template
-        this.template = _.template($('#cklink-klinked-template').html());  
     },
-    events : {
-        "click .removeKtoC" : "removeLink",
-    },
-    removeLink: function(e){
-        var current_concept_ = this.current_concept;
-        var links_to_remove = this.links.filter(function(link){
-            return (
-                link.get('knowledge') == e.target.getAttribute('data-id-knowledge') &&
-                link.get('concept') == this.current_concept_.get('id')
-            );
-        });
-        links_to_remove.forEach(function(link){
-            link.destroy();
-        });
-    },
-    render : function() {
+    render : function(){
         $(this.el).html('');
-        // Select the knowledge already linked
-        current_concept_=this.current_concept;
-        var links_list = this.links.filter(function(link){ 
-            return link.get('concept') == this.current_concept_.get('id'); 
-        });
-
-        knowledges_list = new global.Collections.Knowledges();
-        knowledges_ = this.knowledges;
-        links_list.forEach(function(link){
-            this.knowledges_list.add([this.knowledges_.get(link.get('knowledge'))]);
-        });
-        // klinked view
-        var renderedContent = this.template({
-            knowledges:knowledges_list.toJSON()
-        });
-        $(this.el).append(renderedContent);
-        
-        return this;
-    }
-});
-/***********************************************/
-cklink.Views.Accordion = Backbone.View.extend({
-    tagName:"dl",
-    className:"accordion",
-    initialize: function(json){
-        // Variables
-        this.knowledges = json.knowledges;
-        this.poches = json.poches;
-        this.current_concept = json.current_concept;
-        this.links = json.links;
-        // Events
-        _.bindAll(this, 'render');
-
-        $(this.el).attr( "data-accordion","")
-    },
-    render: function(){
-        // Klinked view
-        klinked = new cklink.Views.Klinked({
-            current_concept:this.current_concept,
-            knowledges:this.knowledges,
-            links:this.links
-        });
-        $(this.el).append(klinked.render().el);
-        // Explorer view
-        explorer_view = new cklink.Views.Explorer({
-            knowledges : this.knowledges,
-            poches : this.poches,
+        // Search bar
+        //$(this.el).append(this.template_search());
+        // Context bar
+        $(this.el).append(this.template_filters({filters : this.filters.toJSON()}));
+        // Knowledge
+        list_of_knowledges = new cklink.Views.Knowledges({
             current_concept : this.current_concept,
-            links:this.links
+            knowledges      : this.knowledges,
+            links           : this.links,
+            eventAggregator : this.eventAggregator
         });
-        $(this.el).append(explorer_view.render().el);
+        $(this.el).append(list_of_knowledges.render().el);
 
         return this;
     }
 });
-/***********************************************/
+/////////////////////////////////////////////////
+// Main 
+/////////////////////////////////////////////////
 cklink.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         //console.log("CKLINK MAIN view initialise");
@@ -248,9 +125,14 @@ cklink.Views.Main = Backbone.View.extend({
         this.eventAggregator = json.eventAggregator;
         this.links = json.links;
         this.concepts = json.concepts;
+        this.filters = new category.Collections.Filters();
+        this.current_concept = json.current_concept;
+
         // Events
         _.bindAll(this, 'render');
 
+        this.filters.bind('add', this.render);
+        this.filters.bind('remove', this.render);
 
         this.poches.bind('reset', this.render);
         this.poches.bind('add', this.render);
@@ -262,28 +144,68 @@ cklink.Views.Main = Backbone.View.extend({
         this.knowledges.bind('add', this.render);
         this.knowledges.bind('remove', this.render);
 
-        this.current_concept = json.current_concept;
-
         // Template
         this.template = _.template($('#cklink-current-concept-template').html());       
     },
-
-
+    events : {
+        "click .addFilter" : "addFilter",
+        "click .remove" : "removeFilter",
+    },
+    removeFilter: function(e){
+        event.preventDefault();
+        this.filters.remove(this.filters.get(e.target.getAttribute('data-id-filter')));
+    },
+    addFilter: function(e){
+        event.preventDefault();
+        model_ = this.poches.get(e.target.getAttribute("data-filter-model"));
+        if(model_ != ""){
+            new_filter = new category.Models.Filter({
+                id:guid(),//e.target.getAttribute("data-filter-id"),
+                type:e.target.getAttribute("data-filter-type"),
+                model:model_
+            });
+            this.filters.add(new_filter);
+        }
+    },
     render : function() {
-        // Current concept view
-        var renderedContent = this.template({
-            concept:this.current_concept.toJSON()
+        $(this.el).html("");
+        // init
+        knowledges = this.knowledges;
+        knowledges_to_render = new Backbone.Collection(); 
+        if(this.filters.length != 0){
+            this.filters.each(function(filter){
+                if(filter.get('type') == "poche"){
+                    knowledges.each(function(knowledge){
+                        console.log('tutu',knowledge.get('tags').indexOf(filter.get('model')),"tags ",knowledge.get('tags'),"model",filter.get('model'))
+                        if(knowledge.get('tags').indexOf(filter.get('model').get('title')) > -1){
+                            knowledges_to_render.add(knowledge);
+                        }
+                    });
+                }
+            });
+        }else{
+            this.knowledges.each(function(knowledge){
+                knowledges_to_render.add(knowledge);
+            });
+        }
+        // Left part
+        left_part_view = new category.Views.LeftPart({
+            knowledges      : this.knowledges,   
+            poches          : this.poches,
+            eventAggregator : this.eventAggregator
         });
-        $(this.el).html(renderedContent);
-        // Accordion
-        accordion = new cklink.Views.Accordion({
-            knowledges:this.knowledges,
-            poches:this.poches,
-            links:this.links,
-            current_concept:this.current_concept
+        $(this.el).append(left_part_view.render().el);
+        // Right Part
+        right_part_view = new cklink.Views.RightPart({
+            current_concept  : this.current_concept,
+            knowledges       : knowledges_to_render,
+            filters          : this.filters,
+            links            : this.links,
+            eventAggregator  : this.eventAggregator
         });
-        $(this.el).append(accordion.render().el);
-        $(document).foundation();
+        $(this.el).append(right_part_view.render().el);
+
+
         return this;
     }
 });

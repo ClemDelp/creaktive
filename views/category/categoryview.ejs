@@ -65,6 +65,7 @@
 
       <div class="interface">
         <br />
+          <div id="category_container"></div>
          <%- partial('templates/category_template') %>
       </div>
 
@@ -109,7 +110,7 @@
       global.init('<%- currentUser %>', '<%- currentProject %>', function(){
         /*Modules*/
         details.init();
-        title.init('<%- projectTitle %>');
+        title.init(<%- currentProject %>.title);
         category.init();
         ////////////////////////////////////////
         /*activat of "hashchange events's monitoring"*/

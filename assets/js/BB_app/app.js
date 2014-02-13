@@ -193,6 +193,7 @@ var visu = {
     //this.views.main.render();
   }
 };
+
 /////////////////////////////////////////////////
 // var topBar = {
 //   // Classes
@@ -299,32 +300,6 @@ var concepts = {
 
 };
 /////////////////////////////////////////////////
-var interface3 = {
-  // Classes
-  Collections: {},
-  Models: {},
-  Views: {},
-  // Instances
-  collections: {},
-  models: {},
-  views: {},
-  init: function () {
-    /*Init*/
-
-    /*views*/
-    this.views.Main = new this.Views.Main({
-      knowledges:global.collections.Knowledges,
-      user:global.models.current_user,
-      poches:global.collections.Poches,
-      users : global.collections.Users,
-      eventAggregator : global.eventAggregator
-    });
-    /*Renders*/
-    this.views.Main.render();
-        
-  }
-};
-/////////////////////////////////////////////////
 var interface1 = {
   // Classes
   Collections: {},
@@ -335,8 +310,7 @@ var interface1 = {
   models: {},
   views: {},
 
-    // Objects
-  
+  // Objects
   init: function () {
     /*Init*/
 
@@ -356,12 +330,9 @@ var interface1 = {
 
     /*Renders*/
     this.views.Main.render();
-
-    
+   
   }
 };
-
-
 /////////////////////////////////////////////////
 var details = {
   // Classes

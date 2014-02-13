@@ -39,7 +39,7 @@ global.Models.CKObject = Backbone.Model.extend({
         date : "",
         date2: "",
         attachment: "",
-        color: "",
+        color: "#95A5A6",
         members:[],
         attachment:[]
     },

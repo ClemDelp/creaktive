@@ -1,5 +1,3 @@
-<div id="category_container"></div>
-
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Left part -->
 <script type="text/template" id="category-search-template">
@@ -10,7 +8,7 @@
 <script type="text/template" id="category-tag-template">
     <div class="row">
         <div class="small-12 medium-12 large-8 columns">
-                <a class="tiny success button addFilter expand" data-filter-type="poche" data-filter-model="{{-poche.id}}">
+                <a class="tiny success radius button addFilter expand" data-filter-type="poche" data-filter-model="{{-poche.id}}">
                         {{- poche.title }} - <font style="color:red">({{- rec }})</font>
                         <input style="float:right" data-id-poche="{{- poche.id }}" type="submit" value="x" class="removePoche" />
                 </a>
@@ -32,16 +30,38 @@
     </div>
 </script>
 <!-- //////////////////////////////////////////////////////////////////////: -->
+<!-- Modal part -->
+<div id="category_modal_container" class="reveal-modal" data-reveal></div>
+
+<script type="text/template" id="category-modal-template">
+    <dl class="tabs" data-tab>
+      <dd class="active"><a href="#panel2-1">Move to...</a></dd>
+      <dd><a href="#panel2-2">Duplicate to...</a></dd>
+    </dl>
+    <div class="tabs-content">
+      <div class="content active" id="panel2-1">
+        {{ _.each(poches, function(poche) { }}
+            <a href="#" class="button success round moveTo" data-knowledge-id="{{- knowledge.id }}" data-catg-title="{{-poche.title}}">{{-poche.title}}</a>
+        {{ }); }}   
+      </div>
+      <div class="content" id="panel2-2">
+        {{ _.each(poches, function(poche) { }}
+            <a href="#" class="button alert round moveTo" data-knowledge-id="{{- knowledge.id }}" data-catg-title="{{-poche.title}}">{{-poche.title}}</a>
+        {{ }); }}
+      </div>
+    </div>
+</script>
+<!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Right part -->
 <script type="text/template" id="category-notcategorized-template">
-    <a href="#" class="button tiny split expand">{{- knowledge.title }}<span data-dropdown="drop{{- knowledge.id }}"></span></a><br>
-    <ul id="drop{{- knowledge.id }}" class="f-dropdown" data-dropdown-content>
+
+    <a href="#" data-dropdown="drop{{-knowledge.id}}" class="tiny radius round button dropdown expand" style="background:{{- knowledge.color }}">{{- knowledge.title }}</a><br>
+    <ul id="drop{{-knowledge.id}}" data-dropdown-content class="f-dropdown">
         {{ _.each(poches, function(poche) { }}
-            <li><a href="#" class="moveTo" data-knowledge-id="{{- knowledge.id }}" data-catg-title="{{-poche.title}}">move to {{-poche.title}}</a></li>
-        {{ }); }}
+            <li><a href="#" class="moveTo" data-knowledge-id="{{- knowledge.id }}" data-catg-title="{{-poche.title}}">{{-poche.title}}</a></li>
+        {{ }); }}   
     </ul>
 </script>
-
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Middle part -->
 <script type="text/template" id="category-filters-template">
@@ -49,7 +69,7 @@
         <hr>
             context: 
             {{ _.each(filters, function(filter) { }}
-                <a class="button success tiny remove" data-id-filter="{{-filter.id}}">{{- filter.model.title }}</a> +
+                <a class="button success round tiny remove" data-id-filter="{{-filter.id}}">{{- filter.model.title }}</a> +
             {{ }); }}
         <hr>
     </div>
@@ -75,12 +95,7 @@
             </li>
             <li class="bullet-item">
                 {{ _.each(knowledges, function(knowledge) { }}
-                    <a href="#" class="button tiny split expand" style="background:{{-knowledge.color}}">{{- knowledge.title }}<span data-dropdown="drop{{- knowledge.id }}"></span></a><br>
-                    <ul id="drop{{- knowledge.id }}" class="f-dropdown" data-dropdown-content>
-                        {{ _.each(categories, function(category) { }}
-                            <li><a href="#" class="moveTo" data-knowledge-id="{{- knowledge.id }}" data-catg-title="{{-category.title}}">move to {{-category.title}}</a></li>
-                        {{ }); }}
-                    </ul>
+                    <a href="#" class="button openModal tiny radius round expand" data-knowledge-id="{{-knowledge.id}}" style="background:{{-knowledge.color}}">{{- knowledge.title }}</a>
                 {{ }); }}   
             </li>
         </ul>
