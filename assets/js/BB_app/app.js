@@ -24,6 +24,7 @@ var global = {
     this.collections.Concepts = new this.Collections.ConceptsCollection();
     this.collections.Links = new this.Collections.CKLinks();
     this.collections.Notifications = new this.Collections.NotificationsCollection();
+    this.collections.Permissions = new this.Collections.PermissionsCollection();
 
     /*Loads*/
 
@@ -35,6 +36,7 @@ var global = {
     this.collections.Concepts.fetch({reset:true});
     this.collections.Links.fetch({reset:true});
     this.collections.Notifications.fetch({reset:true});
+    this.collections.Permissions.fetch({reset:true});
 
       this.eventAggregator = {};//this.concepts.first();
       _.extend(this.eventAggregator, Backbone.Events);
@@ -148,21 +150,14 @@ var user = {
   collections: {},
   models: {},
   views: {},
-  init: function (projectTitle) {
+  init: function (project_) {
     /*Init*/
     this.views.Main = new this.Views.Main({
-      projects    : global.collections.Projects,
-      project     : projectTitle,
-      concepts    : global.collections.Concepts,
-      knowledges  : global.collections.Knowledges,
-      experts     : global.collections.Users,
-      poches      : global.collections.Poches,
-      links       : global.collections.Links,
+      project     : project_,
       users       : global.collections.Users,
-      user        : global.models.current_user,
+      permissions : global.collections.Permissions,
       eventAggregator : global.eventAggregator
     });  
-
   }
 };
 /////////////////////////////////////////////////

@@ -13,17 +13,26 @@ module.exports = {
   }
   */
 
+find : function (req,res){
+    Permission.find({
+
+    }).done(function(err,permissions){
+      if(err) res.send(err)
+      res.send(permissions)
+    });
+
+  },
 
 update : function(req,res){
-  	Permission.findOne(req.body.id).done(function(err, permission){
+  	Permission.findOne(req.body.params.id).done(function(err, permission){
   		if(err) res.send(err);
   		if(permission){
-  			Permission.update({id: req.body.id}, req.body).done(function(err,c){
+  			Permission.update({id: req.body.params.id}, req.body.params).done(function(err,c){
   				if(err) res.send(err)
   				res.send(c);
   			});
   		}else{
-  			Permission.create(req.body).done(function(err,p){
+  			Permission.create(req.body.params).done(function(err,p){
   				if(err) res.send(err)
   				res.send(p);
   			})
@@ -31,22 +40,4 @@ update : function(req,res){
   	})
   },
 
-  
-update : function(req,res){
-		Permission.findOne(req.body.id).done(function(err,permission){
-			if (permission){
-					Permission.update({
-						id : req.body.id
-					},req.body).done(function(err,p){
-						if(err) res.send({err:err});
-						res.send(p);
-					})
-			}
-			else{
-				Permission.create(req.body).done(function(err, p){
-					res.send(p)
-				})
-			}
-		})
-	},
 };
