@@ -5,7 +5,6 @@ module.exports = function(req, res, next) {
 	'use strict';
 
 	_.each(req.body, function(p){
-		console.log("******", p)
 		xss(p)
 	})
 	// Sockets
