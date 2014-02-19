@@ -3,37 +3,47 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Left part -->
 <script type="text/template" id="user-profil-template">
-	{{ _.each(users_linked, function(permission) { }}
-		<a href="#" class="button round tiny removePermission" data-id-user="{{- permission.user.id }}">
-		    <div class="large-3 medium-3 small-3 columns" data-id-user="{{- permission.user.id }}">
-		    	<img data-id-user="{{- permission.user.id }}" class="roundedImage" src="{{- permission.user.img }}"/>
-		    </div>
-		    <div data-id-user="{{- permission.user.id }}" class="large-9 medium-9 small-9 columns">
-		    	<label data-id-user="{{- permission.user.id }}">
-		    		<h4 data-id-user="{{- permission.user.id }}">{{- permission.user.name }}</h4>
-		    	</label>
-		    	<select data-id-user="{{- permission.user.id }}" id="{{- permission.user.id }}_right">
-		          <option data-id-user="{{- permission.user.id }}" {{if(permission.right == "Read only"){ }}selected{{ } }} value="r">Read only</option>
-		          <option data-id-user="{{- permission.user.id }}" {{if(permission.right == "Read and Write"){ }}selected{{ } }} value="rw">Read an write</option>
-		        </select>
-		    </div>
-	 	</a>
-	{{ }); }}
+	<div class="large-6 medium-6 small-12 columns" style="border-right:1px gray dotted">
+		<h4>Users linked to the project</h4>
+		<hr>
+		{{ _.each(users_linked, function(permission) { }}
+			<a href="#" class="button round tiny">
+			    <div class="large-3 medium-3 small-3 columns">
+			    	<img class="roundedImage" src="{{- permission.user.img }}"/>
+			    </div>
+			    <div class="large-9 medium-9 small-9 columns">
+			    	<label>
+			    		<h4>{{- permission.user.name }}</h4>
+			    	</label>
+			    	<select class="changePermission" data-id-user="{{- permission.user.id }}" id="{{- permission.user.id }}_right">
+			          <option data-id-user="{{- permission.user.id }}" {{if((permission.right != "r")&&(permission.right != "rw")){ }}selected{{ } }} value="u">unlink</option>
+			          <option data-id-user="{{- permission.user.id }}" {{if(permission.right == "r"){ }}selected{{ } }} value="r">Read only</option>
+			          <option data-id-user="{{- permission.user.id }}" {{if(permission.right == "rw"){ }}selected{{ } }} value="rw">Read an write</option>
+			        </select>
+			    </div>
+		 	</a>
+		{{ }); }}
+	</div>
 
-	{{ _.each(users_notlinked, function(user) { }}
-		<a href="#" class="button secondary round tiny addPermission" data-id-user="{{- user.id }}">
-		    <div class="large-3 medium-3 small-3 columns" data-id-user="{{- user.id }}"><img class="roundedImage" src="{{- user.img }}" data-id-user="{{- user.id }}"/></div>
-		    <div class="large-9 medium-9 small-9 columns" data-id-user="{{- user.id }}">
-		    	<label data-id-user="{{- user.id }}">
-		    		<h4 data-id-user="{{- user.id }}">{{- user.name }}</h4>
-		    	</label>
-		    	<select id="{{- user.id }}_right" data-id-user="{{- user.id }}">
-		          <option value="r" data-id-user="{{- user.id }}">Read only</option>
-		          <option value="rw" data-id-user="{{- user.id }}">Read an write</option>
-		        </select>
-		    </div>
-	 	</a>
-	{{ }); }}
+	<div class="large-6 medium-6 small-12 columns">
+		<h4>Users not linked to the project</h4>
+		<hr>
+		{{ _.each(users_notlinked, function(user) { }}
+			<a href="#" class="button secondary round tiny">
+			    <div class="large-3 medium-3 small-3 columns"><img class="roundedImage" src="{{- user.img }}"/></div>
+			    <div class="large-9 medium-9 small-9 columns">
+			    	<label>
+			    		<h4>{{- user.name }}</h4>
+			    	</label>
+			    	<select class="addPermission" id="{{- user.id }}_right" data-id-user="{{- user.id }}">
+			          <option value="u" data-id-user="{{- user.id }}">none</option>
+			          <option value="r" data-id-user="{{- user.id }}">Read only</option>
+			          <option value="rw" data-id-user="{{- user.id }}">Read an write</option>
+			        </select>
+			    </div>
+		 	</a>
+		{{ }); }}
+	</div>
     
 </script>
 

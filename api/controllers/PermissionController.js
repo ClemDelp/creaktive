@@ -23,6 +23,16 @@ find : function (req,res){
 
   },
 
+destroy : function(req,res){
+    Permission.findOne(req.body.params.id).done(function(err,permission){
+      if(err) console.log(err);
+      permission.destroy(function(err){
+        if(err) console.log(err)
+          res.send({msg:"permission destroyed"})
+      })
+    });
+  },
+
 update : function(req,res){
   	Permission.findOne(req.body.params.id).done(function(err, permission){
   		if(err) res.send(err);
