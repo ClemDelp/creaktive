@@ -1,81 +1,74 @@
-tagK.Views.Poche = Backbone.View.extend({
-    tagName : "li",
-    initialize : function(json){
-        _.bindAll(this, 'render');
-        // Variables
-        this.poche = json.poche;
-        this.current_knowledge = json.current_knowledge;
+/***********************************************/
+// tagK.Views.Poche = Backbone.View.extend({
+    
+//     initialize : function(json){
+//         _.bindAll(this, 'render');
+//         this.poche = json.poche;
+//         this.current_knowledge = json.current_knowledge;
 
-        // Events
-        this.current_knowledge.bind("change", this.render);
+//         this.current_knowledge.bind("change", this.render);
 
-        this.template = _.template($('#poche-template').html()); 
-    },
-
-    render : function(){
-        $(this.el).html("")
-        console.log("RENDER");
-        var tagged = "selectTag";
-        if(_.indexOf(this.current_knowledge.get('tags'), this.poche.get('title')) != -1 ) tagged="unSelectTag alert"
-        var renderedContent = this.template({
-            tag : { title : this.poche.get('title'), tagged : tagged, id : this.poche.id}
-        })
-        $(this.el).append(renderedContent);
-        return this;
-    }
-});
+        
+//     },
+//     render : function(){
+//         $(this.el).html("")
+//         console.log("RENDER");
+//         var tagged = "selectTag";
+//         if(_.indexOf(this.current_knowledge.get('tags'), this.poche.get('title')) != -1 ) tagged="unSelectTag alert"
+//         var renderedContent = this.template({
+//             tag : { title : this.poche.get('title'), tagged : tagged, id : this.poche.id}
+//         })
+//         $(this.el).append(renderedContent);
+//         return this;
+//     }
+// });
+/***********************************************/
 tagK.Views.Poches = Backbone.View.extend({
-    tagName : "ul",
-    className : "small-block-grid-3 medium-block-grid-5 large-block-grid-8",
+    //tagName : "ul",
+    //className : "small-block-grid-3 medium-block-grid-5 large-block-grid-8",
     initialize : function(json){
         _.bindAll(this, 'render');
         // Variables
         this.poches = json.poches;
+        this.poches_render = this.poches;
         this.eventAggregator = json.eventAggregator;
         this.current_knowledge = json.current_knowledge;
-
-        this.poches_render = this.poches;
-
+        // Events
         this.eventAggregator.on("details_poche_search", this.poche_search, this);
-
+        // Templates
+        this.template = _.template($('#tagK-poches-template').html()); 
     },
-    events : {
-        "click .selectTag" : "onTagSelected",
-        "click .unSelectTag" : "onTagDeSelected"
-    },
-
     poche_search : function(matched){
         this.poches_render = matched;
         this.render();
-    },
-
-    onTagSelected : function(e){
-        poche_id = e.target.getAttribute("data-id-poche");
-        poche = this.poches.get(poche_id);
-        this.current_knowledge.get('tags').unshift(poche.get('title'));
-        this.current_knowledge.trigger("change");
-        this.current_knowledge.save();
-        this.eventAggregator.trigger("Ktagged",e)
-    },
-    onTagDeSelected : function(e){
-        poche_id = e.target.getAttribute("data-id-poche");
-        poche = this.poches.get(poche_id);
-        tags = _.without(this.current_knowledge.get('tags'), poche.get('title'));
-        this.current_knowledge.set({tags : tags});
-        this.current_knowledge.save();
-        this.eventAggregator.trigger("Ktagged",e)
-
-    },
+    },  
     render : function(){
-        _this = this;
-        $(_this.el).html("");
+        $(this.el).html("");
+        // Init
+        current_knowledge = this.current_knowledge;
+        // Made linked and unlinked poches collection
+        poches_linked = new Backbone.Collection();
+        poches_notLinked = new Backbone.Collection();
         this.poches_render.each(function(poche){
-            poche_ = new tagK.Views.Poche({
-                poche : poche,
-                current_knowledge : _this.current_knowledge
-            });
-            $(_this.el).append(poche_.render().el)
-        })
+            if(_.indexOf(current_knowledge.get('tags'), poche.get('title')) != -1 ){
+                poches_linked.add(poche);
+            }else{
+                poches_notLinked.add(poche);
+            }
+        });
+        // Poches 
+        $(this.el).append(this.template({
+            poches_linked : poches_linked.toJSON(), 
+            poches_notLinked : poches_notLinked.toJSON()
+        }));
+
+        // this.poches_render.each(function(poche){
+        //     poche_ = new tagK.Views.Poche({
+        //         poche : poche,
+        //         current_knowledge : _this.current_knowledge
+        //     });
+        //     $(_this.el).append(poche_.render().el)
+        // })
 
         return this;
     }
@@ -103,7 +96,28 @@ tagK.Views.Main = Backbone.View.extend({
     },
 
     events : {
-        "keyup .searchDetails" : "search"
+        "keyup .searchDetails" : "search",
+        "click .linkCategory" : "linkCategory",
+        "click .unlinkCategory" : "unlinkCategory"
+    },
+    linkCategory : function(e){
+        poche_id = e.target.getAttribute("data-id-poche");
+        poche = this.poches.get(poche_id);
+        this.current_knowledge.get('tags').unshift(poche.get('title'));
+        this.current_knowledge.trigger("change");
+        this.current_knowledge.save();
+        this.eventAggregator.trigger("Ktagged",e);
+        this.render();
+    },
+    unlinkCategory : function(e){
+        poche_id = e.target.getAttribute("data-id-poche");
+        poche = this.poches.get(poche_id);
+        tags = _.without(this.current_knowledge.get('tags'), poche.get('title'));
+        this.current_knowledge.set({tags : tags});
+        this.current_knowledge.save();
+        this.eventAggregator.trigger("Ktagged",e);
+        this.render();
+
     },
 
     search: function(e){
@@ -117,8 +131,6 @@ tagK.Views.Main = Backbone.View.extend({
         });
         this.eventAggregator.trigger('details_poche_search',matched);
     },
-
-
     render : function() {
         $(this.el).html("");
         // Current Knowledge view
