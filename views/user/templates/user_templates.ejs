@@ -8,10 +8,10 @@
 		<hr>
 		{{ _.each(users_linked, function(permission) { }}
 			<a href="#" class="button round tiny">
-			    <div class="large-3 medium-3 small-3 columns">
+			    <div class="large-2 medium-2 small-2 columns">
 			    	<img class="roundedImage" src="{{- permission.user.img }}"/>
 			    </div>
-			    <div class="large-9 medium-9 small-9 columns">
+			    <div class="large-10 medium-10 small-10 columns">
 			    	<label>
 			    		<h4>{{- permission.user.name }}</h4>
 			    	</label>
@@ -30,8 +30,8 @@
 		<hr>
 		{{ _.each(users_notlinked, function(user) { }}
 			<a href="#" class="button secondary round tiny">
-			    <div class="large-3 medium-3 small-3 columns"><img class="roundedImage" src="{{- user.img }}"/></div>
-			    <div class="large-9 medium-9 small-9 columns">
+			    <div class="large-2 medium-2 small-2 columns"><img class="roundedImage" src="{{- user.img }}"/></div>
+			    <div class="large-10 medium-10 small-10 columns">
 			    	<label>
 			    		<h4>{{- user.name }}</h4>
 			    	</label>
