@@ -79,8 +79,15 @@ user.Views.Main = Backbone.View.extend({
             user_id : user_id_,
             project_id : this.project.id
         });
-        new_persmission.save();
-        this.permissions.add(new_persmission);
+        // Intediction pour barth sauf les projets nomé poney
+        user_ = this.users.get(user_id_);
+        if((user_.get('name') == 'barth')&&(this.project.title != "poney")){
+            alert("c'est mort doudou!");
+        }else{
+            new_persmission.save();
+            this.permissions.add(new_persmission);
+        }
+        
     },
     changePermission : function(e){
         event.preventDefault();
