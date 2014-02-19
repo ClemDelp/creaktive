@@ -92,7 +92,18 @@ module.exports = {
     }).done(function(err, user){
       if(err) res.send(err)
 
-      var url = req.baseUrl + "/register?id=" + user.id;
+
+        var url = "";
+      if(req.baseUrl == "http://localhost:1337"){
+        url = req.baseUrl + "/register?id=" + user.id;
+      } 
+      else{
+            var u = req.baseUrl
+            u = u.slice(0, u.lastIndexOf(":"))
+            url = u + "/register?id=" + user.id;
+      }
+
+       
       sails.config.email.sendRegistrationMail(user.email, url,function(err, msg){
         if(err) console.log(err)
         console.log(msg)
