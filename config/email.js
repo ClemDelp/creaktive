@@ -3,9 +3,6 @@ var nodemailer = require("nodemailer");
 
 module.exports.email = {
 	
-	smtpTransport : nodemailer.createTransport("PICKUP",{
-	    directory : "email/"
-	}),
 
 	smtpGmail : nodemailer.createTransport("SMTP", {
 	    service: "Gmail",
