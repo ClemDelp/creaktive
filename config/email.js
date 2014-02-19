@@ -7,16 +7,27 @@ module.exports.email = {
 	    directory : "email/"
 	}),
 
+	smtpGmail : nodemailer.createTransport("SMTP", {
+	    service: "Gmail",
+	    auth: {
+	        user: "creaktive.contact@gmail.com",
+	        pass: "creaktive30"
+	    }
+	}),
 
-	sendRegistrationMail : function(to, text, cb){
+
+	sendRegistrationMail : function(to, url, cb){
+		var html = "<h1>SALUT CONNARD</h1></br>ça te dirais te te connecter à mon projet ? </br>" + url
+
 		mailOptions = {
 		    from: "CreaKtive ✔ contact@creaktive.fr", // sender address
 		    to: to, // list of receivers
 		    subject: "Invititation on CreaKtive", // Subject line
-		    text: text, // plaintext body
+		    generateTextFromHTML: true,
+		    html: html, // plaintext body
 		},
 
-		this.smtpTransport.sendMail(mailOptions, function(error, response){
+		this.smtpGmail.sendMail(mailOptions, function(error, response){
 		    if(error){
 		        cb(error)
 		    }else{

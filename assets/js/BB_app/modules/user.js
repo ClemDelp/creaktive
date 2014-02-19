@@ -22,21 +22,28 @@ user.Views.Members = Backbone.View.extend({
     render:function(){
         $(this.el).html('');
         //init
-        users = this.users;
+        users = this.users_render;
+        permissions = new Backbone.Collection();
+
+        this.permissions.each(function(permission){
+            if(users.where({id : permission.get('user_id')}).length > 0){
+                permissions.add(permission)
+            }
+        });
 
         users_linked = new Backbone.Collection();
         users_notlinked = new Backbone.Collection();
-        this.permissions.each(function(permission){
+        permissions.each(function(permission){
             users_linked.add(users.get(permission.get('user_id')));
         });
         this.users_render.each(function(user){
             if(users_linked.get(user.get('id')) == undefined){users_notlinked.add(user)}
         });
         // on remplace user id par le model user ds les permissions
-        this.permissions.each(function(permission){permission.set({user:users.get(permission.get("user_id"))})})
+        permissions.each(function(permission){permission.set({user:users.get(permission.get("user_id"))})})
         // For each user
         $(this.el).append(this.template_profil({
-            users_linked:this.permissions.toJSON(),
+            users_linked:permissions.toJSON(),
             users_notlinked:users_notlinked.toJSON()
         }));
         return this;
@@ -77,9 +84,8 @@ user.Views.Main = Backbone.View.extend({
         $.post("/user/inviteUser", {email :  $('#searchUser').val()}, function(data){
             console.log(data)
             _this.users.add(data.user);
-            _this.users.add(data.permission);
+            _this.permissions.add(data.permission);
             $('#searchUser').val("");
-            _this.render();
         });
 
     },
@@ -87,20 +93,15 @@ user.Views.Main = Backbone.View.extend({
         event.preventDefault();
         user_id_ = e.target.getAttribute('data-id-user');
         right_ = $("#"+e.target.getAttribute('data-id-user')+"_right").val();
-        new_persmission = new global.Models.PermissionModel({
+        this.permissions.create({
             id : guid(),
             right : right_,
             user_id : user_id_,
             project_id : this.project.id
         });
         // Intediction pour barth sauf les projets nomé poney
-        user_ = this.users.get(user_id_);
-        if((user_.get('name') == 'barth')&&(this.project.title != "poney")){
-            alert("c'est mort doudou!");
-        }else{
-            new_persmission.save();
-            this.permissions.add(new_persmission);
-        }
+
+
         
     },
     changePermission : function(e){
@@ -128,7 +129,8 @@ user.Views.Main = Backbone.View.extend({
         var research_size = research.length;
         var matched = new Backbone.Collection();
         this.users.each(function(c){
-            if(research.toLowerCase() == c.get('name').substr(0,research_size).toLowerCase()){
+            if(research.toLowerCase() == c.get('name').substr(0,research_size).toLowerCase() ||
+                research.toLowerCase() == c.get('email').substr(0,research_size).toLowerCase()){
                 matched.add(c);
             }
         });
