@@ -9,8 +9,38 @@ var xss = require('node-xss').clean;
  
 var AuthController = {
 
+
 	register : function(req,res){
-		res.view();
+	    if(req.query.id){
+	    	User.findOne(req.query.id).done(function(err, user){
+	    		req.session.pendingUser = user;
+	    		res.view({user : user});
+	    	})
+	    	
+	    }else {
+	    	res.send("You are not auhtorized to perform this action")
+	    }
+	},
+
+	processRegistration : function(req,res){
+		console.log(req.body);
+		if(req.body.password !== req.body.confirmPassword) res.send("passwords must match")
+		User.findOne(req.session.pendingUser.id).done(function(err, user){
+			delete user.pw;
+			user.pw = req.body.password;
+			user.email = req.body.email;
+			user.name = req.body.username;
+			user.confirmed = true;
+			user.save(function(err, user){
+				if(err) console.log(err)
+				delete req.session.pendingUser;
+				res.redirect("/login");
+			});
+
+		})
+
+
+		
 	},
  
 	login: function(req, res) {

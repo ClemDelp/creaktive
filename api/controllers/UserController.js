@@ -5,6 +5,13 @@
  * @description	:: Contains logic for handling requests.
  */
 
+var bcrypt = require('bcrypt');
+
+function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
+function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
+function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
+
+
 module.exports = {
 
   /* e.g.
@@ -72,6 +79,40 @@ module.exports = {
       })
     });
   },
+
+  inviteUser : function(req,res){
+    console.log(req.body)
+    User.create({
+      img : "/img/default-user-icon-profile.png",
+      name : req.body.email.substring(0,req.body.email.indexOf("@")),
+      email : req.body.email,
+      pw : "JKHk!lm3682jhqmfljzdofij654654dfsdf6522dfs#mkldqj$",
+      confirmed : false,
+      id : guid()
+    }).done(function(err, user){
+      if(err) res.send(err)
+
+      var url = req.baseUrl + "/register?id=" + user.id;
+      sails.config.email.sendRegistrationMail(user.email, url,function(err, msg){
+        if(err) console.log(err)
+        console.log(msg)
+      });
+
+
+      Permission.create({
+        id: guid(),
+        right : "r",
+        user_id : user.id,
+        project_id : req.session.currentProject.id
+      }).done(function(err, permission){
+        if(err) res.send(err)
+        res.send({user : user, permission : permission})
+      })
+    })
+
+
+  },
+
 
   userview : function(req,res){
     req.session.user = req.session.user || {id:"999999999", name : "guest", img:"img/default-user-icon-profile.png"}

@@ -20,7 +20,6 @@
 
   '*': "authenticated",
   "AppController" : {
-  	"appview" : ["authenticated","authorized", "forceHTTPs"],
   	"managerview" : ["authenticated", "forceHTTPs"]
   },
 
@@ -41,6 +40,8 @@
   	'login' : "forceHTTPs",
   	'logout' : true,
   	'process' : true,
+  	'register' : "forceHTTPs",
+  	'processRegistration' : true,
   	"openChannels" : ["authenticated","allowedProject"]
   },
 

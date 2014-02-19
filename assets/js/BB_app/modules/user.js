@@ -8,7 +8,7 @@ user.Views.Members = Backbone.View.extend({
         this.project = json.project;
         this.permissions = json.permissions;
         this.users   = json.users;
-        this.users_render = this.users;
+        this.users_render = json.users;
         this.eventAggregator    = json.eventAggregator;
         // Events
         this.eventAggregator.on('members_search', this.membersSearch, this);
@@ -22,21 +22,34 @@ user.Views.Members = Backbone.View.extend({
     render:function(){
         $(this.el).html('');
         //init
-        users = this.users;
+        users = this.users_render;
+        permissions = new Backbone.Collection();
+
+        this.permissions.each(function(permission){
+            if(users.where({id : permission.get('user_id') }).length > 0 ){
+                permissions.add(permission)
+            }
+        })
+
 
         users_linked = new Backbone.Collection();
         users_notlinked = new Backbone.Collection();
-        this.permissions.each(function(permission){
+        
+        permissions.each(function(permission){
             users_linked.add(users.get(permission.get('user_id')));
         });
-        this.users_render.each(function(user){
+
+
+        users.each(function(user){
             if(users_linked.get(user.get('id')) == undefined){users_notlinked.add(user)}
         });
         // on remplace user id par le model user ds les permissions
-        this.permissions.each(function(permission){permission.set({user:users.get(permission.get("user_id"))})})
+        permissions.each(function(permission){
+            permission.set({user:users.get(permission.get("user_id"))})
+        })
         // For each user
         $(this.el).append(this.template_profil({
-            users_linked:this.permissions.toJSON(),
+            users_linked:permissions.toJSON(),
             users_notlinked:users_notlinked.toJSON()
         }));
         return this;
@@ -67,20 +80,33 @@ user.Views.Main = Backbone.View.extend({
     events : {
         "keyup .search" : "search",
         "click .addPermission" : "addPermission",
-        "click .removePermission" : "removePermission"
+        "click .removePermission" : "removePermission",
+        "click .inviteUser" : "inviteUser"
+    },
+
+    inviteUser : function(e){
+        event.preventDefault();
+        _this = this;
+        $.post("/user/inviteUser", {email :  $('#searchUser').val()}, function(data){
+            console.log(data)
+            _this.users.add(data.user);
+            _this.users.add(data.permission);
+            $('#searchUser').val("");
+            _this.render();
+        });
     },
     addPermission : function(e){
         event.preventDefault();
         user_id_ = e.target.getAttribute('data-id-user');
         right_ = $("#"+e.target.getAttribute('data-id-user')+"_right").val();
-        new_persmission = new global.Models.PermissionModel({
+        new_permission = new global.Models.PermissionModel({
             id : guid(),
             right : right_,
             user_id : user_id_,
             project_id : this.project.id
         });
-        new_persmission.save();
-        this.permissions.add(new_persmission);
+        new_permission.save();
+        this.permissions.add(new_permission);
     },
     removePermission : function(e){
         event.preventDefault();
@@ -92,7 +118,7 @@ user.Views.Main = Backbone.View.extend({
         var research_size = research.length;
         var matched = new Backbone.Collection();
         this.users.each(function(c){
-            if(research.toLowerCase() == c.get('name').substr(0,research_size).toLowerCase()){
+            if(research.toLowerCase() == c.get('name').substr(0,research_size).toLowerCase() || research.toLowerCase() == c.get('email').substr(0,research_size).toLowerCase()){
                 matched.add(c);
             }
         });

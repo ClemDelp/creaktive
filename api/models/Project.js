@@ -21,6 +21,20 @@ autoPK : false,
     
   },
 
+  beforeDestroy : function (values, cb){
+    Permission.find({
+      project_id : values.id
+    }).done(function(err, perms){
+      _.each(perms, function(p){
+        p.destroy(function(err){
+          if(err) console.log(err)
+        })
+      })
+    })
+
+    cb();
+  },
+
   beforeCreate : function (values, cb){
 
     Concept.create({
