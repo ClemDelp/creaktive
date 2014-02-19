@@ -12,7 +12,25 @@ module.exports = {
     res.send('hello world!');
   }
   */
+find : function (req,res){
+    Permission.find({
 
+    }).done(function(err,permissions){
+      if(err) res.send(err)
+      res.send(permissions)
+    });
+
+  },
+
+destroy : function(req,res){
+    Permission.findOne(req.body.params.id).done(function(err,permission){
+      if(err) console.log(err);
+      permission.destroy(function(err){
+        if(err) console.log(err)
+          res.send({msg:"permission destroyed"})
+      })
+    });
+  },
 
 update : function(req,res){
   	Permission.findOne(req.body.id).done(function(err, permission){
