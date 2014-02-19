@@ -83,10 +83,11 @@ var manager = {
   init: function () {
     /*Init*/
     this.views.Main = new this.Views.Main({
-      users : global.collections.Users,
-      groups : global.collections.Groups,
+      //users : global.collections.Users,
+      //groups : global.collections.Groups,
       projects : global.collections.Projects,
-      currentUser : global.models.current_user
+      currentUser : global.models.current_user,
+      eventAggregator : global.eventAggregator
     }); 
 
     this.views.Main.render();
