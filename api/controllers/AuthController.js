@@ -31,6 +31,7 @@ var AuthController = {
 			user.email = req.body.email;
 			user.name = req.body.username;
 			user.confirmed = true;
+			user.img = req.body.image;
 			user.save(function(err, user){
 				if(err) console.log(err)
 				delete req.session.pendingUser;
