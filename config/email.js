@@ -5,7 +5,9 @@ module.exports.email = {
 	
 
 	smtpGmail : nodemailer.createTransport("SMTP", {
-	    service: "Gmail",
+        host: "smtp.gmail.com", // hostname
+	    secureConnection: true, // use SSL
+	    port: 465, // port for secure SMTP
 	    auth: {
 	        user: "creaktive.contact@gmail.com",
 	        pass: "creaktive30"
