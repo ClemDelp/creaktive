@@ -82,7 +82,6 @@ user.Views.Main = Backbone.View.extend({
         event.preventDefault();
         _this = this;
         $.post("/user/inviteUser", {email :  $('#searchUser').val()}, function(data){
-            console.log(data)
             _this.users.add(data.user);
             _this.permissions.add(data.permission);
             $('#searchUser').val("");
@@ -140,7 +139,6 @@ user.Views.Main = Backbone.View.extend({
         $(this.el).html("");
         // Init
         project = this.project;
-        console.log(this.permissions)
         permissions_filtred = this.permissions.filter(function(permission){ 
             return permission.get('project_id') == project.id; 
         });
