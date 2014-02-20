@@ -64,15 +64,6 @@ module.exports = {
   destroy : function(req,res){
     User.findOne(req.body.params.id).done(function(err,user){
       if(err) console.log(err);
-      UserGroup.find({
-        user_id : user.id
-      }).done(function (err, usergroups){
-        _.each(usergroups, function(ug){
-          ug.destroy(function(err){
-            if(err) console.log(err);
-          });
-        })
-      })
       user.destroy(function(err){
         if(err) console.log(err)
           res.send({msg:"destroyed"})
@@ -122,6 +113,42 @@ module.exports = {
     })
 
 
+  },
+
+  changepassword : function(req,res){
+    user = req.session.user;
+
+    bcrypt.compare(req.body.oldpassword, user.pw, function (err, res) {
+      if (!res) res.send("Invalid password")
+      if(req.body.password == req.body.confirmPassword){
+        user.pw = req.body.password
+        user.save(function(err, user){
+          res.send({msg:"Password changed"})
+        })
+        
+      }else{
+        res.send("Password must match")
+      }
+    });
+
+  },
+
+  editprofile : function(req,res){
+    User.findOne(req.session.user.id).done(function(err, user){
+      user.email = req.body.email;
+      user.name = req.body.username;
+      user.img = req.body.image;
+      user.save(function(err, user){
+        req.session.user = user;
+        res.redirect("/editprofile")     
+      })
+    })
+
+
+  },
+
+  editprofileview : function(req,res){
+    res.view({user : req.session.user});
   },
 
 
