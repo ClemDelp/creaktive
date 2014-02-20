@@ -19,23 +19,17 @@ module.exports = {
   */
 
   find : function(req,res){
-    Project.find().done(function (err,projects){   
-      Permission.find().done(function (err, permissions){
-        User.find().done(function (err, users){        
-          _.each(projects, function(project){
-            project.permissions = [];
-            perms = _.where(permissions, {project_id : project.id});
-            _.each(perms, function (p){
-              p.user = _.findWhere(users,{id:p.user_id});
-              delete p.user_id;
-              delete p.project_id;
-              project.permissions.push(p)
-            });           
-          });
-          res.send(projects);
-        })
+    Permission.find({
+      user_id : req.session.user.id
+    }).done(function (err, permissions){
+      var authorized_projects = _.pluck(permissions, 'project_id');
+      Project.find({
+        id : authorized_projects
+      }).done(function(err, projects){
+        res.send(projects);
       })
     })
+
   },
 
   create : function (req,res){
