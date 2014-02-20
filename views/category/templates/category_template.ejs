@@ -41,12 +41,16 @@
     <div class="tabs-content">
       <div class="content active" id="panel2-1">
         {{ _.each(poches, function(poche) { }}
-            <a href="#" class="button success round moveTo" data-knowledge-id="{{- knowledge.id }}" data-catg-title="{{-poche.title}}">{{-poche.title}}</a>
+            {{ if(poche.title != category_origin){ }}
+                <a href="#" class="button success round moveTo" data-catg-orign="{{- category_origin }}" data-knowledge-id="{{- knowledge.id }}" data-catg-title="{{-poche.title}}">{{-poche.title}}</a>
+            {{ } }}
         {{ }); }}   
       </div>
       <div class="content" id="panel2-2">
         {{ _.each(poches, function(poche) { }}
-            <a href="#" class="button alert round moveTo" data-knowledge-id="{{- knowledge.id }}" data-catg-title="{{-poche.title}}">{{-poche.title}}</a>
+            {{ if(poche.title != category_origin){ }}
+                <a href="#" class="button alert round copyTo" data-knowledge-id="{{- knowledge.id }}" data-catg-title="{{-poche.title}}">{{-poche.title}}</a>
+            {{ } }}
         {{ }); }}
       </div>
     </div>
@@ -96,7 +100,7 @@
             </li>
             <li class="bullet-item">
                 {{ _.each(knowledges, function(knowledge) { }}
-                    <a href="#" class="button openModal tiny radius round expand" data-knowledge-id="{{-knowledge.id}}" style="background:{{-knowledge.color}}">{{- knowledge.title }}</a>
+                    <a href="#" class="button openModal tiny radius round expand" data-knowledge-id="{{-knowledge.id}}" data-catg-origin="{{- category.title}}"  style="background:{{-knowledge.color}}">{{- knowledge.title }}</a>
                 {{ }); }}   
             </li>
         </ul>
