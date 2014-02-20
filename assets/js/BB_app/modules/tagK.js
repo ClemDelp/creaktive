@@ -1,31 +1,5 @@
 /***********************************************/
-// tagK.Views.Poche = Backbone.View.extend({
-    
-//     initialize : function(json){
-//         _.bindAll(this, 'render');
-//         this.poche = json.poche;
-//         this.current_knowledge = json.current_knowledge;
-
-//         this.current_knowledge.bind("change", this.render);
-
-        
-//     },
-//     render : function(){
-//         $(this.el).html("")
-//         console.log("RENDER");
-//         var tagged = "selectTag";
-//         if(_.indexOf(this.current_knowledge.get('tags'), this.poche.get('title')) != -1 ) tagged="unSelectTag alert"
-//         var renderedContent = this.template({
-//             tag : { title : this.poche.get('title'), tagged : tagged, id : this.poche.id}
-//         })
-//         $(this.el).append(renderedContent);
-//         return this;
-//     }
-// });
-/***********************************************/
 tagK.Views.Poches = Backbone.View.extend({
-    //tagName : "ul",
-    //className : "small-block-grid-3 medium-block-grid-5 large-block-grid-8",
     initialize : function(json){
         _.bindAll(this, 'render');
         // Variables
@@ -62,18 +36,9 @@ tagK.Views.Poches = Backbone.View.extend({
             poches_notLinked : poches_notLinked.toJSON()
         }));
 
-        // this.poches_render.each(function(poche){
-        //     poche_ = new tagK.Views.Poche({
-        //         poche : poche,
-        //         current_knowledge : _this.current_knowledge
-        //     });
-        //     $(_this.el).append(poche_.render().el)
-        // })
-
         return this;
     }
 });
-
 /***********************************************/
 tagK.Views.Main = Backbone.View.extend({
     tagName : "div",
@@ -119,7 +84,6 @@ tagK.Views.Main = Backbone.View.extend({
         this.render();
 
     },
-
     search: function(e){
         var research = e.target.value;
         var research_size = research.length;
