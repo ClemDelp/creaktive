@@ -98,10 +98,18 @@ var AuthController = {
 				sails.io.sockets.emit("connectedUsers", _.compact(_.uniq(connectedUsers)));
 			});	
 		});
+
+		Permission.find({
+			id_user : req.session.user.id
+		}).done(function (err, permissions){
+			var allowedProject = _.pluck(permissions, "id_project");
+			_.each(req.session.allowedProject, function(project){
+				req.socket.join(project)
+			})	
+
+		});
 		
-		_.each(req.session.allowedProject, function(project){
-			req.socket.join(project)
-		})		
+	
 		
 		//res.send({msg:"Channels opened", channels : req.session.allowedProject});
 	

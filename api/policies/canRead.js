@@ -5,13 +5,13 @@ module.exports = function(req, res, next) {
 
 	Permission.find({
 		user_id : req.session.user.id,
-		project_id : req.query.projectId
+		project_id : req.session.currentProject.id
 	}).done( function (err, perm){
-		console.log(req.session.user.id)
-		console.log(req.query.projectId)
 		if(err) next(err);
-		if(perm.length !== 0) next();
-		else res.redirect("/")
+		if(perm.length !== 0){
+			next();
+		} 
+		else res.json({err : "You are not permitted to perform this action" });
 	})
 
 	

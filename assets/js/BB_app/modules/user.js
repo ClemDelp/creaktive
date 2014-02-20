@@ -78,7 +78,7 @@ user.Views.Main = Backbone.View.extend({
     },
 
     inviteUser : function(e){
-        event.preventDefault();
+        e.preventDefault();
         _this = this;
         $.post("/user/inviteUser", {email :  $('#searchUser').val()}, function(data){
             _this.users.add(data.user);
@@ -88,7 +88,7 @@ user.Views.Main = Backbone.View.extend({
 
     },
     addPermission : function(e){
-        event.preventDefault();
+        e.preventDefault();
         user_id_ = e.target.getAttribute('data-id-user');
         right_ = $("#"+e.target.getAttribute('data-id-user')+"_right").val();
         this.permissions.create({
@@ -103,7 +103,7 @@ user.Views.Main = Backbone.View.extend({
         
     },
     changePermission : function(e){
-        event.preventDefault();
+        e.preventDefault();
         user_id = e.target.getAttribute('data-id-user');
         project_id = this.project.id;
         right_ = $("#"+e.target.getAttribute('data-id-user')+"_right").val();
@@ -122,7 +122,7 @@ user.Views.Main = Backbone.View.extend({
         
     },
     search: function(e){
-        event.preventDefault();
+        e.preventDefault();
         var research = e.target.value;
         var research_size = research.length;
         var matched = new Backbone.Collection();

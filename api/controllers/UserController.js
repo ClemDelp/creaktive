@@ -20,14 +20,6 @@ module.exports = {
   }
   */
 
-  register : function (req,res){
-    console.log(req.body)
-
-    User.create(req.body.params).done(function(err, user){
-      if(err) console.log(err);
-      res.send(user);
-    })
-  },
 
   find : function (req,res){
     User.find({

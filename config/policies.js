@@ -18,33 +18,63 @@
   // (`true` allows public access) 
   
 
-  '*': "authenticated",
-  "AppController" : {
-  	"managerview" : ["authenticated", "forceHTTPs"]
-  },
+  '*': false,
 
-  "ProjectController" : {
-  	"createPermission" : ["authenticated","canAuthorizeProject"]
-  },
-  
-  "ManagerController" : {
-  	"managerview" : ["authenticated", "forceHTTPs"] 
-  },
-  "ConceptController" : {
-  	"conceptview" : ["authenticated","authorized", "forceHTTPs"] 
-  },
-  "KnowledgeController" : {
-  	"knowledgeview" : ["authenticated","authorized", "forceHTTPs"]
-  },
   'AuthController': {
   	'login' : "forceHTTPs",
   	'logout' : true,
   	'process' : true,
   	'register' : "forceHTTPs",
   	'processRegistration' : true,
-  	"openChannels" : ["authenticated","allowedProject"]
+  	"openChannels" : ["authenticated"]
   },
 
+  "ProjectController" : {
+  	"*" : "authenticated",
+  	"destroy" : ["authenticated", "canManageProject" ],
+  
+  }, 
+  "ManagerController" : {
+  	"managerview" : ["authenticated", "forceHTTPs"],
+  	"editprofileview" : ["authenticated", "forceHTTPs"]
+  },
+  "UserController" : {
+  	"userview" : ["authenticated", "forceHTTPs"],
+  	  	"find" : ["authenticated", "canRead"],
+  },
+  "PermissionController" : {
+  	"find" : ["authenticated", "canRead"],
+  	"*" : ["authenticated", "canWrite"]
+  },
+
+  "NotificationController" : {
+  	"find" : ["authenticated", "canRead"],
+  },
+
+  "ConceptController" : {
+  	"conceptview" : ["authenticated", "forceHTTPs"],
+  	"generateTree" : "authenticated",
+  	"find" : ["authenticated", "canRead"],
+  	"*" : ["authenticated", "canWrite"] 
+  },
+  "KnowledgeController" : {
+  	"knowledgeview" : ["authenticated", "forceHTTPs"],
+  	"find" : ["authenticated", "canRead"],
+  	"*" : ["authenticated", "canWrite"]
+  },
+  "CategoryController" : {
+  	"categoryview" : ["authenticated", "forceHTTPs"],
+  	"find" : ["authenticated", "canRead"],
+  	"*" : ["authenticated", "canWrite"]
+  },
+  "LinkController" : {
+  	"find" : ["authenticated", "canRead"],
+  	"*" : ["authenticated", "canWrite"]
+  },
+  "PocheController" : {
+  	"find" : ["authenticated", "canRead"],
+  	"*" : ["authenticated", "canWrite"]
+  },
 
 
   /*

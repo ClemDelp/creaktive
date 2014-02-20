@@ -81,7 +81,7 @@
 
 
   find : function (req,res){
-
+    
     Concept.find({
       project : req.session.currentProject.id
     }).done(function(err,concepts){
