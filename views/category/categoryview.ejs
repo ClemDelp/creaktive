@@ -29,74 +29,28 @@
 <!-- ******************************** -->
 
 <!-- Templates to load -->
-
-<nav class="top-bar" data-topbar>
-  <ul class="title-area">
-    <li class="name">
-      <h1><a href="/">CreaKtive</a></h1>
-    </li>
-    <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
-  </ul>
-
-  <section class="top-bar-section">        
-    <!-- Left Nav Section -->
-    <ul class="left">
-      <li><a href="concepts?projectId=<%- projectId %>">Concepts</a></li>
-      <li><a href="knowledges?projectId=<%- projectId %>">Explorer</a></li>
-      <li class="active"><a href="categories?projectId=<%- projectId %>">Organizer</a></li>
-      <li><a href="user?projectId=<%- projectId %>">Members</a></li>
-    </ul>
-    <ul class="right">
-      <li class="divider"></li>
-      <li class="has-form">
-        <a href="http://creaktive.fr/contact/" class="button">FeedBack</a>
-      </li>
-      <li class="divider"></li>
-      <li class="has-form">
-        <a href="http://creaktive.fr/documentation/" class="button">Documentation</a>
-      </li>
-      <li class="divider"></li>
-      <li><a class="active" href="/logout">Logout</a></li>
-    </ul>
-  </section>
-</nav>
-  <%- partial('../app/templates/title_templates') %>
-
-
-      <div class="interface">
-        <br />
-          <div id="category_container"></div>
-         <%- partial('templates/category_template') %>
-      </div>
-
-
-      <%- partial('../app/templates/details_templates') %>
-
-
-
-
-<!-- Javascript libs -->
-
-
+<%- partial('../app/templates/topbar_templates') %>
+<%- partial('../app/templates/title_templates') %>
+<div class="interface">
+  <br />
+    <div id="category_container"></div>
+   <%- partial('templates/category_template') %>
+</div>
+<%- partial('../app/templates/details_templates') %>
 <!-- Modules situés dans assets/js/BB_app -->
+<script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/details.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/title.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/category.js"></script>
-
 
 <script>
 
   $(document).on('open', '[data-reveal]', function () {
     var modal = $(this);
     if(modal.attr('id')==="detailsModal"){
-
         CKEDITOR.replaceAll('ckeditor');
-
-
     };
   });
-
- 
 
   ///////////////////////////////////////////////////
   $(document).ready(function () {
@@ -109,6 +63,7 @@
     rt(io, function(){
       global.init('<%- currentUser %>', '<%- currentProject %>', function(){
         /*Modules*/
+        topbar.init("organizer");
         details.init();
         title.init(<%- currentProject %>.title);
         category.init();

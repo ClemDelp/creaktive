@@ -69,7 +69,7 @@ user.Views.Main = Backbone.View.extend({
         "click .changePermission" : "changePermission"
     },
     addPermission : function(e){
-        event.preventDefault();
+        e.preventDefault();
         user_id_ = e.target.getAttribute('data-id-user');
         right_ = $("#"+e.target.getAttribute('data-id-user')+"_right").val();
         new_persmission = new global.Models.PermissionModel({
@@ -89,7 +89,7 @@ user.Views.Main = Backbone.View.extend({
         
     },
     changePermission : function(e){
-        event.preventDefault();
+        e.preventDefault();
         user_id = e.target.getAttribute('data-id-user');
         project_id = this.project.id;
         right_ = $("#"+e.target.getAttribute('data-id-user')+"_right").val();
@@ -108,7 +108,7 @@ user.Views.Main = Backbone.View.extend({
         
     },
     search: function(e){
-        event.preventDefault();
+        e.preventDefault();
         var research = e.target.value;
         var research_size = research.length;
         var matched = new Backbone.Collection();

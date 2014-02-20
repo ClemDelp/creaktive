@@ -109,6 +109,27 @@ var category = {
   }
 };
 /////////////////////////////////////////////////
+var topbar = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function (page) {
+    /*Init*/
+    this.views.Main = new this.Views.Main({
+      projects        : global.collections.Projects,
+      project         : global.models.currentProject,
+      page            : page,
+      user            : global.models.current_user,
+      eventAggregator : global.eventAggregator
+    });  
+  }
+};
+/////////////////////////////////////////////////
 var title = {
   // Classes
   Collections: {},
