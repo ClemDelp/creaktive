@@ -65,7 +65,7 @@ explorer.Views.KnowledgesList = Backbone.View.extend({
 /***************************************/
 explorer.Views.MiddlePart = Backbone.View.extend({
     tagName: "div",
-    className: "small-12 medium-6 large-8 columns",
+    className: "small-12 medium-10 large-10 columns",
     initialize : function(json) {
         //console.log("Right part of explorer view initialise");
         _.bindAll(this, 'render');
@@ -77,7 +77,7 @@ explorer.Views.MiddlePart = Backbone.View.extend({
         this.eventAggregator = json.eventAggregator;
         this.style=json.style;
         // Template
-        this.template_context = _.template($('#explorer-publish-module-template').html());
+        this.template_context = _.template($('#explorer-context-template').html());
 
     },
     events : {
@@ -116,7 +116,7 @@ explorer.Views.MiddlePart = Backbone.View.extend({
     }
 });
 /////////////////////////////////////////
-// Right part
+// Experts content part
 /////////////////////////////////////////
 explorer.Views.ExpertsList = Backbone.View.extend({
     initialize : function(json) {
@@ -168,15 +168,17 @@ explorer.Views.ExpertsList = Backbone.View.extend({
 });
 /***************************************/
 explorer.Views.ExpertsPart = Backbone.View.extend({
+    className:"content",
     initialize : function(json) {
-        //console.log("Visu experts part view initialise");
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render','search');
         // Variables
         this.experts = json.experts;
         this.knowledges = json.knowledges;
         this.eventAggregator = json.eventAggregator;
         // Template
         this.template_search = _.template($('#explorer-search-template').html());
+        // Style
+        $(this.el).attr('id',json.idAcc);
     },
     events : {
         "keyup .search" : "search",
@@ -209,6 +211,34 @@ explorer.Views.ExpertsPart = Backbone.View.extend({
     }
 });
 /***************************************/
+explorer.Views.ddExperts = Backbone.View.extend({
+    tagName:"dd",
+    initialize:function(json){
+        _.bindAll(this, 'render');
+        // Variables
+        this.experts = json.experts;
+        this.knowledges = json.knowledges;
+        this.eventAggregator = json.eventAggregator;
+        // Templates
+        this.template_accrodion_hearder = _.template($('#explorer-accordion-header-template').html());
+    },
+    render:function(){
+        $(this.el).html('');
+        $(this.el).append(this.template_accrodion_hearder({title:"Authors",idAcc:"authors_acc"}));
+        // Accordion Concepts part content
+        $(this.el).append(new explorer.Views.ExpertsPart({
+            idAcc : "authors_acc",
+            experts:this.experts,
+            knowledges:this.knowledges,
+            eventAggregator:this.eventAggregator
+        }).render().el);
+
+        return this;
+    }
+});
+/////////////////////////////////////////
+// Poches content part
+/////////////////////////////////////////
 explorer.Views.PochesList = Backbone.View.extend({
     initialize : function(json) {
         //console.log("Visu poches part view initialise");
@@ -266,9 +296,9 @@ explorer.Views.PochesList = Backbone.View.extend({
 });
 /***************************************/
 explorer.Views.PochesPart = Backbone.View.extend({
+    className:"content",
     initialize : function(json) {
-        //console.log("Visu poches part view initialise");
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render','search');
         // Variables
         this.poches = json.poches;
         this.knowledges = json.knowledges;
@@ -279,7 +309,8 @@ explorer.Views.PochesPart = Backbone.View.extend({
         this.poches.bind("change",this.render);
         // Templates
         this.template_search = _.template($('#explorer-search-template').html());
-        
+        // Style
+        $(this.el).attr('id',json.idAcc);
     },
     events : {
         "keyup .search" : "search",
@@ -330,42 +361,33 @@ explorer.Views.PochesPart = Backbone.View.extend({
     }
 });
 /***************************************/
-explorer.Views.RightPart = Backbone.View.extend({
-    className: "show-for-medium-up medium-3 large-2 columns",
-    initialize : function(json) {
-        //console.log("Right part of explorer view initialise");
+explorer.Views.ddCategories = Backbone.View.extend({
+    tagName:"dd",
+    initialize:function(json){
         _.bindAll(this, 'render');
         // Variables
-        this.knowledges = json.knowledges;    
         this.poches = json.poches;
-        this.experts = json.experts;
-        this.links = json.links;
+        this.knowledges = json.knowledges;
         this.eventAggregator = json.eventAggregator;
+        // Templates
+        this.template_accrodion_hearder = _.template($('#explorer-accordion-header-template').html());
     },
-
-    render : function(){
+    render:function(){
         $(this.el).html('');
-        // Poches part
-        poches_part_view = new explorer.Views.PochesPart({
+        $(this.el).append(this.template_accrodion_hearder({title:"Categories",idAcc:"categories_acc"}));
+        // Accordion Concepts part content
+        $(this.el).append(new explorer.Views.PochesPart({
+            idAcc : "categories_acc",
             poches:this.poches,
             knowledges:this.knowledges,
             eventAggregator:this.eventAggregator
-        });
-        $(this.el).append(poches_part_view.render().el);
-        // Experts part
-        experts_part_view = new explorer.Views.ExpertsPart({
-            experts:this.experts,
-            knowledges:this.knowledges,
-            eventAggregator:this.eventAggregator
-        });
-        $(this.el).append(experts_part_view.render().el);
-
+        }).render().el);
 
         return this;
     }
 });
 /////////////////////////////////////////
-// Left part
+// Concept content part
 /////////////////////////////////////////
 explorer.Views.ConceptList = Backbone.View.extend({
     initialize : function(json) {
@@ -429,10 +451,9 @@ explorer.Views.ConceptList = Backbone.View.extend({
 });
 /***************************************/
 explorer.Views.ConceptsPart = Backbone.View.extend({
+    className:"content",
     initialize : function(json) {
-        //console.log("Visu concept part view initialise");
-        _.bindAll(this, 'render');
-        _.bindAll(this, 'search');
+        _.bindAll(this, 'render', 'search');
         // Variables
         this.concepts = json.concepts;
         this.knowledges = json.knowledges;
@@ -444,6 +465,8 @@ explorer.Views.ConceptsPart = Backbone.View.extend({
         this.concepts.bind("change",this.render);
         // Template
         this.template_search = _.template($('#explorer-search-template').html());
+        // Style
+        $(this.el).attr('id',json.idAcc);
     },
     events : {
         "keyup .search" : "search"
@@ -482,6 +505,36 @@ explorer.Views.ConceptsPart = Backbone.View.extend({
     }
 });
 /***************************************/
+explorer.Views.ddConcepts = Backbone.View.extend({
+    tagName:"dd",
+    initialize:function(json){
+        _.bindAll(this, 'render');
+        // Variables
+        this.concepts = json.concepts;
+        this.knowledges = json.knowledges;
+        this.links = json.links;
+        this.eventAggregator = json.eventAggregator;
+        // Templates
+        this.template_accrodion_hearder = _.template($('#explorer-accordion-header-template').html());
+    },
+    render:function(){
+        $(this.el).html('');
+        $(this.el).append(this.template_accrodion_hearder({title:"Concepts",idAcc:"concepts_acc"}));
+        // Accordion Concepts part content
+        $(this.el).append(new explorer.Views.ConceptsPart({
+            idAcc : "concepts_acc",
+            concepts:this.concepts,
+            knowledges:this.knowledges,
+            links:this.links,
+            eventAggregator:this.eventAggregator
+        }).render().el);
+
+        return this;
+    }
+});
+/////////////////////////////////////////
+// Projects content part
+/////////////////////////////////////////
 explorer.Views.ProjectList = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
@@ -537,9 +590,9 @@ explorer.Views.ProjectList = Backbone.View.extend({
 });
 /***************************************/
 explorer.Views.ProjectsPart = Backbone.View.extend({
+    className:"content",
     initialize : function(json) {
-        _.bindAll(this, 'render');
-        _.bindAll(this, 'search');
+        _.bindAll(this, 'render','search');
         // Variables
         this.projects = json.projects; 
         this.knowledges = json.knowledges;
@@ -550,6 +603,8 @@ explorer.Views.ProjectsPart = Backbone.View.extend({
         this.projects.bind("change",this.render);
         // Template
         this.template_search = _.template($('#explorer-search-template').html());
+        // Style
+        $(this.el).attr('id',json.idAcc);
     },
     events : {
         "keyup .search" : "search"
@@ -585,35 +640,82 @@ explorer.Views.ProjectsPart = Backbone.View.extend({
     }
 });
 /***************************************/
+explorer.Views.ddProjects = Backbone.View.extend({
+    tagName:"dd",
+    initialize:function(json){
+        _.bindAll(this, 'render');
+        // Variables
+        this.projects = json.projects; 
+        this.knowledges = json.knowledges;
+        this.eventAggregator = json.eventAggregator;
+        // Templates
+        this.template_accrodion_hearder = _.template($('#explorer-accordion-header-template').html());
+    },
+    render:function(){
+        $(this.el).html('');
+        $(this.el).append(this.template_accrodion_hearder({title:"Projects",idAcc:"projects_acc"}));
+        // Accordion Projects part content
+        $(this.el).append(new explorer.Views.ProjectsPart({
+            idAcc : "projects_acc",
+            projects:this.projects,
+            knowledges:this.knowledges,
+            eventAggregator:this.eventAggregator
+        }).render().el);
+
+        return this;
+    }
+});
+/////////////////////////////////////////
+// Left Part
+/////////////////////////////////////////
 explorer.Views.LeftPart = Backbone.View.extend({
-    className: "show-for-medium-up medium-3 large-2 columns",
+    tagName:'dl',
+    className: "accordion show-for-medium-up medium-2 large-2 columns",
     initialize : function(json) {
         //console.log("Left part of explorer view initialise");
         _.bindAll(this, 'render');
         // Variables
+        this.poches             = json.poches;
+        this.experts            = json.experts;
         this.projects           = json.projects;
         this.concepts           = json.concepts;
         this.knowledges         = json.knowledges;    
         this.links              = json.links;
         this.eventAggregator    = json.eventAggregator;
+        // Style
+        $(this.el).attr('data-accordion','');
+        // Templates
+        this.template_states = _.template($('#explorer-states-template').html());
     },
     render : function(){
         $(this.el).html('');
-        // Projects part 
-        projects_part_view = new explorer.Views.ProjectsPart({
+        // States
+        $(this.el).append(this.template_states());
+        // Projects dd part 
+        $(this.el).append(new explorer.Views.ddProjects({
             projects:this.projects,
             knowledges:this.knowledges,
             eventAggregator:this.eventAggregator
-        });
-        $(this.el).append(projects_part_view.render().el);
-        // Concepts part
-        concepts_part_view = new explorer.Views.ConceptsPart({
+        }).render().el);
+        // Concepts dd part
+        $(this.el).append(new explorer.Views.ddConcepts({
             concepts:this.concepts,
             knowledges:this.knowledges,
             links:this.links,
             eventAggregator:this.eventAggregator
-        });
-        $(this.el).append(concepts_part_view.render().el);
+        }).render().el);
+        // Categories dd part
+        $(this.el).append(new explorer.Views.ddCategories({
+            poches:this.poches,
+            knowledges:this.knowledges,
+            eventAggregator:this.eventAggregator
+        }).render().el);
+        // Authors dd part
+        $(this.el).append(new explorer.Views.ddExperts({
+            experts:this.experts,
+            knowledges:this.knowledges,
+            eventAggregator:this.eventAggregator
+        }).render().el);
 
         return this;
     }
@@ -689,7 +791,6 @@ explorer.Views.Main = Backbone.View.extend({
     //     this.render();
     // },
     addKnowledge : function(e){
-        //console.log("Add knowledge");
         // Init
         user_ = this.user;
         // Get the context
@@ -835,40 +936,43 @@ explorer.Views.Main = Backbone.View.extend({
     ///////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////
     render : function(){
+        $(this.el).html('');
         if(this.filters.length == 0){
             ks=this.knowledges;
         }else{
             ks = this.quenelle();
         }
             // Left part
-            leftPart_view = new explorer.Views.LeftPart({
-                projects            : this.projects,
+            $(this.el).append(new explorer.Views.LeftPart({
+                poches              :this.poches,
+                experts             :this.experts,
+                projects            :this.projects,
                 concepts            :this.concepts,
                 knowledges          :ks,
                 links               :this.links,
                 eventAggregator     :this.eventAggregator
-            });
-            $(this.el).html(leftPart_view.render().el);
+            }).render().el);
             // middle part
-            middlePart_view = new explorer.Views.MiddlePart({
+            $(this.el).append(new explorer.Views.MiddlePart({
                 knowledges:ks,
                 filters:this.filters,
                 user:this.user,
                 links:this.links,
                 eventAggregator:this.eventAggregator,
                 style:this.style
-            });
-            $(this.el).append(middlePart_view.render().el);
-            // right part
-            rightPart_view = new explorer.Views.RightPart({
-                knowledges:ks,
-                links:this.links,
-                poches:this.poches,
-                experts:this.experts,
-                eventAggregator:this.eventAggregator
-            });
-            $(this.el).append(rightPart_view.render().el);
+            }).render().el);
 
+            // right part
+            // rightPart_view = new explorer.Views.RightPart({
+            //     knowledges:ks,
+            //     links:this.links,
+            //     poches:this.poches,
+            //     experts:this.experts,
+            //     eventAggregator:this.eventAggregator
+            // });
+            // $(this.el).append(rightPart_view.render().el);
+
+            $(document).foundation();
             return this;
         }
     });
