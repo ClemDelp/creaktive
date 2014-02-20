@@ -672,7 +672,6 @@ explorer.Views.LeftPart = Backbone.View.extend({
     tagName:'dl',
     className: "accordion show-for-medium-up medium-2 large-2 columns",
     initialize : function(json) {
-        //console.log("Left part of explorer view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.poches             = json.poches;

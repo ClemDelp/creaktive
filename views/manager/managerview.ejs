@@ -1,57 +1,11 @@
-<!-- Javascript libs -->
-
-
-
 <!-- Templates to load -->
 
-
-        <nav class="top-bar" data-topbar>
-      <ul class="title-area">
-        <li class="name">
-          <h1><a href="/">CreaKtive</a></h1>
-        </li>
-        <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
-      </ul>
-
-      <section class="top-bar-section">        
-        <!-- Left Nav Section -->
-
-        
-       <ul class="right">
-      <li class="divider"></li>
-      <li class="has-form"><a href="http://creaktive.fr/contact/" class="button">FeedBack</a></li>
-                <li class="divider"></li>
-          <li class="has-form">
-            <a href="http://creaktive.fr/documentation/" class="button">Documentation</a>
-          </li>
-                <li class="divider"></li>
-        <li class="has-form">
-          <a href="/editprofile" >Profile</a>
-        </li>
-      <li class="divider"></li>
-      <li><a class="active" href="/logout">Logout</a></li>
-    </ul>
-      </section>
-    </nav>
-
+<%- partial('../app/templates/topbar_templates') %>
 <br>
 <%- partial('templates/manager_template') %>
-
-
-
-
-
-
-
-
-
-
-<!-- Javascript libs -->
-
-
 <!-- Modules situés dans BB_app -->
 <script src="js/BB_app/modules/manager.js"></script>
-
+<script src="js/BB_app/modules/topbar.js"></script>
 
 <script>
 
@@ -64,6 +18,7 @@
     rt(io, function(){
       global.initManager('<%- currentUser %>', function(){
         // Modules
+        topbar.init("manager");     
         manager.init();     
         /*activat of "hashchange events's monitoring"*/
         Backbone.history.start();  
