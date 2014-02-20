@@ -40,6 +40,7 @@
   },
   "UserController" : {
   	"userview" : ["authenticated", "forceHTTPs"],
+  	"editprofileview" : ["authenticated", "forceHTTPs"],
   	  	"find" : ["authenticated", "canRead"],
   },
   "PermissionController" : {
