@@ -460,7 +460,6 @@ category.Views.Main = Backbone.View.extend({
         this.filters.bind('add', this.render);
         this.filters.bind('remove', this.render);
 
-        this.knowledges.bind("reset", this.render);
         this.knowledges.bind("add", this.render);
         this.knowledges.bind("remove", this.render);
     },

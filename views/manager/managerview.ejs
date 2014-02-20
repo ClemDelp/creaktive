@@ -58,16 +58,13 @@
     };
 
     rt(io, function(){
-  // Initialisation de l'managerlication ici
-  console.log( "CreaKtive DOM loaded!" );
-  global.initManager('<%- currentUser %>');
-
-  //notifications.init();
-  manager.init();      
-  ////////////////////////////////////////
-  /*activat of "hashchange events's monitoring"*/
-  Backbone.history.start();
-})
+      global.initManager('<%- currentUser %>', function(){
+        // Modules
+        manager.init();     
+        /*activat of "hashchange events's monitoring"*/
+        Backbone.history.start();  
+      });
+    });
   }) ;
 
 

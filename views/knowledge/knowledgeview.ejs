@@ -65,7 +65,7 @@
 
       <div class="interface">
         <br />
-         <%- partial('templates/visu_template') %>
+         <%- partial('templates/explorer_template') %>
       </div>
 
 
@@ -83,7 +83,7 @@
 
 
 
-<script type="text/javascript" src="js/BB_app/modules/visu.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/explorer.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/details.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/tagK.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/title.js"></script>
@@ -113,15 +113,12 @@
     ////////////////////////////////////////
     rt(io, function(){
       global.init('<%- currentUser %>', '<%- currentProject %>', function(){
+        // Modules
         title.init('<%- projectTitle %>');
-        /*Modules*/
         details.init();
-        //notifications.init();
         cklink.init();
-        visu.init();
-        ////////////////////////////////////////
+        explorer.init();
         /*activat of "hashchange events's monitoring"*/
-
         Backbone.history.start();  
       });
     });

@@ -1,14 +1,14 @@
-<div id="visu_container"></div>
+<div id="explorer_container"></div>
 
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Left part -->
-<script type="text/template" id="visu-search-template">
+<script type="text/template" id="explorer-search-template">
         <div class="panel expand"><p>{{-title}}</p></div>
         <input type="text" class="search" placeholder="search in {{-title}}...">
 </script>
 
 
-<script type="text/template" id="visu-project-template">
+<script type="text/template" id="explorer-project-template">
     <div class="row">
         <div class="small-12 medium-12 large-8 columns">
                 <a class="tiny button radius alert addFilter expand" data-filter-type="project" data-filter-model="{{-project.id}}">
@@ -22,7 +22,7 @@
 </script>
 
 
-<script type="text/template" id="visu-expert-template">
+<script type="text/template" id="explorer-expert-template">
         <div class="row">
                 <div class="small-12 medium-12 large-8 columns">
                         <a class="tiny radius button alert addFilter expand" data-filter-type="expert" data-filter-model="{{-expert.id}}">
@@ -35,7 +35,7 @@
         </div>
 </script>
 
-<script type="text/template" id="visu-concept-template">
+<script type="text/template" id="explorer-concept-template">
     <div class="row">
                 <div class="small-12 medium-12 large-8 columns">
                         <a class="tiny radius button addFilter expand" style="background:{{-concept.color}}" data-filter-type="concept" data-filter-model="{{-concept.id}}">
@@ -48,10 +48,10 @@
         </div>
 </script>
 
-<script type="text/template" id="visu-new-poche-template">
+<script type="text/template" id="explorer-new-poche-template">
         <div class="row collapse">
         <div class="small-10 columns">
-          <input type="text" id="visu_newP" class="expand" placeholder="New poche...">
+          <input type="text" id="explorer_newP" class="expand" placeholder="New poche...">
         </div>
         <div class="small-2 columns">
           <a href="#" class="button success postfix add">Add</a>
@@ -59,7 +59,7 @@
     </div>
 </script>
 
-<script type="text/template" id="visu-poche-template">
+<script type="text/template" id="explorer-poche-template">
     <div class="row">
         <div class="small-12 medium-12 large-8 columns">
                 <a class="tiny success radius button addFilter expand" data-filter-type="poche" data-filter-model="{{-poche.id}}">
@@ -75,7 +75,7 @@
 
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Middle part -->
-<script type="text/template" id="visu-knowledges-template">
+<script type="text/template" id="explorer-knowledges-template">
 
         {{ _.each(knowledges, function(knowledge) { }}
             <a href="#" class="button radius round openModal" style="background:{{-knowledge.color}}" data-id-knowledge="{{- knowledge.id }}">{{-knowledge.title}}</a>
@@ -85,7 +85,7 @@
         
 </script>
 
-<script type="text/template" id="visu-publish-module-template">
+<script type="text/template" id="explorer-publish-module-template">
         <div class="show-for-medium-up medium-12 large-12 columns">
 
                 Context :  
@@ -120,7 +120,7 @@
                 <hr>
                 <div class="row collapse">
                     <div class="small-10 columns">
-                      <input id="visu_new_k_title" class="search" type="text" placeholder="Add a knowledge in the current context..."/>
+                      <input id="explorer_new_k_title" class="search" type="text" placeholder="Add a knowledge in the current context..."/>
                     </div>
                     <div class="small-2 columns">
                       <a href="#" class="button postfix addKnowledge">Add</a>

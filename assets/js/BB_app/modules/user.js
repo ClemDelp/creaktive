@@ -56,7 +56,6 @@ user.Views.Main = Backbone.View.extend({
         this.eventAggregator    = json.eventAggregator;
 
         // Events   
-        this.users.bind("reset", this.render);
         this.permissions.bind("reset", this.render);
         this.permissions.bind("add", this.render);
         this.permissions.bind("remove", this.render);
