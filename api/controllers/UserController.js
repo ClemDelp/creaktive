@@ -122,9 +122,13 @@ module.exports = {
       if (!res) res.send("Invalid password")
       if(req.body.password == req.body.confirmPassword){
         user.pw = req.body.password
-        user.save(function(err, user){
-          res.send({msg:"Password changed"})
+        user.hashPassword(user, function(err, user){
+          user.save(function(err, user){
+            req.session.user = user;
+            res.redirect("/editprofile") 
+          })
         })
+
         
       }else{
         res.send("Password must match")

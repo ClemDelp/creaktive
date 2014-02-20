@@ -32,11 +32,14 @@ var AuthController = {
 			user.name = req.body.username;
 			user.confirmed = true;
 			user.img = req.body.image;
-			user.save(function(err, user){
+			user.hashPassword(user, function(err, user){
+							user.save(function(err, user){
 				if(err) console.log(err)
 				delete req.session.pendingUser;
 				res.redirect("/login");
 			});
+			})
+
 
 		})
 
