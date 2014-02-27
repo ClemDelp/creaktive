@@ -496,7 +496,10 @@ category.Views.Main = Backbone.View.extend({
     },
     render : function(){
         // alert(this.knowledges.filter(function(knowledge){return knowledge.get('tags').length == 0;}).length)
-        this.knowledges.each(function(k){console.log(k.get('title'));console.log(k.get('tags'))})
+        // this.knowledges.each(function(k){
+        //     console.log(k.get('title'));
+        //     console.log(k.get('tags'))
+        // })
         $(this.el).html("");
         // init
         poches_to_render = new Backbone.Collection(); 

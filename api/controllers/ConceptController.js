@@ -13,6 +13,7 @@
     this.tree = "";
     this.rank = 0;
     this.compteur = 0;
+    this.position = 1;
 
     generateRank = function(rank){
       if(rank ===0){

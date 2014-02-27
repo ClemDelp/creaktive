@@ -11,7 +11,7 @@ global.Models.Poche = Backbone.Model.extend({
         date : ""
     },
     initialize : function Poche() {
-        console.log('Poche Constructor');
+        //console.log('Poche Constructor');
         this.urlRoot = "poche";
         this.bind("error", function(model, error){
             console.log( error );
