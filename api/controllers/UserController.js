@@ -5,14 +5,14 @@
  * @description	:: Contains logic for handling requests.
  */
 
-var bcrypt = require('bcrypt');
+ var bcrypt = require('bcrypt');
 
-function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
-function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
-function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
+ function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
+ function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
+ function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
 
 
-module.exports = {
+ module.exports = {
 
   /* e.g.
   sayHello: function (req, res) {
@@ -26,29 +26,29 @@ module.exports = {
 
     }).done(function(err,users){
       if(err) res.send(err)
-      res.send(users)
+        res.send(users)
     });
 
   },
 
   
-    update : function(req,res){
+  update : function(req,res){
   	User.findOne(req.body.params.id).done(function(err, user){
   		if(err) res.send(err);
   		if(user){
   			User.update({id: req.body.params.id}, req.body.params).done(function(err,c){
   				if(err) res.send(err)
-  				res.send(c);
-  			});
+            res.send(c);
+        });
   		}else{
   			User.create(req.body.params).done(function(err,p){
   				if(err) res.send(err)
-          p.confirmed = true;
-        p.save(function(err, u){
-          res.send(u);
+            p.confirmed = true;
+          p.save(function(err, u){
+            res.send(u);
+          })
+          
         })
-  				
-  			})
   		}
   	})
   },
@@ -81,15 +81,15 @@ module.exports = {
         url = req.baseUrl + "/register?id=" + user.id;
       } 
       else{
-            var u = req.baseUrl
-            u = u.slice(0, u.lastIndexOf(":"))
-            url = u + "/register?id=" + user.id;
+        var u = req.baseUrl
+        u = u.slice(0, u.lastIndexOf(":"))
+        url = u + "/register?id=" + user.id;
       }
 
-       
+      
       sails.config.email.sendRegistrationMail(user.email, url,function(err, msg){
         if(err) console.log(err)
-        console.log(msg)
+          console.log(msg)
       });
 
 
@@ -100,7 +100,7 @@ module.exports = {
         project_id : req.session.currentProject.id
       }).done(function(err, permission){
         if(err) res.send(err)
-        res.send({user : user, permission : permission})
+          res.send({user : user, permission : permission})
       })
     })
 
@@ -112,20 +112,20 @@ module.exports = {
 
     bcrypt.compare(req.body.oldpassword, user.pw, function (err, res) {
       if (!res) res.send("Invalid password")
-      if(req.body.password == req.body.confirmPassword){
-        user.pw = req.body.password
-        user.hashPassword(user, function(err, user){
-          user.save(function(err, user){
-            req.session.user = user;
-            res.redirect("/editprofile") 
+        if(req.body.password == req.body.confirmPassword){
+          user.pw = req.body.password
+          user.hashPassword(user, function(err, user){
+            user.save(function(err, user){
+              req.session.user = user;
+              res.redirect("/editprofile") 
+            })
           })
-        })
 
-        
-      }else{
-        res.send("Password must match")
-      }
-    });
+          
+        }else{
+          res.send("Password must match")
+        }
+      });
 
   },
 
