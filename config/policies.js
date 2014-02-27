@@ -18,64 +18,64 @@
   // (`true` allows public access) 
   
 
-  // '*': false,
+  '*': false,
 
-  // 'AuthController': {
-  // 	'login' : "forceHTTPs",
-  // 	'logout' : true,
-  // 	'process' : true,
-  // 	'register' : "forceHTTPs",
-  // 	'processRegistration' : true,
-  // 	"openChannels" : ["authenticated"]
-  // },
+  'AuthController': {
+  	'login' : "forceHTTPs",
+  	'logout' : true,
+  	'process' : true,
+  	'register' : "forceHTTPs",
+  	'processRegistration' : true,
+  	"openChannels" : ["authenticated"]
+  },
 
-  // "ProjectController" : {
-  // 	"*" : "authenticated",
-  // 	"destroy" : ["authenticated", "canManageProject" ],
+  "ProjectController" : {
+  	"*" : "authenticated",
+  	"destroy" : ["authenticated", "canManageProject" ],
   
-  // }, 
-  // "ManagerController" : {
-  // 	"managerview" : ["authenticated", "forceHTTPs"],
-  // 	"editprofileview" : ["authenticated", "forceHTTPs"]
-  // },
-  // "UserController" : {
-  // 	"userview" : ["authenticated", "forceHTTPs"],
-  // 	"editprofileview" : ["authenticated", "forceHTTPs"],
-  // 	  	"find" : ["authenticated", "canRead"],
-  // },
-  // "PermissionController" : {
-  // 	"find" : ["authenticated", "canRead"],
-  // 	"*" : ["authenticated", "canWrite"]
-  // },
+  }, 
+  "ManagerController" : {
+  	"managerview" : ["authenticated", "forceHTTPs"],
+  	"editprofileview" : ["authenticated", "forceHTTPs"]
+  },
+  "UserController" : {
+  	"userview" : ["authenticated", "forceHTTPs"],
+  	"editprofileview" : ["authenticated", "forceHTTPs"],
+  	  	"find" : ["authenticated", "canRead"],
+  },
+  "PermissionController" : {
+  	"find" : ["authenticated", "canRead"],
+  	"*" : ["authenticated", "canWrite"]
+  },
 
-  // "NotificationController" : {
-  // 	"find" : ["authenticated", "canRead"],
-  // },
+  "NotificationController" : {
+  	"find" : ["authenticated", "canRead"],
+  },
 
-  // "ConceptController" : {
-  // 	"conceptview" : ["authenticated", "forceHTTPs"],
-  // 	"generateTree" : "authenticated",
-  // 	"find" : ["authenticated", "canRead"],
-  // 	"*" : ["authenticated", "canWrite"] 
-  // },
-  // "KnowledgeController" : {
-  // 	"knowledgeview" : ["authenticated", "forceHTTPs"],
-  // 	"find" : ["authenticated", "canRead"],
-  // 	"*" : ["authenticated", "canWrite"]
-  // },
-  // "CategoryController" : {
-  // 	"categoryview" : ["authenticated", "forceHTTPs"],
-  // 	"find" : ["authenticated", "canRead"],
-  // 	"*" : ["authenticated", "canWrite"]
-  // },
-  // "LinkController" : {
-  // 	"find" : ["authenticated", "canRead"],
-  // 	"*" : ["authenticated", "canWrite"]
-  // },
-  // "PocheController" : {
-  // 	"find" : ["authenticated", "canRead"],
-  // 	"*" : ["authenticated", "canWrite"]
-  // },
+  "ConceptController" : {
+  	"conceptview" : ["authenticated", "forceHTTPs"],
+  	"generateTree" : "authenticated",
+  	"find" : ["authenticated", "canRead"],
+  	"*" : ["authenticated", "canWrite"] 
+  },
+  "KnowledgeController" : {
+  	"knowledgeview" : ["authenticated", "forceHTTPs"],
+  	"find" : ["authenticated", "canRead"],
+  	"*" : ["authenticated", "canWrite"]
+  },
+  "CategoryController" : {
+  	"categoryview" : ["authenticated", "forceHTTPs"],
+  	"find" : ["authenticated", "canRead"],
+  	"*" : ["authenticated", "canWrite"]
+  },
+  "LinkController" : {
+  	"find" : ["authenticated", "canRead"],
+  	"*" : ["authenticated", "canWrite"]
+  },
+  "PocheController" : {
+  	"find" : ["authenticated", "canRead"],
+  	"*" : ["authenticated", "canWrite"]
+  },
 
 
   /*
