@@ -1,0 +1,139 @@
+<div id="explorer_container"></div>
+
+<!-- //////////////////////////////////////////////////////////////////////: -->
+<!-- Left part -->
+<script type="text/template" id="explorer-accordion-header-template">
+    <a href="#{{- idAcc }}">{{- title }}</a>
+</script>
+
+<script type="text/template" id="explorer-search-template">
+    <input type="text" class="search" placeholder="search in {{-title}}...">
+</script>
+
+
+<script type="text/template" id="explorer-project-template">
+    <div class="row">
+        <div class="small-12 medium-12 large-8 columns">
+            <button class="tiny button radius alert addFilter expand" data-filter-type="project" data-filter-model="{{-project.id}}">
+                    {{- project.title }} - <font style="color:white">({{- rec }})</font>
+            </button>
+        </div>
+        <div class="progress alert show-for-large-up large-4 large-4 columns">
+          <span class="meter" style="width: {{-per}}%"></span>
+        </div>
+    </div>
+</script>
+
+
+<script type="text/template" id="explorer-expert-template">
+        <div class="row">
+                <div class="small-12 medium-12 large-8 columns">
+                        <button class="tiny radius button alert addFilter expand" data-filter-type="expert" data-filter-model="{{-expert.id}}">
+                                {{- expert.name }} - <font style="color:white">({{- rec }})</font>
+                        </button>
+                </div>
+                <div class="progress alert show-for-large-up large-4 large-4 columns">
+                  <span class="meter" style="width: {{-per}}%"></span>
+                </div>
+        </div>
+</script>
+
+<script type="text/template" id="explorer-concept-template">
+    <div class="row">
+                <div class="small-12 medium-12 large-8 columns">
+                        <button class="tiny radius button addFilter expand" style="background:{{-concept.color}}" data-filter-type="concept" data-filter-model="{{-concept.id}}">
+                                {{- concept.title }} - <font style="color:red">({{- rec }})</font>
+                        </button>
+                </div>
+                <div class="progress show-for-large-up large-4 columns">
+                  <span class="meter" style="background:{{-concept.color}};width: {{-per}}%"></span>
+                </div>
+        </div>
+</script>
+
+<script type="text/template" id="explorer-new-poche-template">
+        <div class="row collapse">
+        <div class="small-10 columns">
+          <input type="text" id="explorer_newP" class="expand" placeholder="New poche...">
+        </div>
+        <div class="small-2 columns">
+          <button href="#" class="button success postfix add">Add</button>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="explorer-poche-template">
+    <div class="row">
+        <div class="small-12 medium-12 large-8 columns">
+                <button class="tiny success radius button addFilter expand" data-filter-type="poche" data-filter-model="{{-poche.id}}">
+                        {{- poche.title }} - <font style="color:red">({{- rec }})</font>
+                        <input style="float:right" data-id-poche="{{- poche.id }}" type="submit" value="x" class="removePoche" />
+                </button>
+        </div>
+        <div class="progress success show-for-large-up large-4 large-4 columns">
+          <span class="meter" style="width: {{-per}}%"></span>
+        </div>
+    </div>
+</script>
+
+<!-- //////////////////////////////////////////////////////////////////////: -->
+<!-- Middle part -->
+<script type="text/template" id="explorer-knowledges-template">
+
+        {{ _.each(knowledges, function(knowledge) { }}
+            <button href="#" class="button radius round openModal" style="background:{{-knowledge.color}}" data-id-knowledge="{{- knowledge.id }}">{{-knowledge.title}}</button>
+        {{ }); }}
+        
+</script>
+
+<script type="text/template" id="explorer-states-template">
+    <dd>
+        <a href="#states_dd">States</a>
+        <div id="states_dd" class="content">
+            <button href="#" class="expand button radius tiny addFilter" data-filter-type="notLinked">not linked</button>
+            <button href="#" class="expand button radius tiny success addFilter" data-filter-type="notCategorised">not categorised</button>
+            <button href="#" class="expand button radius tiny addFilter" style="background-color : #27AE60 " data-filter-type="state" data-filter-model="#27AE60">V</button>
+            <button href="#" class="expand button radius tiny addFilter" style="background-color : #C0392B " data-filter-type="state" data-filter-model="#C0392B">P</a>
+            <button href="#" class="expand button radius tiny addFilter" style="background-color : #F39C12 " data-filter-type="state" data-filter-model="#F39C12">M</button>
+        </div>
+    </dd>
+</script>
+
+<script type="text/template" id="explorer-context-template">
+        <div class="show-for-medium-up medium-12 large-12 columns">
+                Context :  
+                {{ _.each(filters, function(filter) { }}
+                    {{ if(filter.type == "concept"){ }}
+                            <a class="tiny round button remove" data-id-filter="{{-filter.id}}">{{- filter.model.title }}</a> +
+                    {{ }else if(filter.type == "project"){ }}
+                            <a class="tiny round alert button remove" data-id-filter="{{-filter.id}}">{{- filter.model.title }}</a> +
+                    {{ }else if(filter.type == "poche"){ }}
+                            <a class="tiny round success button remove" data-id-filter="{{-filter.id}}">{{- filter.model.title }}</a> +
+                    {{ }else if(filter.type == "expert"){ }}        
+                            <a class="tiny round alert button remove" data-id-filter="{{-filter.id}}">{{- filter.model.name }}</a> +
+                    {{ }else if(filter.type == "state"){ }}
+                        {{ var name="Validated"; if(filter.model == "#F39C12"){name="Missing"}else if(filter.model == "#C0392B"){name="Processing";} }}
+                        <a class="tiny round button remove" style="background-color : {{- filter.model}} " data-id-filter="{{-filter.id}}">{{- name }}</a> +
+                    {{ }else if(filter.type == "notLinked"){ }}
+                        <a class="tiny round button remove" data-id-filter="{{-filter.id}}">not linked</a> +
+                    {{ }else if(filter.type == "notCategorised"){ }}
+                        <a class="tiny round button success remove" data-id-filter="{{-filter.id}}">not categorised</a> +
+                    {{ } }}
+                {{ }); }}
+                <ul class="button-group" style="float:right">
+                  <li><a href="#" class="button radius tiny secondary putInList">List</a></li>
+                  <li><a href="#" class="button radius tiny secondary putInGird">Grid</a></li>
+                </ul>
+                <hr>
+                <div class="row collapse">
+                    <div class="small-10 columns">
+                      <input id="explorer_new_k_title" class="search" type="text" placeholder="Add a knowledge in the current context..."/>
+                    </div>
+                    <div class="small-2 columns">
+                      <a href="#" class="button postfix addKnowledge">Add</a>
+                    </div>
+                </div>
+                
+        </div>
+
+</script>

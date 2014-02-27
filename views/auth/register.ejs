@@ -1,29 +1,84 @@
+<script>
+    function select (data) {
+        $('#image').val(data);
+        $('#avatar').attr('src', data);
+    }
+</script>
+
 <div class="row">
     <h1> Register </h1>
     <hr>
+    <div class="large-2 medium-2 small-2 columns">
+        <img src= "<%- user.img %>" id="avatar"/>      
+    </div>
+    <div class="large-10 medium-10 small-10 columns">
+        <a href="#" class="button" data-dropdown="drop2">Change avatar</a>
+    </div>
+
+</div>
+
+<div id="drop2" data-dropdown-content class="f-dropdown content">
+  <ul class="large-block-grid-4 medium-block-grid-5  small-block-grid-2">
+    <li><img src= "img/profiles/1.png" onclick="select('img/profiles/1.png')" /> </li>
+    <li><img src= "img/profiles/2.png" onclick="select('img/profiles/2.png')"/> </li>
+    <li><img src= "img/profiles/3.png" onclick="select('img/profiles/3.png')"/> </li>
+    <li><img src= "img/profiles/4.png" onclick="select('img/profiles/4.png')"/> </li>
+    <li><img src= "img/profiles/5.png" onclick="select('img/profiles/5.png')"/> </li>
+    <li><img src= "img/profiles/6.png" onclick="select('img/profiles/6.png')"/> </li>
+    <li><img src= "img/profiles/7.png" onclick="select('img/profiles/7.png')"/> </li>
+    <li><img src= "img/profiles/8.png" onclick="select('img/profiles/8.png')"/> </li>
+    <li><img src= "img/profiles/9.png" onclick="select('img/profiles/9.png')"/> </li>
+    <li><img src= "img/profiles/10.png" onclick="select('img/profiles/10.png')"/> </li>
+    <li><img src= "img/profiles/11.png" onclick="select('img/profiles/11.png')"/> </li>
+    <li><img src= "img/profiles/12.png" onclick="select('img/profiles/12.png')"/> </li>
+    <li><img src= "img/profiles/13.png" onclick="select('img/profiles/13.png')"/> </li>
+    <li><img src= "img/profiles/14.png" onclick="select('img/profiles/14.png')"/> </li>
+    <li><img src= "img/profiles/15.png" onclick="select('img/profiles/15.png')"/> </li>
+    <li><img src= "img/profiles/16.png" onclick="select('img/profiles/16.png')"/> </li>
+    <li><img src= "img/profiles/17.png" onclick="select('img/profiles/17.png')"/> </li>
+    <li><img src= "img/profiles/18.png" onclick="select('img/profiles/18.png')"/> </li>
+  </ul>
+</div>
+
+</br>
+
+<div class="row">
     <form data-abide action="/register" method="post">
+
+        <div class="large-4 medium-4 small-4 image-field">
+
+            <input type="hidden" id="image" name="image" value="<%- user.img %>"/>
+
+        </div>
 
         <div class="large-4 medium-4 small-4 name-field">
             <label>Name <small>required</small></label>
-            <input type="text" name="username" />
+            <input type="text" name="username" value="<%- user.name %>"/>
         </div>
         <div class="large-4 medium-4 small-4 email-field">
             <label>Email adress <small>required</small></label>
-            <input type="email" name="email" required>
-            <small class="error">A valid email address is required.</small>
+            <input type="email" name="email" value="<%- user.email %>" required>
+            <small class="error">Passwords must be at least 8 characters with 1 capital letter, 1 number, and one special character.</small>
         </div>
-
 
         <div class="large-4 medium-4 small-4 password-field">
             <label>Password <small>required</small></label>
-            <input type="password" id="password" required >
-            <small class="error">Passwords must be at least 8 characters with 1 capital letter, 1 number, and one special character.</small>
+            <input type="password" name="password" />
+            <small class="error">Your password must match the requirements</small>
         </div>
+        <div class="large-4 medium-4 small-4 confirm-password-field">
+            <label>Confirm password <small>required</small></label>
+            <input type="password" name="confirmPassword" data-equalto="password">
+            <small class="error">The password did not match</small>
+        </div>
+
+
 
             <button class="button" type="submit">Submit</button>
 
 
 
     </form>
-
 </div>
+
+

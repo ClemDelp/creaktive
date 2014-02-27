@@ -32,26 +32,40 @@ module.exports = {
       var obj = this.toObject();
       delete obj.pw;
       return obj;
-    }
+    },
+
+    hashPassword : function(user, cb){
+        bcrypt.genSalt(10, function(err, salt) {
+          bcrypt.hash(user.pw, salt, function(err, hash) {
+            if (err) {
+              console.log(err);
+              cb(err);
+            }else{
+              user.pw = hash;
+              cb(null, user);
+            }
+          });
+        });
+      },
     
   },
 
   beforeDestroy : function (values, cb){
-  	UserGroup.find({
-  		user_id : values.where.id
-  	}).done(function (err, userGroups){
-  		if(err) console.log(err);
-  		_.each(userGroups, function (userGroup){
-  			userGroup.destroy(function(err){
-  				if(err) console.log(err)
-  			})
-  		})
-  	})
+  	Permission.find({
+      user_id : values.id
+    }).done(function(err, perms){
+      _.each(perms, function(p){
+        p.destroy(function(err){
+          if(err) console.log(err)
+        })
+      })
+    })
 
   	cb();
   },
 
 beforeCreate: function(user, cb) {
+  console.log("SAVE")
     bcrypt.genSalt(10, function(err, salt) {
       bcrypt.hash(user.pw, salt, function(err, hash) {
         if (err) {
@@ -63,7 +77,8 @@ beforeCreate: function(user, cb) {
         }
       });
     });
-  }
+  },
+
 
 
 };

@@ -11,12 +11,14 @@ var global = {
   models: {},
   views: {},
   init: function (currentUser, currentProject, callback) {
-    /*Init*/
 
+    //Variables
     this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
     this.models.currentProject = new this.Models.ProjectModel(JSON.parse(currentProject)); 
     console.log("******* Connected as ", this.models.current_user.get("name"), " on ", this.models.currentProject.get("title"))
-    /*Collections*/
+    this.eventAggregator = {};//this.concepts.first();
+    _.extend(this.eventAggregator, Backbone.Events);
+
     this.collections.Knowledges = new this.Collections.Knowledges();
     this.collections.Users = new this.Collections.UsersCollection();
     this.collections.Poches = new this.Collections.Poches();
@@ -24,48 +26,47 @@ var global = {
     this.collections.Concepts = new this.Collections.ConceptsCollection();
     this.collections.Links = new this.Collections.CKLinks();
     this.collections.Notifications = new this.Collections.NotificationsCollection();
+    this.collections.Permissions = new this.Collections.PermissionsCollection();
 
-    /*Loads*/
-
-
-    this.collections.Users.fetch({reset:true}); 
-    this.collections.Knowledges.fetch({reset: true});
-    this.collections.Poches.fetch({reset: true});
-    this.collections.Projects.fetch({reset:true});
-    this.collections.Concepts.fetch({reset:true});
-    this.collections.Links.fetch({reset:true});
-    this.collections.Notifications.fetch({reset:true});
-
-      this.eventAggregator = {};//this.concepts.first();
-      _.extend(this.eventAggregator, Backbone.Events);
-
+    // Fetch
+    global.collections.Users.fetch({reset:true,success:function(){},complete:function(){
+      global.collections.Knowledges.fetch({reset: true,complete:function(){
+        global.collections.Poches.fetch({reset: true,complete:function(){
+          global.collections.Projects.fetch({reset:true,complete:function(){
+            global.collections.Concepts.fetch({reset:true,complete:function(){
+              global.collections.Links.fetch({reset:true,complete:function(){
+                global.collections.Notifications.fetch({reset:true,complete:function(){
+                  global.collections.Permissions.fetch({reset:true,complete:function(){
+      
+                  }});
+                }});
+              }});
+            }});        
+          }});      
+        }});    
+      }});  
+    }}); 
+  
     callback();
 
   },
-
-  initManager :function (currentUser) {
-    /*Init*/
-    console.log("manager loading...");
-
+  initManager :function (currentUser, callback) {
+    // Variable
     this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
     console.log("******* Connected as ", this.models.current_user.get("name"))
-    /*Collections*/
-    this.collections.Users = new this.Collections.UsersCollection();
-    this.collections.Groups = new this.Collections.GroupsCollection();
     this.collections.Projects = new this.Collections.ProjectsCollection();
     this.collections.Notifications = new this.Collections.NotificationsCollection();
+    this.eventAggregator = {};//this.concepts.first();
+    _.extend(this.eventAggregator, Backbone.Events);
 
-    this.collections.Projects.fetch({reset: true});
-    this.collections.Users.fetch({reset: true});
-    this.collections.Groups.fetch({reset: true});
-    this.collections.Notifications.fetch({reset : true});
+    // Fetch
+    global.collections.Projects.fetch({reset: true,complete:function(){
+      global.collections.Notifications.fetch({reset : true,complete:function(){}});  
+    }});
 
-          this.eventAggregator = {};//this.concepts.first();
-      _.extend(this.eventAggregator, Backbone.Events);
-
+    callback();
   }
 };
-
 /////////////////////////////////////////////////////////////////////////////////////////////
 // MANAGER PART
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,14 +82,10 @@ var manager = {
   init: function () {
     /*Init*/
     this.views.Main = new this.Views.Main({
-      users : global.collections.Users,
-      groups : global.collections.Groups,
       projects : global.collections.Projects,
-      currentUser : global.models.current_user
+      currentUser : global.models.current_user,
+      eventAggregator : global.eventAggregator
     }); 
-
-    this.views.Main.render();
-  
   }
 };
 /////////////////////////////////////////////////
@@ -109,6 +106,27 @@ var category = {
       user        : global.models.current_user,
       eventAggregator : global.eventAggregator,
     });   
+  }
+};
+/////////////////////////////////////////////////
+var topbar = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function (page) {
+    /*Init*/
+    this.views.Main = new this.Views.Main({
+      projects        : global.collections.Projects,
+      project         : global.models.currentProject,
+      page            : page,
+      user            : global.models.current_user,
+      eventAggregator : global.eventAggregator
+    });  
   }
 };
 /////////////////////////////////////////////////
@@ -148,25 +166,18 @@ var user = {
   collections: {},
   models: {},
   views: {},
-  init: function (projectTitle) {
+  init: function (project_) {
     /*Init*/
     this.views.Main = new this.Views.Main({
-      projects    : global.collections.Projects,
-      project     : projectTitle,
-      concepts    : global.collections.Concepts,
-      knowledges  : global.collections.Knowledges,
-      experts     : global.collections.Users,
-      poches      : global.collections.Poches,
-      links       : global.collections.Links,
+      project     : project_,
       users       : global.collections.Users,
-      user        : global.models.current_user,
+      permissions : global.collections.Permissions,
       eventAggregator : global.eventAggregator
     });  
-
   }
 };
 /////////////////////////////////////////////////
-var visu = {
+var explorer = {
   // Classes
   Collections: {},
   Models: {},
@@ -193,6 +204,7 @@ var visu = {
     //this.views.main.render();
   }
 };
+
 /////////////////////////////////////////////////
 // var topBar = {
 //   // Classes
@@ -236,22 +248,6 @@ var visu = {
 
 //   }
 // };
-
-/////////////////////////////////////////////////
-var explorer = {
-  // Classes
-  Collections: {},
-  Models: {},
-  Views: {},
-  // Instances
-  collections: {},
-  models: {},
-  views: {},
-  init: function () {
-    /*Init*/
-
-  }
-};
 /////////////////////////////////////////////////
 var cklink = {
   // Classes
@@ -296,33 +292,6 @@ var concepts = {
     /*Init*/
 
   }
-
-};
-/////////////////////////////////////////////////
-var interface3 = {
-  // Classes
-  Collections: {},
-  Models: {},
-  Views: {},
-  // Instances
-  collections: {},
-  models: {},
-  views: {},
-  init: function () {
-    /*Init*/
-
-    /*views*/
-    this.views.Main = new this.Views.Main({
-      knowledges:global.collections.Knowledges,
-      user:global.models.current_user,
-      poches:global.collections.Poches,
-      users : global.collections.Users,
-      eventAggregator : global.eventAggregator
-    });
-    /*Renders*/
-    this.views.Main.render();
-        
-  }
 };
 /////////////////////////////////////////////////
 var interface1 = {
@@ -335,13 +304,8 @@ var interface1 = {
   models: {},
   views: {},
 
-    // Objects
-  
-  init: function () {
-    /*Init*/
-
-    /*views*/
-    
+  // Objects
+  init: function () {    
     /*views*/
     this.views.Main = new this.Views.Main({
       users : global.collections.Users,
@@ -356,12 +320,9 @@ var interface1 = {
 
     /*Renders*/
     this.views.Main.render();
-
-    
+   
   }
 };
-
-
 /////////////////////////////////////////////////
 var details = {
   // Classes

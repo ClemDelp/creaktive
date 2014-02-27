@@ -8,11 +8,14 @@
 
  module.exports = {
 
-  generateTree : function(req,res){
+ generateTree : function(req,res){
     this.concepts = [];
     this.tree = "";
     this.rank = 0;
     this.compteur = 0;
+
+    this.position = 1;
+
 
     generateRank = function(rank){
       if(rank ===0){
@@ -81,7 +84,7 @@
 
 
   find : function (req,res){
-
+    
     Concept.find({
       project : req.session.currentProject.id
     }).done(function(err,concepts){

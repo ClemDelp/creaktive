@@ -1,5 +1,4 @@
 module.exports = function(req,res,next){
-	console.log(req.baseUrl, req.url )
 		var u = req.baseUrl.replace("http","https");
 
 	if(req.baseUrl == "http://localhost:1337"){

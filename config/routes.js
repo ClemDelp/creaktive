@@ -33,18 +33,21 @@ module.exports.routes = {
   // 
   // (This would also work if you had a file at: `/views/home.ejs`)
 
-  '/user': "UserController.userview",
+  '/': "ManagerController.managerview",
+  '/userManager': "UserController.userview",
+
   '/categories': "CategoryController.categoryview",
   '/knowledges': "KnowledgeController.knowledgeview",
   '/concepts': "ConceptController.conceptview",
-  '/': "ManagerController.managerview",
-  '/proj' : "AppController.appView",
+
   'get /login' : 'AuthController.login',
-  // 'get /register' : 'AuthController.register',
-  // 'post /register' : "UserController.register",
   'post /login' : 'AuthController.process',
   'get /logout' : 'AuthController.logout',
-
+  'get /register' : 'AuthController.register',
+  'post /register' : "AuthController.processRegistration",
+  'get /editprofile' : "UserController.editprofileview",
+  'post /editprofile' : "UserController.editprofile",
+  "post /changepassword" : "UserController.changepassword"
 
   /*
   // But what if you want your home page to display

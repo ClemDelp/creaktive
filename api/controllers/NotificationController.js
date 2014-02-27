@@ -13,12 +13,21 @@ module.exports = {
   }
   */
 
+  
+
   find : function (req,res){
-    Notification.find({
-    }).done(function(err, notifications){
-      if(err) res.send(err);
-      res.send(notifications );
-    });
+    Permission.find({
+      project_id : req.session.currentProject.id
+    }).done(function(err, permissions){
+      var authorized_projects = _.pluck(permissions, 'project_id');
+      Notification.find({
+        project_id : authorized_projects
+      }).done(function(err, notifications){
+        if(err) res.send(err);
+        res.send(notifications );
+      });
+    })
+
   },
 
   update : function(req, res){

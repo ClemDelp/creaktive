@@ -25,11 +25,11 @@ category.Collections.Filters = Backbone.Collection.extend({
     }
 });
 /////////////////////////////////////////
-// Left Part
+// Middle Part
 /////////////////////////////////////////
 category.Views.Category = Backbone.View.extend({
     initialize : function(json){
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render',"openModal");
         // Variable
         this.knowledges         = json.knowledges;
         this.poches             = json.poches;
@@ -41,6 +41,11 @@ category.Views.Category = Backbone.View.extend({
     },
     events : {
         "click .addKnowledge" : "addKnowledge",
+        "click .openModal"  : "openModal"
+    },
+    openModal: function(e){
+        event.preventDefault();
+        this.eventAggregator.trigger("openModal",e.target.getAttribute("data-knowledge-id"),e.target.getAttribute("data-catg-origin"));
     },
     addKnowledge : function(e){
         // Init
@@ -83,6 +88,8 @@ category.Views.Categories = Backbone.View.extend({
         this.poches             = json.poches;
         this.user               = json.user;
         this.eventAggregator    = json.eventAggregator;
+        // Events
+        this.eventAggregator.on('categories_list_render', this.render, this);
         // Templates
         this.template_list = _.template($('#category-list-template').html());
     },
@@ -126,6 +133,7 @@ category.Views.MiddlePart = Backbone.View.extend({
         this.poches             = json.poches;
         this.filters            = json.filters;
         this.user               = json.user;
+        this.eventAggregator    = json.eventAggregator;
         // Events 
 
         // Templates
@@ -249,6 +257,7 @@ category.Views.PochesCategory = Backbone.View.extend({
         this.eventAggregator = json.eventAggregator;
         // Events
         this.eventAggregator.on('poche_search', this.pocheSearch, this);
+        this.eventAggregator.on('categories_list_render', this.render, this);
         // Templates
         this.template_tags = _.template($('#category-tag-template').html());
         this.template_new_poche = _.template($('#category-new-poche-template').html());
@@ -295,7 +304,8 @@ category.Views.PochesCategory = Backbone.View.extend({
     }
 });
 /***************************************/
-category.Views.PochesPart = Backbone.View.extend({
+category.Views.LeftPart = Backbone.View.extend({
+    className: "small-2 medium-2 large-2 columns",
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
@@ -361,30 +371,74 @@ category.Views.PochesPart = Backbone.View.extend({
         return this;
     }
 });
-/***************************************/
-category.Views.LeftPart = Backbone.View.extend({
-    className: "small-2 medium-2 large-2 columns",
-    initialize : function(json) {
-        _.bindAll(this, 'render');
+/////////////////////////////////////////
+// Modal
+/////////////////////////////////////////
+category.Views.Modal = Backbone.View.extend({
+    el:"#category_modal_container",
+    initialize:function(json){
+        _.bindAll(this, 'render', 'openModal');
         // Variables
-        this.knowledges = json.knowledges;    
+        this.knowledge = new Backbone.Model();
+        this.knowledges = json.knowledges;
         this.poches = json.poches;
+        this.category_origin = "none";
         this.eventAggregator = json.eventAggregator;
+        // Events
+        this.eventAggregator.on("openModal", this.openModal);
+        // Templates
+        this.template_modal = _.template($('#category-modal-template').html()); 
     },
-
-    render : function(){
+    events: {
+        "click .moveTo" : "moveTo",
+        "click .copyTo" : "copyTo",
+    },
+    copyTo : function(e){
+        event.preventDefault();
+        target = e.target.getAttribute("data-catg-title");
+        knowledge_id = e.target.getAttribute("data-knowledge-id");
+        knowledgeToSet = this.knowledges.get(knowledge_id);
+        knowledgeToSet.set({'tags':_.union(knowledgeToSet.get('tags'),[target])});
+        knowledgeToSet.save();
+        this.eventAggregator.trigger("categories_list_render");
+        $('#category_modal_container').foundation('reveal', 'close'); 
+    },
+    moveTo : function(e){
+        // Init
+        event.preventDefault();
+        target = e.target.getAttribute("data-catg-title");
+        origin = e.target.getAttribute("data-catg-orign");
+        knowledge_id = e.target.getAttribute("data-knowledge-id");
+        knowledgeToSet = this.knowledges.get(knowledge_id);
+        // Si K est déjà dans une poche ou enlève le tag de la poche d'origine
+        if(knowledgeToSet.get('tags').length != 0){
+            knowledgeToSet.set({'tags': _.without(knowledgeToSet.get('tags'),origin)});    
+        }
+        knowledgeToSet.set({'tags':_.union(knowledgeToSet.get('tags'),[target])});
+        knowledgeToSet.save();
+        this.eventAggregator.trigger("categories_list_render");
+        $('#category_modal_container').foundation('reveal', 'close'); 
+    },
+    openModal : function(k_id,catg_origin){
+        this.knowledge = this.knowledges.get(k_id);
+        this.category_origin = catg_origin;
+        this.render(function(){
+            $('#category_modal_container').foundation('reveal', 'open'); 
+            $(document).foundation();
+        }); 
+    },
+    render:function(callback){
         $(this.el).html('');
-        // Poches part
-        poches_part_view = new category.Views.PochesPart({
-            poches:this.poches,
-            knowledges:this.knowledges,
-            eventAggregator:this.eventAggregator
-        });
-        $(this.el).append(poches_part_view.render().el);
-        
+        $(this.el).append(this.template_modal({
+            knowledge:this.knowledge.toJSON(),
+            category_origin : this.category_origin,
+            poches : this.poches.toJSON()
+        }));
 
+       
+        // Render it in our div
+        if(callback) callback();
 
-        return this;
     }
 });
 /////////////////////////////////////////
@@ -403,21 +457,24 @@ category.Views.Main = Backbone.View.extend({
 
         // Events                 
         this.poches.bind("reset", this.render);
-
         this.filters.bind('add', this.render);
         this.filters.bind('remove', this.render);
-
-        this.knowledges.bind("reset", this.render);
+        this.knowledges.bind("add", this.render);
+        this.knowledges.bind("remove", this.render);
     },
     events : {
         "click .addFilter" : "addFilter",
         "click .remove" : "removeFilter",
-        "click .moveTo" : "moveTo",
+        "click .moveTo" : "moveTo"
     },
     moveTo : function(e){
+        // Init
         event.preventDefault();
-        knowledgeToSet = this.knowledges.get(e.target.getAttribute("data-knowledge-id"));
-        knowledgeToSet.get('tags').unshift(e.target.getAttribute("data-catg-title"));
+        target = e.target.getAttribute("data-catg-title");
+        knowledge_id = e.target.getAttribute("data-knowledge-id");
+        knowledgeToSet = this.knowledges.get(knowledge_id);
+        
+        knowledgeToSet.set({'tags':_.union(knowledgeToSet.get('tags'),[target])});
         knowledgeToSet.save();
         this.render();
     },
@@ -438,6 +495,11 @@ category.Views.Main = Backbone.View.extend({
         }
     },
     render : function(){
+        // alert(this.knowledges.filter(function(knowledge){return knowledge.get('tags').length == 0;}).length)
+        // this.knowledges.each(function(k){
+        //     console.log(k.get('title'));
+        //     console.log(k.get('tags'))
+        // })
         $(this.el).html("");
         // init
         poches_to_render = new Backbone.Collection(); 
@@ -473,9 +535,16 @@ category.Views.Main = Backbone.View.extend({
             eventAggregator:this.eventAggregator
         });
         $(this.el).append(right_part.render().el);
+        //Modal
+        modal_view = new category.Views.Modal({
+            poches: this.poches,
+            knowledges : this.knowledges,
+            eventAggregator : this.eventAggregator
+        });
+        $(this.el).append(modal_view.render());
 
         $(document).foundation();
-        
+
         return this;
     }
 });

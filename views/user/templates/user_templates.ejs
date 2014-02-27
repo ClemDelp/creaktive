@@ -3,19 +3,56 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Left part -->
 <script type="text/template" id="user-profil-template">
-    <div class="small-1 medium-1 large-1 columns" style="float:left">    
-        <ul class="pricing-table">
-            <li style="background-color : secondary " class="title">{{- user.name }}</li>
-            <li class="price"><img src="{{- user.img }}"/></li>
-            <li class="cta-button"><a class="button" href="#">Link</a></li>
-        </ul>
-    </div>
-</script>
+	<div class="large-6 medium-6 small-12 columns" style="border-right:1px gray dotted">
+		<h4>Users linked to the project</h4>
+		<hr>
+		{{ _.each(users_linked, function(permission) { }}
+			<a href="#" class="button round tiny">
+			    <div class="large-2 medium-2 small-2 columns">
+			    	<img class="roundedImage" src="{{- permission.user.img }}"/>
+			    </div>
+			    <div class="large-10 medium-10 small-10 columns">
+			    	<label>
+			    		<h4>{{- permission.user.name }}</h4>
+			    	</label>
+			    	<select class="changePermission" data-id-user="{{- permission.user.id }}" id="{{- permission.user.id }}_right">
+			          <option data-id-user="{{- permission.user.id }}" {{if((permission.right != "r")&&(permission.right != "rw")){ }}selected{{ } }} value="u">unlink</option>
+			          <option data-id-user="{{- permission.user.id }}" {{if(permission.right == "r"){ }}selected{{ } }} value="r">Read only</option>
+			          <option data-id-user="{{- permission.user.id }}" {{if(permission.right == "rw"){ }}selected{{ } }} value="rw">Read an write</option>
+			        </select>
+			    </div>
+		 	</a>
+		{{ }); }}
+	</div>
 
-<script type="text/template" id="user-new-template">
+	<div class="large-6 medium-6 small-12 columns">
+		<h4>Users not linked to the project</h4>
+		<hr>
+		{{ _.each(users_notlinked, function(user) { }}
+			<a href="#" class="button secondary round tiny">
+			    <div class="large-2 medium-2 small-2 columns"><img class="roundedImage" src="{{- user.img }}"/></div>
+			    <div class="large-10 medium-10 small-10 columns">
+			    	<label>
+			    		<h4>{{- user.name }}</h4>
+			    	</label>
+			    	<select class="addPermission" id="{{- user.id }}_right" data-id-user="{{- user.id }}">
+			          <option value="u" data-id-user="{{- user.id }}">none</option>
+			          <option value="r" data-id-user="{{- user.id }}">Read only</option>
+			          <option value="rw" data-id-user="{{- user.id }}">Read an write</option>
+			        </select>
+			    </div>
+		 	</a>
+		{{ }); }}
+	</div>
     
 </script>
 
+
 <script type="text/template" id="user-search-template">
-    <input type="text" placeholder="search users by keywords"/>
+    	<div class="large-10 medium-10 small-10 columns">
+    		<input type="text" class="search" id="searchUser" placeholder="search users by keywords"/>
+		</div>
+        <div class="large-2 medium-2 small-2 columns">
+          <a href="#" class="button postfix inviteUser">Invite user</a>
+        </div>
 </script>
