@@ -89,6 +89,26 @@ var manager = {
   }
 };
 /////////////////////////////////////////////////
+var conceptsmap = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    this.views.Main = new this.Views.Main({
+      concepts    : global.collections.Concepts,
+      user        : global.models.current_user,
+      knowledges  : global.collections.Knowledges,
+      eventAggregator : global.eventAggregator
+    });   
+  }
+};
+/////////////////////////////////////////////////
 var category = {
   // Classes
   Collections: {},

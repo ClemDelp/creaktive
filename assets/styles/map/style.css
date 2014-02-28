@@ -1,0 +1,59 @@
+@import url(ui.css);
+@import url(item.css);
+@import url(shape.css);
+
+* {
+	font-family: source sans pro, sans-serif;
+}
+
+html, body {
+	margin: 0;
+	overflow: hidden;
+	height: 100%;
+}
+
+ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#port {
+	/*background-color: #eed;*/
+	overflow: hidden;
+	font-size: 15px;
+}
+
+#throbber {
+	width: 50px;
+	height: 50px;
+	background-image: url(throbber.gif);
+	position: fixed;
+	top: 20px;
+}
+
+#throbber:not(.visible) {
+	opacity: 0;
+}
+
+.ghost {
+	position: absolute !important; /* to prevent collision with .content */
+	opacity: 0.5;
+	z-index: 1;
+}
+
+#tip {
+	position: fixed;
+	z-index: 1;
+	left: 10px;
+	bottom: 5px;
+	transition: all 500ms;
+}
+
+#tip:before {
+	content: "Tip: ";
+}
+
+#tip.hidden {
+	opacity: 0;
+}
