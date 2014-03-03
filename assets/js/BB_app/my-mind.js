@@ -28,7 +28,8 @@ var MM = {
 			var code = Math.floor(Math.random()*26);
 			str += String.fromCharCode("a".charCodeAt(0) + code);
 		}
-		return str;
+		return guid();
+		//return str;
 	}
 };
 /*
@@ -395,7 +396,6 @@ MM.Item.prototype.clone = function() {
 
 MM.Item.prototype.update = function(doNotRecurse) {
 	MM.publish("item-change", this);
-	console.log("updateeeeeeeeeeeeeeeee")
 	var map = this.getMap();
 	if (!map || !map.isVisible()) { return this; }
 
@@ -1068,6 +1068,20 @@ MM.Tip = {
 MM.Action = function() {}
 MM.Action.prototype.perform = function() {}
 MM.Action.prototype.undo = function() {}
+
+
+MM.Action.prototype.getName = function() { 
+ if (this && this.constructor && this.constructor.toString) {
+        var arr = this.constructor.toString().match(
+            /function\s*(\w+)/);
+
+        if (arr && arr.length == 2) {
+            return arr[1];
+        }
+    }
+
+    return undefined;
+};
 
 MM.Action.InsertNewItem = function(parent, index) {
 	this._parent = parent;
@@ -4452,7 +4466,7 @@ MM.App = {
 	_fontSize: 100,
 	
 	action: function(action) {
-		this.eventAggregator.trigger("change",action);
+		this.eventAggregator.trigger("change",action,MM.App.map.toJSON());
 
 		if (this.historyIndex < this.history.length) { /* remove undoed actions */
 			this.history.splice(this.historyIndex, this.history.length-this.historyIndex);

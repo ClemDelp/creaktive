@@ -1,5 +1,9 @@
 <div id="conceptsmap_container"></div>
-
+<script>
+	$(function() {
+		$( "#draggable" ).draggable();
+	});
+	</script>
 <div class="expand">
 	<a href="#" class="button tiny secondary">1/2</a>
 	<a href="#" class="button tiny secondary">2/3</a>
@@ -13,7 +17,7 @@
 </ul>
 <div id="throbber"></div>
 
-		<div class="ui">
+		<div class="ui" >
 			<h3>Map</h3>
 			<p>
 				<button data-command="New">New</button><button data-command="Load">Load</button>

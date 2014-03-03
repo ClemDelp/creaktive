@@ -115,6 +115,7 @@ global.Models.ProjectModel = Backbone.Model.extend({
     defaults : {
         id : "",
         title : "no projects",
+        conceptsMapJson : {},
         date : getDate()
     },
     initialize : function Doc() {

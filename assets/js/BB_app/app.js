@@ -102,6 +102,7 @@ var conceptsmap = {
     /*Init*/
     this.views.Main = new this.Views.Main({
       concepts    : global.collections.Concepts,
+      project     : global.models.currentProject,
       user        : global.models.current_user,
       knowledges  : global.collections.Knowledges,
       eventAggregator : global.eventAggregator
