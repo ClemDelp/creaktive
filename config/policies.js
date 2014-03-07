@@ -29,6 +29,10 @@
   	"openChannels" : ["authenticated"]
   },
 
+  "AnalyseController" : {
+    "*" : "authenticated"  
+  }, 
+
   "ConceptmapController" : {
     "*" : "authenticated",
     "destroy" : ["authenticated", "canManageProject" ],

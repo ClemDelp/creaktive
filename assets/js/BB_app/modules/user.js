@@ -76,7 +76,6 @@ user.Views.Main = Backbone.View.extend({
         "click .changePermission" : "changePermission",
         "click .inviteUser" : "inviteUser",
     },
-
     inviteUser : function(e){
         e.preventDefault();
         _this = this;
@@ -102,21 +101,24 @@ user.Views.Main = Backbone.View.extend({
     },
     changePermission : function(e){
         e.preventDefault();
-        user_id = e.target.getAttribute('data-id-user');
-        project_id = this.project.id;
-        right_ = $("#"+e.target.getAttribute('data-id-user')+"_right").val();
-        if(right_ == "u"){
-            permissions_to_remove = this.permissions.filter(function(permission){return ((permission.get('project_id') == project_id) && (permission.get('user_id') == user_id))});
-            permissions_to_remove.forEach(function(permission){
-                permission.destroy();
-            });    
-        }else if((right_ == "r")||(right_=="rw")){
-            permissions_to_update = this.permissions.filter(function(permission){return ((permission.get('project_id') == project_id) && (permission.get('user_id') == user_id))});
-            permissions_to_update.forEach(function(permission){
-                permission.set({"right":right_});
-                permission.save();
-            }); 
+        if(confirm("Be careful, change permission can lead to a ban on project! Confirm?")){
+            user_id = e.target.getAttribute('data-id-user');
+            project_id = this.project.id;
+            right_ = $("#"+e.target.getAttribute('data-id-user')+"_right").val();
+            if(right_ == "u"){
+                permissions_to_remove = this.permissions.filter(function(permission){return ((permission.get('project_id') == project_id) && (permission.get('user_id') == user_id))});
+                permissions_to_remove.forEach(function(permission){
+                    permission.destroy();
+                });    
+            }else if((right_ == "r")||(right_=="rw")){
+                permissions_to_update = this.permissions.filter(function(permission){return ((permission.get('project_id') == project_id) && (permission.get('user_id') == user_id))});
+                permissions_to_update.forEach(function(permission){
+                    permission.set({"right":right_});
+                    permission.save();
+                }); 
+            }
         }
+        
         
     },
     search: function(e){

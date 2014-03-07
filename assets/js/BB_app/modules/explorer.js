@@ -757,11 +757,11 @@ explorer.Views.Main = Backbone.View.extend({
         "click .remove" : "removeFilter",
     },
     removeFilter: function(e){
-        event.preventDefault();
+        e.preventDefault();
         this.filters.remove(this.filters.get(e.target.getAttribute('data-id-filter')));
     },
     addFilter: function(e){
-        event.preventDefault();
+        e.preventDefault();
         model_ = "";
         if(e.target.getAttribute("data-filter-type") == "expert"){model_ = this.experts.get(e.target.getAttribute("data-filter-model"))}
         else if(e.target.getAttribute("data-filter-type") == "poche"){model_ = this.poches.get(e.target.getAttribute("data-filter-model"))}
@@ -933,7 +933,6 @@ explorer.Views.Main = Backbone.View.extend({
         return ks_filtered;
     },
     ///////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////
     render : function(){
         $(this.el).html('');
         if(this.filters.length == 0){
@@ -941,38 +940,28 @@ explorer.Views.Main = Backbone.View.extend({
         }else{
             ks = this.quenelle();
         }
-            // Left part
-            $(this.el).append(new explorer.Views.LeftPart({
-                poches              :this.poches,
-                experts             :this.experts,
-                projects            :this.projects,
-                concepts            :this.concepts,
-                knowledges          :ks,
-                links               :this.links,
-                eventAggregator     :this.eventAggregator
-            }).render().el);
-            // middle part
-            $(this.el).append(new explorer.Views.MiddlePart({
-                knowledges:ks,
-                filters:this.filters,
-                user:this.user,
-                links:this.links,
-                eventAggregator:this.eventAggregator,
-                style:this.style
-            }).render().el);
+        // Left part
+        $(this.el).append(new explorer.Views.LeftPart({
+            poches              :this.poches,
+            experts             :this.experts,
+            projects            :this.projects,
+            concepts            :this.concepts,
+            knowledges          :ks,
+            links               :this.links,
+            eventAggregator     :this.eventAggregator
+        }).render().el);
+        // middle part
+        $(this.el).append(new explorer.Views.MiddlePart({
+            knowledges:ks,
+            filters:this.filters,
+            user:this.user,
+            links:this.links,
+            eventAggregator:this.eventAggregator,
+            style:this.style
+        }).render().el);
 
-            // right part
-            // rightPart_view = new explorer.Views.RightPart({
-            //     knowledges:ks,
-            //     links:this.links,
-            //     poches:this.poches,
-            //     experts:this.experts,
-            //     eventAggregator:this.eventAggregator
-            // });
-            // $(this.el).append(rightPart_view.render().el);
-
-            $(document).foundation();
-            return this;
-        }
-    });
+        $(document).foundation();
+        return this;
+    }
+});
 /***************************************/

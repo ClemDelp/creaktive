@@ -70,6 +70,23 @@ var global = {
 /////////////////////////////////////////////////////////////////////////////////////////////
 // MANAGER PART
 /////////////////////////////////////////////////////////////////////////////////////////////
+var analyse = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    this.views.Main = new this.Views.Main({
+      eventAggregator : global.eventAggregator
+    }); 
+  }
+};
+/////////////////////////////////////////////////
 var manager = {
   // Classes
   Collections: {},

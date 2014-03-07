@@ -44,7 +44,7 @@ category.Views.Category = Backbone.View.extend({
         "click .openModal"  : "openModal"
     },
     openModal: function(e){
-        event.preventDefault();
+        e.preventDefault();
         this.eventAggregator.trigger("openModal",e.target.getAttribute("data-knowledge-id"),e.target.getAttribute("data-catg-origin"));
     },
     addKnowledge : function(e){
@@ -218,7 +218,7 @@ category.Views.RightPart = Backbone.View.extend({
         "keyup .search" : "search",
     },
     search: function(e){
-        event.preventDefault();
+        e.preventDefault();
         var research = e.target.value;
         var research_size = research.length;
         var matched = new Backbone.Collection();
@@ -265,7 +265,7 @@ category.Views.PochesCategory = Backbone.View.extend({
         //$(this.el).attr( "style","overflow: auto;max-height:200px");
     },
     pocheSearch: function(matched_poches){
-        event.preventDefault();
+        e.preventDefault();
         this.poches_render = matched_poches;
         this.render();
     },
@@ -326,7 +326,7 @@ category.Views.LeftPart = Backbone.View.extend({
         "click .removePoche" : "removePoche",
     },
     search: function(e){
-        event.preventDefault();
+        e.preventDefault();
         var research = e.target.value;
         var research_size = research.length;
         var matched = new Backbone.Collection();
@@ -338,12 +338,12 @@ category.Views.LeftPart = Backbone.View.extend({
         this.eventAggregator.trigger('poche_search',matched);
     },
     removePoche: function(e){
-        event.preventDefault();
+        e.preventDefault();
         var poche = this.poches.get(e.target.getAttribute('data-id-poche'));
         poche.destroy();
     },
     addPoche : function(e){
-        event.preventDefault();
+        e.preventDefault();
         global.models.newP = new global.Models.Poche({
             id: guid(),
             title: $("#category_newP").val(),
@@ -394,7 +394,7 @@ category.Views.Modal = Backbone.View.extend({
         "click .copyTo" : "copyTo",
     },
     copyTo : function(e){
-        event.preventDefault();
+        e.preventDefault();
         target = e.target.getAttribute("data-catg-title");
         knowledge_id = e.target.getAttribute("data-knowledge-id");
         knowledgeToSet = this.knowledges.get(knowledge_id);
@@ -405,7 +405,7 @@ category.Views.Modal = Backbone.View.extend({
     },
     moveTo : function(e){
         // Init
-        event.preventDefault();
+        e.preventDefault();
         target = e.target.getAttribute("data-catg-title");
         origin = e.target.getAttribute("data-catg-orign");
         knowledge_id = e.target.getAttribute("data-knowledge-id");
@@ -454,7 +454,11 @@ category.Views.Main = Backbone.View.extend({
         this.user               = json.user;
         this.filters            = new category.Collections.Filters();
         this.eventAggregator    = json.eventAggregator;
-
+        this.modal_view = new category.Views.Modal({
+            poches: this.poches,
+            knowledges : this.knowledges,
+            eventAggregator : this.eventAggregator
+        });
         // Events                 
         this.poches.bind("reset", this.render);
         this.filters.bind('add', this.render);
@@ -469,7 +473,7 @@ category.Views.Main = Backbone.View.extend({
     },
     moveTo : function(e){
         // Init
-        event.preventDefault();
+        e.preventDefault();
         target = e.target.getAttribute("data-catg-title");
         knowledge_id = e.target.getAttribute("data-knowledge-id");
         knowledgeToSet = this.knowledges.get(knowledge_id);
@@ -479,11 +483,11 @@ category.Views.Main = Backbone.View.extend({
         this.render();
     },
     removeFilter: function(e){
-        event.preventDefault();
+        e.preventDefault();
         this.filters.remove(this.filters.get(e.target.getAttribute('data-id-filter')));
     },
     addFilter: function(e){
-        event.preventDefault();
+        e.preventDefault();
         model_ = this.poches.get(e.target.getAttribute("data-filter-model"));
         if(model_ != ""){
             new_filter = new category.Models.Filter({
@@ -536,13 +540,8 @@ category.Views.Main = Backbone.View.extend({
         });
         $(this.el).append(right_part.render().el);
         //Modal
-        modal_view = new category.Views.Modal({
-            poches: this.poches,
-            knowledges : this.knowledges,
-            eventAggregator : this.eventAggregator
-        });
-        $(this.el).append(modal_view.render());
-
+        this.modal_view.render();
+        
         $(document).foundation();
 
         return this;

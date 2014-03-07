@@ -1,0 +1,103 @@
+
+<!-- Javascript libs -->
+<script src="/js/vendor/backbone.iosync.js"></script>
+<script src="/js/vendor/backbone.iobind.js"></script>
+
+<script type="text/javascript" src="js/vendor/jquery.mousewheel-3.1.3.js"></script>
+<script src="js/vendor/jquery.hotkeys.js"></script>
+<script src="js/vendor/jquery.hammer.min.js"></script>
+<script type="text/javascript" src="js/vendor/kinetic-v4.4.3.js"></script>
+<script src="js/vendor/color-0.4.1.min.js"></script>
+
+<!-- ******************************** -->
+<!-- FileUpload -->
+<script src="js/vendor/jquery.ui.widget.js"></script>
+<script src="js/vendor/jquery.iframe-transport.js"></script>
+<script src="js/vendor/jquery.fileupload.js"></script>
+
+<script type="text/javascript" src="/js/vendor/backbone-defered-view-loader.js"></script>
+<script type="text/javascript" src="js/vendor/backbone.upload-manager.js"></script>
+
+<script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
+<!-- ******************************** -->
+<!-- CKEditor -->
+<script src="/js/ckeditor/ckeditor.js"></script>
+<!-- ******************************** -->
+<!-- tags input -->
+<link rel="stylesheet" type="text/css" href="styles/jquery.tagsinput.css" />
+<script type="text/javascript" src="js/vendor/jquery.tagsinput.js"></script>
+<!-- ******************************** -->
+
+<!-- Templates to load -->
+
+<%- partial('../app/templates/topbar_templates') %>
+<%- partial('../app/templates/title_templates') %>
+<%- partial('templates/analyse_templates') %>
+
+
+<!-- Modules situés dans assets/js/BB_app -->
+<script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/details.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/title.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/analyse.js"></script>
+
+<script>
+
+  $(document).on('open', '[data-reveal]', function () {
+    var modal = $(this);
+    if(modal.attr('id')==="detailsModal"){
+        CKEDITOR.replaceAll('ckeditor');
+    };
+  });
+
+  ///////////////////////////////////////////////////
+  $(document).ready(function () {
+    console.log( "CreaKtive DOM loaded!" );
+    ////////////////////////////////////////
+    Backbone.Model.prototype.toJSON = function() {
+      return JSON.parse(JSON.stringify(this.attributes));
+    };
+    ////////////////////////////////////////
+    rt(io, function(){
+      global.init('<%- currentUser %>', '<%- currentProject %>', function(){
+        /*Modules*/
+        topbar.init("analyse");
+        title.init(<%- currentProject %>.title);
+        analyse.init();
+        ////////////////////////////////////////
+        /*activat of "hashchange events's monitoring"*/
+
+        Backbone.history.start();  
+      });
+    });
+
+  });
+  /////////////////////////////////////////////////////////////////////////////////////////////
+// Realtime connection
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+function rt (io, callback) {
+  // as soon as this file is loaded, connect automatically, 
+  var socket = io.connect("/",{'sync disconnect on unload ': true});
+  socket.on('connect', function socketConnected() {
+    socket.get("/auth/openChannels", function(data){
+      // console.log(data.msg);
+      // console.log(data.channels);
+    });
+    console.log(
+      'Socket is now connected and globally accessible as `socket`.\n' + 
+      'e.g. to send a GET request to Sails, try \n' + 
+      '`socket.get("/", function (response) ' +
+        '{ console.log(response); })`'
+    );
+    callback();
+  });
+
+  window.socket = socket;
+
+};
+
+</script>
+
+
+

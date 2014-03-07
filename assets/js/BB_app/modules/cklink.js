@@ -15,7 +15,7 @@ cklink.Views.Knowledges = Backbone.View.extend({
         "click .selectable" : "linkAndUnlink",
     },
     linkAndUnlink: function(e){
-        event.preventDefault();
+        e.preventDefault();
         // Init
         current_concept = this.current_concept;
         // Change the background color
@@ -147,11 +147,11 @@ cklink.Views.Main = Backbone.View.extend({
         "click .remove" : "removeFilter",
     },
     removeFilter: function(e){
-        event.preventDefault();
+        e.preventDefault();
         this.filters.remove(this.filters.get(e.target.getAttribute('data-id-filter')));
     },
     addFilter: function(e){
-        event.preventDefault();
+        e.preventDefault();
         model_ = this.poches.get(e.target.getAttribute("data-filter-model"));
         if(model_ != ""){
             new_filter = new category.Models.Filter({

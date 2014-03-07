@@ -3,14 +3,14 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Left part -->
 <script type="text/template" id="user-profil-template">
-	<div class="large-6 medium-6 small-12 columns" style="border-right:1px gray dotted">
+	<div class="large-6 medium-6 small-12 columns">
 		<h4>Users linked to the project</h4>
 		<hr>
 		{{ _.each(users_linked, function(permission) { }}
 			<div class="row panel callout">
 				<div class="large-1 medium-1 small-1 columns">
 			    	<img class="roundedImage" src="{{- permission.user.img }}"/>
-			    	<h4>{{- permission.user.name }}</h4>
+			    	<label><h4>{{- permission.user.name }}</h4>{{- permission.user.email }}</label>
 			    </div>
 			    <div class="large-11 medium-11 small-11 columns">
 			    	<div class="row">
@@ -30,9 +30,6 @@
 					    </div>
 					</div>
 			    </div>
-
-
-				
 			</div>
 		{{ }); }}
 	</div>
@@ -44,7 +41,7 @@
 			<div class="row panel">
 			    <div class="large-1 medium-1 small-1 columns">
 			    	<img class="roundedImage" src="{{- user.img }}"/>
-			    	<label><h4>{{- user.name }}</h4></label>
+			    	<label><h4>{{- user.name }}</h4>{{- user.email }}</label>
 			    </div>
 			    <div class="large-11 medium-11 small-11 columns">
 			    	<div class="row">
@@ -76,6 +73,6 @@
     		<input type="text" class="search" id="searchUser" placeholder="search users by keywords"/>
 		</div>
         <div class="large-2 medium-2 small-2 columns">
-          <a href="#" class="button postfix inviteUser">Invite user</a>
+          <a href="#" class="button postfix inviteUser">Send an invitation by email</a>
         </div>
 </script>

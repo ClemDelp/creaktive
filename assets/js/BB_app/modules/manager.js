@@ -50,7 +50,7 @@ manager.Views.Main = Backbone.View.extend({
         "click .removeProject" : "removeProject",
     },
     newProject : function(e){
-        event.preventDefault();
+        e.preventDefault();
         new_project = new global.Models.ProjectModel({
             id:guid(),
             title: $("#project_title").val(),
@@ -70,7 +70,7 @@ manager.Views.Main = Backbone.View.extend({
         project.destroy();
     },
     search: function(e){
-        event.preventDefault();
+        e.preventDefault();
         var research = e.target.value;
         var research_size = research.length;
         var matched = new Backbone.Collection();
