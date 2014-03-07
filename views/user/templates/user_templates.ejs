@@ -7,21 +7,33 @@
 		<h4>Users linked to the project</h4>
 		<hr>
 		{{ _.each(users_linked, function(permission) { }}
-			<a href="#" class="button round tiny">
-			    <div class="large-2 medium-2 small-2 columns">
+			<div class="row panel callout">
+				<div class="large-1 medium-1 small-1 columns">
 			    	<img class="roundedImage" src="{{- permission.user.img }}"/>
+			    	<h4>{{- permission.user.name }}</h4>
 			    </div>
-			    <div class="large-10 medium-10 small-10 columns">
-			    	<label>
-			    		<h4>{{- permission.user.name }}</h4>
-			    	</label>
-			    	<select class="changePermission" data-id-user="{{- permission.user.id }}" id="{{- permission.user.id }}_right">
-			          <option data-id-user="{{- permission.user.id }}" {{if((permission.right != "r")&&(permission.right != "rw")){ }}selected{{ } }} value="u">unlink</option>
-			          <option data-id-user="{{- permission.user.id }}" {{if(permission.right == "r"){ }}selected{{ } }} value="r">Read only</option>
-			          <option data-id-user="{{- permission.user.id }}" {{if(permission.right == "rw"){ }}selected{{ } }} value="rw">Read an write</option>
-			        </select>
+			    <div class="large-11 medium-11 small-11 columns">
+			    	<div class="row">
+					    <div class="large-12 columns">
+					      <div class="row collapse">
+					        <div class="small-10 columns">
+					    		<select id="{{- permission.user.id }}_right">
+					          		<option data-id-user="{{- permission.user.id }}" {{if((permission.right != "r")&&(permission.right != "rw")){ }}selected{{ } }} value="u">unlink</option>
+			          				<option data-id-user="{{- permission.user.id }}" {{if(permission.right == "r"){ }}selected{{ } }} value="r">Read only</option>
+			          				<option data-id-user="{{- permission.user.id }}" {{if(permission.right == "rw"){ }}selected{{ } }} value="rw">Read an write</option>
+					        	</select>
+					        </div>
+					        <div class="small-2 columns">
+					          <a href="#" class="button postfix secondary changePermission" data-id-user="{{- permission.user.id }}">Validate</a>
+					        </div>
+					      </div>
+					    </div>
+					</div>
 			    </div>
-		 	</a>
+
+
+				
+			</div>
 		{{ }); }}
 	</div>
 
@@ -29,19 +41,30 @@
 		<h4>Users not linked to the project</h4>
 		<hr>
 		{{ _.each(users_notlinked, function(user) { }}
-			<a href="#" class="button secondary round tiny">
-			    <div class="large-2 medium-2 small-2 columns"><img class="roundedImage" src="{{- user.img }}"/></div>
-			    <div class="large-10 medium-10 small-10 columns">
-			    	<label>
-			    		<h4>{{- user.name }}</h4>
-			    	</label>
-			    	<select class="addPermission" id="{{- user.id }}_right" data-id-user="{{- user.id }}">
-			          <option value="u" data-id-user="{{- user.id }}">none</option>
-			          <option value="r" data-id-user="{{- user.id }}">Read only</option>
-			          <option value="rw" data-id-user="{{- user.id }}">Read an write</option>
-			        </select>
+			<div class="row panel">
+			    <div class="large-1 medium-1 small-1 columns">
+			    	<img class="roundedImage" src="{{- user.img }}"/>
+			    	<label><h4>{{- user.name }}</h4></label>
 			    </div>
-		 	</a>
+			    <div class="large-11 medium-11 small-11 columns">
+			    	<div class="row">
+					    <div class="large-12 columns">
+					      <div class="row collapse">
+					        <div class="small-10 columns">
+					    		<select id="{{- user.id }}_right">
+					          		<option value="u">none</option>
+					          		<option value="r">Read only</option>
+					          		<option value="rw">Read an write</option>
+					        	</select>
+					        </div>
+					        <div class="small-2 columns">
+					          <a href="#" class="button postfix addPermission" data-id-user="{{- user.id }}">Validate</a>
+					        </div>
+					      </div>
+					    </div>
+					</div>
+			    </div>
+		 	</div>
 		{{ }); }}
 	</div>
     

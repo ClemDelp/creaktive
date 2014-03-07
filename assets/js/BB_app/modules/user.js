@@ -74,7 +74,7 @@ user.Views.Main = Backbone.View.extend({
         "keyup .search" : "search",
         "click .addPermission" : "addPermission",
         "click .changePermission" : "changePermission",
-                "click .inviteUser" : "inviteUser",
+        "click .inviteUser" : "inviteUser",
     },
 
     inviteUser : function(e){
@@ -91,16 +91,14 @@ user.Views.Main = Backbone.View.extend({
         e.preventDefault();
         user_id_ = e.target.getAttribute('data-id-user');
         right_ = $("#"+e.target.getAttribute('data-id-user')+"_right").val();
-        this.permissions.create({
-            id : guid(),
-            right : right_,
-            user_id : user_id_,
-            project_id : this.project.id
-        });
-        // Intediction pour barth sauf les projets nomé poney
-
-
-        
+        if(right_ != "u"){
+            this.permissions.create({
+                id : guid(),
+                right : right_,
+                user_id : user_id_,
+                project_id : this.project.id
+            });
+        }        
     },
     changePermission : function(e){
         e.preventDefault();
