@@ -16,7 +16,7 @@ module.exports.email = {
 
 
 	sendRegistrationMail : function(to, url, cb){
-		var html = "<h1>Bonjour</h1></br>Vous avez reçu une invitation sur CreaKtive</br>" + url
+		var html = "<h1>Bonjour</h1></br>Vous avez reçu une invitation sur CreaKtive</br> " + url
 
 		mailOptions = {
 		    from: "CreaKtive ✔ contact@creaktive.fr", // sender address

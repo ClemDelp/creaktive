@@ -61,7 +61,7 @@
 
   "ConceptController" : {
     "conceptview" : ["authenticated", "forceHTTPs"],
-    "crMate" : "authenticated",
+    "generateTree" : "authenticated",
     "find" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"] 
   },

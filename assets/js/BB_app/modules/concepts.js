@@ -154,7 +154,8 @@ concepts.Views.MapView = Backbone.View.extend({
                 id : args[2],
                 title : args[1],
                 user : this.currentUser,
-                id_father : args[0]
+                id_father : args[0],
+                position : _this.concepts.get(args[0]).get("position") + 1
                 // date, content, color
             });
 

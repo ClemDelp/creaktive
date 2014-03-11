@@ -8,26 +8,49 @@
 
  module.exports = {
 
+
+/*
+* Generates the json file for the concepts map
+*/
  generateTree : function(req,res){
     this.concepts = [];
     this.tree = "";
     this.rank = 0;
     this.compteur = 0;
+    this.left = true;
 
-    this.position = 1;
 
-
-    generateRank = function(rank){
+    /*
+    * Generates the rank i.e. the position on the map
+    * negative rank = to the left
+    * positive rank = to the right
+    */
+    generateRank = function(rank, father_position){
       if(rank ===0){
         this.rank = 1;
         return this.rank;
       }
       this.rank++;
       this.compteur++;
-      if(this.compteur%2 ===1) return -this.rank;
+      
+      // Si ce sont des noeuds centraux ils peuvent être à gauche ou à droite
+      if(father_position == 0 ){
+        if(this.left) {
+          this.left = false
+          return -this.rank;
+        }
+        else {
+          this.left = true
+          return this.rank;
+        }
+      } 
+      
       return this.rank;
     };
 
+    /*
+    * Format the idea json to mapjs format
+    */
     createIdea = function(concept){
       idea = concept;
       idea.attr = {
@@ -39,13 +62,20 @@
       return idea;
     }
 
-    createChildren = function (father, child){
-        var rank = generateRank(this.rank);
-        console.log(rank)
-        father.ideas[rank] = child;
 
+    /*
+    * Add a child to a node
+    */
+    createChildren = function (father, child){
+        var rank = generateRank(this.rank, father.position);
+        father.ideas[rank] = child;
     };
 
+    /*
+    * Look into concepts and build the json
+    * @father : a node
+    * @children : all children nodes
+    */ 
     populate = function(father, children){
       for (var i = children.length - 1; i >= 0; i--) {
         
@@ -54,7 +84,6 @@
         var c = _.where(this.concepts, {id_father : children[i].id})
         
         if(c.length > 0){
-            //this.rank=0;
             this.populate(children[i], c)
         }
       };
