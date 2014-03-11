@@ -35,6 +35,30 @@ module.exports.email = {
 		    // if you don't want to use this transport object anymore, uncomment following line
 		    //smtpTransport.close(); // shut down the connection pool, no more messages
 		});
+	},
+
+	sendNewUserMail : function (user, cb){
+		
+		var html = "New user added on CreaKtive " + user.name + " " + user.email;  
+
+		mailOptions = {
+		    from: "CreaKtive ✔ contact@creaktive.fr", // sender address
+		    to: "creaktive.contact@gmail.com",
+		    subject: "New user on CreaKtive-minesparis", // Subject line
+		    generateTextFromHTML: true,
+		    html: html, // plaintext body
+		},
+
+		this.smtpGmail.sendMail(mailOptions, function(error, response){
+		    if(error){
+		        cb(error)
+		    }else{
+		        cb(null, "Message sent: " + response.message);
+		    }
+		    // if you don't want to use this transport object anymore, uncomment following line
+		    //smtpTransport.close(); // shut down the connection pool, no more messages
+		});
+
 	}
 
 

@@ -1,35 +1,4 @@
 
-        <nav class="top-bar" data-topbar>
-      <ul class="title-area">
-        <li class="name">
-          <h1><a href="/">CreaKtive</a></h1>
-        </li>
-        <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
-      </ul>
-
-      <section class="top-bar-section">        
-        <!-- Left Nav Section -->
-
-        
-       <ul class="right">
-      <li class="divider"></li>
-      <li class="has-form"><a href="http://creaktive.fr/contact/" class="button">FeedBack</a></li>
-                <li class="divider"></li>
-          <li class="has-form">
-            <a href="http://creaktive.fr/documentation/" class="button">Documentation</a>
-          </li>
-                <li class="divider"></li>
-        <li class="has-form">
-          <a href="/editprofile" >Profile</a>
-        </li>
-      <li class="divider"></li>
-      <li><a class="active" href="/logout">Logout</a></li>
-    </ul>
-      </section>
-    </nav>
-
-<br>
-
 
 <script>
     function select (data) {
@@ -39,10 +8,10 @@
 </script>
 
 <div class="row">
-    <h1> Profile </h1>
+    <h1> Registration form </h1>
     <hr>
     <div class="large-2 medium-2 small-2 columns">
-        <img src= "<%- user.img %>" id="avatar"/>      
+        <img src= "/img/default-user-icon-profile.png" id="avatar"/>      
     </div>
     <div class="large-10 medium-10 small-10 columns">
         <a href="#" class="button" data-dropdown="drop2">Change avatar</a>
@@ -75,44 +44,34 @@
 
 
 <div class="row">
-    <form data-abide action="/editProfile" method="post">
+    <form data-abide action="/newuser" method="post">
 
         <div class="large-4 medium-4 small-4 image-field">
-            <input type="hidden" id="image" name="image" value="<%- user.img %>"/>
+            <input type="hidden" id="image" name="image" />
         </div>
 
         <div class="large-4 medium-4 small-4 name-field">
             <label>Name <small>required</small></label>
-            <input type="text" name="username" value="<%- user.name %>"/>
+            <input type="text" name="username" />
         </div>
         <div class="large-4 medium-4 small-4 email-field">
             <label>Email adress <small>required</small></label>
-            <input type="email" name="email" value="<%- user.email %>" required>
+            <input type="email" name="email"  required>
         </div>
-
-        <button class="button" type="submit">Submit</button>
-    </form>
-
-    <form data-abide action="/changepassword" method="post">
-
-        <div class="large-4 medium-4 small-4 old-password-field">
-            <label>Old password <small>required</small></label>
-            <input type="password" name="oldpassword" />
-            <small class="error">Your password must match the requirements</small>
-        </div>
-
-        <div class="large-4 medium-4 small-4 password-field">
+ 
+ <div class="large-4 medium-4 small-4 password-field">
             <label>New password <small>required</small></label>
             <input type="password" name="password" />
-                        <small class="error">Passwords must be at least 8 characters with 1 capital letter, 1 number, and one special character.</small>
+            <small class="error">Your password must match the requirements</small>
         </div>
         <div class="large-4 medium-4 small-4 confirm-password-field">
             <label>Confirm new password <small>required</small></label>
             <input type="password" name="confirmPassword" data-equalto="password">
-                        <small class="error">Passwords must be at least 8 characters with 1 capital letter, 1 number, and one special character.</small>
+            <small class="error">The password did not match</small>
         </div>
 
-        <button class="button" type="submit">Change password</button>
 
+        <button class="button" type="submit">Submit</button>
     </form>
-</div>
+
+  

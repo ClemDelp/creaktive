@@ -24,6 +24,8 @@
     'login' : "forceHTTPs",
     'logout' : true,
     'process' : true,
+    'registernew' : true,
+    'processRegistrationNew' : true,
     'register' : "forceHTTPs",
     'processRegistration' : true,
     "openChannels" : ["authenticated"]
