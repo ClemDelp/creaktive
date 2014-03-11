@@ -55,9 +55,9 @@
     "find" : ["authenticated", "canRead"],
   },
 
-  "ConceptController" : {
-    "conceptview" : ["authenticated", "forceHTTPs"],
-    "generateTree" : "authenticated",
+  "ConceptmapController" : {
+    "conceptmapview" : ["authenticated", "forceHTTPs"],
+    "crMate" : "authenticated",
     "find" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"] 
   },

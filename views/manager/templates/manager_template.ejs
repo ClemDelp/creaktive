@@ -19,7 +19,7 @@
 
 <script type="text/template" id="manager-projects-template">
 	{{ _.each(projects, function(project) { }}
-		<a href="/concepts?projectId={{- project.id}}" class="button secondary round expand split">{{- project.title}}<span data-dropdown="drop_{{- project.id}}"></span></a><br>
+		<a href="/conceptsMap?projectId={{- project.id}}" class="button secondary round expand split">{{- project.title}}<span data-dropdown="drop_{{- project.id}}"></span></a><br>
 		<ul id="drop_{{- project.id}}" class="f-dropdown" data-dropdown-content>
 		  <li><a href="#" class="removeProject" data-id-project="{{- project.id}}">Remove</a></li>
 		</ul>
