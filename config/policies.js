@@ -29,6 +29,10 @@
     "openChannels" : ["authenticated"]
   },
 
+  "AnalyseController" : {
+    "*" : "authenticated"
+  }, 
+
   "ProjectController" : {
     "*" : "authenticated",
     "destroy" : ["authenticated", "canManageProject" ],
@@ -55,12 +59,20 @@
     "find" : ["authenticated", "canRead"],
   },
 
-  "ConceptmapController" : {
-    "conceptmapview" : ["authenticated", "forceHTTPs"],
+  "ConceptController" : {
+    "conceptview" : ["authenticated", "forceHTTPs"],
     "crMate" : "authenticated",
     "find" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"] 
   },
+
+  // "ConceptmapController" : {
+  //   "conceptmapview" : ["authenticated", "forceHTTPs"],
+  //   "crMate" : "authenticated",
+  //   "find" : ["authenticated", "canRead"],
+  //   "*" : ["authenticated", "canWrite"] 
+  // },
+  
   "KnowledgeController" : {
     "knowledgeview" : ["authenticated", "forceHTTPs"],
     "find" : ["authenticated", "canRead"],

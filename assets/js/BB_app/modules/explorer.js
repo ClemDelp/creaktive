@@ -691,11 +691,11 @@ explorer.Views.LeftPart = Backbone.View.extend({
         // States
         $(this.el).append(this.template_states());
         // Projects dd part 
-        $(this.el).append(new explorer.Views.ddProjects({
-            projects:this.projects,
-            knowledges:this.knowledges,
-            eventAggregator:this.eventAggregator
-        }).render().el);
+        // $(this.el).append(new explorer.Views.ddProjects({
+        //     projects:this.projects,
+        //     knowledges:this.knowledges,
+        //     eventAggregator:this.eventAggregator
+        // }).render().el);
         // Concepts dd part
         $(this.el).append(new explorer.Views.ddConcepts({
             concepts:this.concepts,

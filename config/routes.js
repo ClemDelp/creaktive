@@ -39,7 +39,7 @@ module.exports.routes = {
   '/analyse': "AnalyseController.analyseview",
   '/categories': "CategoryController.categoryview",
   '/knowledges': "KnowledgeController.knowledgeview",
-  '/conceptsMap': "ConceptMapController.conceptmapview",
+  '/conceptsMap': "ConceptController.conceptview",
 
   'get /login' : 'AuthController.login',
   'post /login' : 'AuthController.process',
