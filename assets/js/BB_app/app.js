@@ -82,6 +82,9 @@ var analyse = {
   init: function () {
     /*Init*/
     this.views.Main = new this.Views.Main({
+      concepts : global.collections.Concepts,
+      knowledges : global.collections.Knowledges,
+      links : global.collections.Links,
       eventAggregator : global.eventAggregator
     }); 
   }

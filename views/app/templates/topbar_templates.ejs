@@ -17,6 +17,7 @@
           <li {{if(page == "conceptsmap"){ }}class="active"{{ } }}><a href="conceptsMap?projectId={{- project.id }}">Concepts map</a></li>
           <li {{if(page == "explorer"){ }}class="active"{{ } }}><a href="knowledges?projectId={{- project.id }}">Explorer</a></li>
           <li {{if(page == "organizer"){ }}class="active"{{ } }}><a href="categories?projectId={{- project.id }}">Organizer</a></li>
+          <li {{if(page == "analyse"){ }}class="active"{{ } }}><a href="analyse?projectId={{- project.id }}">Analyse</a></li>
           <li {{if(page == "member"){ }}class="active"{{ } }}><a href="userManager?projectId={{- project.id }}">Members</a></li>
         </ul>
       {{ } }}
