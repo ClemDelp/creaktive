@@ -48,6 +48,9 @@ module.exports.routes = {
   'post /register' : "AuthController.processRegistration",
   "get /newuser" : "AuthController.registernew",
   "post /newuser" : "AuthController.processRegistrationNew",
+  "get /confirmation" : {
+    view : "auth/registrationconfirmed"
+  },
 
   'get /editprofile' : "UserController.editprofileview",
   'post /editprofile' : "UserController.editprofile",

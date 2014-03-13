@@ -32,7 +32,7 @@ var AuthController = {
 	          	console.log(msg)
 	      	});
 
-	      	res.redirect("/");
+	      	res.redirect("/confirmation");
 		})
 	},
 
