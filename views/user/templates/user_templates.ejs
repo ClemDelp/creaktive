@@ -10,12 +10,13 @@
 			<div class="row panel callout">
 				<div class="large-1 medium-1 small-1 columns">
 			    	<img class="roundedImage" src="{{- permission.user.img }}"/>
-			    	<label><h4>{{- permission.user.name }}</h4>{{- permission.user.email }}</label>
+			    	
 			    </div>
 			    <div class="large-11 medium-11 small-11 columns">
 			    	<div class="row">
 					    <div class="large-12 columns">
 					      <div class="row collapse">
+					      	<label><h4>{{- permission.user.name }}</h4>{{- permission.user.email }}</label>
 					        <div class="small-10 columns">
 					    		<select id="{{- permission.user.id }}_right">
 					          		<option data-id-user="{{- permission.user.id }}" {{if((permission.right != "r")&&(permission.right != "rw")){ }}selected{{ } }} value="u">unlink</option>
@@ -41,12 +42,12 @@
 			<div class="row panel">
 			    <div class="large-1 medium-1 small-1 columns">
 			    	<img class="roundedImage" src="{{- user.img }}"/>
-			    	<label><h4>{{- user.name }}</h4>{{- user.email }}</label>
 			    </div>
 			    <div class="large-11 medium-11 small-11 columns">
 			    	<div class="row">
 					    <div class="large-12 columns">
 					      <div class="row collapse">
+					      	<label><h4>{{- user.name }}</h4>{{- user.email }}</label>
 					        <div class="small-10 columns">
 					    		<select id="{{- user.id }}_right">
 					          		<option value="u">none</option>
