@@ -31,6 +31,10 @@
     "openChannels" : ["authenticated"]
   },
 
+  "ElasticsearchController" : {
+    "*" : "authenticated"
+  }, 
+
   "AnalyseController" : {
     "*" : "authenticated"
   }, 
