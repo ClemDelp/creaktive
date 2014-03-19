@@ -50,6 +50,7 @@
   	Knowledge.findOne(req.body.params.id).done(function(err, knowledge){
   		if(err) res.send(err);
   		if(knowledge){
+        sails.config.elasticsearch.indexKnowledge();
   			Knowledge.update({id: req.body.params.id}, req.body.params).done(function(err,c){
   				if(err) res.send(err);
          Notification.objectUpdated(req,res,"Knowledge", c[0].id, function(notification){

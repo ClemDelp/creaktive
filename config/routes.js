@@ -35,9 +35,9 @@ module.exports.routes = {
 
   '/': "ManagerController.managerview",
   '/userManager': "UserController.userview",
-  
-  '/elasticsearch': "ElasticsearchController.index",
 
+  '/elasticsearch': "ElasticsearchController.ping",
+  
   '/analyse': "AnalyseController.analyseview",
   '/categories': "CategoryController.categoryview",
   '/knowledges': "KnowledgeController.knowledgeview",

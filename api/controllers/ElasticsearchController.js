@@ -4,7 +4,7 @@
  * @module		:: Controller
  * @description	:: Contains logic for handling requests.
  */
-var elasticsearch = require('elasticsearch');
+
 
 module.exports = {
 
@@ -15,73 +15,49 @@ module.exports = {
   */
   
   /**
-   * /elasticsearch/index
+   * /elasticsearch/ping
    */ 
-  index: function (req,res) {
-    var elasticsearch = require('elasticsearch');
-    var client = new elasticsearch.Client({
-      host: 'https://x6m7jy5h:iynnxxbn54x3ip8o@pine-2612821.us-east-1.bonsai.io/',
-      log: 'trace'
-    });
-
-    // var client = new elasticsearch.Client({
-    //   host: 'https://x6m7jy5h:iynnxxbn54x3ip8o@pine-2612821.us-east-1.bonsai.io/',
-    //   sniffOnStart: true,
-    //   sniffInterval: 60000,
-    // });
-
-    client.ping({
-      requestTimeout: 1000,
-      // undocumented params are appended to the query string
-      hello: "elasticsearch!"
-    }, function (error) {
-      if (error) {
-        console.error('elasticsearch cluster is down!');
-      } else {
-        console.log('All is well');
-      }
-    });
-
-
-    // client.cluster.health(function (err, resp) {
-    //   if (err) {
-    //     console.error("err cluster health",err.message);
-    //   } else {
-    //     console.dir("cluster health",resp);
-    //   }
-    // });
-
-    // index a document
-    // client.index({
-    //   index: 'blog',
-    //   type: 'post',
-    //   id: 1,
-    //   body: {
-    //     title: 'JavaScript Everywhere!',
-    //     content: 'It all started when...',
-    //     date: '2013-12-17'
-    //   }
-    // }, function (err, resp) {
-    //   if (err) {
-    //     console.error("lalala",err.message);
-    //   } else {
-    //     console.dir(resp);
-    //   }
-    // });
+  ping: function (req,res) {
     // This will render the view: 
-    // /home/barth/creaktive/views/elasticsearch/index.ejs
-    
+    // /home/clem/creaktive/views/elasticsearch/ping.ejs
+    req.session.user = req.session.user || {id:"999999999", name : "guest", img:"img/default-user-icon-profile.png"}
+    sails.config.elasticsearch.indexKnowledge();
+    res.view({currentUser:JSON.stringify(req.session.user)});
 
   },
 
 
   /**
-   * /elasticsearch/query
+   * /elasticsearch/index
    */ 
-  query: function (req,res) {
+  index: function (req,res) {
 
     // This will render the view: 
-    // /home/barth/creaktive/views/elasticsearch/query.ejs
+    // /home/clem/creaktive/views/elasticsearch/index.ejs
+    res.view();
+
+  },
+
+
+  /**
+   * /elasticsearch/udupdate
+   */ 
+  udupdate: function (req,res) {
+
+    // This will render the view: 
+    // /home/clem/creaktive/views/elasticsearch/udupdate.ejs
+    res.view();
+
+  },
+
+
+  /**
+   * /elasticsearch/remove
+   */ 
+  remove: function (req,res) {
+
+    // This will render the view: 
+    // /home/clem/creaktive/views/elasticsearch/remove.ejs
     res.view();
 
   }
