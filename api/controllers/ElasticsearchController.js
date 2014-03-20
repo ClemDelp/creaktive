@@ -17,49 +17,14 @@ module.exports = {
   /**
    * /elasticsearch/ping
    */ 
-  ping: function (req,res) {
-    // This will render the view: 
-    // /home/clem/creaktive/views/elasticsearch/ping.ejs
-    req.session.user = req.session.user || {id:"999999999", name : "guest", img:"img/default-user-icon-profile.png"}
-    sails.config.elasticsearch.indexKnowledge();
-    res.view({currentUser:JSON.stringify(req.session.user)});
-
+  pingServer: function (req,res) {
+    sails.config.elasticsearch.pingServer();
   },
 
-
-  /**
-   * /elasticsearch/index
-   */ 
-  index: function (req,res) {
-
-    // This will render the view: 
-    // /home/clem/creaktive/views/elasticsearch/index.ejs
-    res.view();
-
-  },
-
-
-  /**
-   * /elasticsearch/udupdate
-   */ 
-  udupdate: function (req,res) {
-
-    // This will render the view: 
-    // /home/clem/creaktive/views/elasticsearch/udupdate.ejs
-    res.view();
-
-  },
-
-
-  /**
-   * /elasticsearch/remove
-   */ 
-  remove: function (req,res) {
-
-    // This will render the view: 
-    // /home/clem/creaktive/views/elasticsearch/remove.ejs
-    res.view();
-
+  searchKnowledge : function(req,res){
+    sails.config.elasticsearch.searchKnowledge(req.param('nodeTitle'),function(json){
+      res.send(json);
+    });
   }
 
 };

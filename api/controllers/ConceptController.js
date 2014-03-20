@@ -144,19 +144,18 @@
     Concept.findOne(req.body.params.id).done(function(err, concept){
       if(err) res.send(err);
       if(concept){
-        Concept.update({
+        Concept.update(
+        {
           id: req.body.params.id
-        }, req.body.params).done(function(err,c){
+        }, 
+        req.body.params).done(function(err,c){
           if(err) res.send(err);
-          
-          
-
           Notification.objectUpdated(req,res,"Concept", c[0].id, function(notification){
             res.send(notification);
           });
-
           res.send(c[0]);
-      });
+        });
+        sails.config.elasticsearch.indexConcept(req.body.params);
       }else{
         var concept = req.body.params;
         concept.project = req.session.currentProject.id;
@@ -168,6 +167,7 @@
           });
           res.send(c);
         });
+        sails.config.elasticsearch.indexConcept(concept);
       }
     })
   },

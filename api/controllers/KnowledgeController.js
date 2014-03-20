@@ -50,17 +50,19 @@
   	Knowledge.findOne(req.body.params.id).done(function(err, knowledge){
   		if(err) res.send(err);
   		if(knowledge){
-        sails.config.elasticsearch.indexKnowledge();
+        // Update the Knowledge
   			Knowledge.update({id: req.body.params.id}, req.body.params).done(function(err,c){
   				if(err) res.send(err);
-         Notification.objectUpdated(req,res,"Knowledge", c[0].id, function(notification){
-          res.send(notification);
+          Notification.objectUpdated(req,res,"Knowledge", c[0].id, function(notification){
+            res.send(notification);
+          });
+
+          res.send(c[0]);
+
         });
-
-         res.send(c[0]);
-
-       });
+        sails.config.elasticsearch.indexKnowledge(req.body.params);
   		}else{
+        // Create a new knowledge
         var k = req.body.params;
         k.project = req.session.currentProject.id
         Knowledge.create(k).done(function(err,k){
@@ -70,7 +72,8 @@
           });
           res.send(k);
           
-        })
+        });
+        sails.config.elasticsearch.indexKnowledge(k);
       }
     })
   },

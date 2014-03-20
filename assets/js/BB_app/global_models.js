@@ -41,7 +41,8 @@ global.Models.CKObject = Backbone.Model.extend({
         attachment: "",
         color: "#95A5A6",
         members:[],
-        attachment:[]
+        attachment:[],
+        project:""
     },
     parse : function(serverObj){
         serverObj.comments = new global.Collections.Comments(serverObj.comments);

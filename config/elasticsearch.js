@@ -1,12 +1,13 @@
 var elasticsearch = require('elasticsearch');
 
 module.exports.elasticsearch = {
-    
+    /////////////////////////////////////
+    // Utilities PART
+    /////////////////////////////////////
     client : elasticsearch.Client({
       host: 'https://4peanmep:29jdygzgbu8viq9g@redwood-73726.us-east-1.bonsai.io/',
       log: 'trace'
     }),
-    
     pingServer : function(){
         this.client.ping({
           requestTimeout: 1000,
@@ -20,63 +21,58 @@ module.exports.elasticsearch = {
           }
         });
     },
-    
-    indexKnowledge : function(){
+    /////////////////////////////////////
+    // Knowledge PART
+    /////////////////////////////////////
+    indexKnowledge : function(json){
         this.client.index({
-          index: 'acme-production',
-          type: 'mytype',
-          id: '3',
-          body: {
-            title: 'Test 1',
-            tags: ['y', 'z'],
-            published: true,
-          }
+          index: 'creaktive',
+          type: 'knowledge',
+          id: json.id,
+          body: json
         }, function (error) {
             if (error) {
-                console.error('error impossible to index!',error);
-              } else {
-                console.log('Knowledge indexed!');
-              }
+              console.error('error impossible to index knwoledge!',error);
+            } else {
+              console.log('Knowledge indexed!');
+            }
         });
     },
-
-    updateKnowledge : function(){
-
+    searchKnowledge : function(val,cb){
+      this.client.search({
+        index: 'creaktive',
+        type: 'knowledge',
+        q: val
+      }, function (error, response) {
+        cb(response);
+      });
     },
-
-    query : function(){
-
+    removeKnowledge : function(){},
+    /////////////////////////////////////
+    // Concept PART
+    /////////////////////////////////////
+    indexConcept : function(json){
+        this.client.index({
+          index: 'creaktive',
+          type: 'concept',
+          id: json.id,
+          body: json
+        }, function (error) {
+            if (error) {
+              console.error('error impossible to index concept!',error);
+            } else {
+              console.log('Concept indexed!');
+            }
+        });
     },
-
-    remove : function(){
+    searchConcept : function(){},
+    removeConcept : function(){},
+    /////////////////////////////////////
+    // Attachement PART
+    /////////////////////////////////////
+    indexAttachement : function(){
 
     }
-
-    // client.cluster.health(function (err, resp) {
-    //   if (err) {
-    //     console.error("err cluster health",err.message);
-    //   } else {
-    //     console.dir("cluster health",resp);
-    //   }
-    // });
-
-    // index a document
-    // client.index({
-    //   index: 'blog',
-    //   type: 'post',
-    //   id: 1,
-    //   body: {
-    //     title: 'JavaScript Everywhere!',
-    //     content: 'It all started when...',
-    //     date: '2013-12-17'
-    //   }
-    // }, function (err, resp) {
-    //   if (err) {
-    //     console.error("lalala",err.message);
-    //   } else {
-    //     console.dir(resp);
-    //   }
-    // });
-    // This will render the view: 
-    // /home/barth/creaktive/views/elasticsearch/index.ejs
+    /////////////////////////////////////
+    /////////////////////////////////////
 }

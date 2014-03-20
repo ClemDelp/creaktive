@@ -71,6 +71,7 @@ module.exports = {
   	var file = req.files.files[0];
 
     async.auto({
+      
       metadata : function(next){
         id = guid(),
         fileName = safeFilename(file.name),
@@ -119,12 +120,6 @@ module.exports = {
     },function(err){
       if(err) res.send(err)
     })
-
-
-  	
-  
-
-
   },
 
 };

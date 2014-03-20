@@ -128,6 +128,11 @@ concepts.Views.MapView = Backbone.View.extend({
         socket.get("/concept/generateTree", function(data){
             _this.idea = MAPJS.content(data.tree);
             _this.mapRepository.dispatchEvent('mapLoaded', _this.idea);
+            _this.mapModel.addEventListener("nodeSelection", function(id){
+                socket.post('/elasticsearch/searchKnowledge',{nodeTitle: _this.concepts.get(id).get('title')}, function (response) {
+                    console.log('reeeeeeeeeeeeeeeeeeeeesponse:',response)
+                });
+            });
             _this.mapModel.addEventListener("openDetails", function(e){
                 var concept_id = e;
                 _this.eventAggregator.trigger("nodeSelectionChanged", concept_id);
