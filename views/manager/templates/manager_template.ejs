@@ -17,29 +17,17 @@
 	</div>
 </script>
 
-<script type="text/template" id="manager-projects-template">
-	{{ _.each(projects, function(project) { }}
-
-		<a href="/conceptsMap?projectId={{- project.id}}" class="button secondary round expand split">
-			{{- project.title}}
-			<span data-dropdown="drop_{{- project.id}}"></span>
-		</a>
-		<br>
-		<ul id="drop_{{- project.id}}" class="f-dropdown" data-dropdown-content>
-		  <li><a href="#" class="removeProject" data-id-project="{{- project.id}}">Remove</a></li>
-		</ul>		
-	{{ }); }}
-</script>
-
 
 <script type="text/template" id="manager-project-template">
     <div class="panel large-12 medium-12 small-12">
-    	<a href="/conceptsMap?projectId={{- project.id}}" class="button tiny">{{-project.title }}</a>
-	    <a href="/conceptsMap?projectId={{- project.id}}" class="button tiny">{{-nbrConc}} concepts</a>
-	    <a href="/knowledges?projectId={{- project.id}}" class="button tiny">{{-nbrKnow}} knowledges</a>
-	    <a href="/categories?projectId={{- project.id}}" class="button tiny">{{-nbrCatg}} categories</a>
-	    <a href="/analyse?projectId={{- project.id}}" class="button tiny">{{-nbrLink}} CKlinks</a>
-	    <a href="/userManager?projectId={{- project.id}}" class="button tiny">{{-nbrUser}} users</a>
-	    <a href="#" class="button tiny alert removeProject" data-id-project="{{- project.id}}">Remove</a>
+    <center>
+    	<a href="/conceptsMap?projectId={{- project.id}}" class="button success round tiny"><h5 style="color:white">{{-project.title }}</h5></a>
+	    <a href="/conceptsMap?projectId={{- project.id}}" class="button secondary round tiny">{{-nbrConc}} concepts</a>
+	    <a href="/knowledges?projectId={{- project.id}}" class="button secondary round tiny">{{-nbrKnow}} knowledges</a>
+	    <a href="/categories?projectId={{- project.id}}" class="button secondary round tiny">{{-nbrCatg}} categories</a>
+	    <a href="/analyse?projectId={{- project.id}}" class="button secondary round tiny">{{-nbrLink}} CKlinks</a>
+	    <a href="/userManager?projectId={{- project.id}}" class="button secondary round tiny">{{-nbrUser}} users</a>
+	    <a href="#" class="button tiny alert secondary round removeProject" data-id-project="{{- project.id}}">X</a>
+    </center>
     </div>
 </script>

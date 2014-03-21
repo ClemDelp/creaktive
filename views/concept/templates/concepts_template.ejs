@@ -53,3 +53,18 @@
 
 </script>
 
+<!-- //////////////////////////////////////////////////////////////////////: -->
+<!-- Modal part -->
+<div id="concepts_semanticModal_container" class="reveal-modal small" data-reveal></div>
+
+<script type="text/template" id="concepts-semanticModal-template">
+	<div class="panel callout"><center><h3>Semantic matching</h3></center></div>
+    {{ _.each(knowledges, function(knowledge) { }}
+        <div class="panel expand">
+        	<a href="#" class="button linkToC tiny round success" style="float:right" data-id-knowledge="{{-knowledge.id}}">Link</a>
+        	<h4>{{-knowledge.get('title')}}</h4>
+        	{{=knowledge.get('content')}}
+        </div>
+    {{ }); }}
+    <a class="close-reveal-modal">&#215;</a>
+</script>

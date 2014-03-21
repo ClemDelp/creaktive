@@ -38,20 +38,20 @@ module.exports.elasticsearch = {
             }
         });
     },
-    searchKnowledge : function(val,cb){
+    searchKnowledge : function(val,callback){
       this.client.search({
         index: 'creaktive',
         type: 'knowledge',
         q: val
       }, function (error, response) {
-        cb(response);
+        callback(response);
       });
     },
     removeKnowledge : function(){},
     /////////////////////////////////////
     // Concept PART
     /////////////////////////////////////
-    indexConcept : function(json){
+    indexConcept : function(json,callback){
         this.client.index({
           index: 'creaktive',
           type: 'concept',
@@ -60,8 +60,10 @@ module.exports.elasticsearch = {
         }, function (error) {
             if (error) {
               console.error('error impossible to index concept!',error);
+              callBack({response:"error",json:error});
             } else {
               console.log('Concept indexed!');
+              callback({response:"success"});
             }
         });
     },

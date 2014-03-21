@@ -7,6 +7,7 @@ manager.Views.Projects = Backbone.View.extend({
         // Params
         this.permissions        = json.permissions;
         this.projects           = json.projects;
+        this.projects_render    = this.projects;
         this.knowledges         = json.knowledges;
         this.concepts           = json.concepts;
         this.links              = json.links;
@@ -25,7 +26,7 @@ manager.Views.Projects = Backbone.View.extend({
     render : function(){
         $(this.el).html('');
         _this = this;
-        this.projects.each(function(_project){
+        this.projects_render.each(function(_project){
             // List to complete by research
             concepts_list   = [];
             links_list      = [];
@@ -85,7 +86,7 @@ manager.Views.Main = Backbone.View.extend({
         this.currentUser = json.currentUser;
         this.eventAggregator    = json.eventAggregator;
         // Events
-        this.links.bind("reset", this.render);
+        this.permissions.bind("reset", this.render);
         this.projects.bind("add", this.render);
         this.projects.bind("remove", this.render);
         // Templates
@@ -110,11 +111,13 @@ manager.Views.Main = Backbone.View.extend({
         
     },
     removeProject : function (e){
-        console.log("Remove project");
-        project_id = e.target.getAttribute("data-id-project");
-        project = this.projects.get(project_id);
-        this.projects.remove(project);
-        project.destroy();
+        if(confirm("Will remove the project and all its data! Confirm?")){
+            console.log("Remove project");
+            project_id = e.target.getAttribute("data-id-project");
+            project = this.projects.get(project_id);
+            this.projects.remove(project);
+            project.destroy();
+        }
     },
     search: function(e){
         e.preventDefault();

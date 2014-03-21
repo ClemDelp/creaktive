@@ -11,7 +11,6 @@ var global = {
   models: {},
   views: {},
   init: function (currentUser, currentProject, callback) {
-
     //Variables
     this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
     this.models.currentProject = new this.Models.ProjectModel(JSON.parse(currentProject)); 
@@ -51,21 +50,6 @@ var global = {
 
   },
   initManager :function (currentUser, callback) {
-    // // Variable
-    // this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
-    // console.log("******* Connected as ", this.models.current_user.get("name"))
-    // this.collections.Projects = new this.Collections.ProjectsCollection();
-    // this.collections.Notifications = new this.Collections.NotificationsCollection();
-    // this.eventAggregator = {};//this.concepts.first();
-    // _.extend(this.eventAggregator, Backbone.Events);
-
-    // // Fetch
-    // global.collections.Projects.fetch({reset: true,complete:function(){
-    //   global.collections.Notifications.fetch({reset : true,complete:function(){}});  
-    // }});
-
-    // callback();
-
     //Variables
     this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
     console.log("******* Connected as ", this.models.current_user.get("name"))
@@ -226,18 +210,11 @@ var title = {
   init: function (projectTitle) {
     /*Init*/
     this.views.Main = new this.Views.Main({
-      projects    : global.collections.Projects,
       project     : projectTitle,
-      concepts    : global.collections.Concepts,
-      knowledges  : global.collections.Knowledges,
-      experts     : global.collections.Users,
-      poches      : global.collections.Poches,
-      links       : global.collections.Links,
-      users       : global.collections.Users,
       user        : global.models.current_user,
       eventAggregator : global.eventAggregator
     });  
-
+    this.views.Main.render();
   }
 };
 /////////////////////////////////////////////////
