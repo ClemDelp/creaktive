@@ -62,13 +62,17 @@ manager.Views.Main = Backbone.View.extend({
         this.projects.add(new_project);
         
     },
-    removeProject : function (e){
-        console.log("Remove project");
-        project_id = e.target.getAttribute("data-id-project");
-        project = this.projects.get(project_id);
-        this.projects.remove(project);
-        project.destroy();
-    },
+
+removeProject : function (e){
+       if(confirm("Will remove the project and all its data! Confirm?")){
+           console.log("Remove project");
+           project_id = e.target.getAttribute("data-id-project");
+           project = this.projects.get(project_id);
+           this.projects.remove(project);
+           project.destroy();
+       }
+   },
+
     search: function(e){
         e.preventDefault();
         var research = e.target.value;
