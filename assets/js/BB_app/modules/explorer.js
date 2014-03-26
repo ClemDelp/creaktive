@@ -25,7 +25,206 @@ explorer.Collections.Filters = Backbone.Collection.extend({
     }
 });
 /////////////////////////////////////////
+// Right part
+/////////////////////////////////////////
+explorer.Views.PochesList = Backbone.View.extend({
+    initialize : function(json) {
+        //console.log("Visu poches part view initialise");
+        _.bindAll(this, 'render');
+        // Variables
+        this.poches = json.poches;
+        this.poches_render = this.poches;
+        this.knowledges = json.knowledges;
+        this.eventAggregator = json.eventAggregator;
+        // Events
+        this.eventAggregator.on('poche_search', this.pocheSearch, this);
+        // Templates
+        this.template = _.template($('#explorer-poche-template').html());
+        // Styles
+        //$(this.el).attr( "style","overflow: auto;max-height:200px");
+    },
+    pocheSearch: function(matched_poches){
+        this.poches_render = matched_poches;
+        this.render();
+    },
+    render : function(){
+        // Init
+        $(this.el).html('');
+        el_poches_part=this.el;
+        template = this.template;
+        knowledges = this.knowledges;
+        // Get the total_connections
+        total_connections = 0;
+        this.poches_render.each(function(poche_){
+            knowledges.each(function(k){
+                k.get('tags').forEach(function(tag){
+                    if(tag == poche_.get('title')){total_connections+=1;}
+                });
+            });  
+        });
+        // For each poche
+        this.poches_render.each(function(poche_){
+            // Get the recurrence
+            recurrence = 0;
+            knowledges.each(function(k){
+                k.get('tags').forEach(function(tag){
+                    if(tag == poche_.get('title')){recurrence+=1;}
+                });
+            });
+            if((recurrence == 0)&&(total_connections == 0)){percentage = 0;}else{percentage = (recurrence*100)/total_connections;}
+            var renderedContent = template({poche:poche_.toJSON(),rec:recurrence,per:percentage});
+            $(el_poches_part).append(renderedContent);
+        });
+
+        return this;
+    }
+});
+/***************************************/
+explorer.Views.PochesPart = Backbone.View.extend({
+    className:"large-2 medium-2 small-2 columns",
+    initialize : function(json) {
+        _.bindAll(this, 'render','search');
+        // Variables
+        this.poches = json.poches;
+        this.knowledges = json.knowledges;
+        this.eventAggregator = json.eventAggregator;
+        // Events
+        this.poches.bind("add",this.render);
+        this.poches.bind("remove",this.render);
+        this.poches.bind("change",this.render);
+        // Templates
+        this.template_search = _.template($('#explorer-search-template').html());
+    },
+    events : {
+        "keyup .search" : "search",
+        "click .add" : "addPoche",
+        "click .removePoche" : "removePoche",
+    },
+    search: function(e){
+        var research = e.target.value;
+        var research_size = research.length;
+        var matched = new Backbone.Collection();
+        this.poches.each(function(c){
+            if(research.toLowerCase() == c.get('title').substr(0,research_size).toLowerCase()){
+                matched.add(c);
+            }
+        });
+        this.eventAggregator.trigger('poche_search',matched);
+    },
+    removePoche: function(e){
+        var poche = this.poches.get(e.target.getAttribute('data-id-poche'));
+        poche.destroy();
+    },
+    addPoche : function(e){
+        global.models.newP = new global.Models.Poche({
+            id: guid(),
+            title: $("#explorer_newP").val(),
+            user : "clem",
+            color : "#FF0000",
+            description : $("#explorer_newP_description").val(),
+            date : getDate()
+        });
+        global.models.newP.save();
+        this.poches.add(global.models.newP);
+    },
+    render : function(){
+        // Init
+        $(this.el).html('');
+        // Input search
+        $(this.el).append(this.template_search({title:"Categories"}));
+        // Poche list
+        poches_list_view = new explorer.Views.PochesList({
+            poches:this.poches,
+            knowledges:this.knowledges,
+            eventAggregator:this.eventAggregator
+        });
+        $(this.el).append(poches_list_view.render().el);
+        
+        return this;
+    }
+});
+/////////////////////////////////////////
 // Middle part
+/////////////////////////////////////////
+explorer.Views.Comments = Backbone.View.extend({
+    className : "row",
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        // Variables
+        this.comments = json.comments;
+        this.eventAggregator = json.eventAggregator;
+        this.template_comments_list = _.template($('#explorer-comments-list-template').html());
+        this.template_new_comment = _.template($('#explorer-new-comment-template').html());
+    },
+    events : {},
+    render : function(){
+        $(this.el).html('');
+        // comments list
+        $(this.el).append(this.template_comments_list({comments : this.comments.toJSON()}));
+        // new comment
+        $(this.el).append(this.template_new_comment());
+
+        return this;
+    }
+});
+/////////////////////////////////////////
+explorer.Views.Knowledge = Backbone.View.extend({
+    tagName: "div",
+    className: "panel small-12 medium-12 large-12",
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        // Variables
+        this.knowledge = json.knowledge;
+        this.eventAggregator = json.eventAggregator;
+        this.template_knowledge_content = _.template($('#explorer-knowledge-content-template').html());
+    },
+    events : {},
+    render : function(){
+        $(this.el).html('');
+        // content
+        $(this.el).append(this.template_knowledge_content({knowledge : this.knowledge.toJSON()}));
+        // comments part
+        $(this.el).append(new explorer.Views.Comments({
+            comments : this.knowledge.get('comments'),
+            eventAggregator : this.eventAggregator
+        }).render().el);
+
+        return this;
+    }
+});
+/////////////////////////////////////////
+explorer.Views.Knowledges = Backbone.View.extend({
+    initialize: function(json){
+        _.bindAll(this, 'render');
+        // Variables
+        this.knowledges = json.knowledges;
+        this.knowledges_render = this.knowledges;
+        this.eventAggregator = json.eventAggregator;
+        // Events
+        this.eventAggregator.on('knowledge_search', this.knowledge_search, this);
+        this.eventAggregator.on("kColorChanged", this.render)
+        this.eventAggregator.on("kTitleChanged", this.render)
+    },
+    knowledge_search: function(matched_knowledges){
+        this.knowledges_render = matched_knowledges;
+        this.render();
+    },
+    events : {
+
+    },
+    render : function(){
+        _this = this;
+        $(this.el).html('');
+        this.knowledges_render.each(function(_knowledge){
+            $(_this.el).append(new explorer.Views.Knowledge({
+                knowledge : _knowledge,
+                eventAggregator : _this.eventAggregator
+            }).render().el);
+        });
+        return this;
+    }
+
+});
 /////////////////////////////////////////
 explorer.Views.KnowledgesList = Backbone.View.extend({
     initialize : function(json) {
@@ -64,8 +263,7 @@ explorer.Views.KnowledgesList = Backbone.View.extend({
 });
 /***************************************/
 explorer.Views.MiddlePart = Backbone.View.extend({
-    tagName: "div",
-    className: "small-12 medium-10 large-10 columns",
+    className: "small-8 medium-8 large-8 columns",
     initialize : function(json) {
         //console.log("Right part of explorer view initialise");
         _.bindAll(this, 'render');
@@ -96,7 +294,6 @@ explorer.Views.MiddlePart = Backbone.View.extend({
         this.eventAggregator.trigger('knowledge_search',matched);
     },
     open_modal_details_box :function(e){
-        //alert(e.target.getAttribute("data-id-knowledge"))
         this.eventAggregator.trigger("kSelected", e.target.getAttribute("data-id-knowledge"))
     },
     render : function(){
@@ -111,7 +308,12 @@ explorer.Views.MiddlePart = Backbone.View.extend({
             style:this.style
         });
         $(this.el).append(knowledge_list_view.render().el);
-        
+        // Knowledges timeline
+        $(this.el).append(new explorer.Views.Knowledges({
+            knowledges : this.knowledges,
+            eventAggregator : this.eventAggregator
+        }).render().el);
+
         return this;
     }
 });
@@ -229,156 +431,6 @@ explorer.Views.ddExperts = Backbone.View.extend({
         $(this.el).append(new explorer.Views.ExpertsPart({
             idAcc : "authors_acc",
             experts:this.experts,
-            knowledges:this.knowledges,
-            eventAggregator:this.eventAggregator
-        }).render().el);
-
-        return this;
-    }
-});
-/////////////////////////////////////////
-// Poches content part
-/////////////////////////////////////////
-explorer.Views.PochesList = Backbone.View.extend({
-    initialize : function(json) {
-        //console.log("Visu poches part view initialise");
-        _.bindAll(this, 'render');
-        // Variables
-        this.poches = json.poches;
-        this.poches_render = this.poches;
-        this.knowledges = json.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.eventAggregator.on('poche_search', this.pocheSearch, this);
-        // Templates
-        this.template = _.template($('#explorer-poche-template').html());
-        this.template_new_poche = _.template($('#explorer-new-poche-template').html());
-        // Styles
-        //$(this.el).attr( "style","overflow: auto;max-height:200px");
-    },
-    pocheSearch: function(matched_poches){
-        this.poches_render = matched_poches;
-        this.render();
-    },
-    render : function(){
-        // Init
-        $(this.el).html('');
-        el_poches_part=this.el;
-        template = this.template;
-        knowledges = this.knowledges;
-        // Get the total_connections
-        total_connections = 0;
-        this.poches_render.each(function(poche_){
-            knowledges.each(function(k){
-                k.get('tags').forEach(function(tag){
-                    if(tag == poche_.get('title')){total_connections+=1;}
-                });
-            });  
-        });
-        // For each poche
-        this.poches_render.each(function(poche_){
-            // Get the recurrence
-            recurrence = 0;
-            knowledges.each(function(k){
-                k.get('tags').forEach(function(tag){
-                    if(tag == poche_.get('title')){recurrence+=1;}
-                });
-            });
-            if((recurrence == 0)&&(total_connections == 0)){percentage = 0;}else{percentage = (recurrence*100)/total_connections;}
-            var renderedContent = template({poche:poche_.toJSON(),rec:recurrence,per:percentage});
-            $(el_poches_part).append(renderedContent);
-        });
-        // New poche
-        $(this.el).append(this.template_new_poche());
-
-        return this;
-    }
-});
-/***************************************/
-explorer.Views.PochesPart = Backbone.View.extend({
-    className:"content",
-    initialize : function(json) {
-        _.bindAll(this, 'render','search');
-        // Variables
-        this.poches = json.poches;
-        this.knowledges = json.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.poches.bind("add",this.render);
-        this.poches.bind("remove",this.render);
-        this.poches.bind("change",this.render);
-        // Templates
-        this.template_search = _.template($('#explorer-search-template').html());
-        // Style
-        $(this.el).attr('id',json.idAcc);
-    },
-    events : {
-        "keyup .search" : "search",
-        "click .add" : "addPoche",
-        "click .removePoche" : "removePoche",
-    },
-    search: function(e){
-        var research = e.target.value;
-        var research_size = research.length;
-        var matched = new Backbone.Collection();
-        this.poches.each(function(c){
-            if(research.toLowerCase() == c.get('title').substr(0,research_size).toLowerCase()){
-                matched.add(c);
-            }
-        });
-        this.eventAggregator.trigger('poche_search',matched);
-    },
-    removePoche: function(e){
-        var poche = this.poches.get(e.target.getAttribute('data-id-poche'));
-        poche.destroy();
-    },
-    addPoche : function(e){
-        global.models.newP = new global.Models.Poche({
-            id: guid(),
-            title: $("#explorer_newP").val(),
-            user : "clem",
-            color : "#FF0000",
-            description : $("#explorer_newP_description").val(),
-            date : getDate()
-        });
-        global.models.newP.save();
-        this.poches.add(global.models.newP);
-    },
-    render : function(){
-        // Init
-        $(this.el).html('');
-        // Input search
-        $(this.el).append(this.template_search({title:"Poches"}));
-        // Poche list
-        poches_list_view = new explorer.Views.PochesList({
-            poches:this.poches,
-            knowledges:this.knowledges,
-            eventAggregator:this.eventAggregator
-        });
-        $(this.el).append(poches_list_view.render().el);
-        
-        return this;
-    }
-});
-/***************************************/
-explorer.Views.ddCategories = Backbone.View.extend({
-    tagName:"dd",
-    initialize:function(json){
-        _.bindAll(this, 'render');
-        // Variables
-        this.poches = json.poches;
-        this.knowledges = json.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        // Templates
-        this.template_accrodion_hearder = _.template($('#explorer-accordion-header-template').html());
-    },
-    render:function(){
-        $(this.el).html('');
-        $(this.el).append(this.template_accrodion_hearder({title:"Categories",idAcc:"categories_acc"}));
-        // Accordion Concepts part content
-        $(this.el).append(new explorer.Views.PochesPart({
-            idAcc : "categories_acc",
-            poches:this.poches,
             knowledges:this.knowledges,
             eventAggregator:this.eventAggregator
         }).render().el);
@@ -703,12 +755,6 @@ explorer.Views.LeftPart = Backbone.View.extend({
             links:this.links,
             eventAggregator:this.eventAggregator
         }).render().el);
-        // Categories dd part
-        $(this.el).append(new explorer.Views.ddCategories({
-            poches:this.poches,
-            knowledges:this.knowledges,
-            eventAggregator:this.eventAggregator
-        }).render().el);
         // Authors dd part
         $(this.el).append(new explorer.Views.ddExperts({
             experts:this.experts,
@@ -958,6 +1004,12 @@ explorer.Views.Main = Backbone.View.extend({
             links:this.links,
             eventAggregator:this.eventAggregator,
             style:this.style
+        }).render().el);
+        // Right part
+        $(this.el).append(new explorer.Views.PochesPart({
+            poches : this.poches,
+            knowledges : this.knowledges,
+            eventAggregator : this.eventAggregator
         }).render().el);
 
         $(document).foundation();
