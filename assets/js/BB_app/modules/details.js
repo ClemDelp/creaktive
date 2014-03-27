@@ -540,7 +540,7 @@ details.Views.ModalTabsContent = Backbone.View.extend({
 /****************************************************************/
 details.Views.Modal = Backbone.View.extend({
     tagName:"div",
-    className:"reveal-modal xlarge",
+    className:"reveal-modal",
     id :"detailsModal",
     initialize : function(json) {
         _.bindAll(this, 'render');

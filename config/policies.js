@@ -72,12 +72,12 @@
     "*" : ["authenticated", "canWrite"] 
   },
 
-  // "ConceptmapController" : {
-  //   "conceptmapview" : ["authenticated", "forceHTTPs"],
-  //   "crMate" : "authenticated",
-  //   "find" : ["authenticated", "canRead"],
-  //   "*" : ["authenticated", "canWrite"] 
-  // },
+  "ConceptmapController" : {
+    "conceptmapview" : ["authenticated", "forceHTTPs"],
+    "crMate" : "authenticated",
+    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated", "canWrite"] 
+  },
   
   "KnowledgeController" : {
     "knowledgeview" : ["authenticated", "forceHTTPs"],

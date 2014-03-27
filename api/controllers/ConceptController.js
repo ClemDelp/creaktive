@@ -140,6 +140,7 @@
   },
 
   update : function(req, res){
+    console.log('pouette')
 
     Concept.findOne(req.body.params.id).done(function(err, concept){
       if(err) res.send(err);
