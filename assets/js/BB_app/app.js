@@ -325,6 +325,21 @@ var cklink = {
   }
 };
 /////////////////////////////////////////////////
+var comments = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+
+  }
+};
+/////////////////////////////////////////////////
 var tagK = {
   // Classes
   Collections: {},
