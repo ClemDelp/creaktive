@@ -3,6 +3,7 @@
 <!-- Modal part -->
 <div id="explorer_tags_modal_container" class="reveal-modal small" data-reveal></div>
 <div id="explorer_comments_modal_container" class="reveal-modal small" data-reveal></div>
+<div id="explorer_attachment_modal_container" class="reveal-modal small" data-reveal></div>
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Timeline template parts -->
 <script type="text/template" id="explorer-knowledge-normal-template">
@@ -40,13 +41,13 @@
     <div class="row">
         <span class="secondary round label">attachments ({{- knowledge.attachment.length }})</span> -
         {{ _.each(knowledge.attachment, function(file) { }}
-            <a href="#" data-dropdown="drop{{-file.id}}" class="button dropdown">{{- file.name }}</a><br>
+            <a href="#" data-dropdown="drop{{-file.id}}" class="button tiny round success dropdown">{{- file.name }}</a>
             <ul id="drop{{-file.id}}" data-dropdown-content class="f-dropdown">
-              <li><a href="#" class="openFile">Open</a></li>
-              <li><a href="#" class="removeFile">Remove</a></li>
+              <li><a href="#" class="openFile" data-file-path="{{- file.path}}">Open</a></li>
+              <li><a href="#" class="removeFile" data-file-id="{{- file.id}}">Remove</a></li>
             </ul>
         {{ }); }}
-        <span class="alert round label" style="cursor:pointer" data-knowledge-id="{{-knowledge.id}}">+</span>
+        <span class="alert round label openAttachmentModal" style="cursor:pointer" data-knowledge-id="{{-knowledge.id}}">+</span>
     </div>
 </script>
 

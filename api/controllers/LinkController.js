@@ -18,12 +18,20 @@
   */
 
   find : function (req,res){
-    Link.find({
+    if(req.body.params.projectId){
+      Link.find({
       project : req.session.currentProject.id
     }).done(function(err,links){
       if(err) res.send(err)
         res.send(links)
     });
+  }else{
+          Link.find({
+    }).done(function(err,links){
+      if(err) res.send(err)
+        res.send(links)
+    });
+  }
 
   },
 

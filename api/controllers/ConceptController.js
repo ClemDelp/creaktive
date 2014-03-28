@@ -113,8 +113,8 @@
 
 
   find : function (req,res){
-    
-    Concept.find({
+    if(req.body.params.projectId){
+          Concept.find({
       project : req.session.currentProject.id
     }).done(function(err,concepts){
       if(err) res.send(err);
@@ -123,6 +123,19 @@
      
         res.send(concepts)
     });
+    }
+    else{
+      Concept.find({
+
+    }).done(function(err,concepts){
+      if(err) res.send(err);
+      this.concepts = concepts;
+      c0 = _.findWhere(concepts, {position : 0});
+     
+        res.send(concepts)
+    });
+    }
+
 
   },
 

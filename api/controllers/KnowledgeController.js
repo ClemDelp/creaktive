@@ -18,18 +18,22 @@
   */
 
   find : function (req,res){
-    Permission.find({
-      user_id : req.session.user.id
-    }).done(function (err, permissions){
-      var authorized_projects = _.pluck(permissions, 'project_id');
+    if(req.body.params.projectId){
       Knowledge.find({
-        project : authorized_projects
+        project : req.session.currentProject.id
       }).done(function(err,knowledges){
         if(err) res.send(err)
           res.send(knowledges)
       });
+    }else{
+            Knowledge.find({
 
-    });
+      }).done(function(err,knowledges){
+        if(err) res.send(err)
+          res.send(knowledges)
+      });
+    }
+
 
 
   },

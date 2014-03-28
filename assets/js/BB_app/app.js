@@ -29,11 +29,11 @@ var global = {
 
     // Fetch
     global.collections.Users.fetch({reset:true,success:function(){},complete:function(){
-      global.collections.Knowledges.fetch({reset: true,complete:function(){
-        global.collections.Poches.fetch({reset: true,complete:function(){
+      global.collections.Knowledges.fetch({reset: true,data : {projectId : global.models.currentProject.get('id')},complete:function(){
+        global.collections.Poches.fetch({reset: true,data : {projectId : global.models.currentProject.get('id')},complete:function(){
           global.collections.Projects.fetch({reset:true,complete:function(){
-            global.collections.Concepts.fetch({reset:true,complete:function(){
-              global.collections.Links.fetch({reset:true,complete:function(){
+            global.collections.Concepts.fetch({reset:true,data : { projectId : global.models.currentProject.get('id') },complete:function(){
+              global.collections.Links.fetch({reset:true,data : {projectId : global.models.currentProject.get('id')},complete:function(){
                 global.collections.Notifications.fetch({reset:true,complete:function(){
                   global.collections.Permissions.fetch({reset:true,complete:function(){
       
@@ -334,10 +334,19 @@ var comments = {
   collections: {},
   models: {},
   views: {},
-  init: function () {
-    /*Init*/
-
-  }
+  init: function () {}
+};
+/////////////////////////////////////////////////
+var attachment = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {}
 };
 /////////////////////////////////////////////////
 var tagK = {
