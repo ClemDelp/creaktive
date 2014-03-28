@@ -116,6 +116,7 @@ generateTree : function(req,res){
       populate(c0, children)
       
       json.root = c0
+      json.id ="dhflkjhfsdkljhfdslk"
 
       res.send({tree : json});
     });
