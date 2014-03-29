@@ -178,26 +178,26 @@ concepts.Views.MapView = Backbone.View.extend({
         socket.get("/concept/generateTree", function(data){
             _this.idea = MAPJS.content(data.tree);
             _this.mapRepository.dispatchEvent('mapLoaded', _this.idea);
-            _this.mapModel.addEventListener("nodeSelection", function(id){
-                socket.post('/elasticsearch/searchKnowledge',{nodeTitle: _this.concepts.get(id).get('title')}, function (response) {
-                    console.log('Hits! ',response)
-                    if(response.hits.hits.length > 0){
-                        _this.eventAggregator.trigger('title_notification',{
-                            msg : response.hits.hits.length+" knowledge(s) matched for "+_this.concepts.get(id).get('title')+"!",
-                            type: "success",
-                            from : _this.concepts.get(id),
-                            hits : response.hits.hits
-                        });
-                    }else{
-                        _this.eventAggregator.trigger('title_notification',{
-                            msg : "no matching for "+_this.concepts.get(id).get('title')+"!",
-                            type : "secondary",
-                            hits : {}
-                        })
-                    }
+            // _this.mapModel.addEventListener("nodeSelection", function(id){
+            //     socket.post('/elasticsearch/searchKnowledge',{nodeTitle: _this.concepts.get(id).get('title')}, function (response) {
+            //         console.log('Hits! ',response)
+            //         if(response.hits.hits.length > 0){
+            //             _this.eventAggregator.trigger('title_notification',{
+            //                 msg : response.hits.hits.length+" knowledge(s) matched for "+_this.concepts.get(id).get('title')+"!",
+            //                 type: "success",
+            //                 from : _this.concepts.get(id),
+            //                 hits : response.hits.hits
+            //             });
+            //         }else{
+            //             _this.eventAggregator.trigger('title_notification',{
+            //                 msg : "no matching for "+_this.concepts.get(id).get('title')+"!",
+            //                 type : "secondary",
+            //                 hits : {}
+            //             })
+            //         }
                     
-                });
-            });
+            //     });
+            // });
             _this.mapModel.addEventListener("openDetails", function(e){
                 var concept_id = e;
                 _this.eventAggregator.trigger("nodeSelectionChanged", concept_id);

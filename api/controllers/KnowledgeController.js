@@ -64,7 +64,7 @@
           res.send(c[0]);
 
         });
-        sails.config.elasticsearch.indexKnowledge(req.body.params);
+        //sails.config.elasticsearch.indexKnowledge(req.body.params);
   		}else{
         // Create a new knowledge
         var k = req.body.params;
@@ -77,7 +77,7 @@
           res.send(k);
           
         });
-        sails.config.elasticsearch.indexKnowledge(k);
+        //sails.config.elasticsearch.indexKnowledge(k);
       }
     })
   },
