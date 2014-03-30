@@ -66,6 +66,7 @@ tagK.Views.Main = Backbone.View.extend({
         "click .unlinkCategory" : "unlinkCategory"
     },
     linkCategory : function(e){
+        e.preventDefault();
         poche_id = e.target.getAttribute("data-id-poche");
         poche = this.poches.get(poche_id);
         this.current_knowledge.get('tags').unshift(poche.get('title'));
@@ -75,6 +76,7 @@ tagK.Views.Main = Backbone.View.extend({
         this.render();
     },
     unlinkCategory : function(e){
+        e.preventDefault();
         poche_id = e.target.getAttribute("data-id-poche");
         poche = this.poches.get(poche_id);
         tags = _.without(this.current_knowledge.get('tags'), poche.get('title'));
@@ -85,6 +87,7 @@ tagK.Views.Main = Backbone.View.extend({
 
     },
     search: function(e){
+        e.preventDefault();
         var research = e.target.value;
         var research_size = research.length;
         var matched = new Backbone.Collection();

@@ -134,6 +134,7 @@ MAPJS.MapModel = function (mapRepository, layoutCalculator, titlesToRandomlyChoo
 			if (currentlySelectedIdeaId) {
 				self.dispatchEvent('nodeSelectionChanged', currentlySelectedIdeaId, false);
 			}
+			self.dispatchEvent('nodeSelection', id);
 			currentlySelectedIdeaId = id;
 			self.dispatchEvent('nodeSelectionChanged', id, true);
 		}

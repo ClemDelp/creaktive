@@ -6,6 +6,8 @@ interface1.Views.Concept = Backbone.View.extend({
         _.bindAll(this, 'render');
 
         /*Variables*/
+        this.links = json.links;
+        this.knowledges = json.knowledges;
         this.currentUser = json.currentUser;
         this.currentProject = json.currentProject;
 	    this.concepts = json.concepts;
@@ -15,6 +17,8 @@ interface1.Views.Concept = Backbone.View.extend({
 	render : function (){
 		$(this.el).html("");//reset the view
 		concept_ = new concepts.Views.MapView({
+            links : this.links,
+            knowledges : this.knowledges,
     		currentUser : this.currentUser,
     		currentProject : this.currentProject,
     		eventAggregator : this.eventAggregator,
@@ -75,6 +79,8 @@ interface1.Views.Main = Backbone.View.extend({
     render : function() {
         // Arbre des concepts
     	concept_ = new interface1.Views.Concept({
+            links : this.links,
+            knowledges : this.knowledges,
     		currentUser : this.currentUser,
     		currentProject : this.currentProject,
     		eventAggregator : this.eventAggregator,

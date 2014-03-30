@@ -11,11 +11,48 @@ var global = {
   models: {},
   views: {},
   init: function (currentUser, currentProject, callback) {
-
     //Variables
     this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
     this.models.currentProject = new this.Models.ProjectModel(JSON.parse(currentProject)); 
     console.log("******* Connected as ", this.models.current_user.get("name"), " on ", this.models.currentProject.get("title"))
+    this.eventAggregator = {};//this.concepts.first();
+    _.extend(this.eventAggregator, Backbone.Events);
+
+    this.collections.Knowledges = new this.Collections.Knowledges();
+    this.collections.Users = new this.Collections.UsersCollection();
+    this.collections.Poches = new this.Collections.Poches();
+    this.collections.Projects = new this.Collections.ProjectsCollection();
+    this.collections.Concepts = new this.Collections.ConceptsCollection();
+    this.collections.Links = new this.Collections.CKLinks();
+    this.collections.Notifications = new this.Collections.NotificationsCollection();
+    this.collections.Permissions = new this.Collections.PermissionsCollection();
+
+    // Fetch
+    global.collections.Users.fetch({reset:true,success:function(){},complete:function(){
+      global.collections.Knowledges.fetch({reset: true,data : {projectId : global.models.currentProject.get('id')},complete:function(){
+        global.collections.Poches.fetch({reset: true,data : {projectId : global.models.currentProject.get('id')},complete:function(){
+          global.collections.Projects.fetch({reset:true,complete:function(){
+            global.collections.Concepts.fetch({reset:true,data : { projectId : global.models.currentProject.get('id') },complete:function(){
+              global.collections.Links.fetch({reset:true,data : {projectId : global.models.currentProject.get('id')},complete:function(){
+                global.collections.Notifications.fetch({reset:true,complete:function(){
+                  global.collections.Permissions.fetch({reset:true,complete:function(){
+      
+                  }});
+                }});
+              }});
+            }});        
+          }});      
+        }});    
+      }});  
+    }}); 
+  
+    callback();
+
+  },
+  initManager :function (currentUser, callback) {
+    //Variables
+    this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
+    console.log("******* Connected as ", this.models.current_user.get("name"))
     this.eventAggregator = {};//this.concepts.first();
     _.extend(this.eventAggregator, Backbone.Events);
 
@@ -47,23 +84,6 @@ var global = {
       }});  
     }}); 
   
-    callback();
-
-  },
-  initManager :function (currentUser, callback) {
-    // Variable
-    this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
-    console.log("******* Connected as ", this.models.current_user.get("name"))
-    this.collections.Projects = new this.Collections.ProjectsCollection();
-    this.collections.Notifications = new this.Collections.NotificationsCollection();
-    this.eventAggregator = {};//this.concepts.first();
-    _.extend(this.eventAggregator, Backbone.Events);
-
-    // Fetch
-    global.collections.Projects.fetch({reset: true,complete:function(){
-      global.collections.Notifications.fetch({reset : true,complete:function(){}});  
-    }});
-
     callback();
   }
 };
@@ -102,8 +122,15 @@ var manager = {
   init: function () {
     /*Init*/
     this.views.Main = new this.Views.Main({
-      projects : global.collections.Projects,
-      currentUser : global.models.current_user,
+      permissions : global.collections.Permissions,
+      projects    : global.collections.Projects,
+      concepts    : global.collections.Concepts,
+      knowledges  : global.collections.Knowledges,
+      experts     : global.collections.Users,
+      poches      : global.collections.Poches,
+      links       : global.collections.Links,
+      users       : global.collections.Users,
+      user        : global.models.current_user,
       eventAggregator : global.eventAggregator
     }); 
   }
@@ -183,18 +210,11 @@ var title = {
   init: function (projectTitle) {
     /*Init*/
     this.views.Main = new this.Views.Main({
-      projects    : global.collections.Projects,
       project     : projectTitle,
-      concepts    : global.collections.Concepts,
-      knowledges  : global.collections.Knowledges,
-      experts     : global.collections.Users,
-      poches      : global.collections.Poches,
-      links       : global.collections.Links,
-      users       : global.collections.Users,
       user        : global.models.current_user,
       eventAggregator : global.eventAggregator
     });  
-
+    this.views.Main.render();
   }
 };
 /////////////////////////////////////////////////
@@ -303,6 +323,30 @@ var cklink = {
     /*Init*/
 
   }
+};
+/////////////////////////////////////////////////
+var comments = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {}
+};
+/////////////////////////////////////////////////
+var attachment = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {}
 };
 /////////////////////////////////////////////////
 var tagK = {

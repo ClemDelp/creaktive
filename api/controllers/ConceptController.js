@@ -113,8 +113,8 @@
 
 
   find : function (req,res){
-    
-    Concept.find({
+    if(req.body.params.projectId){
+          Concept.find({
       project : req.session.currentProject.id
     }).done(function(err,concepts){
       if(err) res.send(err);
@@ -123,6 +123,19 @@
      
         res.send(concepts)
     });
+    }
+    else{
+      Concept.find({
+
+    }).done(function(err,concepts){
+      if(err) res.send(err);
+      this.concepts = concepts;
+      c0 = _.findWhere(concepts, {position : 0});
+     
+        res.send(concepts)
+    });
+    }
+
 
   },
 
@@ -140,24 +153,26 @@
   },
 
   update : function(req, res){
-
     Concept.findOne(req.body.params.id).done(function(err, concept){
       if(err) res.send(err);
       if(concept){
-        Concept.update({
+        // Update concept
+        Concept.update(
+        {
           id: req.body.params.id
-        }, req.body.params).done(function(err,c){
+        }, 
+        req.body.params).done(function(err,c){
           if(err) res.send(err);
-          
-          
-
           Notification.objectUpdated(req,res,"Concept", c[0].id, function(notification){
             res.send(notification);
           });
-
           res.send(c[0]);
-      });
+        });
+        // sails.config.elasticsearch.indexConcept(req.body.params,function(json){
+        //   res.send({type:"update",response:json});
+        // });
       }else{
+        // Create a new concept
         var concept = req.body.params;
         concept.project = req.session.currentProject.id;
         Concept.create(concept).done(function(err,c){
@@ -168,6 +183,9 @@
           });
           res.send(c);
         });
+        // sails.config.elasticsearch.indexConcept(concept,function(json){
+        //   res.send({type:"new",response:json});
+        // });
       }
     })
   },

@@ -31,6 +31,10 @@
     "openChannels" : ["authenticated"]
   },
 
+  "SparqlController" : {
+    "*" : "authenticated"
+  }, 
+
   "ElasticsearchController" : {
     "*" : "authenticated"
   }, 
@@ -100,7 +104,6 @@
 
   "FileController" : {
     "*" : "authenticated"
-
   }
 
 

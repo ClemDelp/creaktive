@@ -4,63 +4,34 @@
 title.Views.Main = Backbone.View.extend({
     el:"#title_container",
     initialize : function(json) {
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render','openSemanticModal');
         // Variables
-        this.projects = json.projects;
+        this.json = {};
         this.projectTitle = json.project;
-        this.knowledges = json.knowledges;
-        this.concepts = json.concepts;
-        this.links = json.links;
-        this.users = json.users;
         this.user = json.user;
-        this.poches = json.poches;
         this.eventAggregator = json.eventAggregator;
         // Events  
-        this.projects.bind("change", this.render);
-        this.projects.bind("add", this.render);
-        this.projects.bind("remove", this.render);
-
-        this.knowledges.bind("change", this.render);
-        this.knowledges.bind("add", this.render);
-        this.knowledges.bind("remove", this.render);
-
-        this.concepts.bind("change", this.render);
-        this.concepts.bind("add", this.render);
-        this.concepts.bind("remove", this.render);
-
-        this.links.bind("reset", this.render);
-        this.links.bind("change", this.render);
-        this.links.bind("add", this.render);
-        this.links.bind("remove", this.render);
-
-        this.users.bind("change", this.render);
-        this.users.bind("add", this.render);
-        this.users.bind("remove", this.render);
-
-        this.poches.bind("change", this.render);
-        this.poches.bind("add", this.render);
-        this.poches.bind("remove", this.render);
-
+        this.eventAggregator.on("title_notification",this.title_notification,this)
         // Templates
         this.template = _.template($('#title-stats-template').html());              
         
     },
-    events : {},
+    events : {
+        "click #success_notification" : "openSemanticModal"
+    },
+    openSemanticModal : function(e){
+        e.preventDefault();
+        this.eventAggregator.trigger('openSemanticModal',this.json);
+    },
+    title_notification : function(json){
+        type = json.type;
+        msg = json.msg;
+        this.json = {from:json.from,hits:json.hits};
+        $(this.el).find("#"+type+"_notification").hide();
+        $(this.el).find("#"+type+"_notification").html(msg).show('slow');
+    },
     render : function(){
-        nbrConc_ = this.concepts.length;
-        nbrKnow_ = this.knowledges.length;
-        nbrCatg_ = this.poches.length;
-        nbrLink_ = this.links.length;
-        nbrUser_ =this.users.length;
-        $(this.el).html(this.template({
-            projectTitle: this.projectTitle,
-            nbrConc: nbrConc_,
-            nbrKnow: nbrKnow_,
-            nbrCatg: nbrCatg_,
-            nbrLink: nbrLink_,
-            nbrUser: nbrUser_
-        }));
-
+        $(this.el).html(this.template({projectTitle: this.projectTitle}));
         return this;
     }
 });

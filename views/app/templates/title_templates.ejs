@@ -3,12 +3,21 @@
 <script type="text/template" id="title-stats-template">
     <div class="expand panel">
     <center>
-        <strong style="font-size:2em">{{-projectTitle }} : </strong>
-        <span class="success round label">{{-nbrConc}} concepts</span>
-        <span class="alert round label">{{-nbrKnow}} knowledges</span>
-        <span class="secondary round label">{{-nbrCatg}} categories</span>
-        <span class="round label">{{-nbrLink}} CKlinks</span>
-        <span class="success round label">{{-nbrUser}} users</span>
+        <h3>{{-projectTitle }}</h3>
+        <div style="display:none">
+            <span class="secondary round label">
+                <span id="secondary_notification" style="display:none"></span>
+            </span>
+            <span class="success round label">
+                <span id="success_notification" style="display:none"></span>
+            </span>
+            <span class="alert round label">
+                <span id="alert_notification" style="display:none"></span>
+            </span>
+            <span class="round label">
+                <span id="normal_notification" style="display:none"></span>
+            </span>
+        </div>
     </center
     </div>
 </script>
