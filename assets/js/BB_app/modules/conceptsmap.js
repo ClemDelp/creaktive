@@ -123,15 +123,13 @@ conceptsmap.Views.Main = Backbone.View.extend({
             MM.App.init(_this.eventAggregator);
 
             socket.get("/conceptmap/generateTree", function(data) {
-                console.log(JSON.stringify(data.tree));
+                console.log(data.tree);
                 MM.App.setMap(MM.Map.fromJSON(data.tree));
-                MM.publish("load-done", this);
             });   
         }
 
         var dfd = $.Deferred();
         dfd.done(renderTemplate).done(initMap);
-
         dfd.resolve();
 
         // console.log("tutu")
