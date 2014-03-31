@@ -130,9 +130,9 @@
       global.init('<%- currentUser %>', <%- currentProject %>, function(){
         /*Modules*/
         details.init();
-        topbar.init("concept");
+        topbar.init();
         cklink.init();
-        title.init(<%- currentProject %>.title);
+        title.init(<%- currentProject %>,"concept");
         category.init();        
         /*Interfaces*/
         interface1.init();

@@ -65,9 +65,9 @@
     rt(io, function(){
       global.init('<%- currentUser %>', <%- currentProject %>, function(){
         /*Modules*/
-        topbar.init("organizer");
+        topbar.init();
         details.init();
-        title.init(<%- currentProject %>.title);
+        title.init(<%- currentProject %>,"category");
         category.init();
         ////////////////////////////////////////
         /*activat of "hashchange events's monitoring"*/

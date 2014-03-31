@@ -1,58 +1,3 @@
-/////////////////////////////////////////
-// Modal
-/////////////////////////////////////////
-concepts.Views.semanticModal = Backbone.View.extend({
-    el:"#concepts_semanticModal_container",
-    initialize:function(json){
-        _.bindAll(this, 'render', 'openSemanticModal');
-        // Variables
-        this.links = json.links;
-        this.concept = {};
-        this.knowledges = json.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        this.knowledges_list = [];
-        // Events
-        this.eventAggregator.on("openSemanticModal", this.openSemanticModal);
-        // Templates
-        this.template_modal = _.template($('#concepts-semanticModal-template').html()); 
-    },
-    events: {
-        "click .linkToC" : "linkToC"
-    },
-    linkToC : function(e){
-        e.preventDefault();
-        _this = this;
-        new_cklink = new global.Models.CKLink({
-            id : guid(),
-            user : "",
-            date : getDate(),
-            concept : this.concept.get('id'),
-            knowledge : this.knowledges.get(e.target.getAttribute("data-id-knowledge"))
-        });
-        new_cklink.save();
-    },
-    openSemanticModal : function(json){
-        this.concept = json.from;
-        hits = json.hits;
-        _this = this;
-
-        hits.forEach(function(knowledge){
-            _this.knowledges.each(function(_knowledge){
-                if(knowledge._source.id == _knowledge.get('id')){_this.knowledges_list.unshift(_knowledge);}    
-            });
-        })
-        this.render(function(){
-            $('#concepts_semanticModal_container').foundation('reveal', 'open'); 
-            $(document).foundation();
-        }); 
-    },
-    render:function(callback){
-        $(this.el).html('');
-        $(this.el).append(this.template_modal({knowledges : this.knowledges_list}));
-        // openModal callback to reveal the modal
-        if(callback) callback();
-    }
-});
 //////////////////////////////////////////////////////////////////
 // views
 //////////////////////////////////////////////////////////////////
@@ -69,11 +14,6 @@ concepts.Views.MapView = Backbone.View.extend({
         this.currentUser = json.currentUser;
         this.currentConcept = new global.Models.ConceptModel();
         this.knowledges = json.knowledges;
-        this.semanticModal_view = new concepts.Views.semanticModal({
-            links : this.links,
-            knowledges : this.knowledges,
-            eventAggregator : this.eventAggregator
-        });
         // Events
         this.concepts.bind('reset', this.map);        
         this.eventAggregator.on("colorChanged", this.colorChanged);
@@ -158,9 +98,6 @@ concepts.Views.MapView = Backbone.View.extend({
         var renderedContent ;
         renderedContent = this.template({concepts : this.concepts});
         $(this.el).html(renderedContent);
-        //Modal
-        this.semanticModal_view.render();
-        $(document).foundation();
 
         return this;
     },
@@ -178,26 +115,26 @@ concepts.Views.MapView = Backbone.View.extend({
         socket.get("/concept/generateTree", function(data){
             _this.idea = MAPJS.content(data.tree);
             _this.mapRepository.dispatchEvent('mapLoaded', _this.idea);
-            _this.mapModel.addEventListener("nodeSelection", function(id){
-                socket.post('/elasticsearch/searchKnowledge',{nodeTitle: _this.concepts.get(id).get('title')}, function (response) {
-                    console.log('Hits! ',response)
-                    if(response.hits.hits.length > 0){
-                        _this.eventAggregator.trigger('title_notification',{
-                            msg : response.hits.hits.length+" knowledge(s) matched for "+_this.concepts.get(id).get('title')+"!",
-                            type: "success",
-                            from : _this.concepts.get(id),
-                            hits : response.hits.hits
-                        });
-                    }else{
-                        _this.eventAggregator.trigger('title_notification',{
-                            msg : "no matching for "+_this.concepts.get(id).get('title')+"!",
-                            type : "secondary",
-                            hits : {}
-                        })
-                    }
-                    
-                });
-            });
+            // Elasticsearch
+            // _this.mapModel.addEventListener("nodeSelection", function(id){
+            //     socket.post('/elasticsearch/searchKnowledge',{nodeTitle: _this.concepts.get(id).get('title')}, function (response) {
+            //         console.log('Hits! ',response)
+            //         if(response.hits.hits.length > 0){
+            //             _this.eventAggregator.trigger('title_notification',{
+            //                 msg : response.hits.hits.length+" knowledge(s) matched for "+_this.concepts.get(id).get('title')+"!",
+            //                 type: "success",
+            //                 from : _this.concepts.get(id),
+            //                 hits : response.hits.hits
+            //             });
+            //         }else{
+            //             _this.eventAggregator.trigger('title_notification',{
+            //                 msg : "no matching for "+_this.concepts.get(id).get('title')+"!",
+            //                 type : "secondary",
+            //                 hits : {}
+            //             })
+            //         }
+            //     });
+            // });
             _this.mapModel.addEventListener("openDetails", function(e){
                 var concept_id = e;
                 _this.eventAggregator.trigger("nodeSelectionChanged", concept_id);

@@ -168,9 +168,9 @@
           });
           res.send(c[0]);
         });
-        sails.config.elasticsearch.indexConcept(req.body.params,function(json){
-          res.send({type:"update",response:json});
-        });
+        // sails.config.elasticsearch.indexConcept(req.body.params,function(json){
+        //   res.send({type:"update",response:json});
+        // });
       }else{
         // Create a new concept
         var concept = req.body.params;
@@ -183,9 +183,9 @@
           });
           res.send(c);
         });
-        sails.config.elasticsearch.indexConcept(concept,function(json){
-          res.send({type:"new",response:json});
-        });
+        // sails.config.elasticsearch.indexConcept(concept,function(json){
+        //   res.send({type:"new",response:json});
+        // });
       }
     })
   },

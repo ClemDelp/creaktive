@@ -354,17 +354,17 @@ category.Views.LeftPart = Backbone.View.extend({
         });
         global.models.newP.save();
         this.poches.add(global.models.newP);
-        // Get description
-        socket.post(
-            '/sparql/query',
-            {category: global.models.newP.get('title')}, 
-            function (response) {
-                console.log('Hits! ',response)
-                response.results.bindings.forEach(function(row){
-                    console.log(row.r,row.p)
-                })
-            }
-        );
+        // SPARQL
+        // socket.post(
+        //     '/sparql/query',
+        //     {category: global.models.newP.get('title')}, 
+        //     function (response) {
+        //         console.log('Hits! ',response)
+        //         response.results.bindings.forEach(function(row){
+        //             console.log(row.r,row.p)
+        //         })
+        //     }
+        // );
     },
     render : function(){
         // Init

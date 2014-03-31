@@ -68,8 +68,8 @@
     rt(io, function(){
       global.init('<%- currentUser %>', <%- currentProject %>, function(){
         // Modules
-        title.init(<%- currentProject %>.title);
-        topbar.init("explorer");
+        title.init(<%- currentProject %>,"knowledge");
+        topbar.init();
         details.init();
         cklink.init();
         explorer.init();
