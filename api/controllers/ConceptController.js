@@ -211,7 +211,7 @@
         projectId : req.session.currentProject.id,
         currentProject : JSON.stringify(req.session.currentProject)
       });
-    })
+    });
     
   },
 

@@ -361,7 +361,7 @@ category.Views.LeftPart = Backbone.View.extend({
             function (response) {
                 console.log('Hits! ',response)
                 response.results.bindings.forEach(function(row){
-                    console.log(row.p)
+                    console.log(row.r,row.p)
                 })
             }
         );

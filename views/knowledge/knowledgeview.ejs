@@ -66,9 +66,9 @@
     };
     ////////////////////////////////////////
     rt(io, function(){
-      global.init('<%- currentUser %>', '<%- currentProject %>', function(){
+      global.init('<%- currentUser %>', <%- currentProject %>, function(){
         // Modules
-        title.init('<%- projectTitle %>');
+        title.init(<%- currentProject %>.title);
         topbar.init("explorer");
         details.init();
         cklink.init();

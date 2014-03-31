@@ -13,7 +13,7 @@ var global = {
   init: function (currentUser, currentProject, callback) {
     //Variables
     this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
-    this.models.currentProject = new this.Models.ProjectModel(JSON.parse(currentProject)); 
+    this.models.currentProject = new this.Models.ProjectModel(currentProject); 
     console.log("******* Connected as ", this.models.current_user.get("name"), " on ", this.models.currentProject.get("title"))
     this.eventAggregator = {};//this.concepts.first();
     _.extend(this.eventAggregator, Backbone.Events);

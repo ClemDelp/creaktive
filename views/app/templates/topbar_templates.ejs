@@ -13,7 +13,7 @@
       {{if(page != "manager"){ }}
         <!-- Left Nav Section -->
         <ul class="left">
-          <li {{if(page == "conceptsmap"){ }}class="active"{{ } }}><a href="conceptsMap?projectId={{- project.id }}">Concepts</a></li>
+          <li {{if(page == "concept"){ }}class="active"{{ } }}><a href="conceptsMap?projectId={{- project.id }}">Concepts</a></li>
           <li {{if(page == "explorer"){ }}class="active"{{ } }}><a href="knowledges?projectId={{- project.id }}">Knowledges Explorer</a></li>
           <li {{if(page == "organizer"){ }}class="active"{{ } }}><a href="categories?projectId={{- project.id }}">Knowledges Organizer</a></li>
           <li {{if(page == "analyse"){ }}class="active"{{ } }}><a href="analyse?projectId={{- project.id }}">Analyse</a></li>

@@ -59,7 +59,7 @@
     };
     ////////////////////////////////////////
     rt(io, function(){
-      global.init('<%- currentUser %>', '<%- currentProject %>', function(){
+      global.init('<%- currentUser %>', <%- currentProject %>, function(){
         /*Modules*/
         topbar.init("analyse");
         title.init(<%- currentProject %>.title);
