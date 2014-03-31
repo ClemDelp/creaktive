@@ -123,8 +123,9 @@ conceptsmap.Views.Main = Backbone.View.extend({
             MM.App.init(_this.eventAggregator);
 
             socket.get("/conceptmap/generateTree", function(data) {
-                console.log(data.tree);
+                console.log(JSON.stringify(data.tree));
                 MM.App.setMap(MM.Map.fromJSON(data.tree));
+                MM.publish("load-done", this);
             });   
         }
 

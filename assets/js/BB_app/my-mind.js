@@ -4554,7 +4554,7 @@ MM.Layout.getAll = function() {
  		this._throbber.classList[visible ? "add" : "remove"]("visible");
  	},
 
- 	init: function(eventAggregator) {
+ 	init: function(eventAggregator, json) {
  		this.eventAggregator = eventAggregator;
 
  		this._port = document.querySelector("#port");
