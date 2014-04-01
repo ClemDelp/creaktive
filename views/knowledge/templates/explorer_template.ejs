@@ -150,7 +150,7 @@
 </script>
 
 <script type="text/template" id="explorer-context-template">
-        <div class="panel">
+        <div class="">
                 Context :  
                 {{ _.each(filters, function(filter) { }}
                     {{ if(filter.type == "concept"){ }}
@@ -171,7 +171,7 @@
                     {{ } }}
                 {{ }); }}
         </div>
-        <div class="panel">
+        <div class="">
                 <div class="row collapse">
                     <div class="small-10 columns">
                       <input id="explorer_new_k_title" class="search" type="text" placeholder="Add a knowledge in the current context..."/>

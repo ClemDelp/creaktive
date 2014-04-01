@@ -472,19 +472,19 @@ explorer.Views.MiddlePart = Backbone.View.extend({
         // Input 
         $(this.el).append(this.template_context({filters:this.filters.toJSON()}));
         // knowledge list
-        // knowledge_list_view = new explorer.Views.KnowledgesList({
-        //     knowledges:this.knowledges,
-        //     user:this.user,
-        //     eventAggregator:this.eventAggregator,
-        //     style:this.style
-        // });
-        // $(this.el).append(knowledge_list_view.render().el);
+        knowledge_list_view = new explorer.Views.KnowledgesList({
+            knowledges:this.knowledges,
+            user:this.user,
+            eventAggregator:this.eventAggregator,
+            style:this.style
+        });
+        $(this.el).append(knowledge_list_view.render().el);
         // Knowledges timeline
-        $(this.el).append(new explorer.Views.Knowledges({
-            user : this.user,
-            knowledges : this.knowledges,
-            eventAggregator : this.eventAggregator
-        }).render().el);
+        // $(this.el).append(new explorer.Views.Knowledges({
+        //     user : this.user,
+        //     knowledges : this.knowledges,
+        //     eventAggregator : this.eventAggregator
+        // }).render().el);
 
         return this;
     }
