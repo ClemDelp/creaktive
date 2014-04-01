@@ -308,6 +308,14 @@ var MM = {
  		toggle: document.createElement("div"),
  		canvas: document.createElement("canvas")
  	}
+ 	this._dom.node.id = "map";
+ 	this._dom.content.id = "map";
+ 	this._dom.status.id = "map"
+ 	this._dom.value.id = "map";
+ 	this._dom.text.id = "map";
+ 	this._dom.toggle.id = "map";
+ 	this._dom.children.id = "map";
+
  	this._dom.node.classList.add("item");
  	this._dom.content.classList.add("content");
  	this._dom.status.classList.add("status");
@@ -4560,7 +4568,7 @@ MM.Layout.getAll = function() {
  		this._port = document.querySelector("#port");
  		this._throbber = document.querySelector("#throbber");
 		//this.ui = new MM.UI();
-		this.io = new MM.UI.IO();
+		//this.io = new MM.UI.IO();
 		//this.help = new MM.UI.Help();
 
 		MM.Tip.init();
@@ -4573,6 +4581,7 @@ MM.Layout.getAll = function() {
 		
 		this._syncPort();
 		this.setMap(new MM.Map());
+
 	},
 
 	_syncPort: function() {
@@ -4581,6 +4590,7 @@ MM.Layout.getAll = function() {
 		this._port.style.width = this.portSize[0] + "px";
 		this._port.style.height = this.portSize[1] + "px";
 		//this._throbber.style.right = (20 + this.ui.getWidth())+ "px";
+		this._throbber.style.right = (20 + "px");
 		if (this.map) { this.map.ensureItemVisibility(this.current); }
 	}
 }
