@@ -16,7 +16,9 @@ conceptsmap.Views.Main = Backbone.View.extend({
         this.concepts.bind("reset", this.render);
         this.knowledges.bind("add", this.render);
         this.knowledges.bind("remove", this.render);
-        this.eventAggregator.on('change',this.action,this)
+        this.eventAggregator.on('change',this.action,this);
+        this.eventAggregator.on("colorChanged", this.render, this);
+        this.eventAggregator.on("titleChanged", this.render, this);
 
         this.template = _.template($("#conceptsmap_template").html()); 
     },

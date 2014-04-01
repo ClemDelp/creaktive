@@ -354,6 +354,7 @@ details.Views.LeftPart = Backbone.View.extend({
         "click .update_informations" : "update_informations",
     },
     update_informations : function(e){
+        e.preventDefault();
         this.model.set({
             title:$("#"+ e.target.getAttribute('data-action')).val(),
             content:CKEDITOR.instances.editor.getData()
