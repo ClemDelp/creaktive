@@ -259,144 +259,6 @@ explorer.Views.AttachmentModal = Backbone.View.extend({
 /////////////////////////////////////////
 // Middle part
 /////////////////////////////////////////
-explorer.Views.Knowledge = Backbone.View.extend({
-    tagName: "div",
-    className: "panel small-12 medium-12 large-12",
-    initialize : function(json){
-        _.bindAll(this, 'render');
-        // Variables
-        this.user = json.user;
-        this.knowledge = json.knowledge;
-        this.files = this.knowledge.get('attachment');
-        this.eventAggregator = json.eventAggregator;
-        this.mode = "normal";
-        this.template_knowledge_normal = _.template($('#explorer-knowledge-normal-template').html());
-        this.template_knowledge_edition = _.template($('#explorer-knowledge-edition-template').html());
-        // Events
-        this.knowledge.bind('change',this.render);
-    },
-    events : {
-        "click .openTagsModal"  : "openTagsModal",
-        "click .openCommentsModal"  : "openCommentsModal",
-        "click .openAttachmentModal"  : "openAttachmentModal",
-        "click .edit"  : "editMode",
-        "click .updateKnowledge"  : "updateKnowledge",
-        "click .cancelEdition"  : "cancelEdition",
-        "click .update"  : "updateKnowledge",
-        "click .updateLabel" : "updateLabel",
-        "click .remove" : "removeKnowledge",
-        "click .openFile" : "openFile",
-        "click .removeFile" : "removeFile"
-    },
-    removeFile : function(e){
-        console.log(e.target.getAttribute('data-file-id'))
-        var i = {};
-        _.each(this.files, function(f){
-            if(f.id === e.target.getAttribute('data-file-id')) i = f
-        })
-        this.files =  _.without(this.files, i);
-        this.knowledge.set({attachment : this.files})
-        this.knowledge.save();
-        socket.post("/file/destroy", {file : i});
-        this.render();
-    },
-    openFile : function(e){
-        console.log(e.target.getAttribute('data-file-path'));
-        $.download('file/get',{path : e.target.getAttribute('data-file-path')} );
-
-    },
-    cancelEdition : function(e){
-        e.preventDefault();
-        this.mode = "normal";
-        this.render();
-    },
-    removeKnowledge : function(e){
-        this.knowledge.destroy();
-        $(this.el).hide('slow');    
-    },
-    updateLabel : function(e){
-        e.preventDefault();
-        this.knowledge.set({color:e.target.getAttribute("data-label-color")}).save();
-        this.render();
-    },
-    updateKnowledge : function(e){
-        e.preventDefault();
-        //alert(CKEDITOR.instances.editor.getData())
-        this.knowledge.set({
-            user : this.user,
-            title:$(this.el).find(".title").val(),
-            content:CKEDITOR.instances.editor.getData(),
-            date: getDate(),
-            date2:new Date().getTime()
-        });
-        this.knowledge.save();
-        this.mode = "normal";
-        this.render();
-    },
-    editMode : function(e){
-        e.preventDefault();
-        this.mode = "edition";
-        this.render();
-        CKEDITOR.replaceAll('ckeditor');
-    },
-    openAttachmentModal: function(e){
-        e.preventDefault();
-        this.eventAggregator.trigger("openAttachmentModal",e.target.getAttribute("data-knowledge-id"));
-    },
-    openTagsModal: function(e){
-        e.preventDefault();
-        this.eventAggregator.trigger("openTagsModal",e.target.getAttribute("data-knowledge-id"));
-    },
-    openCommentsModal: function(e){
-        e.preventDefault();
-        this.eventAggregator.trigger("openCommentsModal",e.target.getAttribute("data-knowledge-id"));
-    },
-    render : function(){
-        $(this.el).html('');
-        // content
-        if(this.mode == "normal"){
-            $(this.el).append(this.template_knowledge_normal({knowledge : this.knowledge.toJSON()}));
-        } else if(this.mode == "edition"){
-            $(this.el).append(this.template_knowledge_edition({knowledge : this.knowledge.toJSON()}));    
-        }
-        
-        return this;
-    }
-});
-/////////////////////////////////////////
-explorer.Views.Knowledges = Backbone.View.extend({
-    initialize: function(json){
-        _.bindAll(this, 'render');
-        // Variables
-        this.user = json.user;
-        this.knowledges = json.knowledges;
-        this.knowledges_render = this.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.eventAggregator.on('knowledge_search', this.knowledge_search, this);
-        this.eventAggregator.on("kColorChanged", this.render)
-        this.eventAggregator.on("kTitleChanged", this.render)
-    },
-    knowledge_search: function(matched_knowledges){
-        this.knowledges_render = matched_knowledges;
-        this.render();
-    },
-    events : {},
-    render : function(){
-        _this = this;
-        $(this.el).html('');
-        this.knowledges_render.each(function(_knowledge){
-            $(_this.el).append(new explorer.Views.Knowledge({
-                user : _this.user,
-                knowledge : _knowledge,
-                eventAggregator : _this.eventAggregator
-            }).render().el);
-        });
-        return this;
-    }
-
-});
-/////////////////////////////////////////
 explorer.Views.KnowledgesList = Backbone.View.extend({
     initialize : function(json) {
         //console.log("Visu knwoledges liste view initialise");
@@ -431,6 +293,48 @@ explorer.Views.KnowledgesList = Backbone.View.extend({
 
         return this;
     }
+});
+/***************************************/
+explorer.Views.Knowledges = Backbone.View.extend({
+    initialize: function(json){
+        _.bindAll(this, 'render');
+        // Variables
+        this.user = json.user;
+        this.knowledges = json.knowledges;
+        this.knowledges_render = this.knowledges;
+        this.eventAggregator = json.eventAggregator;
+        // Events
+        this.eventAggregator.on('knowledge_search', this.knowledge_search, this);
+        this.eventAggregator.on("kColorChanged", this.render)
+        this.eventAggregator.on("kTitleChanged", this.render)
+    },
+    knowledge_search: function(matched_knowledges){
+        this.knowledges_render = matched_knowledges;
+        this.render();
+    },
+    events : {},
+    render : function(){
+        _this = this;
+        $(this.el).html('');
+        this.knowledges_render.each(function(_knowledge){
+            $(_this.el).append(new knowledge.Views.Main({
+                user : _this.user,
+                knowledge : _knowledge,
+                tagName : "div",
+                className : "panel large-8 medium-8 small-8 columns",
+                eventAggregator : _this.eventAggregator
+            }).render().el);
+            $(_this.el).append(new comments.Views.Main({
+                model : _knowledge,
+                tagName : "div",
+                className : "panel large-4 medium-4 small-4 columns",
+                user : _this.user,
+                eventAggregator : _this.eventAggregator
+            }).render().el);
+        });
+        return this;
+    }
+
 });
 /***************************************/
 explorer.Views.MiddlePart = Backbone.View.extend({
@@ -480,11 +384,11 @@ explorer.Views.MiddlePart = Backbone.View.extend({
         });
         $(this.el).append(knowledge_list_view.render().el);
         // Knowledges timeline
-        // $(this.el).append(new explorer.Views.Knowledges({
-        //     user : this.user,
-        //     knowledges : this.knowledges,
-        //     eventAggregator : this.eventAggregator
-        // }).render().el);
+        $(this.el).append(new explorer.Views.Knowledges({
+            user : this.user,
+            knowledges : this.knowledges,
+            eventAggregator : this.eventAggregator
+        }).render().el);
 
         return this;
     }
@@ -954,17 +858,6 @@ explorer.Views.Main = Backbone.View.extend({
         this.filters            = new explorer.Collections.Filters();
         this.eventAggregator    = json.eventAggregator;
         // Modals
-        this.tags_modal_view = new explorer.Views.TagsModal({
-            user : this.user,
-            poches: this.poches,
-            knowledges : this.knowledges,
-            eventAggregator : this.eventAggregator
-        });
-        this.comments_modal_view = new explorer.Views.CommentsModal({
-            user : this.user,
-            knowledges : this.knowledges,
-            eventAggregator : this.eventAggregator
-        });
         this.attachment_modal_view = new explorer.Views.AttachmentModal({
             user : this.user,
             knowledges : this.knowledges,
@@ -1185,9 +1078,6 @@ explorer.Views.Main = Backbone.View.extend({
             knowledges : this.knowledges,
             eventAggregator : this.eventAggregator
         }).render().el);
-        //Modals
-        this.tags_modal_view.render();
-        //this.comments_modal_view.render();
         
         $(document).foundation();
         return this;

@@ -1,65 +1,7 @@
 <div id="explorer_container"></div>
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Modal part -->
-<div id="explorer_tags_modal_container" class="reveal-modal small" data-reveal></div>
-<div id="explorer_comments_modal_container" class="reveal-modal small" data-reveal></div>
 <div id="explorer_attachment_modal_container" class="reveal-modal small" data-reveal></div>
-<!-- //////////////////////////////////////////////////////////////////////: -->
-<!-- Timeline template parts -->
-<script type="text/template" id="explorer-knowledge-normal-template">
-    <div class="row">
-        <div class="large-2 medium-2 small-2 columns">
-            <a href="#" data-dropdown="label{{-knowledge.id}}" class="button tiny round dropdown" style="background-color:{{- knowledge.color }}">
-            {{ if(knowledge.color == "#27AE60"){ }}Validated{{ }else if(knowledge.color == "#F39C12"){ }}Processing{{ }else{ }}Missing{{ } }}
-            </a><br>
-            <ul id="label{{-knowledge.id}}" data-dropdown-content class="f-dropdown">
-              <li><a href="#" class="updateLabel" data-knowledge-id="{{-knowledge.id}}" data-label-color="#27AE60">validated</a></li>
-              <li><a href="#" class="updateLabel" data-knowledge-id="{{-knowledge.id}}" data-label-color="#F39C12">processing</a></li>
-              <li><a href="#" class="updateLabel" data-knowledge-id="{{-knowledge.id}}" data-label-color="#C0392B">missing</a></li>
-            </ul>
-            <i>Last update by <b>{{-knowledge.user.name}}</b> at {{-knowledge.date}}</i>
-        </div>
-        <div class="large-8 medium-8 small-8 columns">
-            <h4>{{- knowledge.title}}</h4>
-            {{= knowledge.content }}
-        </div>
-        <div class="large-2 medium-2 small-2 columns">
-            <a href="#" class="button tiny round edit expand">Edit</a>
-            <a href="#" class="button tiny round alert remove expand">Remove</a>
-            <a href="#" class="button tiny round secondary openCommentsModal expand" data-knowledge-id="{{-knowledge.id}}">comments ({{- knowledge.comments.length }})</a>
-        </div>
-    </div>
-    <div class="row">
-        <hr>
-        <span class="secondary round label">tags ({{- knowledge.tags.length }})</span> -
-        {{ _.each(knowledge.tags, function(tag) { }}
-            <span class="success round label" style="cursor:pointer">{{-tag}}</span>
-        {{ }); }}
-        <span class="alert round label openTagsModal" style="cursor:pointer" data-knowledge-id="{{-knowledge.id}}">+</span>
-        <hr>
-    </div>
-    <div class="row">
-        <span class="secondary round label">attachments ({{- knowledge.attachment.length }})</span> -
-        {{ _.each(knowledge.attachment, function(file) { }}
-            <a href="#" data-dropdown="drop{{-file.id}}" class="button tiny round success dropdown">{{- file.name }}</a>
-            <ul id="drop{{-file.id}}" data-dropdown-content class="f-dropdown">
-              <li><a href="#" class="openFile" data-file-path="{{- file.path}}">Open</a></li>
-              <li><a href="#" class="removeFile" data-file-id="{{- file.id}}">Remove</a></li>
-            </ul>
-        {{ }); }}
-        <span class="alert round label openAttachmentModal" style="cursor:pointer" data-knowledge-id="{{-knowledge.id}}">+</span>
-    </div>
-</script>
-
-<script type="text/template" id="explorer-knowledge-edition-template">
-    <div class="row">
-        <input type="text" class="title" value="{{- knowledge.title}}"/>
-        <textarea  class="ckeditor"  name="editor" rows="10" cols="80">{{= knowledge.content }}</textarea>
-        <hr>
-        <a href="#" class="button tiny round success updateKnowledge">Update!</a>
-        <a href="#" class="button tiny round secondary cancelEdition">Cancel</a>
-    </div>
-</script>
 
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Left part -->
