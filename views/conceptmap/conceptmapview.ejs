@@ -56,10 +56,10 @@
       global.init('<%- currentUser %>', '<%- currentProject %>', function(){
         // Modules
         details.init();
-        topbar.init("conceptsmap"); 
+        topbar.init(); 
         conceptsmap.init();  
         cklink.init();  
-        title.init(<%- currentProject %>.title);
+        title.init(<%- currentProject %>,"concept");
         /*activat of "hashchange events's monitoring"*/
         Backbone.history.start();  
       });
