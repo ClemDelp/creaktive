@@ -19,7 +19,9 @@
 
   find : function (req,res){
 
+
 if(req.body.params.projectId){
+
       Poche.find({
        project : req.session.currentProject.id
       }).done(function(err,poches){
@@ -34,13 +36,6 @@ if(req.body.params.projectId){
           res.send(poches)
       });
     }
-
-
-
-
-
-
-
 
   },
 

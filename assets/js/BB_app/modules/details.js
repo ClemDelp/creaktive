@@ -354,6 +354,7 @@ details.Views.LeftPart = Backbone.View.extend({
         "click .update_informations" : "update_informations",
     },
     update_informations : function(e){
+        e.preventDefault();
         this.model.set({
             title:$("#"+ e.target.getAttribute('data-action')).val(),
             content:CKEDITOR.instances.editor.getData()
@@ -540,7 +541,7 @@ details.Views.ModalTabsContent = Backbone.View.extend({
 /****************************************************************/
 details.Views.Modal = Backbone.View.extend({
     tagName:"div",
-    className:"reveal-modal xlarge",
+    className:"reveal-modal",
     id :"detailsModal",
     initialize : function(json) {
         _.bindAll(this, 'render');

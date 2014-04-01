@@ -6,16 +6,17 @@
 	font-family: source sans pro, sans-serif;
 }
 
+
 html, body {
 	margin: 0;
-	overflow: hidden;
 	height: 100%;
 }
 
-ul {
+ul#port, ul#map{
 	margin: 0;
 	padding: 0;
 	list-style: none;
+	font-size : 100%;
 }
 
 #port {

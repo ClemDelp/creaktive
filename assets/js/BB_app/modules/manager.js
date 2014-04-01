@@ -110,6 +110,7 @@ manager.Views.Main = Backbone.View.extend({
         this.projects.add(new_project);
         
     },
+
     removeProject : function (e){
         if(confirm("Will remove the project and all its data! Confirm?")){
             console.log("Remove project");
@@ -119,6 +120,7 @@ manager.Views.Main = Backbone.View.extend({
             project.destroy();
         }
     },
+
     search: function(e){
         e.preventDefault();
         var research = e.target.value;
