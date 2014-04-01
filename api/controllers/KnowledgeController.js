@@ -20,7 +20,6 @@
   find : function (req,res){
 
     if(req.body.params.projectId){
-
       Knowledge.find({
         project : req.session.currentProject.id
       }).done(function(err,knowledges){

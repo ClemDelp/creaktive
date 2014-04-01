@@ -70,13 +70,6 @@
   },
 
   "ConceptController" : {
-    "conceptview" : ["authenticated", "forceHTTPs"],
-    "generateTree" : "authenticated",
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"] 
-  },
-
-  "ConceptmapController" : {
     "conceptmapview" : ["authenticated", "forceHTTPs"],
     "crMate" : "authenticated",
     "find" : ["authenticated", "canRead"],

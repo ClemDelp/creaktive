@@ -122,7 +122,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
         var initMap = function(){
             MM.App.init(_this.eventAggregator);
 
-            socket.get("/conceptmap/generateTree", function(data) {
+            socket.get("/concept/generateTree", function(data) {
                 MM.App.setMap(MM.Map.fromJSON(data.tree));
             });   
         }
