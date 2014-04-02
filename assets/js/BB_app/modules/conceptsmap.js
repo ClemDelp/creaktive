@@ -20,7 +20,6 @@ conceptsmap.Views.Main = Backbone.View.extend({
         this.eventAggregator.on("colorChanged", this.render, this);
         this.eventAggregator.on("titleChanged", this.render, this);
         this.eventAggregator.on("undo", this.performUndo, this);
-        this.eventAggregator.on("redo", this.performRedo, this);
         this.template = _.template($("#conceptsmap_template").html()); 
     },
     events : {
@@ -32,10 +31,18 @@ conceptsmap.Views.Main = Backbone.View.extend({
         "click .undo" : "undo",
         "click redo" : "redo",  
     },
-    performRedo : function(type, params){
-        console.log("REDO", type);       
+    performUndo : function(type, params){
+        console.log("UNDO", type);       
         var item = params[0];
-        if(type === "InsertNewItem"){    
+        if(type === "InsertNewItem"){
+            this.concepts.get(item._id).destroy();      
+        }
+        else if (type === "MoveItem"){ 
+            this.concepts.get(item._id).set({'id_father':params[1]}).save();
+        }
+        else if (type === "RemoveItem"){ 
+            _this = this;
+            console.log(item._children)
             this.concepts.create({
                 id:item._id,
                 user: this.user,
@@ -51,38 +58,23 @@ conceptsmap.Views.Main = Backbone.View.extend({
                 members:[],
                 attachment:[]
             });
-        }
-        else if (type === "MoveItem"){ 
-            this.concepts.get(item._id).set({'id_father':params[1]}).save();
-        }
-        else if (type === "RemoveItem"){ 
-            this.concepts.get(item._id).destroy();  
-        }
-    },
-    performUndo : function(type, params){
-        console.log("UNDO", type);       
-        var item = params[0];
-        if(type === "InsertNewItem"){
-            this.concepts.get(item._id).destroy();      
-        }
-        else if (type === "MoveItem"){ 
-            this.concepts.get(item._id).set({'id_father':params[1]}).save();
-        }
-        else if (type === "RemoveItem"){ 
-            this.concepts.create({
-                id:item._id,
-                user: this.user,
-                id_father : item._parent._id,
-                title : item._dom.text.innerText,
-                content : "",/*use for url post type*/
-                tags : [],
-                comments: [],
-                date: getDate(),
-                date2:new Date().getTime(),
-                attachment: "",
-                color: item._color || MM.Item.COLOR,
-                members:[],
-                attachment:[]
+
+            _.each(item._children, function(child){
+                _this.concepts.create({
+                    id:child._id,
+                    user: _this.user,
+                    id_father : child._parent._id,
+                    title : child._dom.text.innerText,
+                    content : "",/*use for url post type*/
+                    tags : [],
+                    comments: [],
+                    date: getDate(),
+                    date2:new Date().getTime(),
+                    attachment: "",
+                    color: child._color || MM.Item.COLOR,
+                    members:[],
+                    attachment:[]
+                });
             });
         }
     },
@@ -122,7 +114,6 @@ conceptsmap.Views.Main = Backbone.View.extend({
     },
     action:function(actions){
         console.log("actions: ",actions);
-
         if (actions instanceof MM.Action.InsertNewItem){
             new_c = new global.Models.ConceptModel({
                 id:actions._item._id,
@@ -149,8 +140,13 @@ conceptsmap.Views.Main = Backbone.View.extend({
             this.concepts.get(actions._item._id).set({'id_father':actions._newParent._id}).save();
         }
         else if (actions instanceof MM.Action.RemoveItem){ 
+            _this = this;
             console.log(actions._item);
             this.concepts.get(actions._item._id).destroy(); 
+            
+            _.each(actions._item._children, function(child){
+                _this.concepts.get(child._id).destroy(); 
+            });
         }
         else if (actions instanceof MM.Action.SetColor){ 
             console.log(actions._item, actions._color);
