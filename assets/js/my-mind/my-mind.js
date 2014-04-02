@@ -1115,6 +1115,7 @@ MM.Action.InsertNewItem.prototype.perform = function() {
 MM.Action.InsertNewItem.prototype.undo = function() {
 	this._parent.removeChild(this._item);
 	MM.App.select(this._parent);
+	MM.App.eventAggregator.trigger("undo", "InsertNewItem", [this._item]);
 }
 
 MM.Action.AppendItem = function(parent, item) {
@@ -1144,6 +1145,8 @@ MM.Action.RemoveItem.prototype.perform = function() {
 MM.Action.RemoveItem.prototype.undo = function() {
 	this._parent.insertChild(this._item, this._index);
 	MM.App.select(this._item);
+		MM.App.eventAggregator.trigger("undo", "RemoveItem", [this._item]);
+
 }
 
 MM.Action.MoveItem = function(item, newParent, newIndex, newSide) {
@@ -1169,6 +1172,7 @@ MM.Action.MoveItem.prototype.undo = function() {
 	this._item.setSide(this._oldSide);
 	this._oldParent.insertChild(this._item, this._oldIndex);
 	MM.App.select(this._newParent);
+	MM.App.eventAggregator.trigger("undo", "MoveItem", [this._item, this._oldParent._id]);
 }
 
 MM.Action.Swap = function(item, diff) {
@@ -1379,6 +1383,7 @@ MM.Command.Redo.isValid = function() {
 MM.Command.Redo.execute = function() {
 	MM.App.history[MM.App.historyIndex].perform();
 	MM.App.historyIndex++;
+	MM.App.eventAggregator.trigger("change", MM.App.history[MM.App.historyIndex-1])
 }
 
 MM.Command.InsertSibling = Object.create(MM.Command, {
@@ -4488,7 +4493,7 @@ MM.Layout.getAll = function() {
  	_fontSize: 100,
 
  	action: function(action) {
- 		this.eventAggregator.trigger("change",action,MM.App.map.toJSON());
+ 		this.eventAggregator.trigger("change",action);
 
  		if (this.historyIndex < this.history.length) { /* remove undoed actions */
  			this.history.splice(this.historyIndex, this.history.length-this.historyIndex);
