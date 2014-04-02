@@ -88,17 +88,12 @@ cklink.Views.RightPart = Backbone.View.extend({
         this.filters            = json.filters;
         this.links = json.links;
         this.eventAggregator = json.eventAggregator;
-        // Events 
-
         // Templates
-        this.template_search = _.template($('#category-searchKnowledges-template').html());
         this.template_filters = _.template($('#category-filters-template').html());
         
     },
     render : function(){
         $(this.el).html('');
-        // Search bar
-        //$(this.el).append(this.template_search());
         // Context bar
         $(this.el).append(this.template_filters({filters : this.filters.toJSON()}));
         // Knowledge
@@ -184,7 +179,8 @@ cklink.Views.Main = Backbone.View.extend({
             });
         }
         // Left part
-        left_part_view = new category.Views.LeftPart({
+        left_part_view = new categoriesList.Views.Main({
+            className       : "small-2 medium-2 large-2 columns",
             knowledges      : this.knowledges,   
             poches          : this.poches,
             eventAggregator : this.eventAggregator

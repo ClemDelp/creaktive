@@ -137,7 +137,7 @@ category.Views.MiddlePart = Backbone.View.extend({
         // Events 
 
         // Templates
-        this.template_search = _.template($('#category-searchKnowledges-template').html());
+        this.template_search = _.template($('#category-newCategory-template').html());
         this.template_filters = _.template($('#category-filters-template').html());
         
     },
@@ -155,8 +155,7 @@ category.Views.MiddlePart = Backbone.View.extend({
             eventAggregator : this.eventAggregator
         });
         $(this.el).append(lists_view.render().el);
-        
-
+    
         return this;
     }
 });
@@ -241,144 +240,6 @@ category.Views.RightPart = Backbone.View.extend({
         });
         $(this.el).append(notcategorized_view.render().el);
 
-        return this;
-    }
-});
-/////////////////////////////////////////
-// Left Part
-/////////////////////////////////////////
-category.Views.PochesCategory = Backbone.View.extend({
-    initialize : function(json) {
-        _.bindAll(this, 'render');
-        // Variables
-        this.poches = json.poches;
-        this.poches_render = this.poches;
-        this.knowledges = json.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.eventAggregator.on('poche_search', this.pocheSearch, this);
-        this.eventAggregator.on('categories_list_render', this.render, this);
-        // Templates
-        this.template_tags = _.template($('#category-tag-template').html());
-        this.template_new_poche = _.template($('#category-new-poche-template').html());
-        // Styles
-        //$(this.el).attr( "style","overflow: auto;max-height:200px");
-    },
-    pocheSearch: function(matched_poches){
-        e.preventDefault();
-        this.poches_render = matched_poches;
-        this.render();
-    },
-    render : function(){
-        // Init
-        $(this.el).html('');
-        el_poches_part=this.el;
-        template = this.template_tags;
-        knowledges = this.knowledges;
-        // Get the total_connections
-        total_connections = 0;
-        this.poches_render.each(function(poche_){
-            knowledges.each(function(k){
-                k.get('tags').forEach(function(tag){
-                    if(tag == poche_.get('title')){total_connections+=1;}
-                });
-            });  
-        });
-        // For each poche
-        this.poches_render.each(function(poche_){
-            // Get the recurrence
-            recurrence = 0;
-            knowledges.each(function(k){
-                k.get('tags').forEach(function(tag){
-                    if(tag == poche_.get('title')){recurrence+=1;}
-                });
-            });
-            if((recurrence == 0)&&(total_connections == 0)){percentage = 0;}else{percentage = (recurrence*100)/total_connections;}
-            var renderedContent = template({poche:poche_.toJSON(),rec:recurrence,per:percentage});
-            $(el_poches_part).append(renderedContent);
-        });
-        // New poche
-        $(this.el).append(this.template_new_poche());
-
-        return this;
-    }
-});
-/***************************************/
-category.Views.LeftPart = Backbone.View.extend({
-    className: "small-2 medium-2 large-2 columns",
-    initialize : function(json) {
-        _.bindAll(this, 'render');
-        // Variables
-        this.poches = json.poches;
-        this.knowledges = json.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.poches.bind("add",this.render);
-        this.poches.bind("remove",this.render);
-        this.poches.bind("change",this.render);
-        // Templates
-        this.template_search = _.template($('#category-search-template').html());
-        
-    },
-    events : {
-        "keyup .search" : "search",
-        "click .add" : "addPoche",
-        "click .removePoche" : "removePoche",
-    },
-    search: function(e){
-        e.preventDefault();
-        var research = e.target.value;
-        var research_size = research.length;
-        var matched = new Backbone.Collection();
-        this.poches.each(function(c){
-            if(research.toLowerCase() == c.get('title').substr(0,research_size).toLowerCase()){
-                matched.add(c);
-            }
-        });
-        this.eventAggregator.trigger('poche_search',matched);
-    },
-    removePoche: function(e){
-        e.preventDefault();
-        var poche = this.poches.get(e.target.getAttribute('data-id-poche'));
-        poche.destroy();
-    },
-    addPoche : function(e){
-        e.preventDefault();
-        global.models.newP = new global.Models.Poche({
-            id: guid(),
-            title: $("#category_newP").val(),
-            user : "clem",
-            color : "#FF0000",
-            description : $("#category_newP_description").val(),
-            date : getDate()
-        });
-        global.models.newP.save();
-        this.poches.add(global.models.newP);
-        // SPARQL
-        // socket.post(
-        //     '/sparql/query',
-        //     {category: global.models.newP.get('title')}, 
-        //     function (response) {
-        //         console.log('Hits! ',response)
-        //         response.results.bindings.forEach(function(row){
-        //             console.log(row.r,row.p)
-        //         })
-        //     }
-        // );
-    },
-    render : function(){
-        // Init
-        $(this.el).html('');
-        // Input search
-        $(this.el).append(this.template_search({title:"Poches"}));
-        // Poche list
-        poches_list_view = new category.Views.PochesCategory({
-            poches:this.poches,
-            knowledges:this.knowledges,
-            eventAggregator:this.eventAggregator
-        });
-        $(this.el).append(poches_list_view.render().el);
-        
         return this;
     }
 });
@@ -480,7 +341,32 @@ category.Views.Main = Backbone.View.extend({
     events : {
         "click .addFilter" : "addFilter",
         "click .remove" : "removeFilter",
-        "click .moveTo" : "moveTo"
+        "click .moveTo" : "moveTo",
+        "click .newCategory" : "newCategory"
+    },
+    newCategory : function(e){
+        e.preventDefault();
+        global.models.newP = new global.Models.Poche({
+            id: guid(),
+            title: $(this.el).find(".category_title").val(),
+            user : "clem",
+            color : "#FF0000",
+            date : getDate()
+        });
+        global.models.newP.save();
+        this.poches.add(global.models.newP);
+        // SPARQL
+        // socket.post(
+        //     '/sparql/query',
+        //     {category: global.models.newP.get('title')}, 
+        //     function (response) {
+        //         console.log('Hits! ',response)
+        //         response.results.bindings.forEach(function(row){
+        //             console.log(row.r,row.p)
+        //         })
+        //     }
+        // );
+        this.render();
     },
     moveTo : function(e){
         // Init
@@ -528,7 +414,8 @@ category.Views.Main = Backbone.View.extend({
             });
         }
         // Left part
-        leftPart_view = new category.Views.LeftPart({
+        leftPart_view = new categoriesList.Views.Main({
+            className       : "small-2 medium-2 large-2 columns",
             knowledges:this.knowledges,
             poches:this.poches,
             eventAggregator:this.eventAggregator

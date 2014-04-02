@@ -1,33 +1,6 @@
-<!-- //////////////////////////////////////////////////////////////////////: -->
-<!-- Left part -->
 <script type="text/template" id="category-search-template">
     <div class="panel expand"><p>{{-title}}</p></div>
     <input type="text" class="search" placeholder="search in {{-title}}...">
-</script>
-
-<script type="text/template" id="category-tag-template">
-    <div class="row">
-        <div class="small-12 medium-12 large-8 columns">
-                <a class="tiny success radius button addFilter expand" data-filter-type="poche" data-filter-model="{{-poche.id}}">
-                        {{- poche.title }} - <font style="color:red">({{- rec }})</font>
-                        <input style="float:right" data-id-poche="{{- poche.id }}" type="submit" value="x" class="removePoche" />
-                </a>
-        </div>
-        <div class="progress success show-for-large-up large-4 large-4 columns">
-          <span class="meter" style="width: {{-per}}%"></span>
-        </div>
-    </div>    
-</script>
-
-<script type="text/template" id="category-new-poche-template">
-        <div class="row collapse">
-        <div class="small-10 columns">
-          <input type="text" id="category_newP" class="expand" placeholder="New poche...">
-        </div>
-        <div class="small-2 columns">
-          <a href="#" class="button success postfix add">Add</a>
-        </div>
-    </div>
 </script>
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Modal part -->
@@ -59,7 +32,6 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Right part -->
 <script type="text/template" id="category-notcategorized-template">
-
     <a href="#" data-dropdown="drop{{-knowledge.id}}" class="tiny radius round button dropdown expand" style="background:{{- knowledge.color }}">{{- knowledge.title }}</a><br>
     <ul id="drop{{-knowledge.id}}" data-dropdown-content class="f-dropdown">
         {{ _.each(poches, function(poche) { }}
@@ -80,8 +52,15 @@
     </div>
 </script>
 
-<script type="text/template" id="category-searchKnowledges-template">
-    <input type="text" placeholder="search knowledge by keywords"/>
+<script type="text/template" id="category-newCategory-template">
+    <div class="row collapse">
+        <div class="small-10 columns">
+          <input class="category_title" type="text" placeholder="new category..."/>
+        </div>
+        <div class="small-2 columns">
+          <a href="#" class="button postfix newCategory">Add</a>
+        </div>
+    </div>
 </script>
 
 <script type="text/template" id="category-list-template">
