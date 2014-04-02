@@ -1026,7 +1026,11 @@ MM.Keyboard.init = function() {
 
 MM.Keyboard.handleEvent = function(e) {
 	var node = document.activeElement;
-	if(node != document.body) {return;}
+	if(node.id == "map" && node.classList.contains("text") && e.keyCode == 13) {
+		MM.Command.Finish.execute();
+		return;
+	}
+	else if(node != document.body) {return;}
 	while (node && node != document) {
 		if (node.classList.contains("ui")) { return; }
 		node = node.parentNode;

@@ -71,7 +71,6 @@
 
   "ConceptController" : {
     "conceptmapview" : ["authenticated", "forceHTTPs"],
-    "crMate" : "authenticated",
     "find" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"] 
   },

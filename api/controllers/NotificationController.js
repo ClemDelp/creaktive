@@ -17,7 +17,6 @@ module.exports = {
 
   find : function (req,res){
     Permission.find({
-      project_id : req.session.currentProject.id
     }).done(function(err, permissions){
       var authorized_projects = _.pluck(permissions, 'project_id');
       Notification.find({
