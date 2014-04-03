@@ -613,19 +613,19 @@ details.Views.Main = Backbone.View.extend({
         this.eventAggregator.on("notificationOpenK", this.onNotificationOpenK)
 
         // Reset the baseUrl of template manager
-        Backbone.TemplateManager.baseUrl = '{name}';
+        //Backbone.TemplateManager.baseUrl = '{name}';
         
         // Create the upload manager object
-        this.uploadManager = new Backbone.UploadManager();
+        // this.uploadManager = new Backbone.UploadManager();
 
-        eventAggregator_ = this.eventAggregator;
+        // eventAggregator_ = this.eventAggregator;
 
-        this.uploadManager.on('filedone', function (e,f,g) {
-            eventAggregator_.trigger("uploadCompleted",f._response.result);
-            $('#uploadModal').foundation('reveal', 'close');
-        });
+        // this.uploadManager.on('filedone', function (e,f,g) {
+        //     eventAggregator_.trigger("uploadCompleted",f._response.result);
+        //     $('#uploadModal').foundation('reveal', 'close');
+        // });
 
-        this.uploadManager.renderTo($('div#upload-container'));
+        // this.uploadManager.renderTo($('div#upload-container'));
 
 
     },

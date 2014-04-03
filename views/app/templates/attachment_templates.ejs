@@ -1,3 +1,14 @@
- <script type="text/template" id="attachment-upload-form-template">
- 	<div id="upload-container"></div>
- </script>
+<script type="text/template" id="attachment-list-template">
+	<span class="secondary round label">attachments ({{- model.attachment.length }})</span> -
+	{{ _.each(model.attachment, function(file) { }}
+	    <a href="#" data-dropdown="drop{{-file.id}}" class="button tiny round success dropdown">{{- file.name }}</a>
+	    <ul id="drop{{-file.id}}" data-dropdown-content class="f-dropdown">
+	      <li><a href="#" class="openFile" data-file-path="{{- file.path}}">Open</a></li>
+	      <li><a href="#" class="removeFile" data-file-id="{{- file.id}}">Remove</a></li>
+	    </ul>
+	{{ }); }}
+	<span class="alert round label openAttachmentModal" style="cursor:pointer" data-knowledge-id="{{-model.id}}">+</span>
+	<div id="upload-container-{{-model.id}}"></div>
+	
+	<input class="uploadFile" type="file" />
+</script>

@@ -312,21 +312,6 @@ var explorer = {
 //   }
 // };
 /////////////////////////////////////////////////
-var knowledge = {
-  // Classes
-  Collections: {},
-  Models: {},
-  Views: {},
-  // Instances
-  collections: {},
-  models: {},
-  views: {},
-  init: function () {
-    /*Init*/
-
-  }
-};
-/////////////////////////////////////////////////
 var cklink = {
   // Classes
   Collections: {},
