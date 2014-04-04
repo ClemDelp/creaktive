@@ -38,6 +38,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
         // CKLayout events
         this.eventAggregator.on("colorChanged", this.render, this);
         this.eventAggregator.on("titleChanged", this.render, this);
+        this.eventAggregator.on("removeKnowledge", this.render, this);
         
         // My-mind events
         this.eventAggregator.on('change',this.action,this);
