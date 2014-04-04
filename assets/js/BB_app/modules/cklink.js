@@ -109,11 +109,54 @@ cklink.Views.RightPart = Backbone.View.extend({
     }
 });
 /////////////////////////////////////////////////
+cklink.Views.Modal = Backbone.View.extend({
+    el:"#CKLinkModal",
+    initialize : function(json){
+        _.bindAll(this, 'render', 'openCKLinkModal');
+        this.current_concept = new Backbone.Model();
+        this.knowledges = json.knowledges;
+        this.poches = json.poches;
+        this.eventAggregator = json.eventAggregator;
+        this.links = json.links;
+        this.concepts = json.concepts;
+
+        //Events
+        this.eventAggregator.on("openCKLinkModal", this.openCKLinkModal);     
+    },
+    closeCKLinkModal : function(){
+        ('#CKLinkModal').foundation('reveal', 'close');
+    },
+    openCKLinkModal : function(c_id){
+        this.current_concept = this.concepts.get(c_id);
+        this.render(function(){
+            $('#CKLinkModal').foundation('reveal', 'open'); 
+            $(document).foundation();
+        }); 
+    },
+    render:function(callback){
+        $(this.el).html('');
+        $(this.el).append(new cklink.Views.Main({
+            className : "panel row",
+            current_concept : this.current_concept,
+            knowledges : this.knowledges,
+            poches : this.poches,
+            links : this.links,
+            concepts : this.concepts,
+            eventAggregator : this.eventAggregator
+        }).render().el);
+        // Render it in our div
+        if(callback) callback();
+    }
+
+});
+
+
+
+/////////////////////////////////////////////////
 // Main 
 /////////////////////////////////////////////////
 cklink.Views.Main = Backbone.View.extend({
     initialize : function(json) {
-        //console.log("CKLINK MAIN view initialise");
         // Variables
         this.knowledges = json.knowledges;
         this.poches = json.poches;
@@ -121,6 +164,8 @@ cklink.Views.Main = Backbone.View.extend({
         this.links = json.links;
         this.concepts = json.concepts;
         this.filters = new category.Collections.Filters();
+        
+
         this.current_concept = json.current_concept;
 
         // Events

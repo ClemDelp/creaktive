@@ -451,7 +451,6 @@ var MM = {
  }
 
  MM.Item.prototype.collapse = function() {
- 	//this.eventAggregator.trigger("collapse", this)
  	if (this._collapsed) { return; }
  	this._collapsed = true;
  	return this.update();
@@ -4302,9 +4301,9 @@ MM.Layout.getAll = function() {
  		break;
 
  		case "dblclick":
-			MM.App.eventAggregator.trigger("nodeSelectionChanged", MM.App.current._id);
-			// var item = MM.App.map.getItemFor(e.target);
-			// if (item) { MM.Command.Edit.execute(); }
+			//MM.App.eventAggregator.trigger("nodeSelectionChanged", MM.App.current._id);
+			var item = MM.App.map.getItemFor(e.target);
+			if (item) { MM.Command.Edit.execute(); }
 			break;
 
 			case "mousedown":

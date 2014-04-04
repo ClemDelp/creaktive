@@ -152,6 +152,8 @@ var conceptsmap = {
       project     : global.models.currentProject,
       user        : global.models.current_user,
       knowledges  : global.collections.Knowledges,
+      poches      : global.collections.Poches,
+      links       : global.collections.Links,
       eventAggregator : global.eventAggregator
     });   
   }

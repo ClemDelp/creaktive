@@ -18,7 +18,7 @@ CKLayout.Views.Modal = Backbone.View.extend({
         // Variables
         this.model = new Backbone.Model();
         this.user = json.user;
-        this.collection = json.knowledges;
+        this.collection = json.knowledges || json.concepts;
         this.eventAggregator = json.eventAggregator;
         // Events
         this.eventAggregator.on("removeKnowledge", this.closeModelEditorModal);

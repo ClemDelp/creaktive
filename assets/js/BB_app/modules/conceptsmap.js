@@ -10,16 +10,39 @@ conceptsmap.Views.Main = Backbone.View.extend({
         this.concepts           = json.concepts;
         this.user               = json.user;
         this.project            = json.project;
+        this.poches             = json.poches;
+        this.links              = json.links;
         this.eventAggregator    = json.eventAggregator;
 
-        // Events                 
+        // Modals
+        this.CKLayoutModal_view = new CKLayout.Views.Modal({
+            user : this.user,
+            concepts : this.concepts,
+            eventAggregator : this.eventAggregator
+        });
+
+        this.CKLinkModal_view = new cklink.Views.Modal({
+            knowledges : this.knowledges,
+            poches : this.poches,
+            concepts : this.concepts,
+            links : this.links,
+            eventAggregator : this.eventAggregator
+        })
+
+
+        // Backbone events              
         this.concepts.bind("reset", this.render);
         this.knowledges.bind("add", this.render);
         this.knowledges.bind("remove", this.render);
-        //this.eventAggregator.on('change',this.action,this);
+        
+        // CKLayout events
         this.eventAggregator.on("colorChanged", this.render, this);
         this.eventAggregator.on("titleChanged", this.render, this);
+        
+        // My-mind events
+        this.eventAggregator.on('change',this.action,this);
         this.eventAggregator.on("undo", this.performUndo, this);
+
         this.template = _.template($("#conceptsmap_template").html()); 
     },
     events : {
@@ -29,7 +52,17 @@ conceptsmap.Views.Main = Backbone.View.extend({
         "click .addSubIdea" : "addSubIdea",
         "click .removeSubIdea" : "removeSubIdea",
         "click .undo" : "undo",
-        "click .addUnlinked" : "addUnlinked"
+        "click .addUnlinked" : "addUnlinked",
+        "click .editContent" : "editContent",
+        "click .linkK" : "linkK"
+    },
+    editContent : function(e){
+        e.preventDefault();
+        this.eventAggregator.trigger('openModelEditorModal',MM.App.current._id);
+    },
+    linkK : function(e){
+        e.preventDefault();
+        this.eventAggregator.trigger('openCKLinkModal',MM.App.current._id);
     },
     addUnlinked : function(e){
         e.preventDefault();
