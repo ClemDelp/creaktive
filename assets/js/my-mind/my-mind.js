@@ -512,7 +512,7 @@ var MM = {
  }
 
  MM.Item.prototype.getColor = function() {
- 	return this._color || (this.isRoot() ? MM.Item.COLOR : this._parent.getColor());
+ 	return this._color || MM.Item.COLOR;//(this.isRoot() ? MM.Item.COLOR : this._parent.getColor());
  }
 
  MM.Item.prototype.getOwnColor = function() {
@@ -618,7 +618,6 @@ var MM = {
  	if (index < this._children.length) { next = this._children[index].getDOM().node; }
  	this._dom.children.insertBefore(child.getDOM().node, next);
  	this._children.splice(index, 0, child);
-
  	return child.setParent(this);
  }
 
@@ -1153,6 +1152,7 @@ MM.Action.AppendItem.prototype.perform = function() {
 MM.Action.AppendItem.prototype.undo = function() {
 	this._parent.removeChild(this._item);
 	MM.App.select(this._parent);
+	MM.App.eventAggregator.trigger("undo", "AppendItem", [this._item]);
 }
 
 MM.Action.RemoveItem = function(item) {

@@ -36,9 +36,9 @@ conceptsmap.Views.Main = Backbone.View.extend({
         this.knowledges.bind("remove", this.render);
         
         // CKLayout events
-        this.eventAggregator.on("colorChanged", this.render, this);
-        this.eventAggregator.on("titleChanged", this.render, this);
-        this.eventAggregator.on("removeKnowledge", this.render, this);
+        this.eventAggregator.on("colorChanged", this.resetMap, this);
+        this.eventAggregator.on("titleChanged", this.resetMap, this);
+        this.eventAggregator.on("removeKnowledge", this.resetMap, this);
         
         // My-mind events
         this.eventAggregator.on('change',this.action,this);
@@ -55,6 +55,9 @@ conceptsmap.Views.Main = Backbone.View.extend({
         "click .undo" : "undo",
         "click .addUnlinked" : "addUnlinked",
         "click .editContent" : "editContent",
+        "click .copy" : "copy",
+        "click .cut" : "cut",
+        "click .paste" : "paste",
         "click .linkK" : "linkK"
     },
     editContent : function(e){
@@ -72,6 +75,19 @@ conceptsmap.Views.Main = Backbone.View.extend({
         item.setLayout(MM.App.map._root.getLayout());
         MM.App.map._root.addUnlinked(item);
     },
+    copy : function(e){
+        e.preventDefault();
+        MM.Clipboard.copy(MM.App.current);
+    },
+    cut : function(e){
+        e.preventDefault();
+        MM.Clipboard.cut(MM.App.current);
+    },
+    paste : function(e){
+        e.preventDefault();
+        MM.Clipboard.paste(MM.App.current);
+
+    },
     performUndo : function(type, params){
         console.log("UNDO", type);       
         var item = params[0];
@@ -80,6 +96,9 @@ conceptsmap.Views.Main = Backbone.View.extend({
         }
         else if (type === "MoveItem"){ 
             this.concepts.get(item._id).set({'id_father':params[1]}).save();
+        }
+        else if (type === "AppendItem"){
+            this.concepts.get(item._id).destroy();  
         }
         else if (type === "RemoveItem"){ 
             _this = this;
@@ -175,7 +194,17 @@ conceptsmap.Views.Main = Backbone.View.extend({
             this.concepts.add(new_c);
 
         }
-        //else if (actions instanceof MM.Action.AppendItem){console.log(actions._parent,actions._item);}
+        else if (actions instanceof MM.Action.AppendItem){
+            console.log(actions._parent,actions._item);
+            var copy = this.concepts.findWhere({title : actions._item._dom.text.innerText})
+            copy.set({
+                id : actions._item._id,
+                id_father : actions._parent._id,
+                user: this.user,
+            });
+            copy.save();
+            this.concepts.add(copy)
+        }
         else if (actions instanceof MM.Action.MoveItem){ 
             console.log(actions._item, actions._newParent, actions._newIndex, actions._newSide);
             this.concepts.get(actions._item._id).set({'id_father':actions._newParent._id}).save();
@@ -204,6 +233,12 @@ conceptsmap.Views.Main = Backbone.View.extend({
         //else if (actions instanceof MM.Action.SetValue){ console.log(actions._item, actions._value);}
 
     },
+    resetMap : function(){
+        MM.App.init(_this.eventAggregator);
+       socket.get("/concept/generateTree", function(data) {
+            MM.App.setMap(MM.Map.fromJSON(data.tree));
+        });   
+    },
     render : function(){
         var _this = this;
         var renderTemplate = function(){
@@ -221,12 +256,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
         var dfd = $.Deferred();
         dfd.done(renderTemplate).done(initMap);
         dfd.resolve();
-
-        // console.log("tutu")
-        // var renderedContent = this.template();
-        // $(this.el).append(renderedContent)
-
-
+        
         $(document).foundation();
 
 
