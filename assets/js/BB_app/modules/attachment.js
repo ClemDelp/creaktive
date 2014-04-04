@@ -5,7 +5,6 @@ attachment.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Variables
         this.model = json.model;
-        this.files = this.model.get('attachment');
         this.eventAggregator = json.eventAggregator;
         _eventAggregator = this.eventAggregator;
         // Events
@@ -39,11 +38,11 @@ attachment.Views.Main = Backbone.View.extend({
             success: function(data, textStatus, jqXHR)
             {
                 if(typeof data.error === 'undefined')
-                {
+                { 
                     // Success so call function to process the form
                     console.log(data);
                     if(data.result === "success"){
-                        _this.files.unshift({
+                        _this.model.get('attachment').unshift({
                             id : data.id,
                             name : data.name,
                             path : data.path
@@ -69,11 +68,11 @@ attachment.Views.Main = Backbone.View.extend({
     removeFile : function(e){
         console.log(e.target.getAttribute('data-file-id'))
         var i = {};
-        _.each(this.files, function(f){
+        _.each(this.model.get('attachment'), function(f){
             if(f.id === e.target.getAttribute('data-file-id')) i = f
         })
-        this.files =  _.without(this.files, i);
-        this.model.set({attachment : this.files})
+        this.model.get('attachment') =  _.without(this.model.get('attachment'), i);
+        this.model.set({attachment : this.model.get('attachment')})
         this.model.save();
         socket.post("/file/destroy", {file : i});
         this.render();

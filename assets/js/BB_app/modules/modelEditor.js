@@ -31,22 +31,12 @@ modelEditor.Views.Main = Backbone.View.extend({
         "click .edit"  : "editMode",
         "click .updateKnowledge"  : "updateKnowledge",
         "click .cancelEdition"  : "cancelEdition",
-        "click .update"  : "updateKnowledge",
         "click .updateLabel" : "updateLabel",
         "click .remove" : "removeKnowledge"
     },
     cancelEdition : function(e){
         e.preventDefault();
         this.mode = "normal";
-        this.render();
-    },
-    removeKnowledge : function(e){
-        this.model.destroy();
-        $(this.el).hide('slow');    
-    },
-    updateLabel : function(e){
-        e.preventDefault();
-        this.model.set({color:e.target.getAttribute("data-label-color")}).save();
         this.render();
     },
     updateKnowledge : function(e){

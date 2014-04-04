@@ -639,7 +639,7 @@ details.Views.Main = Backbone.View.extend({
            $('#detailsModal').foundation('reveal', 'open'); 
         }); 
     },
-    nodeSelectionChanged : function (e){
+    nodeSelectionChanged : function (e){alert('open')
         console.log("C selected");
         this.model = this.concepts.get(e);
         this.type = "concept";

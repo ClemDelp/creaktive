@@ -2,45 +2,18 @@
 <!-- Timeline template parts -->
 <script type="text/template" id="modelEditor-normal-template">
     <div class="row">
-        <div class="large-7 medium-7 small-7 columns">
-            <h4>{{- model.title}}</h4>
-            <span class="success round label" style="background-color:{{- model.color }}">{{ if(model.color == "#27AE60"){ }}Validated{{ }else if(model.color == "#F39C12"){ }}Processing{{ }else{ }}Missing{{ } }}</span>
-            <i>Last update by <b>{{-model.user.name}}</b> at {{-model.date}}</i><br>
-        </div>
-        <div class="large-5 medium-5 small-5 columns">
-            <a href="#" data-dropdown="label{{-model.id}}" class="button tiny round dropdown">
-            Actions
-            </a>
-            <ul id="label{{-model.id}}" data-dropdown-content class="f-dropdown">
-              <li><a href="#" class="edit">Edit</a></li>
-              <li><a href="#" class="updateLabel" data-model-id="{{-model.id}}" data-label-color="#27AE60">validated</a></li>
-              <li><a href="#" class="updateLabel" data-model-id="{{-model.id}}" data-label-color="#F39C12">processing</a></li>
-              <li><a href="#" class="updateLabel" data-model-id="{{-model.id}}" data-label-color="#C0392B">missing</a></li>
-              <li><a href="#" class="remove">remove</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="row">
         <div class="large-12 medium-12 small-12 columns">
+        <a href="#" class="tiny button button round edit">Edit</a>
             {{= model.content }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="large-12 medium-12 small-12 columns">
-            <span class="secondary round label">tags ({{- model.tags.length }})</span> -
-            {{ _.each(model.tags, function(tag) { }}
-                <span class="success round label" style="cursor:pointer">{{-tag}}</span>
-            {{ }); }}
         </div>
     </div>
 </script>
 
 <script type="text/template" id="modelEditor-edition-template">
     <div class="row">
-        <input type="text" class="title" value="{{- model.title}}"/>
-        <textarea  class="ckeditor"  name="editor" rows="10" cols="80">{{= model.content }}</textarea>
-        <hr>
         <a href="#" class="button tiny round success updateKnowledge">Update!</a>
         <a href="#" class="button tiny round secondary cancelEdition">Cancel</a>
+        <input type="text" class="title" value="{{- model.title}}"/>
+        <textarea  class="ckeditor"  name="editor" rows="10" cols="80">{{= model.content }}</textarea>        
     </div>
 </script>

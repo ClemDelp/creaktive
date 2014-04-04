@@ -25,38 +25,6 @@ explorer.Collections.Filters = Backbone.Collection.extend({
     }
 });
 /////////////////////////////////////////
-explorer.Views.CKLayoutModal = Backbone.View.extend({
-    el:"#CKLayoutModal",
-    initialize:function(json){
-        _.bindAll(this, 'render', 'openModelEditorModal');
-        // Variables
-        this.model = new Backbone.Model();
-        this.user = json.user;
-        this.collection = json.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.eventAggregator.on("openModelEditorModal", this.openModelEditorModal);
-    },
-    openModelEditorModal : function(k_id){
-        this.model = this.collection.get(k_id);
-        this.render(function(){
-            $('#CKLayoutModal').foundation('reveal', 'open'); 
-            $(document).foundation();
-        }); 
-    },
-    render:function(callback){
-        $(this.el).html('');
-        $(this.el).append(new CKLayout.Views.Main({
-            className : "panel row",
-            model : this.model,
-            user : this.user,
-            eventAggregator : this.eventAggregator
-        }).render().el);
-        // Render it in our div
-        if(callback) callback();
-    }
-});
-/////////////////////////////////////////
 // Middle part
 /////////////////////////////////////////
 explorer.Views.KnowledgesList = Backbone.View.extend({
@@ -70,8 +38,6 @@ explorer.Views.KnowledgesList = Backbone.View.extend({
         this.style = json.style;
         // Events
         this.eventAggregator.on('knowledge_search', this.knowledge_search, this);
-        this.eventAggregator.on("kColorChanged", this.render)
-        this.eventAggregator.on("kTitleChanged", this.render)
         // Templates
         this.template_knowledge = _.template($('#explorer-knowledges-template').html());
     },
@@ -111,8 +77,6 @@ explorer.Views.Knowledges = Backbone.View.extend({
         this.eventAggregator = json.eventAggregator;
         // Events
         this.eventAggregator.on('knowledge_search', this.knowledge_search, this);
-        this.eventAggregator.on("kColorChanged", this.render)
-        this.eventAggregator.on("kTitleChanged", this.render)
     },
     knowledge_search: function(matched_knowledges){
         this.knowledges_render = matched_knowledges;
@@ -147,6 +111,10 @@ explorer.Views.MiddlePart = Backbone.View.extend({
         this.links = json.links;
         this.eventAggregator = json.eventAggregator;
         this.style=json.style;
+        // Events
+        this.knowledges.bind('remove',this.render)
+        this.knowledges.bind('add',this.render)
+        this.knowledges.bind('change',this.render)
         // Template
         this.template_context = _.template($('#explorer-context-template').html());
 
@@ -170,19 +138,19 @@ explorer.Views.MiddlePart = Backbone.View.extend({
         // Input 
         $(this.el).append(this.template_context({filters:this.filters.toJSON()}));
         // knowledge list
-        knowledge_list_view = new explorer.Views.KnowledgesList({
+        $(this.el).append(new explorer.Views.KnowledgesList({
+            className : "row panel",
             knowledges:this.knowledges,
             user:this.user,
             eventAggregator:this.eventAggregator,
             style:this.style
-        });
-        $(this.el).append(knowledge_list_view.render().el);
-        // Knowledges timeline
-        $(this.el).append(new explorer.Views.Knowledges({
-            user : this.user,
-            knowledges : this.knowledges,
-            eventAggregator : this.eventAggregator
         }).render().el);
+        // Knowledges timeline
+        // $(this.el).append(new explorer.Views.Knowledges({
+        //     user : this.user,
+        //     knowledges : this.knowledges,
+        //     eventAggregator : this.eventAggregator
+        // }).render().el);
 
         return this;
     }
@@ -333,7 +301,7 @@ explorer.Views.Main = Backbone.View.extend({
         this.filters            = new explorer.Collections.Filters();
         this.eventAggregator    = json.eventAggregator;
         // Modals
-        this.CKLayoutModal_view = new explorer.Views.CKLayoutModal({
+        this.CKLayoutModal_view = new CKLayout.Views.Modal({
             user : this.user,
             knowledges : this.knowledges,
             eventAggregator : this.eventAggregator
@@ -393,7 +361,7 @@ explorer.Views.Main = Backbone.View.extend({
             id:guid(),
             user: this.user,
             title : $('#explorer_new_k_title').val(),
-            content : '<a href="#" class="edit">Edit the knowledge</a>',
+            content : '',
             tags: poches,
             comments: new Backbone.Collection(),
             date: getDate(),
@@ -405,7 +373,7 @@ explorer.Views.Main = Backbone.View.extend({
                 global.models.newLink = new global.Models.CKLink({
                     id :guid(),
                     user : user_,
-                    content : '<a href="#" class="edit">Edit the knowledge</a>',
+                    content : '',
                     date : getDate(),
                     concept : concept.get('id'),
                     knowledge : newK.get('id')
@@ -418,8 +386,6 @@ explorer.Views.Main = Backbone.View.extend({
         // Save the new knowledge
         newK.save();
         this.knowledges.add(newK);
-        this.render();
-
     },
     ///////////////////////////////////////////////////////
     // Session quenelle power
