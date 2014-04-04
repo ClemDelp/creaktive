@@ -71,6 +71,7 @@ CKLayout.Views.Main = Backbone.View.extend({
     updateLabel : function(e){
         e.preventDefault();
         this.model.set({color:e.target.getAttribute("data-label-color")}).save();
+        this.eventAggregator.trigger("colorChanged")
         this.render();
     },
     render:function(){
