@@ -16,7 +16,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
         this.concepts.bind("reset", this.render);
         this.knowledges.bind("add", this.render);
         this.knowledges.bind("remove", this.render);
-        this.eventAggregator.on('change',this.action,this);
+        //this.eventAggregator.on('change',this.action,this);
         this.eventAggregator.on("colorChanged", this.render, this);
         this.eventAggregator.on("titleChanged", this.render, this);
         this.eventAggregator.on("undo", this.performUndo, this);
@@ -29,7 +29,14 @@ conceptsmap.Views.Main = Backbone.View.extend({
         "click .addSubIdea" : "addSubIdea",
         "click .removeSubIdea" : "removeSubIdea",
         "click .undo" : "undo",
-        "click redo" : "redo",  
+        "click .addUnlinked" : "addUnlinked"
+    },
+    addUnlinked : function(e){
+        e.preventDefault();
+        var item = new MM.Item();
+        item.setText("blabla");
+        item.setLayout(MM.App.map._root.getLayout());
+        MM.App.map._root.addUnlinked(item);
     },
     performUndo : function(type, params){
         console.log("UNDO", type);       

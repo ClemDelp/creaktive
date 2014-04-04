@@ -298,6 +298,8 @@ var MM = {
  		status: null
  	}
 
+ 	this._unlinked = [];
+
  	this._dom = {
  		node: document.createElement("li"),
  		content: document.createElement("div"),
@@ -306,7 +308,8 @@ var MM = {
  		text: document.createElement("div"),
  		children: document.createElement("ul"),
  		toggle: document.createElement("div"),
- 		canvas: document.createElement("canvas")
+ 		canvas: document.createElement("canvas"),
+ 		unlinked : document.createElement("ul"),
  	}
  	this._dom.node.id = "map";
  	this._dom.content.id = "map";
@@ -315,6 +318,7 @@ var MM = {
  	this._dom.text.id = "map";
  	this._dom.toggle.id = "map";
  	this._dom.children.id = "map";
+ 	this._dom.unlinked.id = "map";
 
  	this._dom.node.classList.add("item");
  	this._dom.content.classList.add("content");
@@ -323,6 +327,7 @@ var MM = {
  	this._dom.text.classList.add("text");
  	this._dom.toggle.classList.add("toggle");
  	this._dom.children.classList.add("children");
+ 	this._dom.unlinked.classList.add("unlinked");
 
  	this._dom.content.appendChild(this._dom.text); /* status+value are appended in layout */
  	this._dom.node.appendChild(this._dom.canvas);
@@ -577,7 +582,19 @@ var MM = {
  	return this.updateSubtree();
  }
 
- MM.Item.prototype.addUnlink = function(){
+ MM.Item.prototype.addUnlinked = function(item){
+ 	item._parent = MM.App.map
+ 	if (!this._unlinked.length) {
+ 		this._dom.node.appendChild(this._dom.toggle);
+ 		this._dom.node.appendChild(this._dom.unlinked);
+ 	}
+
+ 	index = this._unlinked.length;
+ 	this._dom.unlinked.insertBefore(item.getDOM().node,null)
+ 	this._unlinked.push(item)
+ 	
+ 	item.update();
+ 	this.update();
 
  }
 
@@ -794,7 +811,7 @@ MM.Item.prototype._findLinks = function(node) {
 }
 MM.Map = function(options) {
 	var o = {
-		root: "My Mind Map",
+		root: "c0",
 		layout: MM.Layout.Map
 	}
 	for (var p in options) { o[p] = options[p]; }
@@ -803,7 +820,10 @@ MM.Map = function(options) {
 	this._position = [0, 0];
 	this._id = MM.generateId();
 
-	this._setRoot(new MM.Item().setText(o.root).setLayout(o.layout));
+	var root = new MM.Item();
+	root.setText(o.root);
+	root.setLayout(o.layout)
+	this._setRoot(root);
 }
 
 MM.Map.fromJSON = function(data) {
@@ -2076,6 +2096,19 @@ MM.Layout.getAll = function() {
  	}, this);
 
  	return bbox;
+ }
+
+
+ //TODO : une fonction pour placer correctement les unlinked
+ MM.Layout.Graph._layoutUnlinked = function(unlinked){
+ 	unlinked.forEach(function(child){
+		var node = child.getDOM().node;
+		var childSize = [node.offsetWidth, node.offsetHeight];
+
+
+ 	}, this);
+ 
+
  }
 
  MM.Layout.Graph._drawLinesHorizontal = function(item, side) {
