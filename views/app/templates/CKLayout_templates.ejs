@@ -2,16 +2,14 @@
 	<div class="row">
         <div class="large-10 medium-10 small-10 columns">
             <h4 style="display:inline">{{- model.title}}</h4> - 
-            <span class="success round label" style="background-color:{{- model.color }};display:inline">
-            {{ if(model.color == "#27AE60"){ }}Validated{{ }else if(model.color == "#F39C12"){ }}Processing{{ }else{ }}Missing{{ } }}
-            </span>
+            <span class="success round label" style="background-color:{{- model.color }};display:inline">{{- model.label}}</span>
         </div>
         <div class="large-2 medium-2 small-2 columns">
             <a href="#" data-dropdown="label{{-model.id}}" class="button tiny round dropdown">Actions</a>
             <ul id="label{{-model.id}}" data-dropdown-content class="f-dropdown">
-              <li><a href="#" class="updateLabel" data-model-id="{{-model.id}}" data-label-color="#27AE60">validated</a></li>
-              <li><a href="#" class="updateLabel" data-model-id="{{-model.id}}" data-label-color="#F39C12">processing</a></li>
-              <li><a href="#" class="updateLabel" data-model-id="{{-model.id}}" data-label-color="#C0392B">missing</a></li>
+              {{ _.each(labels, function(label){ }}
+                <li><a href="#" class="updateLabel" data-model-id="{{-model.id}}" data-label-color="{{-label.color}}" data-label-title="{{-label.title}}">{{-label.title}}</a></li>
+              {{ }); }}
               <li><a href="#" class="remove">remove</a></li>
             </ul>
         </div>

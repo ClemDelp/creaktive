@@ -156,6 +156,7 @@ user.Views.Main = Backbone.View.extend({
         // User list
         $(this.el).append(
             new user.Views.Members({
+                className : "row",
                 project : this.project,
                 permissions : permissions_collection,
                 users : this.users,

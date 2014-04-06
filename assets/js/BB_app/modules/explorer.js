@@ -67,38 +67,6 @@ explorer.Views.KnowledgesList = Backbone.View.extend({
     }
 });
 /***************************************/
-explorer.Views.Knowledges = Backbone.View.extend({
-    initialize: function(json){
-        _.bindAll(this, 'render');
-        // Variables
-        this.user = json.user;
-        this.knowledges = json.knowledges;
-        this.knowledges_render = this.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.eventAggregator.on('knowledge_search', this.knowledge_search, this);
-    },
-    knowledge_search: function(matched_knowledges){
-        this.knowledges_render = matched_knowledges;
-        this.render();
-    },
-    events : {},
-    render : function(){
-        _this = this;
-        $(this.el).html('');
-        this.knowledges_render.each(function(_knowledge){
-            // CKLayout
-            $(_this.el).append(new CKLayout.Views.Main({
-                user : _this.user,
-                model : _knowledge,
-                className : "panel row",
-                eventAggregator : _this.eventAggregator
-            }).render().el);
-        });
-        return this;
-    }
-});
-/***************************************/
 explorer.Views.MiddlePart = Backbone.View.extend({
     className: "small-8 medium-8 large-8 columns",
     initialize : function(json) {
@@ -145,12 +113,6 @@ explorer.Views.MiddlePart = Backbone.View.extend({
             eventAggregator:this.eventAggregator,
             style:this.style
         }).render().el);
-        // Knowledges timeline
-        // $(this.el).append(new explorer.Views.Knowledges({
-        //     user : this.user,
-        //     knowledges : this.knowledges,
-        //     eventAggregator : this.eventAggregator
-        // }).render().el);
 
         return this;
     }
@@ -302,6 +264,7 @@ explorer.Views.Main = Backbone.View.extend({
         this.eventAggregator    = json.eventAggregator;
         // Modals
         this.CKLayoutModal_view = new CKLayout.Views.Modal({
+            type : "knowledge",
             user : this.user,
             knowledges : this.knowledges,
             eventAggregator : this.eventAggregator

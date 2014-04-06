@@ -1,4 +1,6 @@
-/***************************************/
+/////////////////////////////////////////
+// MODULE
+/////////////////////////////////////////
 var CKLayout = {
   // Classes
   Collections: {},
@@ -8,8 +10,47 @@ var CKLayout = {
   collections: {},
   models: {},
   views: {},
-  init: function () {}
+  init: function () {
+    // Concept labels
+    CKLayout.collections.CLabels = new CKLayout.Collections.Labels();
+    CKLayout.collections.CLabels.add(new CKLayout.Models.Label({id:guid(),title:"Known",color:"#27AE60"}));
+    CKLayout.collections.CLabels.add(new CKLayout.Models.Label({id:guid(),title:"Reachable",color:"#F39C12"}));
+    CKLayout.collections.CLabels.add(new CKLayout.Models.Label({id:guid(),title:"Alternative",color:"#C0392B"}));
+    // Knowledge Labels
+    CKLayout.collections.KLabels = new CKLayout.Collections.Labels();
+    CKLayout.collections.KLabels.add(new CKLayout.Models.Label({id:guid(),title:"Validated",color:"#27AE60"}));
+    CKLayout.collections.KLabels.add(new CKLayout.Models.Label({id:guid(),title:"Processing",color:"#F39C12"}));
+    CKLayout.collections.KLabels.add(new CKLayout.Models.Label({id:guid(),title:"Missing",color:"#C0392B"}));
+  }
 };
+/////////////////////////////////////////
+// Models & collections
+/////////////////////////////////////////
+CKLayout.Models.Label = Backbone.Model.extend({
+    defaults : {
+        id : "",
+        title : "",
+        color : ""
+    },
+    initialize : function Label() {
+        //console.log('Filter explorer Constructor');
+        this.bind("error", function(model, error){
+            //console.log( error );
+        });
+    }
+});
+/***************************************/
+CKLayout.Collections.Labels = Backbone.Collection.extend({
+    model : CKLayout.Models.Label,
+    initialize : function() {
+        //console.log('Filters explorer collection Constructor');
+        this.bind("error", function(model, error){
+            //console.log( error );
+        });
+    }
+});
+/////////////////////////////////////////
+// VIEWS
 /////////////////////////////////////////
 CKLayout.Views.Modal = Backbone.View.extend({
     el:"#CKLayoutModal",
@@ -18,6 +59,7 @@ CKLayout.Views.Modal = Backbone.View.extend({
         // Variables
         this.model = new Backbone.Model();
         this.user = json.user;
+        this.type = json.type;
         this.collection = json.knowledges || json.concepts;
         this.eventAggregator = json.eventAggregator;
         // Events
@@ -38,6 +80,7 @@ CKLayout.Views.Modal = Backbone.View.extend({
         $(this.el).html('');
         $(this.el).append(new CKLayout.Views.Main({
             className : "panel row",
+            type : this.type,
             model : this.model,
             user : this.user,
             eventAggregator : this.eventAggregator
@@ -50,10 +93,19 @@ CKLayout.Views.Modal = Backbone.View.extend({
 CKLayout.Views.Main = Backbone.View.extend({
     initialize:function(json){
         _.bindAll(this, 'render');
+        CKLayout.init();
         // Variables
         this.model              = json.model;
         this.user               = json.user;
         this.eventAggregator    = json.eventAggregator;
+        // Labels
+        this.type               = json.type;
+        this.labels             = Backbone.Collection;
+        if(this.type === "concept"){
+            this.labels = CKLayout.collections.CLabels;
+        }else{
+            this.labels = CKLayout.collections.KLabels;
+        }
         // Events
         this.model.bind('change',this.render)
         // Templates
@@ -70,14 +122,20 @@ CKLayout.Views.Main = Backbone.View.extend({
     },
     updateLabel : function(e){
         e.preventDefault();
-        this.model.set({color:e.target.getAttribute("data-label-color")}).save();
+        this.model.set({
+            color:e.target.getAttribute("data-label-color"),
+            label:e.target.getAttribute("data-label-title")
+        }).save();
         this.eventAggregator.trigger("colorChanged")
         this.render();
     },
     render:function(){
         $(this.el).html('');
         // Header
-        $(this.el).append(this.template_hearder({model:this.model.toJSON()}));
+        $(this.el).append(this.template_hearder({
+            model:this.model.toJSON(),
+            labels:this.labels.toJSON()
+        }));
         // Model editor module
         $(this.el).append(new modelEditor.Views.Main({
             className       : "large-8 medium-8 small-8 columns",

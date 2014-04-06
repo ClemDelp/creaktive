@@ -16,6 +16,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
 
         // Modals
         this.CKLayoutModal_view = new CKLayout.Views.Modal({
+            type : "concept",
             user : this.user,
             concepts : this.concepts,
             eventAggregator : this.eventAggregator
