@@ -1,5 +1,5 @@
 <script type="text/template" id="category-search-template">
-    <div class="panel expand"><p>{{-title}}</p></div>
+    <h5>{{-title}}</h5><hr>
     <input type="text" class="search" placeholder="search in {{-title}}...">
 </script>
 <!-- //////////////////////////////////////////////////////////////////////: -->
@@ -42,17 +42,12 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Middle part -->
 <script type="text/template" id="category-filters-template">
-    <div>
-        <hr>
-            context: 
-            {{ _.each(filters, function(filter) { }}
-                <a class="button success round tiny remove" data-id-filter="{{-filter.id}}">{{- filter.model.title }}</a> +
-            {{ }); }}
-        <hr>
+    <div class="row">
+        context: 
+        {{ _.each(filters, function(filter) { }}
+            <a class="button success round tiny remove" data-id-filter="{{-filter.id}}">{{- filter.model.title }}</a> +
+        {{ }); }}
     </div>
-</script>
-
-<script type="text/template" id="category-newCategory-template">
     <div class="row collapse">
         <div class="small-10 columns">
           <input class="category_title" type="text" placeholder="new category..."/>
@@ -73,7 +68,7 @@
                       <input class="category_new_k_title" type="text" placeholder="new knowledge..."/>
                     </div>
                     <div class="small-2 columns">
-                      <a href="#" class="button postfix addKnowledge" data-title-category="{{- category.title}}">Add</a>
+                      <a href="#" class="button postfix addKnowledge" data-title-category="{{- category.title}}">+</a>
                     </div>
                 </div>
             </li>

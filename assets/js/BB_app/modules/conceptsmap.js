@@ -260,7 +260,6 @@ conceptsmap.Views.Main = Backbone.View.extend({
         
         $(document).foundation();
 
-
         return this;
     }
 });

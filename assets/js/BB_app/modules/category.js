@@ -137,18 +137,16 @@ category.Views.MiddlePart = Backbone.View.extend({
         // Events 
 
         // Templates
-        this.template_search = _.template($('#category-newCategory-template').html());
         this.template_filters = _.template($('#category-filters-template').html());
         
     },
     render : function(){
         $(this.el).html('');
-        // Search bar
-        $(this.el).append(this.template_search());
         // Context bar
         $(this.el).append(this.template_filters({filters : this.filters.toJSON()}));
         // Category de cards
         lists_view = new category.Views.Categories({
+            className       : "row panel",
             knowledges      : this.knowledges,
             poches          : this.poches,
             user            : this.user,
