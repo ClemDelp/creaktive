@@ -99,7 +99,7 @@ Backbone.sync = function (method, model, options) {
 
   var defer = $.Deferred();
   io.emit(action, json, function (data) {
-    console.log("*** SOCKET from ", json, "Response ", data, "***")
+    console.log("*** SOCKET from ", json.url, "Response ", data, "***")
     // if (data.err) {
     //   if(options.error) options.error(err);
     //   defer.reject();
