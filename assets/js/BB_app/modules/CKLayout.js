@@ -118,7 +118,6 @@ CKLayout.Views.Main = Backbone.View.extend({
     },
     removeKnowledge : function(e){
         this.model.destroy(); 
-        this.eventAggregator.trigger('removeKnowledge');
     },
     updateLabel : function(e){
         e.preventDefault();
@@ -126,7 +125,6 @@ CKLayout.Views.Main = Backbone.View.extend({
             color:e.target.getAttribute("data-label-color"),
             label:e.target.getAttribute("data-label-title")
         }).save();
-        this.eventAggregator.trigger("colorChanged")
         this.render();
     },
     render:function(){

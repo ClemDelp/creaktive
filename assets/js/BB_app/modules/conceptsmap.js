@@ -33,13 +33,11 @@ conceptsmap.Views.Main = Backbone.View.extend({
 
         // Backbone events              
         this.concepts.bind("reset", this.render);
+        this.concepts.bind("change",this.render);
+        this.concepts.bind("remove",this.render);
         this.knowledges.bind("add", this.render);
         this.knowledges.bind("remove", this.render);
         
-        // CKLayout events
-        this.eventAggregator.on("colorChanged", this.resetMap, this);
-        this.eventAggregator.on("titleChanged", this.resetMap, this);
-        this.eventAggregator.on("removeKnowledge", this.resetMap, this);
         
         // My-mind events
         this.eventAggregator.on('change',this.action,this);
