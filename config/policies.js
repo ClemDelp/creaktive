@@ -70,7 +70,7 @@
   },
 
   "ConceptController" : {
-    "conceptmapview" : ["authenticated", "forceHTTPs"],
+    "conceptview" : ["authenticated", "forceHTTPs"],
     "find" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"] 
   },

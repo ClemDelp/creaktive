@@ -235,7 +235,8 @@ conceptsmap.Views.Main = Backbone.View.extend({
     resetMap : function(model,collection,options){
         console.log("RESET ", options)
        
-        if(options){
+       // Si il n'y a pas d'options, c'est un élément renvoyé par le serveur via les sockets.
+        if(options){ 
              MM.App.init(_this.eventAggregator);
             socket.get("/concept/generateTree", function(data) {
                 MM.App.setMap(MM.Map.fromJSON(data.tree));
