@@ -1,4 +1,4 @@
-.item {
+#map.item {
 	position: absolute;
 }
 
@@ -6,22 +6,23 @@
 	opacity: 0.5;
 }
 
-.item.collapsed .children {
+.item.collapsed #map.children {
 	display: none;
 }
 
-.content {
+#map.content {
 	position: relative;
 	display: inline-block;
 	white-space: nowrap;
 	cursor: pointer;
+	
 }
 
-.content > * {
+#map.content > * {
 	vertical-align: middle;
 }
 
-.text {
+#map.text {
 	display: inline-block;
 	text-align: center;
 	min-width: 0.5em;
@@ -30,38 +31,38 @@
 	outline: none;
 }
 
-.value, .status {
+#map.value, #map.status {
 	margin-right: 0.2em;
 }
 
-.text ~ .value, .text ~ .status {
+#map.text ~ #map.value, #map.text ~ #map.status {
 	margin-left: 0.2em;
 	margin-right: 0;
 }
 
-.value {
+#map.value {
 	opacity: 0.7;
 }
 
-.value:not(:empty):before {
+#map.value:not(:empty):before {
 	content: "(";
 }
 
-.value:not(:empty):after {
+#map.value:not(:empty):after {
 	content: ")";
 }
 
-.status {
+#map.status {
 	font-size: 150%;
 	line-height: 0.8;
 }
 
-.status.yes:after {
+#map.status.yes:after {
 	content: "✔";
 	color: #0f0;
 }
 
-.status.no:after {
+#map.status.no:after {
 	content: "✘";
 	color: #f00;
 }
@@ -72,7 +73,7 @@ canvas {
 	top: 0;
 }
 
-.toggle {
+#map.toggle {
 	position: absolute;
 	width: 12px;
 	height: 12px;
@@ -88,11 +89,11 @@ canvas {
 	opacity: 0.7;
 }
 
-.toggle:hover {
+#map.toggle:hover {
 	opacity: 1;
 }
 
-.toggle:before {
+#map.toggle:before {
 	content: "−";
 }
 

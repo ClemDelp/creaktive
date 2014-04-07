@@ -25,381 +25,10 @@ explorer.Collections.Filters = Backbone.Collection.extend({
     }
 });
 /////////////////////////////////////////
-// Right part
-/////////////////////////////////////////
-explorer.Views.PochesList = Backbone.View.extend({
-    initialize : function(json) {
-        //console.log("Visu poches part view initialise");
-        _.bindAll(this, 'render');
-        // Variables
-        this.poches = json.poches;
-        this.poches_render = this.poches;
-        this.knowledges = json.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.eventAggregator.on('poche_search', this.pocheSearch, this);
-        // Templates
-        this.template = _.template($('#explorer-poche-template').html());
-        // Styles
-        //$(this.el).attr( "style","overflow: auto;max-height:200px");
-    },
-    pocheSearch: function(matched_poches){
-        this.poches_render = matched_poches;
-        this.render();
-    },
-    render : function(){
-        // Init
-        $(this.el).html('');
-        el_poches_part=this.el;
-        template = this.template;
-        knowledges = this.knowledges;
-        // Get the total_connections
-        total_connections = 0;
-        this.poches_render.each(function(poche_){
-            knowledges.each(function(k){
-                k.get('tags').forEach(function(tag){
-                    if(tag == poche_.get('title')){total_connections+=1;}
-                });
-            });  
-        });
-        // For each poche
-        this.poches_render.each(function(poche_){
-            // Get the recurrence
-            recurrence = 0;
-            knowledges.each(function(k){
-                k.get('tags').forEach(function(tag){
-                    if(tag == poche_.get('title')){recurrence+=1;}
-                });
-            });
-            if((recurrence == 0)&&(total_connections == 0)){percentage = 0;}else{percentage = (recurrence*100)/total_connections;}
-            var renderedContent = template({poche:poche_.toJSON(),rec:recurrence,per:percentage});
-            $(el_poches_part).append(renderedContent);
-        });
-
-        return this;
-    }
-});
-/***************************************/
-explorer.Views.PochesPart = Backbone.View.extend({
-    className:"large-2 medium-2 small-2 columns",
-    initialize : function(json) {
-        _.bindAll(this, 'render','search');
-        // Variables
-        this.poches = json.poches;
-        this.knowledges = json.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.poches.bind("add",this.render);
-        this.poches.bind("remove",this.render);
-        this.poches.bind("change",this.render);
-        // Templates
-        this.template_search = _.template($('#explorer-search-template').html());
-    },
-    events : {
-        "keyup .search" : "search",
-        "click .add" : "addPoche",
-        "click .removePoche" : "removePoche",
-    },
-    search: function(e){
-        var research = e.target.value;
-        var research_size = research.length;
-        var matched = new Backbone.Collection();
-        this.poches.each(function(c){
-            if(research.toLowerCase() == c.get('title').substr(0,research_size).toLowerCase()){
-                matched.add(c);
-            }
-        });
-        this.eventAggregator.trigger('poche_search',matched);
-    },
-    removePoche: function(e){
-        var poche = this.poches.get(e.target.getAttribute('data-id-poche'));
-        poche.destroy();
-    },
-    addPoche : function(e){
-        global.models.newP = new global.Models.Poche({
-            id: guid(),
-            title: $("#explorer_newP").val(),
-            user : "clem",
-            color : "#FF0000",
-            description : $("#explorer_newP_description").val(),
-            date : getDate()
-        });
-        global.models.newP.save();
-        this.poches.add(global.models.newP);
-    },
-    render : function(){
-        // Init
-        $(this.el).html('');
-        // Input search
-        $(this.el).append(this.template_search({title:"Categories"}));
-        // Poche list
-        poches_list_view = new explorer.Views.PochesList({
-            poches:this.poches,
-            knowledges:this.knowledges,
-            eventAggregator:this.eventAggregator
-        });
-        $(this.el).append(poches_list_view.render().el);
-        
-        return this;
-    }
-});
-/////////////////////////////////////////
-// Modals
-/////////////////////////////////////////
-explorer.Views.TagsModal = Backbone.View.extend({
-    el:"#explorer_tags_modal_container",
-    initialize:function(json){
-        _.bindAll(this, 'render', 'openTagsModal');
-        // Variables
-        this.knowledge = new Backbone.Model();
-        this.user = json.user;
-        this.knowledges = json.knowledges;
-        this.poches = json.poches;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.eventAggregator.on("openTagsModal", this.openTagsModal);
-    },
-    events: {},
-    openTagsModal : function(k_id){
-        this.knowledge = this.knowledges.get(k_id);
-        this.render(function(){
-            $('#explorer_tags_modal_container').foundation('reveal', 'open'); 
-            $(document).foundation();
-        }); 
-    },
-    render:function(callback){
-        $(this.el).html('');
-        $(this.el).append(new tagK.Views.Main({
-            current_knowledge : this.knowledge,
-            currentUser : this.user,
-            poches:this.poches,
-            eventAggregator:this.eventAggregator,
-        }).render().el);
-        // Render it in our div
-        if(callback) callback();
-    }
-});
-/////////////////////////////////////////
-explorer.Views.CommentsModal = Backbone.View.extend({
-    el:"#explorer_comments_modal_container",
-    initialize:function(json){
-        _.bindAll(this, 'render', 'openCommentsModal');
-        // Variables
-        this.knowledge = new Backbone.Model();
-        this.user = json.user;
-        this.knowledges = json.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.eventAggregator.on("openCommentsModal", this.openCommentsModal);
-    },
-    events: {},
-    openCommentsModal : function(k_id){
-        this.knowledge = this.knowledges.get(k_id);
-        this.render(function(){
-            $('#explorer_comments_modal_container').foundation('reveal', 'open'); 
-            $(document).foundation();
-        }); 
-    },
-    render:function(callback){
-        $(this.el).html('');
-        $(this.el).append(new comments.Views.Main({
-            model : this.knowledge,
-            user : this.user,
-            eventAggregator : this.eventAggregator
-        }).render().el);
-        // Render it in our div
-        if(callback) callback();
-    }
-});
-/////////////////////////////////////////
-explorer.Views.AttachmentModal = Backbone.View.extend({
-    el:"#explorer_attachment_modal_container",
-    initialize:function(json){
-        _.bindAll(this, 'render', 'openAttachmentModal','uploadCompleted');
-        // Variables
-        this.knowledge = new Backbone.Model();
-        
-        this.user = json.user;
-        this.knowledges = json.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.eventAggregator.on("openAttachmentModal", this.openAttachmentModal);
-        this.eventAggregator.on("uploadCompleted", this.uploadCompleted);
-    },
-    events: {},
-    uploadCompleted : function(e){
-        console.log("File : ", e);
-        if(e.result === "success"){
-            this.knowledge.get('attachment').unshift({
-                id : e.id,
-                name : e.name,
-                path : e.path
-            });
-            this.knowledge.save();
-            $(this.el).foundation('reveal', 'close');
-            this.render();
-        }
-    },
-    openAttachmentModal : function(k_id){
-        this.knowledge = this.knowledges.get(k_id);
-        this.render(function(){
-            $('#explorer_attachment_modal_container').foundation('reveal', 'open'); 
-            $(document).foundation();
-        }); 
-    },
-    render:function(callback){
-        $(this.el).html('');
-        $(this.el).append(new attachment.Views.Main({
-            eventAggregator : this.eventAggregator
-        }).render().el);
-        // Render it in our div
-        if(callback) callback();
-    }
-});
-/////////////////////////////////////////
 // Middle part
-/////////////////////////////////////////
-explorer.Views.Knowledge = Backbone.View.extend({
-    tagName: "div",
-    className: "panel small-12 medium-12 large-12",
-    initialize : function(json){
-        _.bindAll(this, 'render');
-        // Variables
-        this.user = json.user;
-        this.knowledge = json.knowledge;
-        this.files = this.knowledge.get('attachment');
-        this.eventAggregator = json.eventAggregator;
-        this.mode = "normal";
-        this.template_knowledge_normal = _.template($('#explorer-knowledge-normal-template').html());
-        this.template_knowledge_edition = _.template($('#explorer-knowledge-edition-template').html());
-        // Events
-        this.knowledge.bind('change',this.render);
-    },
-    events : {
-        "click .openTagsModal"  : "openTagsModal",
-        "click .openCommentsModal"  : "openCommentsModal",
-        "click .openAttachmentModal"  : "openAttachmentModal",
-        "click .edit"  : "editMode",
-        "click .updateKnowledge"  : "updateKnowledge",
-        "click .cancelEdition"  : "cancelEdition",
-        "click .update"  : "updateKnowledge",
-        "click .updateLabel" : "updateLabel",
-        "click .remove" : "removeKnowledge",
-        "click .openFile" : "openFile",
-        "click .removeFile" : "removeFile"
-    },
-    removeFile : function(e){
-        console.log(e.target.getAttribute('data-file-id'))
-        var i = {};
-        _.each(this.files, function(f){
-            if(f.id === e.target.getAttribute('data-file-id')) i = f
-        })
-        this.files =  _.without(this.files, i);
-        this.knowledge.set({attachment : this.files})
-        this.knowledge.save();
-        socket.post("/file/destroy", {file : i});
-        this.render();
-    },
-    openFile : function(e){
-        console.log(e.target.getAttribute('data-file-path'));
-        $.download('file/get',{path : e.target.getAttribute('data-file-path')} );
-
-    },
-    cancelEdition : function(e){
-        e.preventDefault();
-        this.mode = "normal";
-        this.render();
-    },
-    removeKnowledge : function(e){
-        this.knowledge.destroy();
-        $(this.el).hide('slow');    
-    },
-    updateLabel : function(e){
-        e.preventDefault();
-        this.knowledge.set({color:e.target.getAttribute("data-label-color")}).save();
-        this.render();
-    },
-    updateKnowledge : function(e){
-        e.preventDefault();
-        //alert(CKEDITOR.instances.editor.getData())
-        this.knowledge.set({
-            user : this.user,
-            title:$(this.el).find(".title").val(),
-            content:CKEDITOR.instances.editor.getData(),
-            date: getDate(),
-            date2:new Date().getTime()
-        });
-        this.knowledge.save();
-        this.mode = "normal";
-        this.render();
-    },
-    editMode : function(e){
-        e.preventDefault();
-        this.mode = "edition";
-        this.render();
-        CKEDITOR.replaceAll('ckeditor');
-    },
-    openAttachmentModal: function(e){
-        e.preventDefault();
-        this.eventAggregator.trigger("openAttachmentModal",e.target.getAttribute("data-knowledge-id"));
-    },
-    openTagsModal: function(e){
-        e.preventDefault();
-        this.eventAggregator.trigger("openTagsModal",e.target.getAttribute("data-knowledge-id"));
-    },
-    openCommentsModal: function(e){
-        e.preventDefault();
-        this.eventAggregator.trigger("openCommentsModal",e.target.getAttribute("data-knowledge-id"));
-    },
-    render : function(){
-        $(this.el).html('');
-        // content
-        if(this.mode == "normal"){
-            $(this.el).append(this.template_knowledge_normal({knowledge : this.knowledge.toJSON()}));
-        } else if(this.mode == "edition"){
-            $(this.el).append(this.template_knowledge_edition({knowledge : this.knowledge.toJSON()}));    
-        }
-        
-        return this;
-    }
-});
-/////////////////////////////////////////
-explorer.Views.Knowledges = Backbone.View.extend({
-    initialize: function(json){
-        _.bindAll(this, 'render');
-        // Variables
-        this.user = json.user;
-        this.knowledges = json.knowledges;
-        this.knowledges_render = this.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.eventAggregator.on('knowledge_search', this.knowledge_search, this);
-        this.eventAggregator.on("kColorChanged", this.render)
-        this.eventAggregator.on("kTitleChanged", this.render)
-    },
-    knowledge_search: function(matched_knowledges){
-        this.knowledges_render = matched_knowledges;
-        this.render();
-    },
-    events : {},
-    render : function(){
-        _this = this;
-        $(this.el).html('');
-        this.knowledges_render.each(function(_knowledge){
-            $(_this.el).append(new explorer.Views.Knowledge({
-                user : _this.user,
-                knowledge : _knowledge,
-                eventAggregator : _this.eventAggregator
-            }).render().el);
-        });
-        return this;
-    }
-
-});
 /////////////////////////////////////////
 explorer.Views.KnowledgesList = Backbone.View.extend({
     initialize : function(json) {
-        //console.log("Visu knwoledges liste view initialise");
         _.bindAll(this, 'render');
         // Variables
         this.knowledges = json.knowledges;
@@ -409,10 +38,15 @@ explorer.Views.KnowledgesList = Backbone.View.extend({
         this.style = json.style;
         // Events
         this.eventAggregator.on('knowledge_search', this.knowledge_search, this);
-        this.eventAggregator.on("kColorChanged", this.render)
-        this.eventAggregator.on("kTitleChanged", this.render)
         // Templates
         this.template_knowledge = _.template($('#explorer-knowledges-template').html());
+    },
+    events : {
+        "click .openModal" : "openModal"
+    },
+    openModal : function(e){
+        e.preventDefault();
+        this.eventAggregator.trigger('openModelEditorModal',e.target.getAttribute("data-id-knowledge"));
     },
     knowledge_search: function(matched_knowledges){
         this.knowledges_render = matched_knowledges;
@@ -445,12 +79,15 @@ explorer.Views.MiddlePart = Backbone.View.extend({
         this.links = json.links;
         this.eventAggregator = json.eventAggregator;
         this.style=json.style;
+        // Events
+        this.knowledges.bind('remove',this.render)
+        this.knowledges.bind('add',this.render)
+        this.knowledges.bind('change',this.render)
         // Template
         this.template_context = _.template($('#explorer-context-template').html());
 
     },
     events : {
-        "click .openModal" : "open_modal_details_box",
         "keyup .search" : "search",
     },
     search: function(e){
@@ -464,127 +101,25 @@ explorer.Views.MiddlePart = Backbone.View.extend({
         });
         this.eventAggregator.trigger('knowledge_search',matched);
     },
-    open_modal_details_box :function(e){
-        this.eventAggregator.trigger("kSelected", e.target.getAttribute("data-id-knowledge"))
-    },
     render : function(){
         $(this.el).html('');
         // Input 
         $(this.el).append(this.template_context({filters:this.filters.toJSON()}));
         // knowledge list
-        // knowledge_list_view = new explorer.Views.KnowledgesList({
-        //     knowledges:this.knowledges,
-        //     user:this.user,
-        //     eventAggregator:this.eventAggregator,
-        //     style:this.style
-        // });
-        // $(this.el).append(knowledge_list_view.render().el);
-        // Knowledges timeline
-        $(this.el).append(new explorer.Views.Knowledges({
-            user : this.user,
-            knowledges : this.knowledges,
-            eventAggregator : this.eventAggregator
+        $(this.el).append(new explorer.Views.KnowledgesList({
+            className : "row panel",
+            knowledges:this.knowledges,
+            user:this.user,
+            eventAggregator:this.eventAggregator,
+            style:this.style
         }).render().el);
 
         return this;
     }
 });
 /////////////////////////////////////////
-// Experts content part
+// Left Part
 /////////////////////////////////////////
-explorer.Views.ExpertsList = Backbone.View.extend({
-    initialize : function(json) {
-        //console.log("Visu experts liste view initialise");
-        _.bindAll(this, 'render');
-        // Variables
-        this.experts = json.experts;
-        this.experts_render = this.experts;
-        this.knowledges = json.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.eventAggregator.on('expert_search', this.expertSearch, this);
-        // Templates
-        this.template = _.template($('#explorer-expert-template').html());
-        // Styles
-        //$(this.el).attr( "style","overflow: auto;max-height:200px");
-    },
-    expertSearch: function(matched_experts){
-        this.experts_render = matched_experts;
-        this.render();
-    },
-    render : function(){
-        // Init
-        $(this.el).html('');
-        el_experts_part=this.el;
-        template = this.template;
-        knowledges = this.knowledges;
-        // Get the total_connections
-        total_connections = 0;
-        this.experts_render.each(function(expert){
-            knowledges.each(function(k){
-                if(k.get('user').id == expert.get('id')){total_connections+=1;}
-            });  
-        });
-        // For each expert
-        this.experts_render.each(function(expert_){
-            // Get the recurrence
-            recurrence = 0;
-            knowledges.each(function(k){
-                if(k.get('user').id == expert_.get('id')){recurrence+=1;}
-            });
-            if((recurrence == 0)&&(total_connections == 0)){percentage = 0;}else{percentage = (recurrence*100)/total_connections;}
-            var renderedContent = template({expert:expert_.toJSON(),rec:recurrence,per:percentage});
-            $(el_experts_part).append(renderedContent);
-        });
-
-        return this;
-    }
-});
-/***************************************/
-explorer.Views.ExpertsPart = Backbone.View.extend({
-    className:"content",
-    initialize : function(json) {
-        _.bindAll(this, 'render','search');
-        // Variables
-        this.experts = json.experts;
-        this.knowledges = json.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        // Template
-        this.template_search = _.template($('#explorer-search-template').html());
-        // Style
-        $(this.el).attr('id',json.idAcc);
-    },
-    events : {
-        "keyup .search" : "search",
-    },
-    search: function(e){
-        var research = e.target.value;
-        var research_size = research.length;
-        var matched = new Backbone.Collection();
-        this.experts.each(function(c){
-            if(research.toLowerCase() == c.get('name').substr(0,research_size).toLowerCase()){
-                matched.add(c);
-            }
-        });
-        this.eventAggregator.trigger('expert_search',matched);
-    },
-    render : function(){
-        // Init
-        $(this.el).html('');
-        // Input search
-        $(this.el).append(this.template_search({title:"Experts"}));
-        // Poche list
-        experts_list_view = new explorer.Views.ExpertsList({
-            experts:this.experts,
-            knowledges:this.knowledges,
-            eventAggregator:this.eventAggregator
-        });
-        $(this.el).append(experts_list_view.render().el);
-        
-        return this;
-    }
-});
-/***************************************/
 explorer.Views.ddExperts = Backbone.View.extend({
     tagName:"dd",
     initialize:function(json){
@@ -600,130 +135,13 @@ explorer.Views.ddExperts = Backbone.View.extend({
         $(this.el).html('');
         $(this.el).append(this.template_accrodion_hearder({title:"Authors",idAcc:"authors_acc"}));
         // Accordion Concepts part content
-        $(this.el).append(new explorer.Views.ExpertsPart({
+        $(this.el).append(new expertsList.Views.Main({
             idAcc : "authors_acc",
             experts:this.experts,
             knowledges:this.knowledges,
             eventAggregator:this.eventAggregator
         }).render().el);
 
-        return this;
-    }
-});
-/////////////////////////////////////////
-// Concept content part
-/////////////////////////////////////////
-explorer.Views.ConceptList = Backbone.View.extend({
-    initialize : function(json) {
-        _.bindAll(this, 'render');
-        // Variables
-        this.concepts = json.concepts;
-        this.concepts_render = this.concepts;
-        this.eventAggregator = json.eventAggregator;
-        this.knowledges = json.knowledges;
-        this.links = json.links;
-        // Events
-        this.eventAggregator.on('concept_search', this.conceptSearch, this);
-        // Templates
-        this.template = _.template($('#explorer-concept-template').html());
-        // Styles
-        //$(this.el).attr( "style","overflow: auto;max-height:200px");
-    },
-    conceptSearch: function(matched_concepts){
-        this.concepts_render = matched_concepts;
-        this.render();
-    },
-    render : function(){
-        // Init
-        $(this.el).html('');
-        el_concepts_part=this.el;
-        template = this.template;
-        links = this.links;
-        knowledges = this.knowledges;
-        // Get the total_connections
-        total_connections = 0;
-        this.concepts_render.each(function(concept_){
-            // Get the recurrence
-            knowledges.each(function(k){
-                links.filter(function(link){
-                    if((link.get('concept') == concept_.get('id'))&&(link.get('knowledge') == k.get('id'))){
-                        total_connections+=1;return false;
-                    }
-                    else{return false;}   
-                });  
-            });
-        });
-        // For each concept
-        this.concepts_render.each(function(concept_){
-            // Get the recurrence
-            recurrence = 0;
-            knowledges.each(function(k){
-                links.filter(function(link){
-                    if((link.get('concept') == concept_.get('id'))&&(link.get('knowledge') == k.get('id'))){
-                        recurrence+=1;return false;
-                    }
-                    else{return false;}   
-                });  
-            });
-            if((recurrence == 0)&&(total_connections == 0)){percentage = 0;}else{percentage = (recurrence*100)/total_connections;}
-            var renderedContent = template({concept:concept_.toJSON(),rec : recurrence,per : percentage});
-            $(el_concepts_part).append(renderedContent);
-        });
-        return this;
-    }
-});
-/***************************************/
-explorer.Views.ConceptsPart = Backbone.View.extend({
-    className:"content",
-    initialize : function(json) {
-        _.bindAll(this, 'render', 'search');
-        // Variables
-        this.concepts = json.concepts;
-        this.knowledges = json.knowledges;
-        this.links = json.links;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.concepts.bind("add",this.render);
-        this.concepts.bind("remove",this.render);
-        this.concepts.bind("change",this.render);
-        // Template
-        this.template_search = _.template($('#explorer-search-template').html());
-        // Style
-        $(this.el).attr('id',json.idAcc);
-    },
-    events : {
-        "keyup .search" : "search"
-    },
-    search: function(e){
-        var research = e.target.value;
-        var research_size = research.length;
-        var matched = new Backbone.Collection();
-        this.concepts.each(function(c){
-            if(research.toLowerCase() == c.get('title').substr(0,research_size).toLowerCase()){
-                matched.add(c);
-            }
-        });
-        this.eventAggregator.trigger('concept_search',matched);
-    },
-    render : function(){
-        // Init
-        $(this.el).html('');
-        el_concepts_part=this.el;
-        template = this.template;
-        links = this.links;
-        knowledges = this.knowledges;
-        // Input search
-        $(this.el).append(this.template_search({title:"Concepts"}));
-        // Concepts list
-        concept_list_view = new explorer.Views.ConceptList({
-            concepts:this.concepts,
-            eventAggregator:this.eventAggregator,
-            knowledges:this.knowledges,
-            links:this.links
-        });
-        $(this.el).append(concept_list_view.render().el);
-        
-        
         return this;
     }
 });
@@ -744,7 +162,7 @@ explorer.Views.ddConcepts = Backbone.View.extend({
         $(this.el).html('');
         $(this.el).append(this.template_accrodion_hearder({title:"Concepts",idAcc:"concepts_acc"}));
         // Accordion Concepts part content
-        $(this.el).append(new explorer.Views.ConceptsPart({
+        $(this.el).append(new conceptsList.Views.Main({
             idAcc : "concepts_acc",
             concepts:this.concepts,
             knowledges:this.knowledges,
@@ -752,113 +170,6 @@ explorer.Views.ddConcepts = Backbone.View.extend({
             eventAggregator:this.eventAggregator
         }).render().el);
 
-        return this;
-    }
-});
-/////////////////////////////////////////
-// Projects content part
-/////////////////////////////////////////
-explorer.Views.ProjectList = Backbone.View.extend({
-    initialize : function(json) {
-        _.bindAll(this, 'render');
-        // Variables
-        this.projects = json.projects;
-        this.projects_render = this.projects;
-        this.eventAggregator = json.eventAggregator;
-        this.knowledges = json.knowledges;
-        // Events
-        this.eventAggregator.on('project_search', this.projectSearch, this);
-        // Templates
-        this.template = _.template($('#explorer-project-template').html());
-        // Styles
-        //$(this.el).attr( "style","overflow: auto;max-height:200px");
-    },
-    projectSearch: function(matched_projects){
-        this.projects_render = matched_projects;
-        this.render();
-    },
-    render : function(){
-        // Init
-        $(this.el).html('');
-        el_projects_part=this.el;
-        template = this.template;
-        knowledges = this.knowledges;
-        // Get the total_connections
-        total_connections = 0;
-        this.projects_render.each(function(project_){
-            // Get the recurrence
-            knowledges.each(function(k){
-                    if(k.get('project') == project_.get('id')){
-                        total_connections+=1;return false;
-                    }
-                    else{return false;}   
-            });
-        });
-        // For each concept
-        this.projects_render.each(function(project_){
-            // Get the recurrence
-            recurrence = 0;
-            knowledges.each(function(k){
-                if(k.get('project') == project_.get('id')){
-                        recurrence+=1;return false;
-                    }
-                    else{return false;}   
-            });
-            if((recurrence == 0)&&(total_connections == 0)){percentage = 0;}else{percentage = (recurrence*100)/total_connections;}
-            var renderedContent = template({project:project_.toJSON(),rec : recurrence,per : percentage});
-            $(el_projects_part).append(renderedContent);
-        });
-        return this;
-    }
-});
-/***************************************/
-explorer.Views.ProjectsPart = Backbone.View.extend({
-    className:"content",
-    initialize : function(json) {
-        _.bindAll(this, 'render','search');
-        // Variables
-        this.projects = json.projects; 
-        this.knowledges = json.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.projects.bind("add",this.render);
-        this.projects.bind("remove",this.render);
-        this.projects.bind("change",this.render);
-        // Template
-        this.template_search = _.template($('#explorer-search-template').html());
-        // Style
-        $(this.el).attr('id',json.idAcc);
-    },
-    events : {
-        "keyup .search" : "search"
-    },
-    search: function(e){
-        var research = e.target.value;
-        var research_size = research.length;
-        var matched = new Backbone.Collection();
-        this.projects.each(function(c){
-            if(research.toLowerCase() == c.get('title').substr(0,research_size).toLowerCase()){
-                matched.add(c);
-            }
-        });
-        this.eventAggregator.trigger('project_search',matched);
-    },
-    render : function(){
-        // Init
-        $(this.el).html('');
-        el_projects_part=this.el;
-        template = this.template;
-        knowledges = this.knowledges;
-        // Input search
-        $(this.el).append(this.template_search({title:"Projects"}));
-        // Concepts list
-        project_list_view = new explorer.Views.ProjectList({
-            projects:this.projects,
-            eventAggregator:this.eventAggregator,
-            knowledges:this.knowledges,
-        });
-        $(this.el).append(project_list_view.render().el);
-        
         return this;
     }
 });
@@ -878,7 +189,7 @@ explorer.Views.ddProjects = Backbone.View.extend({
         $(this.el).html('');
         $(this.el).append(this.template_accrodion_hearder({title:"Projects",idAcc:"projects_acc"}));
         // Accordion Projects part content
-        $(this.el).append(new explorer.Views.ProjectsPart({
+        $(this.el).append(new projectsList.Views.Main({
             idAcc : "projects_acc",
             projects:this.projects,
             knowledges:this.knowledges,
@@ -888,9 +199,7 @@ explorer.Views.ddProjects = Backbone.View.extend({
         return this;
     }
 });
-/////////////////////////////////////////
-// Left Part
-/////////////////////////////////////////
+/***************************************/
 explorer.Views.LeftPart = Backbone.View.extend({
     tagName:'dl',
     className: "accordion show-for-medium-up medium-2 large-2 columns",
@@ -914,11 +223,11 @@ explorer.Views.LeftPart = Backbone.View.extend({
         // States
         $(this.el).append(this.template_states());
         // Projects dd part 
-        // $(this.el).append(new explorer.Views.ddProjects({
-        //     projects:this.projects,
-        //     knowledges:this.knowledges,
-        //     eventAggregator:this.eventAggregator
-        // }).render().el);
+        $(this.el).append(new explorer.Views.ddProjects({
+            projects:this.projects,
+            knowledges:this.knowledges,
+            eventAggregator:this.eventAggregator
+        }).render().el);
         // Concepts dd part
         $(this.el).append(new explorer.Views.ddConcepts({
             concepts:this.concepts,
@@ -954,18 +263,8 @@ explorer.Views.Main = Backbone.View.extend({
         this.filters            = new explorer.Collections.Filters();
         this.eventAggregator    = json.eventAggregator;
         // Modals
-        this.tags_modal_view = new explorer.Views.TagsModal({
-            user : this.user,
-            poches: this.poches,
-            knowledges : this.knowledges,
-            eventAggregator : this.eventAggregator
-        });
-        this.comments_modal_view = new explorer.Views.CommentsModal({
-            user : this.user,
-            knowledges : this.knowledges,
-            eventAggregator : this.eventAggregator
-        });
-        this.attachment_modal_view = new explorer.Views.AttachmentModal({
+        this.CKLayoutModal_view = new CKLayout.Views.Modal({
+            type : "knowledge",
             user : this.user,
             knowledges : this.knowledges,
             eventAggregator : this.eventAggregator
@@ -1025,9 +324,9 @@ explorer.Views.Main = Backbone.View.extend({
             id:guid(),
             user: this.user,
             title : $('#explorer_new_k_title').val(),
-            content : '<a href="#" class="edit">Edit the knowledge</a>',
+            content : '',
             tags: poches,
-            comments:[],
+            comments: new Backbone.Collection(),
             date: getDate(),
             date2:new Date().getTime()
         });
@@ -1037,7 +336,7 @@ explorer.Views.Main = Backbone.View.extend({
                 global.models.newLink = new global.Models.CKLink({
                     id :guid(),
                     user : user_,
-                    content : '<a href="#" class="edit">Edit the knowledge</a>',
+                    content : '',
                     date : getDate(),
                     concept : concept.get('id'),
                     knowledge : newK.get('id')
@@ -1050,8 +349,6 @@ explorer.Views.Main = Backbone.View.extend({
         // Save the new knowledge
         newK.save();
         this.knowledges.add(newK);
-        this.render();
-
     },
     ///////////////////////////////////////////////////////
     // Session quenelle power
@@ -1180,14 +477,12 @@ explorer.Views.Main = Backbone.View.extend({
             eventAggregator:this.eventAggregator
         }).render().el);
         // Right part
-        $(this.el).append(new explorer.Views.PochesPart({
+        $(this.el).append(new categoriesList.Views.Main({
+            className : "large-2 medium-2 small-2 columns",
             poches : this.poches,
             knowledges : this.knowledges,
             eventAggregator : this.eventAggregator
         }).render().el);
-        //Modals
-        this.tags_modal_view.render();
-        //this.comments_modal_view.render();
         
         $(document).foundation();
         return this;

@@ -354,6 +354,7 @@ details.Views.LeftPart = Backbone.View.extend({
         "click .update_informations" : "update_informations",
     },
     update_informations : function(e){
+        e.preventDefault();
         this.model.set({
             title:$("#"+ e.target.getAttribute('data-action')).val(),
             content:CKEDITOR.instances.editor.getData()
@@ -540,7 +541,7 @@ details.Views.ModalTabsContent = Backbone.View.extend({
 /****************************************************************/
 details.Views.Modal = Backbone.View.extend({
     tagName:"div",
-    className:"reveal-modal xlarge",
+    className:"reveal-modal",
     id :"detailsModal",
     initialize : function(json) {
         _.bindAll(this, 'render');
@@ -612,19 +613,19 @@ details.Views.Main = Backbone.View.extend({
         this.eventAggregator.on("notificationOpenK", this.onNotificationOpenK)
 
         // Reset the baseUrl of template manager
-        Backbone.TemplateManager.baseUrl = '{name}';
+        //Backbone.TemplateManager.baseUrl = '{name}';
         
         // Create the upload manager object
-        this.uploadManager = new Backbone.UploadManager();
+        // this.uploadManager = new Backbone.UploadManager();
 
-        eventAggregator_ = this.eventAggregator;
+        // eventAggregator_ = this.eventAggregator;
 
-        this.uploadManager.on('filedone', function (e,f,g) {
-            eventAggregator_.trigger("uploadCompleted",f._response.result);
-            $('#uploadModal').foundation('reveal', 'close');
-        });
+        // this.uploadManager.on('filedone', function (e,f,g) {
+        //     eventAggregator_.trigger("uploadCompleted",f._response.result);
+        //     $('#uploadModal').foundation('reveal', 'close');
+        // });
 
-        this.uploadManager.renderTo($('div#upload-container'));
+        // this.uploadManager.renderTo($('div#upload-container'));
 
 
     },
@@ -638,7 +639,7 @@ details.Views.Main = Backbone.View.extend({
            $('#detailsModal').foundation('reveal', 'open'); 
         }); 
     },
-    nodeSelectionChanged : function (e){
+    nodeSelectionChanged : function (e){alert('open')
         console.log("C selected");
         this.model = this.concepts.get(e);
         this.type = "concept";

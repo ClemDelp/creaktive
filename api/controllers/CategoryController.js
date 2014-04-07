@@ -19,7 +19,6 @@ module.exports = {
       req.session.currentProject = project;
       res.view({
         currentUser : JSON.stringify(req.session.user),
-        projectTitle : req.session.currentProject.title,
         projectId : req.session.currentProject.id,
         currentProject : JSON.stringify(req.session.currentProject)
       });

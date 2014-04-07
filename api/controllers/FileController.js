@@ -68,7 +68,8 @@ module.exports = {
   },
 
   upload: function(req, res) {
-  	var file = req.files.files[0];
+    console.log("tututututututututu",req.files)
+  	var file = req.files[0];
 
     async.auto({
       

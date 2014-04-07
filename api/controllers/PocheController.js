@@ -37,7 +37,6 @@ if(req.body.params.projectId){
       });
     }
 
-
   },
 
   create : function (req,res){

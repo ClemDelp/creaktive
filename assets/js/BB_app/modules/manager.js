@@ -112,14 +112,22 @@ manager.Views.Main = Backbone.View.extend({
     },
 
     removeProject : function (e){
+        _this = this;
         if(confirm("Will remove the project and all its data! Confirm?")){
             console.log("Remove project");
             project_id = e.target.getAttribute("data-id-project");
             project = this.projects.get(project_id);
             this.projects.remove(project);
             project.destroy();
+
+            _.each(this.concepts.where({project : project_id}), function(concept){
+                _this.concepts.remove(concept);
+                concept.destroy();
+            })
+
         }
     },
+
     search: function(e){
         e.preventDefault();
         var research = e.target.value;

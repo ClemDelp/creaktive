@@ -5,11 +5,7 @@ comments.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Variables
         this.model = json.model;
-        this.comments = this.model.get('comments');
         this.user = json.user;
-        // Events
-        this.comments.bind("add", this.render);
-        this.comments.bind("remove", this.render);
         // Templates
         this.template = _.template($('#comments-template').html());
     },
@@ -19,19 +15,21 @@ comments.Views.Main = Backbone.View.extend({
     },
     addComment: function(e){
         e.preventDefault(); 
-        this.comments.add({
+        this.model.get('comments').add({
             id:guid(),
             user : this.user,
             date : getDate(),
             content : $(this.el).find(".input_comment").val()
         });
-        this.model.save({comments : this.comments.toJSON()});
+        this.model.save();
+        this.render();
     },
     removeComment : function(e){
         e.preventDefault();
-        comment = this.comments.get(e.target.getAttribute("data-id-comment"));
-        this.comments.remove(comment);
-        this.model.save({comments : this.comments.toJSON()});
+        comment = this.model.get('comments').get(e.target.getAttribute("data-id-comment"));
+        this.model.get('comments').remove(comment);
+        this.model.save();
+        this.render();
     },
     render : function() {
         $(this.el).html("");
@@ -39,7 +37,7 @@ comments.Views.Main = Backbone.View.extend({
         $(this.el).append(this.template({
             user : this.user,
             model : this.model,
-            comments : this.comments.toJSON()
+            comments : this.model.get('comments').toJSON()
         }));
 
         return this;

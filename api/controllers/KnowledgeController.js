@@ -36,7 +36,6 @@
       });
     }
 
-
   },
 
   create : function (req,res){
@@ -104,6 +103,9 @@
         currentProject : JSON.stringify(req.session.currentProject)
       });
     })
+    
+
+    
     
   },
 

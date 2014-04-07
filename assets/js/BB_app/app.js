@@ -13,7 +13,7 @@ var global = {
   init: function (currentUser, currentProject, callback) {
     //Variables
     this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
-    this.models.currentProject = new this.Models.ProjectModel(JSON.parse(currentProject)); 
+    this.models.currentProject = new this.Models.ProjectModel(currentProject); 
     console.log("******* Connected as ", this.models.current_user.get("name"), " on ", this.models.currentProject.get("title"))
     this.eventAggregator = {};//this.concepts.first();
     _.extend(this.eventAggregator, Backbone.Events);
@@ -152,6 +152,8 @@ var conceptsmap = {
       project     : global.models.currentProject,
       user        : global.models.current_user,
       knowledges  : global.collections.Knowledges,
+      poches      : global.collections.Poches,
+      links       : global.collections.Links,
       eventAggregator : global.eventAggregator
     });   
   }
@@ -194,7 +196,8 @@ var topbar = {
       page            : page,
       user            : global.models.current_user,
       eventAggregator : global.eventAggregator
-    });  
+    }); 
+    this.views.Main.render(); 
   }
 };
 /////////////////////////////////////////////////
@@ -207,12 +210,13 @@ var title = {
   collections: {},
   models: {},
   views: {},
-  init: function (projectTitle) {
+  init: function (_project,_page) {
     /*Init*/
     this.views.Main = new this.Views.Main({
-      project     : projectTitle,
-      user        : global.models.current_user,
-      eventAggregator : global.eventAggregator
+      project           : _project,
+      page              : _page,
+      user              : global.models.current_user,
+      eventAggregator   : global.eventAggregator
     });  
     this.views.Main.render();
   }

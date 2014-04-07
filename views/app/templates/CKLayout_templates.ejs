@@ -1,0 +1,32 @@
+<script type="text/template" id="CKLayout-header-template">
+	<div class="row">
+        <div class="large-10 medium-10 small-10 columns">
+            <h4 style="display:inline">{{- model.title}}</h4> - 
+            <span class="success round label" style="background-color:{{- model.color }};display:inline">{{- model.label}}</span>
+        </div>
+        <div class="large-2 medium-2 small-2 columns">
+            <a href="#" data-dropdown="label{{-model.id}}" class="button tiny round dropdown">Actions</a>
+            <ul id="label{{-model.id}}" data-dropdown-content class="f-dropdown">
+              {{ _.each(labels, function(label){ }}
+                <li><a href="#" class="updateLabel" data-model-id="{{-model.id}}" data-label-color="{{-label.color}}" data-label-title="{{-label.title}}">{{-label.title}}</a></li>
+              {{ }); }}
+              <li><a href="#" class="remove">remove</a></li>
+            </ul>
+        </div>
+    </div>
+</script>
+
+<script type="text/template" id="CKLayout-footer-template">
+	<div class="row">
+		<div class="large-12 medium-12 small-12 columns">
+      <br>
+      <i>Last update by <b>{{-model.user.name}}</b> at {{-model.date}}</i>
+    </div>
+    <div class="large-12 medium-12 small-12 columns">
+        <span class="secondary round label">tags ({{- model.tags.length }})</span> -
+        {{ _.each(model.tags, function(tag) { }}
+            <span class="success round label" style="cursor:pointer">{{-tag}}</span>
+        {{ }); }}
+    </div>
+    </div>
+</script>

@@ -3,16 +3,15 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Left part -->
 <script type="text/template" id="user-profil-template">
-	<div class="large-6 medium-6 small-12 columns">
-		<h4>Users linked to the project</h4>
-		<hr>
+	<div class="large-6 medium-6 small-6 columns">
+		<hr><center><h4>Users linked to the project</h4></center><hr>
 		{{ _.each(users_linked, function(permission) { }}
-			<div class="row panel callout">
-				<div class="large-1 medium-1 small-1 columns">
+			<div class="row panel callout radius">
+				<div class="large-3 medium-3 small-3 columns">
 			    	<img class="roundedImage" src="{{- permission.user.img }}"/>
 			    	
 			    </div>
-			    <div class="large-11 medium-11 small-11 columns">
+			    <div class="large-9 medium-9 small-9 columns">
 			    	<div class="row">
 					    <div class="large-12 columns">
 					      <div class="row collapse">
@@ -25,7 +24,7 @@
 					        	</select>
 					        </div>
 					        <div class="small-2 columns">
-					          <a href="#" class="button postfix secondary changePermission" data-id-user="{{- permission.user.id }}">Validate</a>
+					          <a href="#" class="button postfix changePermission" style="color:white" data-id-user="{{- permission.user.id }}">Validate</a>
 					        </div>
 					      </div>
 					    </div>
@@ -35,15 +34,14 @@
 		{{ }); }}
 	</div>
 
-	<div class="large-6 medium-6 small-12 columns">
-		<h4>Users not linked to the project</h4>
-		<hr>
+	<div class="large-5 medium-6 small-6 columns">
+		<hr><center><h4>Users not linked to the project</h4></center><hr>
 		{{ _.each(users_notlinked, function(user) { }}
-			<div class="row panel">
-			    <div class="large-1 medium-1 small-1 columns">
+			<div class="row panel callout radius">
+			    <div class="large-3 medium-3 small-3 columns">
 			    	<img class="roundedImage" src="{{- user.img }}"/>
 			    </div>
-			    <div class="large-11 medium-11 small-11 columns">
+			    <div class="large-9 medium-9 small-9 columns">
 			    	<div class="row">
 					    <div class="large-12 columns">
 					      <div class="row collapse">
@@ -56,7 +54,7 @@
 					        	</select>
 					        </div>
 					        <div class="small-2 columns">
-					          <a href="#" class="button postfix addPermission" data-id-user="{{- user.id }}">Validate</a>
+					          <a href="#" class="button postfix addPermission" style="color:white" data-id-user="{{- user.id }}">Add</a>
 					        </div>
 					      </div>
 					    </div>
@@ -70,10 +68,29 @@
 
 
 <script type="text/template" id="user-search-template">
-    	<div class="large-10 medium-10 small-10 columns">
-    		<input type="text" class="search" id="searchUser" placeholder="search users by keywords"/>
-		</div>
-        <div class="large-2 medium-2 small-2 columns">
-          <a href="#" class="button postfix inviteUser">Send an invitation by email</a>
+    	<div class="row">
+	    	<div class="large-6 medium-6 small-6 columns">
+		    	<div class="row collapse">
+			        <div class="small-3 columns">
+				      <span class="prefix">Search</span>
+				    </div>
+				    <div class="small-9 columns">
+			          <input type="text" class="search" placeholder="Search members by typing his name">
+			        </div>			  
+			    </div>
+			</div>
+	        <div class="large-5 medium-6 small-6 columns">
+		        <div class="row collapse">
+			        <div class="small-1 large-1 columns">
+				      <span class="prefix">@</span>
+				    </div>
+				    <div class="small-9 columns">
+			          <input type="text" placeholder="Send an invitation by email" id="searchUser">
+			        </div>
+			        <div class="small-2 columns">
+			          <a href="#" class="button postfix inviteUser">Send</a>
+			        </div>
+			    </div>
+		    </div>
         </div>
 </script>

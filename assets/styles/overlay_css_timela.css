@@ -3,6 +3,9 @@ body{
 	background-image:url(/img/pattern.png);
 }
 
+.floatRight{
+	float:right;
+},
 
 .roundedImage{
     overflow:hidden;

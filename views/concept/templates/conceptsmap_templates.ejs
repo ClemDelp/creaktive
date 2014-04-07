@@ -1,0 +1,56 @@
+<div id="conceptsmap_container"></div>
+
+<!-- //////////////////////////////////////////////////////////////////////: -->
+<!-- Modals -->
+ <div id="CKLayoutModal" class="reveal-modal medium" data-reveal></div>
+  <div id="CKLinkModal" class="reveal-modal medium" data-reveal></div>
+ <!-- //////////////////////////////////////////////////////////////////////: -->
+<script type="text/template" id="conceptsmap_template">
+	<div class="columns large-1 medium-1">
+		<a href="#" class="button tiny" data-dropdown="help-dropdown">Help</a>
+		<a href="#" title="Edit content" class="panel button tiny editContent"><img src="img/edit.png"></a>
+		<a href="#" title="Link knowledges" class="panel button tiny linkK"><img src="img/link.png"></a>
+		<a href="#" title="Center (End)" class="panel button tiny resetView"><img src="img/centrer.png"></a>
+		<a href="#" title="Zoom in (+)" class="panel button tiny scaleUp"><img src="img/plus.png"></a>
+		<a href="#" title="Zoom out (-)" class="panel button tiny scaleDown"><img src="img/moins.png"></a>
+		<a href="#" title="Add (Enter)" class="panel button tiny addSubIdea"><img src="img/add.png"></a>
+		<a href="#" title="Delete (Del)" class="panel button tiny removeSubIdea"><img src="img/sup.png"></a>
+		<a href="#" title="Undo (Ctrl-z)" class="panel button tiny undo"><img src="img/undo.png"></a>
+		<a href="#" title="Redo (Ctrl-y)" class="panel button tiny redo"><img src="img/redo.png"></a>
+		<a href="#" title="Copy (Ctrl-c)" class="panel button tiny copy"><img src="img/copy.png"></a>
+		<a href="#" title="Cut (Ctrl-x)" class="panel button tiny cut"><img src="img/cut.png"></a>
+		<a href="#" title="Paste (Ctrl-v)" class="panel button tiny paste"><img src="img/paste.png"></a>
+	</div>
+	
+
+	<div class="large-11 medium-11 columns" >
+		<ul id="port">
+			<div id="tip">
+				Press ‘Tab’ to Insert Child, ‘Enter’ to Insert Sibling Node.
+			</div>
+			
+		</ul>
+		<div id="throbber"></div>
+	</div> 
+</script>
+
+
+<div id="help-dropdown" data-dropdown-content class="f-dropdown content">
+
+		<h3>Help</h3>
+		<p><span>Navigation</span></p>
+		<table class="navigation"><tbody><tr><td>Pan the map</td><td>W/A/S/D</td></tr><tr><td>Move selection</td><td>↑/←/↓/→</td></tr><tr><td>Select root</td><td>Home</td></tr><tr><td>Select parent</td><td>Backspace</td></tr><tr><td>Center map</td><td>End</td></tr><tr><td>Zoom in/Zoom out</td><td>+/−</td></tr><tr><td>Fold/Unfold</td><td>F</td></tr></tbody></table>
+		<p><span>Manipulation</span></p>
+		<table class="manipulation"><tbody><tr><td>Insert a sibling</td><td>↩</td></tr><tr><td>Insert a child</td><td>Tab/Insert</td></tr><tr><td>Swap sibling</td><td>Ctrl+↑/Ctrl+↓</td></tr><tr><td>Change side</td><td>Ctrl+←/Ctrl+→</td></tr><tr><td>Delete an item</td><td>Delete</td></tr><tr><td>Copy</td><td>Ctrl+C</td></tr><tr><td>Cut</td><td>Ctrl+X</td></tr><tr><td>Paste</td><td>Ctrl+V</td></tr></tbody></table>
+		<p><span>Editing</span></p>
+		<table class="editing"><tbody><tr><td>Set value</td><td>V</td></tr><tr><td>Yes/No/Maybe</td><td>Y/N/M</td></tr><tr><td>Edit item</td><td>Spacebar/F2</td></tr><tr><td>Line break</td><td>Shift+↩/Ctrl+↩</td></tr><tr><td>Bold</td><td>Ctrl+B</td></tr><tr><td>Italic</td><td>Ctrl+I</td></tr><tr><td>Underline</td><td>Ctrl+U</td></tr><tr><td>Strike-through</td><td>Ctrl+S</td></tr></tbody></table>
+		<p><span>Other</span></p>
+		<table class="other"><tbody><tr><td>Undo/Redo</td><td>Ctrl+Z/Ctrl+Y</td></tr><tr><td>Save map</td><td>Ctrl+S</td></tr><tr><td>Save as…</td><td>Ctrl+Shift+S</td></tr><tr><td>Load map</td><td>Ctrl+O</td></tr><tr><td>Show/hide help</td><td>?</td></tr><tr><td>Show/hide UI</td><td>*</td></tr></tbody></table>
+</div>
+
+
+
+
+
+
+
