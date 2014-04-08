@@ -22,11 +22,9 @@
 
 
   find : function (req,res){
-    User.find({
-
-    }).done(function(err,users){
-      if(err) res.send(err)
-        res.send(users)
+    User.find().done(function(err,users){
+      if(err) res.send({err:err})
+      res.send(users)
     });
 
   },
@@ -34,17 +32,18 @@
   
   update : function(req,res){
   	User.findOne(req.body.params.id).done(function(err, user){
-  		if(err) res.send(err);
+  		if(err) res.send({err:err});
   		if(user){
   			User.update({id: req.body.params.id}, req.body.params).done(function(err,c){
-  				if(err) res.send(err)
+  				if(err) res.send({err:err})
             res.send(c);
         });
   		}else{
   			User.create(req.body.params).done(function(err,p){
-  				if(err) res.send(err)
+  				if(err) res.send({err:err})
             p.confirmed = true;
           p.save(function(err, u){
+            if(err) res.send({err:err})
             res.send(u);
           })
           
@@ -73,7 +72,7 @@
       confirmed : false,
       id : guid()
     }).done(function(err, user){
-      if(err) res.send(err)
+      if(err) res.send({err:err})
 
 
         var url = "";
@@ -99,7 +98,7 @@
         user_id : user.id,
         project_id : req.session.currentProject.id
       }).done(function(err, permission){
-        if(err) res.send(err)
+        if(err) res.send({err:err})
           res.send({user : user, permission : permission})
       })
     })

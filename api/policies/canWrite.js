@@ -17,9 +17,9 @@ module.exports = function(req, res, next) {
 		if(perm.length !== 0){
 			console.log(perm)
 			if (perm[0].right == "rw") next();
-			else res.json({err : "You have read-only permission" });
+			else res.send({err : "You have read-only permission" });
 		} 
-		else res.json({err : "You are not permitted to perform this action" });
+		else res.send({err : "You are not permitted to perform this action" });
 	})
 
 	
