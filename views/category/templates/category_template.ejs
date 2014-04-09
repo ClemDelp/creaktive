@@ -55,7 +55,7 @@
           <input class="category_title" type="text" placeholder="new category..."/>
         </div>
         <div class="small-2 columns">
-          <a href="#" class="button postfix newCategory">Add</a>
+          <a href="#" class="button postfix newCategory">New</a>
         </div>
     </div>
 </script>
@@ -74,10 +74,10 @@
             <li class="bullet-item">
                 <div class="row collapse">
                     <div class="small-10 columns">
-                      <input class="category_new_k_title" type="text" placeholder="new knowledge..."/>
+                      <input id="category_new_k_title_{{-category.id}}" type="text" placeholder="new knowledge..."/>
                     </div>
                     <div class="small-2 columns">
-                      <a href="#" class="button postfix addKnowledge" data-title-category="{{- category.title}}">+</a>
+                      <a href="#" class="button postfix addKnowledge" data-id-category="{{-category.id}}" data-title-category="{{- category.title}}">+</a>
                     </div>
                 </div>
                 {{ _.each(knowledges, function(knowledge) { }}

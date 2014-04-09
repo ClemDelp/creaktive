@@ -29,50 +29,16 @@ category.Collections.Filters = Backbone.Collection.extend({
 /////////////////////////////////////////
 category.Views.Category = Backbone.View.extend({
     initialize : function(json){
-        _.bindAll(this, 'render',"openModal");
+        _.bindAll(this, 'render');
         // Variable
         this.notifications      = json.notifications;
+        this.user               = json.user;
         this.knowledges         = json.knowledges;
         this.poches             = json.poches;
         this.poche              = json.poche;
-        this.user               = json.user;
         this.eventAggregator    = json.eventAggregator;
         // Templates
         this.template_list = _.template($('#category-list-template').html());
-    },
-    events : {
-        "click .addKnowledge" : "addKnowledge",
-        "click .openModal"  : "openModal",
-        "click .openCategoryEditorModal" : "openCategoryEditorModal"
-    },
-    openCategoryEditorModal : function(e){
-        e.preventDefault();
-        this.eventAggregator.trigger('openCategoryEditorModal',e.target.getAttribute("data-category-id"));
-    },
-    openModal: function(e){
-        e.preventDefault();
-        this.eventAggregator.trigger("openModal",e.target.getAttribute("data-knowledge-id"),e.target.getAttribute("data-catg-origin"));
-    },
-    addKnowledge : function(e){
-        // Init
-        user_ = this.user;
-        poches_ = [e.target.getAttribute('data-title-category')];
-        // Create the knowledge (sign with poche if poches are in context)
-        newK = new global.Models.Knowledge({
-            id:guid(),
-            user: this.user,
-            title : $(this.el).find('.category_new_k_title').val(),
-            //content : CKEDITOR.instances.new_k_content.getData(),
-            tags: poches_,
-            comments:[],
-            date: getDate(),
-            date2:new Date().getTime()
-        });
-        // Save the new knowledge
-        newK.save();
-        this.knowledges.add(newK);
-        this.render();
-
     },
     render:function(){
         $(this.el).html('');
@@ -89,14 +55,13 @@ category.Views.Category = Backbone.View.extend({
             category : this.poche.toJSON(),
             categories : this.poches.toJSON()
         }));
-
         return this;
     }
 });
 /***************************************/
 category.Views.Categories = Backbone.View.extend({
     initialize : function(json){
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render',"openModal","openCategoryEditorModal");
         // Variable
         this.notifications      = json.notifications;
         this.knowledges         = json.knowledges;
@@ -105,6 +70,39 @@ category.Views.Categories = Backbone.View.extend({
         this.eventAggregator    = json.eventAggregator;
         // Events
         this.eventAggregator.on('categories_list_render', this.render, this);
+    },
+    events : {
+        "click .addKnowledge" : "addKnowledge",
+        "click .openModal"  : "openModal",
+        "click .openCategoryEditorModal" : "openCategoryEditorModal"
+    },
+    openCategoryEditorModal : function(e){
+        e.preventDefault();
+        this.eventAggregator.trigger('openCategoryEditorModal',e.target.getAttribute("data-category-id"));
+    },
+    openModal: function(e){
+        e.preventDefault();
+        this.eventAggregator.trigger("openModal",e.target.getAttribute("data-knowledge-id"),e.target.getAttribute("data-catg-origin"));
+    },
+    addKnowledge : function(e){
+        e.preventDefault()
+        catg_id = e.target.getAttribute('data-id-category')
+        poches_ = [e.target.getAttribute('data-title-category')];
+        // Create the knowledge (sign with poche if poches are in context)
+        newK = new global.Models.Knowledge({
+            id:guid(),
+            user: this.user,
+            title : $(this.el).find('#category_new_k_title_'+catg_id).val(),
+            //content : CKEDITOR.instances.new_k_content.getData(),
+            tags: poches_,
+            comments:[],
+            date: getDate(),
+            date2:new Date().getTime()
+        });
+        // Save the new knowledge
+        newK.save();
+        this.knowledges.add(newK);
+        this.render();
     },
     render:function(){
         $(this.el).html('');
@@ -468,7 +466,7 @@ category.Views.Main = Backbone.View.extend({
             gutter: 20,
             width: 260
           });
-        
+
         $(document).foundation();
 
         return this;
