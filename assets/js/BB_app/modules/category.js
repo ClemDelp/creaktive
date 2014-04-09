@@ -161,7 +161,8 @@ category.Views.MiddlePart = Backbone.View.extend({
         $(this.el).append(this.template_filters({filters : this.filters.toJSON()}));
         // Category de cards
         lists_view = new category.Views.Categories({
-            className       : "row panel custom_row",
+            id              : "categories_grid",
+            className       : "row panel custom_row gridalicious",
             notifications   : this.notifications,
             knowledges      : this.knowledges,
             poches          : this.poches,
@@ -169,7 +170,7 @@ category.Views.MiddlePart = Backbone.View.extend({
             eventAggregator : this.eventAggregator
         });
         $(this.el).append(lists_view.render().el);
-    
+        
         return this;
     }
 });
@@ -462,6 +463,11 @@ category.Views.Main = Backbone.View.extend({
         $(this.el).append(right_part.render().el);
         //Modal
         this.modal_view.render();
+        
+        $("#categories_grid").gridalicious({
+            gutter: 20,
+            width: 260
+          });
         
         $(document).foundation();
 
