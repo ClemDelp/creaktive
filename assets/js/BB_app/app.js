@@ -10,7 +10,7 @@ var global = {
   collections: {},
   models: {},
   views: {},
-  init: function (currentUser, currentProject, users, knowledges, projects, poches, concepts, links, notifications, permissions,callback) {
+  init: function (currentUser, currentProject, users, knowledges, poches,projects, concepts, links, notifications, permissions,callback) {
     //Variables
     this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
     this.models.currentProject = new this.Models.ProjectModel(currentProject); 
@@ -116,6 +116,7 @@ var analyse = {
       links : global.collections.Links,
       eventAggregator : global.eventAggregator
     }); 
+    this.views.Main.render()
   }
 };
 /////////////////////////////////////////////////
@@ -164,7 +165,8 @@ var conceptsmap = {
       poches      : global.collections.Poches,
       links       : global.collections.Links,
       eventAggregator : global.eventAggregator
-    });   
+    }); 
+    this.views.Main.render()  
   }
 };
 /////////////////////////////////////////////////
@@ -185,6 +187,7 @@ var category = {
       user        : global.models.current_user,
       eventAggregator : global.eventAggregator,
     });   
+    this.views.Main.render()
   }
 };
 /////////////////////////////////////////////////
@@ -248,6 +251,7 @@ var user = {
       permissions : global.collections.Permissions,
       eventAggregator : global.eventAggregator
     });  
+    this.views.Main.render()
   }
 };
 /////////////////////////////////////////////////
@@ -274,6 +278,7 @@ var explorer = {
       style       : "grid"
 
     });
+    this.views.main.render()
 
     //this.views.main.render();
   }

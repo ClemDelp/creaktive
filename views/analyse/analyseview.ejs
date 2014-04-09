@@ -3,29 +3,14 @@
 <script src="/js/vendor/backbone.iosync.js"></script>
 <script src="/js/vendor/backbone.iobind.js"></script>
 
-<script type="text/javascript" src="js/vendor/jquery.mousewheel-3.1.3.js"></script>
-<script src="js/vendor/jquery.hotkeys.js"></script>
-<script src="js/vendor/jquery.hammer.min.js"></script>
-<script type="text/javascript" src="js/vendor/kinetic-v4.4.3.js"></script>
-<script src="js/vendor/color-0.4.1.min.js"></script>
 
-<!-- ******************************** -->
-<!-- FileUpload -->
-<script src="js/vendor/jquery.ui.widget.js"></script>
-<script src="js/vendor/jquery.iframe-transport.js"></script>
-<script src="js/vendor/jquery.fileupload.js"></script>
 
-<script type="text/javascript" src="/js/vendor/backbone-defered-view-loader.js"></script>
-<script type="text/javascript" src="js/vendor/backbone.upload-manager.js"></script>
+
 
 <script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
 <!-- ******************************** -->
 <!-- CKEditor -->
 <script src="/js/ckeditor/ckeditor.js"></script>
-<!-- ******************************** -->
-<!-- tags input -->
-<link rel="stylesheet" type="text/css" href="styles/jquery.tagsinput.css" />
-<script type="text/javascript" src="js/vendor/jquery.tagsinput.js"></script>
 <!-- ******************************** -->
 
 <!-- Templates to load -->
@@ -59,7 +44,26 @@
     };
     ////////////////////////////////////////
     rt(io, function(){
-      global.init('<%- currentUser %>', <%- currentProject %>, function(){
+       var project = <%- currentProject %>;
+      var users = <%- users %>;
+      var knowledges = <%- knowledges %>;
+      var projects = <%- projects %>;
+      var poches = <%- poches %>;
+      var concepts = <%- concepts %>;
+      var links = <%- links %>;
+      var notifications = <%- notifications %>;
+      var permissions = <%- permissions %>;
+
+      _.each(knowledges, function(k){
+        k.comments = new global.Collections.Comments(k.comments);
+        k.members = new global.Collections.UsersCollection(k.members);
+      })
+      _.each(concepts, function(c){
+        c.comments = new global.Collections.Comments(c.comments);
+        c.members = new global.Collections.UsersCollection(c.members);
+      })
+
+      global.init('<%- currentUser %>', project, users, knowledges, poches, projects, concepts, links, notifications, permissions, function(){
         /*Modules*/
         topbar.init();
         title.init(<%- currentProject %>,"cklink");
