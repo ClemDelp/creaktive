@@ -31,6 +31,7 @@ category.Views.Category = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render',"openModal");
         // Variable
+        this.notifications      = json.notifications;
         this.knowledges         = json.knowledges;
         this.poches             = json.poches;
         this.poche              = json.poche;
@@ -41,7 +42,12 @@ category.Views.Category = Backbone.View.extend({
     },
     events : {
         "click .addKnowledge" : "addKnowledge",
-        "click .openModal"  : "openModal"
+        "click .openModal"  : "openModal",
+        "click .openCategoryEditorModal" : "openCategoryEditorModal"
+    },
+    openCategoryEditorModal : function(e){
+        e.preventDefault();
+        this.eventAggregator.trigger('openCategoryEditorModal',e.target.getAttribute("data-category-id"));
     },
     openModal: function(e){
         e.preventDefault();
@@ -70,7 +76,15 @@ category.Views.Category = Backbone.View.extend({
     },
     render:function(){
         $(this.el).html('');
+        _this = this;
+        // Notifications
+        _notifNbr = 0;
+        this.notifications.each(function(notification){
+            if((notification.get('to') == _this.poche.get('id'))&&( _.indexOf(notification.get('read'),_this.user.get('id')) == -1 )){_notifNbr = _notifNbr+1;}
+        });
+        // Category template
         $(this.el).append(this.template_list({
+            notifNbr : _notifNbr,
             knowledges : this.knowledges.toJSON(), 
             category : this.poche.toJSON(),
             categories : this.poches.toJSON()
@@ -84,6 +98,7 @@ category.Views.Categories = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
         // Variable
+        this.notifications      = json.notifications;
         this.knowledges         = json.knowledges;
         this.poches             = json.poches;
         this.user               = json.user;
@@ -97,6 +112,7 @@ category.Views.Categories = Backbone.View.extend({
         knowledges = this.knowledges;
         user = this.user;
         poches = this.poches;
+        notifications = this.notifications;
         el = this.el;
         eventAggregator_ = this.eventAggregator;
         // For each poches
@@ -108,7 +124,7 @@ category.Views.Categories = Backbone.View.extend({
                 });
             });
             list_view = new category.Views.Category({
-                tagName         : "span",
+                notifications   : notifications,
                 knowledges      : list_of_knowledges,
                 poche           : poche,
                 poches          : poches,
@@ -127,6 +143,7 @@ category.Views.MiddlePart = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
+        this.notifications      = json.notifications;
         this.knowledges         = json.knowledges;
         this.poches             = json.poches;
         this.filters            = json.filters;
@@ -145,6 +162,7 @@ category.Views.MiddlePart = Backbone.View.extend({
         // Category de cards
         lists_view = new category.Views.Categories({
             className       : "row panel custom_row",
+            notifications   : this.notifications,
             knowledges      : this.knowledges,
             poches          : this.poches,
             user            : this.user,
@@ -317,18 +335,26 @@ category.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
+        this.notifications      = json.notifications;
         this.knowledges         = json.knowledges;
         this.poches             = json.poches;
         this.user               = json.user;
         this.filters            = new category.Collections.Filters();
         this.eventAggregator    = json.eventAggregator;
+        // Modals
         this.modal_view = new category.Views.Modal({
             poches: this.poches,
             knowledges : this.knowledges,
             eventAggregator : this.eventAggregator
         });
+        this.categoryEditorModal_view = new categoryEditor.Views.Modal({
+            notifications : this.notifications,
+            user : this.user,
+            categories : this.poches,
+            eventAggregator : this.eventAggregator
+        });
         // Events                 
-        this.poches.bind("reset", this.render);
+        this.notifications.bind("reset", this.render);
         this.filters.bind('add', this.render);
         this.filters.bind('remove', this.render);
         this.knowledges.bind("add", this.render);
@@ -419,6 +445,7 @@ category.Views.Main = Backbone.View.extend({
         $(this.el).append(leftPart_view.render().el);
         // Middle part
         middlePart_view = new category.Views.MiddlePart({
+            notifications:this.notifications,
             knowledges:this.knowledges,
             poches : poches_to_render,
             filters : this.filters,

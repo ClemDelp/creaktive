@@ -95,7 +95,7 @@ CKLayout.Views.Modal = Backbone.View.extend({
 CKLayout.Views.Main = Backbone.View.extend({
     initialize:function(json){
         _.bindAll(this, 'render');
-        CKLayout.init();
+        CKLayout.init(); // Pour instancier les labels
         // Variables
         this.notifications      = json.notifications;
         this.model              = json.model;
@@ -120,6 +120,7 @@ CKLayout.Views.Main = Backbone.View.extend({
         "click .remove" : "removeKnowledge"
     },
     removeKnowledge : function(e){
+        e.preventDefault();
         this.model.destroy(); 
         this.eventAggregator.trigger('removeKnowledge');
     },

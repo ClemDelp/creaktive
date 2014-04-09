@@ -172,6 +172,7 @@ var category = {
   init: function () {
     /*Init*/
     this.views.Main = new this.Views.Main({
+      notifications   : global.collections.Notifications,
       knowledges  : global.collections.Knowledges,
       poches      : global.collections.Poches,
       user        : global.models.current_user,

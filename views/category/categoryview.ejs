@@ -1,23 +1,24 @@
-
 <!-- Javascript libs -->
 <script src="/js/vendor/backbone.iosync.js"></script>
 <script src="/js/vendor/backbone.iobind.js"></script>
 <!-- ******************************** -->
+<!-- CKEditor -->
+<script src="/js/ckeditor/ckeditor.js"></script>
+<!-- ******************************** -->
 <!-- Templates to load -->
 <%- partial('../app/templates/topbar_templates') %>
 <%- partial('../app/templates/title_templates') %>
-<div class="interface">
-  <br />
-    <div id="category_container"></div>
-   <%- partial('templates/category_template') %>
-</div>
+<%- partial('templates/category_template') %>
 <%- partial('../app/templates/categoriesList_templates') %>
-
+<%- partial('../app/templates/categoryEditor_templates') %>
+<%- partial('../app/templates/actualitiesList_templates') %>
 <!-- Modules situés dans assets/js/BB_app -->
 <script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/title.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/category.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/categoriesList.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/categoryEditor.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/actualitiesList.js"></script>
 
 <script>
   ///////////////////////////////////////////////////
