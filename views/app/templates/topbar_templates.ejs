@@ -1,21 +1,6 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <div id="topbar_container"></div>
-<!-- //////////////////////////////////////////////////////////////////////: -->
-<!-- Modals -->
-<div id="NotificationModal" class="reveal-modal medium" data-reveal></div>
-<!-- //////////////////////////////////////////////////////////////////////: -->
-<script type="text/template" id="notification-log-template">
-  <a href="#" class="globalValidation button alert tiny">Global validation</a>
-  {{_.each(notifications,function(notification){ }}
-    <div class="row panel" id="notification_{{- notification.id }}">
-      <img class="large-2 small-2 columns" src="{{- notification.from.img }}">
-      <strong class="large-10 small-10 columns">{{- notification.from.name}}</strong>
-      {{- notification.content }}
-      <a data-id-notification="{{- notification.id}}" class="button tiny open">Open</a>
-      <a data-id-notification="{{- notification.id}}" class="button tiny success validation">Validation</a>
-    </div>
-  {{ }); }}
-</script>
+
 
 <script type="text/template" id="topbar-main-template">
   <nav class="top-bar" data-topbar>
@@ -44,7 +29,7 @@
         <li><a class="active" href="/logout">Logout</a></li>
 
         <li class="divider"></li>
-        <li><a class="active" href="#" data-reveal-id="NotificationModal" data-reveal>Notifications<span class="top-bar-unread">{{-notifications_length}}</span></a></li>
+        <li><a class="active openModal" href="#">Notifications<span class="top-bar-unread">{{-notifications_length}}</span></a></li>
       </ul>
     </section>
   </nav>

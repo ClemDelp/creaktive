@@ -6,10 +6,13 @@
 </script>
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Middle part -->
-<script type="text/template" id="explorer-knowledges-template">
-    {{ _.each(knowledges, function(knowledge) { }}
-        <button class="button radius round openModal" style="background:{{-knowledge.color}}" data-id-knowledge="{{- knowledge.id }}">{{-knowledge.title}}</button>
-    {{ }); }}
+<script type="text/template" id="explorer-knowledge-template">
+    <button class="button round openModal secondary CKBulle" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}" data-id-knowledge="{{- knowledge.id }}">
+        <strong data-id-knowledge="{{- knowledge.id }}">{{-knowledge.title}}</strong>
+        {{if(notifNbr != 0){ }}
+            <span class="top-bar-unread" data-id-knowledge="{{- knowledge.id }}">{{-notifNbr}}</span>
+        {{ } }}
+    </button>
 </script>
 
 <script type="text/template" id="explorer-states-template">
@@ -26,7 +29,7 @@
 </script>
 
 <script type="text/template" id="explorer-context-template">
-        <div class="row">
+        <div class="row custom_row">
                 Context :  
                 {{ _.each(filters, function(filter) { }}
                     {{ if(filter.type == "concept"){ }}
@@ -47,15 +50,12 @@
                     {{ } }}
                 {{ }); }}
         </div>
-        <div class="">
-                <div class="row collapse">
-                    <div class="small-10 columns">
-                      <input id="explorer_new_k_title" class="search" type="text" placeholder="Add a knowledge in the current context..."/>
-                    </div>
-                    <div class="small-2 columns">
-                      <a href="#" class="button postfix addKnowledge">Add</a>
-                    </div>
-                </div>
+        <div class="row collapse custom_row">
+            <div class="small-10 columns">
+              <input id="explorer_new_k_title" class="search" type="text" placeholder="Add a knowledge in the current context..."/>
+            </div>
+            <div class="small-2 columns">
+              <a href="#" class="button postfix addKnowledge">Add</a>
+            </div>
         </div>
-
 </script>

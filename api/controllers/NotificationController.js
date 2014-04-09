@@ -47,7 +47,6 @@ module.exports = {
   },
 
   update : function(req, res){
-    console.log("tutu")
     Notification.findOne(req.body.params.id).done(function(err, concept){
       if(err) res.send(err);
       if(concept){

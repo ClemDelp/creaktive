@@ -28,14 +28,14 @@ var global = {
     this.collections.Permissions = new this.Collections.PermissionsCollection();
 
     // Fetch
-    global.collections.Users.fetch({reset:true,success:function(){},complete:function(){
-      global.collections.Knowledges.fetch({reset: true,data : {projectId : global.models.currentProject.get('id')},complete:function(){
-        global.collections.Poches.fetch({reset: true,data : {projectId : global.models.currentProject.get('id')},complete:function(){
-          global.collections.Projects.fetch({reset:true,complete:function(){
-            global.collections.Concepts.fetch({reset:true,data : { projectId : global.models.currentProject.get('id') },complete:function(){
-              global.collections.Links.fetch({reset:true,data : {projectId : global.models.currentProject.get('id')},complete:function(){
-                global.collections.Notifications.fetch({reset:true,data : {projectId : global.models.currentProject.get('id')},complete:function(){
-                  global.collections.Permissions.fetch({reset:true,complete:function(){
+    global.collections.Users.fetch({reset:true,complete:function(){},success:function(){
+      global.collections.Knowledges.fetch({reset: true,data : {projectId : global.models.currentProject.get('id')},success:function(){
+        global.collections.Poches.fetch({reset: true,data : {projectId : global.models.currentProject.get('id')},success:function(){
+          global.collections.Projects.fetch({reset:true,success:function(){
+            global.collections.Concepts.fetch({reset:true,data : { projectId : global.models.currentProject.get('id') },success:function(){
+              global.collections.Links.fetch({reset:true,data : {projectId : global.models.currentProject.get('id')},success:function(){
+                global.collections.Notifications.fetch({reset:true,data : {projectId : global.models.currentProject.get('id')},success:function(){
+                  global.collections.Permissions.fetch({reset:true,success:function(){
       
                   }});
                 }});
@@ -66,14 +66,14 @@ var global = {
     this.collections.Permissions = new this.Collections.PermissionsCollection();
 
     // Fetch
-    global.collections.Users.fetch({reset:true,success:function(){},complete:function(){
-      global.collections.Knowledges.fetch({reset: true,complete:function(){
-        global.collections.Poches.fetch({reset: true,complete:function(){
-          global.collections.Projects.fetch({reset:true,complete:function(){
-            global.collections.Concepts.fetch({reset:true,complete:function(){
-              global.collections.Links.fetch({reset:true,complete:function(){
-                global.collections.Notifications.fetch({reset:true,complete:function(){
-                  global.collections.Permissions.fetch({reset:true,complete:function(){
+    global.collections.Users.fetch({reset:true,complete:function(){},success:function(){
+      global.collections.Knowledges.fetch({reset: true,success:function(){
+        global.collections.Poches.fetch({reset: true,success:function(){
+          global.collections.Projects.fetch({reset:true,success:function(){
+            global.collections.Concepts.fetch({reset:true,success:function(){
+              global.collections.Links.fetch({reset:true,success:function(){
+                global.collections.Notifications.fetch({reset:true,success:function(){
+                  global.collections.Permissions.fetch({reset:true,success:function(){
       
                   }});
                 }});
@@ -148,6 +148,7 @@ var conceptsmap = {
   init: function () {
     /*Init*/
     this.views.Main = new this.Views.Main({
+      notifications : global.collections.Notifications,
       concepts    : global.collections.Concepts,
       project     : global.models.currentProject,
       user        : global.models.current_user,
@@ -259,6 +260,7 @@ var explorer = {
   init: function () {
     /*Init*/
     this.views.main = new this.Views.Main({
+      notifications : global.collections.Notifications,
       projects    : global.collections.Projects,
       concepts    : global.collections.Concepts,
       knowledges  : global.collections.Knowledges,

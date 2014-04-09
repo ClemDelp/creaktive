@@ -1,0 +1,14 @@
+<script type="text/template" id="actualitiesList-template">
+    <h5><strong>Actualities</strong>({{- notifications.length }})</h5>
+    <table>
+        <tbody>
+        {{_.each(notifications,function(notification){ }}
+            <tr>
+              <td><strong>{{- notification.from.name}}</strong></td>
+              <td><small>{{- notification.date}}</small></td>
+              <td>{{- notification.content }}</td>
+            </tr>
+        {{ }); }}
+        </tbody>
+    </table> 
+</script>

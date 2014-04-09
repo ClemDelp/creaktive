@@ -27,19 +27,44 @@ explorer.Collections.Filters = Backbone.Collection.extend({
 /////////////////////////////////////////
 // Middle part
 /////////////////////////////////////////
+// explorer.Views.Knowledge = Backbone.View.extend({
+//     initialize : function(json) {
+//         _.bindAll(this, 'render');
+//         // Variables
+//         this.knowledge = json.knowledge;
+//         this.eventAggregator = json.eventAggregator;
+//         this.notifications = json.notifications;
+//         this.template = _.template($('#explorer-knowledge-template').html());
+//         // Events
+//     },
+//     events : {
+//         "click .openModal" : "openModal"
+//     },
+//     openModal : function(e){
+//         e.preventDefault();
+//         this.eventAggregator.trigger('openModelEditorModal',this.knowledge.get('id'));
+//     },
+//     render : function(){
+//         $(this.el).html('');
+//         // add knowledge template
+//         $(this.el).append(this.template({knowledge:this.knowledge.toJSON()}));
+//         return this;
+//     }
+// });
+/***************************************/
 explorer.Views.KnowledgesList = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
+        this.notifications = json.notifications;
         this.knowledges = json.knowledges;
         this.knowledges_render = this.knowledges;
         this.user = json.user;
         this.eventAggregator = json.eventAggregator;
-        this.style = json.style;
         // Events
         this.eventAggregator.on('knowledge_search', this.knowledge_search, this);
         // Templates
-        this.template_knowledge = _.template($('#explorer-knowledges-template').html());
+        this.template_knowledge = _.template($('#explorer-knowledge-template').html());
     },
     events : {
         "click .openModal" : "openModal"
@@ -55,12 +80,22 @@ explorer.Views.KnowledgesList = Backbone.View.extend({
     render : function(){
         // Init
         $(this.el).html('');
+        _this = this;
         // For each knowledge
-        var renderedContent = this.template_knowledge({
-            knowledges:this.knowledges_render.toJSON(),
-            user:this.user,
-            style:this.style
+        this.knowledges_render.each(function(_knowledge){
+            // Notifications
+            _notifNbr = 0;
+            _this.notifications.each(function(notification){
+                if((notification.get('to') == _knowledge.get('id'))&&( _.indexOf(notification.get('read'),_this.user.get('id')) == -1 )){_notifNbr = _notifNbr+1;}
+            });
+            // Send knowledge to template
+            $(_this.el).append(_this.template_knowledge({
+                notifNbr : _notifNbr,
+                knowledge : _knowledge.toJSON()
+            }));
+
         });
+        var renderedContent = 
         $(this.el).append(renderedContent);
 
         return this;
@@ -73,19 +108,18 @@ explorer.Views.MiddlePart = Backbone.View.extend({
         //console.log("Right part of explorer view initialise");
         _.bindAll(this, 'render');
         // Variables
+        this.notifications = json.notifications;
         this.knowledges = json.knowledges;
         this.filters = json.filters;
         this.user = json.user;
         this.links = json.links;
         this.eventAggregator = json.eventAggregator;
-        this.style=json.style;
         // Events
         this.knowledges.bind('remove',this.render)
         this.knowledges.bind('add',this.render)
         this.knowledges.bind('change',this.render)
         // Template
         this.template_context = _.template($('#explorer-context-template').html());
-
     },
     events : {
         "keyup .search" : "search",
@@ -107,11 +141,11 @@ explorer.Views.MiddlePart = Backbone.View.extend({
         $(this.el).append(this.template_context({filters:this.filters.toJSON()}));
         // knowledge list
         $(this.el).append(new explorer.Views.KnowledgesList({
-            className : "row panel",
+            notifications : this.notifications,
+            className : "row panel custom_row",
             knowledges:this.knowledges,
             user:this.user,
             eventAggregator:this.eventAggregator,
-            style:this.style
         }).render().el);
 
         return this;
@@ -260,23 +294,23 @@ explorer.Views.Main = Backbone.View.extend({
         this.poches             = json.poches;
         this.links              = json.links;
         this.user               = json.user;
+        this.notifications      = json.notifications;
         this.filters            = new explorer.Collections.Filters();
         this.eventAggregator    = json.eventAggregator;
         // Modals
         this.CKLayoutModal_view = new CKLayout.Views.Modal({
+            notifications : this.notifications,
             type : "knowledge",
             user : this.user,
             knowledges : this.knowledges,
             eventAggregator : this.eventAggregator
         });
         // Events
-        this.links.bind("reset", this.render);
+        this.notifications.bind("reset", this.render);
         this.links.bind('add', this.render);
         this.links.bind('remove', this.render);
         this.filters.bind('add', this.render);
         this.filters.bind('remove', this.render);
-        //this.knowledges.bind('add', this.render);
-        //this.knowledges.bind('remove', this.render);
         this.eventAggregator.on("Ktagged", this.render);
     },
     events : {
@@ -310,6 +344,7 @@ explorer.Views.Main = Backbone.View.extend({
         }
     },
     addKnowledge : function(e){
+        e.preventDefault();
         // Init
         user_ = this.user;
         // Get the context
@@ -453,6 +488,7 @@ explorer.Views.Main = Backbone.View.extend({
     ///////////////////////////////////////////////////////
     render : function(){
         $(this.el).html('');
+        // Apply filters
         if(this.filters.length == 0){
             ks=this.knowledges;
         }else{
@@ -470,6 +506,7 @@ explorer.Views.Main = Backbone.View.extend({
         }).render().el);
         // middle part
         $(this.el).append(new explorer.Views.MiddlePart({
+            notifications : this.notifications,
             knowledges:ks,
             filters:this.filters,
             user:this.user,

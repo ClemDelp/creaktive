@@ -90,8 +90,6 @@ category.Views.Categories = Backbone.View.extend({
         this.eventAggregator    = json.eventAggregator;
         // Events
         this.eventAggregator.on('categories_list_render', this.render, this);
-        // Templates
-        this.template_list = _.template($('#category-list-template').html());
     },
     render:function(){
         $(this.el).html('');
@@ -99,7 +97,6 @@ category.Views.Categories = Backbone.View.extend({
         knowledges = this.knowledges;
         user = this.user;
         poches = this.poches;
-        template_list = this.template_list;
         el = this.el;
         eventAggregator_ = this.eventAggregator;
         // For each poches
@@ -111,6 +108,7 @@ category.Views.Categories = Backbone.View.extend({
                 });
             });
             list_view = new category.Views.Category({
+                tagName         : "span",
                 knowledges      : list_of_knowledges,
                 poche           : poche,
                 poches          : poches,
@@ -146,7 +144,7 @@ category.Views.MiddlePart = Backbone.View.extend({
         $(this.el).append(this.template_filters({filters : this.filters.toJSON()}));
         // Category de cards
         lists_view = new category.Views.Categories({
-            className       : "row panel",
+            className       : "row panel custom_row",
             knowledges      : this.knowledges,
             poches          : this.poches,
             user            : this.user,

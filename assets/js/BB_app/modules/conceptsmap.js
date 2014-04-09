@@ -6,6 +6,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
+        this.notifications      = json.notifications;
         this.knowledges         = json.knowledges;
         this.concepts           = json.concepts;
         this.user               = json.user;
@@ -16,6 +17,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
 
         // Modals
         this.CKLayoutModal_view = new CKLayout.Views.Modal({
+            notifications : this.notifications,
             type : "concept",
             user : this.user,
             concepts : this.concepts,
