@@ -1,5 +1,5 @@
 /***************************************/
-var actualitiesList = {
+var activitiesList = {
   // Classes
   Collections: {},
   Models: {},
@@ -11,7 +11,7 @@ var actualitiesList = {
   init: function () {}
 };
 /***************************************/
-actualitiesList.Views.Main = Backbone.View.extend({
+activitiesList.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
@@ -22,7 +22,7 @@ actualitiesList.Views.Main = Backbone.View.extend({
         this.notifications.bind("remove",this.render);
         this.notifications.bind("change",this.render);
         // Templates
-        this.template = _.template($('#actualitiesList-template').html());     
+        this.template = _.template($('#activitiesList-template').html());     
     },
     events : {},
     render : function(){

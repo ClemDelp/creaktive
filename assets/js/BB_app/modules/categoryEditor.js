@@ -111,7 +111,7 @@ categoryEditor.Views.Main = Backbone.View.extend({
         this.notifications.each(function(notification){
             if(notification.get('to') == _this.category.get('id')){notif_to_send.add(notification)}
         });
-        $(this.el).append(new actualitiesList.Views.Main({
+        $(this.el).append(new activitiesList.Views.Main({
             className       : "expand",
             notifications   : notif_to_send,
             eventAggregator : this.eventAggregator

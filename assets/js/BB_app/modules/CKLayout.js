@@ -166,7 +166,7 @@ CKLayout.Views.Main = Backbone.View.extend({
         this.notifications.each(function(notification){
             if(notification.get('to') == _this.model.get('id')){notif_to_send.add(notification)}
         });
-        $(this.el).append(new actualitiesList.Views.Main({
+        $(this.el).append(new activitiesList.Views.Main({
             className       : "large-8 medium-8 small-8 columns floatLeft",
             notifications   : notif_to_send,
             eventAggregator : this.eventAggregator
