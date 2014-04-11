@@ -27,6 +27,9 @@ node_modules
 
 upload
 
+# mongodb files on cloud 9
+data
+
 npm-debug.log
 
 
