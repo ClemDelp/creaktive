@@ -58,6 +58,7 @@
   			Knowledge.update({id: req.body.params.id}, req.body.params).done(function(err,c){
   				if(err) res.send(err);
           Notification.objectUpdated(req,res,"Knowledge", c[0].id, function(notification){
+
             res.send(notification);
           });
 
@@ -69,12 +70,16 @@
         // Create a new knowledge
         var k = req.body.params;
         k.project = req.session.currentProject.id
-        Knowledge.create(k).done(function(err,k){
+        Knowledge.create(k).done(function(err,knowledge){
           if(err) res.send(err);
-          Notification.objectCreated(req,res,"Knowledge", k.id, function(notification){
+          Notification.objectCreated(req,res,"Knowledge", knowledge.id, function(notification){
+            // knowledge.notifications.unshift(notification);
+            // knowledge.save(function(err) {
+            //   // value has been saved
+            // });
             res.send(notification);
           });
-          res.send(k);
+          res.send(knowledge);
           
         });
         //sails.config.elasticsearch.indexKnowledge(k);

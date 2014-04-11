@@ -7,47 +7,81 @@
 
 module.exports = {
 
-  /* e.g.
-  sayHello: function (req, res) {
-    res.send('hello world!');
-  }
-  */
-
   
-
   find : function (req,res){
-    Permission.find({
-    }).done(function(err, permissions){
-      var authorized_projects = _.pluck(permissions, 'project_id');
-      Notification.find({
-        project_id : authorized_projects
-      }).done(function(err, notifications){
-        if(err) res.send(err);
-        res.send(notifications );
-      });
-    })
+    
+    if(req.body.params.projectId){
+    Notification.find({
+      project_id : req.session.currentProject.id
+    }).done(function(err,notifications){
+      if(err) res.send(err);
+      this.notifications = notifications;
+      c0 = _.findWhere(notifications, {position : 0});
+     
+        res.send(notifications)
+    });
+  }else{
+        Notification.find({
+    }).done(function(err,notifications){
+      if(err) res.send(err);
+      this.notifications = notifications;
+      c0 = _.findWhere(notifications, {position : 0});
+     
+        res.send(notifications)
+    });
+  }
 
   },
 
+  create : function (req,res){
+    var c = req.body.params;
+    c.project = req.session.currentProject.id;
+
+    Notification.create(c).done(function(err, concept){
+      if(err) res.send(err);
+      Notification.objectCreated(req,res,"Notification", c.id, function(notification){
+          res.send(notification);
+      });
+      res.send(concept);
+    });
+  },
+
   update : function(req, res){
-  	Notification.findOne(req.body.params.id).done(function(err, concept){
-  		if(err) res.send(err);
-  		if(concept){
-  			Notification.update({
+    Notification.findOne(req.body.params.id).done(function(err, concept){
+      if(err) res.send(err);
+      if(concept){
+        Notification.update({
           id: req.body.params.id
         }, req.body.params).done(function(err,c){
-  				if(err) res.send(err)
-  				res.send(c);
-  			});
-  		}else{
-  			Notification.create(req.body.params).done(function(err,c){
-  				if(err) res.send(err)
-  				res.send(c);
-  			})
-  		}
-  	})
-  }
-  
+          if(err) res.send(err);
+          console.log(c)
+          res.send(c[0]);
+      });
+      }else{
+        var concept = req.body.params;
+        concept.project = req.session.currentProject.id;
+        Notification.create(concept).done(function(err,c){
+          if(err) res.send(err);
+          res.send(c);
+        });
+      }
+    })
+  },
+
+
+  destroy : function(req,res){
+    Notification.findOne(req.body.params.id).done(function(err,concept){
+      if(err) console.log(err);
+      concept.destroy(function(err){
+        if(err) console.log(err)
+          res.send({msg:"destroyed"})
+      })
+    });
+  },
+
+
+
+
 
 
 };

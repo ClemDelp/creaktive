@@ -57,6 +57,7 @@ CKLayout.Views.Modal = Backbone.View.extend({
     initialize:function(json){
         _.bindAll(this, 'render', 'openModelEditorModal');
         // Variables
+        this.notifications = json.notifications;
         this.model = new Backbone.Model();
         this.user = json.user;
         this.type = json.type;
@@ -80,6 +81,7 @@ CKLayout.Views.Modal = Backbone.View.extend({
         $(this.el).html('');
         $(this.el).append(new CKLayout.Views.Main({
             className : "panel row",
+            notifications : this.notifications,
             type : this.type,
             model : this.model,
             user : this.user,
@@ -93,8 +95,9 @@ CKLayout.Views.Modal = Backbone.View.extend({
 CKLayout.Views.Main = Backbone.View.extend({
     initialize:function(json){
         _.bindAll(this, 'render');
-        CKLayout.init();
+        CKLayout.init(); // Pour instancier les labels
         // Variables
+        this.notifications      = json.notifications;
         this.model              = json.model;
         this.user               = json.user;
         this.eventAggregator    = json.eventAggregator;
@@ -107,7 +110,7 @@ CKLayout.Views.Main = Backbone.View.extend({
             this.labels = CKLayout.collections.KLabels;
         }
         // Events
-        this.model.bind('change',this.render)
+        this.model.on('change',this.render)
         // Templates
         this.template_hearder = _.template($('#CKLayout-header-template').html());
         this.template_footer = _.template($('#CKLayout-footer-template').html());
@@ -117,6 +120,7 @@ CKLayout.Views.Main = Backbone.View.extend({
         "click .remove" : "removeKnowledge"
     },
     removeKnowledge : function(e){
+        e.preventDefault();
         this.model.destroy(); 
         this.eventAggregator.trigger('removeKnowledge');
     },
@@ -131,6 +135,7 @@ CKLayout.Views.Main = Backbone.View.extend({
     },
     render:function(){
         $(this.el).html('');
+        _this = this;
         // Header
         $(this.el).append(this.template_hearder({
             model:this.model.toJSON(),
@@ -154,6 +159,16 @@ CKLayout.Views.Main = Backbone.View.extend({
             className       : "large-4 medium-4 small-4 columns floatRight",
             model           : this.model,
             user            : this.user,
+            eventAggregator : this.eventAggregator
+        }).render().el);
+        // notification module
+        notif_to_send = new Backbone.Collection();
+        this.notifications.each(function(notification){
+            if(notification.get('to') == _this.model.get('id')){notif_to_send.add(notification)}
+        });
+        $(this.el).append(new activitiesList.Views.Main({
+            className       : "large-8 medium-8 small-8 columns floatLeft",
+            notifications   : notif_to_send,
             eventAggregator : this.eventAggregator
         }).render().el);
         // Footer

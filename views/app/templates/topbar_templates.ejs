@@ -1,4 +1,6 @@
+<!-- //////////////////////////////////////////////////////////////////////: -->
 <div id="topbar_container"></div>
+
 
 <script type="text/template" id="topbar-main-template">
   <nav class="top-bar" data-topbar>
@@ -25,6 +27,9 @@
         </li>
         <li class="divider"></li>
         <li><a class="active" href="/logout">Logout</a></li>
+
+        <li class="divider"></li>
+        <li><a class="active openModal" href="#">Notifications<span class="top-bar-unread">{{-notifications_length}}</span></a></li>
       </ul>
     </section>
   </nav>

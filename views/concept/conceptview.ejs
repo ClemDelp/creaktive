@@ -2,7 +2,6 @@
 <link rel="stylesheet" href="styles/map/font.css" />
 <link rel="stylesheet" href="styles/map/style.css" />
 <link rel="stylesheet" href="styles/map/print.css" media="print" />
-
 <!-- ******************************** -->
 <!-- Javascript libs -->
 <script type="text/javascript" src="js/my-mind/my-mind.js"></script>
@@ -20,14 +19,13 @@
 <%- partial('../category/templates/category_template') %>
 <%- partial('../app/templates/cklink_template') %>
 
-<%- partial('../app/templates/details_templates') %>
-
 <%- partial('../app/templates/categoriesList_templates') %>
 
 <%- partial('../app/templates/modelEditor_templates') %>
 <%- partial('../app/templates/comments_templates') %>
 <%- partial('../app/templates/attachment_templates') %>
 <%- partial('../app/templates/CKLayout_templates') %>
+<%- partial('../app/templates/activitiesList_templates') %>
 
 <script type="text/javascript" src="js/BB_app/modules/modelEditor.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/comments.js"></script>
@@ -37,10 +35,10 @@
 <script src="js/BB_app/modules/conceptsmap.js"></script>
 <script src="js/BB_app/modules/topbar.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/title.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/details.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/cklink.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/category.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/categoriesList.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/activitiesList.js"></script>
 
 <script>
 
@@ -61,7 +59,6 @@
       var project = <%- currentProject %>;
       global.init('<%- currentUser %>', project, function(){
         // Modules
-        details.init();
         topbar.init(); 
         conceptsmap.init();  
         cklink.init();  

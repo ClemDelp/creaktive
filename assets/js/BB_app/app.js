@@ -28,14 +28,14 @@ var global = {
     this.collections.Permissions = new this.Collections.PermissionsCollection();
 
     // Fetch
-    global.collections.Users.fetch({reset:true,success:function(){},complete:function(){
-      global.collections.Knowledges.fetch({reset: true,data : {projectId : global.models.currentProject.get('id')},complete:function(){
-        global.collections.Poches.fetch({reset: true,data : {projectId : global.models.currentProject.get('id')},complete:function(){
-          global.collections.Projects.fetch({reset:true,complete:function(){
-            global.collections.Concepts.fetch({reset:true,data : { projectId : global.models.currentProject.get('id') },complete:function(){
-              global.collections.Links.fetch({reset:true,data : {projectId : global.models.currentProject.get('id')},complete:function(){
-                global.collections.Notifications.fetch({reset:true,complete:function(){
-                  global.collections.Permissions.fetch({reset:true,complete:function(){
+    global.collections.Users.fetch({reset:true,complete:function(){},success:function(){
+      global.collections.Knowledges.fetch({reset: true,data : {projectId : global.models.currentProject.get('id')},success:function(){
+        global.collections.Poches.fetch({reset: true,data : {projectId : global.models.currentProject.get('id')},success:function(){
+          global.collections.Projects.fetch({reset:true,success:function(){
+            global.collections.Concepts.fetch({reset:true,data : { projectId : global.models.currentProject.get('id') },success:function(){
+              global.collections.Links.fetch({reset:true,data : {projectId : global.models.currentProject.get('id')},success:function(){
+                global.collections.Notifications.fetch({reset:true,data : {projectId : global.models.currentProject.get('id')},success:function(){
+                  global.collections.Permissions.fetch({reset:true,success:function(){
       
                   }});
                 }});
@@ -66,14 +66,14 @@ var global = {
     this.collections.Permissions = new this.Collections.PermissionsCollection();
 
     // Fetch
-    global.collections.Users.fetch({reset:true,success:function(){},complete:function(){
-      global.collections.Knowledges.fetch({reset: true,complete:function(){
-        global.collections.Poches.fetch({reset: true,complete:function(){
-          global.collections.Projects.fetch({reset:true,complete:function(){
-            global.collections.Concepts.fetch({reset:true,complete:function(){
-              global.collections.Links.fetch({reset:true,complete:function(){
-                global.collections.Notifications.fetch({reset:true,complete:function(){
-                  global.collections.Permissions.fetch({reset:true,complete:function(){
+    global.collections.Users.fetch({reset:true,complete:function(){},success:function(){
+      global.collections.Knowledges.fetch({reset: true,success:function(){
+        global.collections.Poches.fetch({reset: true,success:function(){
+          global.collections.Projects.fetch({reset:true,success:function(){
+            global.collections.Concepts.fetch({reset:true,success:function(){
+              global.collections.Links.fetch({reset:true,success:function(){
+                global.collections.Notifications.fetch({reset:true,success:function(){
+                  global.collections.Permissions.fetch({reset:true,success:function(){
       
                   }});
                 }});
@@ -148,6 +148,7 @@ var conceptsmap = {
   init: function () {
     /*Init*/
     this.views.Main = new this.Views.Main({
+      notifications : global.collections.Notifications,
       concepts    : global.collections.Concepts,
       project     : global.models.currentProject,
       user        : global.models.current_user,
@@ -171,6 +172,7 @@ var category = {
   init: function () {
     /*Init*/
     this.views.Main = new this.Views.Main({
+      notifications   : global.collections.Notifications,
       knowledges  : global.collections.Knowledges,
       poches      : global.collections.Poches,
       user        : global.models.current_user,
@@ -191,13 +193,18 @@ var topbar = {
   init: function (page) {
     /*Init*/
     this.views.Main = new this.Views.Main({
-      projects        : global.collections.Projects,
+      notifications   : global.collections.Notifications,
       project         : global.models.currentProject,
-      page            : page,
+      projects        : global.collections.Projects,
+      concepts        : global.collections.Concepts,
+      knowledges      : global.collections.Knowledges,
+      experts         : global.collections.Users,
+      poches          : global.collections.Poches,
+      links           : global.collections.Links,
       user            : global.models.current_user,
+      users           : global.collections.Users,
       eventAggregator : global.eventAggregator
     }); 
-    this.views.Main.render(); 
   }
 };
 /////////////////////////////////////////////////
@@ -254,6 +261,7 @@ var explorer = {
   init: function () {
     /*Init*/
     this.views.main = new this.Views.Main({
+      notifications : global.collections.Notifications,
       projects    : global.collections.Projects,
       concepts    : global.collections.Concepts,
       knowledges  : global.collections.Knowledges,
@@ -265,13 +273,10 @@ var explorer = {
       style       : "grid"
 
     });
-
-    //this.views.main.render();
   }
 };
-
 /////////////////////////////////////////////////
-// var topBar = {
+// var notification = {
 //   // Classes
 //   Collections: {},
 //   Models: {},
@@ -282,31 +287,16 @@ var explorer = {
 //   views: {},
 //   init: function () {
 //     /*Init*/
-
 //     this.views.Main = new this.Views.Main({
 //       notifications : global.collections.Notifications,
-//       current_user : global.models.current_user,
-//       eventAggregator : global.eventAggregator
-//     });
-//   }
-// };
-
-/////////////////////////////////////////////////
-// var notifications = {
-//   // Classes
-//   Collections: {},
-//   Models: {},
-//   Views: {},
-//   // Instances
-//   collections: {},
-//   models: {},
-//   views: {},
-//   init: function () {
-//     /*Init*/
-
-//     this.views.Main = new this.Views.Main({
-//       notifications : global.collections.Notifications,
-//       current_user : global.models.current_user,
+//       project: global.models.currentProject,
+//       projects    : global.collections.Projects,
+//       concepts    : global.collections.Concepts,
+//       knowledges  : global.collections.Knowledges,
+//       experts     : global.collections.Users,
+//       poches      : global.collections.Poches,
+//       links       : global.collections.Links,
+//       user        : global.models.current_user,
 //       users : global.collections.Users,
 //       eventAggregator : global.eventAggregator
 //     });
@@ -353,21 +343,6 @@ var attachment = {
   init: function () {}
 };
 /////////////////////////////////////////////////
-var tagK = {
-  // Classes
-  Collections: {},
-  Models: {},
-  Views: {},
-  // Instances
-  collections: {},
-  models: {},
-  views: {},
-  init: function () {
-    /*Init*/
-
-  }
-};
-/////////////////////////////////////////////////
 var concepts = {
   // Classes
   Collections: {},
@@ -383,58 +358,3 @@ var concepts = {
   }
 };
 /////////////////////////////////////////////////
-var interface1 = {
-  // Classes
-  Collections: {},
-  Models: {},
-  Views: {},
-  // Instances
-  collections: {},
-  models: {},
-  views: {},
-
-  // Objects
-  init: function () {    
-    /*views*/
-    this.views.Main = new this.Views.Main({
-      users : global.collections.Users,
-      currentUser : global.models.current_user,
-      currentProject : new global.Models.ProjectModel({}),
-      concepts : global.collections.Concepts,
-      links : global.collections.Links,
-      knowledges : global.collections.Knowledges,
-      poches : global.collections.Poches,
-      eventAggregator : global.eventAggregator
-    });
-
-    /*Renders*/
-    this.views.Main.render();
-   
-  }
-};
-/////////////////////////////////////////////////
-var details = {
-  // Classes
-  Collections: {},
-  Models: {},
-  Views: {},
-  // Instances
-  collections: {},
-  models: {},
-  views: {},
-  init: function () {
-    
-    details_ = new details.Views.Main({
-      user : global.models.current_user,
-      users : global.collections.Users,
-      knowledges : global.collections.Knowledges,
-      concepts : global.collections.Concepts,
-      eventAggregator : global.eventAggregator,
-      poches      : global.collections.Poches,
-      links       : global.collections.Links,
-      currentProject : global.models.currentProject
-    });
-
-      
-  }
-};

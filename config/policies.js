@@ -66,11 +66,11 @@
   },
 
   "NotificationController" : {
-    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated"],
   },
 
   "ConceptController" : {
-    "conceptmapview" : ["authenticated", "forceHTTPs"],
+    "conceptview" : ["authenticated", "forceHTTPs"],
     "find" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"] 
   },

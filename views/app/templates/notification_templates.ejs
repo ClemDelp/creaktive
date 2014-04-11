@@ -1,0 +1,17 @@
+<!-- //////////////////////////////////////////////////////////////////////: -->
+<!-- Modals -->
+<div id="NotificationModal" class="reveal-modal small" data-reveal></div>
+<!-- //////////////////////////////////////////////////////////////////////: -->
+<script type="text/template" id="notification-log-template">
+  <a href="#" class="globalValidation button round alert tiny">Global validation</a>
+  {{_.each(notifications,function(notification){ }}
+    <div class="row" id="notification_{{- notification.id }}">
+      <hr>
+      <img class="large-2 small-2 columns roundedImage" src="{{- notification.from.img }}">
+      <strong class="large-10 small-10 columns">{{- notification.from.name}}</strong>
+      {{- notification.content }}
+      <a data-id-notification="{{- notification.id}}" class="button tiny round open">open</a>
+      <a data-id-notification="{{- notification.id}}" class="button tiny success round validation">validation</a>
+    </div>
+  {{ }); }}
+</script>

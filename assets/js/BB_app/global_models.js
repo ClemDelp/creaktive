@@ -49,10 +49,7 @@ global.Models.CKObject = Backbone.Model.extend({
         serverObj.members = new global.Collections.UsersCollection(serverObj.members);
         return serverObj;
     },
-
 });
-
-
 /***************************************/
 global.Models.Knowledge = global.Models.CKObject.extend({
     initialize : function Post() {
@@ -60,8 +57,7 @@ global.Models.Knowledge = global.Models.CKObject.extend({
         this.bind("error", function(model, error){
             console.log( error );
         });
-    },
-
+    }
 });
 /***************************************/
 global.Models.ConceptModel = global.Models.CKObject.extend({
@@ -70,8 +66,7 @@ global.Models.ConceptModel = global.Models.CKObject.extend({
         this.bind("error", function(model, error){
             console.log( error );
         });
-    },
-   
+    }
 });
 /***************************************/
 global.Models.Comment = Backbone.Model.extend({
@@ -108,7 +103,6 @@ global.Models.User = Backbone.Model.extend({
         });
     },
 });
-
 /*-----------------------------------------------------------------*/
 /*Model*/
 /*-----------------------------------------------------------------*/
@@ -126,10 +120,7 @@ global.Models.ProjectModel = Backbone.Model.extend({
             console.log( error );
         });
     },
-
 });
-
-
 /***************************************/
 global.Models.NotificationModel = Backbone.Model.extend({
     defaults : {
@@ -139,6 +130,7 @@ global.Models.NotificationModel = Backbone.Model.extend({
         to : "",//cible: projet, post, document, ...
         from : "",//Qui est à l'origine: utilisateur, mise à jour, ...
         date : getDate(),
+        project_id : "",
         read : ""
     },
     initialize : function Doc() {
@@ -149,7 +141,6 @@ global.Models.NotificationModel = Backbone.Model.extend({
         });
     }
 });
-
 /***************************************/
 global.Models.PermissionModel = Backbone.Model.extend({
     defaults : {

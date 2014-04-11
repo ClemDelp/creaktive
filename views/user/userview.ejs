@@ -2,56 +2,16 @@
 <!-- Javascript libs -->
 <script src="/js/vendor/backbone.iosync.js"></script>
 <script src="/js/vendor/backbone.iobind.js"></script>
-
-<script type="text/javascript" src="js/vendor/jquery.mousewheel-3.1.3.js"></script>
-<script src="js/vendor/jquery.hotkeys.js"></script>
-<script src="js/vendor/jquery.hammer.min.js"></script>
-<script type="text/javascript" src="js/vendor/kinetic-v4.4.3.js"></script>
-<script src="js/vendor/color-0.4.1.min.js"></script>
-
 <!-- ******************************** -->
-<!-- FileUpload -->
-<script src="js/vendor/jquery.ui.widget.js"></script>
-<script src="js/vendor/jquery.iframe-transport.js"></script>
-<script src="js/vendor/jquery.fileupload.js"></script>
-
-<script type="text/javascript" src="/js/vendor/backbone-defered-view-loader.js"></script>
-<script type="text/javascript" src="js/vendor/backbone.upload-manager.js"></script>
-
-<script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
-<!-- ******************************** -->
-<!-- CKEditor -->
-<script src="/js/ckeditor/ckeditor.js"></script>
-<!-- ******************************** -->
-<!-- tags input -->
-<link rel="stylesheet" type="text/css" href="styles/jquery.tagsinput.css" />
-<script type="text/javascript" src="js/vendor/jquery.tagsinput.js"></script>
-<!-- ******************************** -->
-
 <!-- Templates to load -->
-
 <%- partial('../app/templates/topbar_templates') %>
 <%- partial('../app/templates/title_templates') %>
-<div class="interface">
-  <br />
-   <%- partial('templates/user_templates') %>
-</div>
-
+<%- partial('templates/user_templates') %>
 <!-- Modules situés dans assets/js/BB_app -->
 <script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/title.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/user.js"></script>
-
 <script>
-
-  $(document).on('open', '[data-reveal]', function () {
-    var modal = $(this);
-    if(modal.attr('id')==="detailsModal"){
-        CKEDITOR.replaceAll('ckeditor');
-    };
-  });
-
-
   ///////////////////////////////////////////////////
   $(document).ready(function () {
     console.log( "CreaKtive DOM loaded!" );

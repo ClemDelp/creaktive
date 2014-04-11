@@ -29,7 +29,7 @@
   		content : "Project : " + req.session.currentProject.title  + " - New " + object,
   		to : to,
   		date : getDate(),
-  		read : [],
+  		read : [req.session.user.id],
   		project_id : req.session.currentProject.id,
   		from : req.session.user
   	}).done(function(err,n){

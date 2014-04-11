@@ -1,11 +1,13 @@
+<div id="category_container"></div>
+<!-- //////////////////////////////////////////////////////////////////////: -->
 <script type="text/template" id="category-search-template">
-    <div class="panel expand"><p>{{-title}}</p></div>
+    <h5>{{-title}}</h5><hr>
     <input type="text" class="search" placeholder="search in {{-title}}...">
 </script>
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Modal part -->
-<div id="category_modal_container" class="reveal-modal" data-reveal></div>
-
+<div id="category_modal_container" class="reveal-modal small" data-reveal></div>
+<!-- //////////////////////////////////////////////////////////////////////: -->
 <script type="text/template" id="category-modal-template">
     <dl class="tabs" data-tab>
       <dd class="active"><a href="#panel2-1">Move to...</a></dd>
@@ -32,7 +34,7 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Right part -->
 <script type="text/template" id="category-notcategorized-template">
-    <a href="#" data-dropdown="drop{{-knowledge.id}}" class="tiny radius round button dropdown expand" style="background:{{- knowledge.color }}">{{- knowledge.title }}</a><br>
+    <a href="#" data-dropdown="drop{{-knowledge.id}}" class="tiny radius round button dropdown secondary CKBulle expand" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}"><strong>{{- knowledge.title }}</strong></a><br>
     <ul id="drop{{-knowledge.id}}" data-dropdown-content class="f-dropdown">
         {{ _.each(poches, function(poche) { }}
             <li><a href="#" class="moveTo" data-knowledge-id="{{- knowledge.id }}" data-catg-title="{{-poche.title}}">{{-poche.title}}</a></li>
@@ -42,44 +44,46 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Middle part -->
 <script type="text/template" id="category-filters-template">
-    <div>
-        <hr>
-            context: 
-            {{ _.each(filters, function(filter) { }}
-                <a class="button success round tiny remove" data-id-filter="{{-filter.id}}">{{- filter.model.title }}</a> +
-            {{ }); }}
-        <hr>
+    <div class="row custom_row">
+        context: 
+        {{ _.each(filters, function(filter) { }}
+            <a class="button success round tiny remove" data-id-filter="{{-filter.id}}">{{- filter.model.title }}</a> +
+        {{ }); }}
     </div>
-</script>
-
-<script type="text/template" id="category-newCategory-template">
-    <div class="row collapse">
+    <div class="row collapse custom_row">
         <div class="small-10 columns">
           <input class="category_title" type="text" placeholder="new category..."/>
         </div>
         <div class="small-2 columns">
-          <a href="#" class="button postfix newCategory">Add</a>
+          <a href="#" class="button postfix newCategory">New</a>
         </div>
     </div>
 </script>
 
 <script type="text/template" id="category-list-template">
-    <div class="small-3 medium-3 large-3 columns" style="float:left">    
+    <div class="item">    
         <ul class="pricing-table">
-            <li style="background-color : secondary " class="title">{{- category.title}}</li>
-            <li class="price">
-                <div class="row collapse">
-                    <div class="small-10 columns">
-                      <input class="category_new_k_title" type="text" placeholder="new knowledge..."/>
-                    </div>
-                    <div class="small-2 columns">
-                      <a href="#" class="button postfix addKnowledge" data-title-category="{{- category.title}}">Add</a>
-                    </div>
-                </div>
+            <li class="price"class="title">
+                <a href="#" class="button tiny success radius expand openCategoryEditorModal" data-category-id="{{-category.id}}">
+                    <strong data-category-id="{{-category.id}}">{{- category.title}}</strong>
+                    {{if(notifNbr != 0){ }}
+                        <span class="top-bar-unread" data-category-id="{{-category.id}}">{{-notifNbr}}</span>
+                    {{ } }}
+                </a>
             </li>
             <li class="bullet-item">
+                <div class="row collapse">
+                    <div class="small-10 columns">
+                      <input id="category_new_k_title_{{-category.id}}" type="text" placeholder="new knowledge..."/>
+                    </div>
+                    <div class="small-2 columns">
+                      <a href="#" class="button postfix addKnowledge" data-id-category="{{-category.id}}" data-title-category="{{- category.title}}">+</a>
+                    </div>
+                </div>
                 {{ _.each(knowledges, function(knowledge) { }}
-                    <a href="#" class="button openModal tiny radius round expand" data-knowledge-id="{{-knowledge.id}}" data-catg-origin="{{- category.title}}"  style="background:{{-knowledge.color}}">{{- knowledge.title }}</a>
+                    <a href="#" class="button openModal tiny radius round expand secondary CKBulle" data-knowledge-id="{{-knowledge.id}}" data-catg-origin="{{- category.title}}"  style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}">
+                        <strong data-knowledge-id="{{-knowledge.id}}" data-catg-origin="{{- category.title}}">{{- knowledge.title }}</strong>
+                    </a>
                 {{ }); }}   
             </li>
         </ul>

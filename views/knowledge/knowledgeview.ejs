@@ -1,14 +1,6 @@
-
 <!-- Javascript libs -->
 <script src="/js/vendor/backbone.iosync.js"></script>
 <script src="/js/vendor/backbone.iobind.js"></script>
-
-<script type="text/javascript" src="js/vendor/jquery.mousewheel-3.1.3.js"></script>
-<script src="js/vendor/jquery.hotkeys.js"></script>
-<script src="js/vendor/jquery.hammer.min.js"></script>
-<script type="text/javascript" src="js/vendor/kinetic-v4.4.3.js"></script>
-<script src="js/vendor/color-0.4.1.min.js"></script>
-
 <!-- ******************************** -->
 <!-- FileUpload -->
 <script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
@@ -16,27 +8,23 @@
 <!-- CKEditor -->
 <script src="/js/ckeditor/ckeditor.js"></script>
 <!-- Templates to load -->
-
 <%- partial('../app/templates/topbar_templates') %>
 <%- partial('../app/templates/title_templates') %>
-<div class="interface">
-   <%- partial('templates/explorer_template') %>
-</div>
+<%- partial('templates/explorer_template') %>
 <%- partial('../app/templates/modelEditor_templates') %>
 <%- partial('../app/templates/comments_templates') %>
 <%- partial('../app/templates/attachment_templates') %>
 <%- partial('../app/templates/CKLayout_templates') %>
-
 <%- partial('../app/templates/conceptsList_templates') %>
 <%- partial('../app/templates/expertsList_templates') %>
 <%- partial('../app/templates/categoriesList_templates') %>
 <%- partial('../app/templates/projectsList_templates') %>
+<%- partial('../app/templates/activitiesList_templates') %>
 <!-- Modules situés dans assets/js/BB_app -->
 <script type="text/javascript" src="js/BB_app/modules/modelEditor.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/comments.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/attachment.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/CKLayout.js"></script>
-
 <script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/explorer.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/title.js"></script>
@@ -44,16 +32,9 @@
 <script type="text/javascript" src="js/BB_app/modules/expertsList.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/categoriesList.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/projectsList.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/activitiesList.js"></script>
 
 <script>
-
-  $(document).on('open', '[data-reveal]', function () {
-    var modal = $(this);
-    if(modal.attr('id')==="detailsModal"){
-        CKEDITOR.replaceAll('ckeditor');
-    };
-  });
-
   ///////////////////////////////////////////////////
   $(document).ready(function () {
     console.log( "CreaKtive DOM loaded!" );
@@ -75,30 +56,26 @@
 
   });
   /////////////////////////////////////////////////////////////////////////////////////////////
-// Realtime connection
-/////////////////////////////////////////////////////////////////////////////////////////////
-
-function rt (io, callback) {
-  // as soon as this file is loaded, connect automatically, 
-  var socket = io.connect("/",{'sync disconnect on unload ': true});
-  socket.on('connect', function socketConnected() {
-    socket.get("/auth/openChannels", function(data){
-      // console.log(data.msg);
-      // console.log(data.channels);
+  // Realtime connection
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  function rt (io, callback) {
+    // as soon as this file is loaded, connect automatically, 
+    var socket = io.connect("/",{'sync disconnect on unload ': true});
+    socket.on('connect', function socketConnected() {
+      socket.get("/auth/openChannels", function(data){
+        // console.log(data.msg);
+        // console.log(data.channels);
+      });
+      console.log(
+        'Socket is now connected and globally accessible as `socket`.\n' + 
+        'e.g. to send a GET request to Sails, try \n' + 
+        '`socket.get("/", function (response) ' +
+          '{ console.log(response); })`'
+      );
+      callback();
     });
-    console.log(
-      'Socket is now connected and globally accessible as `socket`.\n' + 
-      'e.g. to send a GET request to Sails, try \n' + 
-      '`socket.get("/", function (response) ' +
-        '{ console.log(response); })`'
-    );
-    callback();
-  });
-
-  window.socket = socket;
-
-};
-
+    window.socket = socket;
+  };
 </script>
 
 
