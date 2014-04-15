@@ -24,33 +24,6 @@ explorer.Collections.Filters = Backbone.Collection.extend({
         });
     }
 });
-/////////////////////////////////////////
-// Middle part
-/////////////////////////////////////////
-// explorer.Views.Knowledge = Backbone.View.extend({
-//     initialize : function(json) {
-//         _.bindAll(this, 'render');
-//         // Variables
-//         this.knowledge = json.knowledge;
-//         this.eventAggregator = json.eventAggregator;
-//         this.notifications = json.notifications;
-//         this.template = _.template($('#explorer-knowledge-template').html());
-//         // Events
-//     },
-//     events : {
-//         "click .openModal" : "openModal"
-//     },
-//     openModal : function(e){
-//         e.preventDefault();
-//         this.eventAggregator.trigger('openModelEditorModal',this.knowledge.get('id'));
-//     },
-//     render : function(){
-//         $(this.el).html('');
-//         // add knowledge template
-//         $(this.el).append(this.template({knowledge:this.knowledge.toJSON()}));
-//         return this;
-//     }
-// });
 /***************************************/
 explorer.Views.KnowledgesList = Backbone.View.extend({
     initialize : function(json) {
@@ -257,11 +230,11 @@ explorer.Views.LeftPart = Backbone.View.extend({
         // States
         $(this.el).append(this.template_states());
         // Projects dd part 
-        $(this.el).append(new explorer.Views.ddProjects({
-            projects:this.projects,
-            knowledges:this.knowledges,
-            eventAggregator:this.eventAggregator
-        }).render().el);
+        // $(this.el).append(new explorer.Views.ddProjects({
+        //     projects:this.projects,
+        //     knowledges:this.knowledges,
+        //     eventAggregator:this.eventAggregator
+        // }).render().el);
         // Concepts dd part
         $(this.el).append(new explorer.Views.ddConcepts({
             concepts:this.concepts,

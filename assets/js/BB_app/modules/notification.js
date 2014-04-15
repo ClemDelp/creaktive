@@ -20,7 +20,7 @@ notification.Views.Modal = Backbone.View.extend({
     initialize:function(json){
         _.bindAll(this, 'render', 'openNotificationModal');
         // Variables
-        // this.project            = json.project;
+        this.project            = json.project;
         // this.projects           = json.projects;
         // this.concepts           = json.concepts;
         // this.knowledges         = json.knowledges;
@@ -44,6 +44,7 @@ notification.Views.Modal = Backbone.View.extend({
         $(this.el).html('');
         $(this.el).append(new notification.Views.Main({
             className        : "panel row",
+            project          : this.project,
             user             : this.user,
             notifications    : this.notifications,
             eventAggregator  : this.eventAggregator
@@ -58,6 +59,7 @@ notification.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render','globalValidation');
         // Variables
         this.user               = json.user;
+        this.project            = json.project;
         this.notifications      = json.notifications;
         this.eventAggregator    = json.eventAggregator;
         // Template
@@ -73,7 +75,6 @@ notification.Views.Main = Backbone.View.extend({
         _this = this;
         this.notifications.each(function(notif){
             notif.set({read : _.union(notif.get('read'),_this.user.get('id'))});
-            console.log("lalalalalala",$(_this.el).find("#notification_"+notif.get('id')))
             $("#notification_"+notif.get('id')).hide('slow');
             notif.save();
         });
@@ -81,20 +82,25 @@ notification.Views.Main = Backbone.View.extend({
     },
     open : function(e){
         e.preventDefault();
-        notif = this.notifications.get(e.target.getAttribute('data-id-notification'));
+        onglet = e.target.getAttribute('data-link');
+        // notif = this.notifications.get(e.target.getAttribute('data-id-notification'));
+        // notif.set({read : _.union(notif.get('read'),this.user.get('id'))});
+        // notif.save();
+        window.location.href = "/"+onglet+"?projectId="+this.project.get('id');
     },
     validation : function(e){
         e.preventDefault();
         notif = this.notifications.get(e.target.getAttribute('data-id-notification'));
         notif.set({read : _.union(notif.get('read'),this.user.get('id'))});
         notif.save();
-        console.log($(this.el).find("#notification_"+notif.get('id')))
         $(this.el).find("#notification_"+notif.get('id')).hide('slow');
         this.eventAggregator.trigger('notif_changed');
     },
     render : function(){
         $(this.el).html('');
-        $(this.el).append(this.template({notifications : this.notifications.toJSON()}));
+        $(this.el).append(this.template({
+            notifications : this.notifications.toJSON()
+        }));
             
         return this;
     }

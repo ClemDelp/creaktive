@@ -26,8 +26,10 @@
   	Notification.create({
   		id : guid(),
   		type : "create"+object,
-  		content : "Project : " + req.session.currentProject.title  + " - New " + object,
+      //content : "Project : " + req.session.currentProject.title  + " - New " + object,
+  		content : " create " + object,
   		to : to,
+      object : object,
   		date : getDate(),
   		read : [req.session.user.id],
   		project_id : req.session.currentProject.id,
@@ -40,11 +42,10 @@
   },
 
   objectUpdated : function(req,res, object, to, cb){
-
   	console.log(req.body.action);
-  	var action ="Color";
+  	var action ="";
   	if(req.body.action.title) action = "Title";
-  	if(req.body.action.color) action = "Color";
+  	if(req.body.action.color) action = "state";
   	if(req.body.action.content) action = "Content";
   	if(req.body.action.members) action = "Members";
   	if(req.body.action.comments) action = "Comments";
@@ -52,10 +53,12 @@
   	Notification.create({
   		id : guid(),
   		type : "update" + object+action,
-  		content : "Project : " + req.session.currentProject.title  + " - " + object + " " + action + " updated",
+      object : object,
+      //content : "Project : " + req.session.currentProject.title  + " - " + object + " " + action + " updated",
+  		content : object + " " + action + " updated",
   		to : to,
   		date : getDate(),
-  		read : [],
+  		read : [req.session.user.id],
   		project_id : req.session.currentProject.id,
   		from : req.session.user
   	}).done(function(err,n){

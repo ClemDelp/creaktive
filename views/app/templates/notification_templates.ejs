@@ -7,11 +7,17 @@
   {{_.each(notifications,function(notification){ }}
     <div class="row" id="notification_{{- notification.id }}">
       <hr>
-      <img class="large-2 small-2 columns roundedImage" src="{{- notification.from.img }}">
-      <strong class="large-10 small-10 columns">{{- notification.from.name}}</strong>
-      {{- notification.content }}
-      <a data-id-notification="{{- notification.id}}" class="button tiny round open">open</a>
-      <a data-id-notification="{{- notification.id}}" class="button tiny success round validation">validation</a>
+      <img class="large-1 small-1 medium-1 columns roundedImage" src="{{- notification.from.img }}">
+      <div class="large-8 small-8 medium-8 columns">
+        <strong>{{- notification.from.name}} - <small>{{- notification.date}}</small></strong>
+        <p>{{- notification.content }}</p>
+      </div>
+      <div class="large-3 small-3 medium-3 columns">
+        {{ var link = "#";}}
+        {{ if(notification.object == "Knowledge"){ link="knowledges"; }else if(notification.object == "Concept"){ link="conceptsMap"; }else if(notification.object == "Category"){ link="categories"; } }}
+        <a href="#" data-id-notification="{{- notification.id}}" data-link="{{- link}}" class="button tiny round open" title="open">o</a>
+        <a data-id-notification="{{- notification.id}}" class="button tiny success round validation" title="validation">v</a>
+      </div>
     </div>
   {{ }); }}
 </script>
