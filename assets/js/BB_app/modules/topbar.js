@@ -47,9 +47,7 @@ topbar.Views.Main = Backbone.View.extend({
         this.notifications      = json.notifications;
         this.notif_to_render    = new Backbone.Collection();
         this.eventAggregator    = json.eventAggregator;
-        
         // Events
-        
         this.notifications.bind("reset", this.render);
         this.notif_to_render.on('change',this.renderTopBar);
     },

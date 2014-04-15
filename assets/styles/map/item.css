@@ -1,5 +1,6 @@
 #map.item {
 	position: absolute;
+
 }
 
 .item.cut {
@@ -15,6 +16,8 @@
 	display: inline-block;
 	white-space: nowrap;
 	cursor: pointer;
+	-webkit-border-radius: 1000px;
+	border-radius: 1000px;
 	
 }
 

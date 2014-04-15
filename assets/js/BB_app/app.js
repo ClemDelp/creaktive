@@ -136,6 +136,23 @@ var manager = {
   }
 };
 /////////////////////////////////////////////////
+var welcome = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    this.views.Main = new this.Views.Main({
+      notifications : global.collections.Notifications,
+      user : global.models.current_user
+    })
+  }
+};
+/////////////////////////////////////////////////
 var conceptsmap = {
   // Classes
   Collections: {},
