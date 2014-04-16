@@ -78,8 +78,11 @@ attachment.Views.Main = Backbone.View.extend({
         this.render();
     },
     openFile : function(e){
-        console.log(e.target.getAttribute('data-file-path'));
-        $.download('file/get',{path : e.target.getAttribute('data-file-path')} );
+        _this = this;
+        $.get("/file/get?path=" +  e.target.getAttribute('data-file-path'), function(data){
+            //PDFJS.getDocument({data : data})
+        })
+        //$.download('file/get',{path : e.target.getAttribute('data-file-path')} );
     },
     render : function() {
         $(this.el).html("");

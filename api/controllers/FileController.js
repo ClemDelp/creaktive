@@ -10,6 +10,7 @@
  function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
 
 
+
  var fs = require('fs');
  var mkdirp = require('mkdirp');
  var rimraf = require('rimraf');
@@ -38,13 +39,14 @@ function fileExtension(fileName) {
 
 // Where you would do your processing, etc
 // Stubbed out for now
-function processImage(id, name, path, cb) {
+function processImage(id, name, path, ext, cb) {
 
 	cb(null, {
 		'result': 'success',
 		'id': id,
 		'name': name,
-		'path': path
+		'path': path,
+    'extension' : ext
 	});
 }
 
@@ -56,8 +58,8 @@ module.exports = {
   }
   */
 
-  get: function (req, res) {
-  	res.download(req.body.path);
+  get: function (req, res) { 
+  	res.sendfile(req.query.path, "tutu");
   },
 
   destroy : function (req,res){
@@ -68,7 +70,6 @@ module.exports = {
   },
 
   upload: function(req, res) {
-    console.log("tututututututututu",req.files)
   	var file = req.files[0];
 
     async.auto({
@@ -77,7 +78,8 @@ module.exports = {
         id = guid(),
         fileName = safeFilename(file.name),
         dirPath = UPLOAD_PATH + '/' + id,
-        filePath = dirPath + '/' + fileName;
+        filePath = dirPath + '/' + fileName,
+        fileExt = fileExtension(file.name);
 
         next(null,{
           id: id,
@@ -104,7 +106,7 @@ module.exports = {
                 if (err) {
                   res.json({'error': 'could not write file to storage'});
                 } else {
-                  processImage(id, r.metadata.fileName, r.metadata.filePath, function (err, data) {
+                  processImage(id, r.metadata.fileName, r.metadata.filePath, r.metadata.fileExt, function (err, data) {
                     if (err) {
                       res.json(err);
                     } else {
