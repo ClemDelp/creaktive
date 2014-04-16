@@ -20,7 +20,7 @@ notification.Views.Modal = Backbone.View.extend({
     initialize:function(json){
         _.bindAll(this, 'render', 'openNotificationModal');
         // Variables
-        this.project            = json.project;
+        //this.project            = json.project;
         // this.projects           = json.projects;
         // this.concepts           = json.concepts;
         // this.knowledges         = json.knowledges;
@@ -33,6 +33,10 @@ notification.Views.Modal = Backbone.View.extend({
         this.eventAggregator    = json.eventAggregator;
         // Events
         this.eventAggregator.on("openNotificationModal", this.openNotificationModal);
+        this.eventAggregator.on("closeNotificationModal", this.closeNotificationModal);
+    },
+    closeNotificationModal : function(){
+        $('#NotificationModal').foundation('reveal', 'close');  
     },
     openNotificationModal : function(){
         this.render(function(){
@@ -44,7 +48,7 @@ notification.Views.Modal = Backbone.View.extend({
         $(this.el).html('');
         $(this.el).append(new notification.Views.Main({
             className        : "panel row",
-            project          : this.project,
+            //project          : this.project,
             user             : this.user,
             notifications    : this.notifications,
             eventAggregator  : this.eventAggregator
@@ -59,7 +63,7 @@ notification.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render','globalValidation');
         // Variables
         this.user               = json.user;
-        this.project            = json.project;
+        //this.project            = json.project;
         this.notifications      = json.notifications;
         this.eventAggregator    = json.eventAggregator;
         // Template
@@ -75,18 +79,30 @@ notification.Views.Main = Backbone.View.extend({
         _this = this;
         this.notifications.each(function(notif){
             notif.set({read : _.union(notif.get('read'),_this.user.get('id'))});
-            $("#notification_"+notif.get('id')).hide('slow');
             notif.save();
         });
+        $('#NotificationModal').foundation('reveal', 'close'); 
         this.eventAggregator.trigger('notif_changed');
     },
     open : function(e){
         e.preventDefault();
-        onglet = e.target.getAttribute('data-link');
+        var notif = this.notifications.get(e.target.getAttribute('data-id-notification'));
+        console.log(notif)
+        var project_id = notif.get('project_id');
+        console.log(project_id)
+        var link = "#";
+        if(notif.get('object') == "Knowledge"){ 
+            link="knowledges"; 
+        }else if(notif.get('object') == "Concept"){ 
+            link="conceptsMap"; 
+        }else if(notif.get('object') == "Category"){ 
+            link="categories"; 
+        }
+        console.log(link)
         // notif = this.notifications.get(e.target.getAttribute('data-id-notification'));
         // notif.set({read : _.union(notif.get('read'),this.user.get('id'))});
         // notif.save();
-        window.location.href = "/"+onglet+"?projectId="+this.project.get('id');
+        window.location.href = "/"+link+"?projectId="+project_id;
     },
     validation : function(e){
         e.preventDefault();
@@ -98,8 +114,12 @@ notification.Views.Main = Backbone.View.extend({
     },
     render : function(){
         $(this.el).html('');
+        notif_to_render = new Backbone.Collection();
+        this.notifications.each(function(notif){
+            if(_.indexOf(notif.get('read'), _this.user.get('id')) == -1){notif_to_render.add(notif);}
+        });
         $(this.el).append(this.template({
-            notifications : this.notifications.toJSON()
+            notifications : notif_to_render.toJSON()
         }));
             
         return this;

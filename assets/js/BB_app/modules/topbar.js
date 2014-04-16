@@ -5,6 +5,7 @@ topbar.Views.TopBar = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render','notifChanged');
         // Variables
+        this.user = json.user;
         this.notifications      = json.notifications;
         this.eventAggregator    = json.eventAggregator;
         // Templates     
@@ -24,7 +25,10 @@ topbar.Views.TopBar = Backbone.View.extend({
     },
     render : function(){
         $(this.el).html('');
-        $(this.el).append(this.template({notifications_length : this.notifications.length}));
+        $(this.el).append(this.template({
+            notifications_length : this.notifications.length,
+            user : this.user.toJSON()
+        }));
 
         return this;
     }
@@ -35,15 +39,15 @@ topbar.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render','renderTopBar');
         // Variables
-        this.project            = json.project;
-        this.projects           = json.projects;
-        this.concepts           = json.concepts;
-        this.knowledges         = json.knowledges;
-        this.experts            = json.experts;
-        this.poches             = json.poches;
-        this.links              = json.links;
+        // this.project            = json.project;
+        // this.projects           = json.projects;
+        // this.concepts           = json.concepts;
+        // this.knowledges         = json.knowledges;
+        // this.experts            = json.experts;
+        // this.poches             = json.poches;
+        // this.links              = json.links;
         this.user               = json.user;
-        this.users              = json.users;
+        // this.users              = json.users;
         this.notifications      = json.notifications;
         this.notif_to_render    = new Backbone.Collection();
         this.eventAggregator    = json.eventAggregator;
@@ -62,6 +66,7 @@ topbar.Views.Main = Backbone.View.extend({
         });
         // TopBar view
         $(this.el).append(new topbar.Views.TopBar({
+            user : this.user,
             notifications : notif_to_render2,
             eventAggregator : this.eventAggregator
         }).render().el);
@@ -75,20 +80,21 @@ topbar.Views.Main = Backbone.View.extend({
         });
         // TopBar view
         $(this.el).append(new topbar.Views.TopBar({
+            user : this.user,
             notifications : this.notif_to_render,
             eventAggregator : this.eventAggregator
         }).render().el);
         // Notification Modal
         new notification.Views.Modal({
-            project          : this.project,
-            projects         : this.projects,
-            concepts         : this.concepts,
-            knowledges       : this.knowledges,
-            experts          : this.experts,
-            poches           : this.poches,
-            links            : this.links,
+            // project          : this.project,
+            // projects         : this.projects,
+            // concepts         : this.concepts,
+            // knowledges       : this.knowledges,
+            // experts          : this.experts,
+            // poches           : this.poches,
+            // links            : this.links,
             user             : this.user,
-            users            : this.users,
+            //users            : this.users,
             notifications    : this.notif_to_render,
             eventAggregator  : this.eventAggregator
         });

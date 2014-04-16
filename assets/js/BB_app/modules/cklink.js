@@ -89,8 +89,7 @@ cklink.Views.RightPart = Backbone.View.extend({
         this.links = json.links;
         this.eventAggregator = json.eventAggregator;
         // Templates
-        this.template_filters = _.template($('#category-filters-template').html());
-        
+        this.template_filters = _.template($('#cklink-filters-template').html());
     },
     render : function(){
         $(this.el).html('');
@@ -180,7 +179,8 @@ cklink.Views.Main = Backbone.View.extend({
         this.knowledges.bind('remove', this.render);
 
         // Template
-        this.template = _.template($('#cklink-current-concept-template').html());       
+        this.template = _.template($('#cklink-current-concept-template').html());  
+        this.template_header = _.template($('#cklink-header-template').html());     
     },
     events : {
         "click .addFilter" : "addFilter",
@@ -223,6 +223,8 @@ cklink.Views.Main = Backbone.View.extend({
                 knowledges_to_render.add(knowledge);
             });
         }
+        // Header
+        $(this.el).append(this.template_header({concept : this.current_concept.toJSON()}));        
         // Left part
         left_part_view = new categoriesList.Views.Main({
             className       : "small-2 medium-2 large-2 columns",

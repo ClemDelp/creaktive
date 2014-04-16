@@ -7,7 +7,7 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Middle part -->
 <script type="text/template" id="explorer-knowledge-template">
-    <button class="button round openModal secondary CKBulle" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}" data-id-knowledge="{{- knowledge.id }}">
+    <button class="button round small openModal secondary CKBulle" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}" data-id-knowledge="{{- knowledge.id }}">
         <strong data-id-knowledge="{{- knowledge.id }}">{{-knowledge.title}}</strong>
         {{if(notifNbr != 0){ }}
             <span class="top-bar-unread" data-id-knowledge="{{- knowledge.id }}">{{-notifNbr}}</span>
@@ -19,11 +19,32 @@
     <dd>
         <a href="#states_dd">States</a>
         <div id="states_dd" class="content active">
-            <button class="expand button radius tiny addFilter" data-filter-type="notLinked">not linked</button>
-            <button class="expand button radius tiny success addFilter" data-filter-type="notCategorised">not categorised</button>
-            <button class="expand button radius tiny addFilter" style="background-color : #27AE60 " data-filter-type="state" data-filter-model="#27AE60">Validated</button>
-            <button class="expand button radius tiny addFilter" style="background-color : #F39C12 " data-filter-type="state" data-filter-model="#F39C12">Processing</a>
-            <button class="expand button radius tiny addFilter" style="background-color : #C0392B " data-filter-type="state" data-filter-model="#C0392B">Missing</button>
+
+            <div class="small-12 medium-12 large-12">
+                <span class="label round"></span>
+                <strong><a href="#" class="addFilter" style="background:white" data-filter-type="notLinked">not linked</a></strong>
+            </div>
+
+            <div class="small-12 medium-12 large-12">
+                <span class="label success round"></span>
+                <strong><a href="#" class="addFilter" style="background:white" data-filter-type="notCategorised">notCategorised</a></strong>
+            </div>
+
+            <div class="small-12 medium-12 large-12">
+                <span class="label round" style="background-color : #27AE60 "></span>
+                <strong><a href="#" class="addFilter" style="background:white" -filter-type="state" data-filter-model="#27AE60">Validated</a></strong>
+            </div>
+
+            <div class="small-12 medium-12 large-12">
+                <span class="label round" style="background-color : #F39C12 "></span>
+                <strong><a href="#" class="addFilter" style="background:white" data-filter-type="state" data-filter-model="#F39C12">Processing</a></strong>
+            </div>
+
+            <div class="small-12 medium-12 large-12">
+                <span class="label round" style="background-color : #C0392B "></span>
+                <strong><a href="#" class="addFilter" style="background:white" data-filter-type="state" data-filter-model="#C0392B">Missing</a></strong>
+            </div>
+
         </div>
     </dd>
 </script>

@@ -8,6 +8,7 @@ welcome.Views.Main = Backbone.View.extend({
         this.notifications = json.notifications;
         // Events
         this.notifications.on('reset',this.render)
+        this.notifications.on('change',this.render)
         // Templates
         this.template = _.template($('#welcome-template').html());
     },
@@ -15,6 +16,7 @@ welcome.Views.Main = Backbone.View.extend({
     render : function(){
         // Init
         $(this.el).html('');
+        _this = this;
         // On filtre les notifs
         notifNbre = 0;
         this.notifications.each(function(notif){

@@ -5,13 +5,12 @@
 
 <script type="text/template" id="categoriesList-tag-template">
     <div class="row">
-        <div class="small-12 medium-12 large-8 columns">
-                <a class="tiny success radius button addFilter expand" data-filter-type="poche" data-filter-model="{{-poche.id}}">
-                    {{- poche.title }} - <font style="color:red">({{- rec }})</font>
-                </a>
+        <div class="small-12 medium-12 large-12">
+            <strong><a href="#" class="addFilter" data-filter-type="poche" data-filter-model="{{-poche.id}}">{{- poche.title }}</a></strong>
+            <small style="color:#5da423">({{- rec }} knowledges)</small>
         </div>
-        <div class="progress success show-for-large-up large-4 large-4 columns">
-          <span class="meter" style="width: {{-per}}%"></span>
+        <div class="progress success large-12 medium-12 small-12" style="padding:0px;height:5px" >
+          <span class="meter" style="background:#5da423;width: {{-per}}%"></span>
         </div>
-    </div>    
+    </div>  
 </script>

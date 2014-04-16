@@ -4,13 +4,13 @@
 
 <script type="text/template" id="conceptList-concept-template">
     <div class="row">
-                <div class="small-12 medium-12 large-8 columns">
-                        <button class="tiny radius button addFilter expand" style="background:{{-concept.color}}" data-filter-type="concept" data-filter-model="{{-concept.id}}">
-                                {{- concept.title }} - <font style="color:red">({{- rec }})</font>
-                        </button>
-                </div>
-                <div class="progress show-for-large-up large-4 columns">
-                  <span class="meter" style="background:{{-concept.color}};width: {{-per}}%"></span>
-                </div>
+        <div class="small-12 medium-12 large-12">
+            <span class="label round" style="background:{{-concept.color}}"></span>
+            <strong><a href="#" class="addFilter" data-filter-type="concept" data-filter-model="{{-concept.id}}" style="background:white">{{- concept.title }}</a></strong>
+            <small style="color:{{-concept.color}}">({{- rec }} knowledges)</small>
+            <div class="progress large-12 medium-12 small-12" style="padding:0px;height:5px" >
+              <span class="meter" style="background:{{-concept.color}};width: {{-per}}%;"></span>
+            </div>
         </div>
+    </div>
 </script>

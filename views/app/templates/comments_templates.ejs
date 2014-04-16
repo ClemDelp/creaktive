@@ -3,7 +3,7 @@
  		<legend>Discussions ({{- comments.length }})</legend>
  			<ul>
 			{{ _.each(comments, function(comment) { }}  
- 				<li title="{{- comment.date }}"><strong>{{- comment.user.name }}</strong> :
+ 				<li title="{{- comment.date }}"><strong><small>{{- comment.user.name }}</small></strong> :
  				{{- comment.content }} - 
  				<a class="remove" title="remove" data-id-comment="{{- comment.id }}" style="color:red">x</a></li>
 			{{ }); }}

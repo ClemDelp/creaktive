@@ -35,6 +35,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
 
         // Backbone events              
         this.concepts.bind("reset", this.render);
+        this.notifications.on('reset',this.actualizeNotification,this)
         this.knowledges.bind("add", this.render);
         this.knowledges.bind("remove", this.render);
         
@@ -62,6 +63,24 @@ conceptsmap.Views.Main = Backbone.View.extend({
         "click .cut" : "cut",
         "click .paste" : "paste",
         "click .linkK" : "linkK"
+    },
+    actualizeNotification : function(){
+        _this = this;
+        concept_notifs = {};
+        this.notifications.each(function(notif){
+            if(_.indexOf(notif.get('read'), _this.user.get('id')) == -1){
+                if(notif.get('object') == "Concept"){
+                    if(concept_notifs[notif.get('to')]){ 
+                        concept_notifs[notif.get('to')] = concept_notifs[notif.get('to')]+1;
+                    }else{
+                        concept_notifs[notif.get('to')] = 1;
+                    } 
+                } 
+            }
+        });
+        _.keys(concept_notifs).forEach(function(key){
+            $("#concept_notif_"+key).append('<span class="top-bar-unread">'+concept_notifs[key]+'</span>')
+        }) 
     },
     editContent : function(e){
         e.preventDefault();

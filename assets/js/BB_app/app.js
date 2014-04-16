@@ -24,9 +24,12 @@ var global = {
     this.collections.Projects = new this.Collections.ProjectsCollection();
     this.collections.Concepts = new this.Collections.ConceptsCollection();
     this.collections.Links = new this.Collections.CKLinks();
-    this.collections.Notifications = new this.Collections.NotificationsCollection();
     this.collections.Permissions = new this.Collections.PermissionsCollection();
-
+    // Notifications
+    this.collections.Notifications = new this.Collections.NotificationsCollection();
+    this.collections.knowledge_notifs = new Backbone.Collection();
+    this.collections.concept_notifs = new Backbone.Collection();
+    this.collections.category_notifs = new Backbone.Collection();
     // Fetch
     global.collections.Users.fetch({reset:true,complete:function(){},success:function(){
       global.collections.Knowledges.fetch({reset: true,data : {projectId : global.models.currentProject.get('id')},success:function(){
@@ -34,11 +37,23 @@ var global = {
           global.collections.Projects.fetch({reset:true,success:function(){
             global.collections.Concepts.fetch({reset:true,data : { projectId : global.models.currentProject.get('id') },success:function(){
               global.collections.Links.fetch({reset:true,data : {projectId : global.models.currentProject.get('id')},success:function(){
-                global.collections.Notifications.fetch({reset:true,data : {projectId : global.models.currentProject.get('id')},success:function(){
-                  global.collections.Permissions.fetch({reset:true,success:function(){
-      
-                  }});
-                }});
+                global.collections.Notifications.fetch({
+                  reset:true,
+                  data : {projectId : global.models.currentProject.get('id')},
+                  success:function(collection, response){
+                    collection.each(function(notif){
+                      if(notif.get('object') == "Knowledge"){
+                        global.collections.knowledge_notifs.add(notif);
+                      }else if(notif.get('object') == "Concept"){
+                        global.collections.concept_notifs.add(notif);
+                      }else if(notif.get('object') == "Category"){
+                        global.collections.category_notifs.add(notif);
+                      }
+                    });
+                    //alert(global.collections.knowledge_notifs.length+" - "+global.collections.concept_notifs.length+" - "+global.collections.category_notifs.length)
+                    global.collections.Permissions.fetch({reset:true,success:function(){}});
+                  }
+                });
               }});
             }});        
           }});      
@@ -211,15 +226,15 @@ var topbar = {
     /*Init*/
     this.views.Main = new this.Views.Main({
       notifications   : global.collections.Notifications,
-      project         : global.models.currentProject,
-      projects        : global.collections.Projects,
-      concepts        : global.collections.Concepts,
-      knowledges      : global.collections.Knowledges,
-      experts         : global.collections.Users,
-      poches          : global.collections.Poches,
-      links           : global.collections.Links,
+      // project         : global.models.currentProject,
+      // projects        : global.collections.Projects,
+      // concepts        : global.collections.Concepts,
+      // knowledges      : global.collections.Knowledges,
+      // experts         : global.collections.Users,
+      // poches          : global.collections.Poches,
+      // links           : global.collections.Links,
       user            : global.models.current_user,
-      users           : global.collections.Users,
+      //users           : global.collections.Users,
       eventAggregator : global.eventAggregator
     }); 
   }
@@ -292,34 +307,6 @@ var explorer = {
     });
   }
 };
-/////////////////////////////////////////////////
-// var notification = {
-//   // Classes
-//   Collections: {},
-//   Models: {},
-//   Views: {},
-//   // Instances
-//   collections: {},
-//   models: {},
-//   views: {},
-//   init: function () {
-//     /*Init*/
-//     this.views.Main = new this.Views.Main({
-//       notifications : global.collections.Notifications,
-//       project: global.models.currentProject,
-//       projects    : global.collections.Projects,
-//       concepts    : global.collections.Concepts,
-//       knowledges  : global.collections.Knowledges,
-//       experts     : global.collections.Users,
-//       poches      : global.collections.Poches,
-//       links       : global.collections.Links,
-//       user        : global.models.current_user,
-//       users : global.collections.Users,
-//       eventAggregator : global.eventAggregator
-//     });
-
-//   }
-// };
 /////////////////////////////////////////////////
 var cklink = {
   // Classes
