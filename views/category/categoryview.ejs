@@ -5,9 +5,11 @@
 <!-- Gridalicious -->
 <script src="/js/vendor/jquery.grid-a-licious.js"></script>
 <!-- ******************************** -->
+<script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
+<!-- ******************************** -->
 <!-- CKEditor -->
 <script src="/js/ckeditor/ckeditor.js"></script>
-<!-- ******************************** -->
+
 <!-- Templates to load -->
 <%- partial('../app/templates/topbar_templates') %>
 <%- partial('../app/templates/title_templates') %>
@@ -39,7 +41,26 @@
     };
     ////////////////////////////////////////
     rt(io, function(){
-      global.init('<%- currentUser %>', <%- currentProject %>, function(){
+      var project = <%- currentProject %>;
+      var users = <%- users %>;
+      var knowledges = <%- knowledges %>;
+      var projects = <%- projects %>;
+      var poches = <%- poches %>;
+      var concepts = <%- concepts %>;
+      var links = <%- links %>;
+      var notifications = <%- notifications %>;
+      var permissions = <%- permissions %>;
+
+      _.each(knowledges, function(k){
+        k.comments = new global.Collections.Comments(k.comments);
+        k.members = new global.Collections.UsersCollection(k.members);
+      })
+      _.each(concepts, function(c){
+        c.comments = new global.Collections.Comments(c.comments);
+        c.members = new global.Collections.UsersCollection(c.members);
+      })
+
+      global.init('<%- currentUser %>', project, users, knowledges, poches, projects, concepts, links, notifications, permissions, function(){
         /*Modules*/
         topbar.init();
         title.init(<%- currentProject %>,"category");

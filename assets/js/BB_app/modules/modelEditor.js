@@ -52,7 +52,6 @@ modelEditor.Views.Main = Backbone.View.extend({
         this.model.save();
         this.mode = "normal";
         this.render();
-        this.eventAggregator.trigger("titleChanged");
     },
     editMode : function(e){
         e.preventDefault();

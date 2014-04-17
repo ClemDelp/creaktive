@@ -35,14 +35,12 @@ conceptsmap.Views.Main = Backbone.View.extend({
 
         // Backbone events              
         this.concepts.bind("reset", this.render);
-        this.notifications.on('reset',this.actualizeNotification,this)
-        this.knowledges.bind("add", this.render);
-        this.knowledges.bind("remove", this.render);
+
+        this.concepts.bind("change",this.resetMap);
+        this.concepts.bind("remove",this.resetMap);
+        // this.knowledges.bind("add", this.render);
+        // this.knowledges.bind("remove", this.render);
         
-        // CKLayout events
-        this.eventAggregator.on("colorChanged", this.resetMap, this);
-        this.eventAggregator.on("titleChanged", this.resetMap, this);
-        this.eventAggregator.on("removeKnowledge", this.resetMap, this);
         
         // My-mind events
         this.eventAggregator.on('change',this.action,this);
@@ -197,7 +195,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
     action:function(actions){
         console.log("actions: ",actions);
         if (actions instanceof MM.Action.InsertNewItem){
-            new_c = new global.Models.ConceptModel({
+            this.concepts.create({
                 id:actions._item._id,
                 user: this.user,
                 id_father : actions._parent._id,
@@ -211,9 +209,8 @@ conceptsmap.Views.Main = Backbone.View.extend({
                 color: actions._item._color,
                 members:[],
                 attachment:[]
-            });
-            new_c.save();
-            this.concepts.add(new_c);
+            },{silent:true});
+
 
         }
         else if (actions instanceof MM.Action.AppendItem){
@@ -224,25 +221,25 @@ conceptsmap.Views.Main = Backbone.View.extend({
                 id_father : actions._parent._id,
                 user: this.user,
             });
-            copy.save();
+            copy.save({silent:true});
             this.concepts.add(copy)
         }
         else if (actions instanceof MM.Action.MoveItem){ 
             console.log(actions._item, actions._newParent, actions._newIndex, actions._newSide);
-            this.concepts.get(actions._item._id).set({'id_father':actions._newParent._id}).save();
+            this.concepts.get(actions._item._id).set({'id_father':actions._newParent._id}).save({silent:true});
         }
         else if (actions instanceof MM.Action.RemoveItem){ 
             _this = this;
             console.log(actions._item);
-            this.concepts.get(actions._item._id).destroy(); 
+            this.concepts.get(actions._item._id).destroy({silent:true}); 
             
             _.each(actions._item._children, function(child){
-                _this.concepts.get(child._id).destroy(); 
+                _this.concepts.get(child._id).destroy({silent:true}); 
             });
         }
         else if (actions instanceof MM.Action.SetColor){ 
             console.log(actions._item, actions._color);
-            this.concepts.get(actions._item._id).set({'color':actions._color}).save();
+            this.concepts.get(actions._item._id).set({'color':actions._color}).save({silent:true});
         }
         //else if (actions instanceof MM.Action.SetLayout){console.log(actions._item, actions._layout);}
         //else if (actions instanceof MM.Action.SetShape){console.log(actions._item, actions._shape);}
@@ -250,16 +247,23 @@ conceptsmap.Views.Main = Backbone.View.extend({
         //else if (actions instanceof MM.Action.SetStatus){console.log(actions._item, actions._status);}
         else if (actions instanceof MM.Action.SetText){ 
             console.log(actions._item, actions._text);
-            this.concepts.get(actions._item._id).set({'title':actions._text}).save();
+            concept = this.concepts.get(actions._item._id).set({'title':actions._text}, {silent:true});
+            concept.save({silent:true});
         }
         //else if (actions instanceof MM.Action.SetValue){ console.log(actions._item, actions._value);}
 
     },
-    resetMap : function(){
-        MM.App.init(_this.eventAggregator);
-       socket.get("/concept/generateTree", function(data) {
-            MM.App.setMap(MM.Map.fromJSON(data.tree));
-        });   
+    resetMap : function(model,collection,options){
+        console.log("RESET ", options)
+       
+       // Si il n'y a pas d'options, c'est un élément renvoyé par le serveur via les sockets.
+        if(options){ 
+             MM.App.init(_this.eventAggregator);
+            socket.get("/concept/generateTree", function(data) {
+                MM.App.setMap(MM.Map.fromJSON(data.tree));
+            });        
+        }
+
     },
     render : function(){
         var _this = this;

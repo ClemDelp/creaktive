@@ -2067,6 +2067,9 @@ MM.Layout.getAll = function() {
  	offset[childIndex] = Math.round((childSize - bbox[childIndex])/2);
  	this._layoutChildren(item.getChildren(), rankDirection, offset, bbox);
 
+ 	this._layoutUnlinked(item, item._unlinked,bbox);
+
+
  	/* label position */
  	var labelPos = 0;
  	if (rankDirection == "left") { labelPos = rankSize - contentSize[0]; }
@@ -2103,15 +2106,19 @@ MM.Layout.getAll = function() {
 
 
  //TODO : une fonction pour placer correctement les unlinked
- MM.Layout.Graph._layoutUnlinked = function(unlinked){
- 	unlinked.forEach(function(child){
+ MM.Layout.Graph._layoutUnlinked = function(item,unlinked,bbox){
+ 	_this = this;
+ 	_.each(unlinked, function(child){
 		var node = child.getDOM().node;
 		var childSize = [node.offsetWidth, node.offsetHeight];
+		_this._anchorCanvas(child);
 
+		node.style["left"] = "0"+"px";
+		node.style["top"] =  "0"+"px";
 
- 	}, this);
+ 	});
  
-
+ 	return bbox;
  }
 
  MM.Layout.Graph._drawLinesHorizontal = function(item, side) {

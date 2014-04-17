@@ -10,7 +10,7 @@ var global = {
   collections: {},
   models: {},
   views: {},
-  init: function (currentUser, currentProject, callback) {
+  init: function (currentUser, currentProject, users, knowledges, poches,projects, concepts, links, notifications, permissions,callback) {
     //Variables
     this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
     this.models.currentProject = new this.Models.ProjectModel(currentProject); 
@@ -25,6 +25,7 @@ var global = {
     this.collections.Concepts = new this.Collections.ConceptsCollection();
     this.collections.Links = new this.Collections.CKLinks();
     this.collections.Permissions = new this.Collections.PermissionsCollection();
+<<<<<<< HEAD
     // Notifications
     this.collections.Notifications = new this.Collections.NotificationsCollection();
     this.collections.knowledge_notifs = new Backbone.Collection();
@@ -60,6 +61,36 @@ var global = {
         }});    
       }});  
     }}); 
+=======
+
+
+    this.collections.Knowledges.reset(knowledges);
+    this.collections.Users.reset(users);
+    this.collections.Poches.reset(poches);
+    this.collections.Projects.reset(projects);
+    this.collections.Concepts.reset(concepts);
+    this.collections.Links.reset(links);
+    this.collections.Notifications.reset(notifications);
+    this.collections.Permissions.reset(permissions);
+    // Fetch
+    // global.collections.Users.fetch({reset:true,success:function(){},complete:function(){
+    //   global.collections.Knowledges.fetch({reset: true,data : {projectId : global.models.currentProject.get('id')},complete:function(){
+    //     global.collections.Poches.fetch({reset: true,data : {projectId : global.models.currentProject.get('id')},complete:function(){
+    //       global.collections.Projects.fetch({reset:true,complete:function(){
+    //         global.collections.Concepts.fetch({reset:true,data : { projectId : global.models.currentProject.get('id') },complete:function(){
+    //           global.collections.Links.fetch({reset:true,data : {projectId : global.models.currentProject.get('id')},complete:function(){
+    //             global.collections.Notifications.fetch({reset:true,complete:function(){
+    //               global.collections.Permissions.fetch({reset:true,complete:function(){
+      
+    //               }});
+    //             }});
+    //           }});
+    //         }});        
+    //       }});      
+    //     }});    
+    //   }});  
+    // }}); 
+>>>>>>> origin/bootstrap
   
     callback();
 
@@ -122,6 +153,7 @@ var analyse = {
       links : global.collections.Links,
       eventAggregator : global.eventAggregator
     }); 
+    this.views.Main.render()
   }
 };
 /////////////////////////////////////////////////
@@ -188,7 +220,8 @@ var conceptsmap = {
       poches      : global.collections.Poches,
       links       : global.collections.Links,
       eventAggregator : global.eventAggregator
-    });   
+    }); 
+    this.views.Main.render()  
   }
 };
 /////////////////////////////////////////////////
@@ -210,6 +243,7 @@ var category = {
       user        : global.models.current_user,
       eventAggregator : global.eventAggregator,
     });   
+    this.views.Main.render()
   }
 };
 /////////////////////////////////////////////////
@@ -278,6 +312,7 @@ var user = {
       permissions : global.collections.Permissions,
       eventAggregator : global.eventAggregator
     });  
+    this.views.Main.render()
   }
 };
 /////////////////////////////////////////////////
@@ -305,6 +340,12 @@ var explorer = {
       style       : "grid"
 
     });
+<<<<<<< HEAD
+=======
+    this.views.main.render()
+
+    //this.views.main.render();
+>>>>>>> origin/bootstrap
   }
 };
 /////////////////////////////////////////////////
