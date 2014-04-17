@@ -66,15 +66,11 @@ conceptsmap.Views.Main = Backbone.View.extend({
         _this = this;
         concept_notifs = {};
         this.notifications.each(function(notif){
-            if(_.indexOf(notif.get('read'), _this.user.get('id')) == -1){
-                if(notif.get('object') == "Concept"){
-                    if(concept_notifs[notif.get('to')]){ 
-                        concept_notifs[notif.get('to')] = concept_notifs[notif.get('to')]+1;
-                    }else{
-                        concept_notifs[notif.get('to')] = 1;
-                    } 
-                } 
-            }
+            if(concept_notifs[notif.get('to').id]){ 
+                concept_notifs[notif.get('to').id] = concept_notifs[notif.get('to').id]+1;
+            }else{
+                concept_notifs[notif.get('to').id] = 1;
+            } 
         });
         _.keys(concept_notifs).forEach(function(key){
             $("#concept_notif_"+key).append('<span class="top-bar-unread">'+concept_notifs[key]+'</span>')

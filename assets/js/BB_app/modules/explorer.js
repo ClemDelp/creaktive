@@ -35,6 +35,9 @@ explorer.Views.KnowledgesList = Backbone.View.extend({
         this.user = json.user;
         this.eventAggregator = json.eventAggregator;
         // Events
+        this.notifications.on('change',this.render,this);
+        this.notifications.on('add',this.render,this);
+        this.notifications.on('remove',this.render,this);
         this.eventAggregator.on('knowledge_search', this.knowledge_search, this);
         // Templates
         this.template_knowledge = _.template($('#explorer-knowledge-template').html());
@@ -59,7 +62,7 @@ explorer.Views.KnowledgesList = Backbone.View.extend({
             // Notifications
             _notifNbr = 0;
             _this.notifications.each(function(notification){
-                if((notification.get('to') == _knowledge.get('id'))&&( _.indexOf(notification.get('read'),_this.user.get('id')) == -1 )){_notifNbr = _notifNbr+1;}
+                if(notification.get('to').id == _knowledge.get('id')){_notifNbr = _notifNbr+1;}
             });
             // Send knowledge to template
             $(_this.el).append(_this.template_knowledge({
@@ -68,9 +71,7 @@ explorer.Views.KnowledgesList = Backbone.View.extend({
             }));
 
         });
-        var renderedContent = 
-        $(this.el).append(renderedContent);
-
+        
         return this;
     }
 });
@@ -279,7 +280,6 @@ explorer.Views.Main = Backbone.View.extend({
             eventAggregator : this.eventAggregator
         });
         // Events
-        this.notifications.bind("reset", this.render);
         this.links.bind('add', this.render);
         this.links.bind('remove', this.render);
         this.filters.bind('add', this.render);

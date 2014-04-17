@@ -58,7 +58,7 @@
           
           
 
-          Notification.objectUpdated(req,res,"Concept", c[0].id, function(notification){
+          Notification.objectUpdated(req,res,"Concept", c[0], function(notification){
             res.send(notification);
           });
 
@@ -72,7 +72,7 @@
         Concept.create(concept).done(function(err,c){
           if(err) res.send(err);
 
-          Notification.objectCreated(req,res,"Concept", c.id, function(notification){
+          Notification.objectCreated(req,res,"Concept", c, function(notification){
             res.send(notification);
           });
           res.send(c);

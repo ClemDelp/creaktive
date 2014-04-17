@@ -33,7 +33,8 @@
   		date : getDate(),
   		read : [req.session.user.id],
   		project_id : req.session.currentProject.id,
-  		from : req.session.user
+  		from : req.session.user,
+      comparator : new Date().getTime()
   	}).done(function(err,n){
   		if(err) console.log(err);
   		req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
@@ -60,7 +61,8 @@
   		date : getDate(),
   		read : [req.session.user.id],
   		project_id : req.session.currentProject.id,
-  		from : req.session.user
+  		from : req.session.user,
+      comparator : new Date().getTime()
   	}).done(function(err,n){
   		if(err) console.log(err);
   		req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);

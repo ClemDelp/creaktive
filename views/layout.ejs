@@ -61,7 +61,7 @@
     <script src="js/BB_app/global_models.js"></script>
     <script src="js/BB_app/global_collections.js"></script>
 
-
+    
 
 
       <%- body %>
@@ -78,8 +78,36 @@
     <script src="js/foundation.min.js"></script>
     <script src="js/foundation/foundation.abide.js"></script>
     <script src="js/foundation/foundation.equalizer.js"></script>
+
     <script>
       $(document).foundation();
+      /////////////////////////////////////////////////////////////////////////////////////////////
+      // Realtime connection
+      /////////////////////////////////////////////////////////////////////////////////////////////
+      function rt (io, callback) {
+        // as soon as this file is loaded, connect automatically, 
+        var socket = io.connect("/",{'sync disconnect on unload ': true});
+        socket.on('connect', function socketConnected() {
+          
+          socket.get("/auth/openChannels", function(data){
+            console.log(data.msg);
+            console.log(data.channels);
+          });
+
+          socket.on('notification:create', function socketConnected(x) {
+            console.log("xxxxxx",x)
+          });
+
+          console.log(
+            'Socket is now connected and globally accessible as `socket`.\n' + 
+            'e.g. to send a GET request to Sails, try \n' + 
+            '`socket.get("/", function (response) ' +
+              '{ console.log(response); })`'
+          );
+          callback();
+        });
+        window.socket = socket;
+      };
     </script>
 
 

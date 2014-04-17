@@ -102,37 +102,38 @@ var AuthController = {
 
 	openChannels : function(req,res){
 
-		req.socket.join("users")
-		req.socket.set('user', req.session.user.id, function(args){
-			var connectedUsers = []
-			for (var socketId in sails.io.sockets.sockets) {
-			    sails.io.sockets.sockets[socketId].get('user', function(err, u) {
-			        if(err) console.log(err)
-			    	connectedUsers.push(u);
-			    });
-			}
-			sails.io.sockets.emit("connectedUsers", _.compact(_.uniq(connectedUsers)));
-			req.socket.set('connectedUsers', _.compact( _.uniq(connectedUsers)));
+		// req.socket.join("users")
+		
+		// req.socket.set('user', req.session.user.id, function(args){
+		// 	var connectedUsers = []
+		// 	for (var socketId in sails.io.sockets.sockets) {
+		// 	    sails.io.sockets.sockets[socketId].get('user', function(err, u) {
+		// 	        if(err) console.log(err)
+		// 	    	connectedUsers.push(u);
+		// 	    });
+		// 	}
+		// 	sails.io.sockets.emit("connectedUsers", _.compact(_.uniq(connectedUsers)));
+		// 	req.socket.set('connectedUsers', _.compact( _.uniq(connectedUsers)));
 
-		})
+		// })
 
-		req.socket.on("disconnect", function(){
-			console.log("DISCONNECTED")
-			req.socket.get('connectedUsers', function(err, connectedUsers){
-				var i = connectedUsers.indexOf(req.session.user.id);
-				delete connectedUsers[i];
-				sails.io.sockets.emit("connectedUsers", _.compact(_.uniq(connectedUsers)));
-			});	
-		});
+		// req.socket.on("disconnect", function(){
+		// 	console.log("DISCONNECTED")
+		// 	req.socket.get('connectedUsers', function(err, connectedUsers){
+		// 		var i = connectedUsers.indexOf(req.session.user.id);
+		// 		delete connectedUsers[i];
+		// 		sails.io.sockets.emit("connectedUsers", _.compact(_.uniq(connectedUsers)));
+		// 	});	
+		// });
+
 
 		Permission.find({
-			id_user : req.session.user.id
+			user_id : req.session.user.id
 		}).done(function (err, permissions){
-			var allowedProject = _.pluck(permissions, "id_project");
-			_.each(req.session.allowedProject, function(project){
+			var allowedProject = _.pluck(permissions, "project_id");
+			_.each(allowedProject, function(project){
 				req.socket.join(project)
 			})	
-
 		});
 		
 	
