@@ -114,6 +114,7 @@ notification.Views.Main = Backbone.View.extend({
     },
     render : function(){
         $(this.el).html('');
+        _this = this;_this
         notif_to_render = new Backbone.Collection();
         this.notifications.each(function(notif){
             if(_.indexOf(notif.get('read'), _this.user.get('id')) == -1){notif_to_render.add(notif);}
