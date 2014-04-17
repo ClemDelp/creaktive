@@ -57,7 +57,7 @@ module.exports = {
   */
 
   get: function (req, res) {
-  	res.download(req.body.path);
+  	res.download(req.query.path);
   },
 
   destroy : function (req,res){
