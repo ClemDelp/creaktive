@@ -156,7 +156,6 @@ CKLayout.Views.Main = Backbone.View.extend({
         $(this.el).append(new comments.Views.Main({
             className       : "large-4 medium-4 small-4 columns floatRight",
             model           : this.model,
-            
             user            : this.user,
             eventAggregator : this.eventAggregator
         }).render().el);

@@ -4,7 +4,7 @@
 conceptsmap.Views.Main = Backbone.View.extend({
     el:"#conceptsmap_container",
     initialize : function(json) {
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render','actualizeNotification');
         // Variables
         this.notifications      = json.notifications;
         this.knowledges         = json.knowledges;
@@ -14,7 +14,6 @@ conceptsmap.Views.Main = Backbone.View.extend({
         this.poches             = json.poches;
         this.links              = json.links;
         this.eventAggregator    = json.eventAggregator;
-
         // Modals
         this.CKLayoutModal_view = new CKLayout.Views.Modal({
             notifications : this.notifications,
@@ -31,18 +30,13 @@ conceptsmap.Views.Main = Backbone.View.extend({
             links : this.links,
             eventAggregator : this.eventAggregator
         })
-
-
         // Backbone events              
-        this.concepts.bind("reset", this.render);
-
         this.concepts.bind("change",this.resetMap);
         this.concepts.bind("remove",this.resetMap);
-        // this.knowledges.bind("add", this.render);
-        // this.knowledges.bind("remove", this.render);
-        
-        
-        // My-mind events
+        // Events
+        this.notifications.on('change',this.actualizeNotification,this);
+        this.notifications.on('add',this.actualizeNotification,this);
+        this.notifications.on('remove',this.actualizeNotification,this);
         this.eventAggregator.on('change',this.action,this);
         this.eventAggregator.on("undo", this.performUndo, this);
 
@@ -66,15 +60,17 @@ conceptsmap.Views.Main = Backbone.View.extend({
         _this = this;
         concept_notifs = {};
         this.notifications.each(function(notif){
+            console.log(notif.get('to').title)
             if(concept_notifs[notif.get('to').id]){ 
                 concept_notifs[notif.get('to').id] = concept_notifs[notif.get('to').id]+1;
             }else{
                 concept_notifs[notif.get('to').id] = 1;
             } 
         });
+        
         _.keys(concept_notifs).forEach(function(key){
-            $("#concept_notif_"+key).append('<span class="top-bar-unread">'+concept_notifs[key]+'</span>')
-        }) 
+            $("#concept_notif_"+key).html('<span class="top-bar-unread">'+concept_notifs[key]+'</span>')
+        });
     },
     editContent : function(e){
         e.preventDefault();
@@ -278,7 +274,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
         var dfd = $.Deferred();
         dfd.done(renderTemplate).done(initMap);
         dfd.resolve();
-        
+
         $(document).foundation();
 
         return this;

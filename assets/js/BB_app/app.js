@@ -193,7 +193,7 @@ var conceptsmap = {
       links       : global.collections.Links,
       eventAggregator : global.eventAggregator
     }); 
-    this.views.Main.render()  
+    this.views.Main.render();
   }
 };
 /////////////////////////////////////////////////

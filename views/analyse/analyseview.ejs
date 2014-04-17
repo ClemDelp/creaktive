@@ -59,30 +59,7 @@
     });
 
   });
-  /////////////////////////////////////////////////////////////////////////////////////////////
-// Realtime connection
-/////////////////////////////////////////////////////////////////////////////////////////////
 
-function rt (io, callback) {
-  // as soon as this file is loaded, connect automatically, 
-  var socket = io.connect("/",{'sync disconnect on unload ': true});
-  socket.on('connect', function socketConnected() {
-    socket.get("/auth/openChannels", function(data){
-      // console.log(data.msg);
-      // console.log(data.channels);
-    });
-    console.log(
-      'Socket is now connected and globally accessible as `socket`.\n' + 
-      'e.g. to send a GET request to Sails, try \n' + 
-      '`socket.get("/", function (response) ' +
-        '{ console.log(response); })`'
-    );
-    callback();
-  });
-
-  window.socket = socket;
-
-};
 
 </script>
 
