@@ -1,7 +1,7 @@
 module.exports = function(req,res,next){
 		var u = req.baseUrl.replace("http","https");
 
-	if(req.baseUrl == "http://localhost:1337"){
+	if(req.baseUrl == "http://localhost:1337" ||req.baseUrl == "http://localhost:5000"  ){
 		next()
 	} 
 	else{

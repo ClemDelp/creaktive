@@ -14,56 +14,81 @@ attachment.Views.Main = Backbone.View.extend({
     events : {
         "click .openFile" : "openFile",
         "click .removeFile" : "removeFile",
-        "change .uploadFile" : "uploadFile"
+        "change #uploadFile" : "uploadFile"
     },
     uploadFile : function(e){
         e.preventDefault();
-        files = e.target.files;
-        console.log(files)
-        // Create a formdata object and add the files
-        var data = new FormData();
-        $.each(files, function(key, value)
-        {
-            data.append(key, value);
-        });
         _this = this;
-        $.ajax({
-            url: '/file/upload',
-            type: 'POST',
-            data: data,
-            cache: false,
-            dataType: 'json',
-            processData: false, // Don't process the files
-            contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-            success: function(data, textStatus, jqXHR)
-            {
-                if(typeof data.error === 'undefined')
-                { 
-                    // Success so call function to process the form
-                    console.log(data);
-                    if(data.result === "success"){
-                        _this.model.get('attachment').unshift({
-                            id : data.id,
-                            name : data.name,
-                            path : data.path
-                        });
-                        _this.model.save();
-                        _this.render();
-                    };
-                }
-                else
-                {
-                    // Handle errors here
-                    alert('ERRORS: ' + data.error);
-                }
+        var s3upload = new S3Upload({
+            file_dom_selector: 'uploadFile',
+            s3_sign_put_url: '/file/sign_s3',
+            onProgress: function(percent, message) {
+                $('#status').html('Upload progress: ' + percent + '% ' + message);
             },
-            error: function(jqXHR, textStatus, errorThrown)
-            {
-                // Handle errors here
-                alert('ERRORS: ' + textStatus);
-                // STOP LOADING SPINNER
+            onFinishS3Put: function(public_url) {
+                $('#status').html('Upload completed. Uploaded to: '+ public_url);
+                console.log(public_url);
+
+
+        //           _this.model.get('attachment').unshift({
+        //                     id : data.id,
+        //                     name : data.name,
+        //                     path : data.path
+        //                 });
+        //                 _this.model.save();
+        //                 _this.render();
+            },
+            onError: function(status) {
+                console.log(status)
+                $('#status').html('Upload error: ' + status);
             }
         });
+        // files = e.target.files;
+        // console.log(files)
+        // // Create a formdata object and add the files
+        // var data = new FormData();
+        // $.each(files, function(key, value)
+        // {
+        //     data.append(key, value);
+        // });
+        // _this = this;
+        // $.ajax({
+        //     url: '/file/upload',
+        //     type: 'POST',
+        //     data: data,
+        //     cache: false,
+        //     dataType: 'json',
+        //     processData: false, // Don't process the files
+        //     contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+        //     success: function(data, textStatus, jqXHR)
+        //     {
+        //         if(typeof data.error === 'undefined')
+        //         { 
+        //             // Success so call function to process the form
+        //             console.log(data);
+        //             if(data.result === "success"){
+        //                 _this.model.get('attachment').unshift({
+        //                     id : data.id,
+        //                     name : data.name,
+        //                     path : data.path
+        //                 });
+        //                 _this.model.save();
+        //                 _this.render();
+        //             };
+        //         }
+        //         else
+        //         {
+        //             // Handle errors here
+        //             alert('ERRORS: ' + data.error);
+        //         }
+        //     },
+        //     error: function(jqXHR, textStatus, errorThrown)
+        //     {
+        //         // Handle errors here
+        //         alert('ERRORS: ' + textStatus);
+        //         // STOP LOADING SPINNER
+        //     }
+        // });
     },
     removeFile : function(e){
         console.log(e.target.getAttribute('data-file-id'))
