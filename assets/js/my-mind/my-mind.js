@@ -279,6 +279,7 @@ var MM = {
  	}
  }
  MM.Item = function() {
+
  	this._parent = null;
  	this._children = [];
  	this._collapsed = false;
@@ -303,6 +304,7 @@ var MM = {
  	this._dom = {
  		node: document.createElement("li"),
  		content: document.createElement("div"),
+ 		notif: document.createElement("span"),
  		status: document.createElement("span"),
  		value: document.createElement("span"),
  		text: document.createElement("div"),
@@ -313,6 +315,7 @@ var MM = {
  	}
  	this._dom.node.id = "map";
  	this._dom.content.id = "map";
+ 	this._dom.notif.id = "";
  	this._dom.status.id = "map"
  	this._dom.value.id = "map";
  	this._dom.text.id = "map";
@@ -322,6 +325,7 @@ var MM = {
 
  	this._dom.node.classList.add("item");
  	this._dom.content.classList.add("content");
+ 	this._dom.notif.classList.add("notif");
  	this._dom.status.classList.add("status");
  	this._dom.value.classList.add("value");
  	this._dom.text.classList.add("text");
@@ -330,6 +334,7 @@ var MM = {
  	this._dom.unlinked.classList.add("unlinked");
 
  	this._dom.content.appendChild(this._dom.text); /* status+value are appended in layout */
+ 	this._dom.content.appendChild(this._dom.notif); /* status+value are appended in layout */
  	this._dom.node.appendChild(this._dom.canvas);
  	this._dom.node.appendChild(this._dom.content);
  	/* toggle+children are appended when children exist */
@@ -359,6 +364,7 @@ var MM = {
  */
  MM.Item.prototype.fromJSON = function(data) {
  	this.setText(data.text);
+ 	//console.log(data)
  	if (data.id) { this._id = data.id; }
  	if (data.side) { this._side = data.side; }
  	if (data.color) { this._color = data.color; }
@@ -367,11 +373,10 @@ var MM = {
  	if (data.collapsed) { this.collapse(); }
  	if (data.layout) { this._layout = MM.Layout.getById(data.layout); }
  	if (data.shape) { this.setShape(MM.Shape.getById(data.shape)); }
-
  	(data.children || []).forEach(function(child) {
  		this.insertChild(MM.Item.fromJSON(child));
  	}, this);
-
+ 	this._dom.notif.id = "concept_notif_"+this._id;
  	return this;
  }
 
@@ -380,7 +385,6 @@ var MM = {
  		id: this._id,
  		text: this.getText()
  	}
-
  	if (this._side) { data.side = this._side; }
  	if (this._color) { data.color = this._color; }
  	if (this._value) { data.value = this._value; }
@@ -2063,6 +2067,9 @@ MM.Layout.getAll = function() {
  	offset[childIndex] = Math.round((childSize - bbox[childIndex])/2);
  	this._layoutChildren(item.getChildren(), rankDirection, offset, bbox);
 
+ 	this._layoutUnlinked(item, item._unlinked,bbox);
+
+
  	/* label position */
  	var labelPos = 0;
  	if (rankDirection == "left") { labelPos = rankSize - contentSize[0]; }
@@ -2099,15 +2106,19 @@ MM.Layout.getAll = function() {
 
 
  //TODO : une fonction pour placer correctement les unlinked
- MM.Layout.Graph._layoutUnlinked = function(unlinked){
- 	unlinked.forEach(function(child){
+ MM.Layout.Graph._layoutUnlinked = function(item,unlinked,bbox){
+ 	_this = this;
+ 	_.each(unlinked, function(child){
 		var node = child.getDOM().node;
 		var childSize = [node.offsetWidth, node.offsetHeight];
+		_this._anchorCanvas(child);
 
+		node.style["left"] = "0"+"px";
+		node.style["top"] =  "0"+"px";
 
- 	}, this);
+ 	});
  
-
+ 	return bbox;
  }
 
  MM.Layout.Graph._drawLinesHorizontal = function(item, side) {

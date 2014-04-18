@@ -20,19 +20,15 @@ notification.Views.Modal = Backbone.View.extend({
     initialize:function(json){
         _.bindAll(this, 'render', 'openNotificationModal');
         // Variables
-        // this.project            = json.project;
-        // this.projects           = json.projects;
-        // this.concepts           = json.concepts;
-        // this.knowledges         = json.knowledges;
-        // this.experts            = json.experts;
-        // this.poches             = json.poches;
-        // this.links              = json.links;
         this.user               = json.user;
-        //this.users              = json.users;
         this.notifications      = json.notifications;
         this.eventAggregator    = json.eventAggregator;
         // Events
         this.eventAggregator.on("openNotificationModal", this.openNotificationModal);
+        this.eventAggregator.on("closeNotificationModal", this.closeNotificationModal);
+    },
+    closeNotificationModal : function(){
+        $('#NotificationModal').foundation('reveal', 'close');  
     },
     openNotificationModal : function(){
         this.render(function(){
@@ -62,6 +58,8 @@ notification.Views.Main = Backbone.View.extend({
         this.eventAggregator    = json.eventAggregator;
         // Template
         this.template = _.template($('#notification-log-template').html());
+        // Event
+        this.notifications.on('add',this.render,this);
     },
     events : {
         "click .globalValidation" : "globalValidation",
@@ -73,28 +71,39 @@ notification.Views.Main = Backbone.View.extend({
         _this = this;
         this.notifications.each(function(notif){
             notif.set({read : _.union(notif.get('read'),_this.user.get('id'))});
-            console.log("lalalalalala",$(_this.el).find("#notification_"+notif.get('id')))
-            $("#notification_"+notif.get('id')).hide('slow');
             notif.save();
         });
+        $('#NotificationModal').foundation('reveal', 'close'); 
         this.eventAggregator.trigger('notif_changed');
     },
     open : function(e){
         e.preventDefault();
-        notif = this.notifications.get(e.target.getAttribute('data-id-notification'));
+        var notif = this.notifications.get(e.target.getAttribute('data-id-notification'));
+        console.log(notif)
+        var project_id = notif.get('project_id');
+        console.log(project_id)
+        var link = "#";
+        if(notif.get('object') == "Knowledge"){ 
+            link="knowledges"; 
+        }else if(notif.get('object') == "Concept"){ 
+            link="conceptsMap"; 
+        }else if(notif.get('object') == "Category"){ 
+            link="categories"; 
+        }
+        window.location.href = "/"+link+"?projectId="+project_id;
     },
     validation : function(e){
         e.preventDefault();
         notif = this.notifications.get(e.target.getAttribute('data-id-notification'));
         notif.set({read : _.union(notif.get('read'),this.user.get('id'))});
         notif.save();
-        console.log($(this.el).find("#notification_"+notif.get('id')))
-        $(this.el).find("#notification_"+notif.get('id')).hide('slow');
-        this.eventAggregator.trigger('notif_changed');
+        //$(this.el).find("#notification_"+notif.get('id')).hide('slow');
     },
     render : function(){
         $(this.el).html('');
-        $(this.el).append(this.template({notifications : this.notifications.toJSON()}));
+        $(this.el).append(this.template({
+            notifications : this.notifications.toJSON()
+        }));
             
         return this;
     }

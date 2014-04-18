@@ -49,7 +49,7 @@ category.Views.Category = Backbone.View.extend({
             if((notification.get('to') == _this.poche.get('id'))&&( _.indexOf(notification.get('read'),_this.user.get('id')) == -1 )){_notifNbr = _notifNbr+1;}
         });
         // Category template
-        $(this.el).append(this.template_list({
+        $(this.el).html(this.template_list({
             notifNbr : _notifNbr,
             knowledges : this.knowledges.toJSON(), 
             category : this.poche.toJSON(),
@@ -68,8 +68,6 @@ category.Views.Categories = Backbone.View.extend({
         this.poches             = json.poches;
         this.user               = json.user;
         this.eventAggregator    = json.eventAggregator;
-        // Events
-        this.eventAggregator.on('categories_list_render', this.render, this);
     },
     events : {
         "click .addKnowledge" : "addKnowledge",
@@ -78,7 +76,15 @@ category.Views.Categories = Backbone.View.extend({
     },
     openCategoryEditorModal : function(e){
         e.preventDefault();
-        this.eventAggregator.trigger('openCategoryEditorModal',e.target.getAttribute("data-category-id"));
+        // Get category knowledges
+        category_model = this.poches.get(e.target.getAttribute("data-category-id"))
+        list_of_knowledges = new Backbone.Collection();
+        this.knowledges.each(function(knowledge){
+            knowledge.get('tags').forEach(function(tag){
+                if(category_model.get('title') == tag){list_of_knowledges.add(knowledge);}
+            });
+        });
+        this.eventAggregator.trigger('openCategoryEditorModal',e.target.getAttribute("data-category-id"),list_of_knowledges);
     },
     openModal: function(e){
         e.preventDefault();
@@ -148,7 +154,9 @@ category.Views.MiddlePart = Backbone.View.extend({
         this.user               = json.user;
         this.eventAggregator    = json.eventAggregator;
         // Events 
-
+        this.poches.on('remove',this.render,this)
+        this.poches.on('change',this.render,this)
+        this.eventAggregator.on('categories_list_render', this.render, this);
         // Templates
         this.template_filters = _.template($('#category-filters-template').html());
         
@@ -168,7 +176,10 @@ category.Views.MiddlePart = Backbone.View.extend({
             eventAggregator : this.eventAggregator
         });
         $(this.el).append(lists_view.render().el);
-        
+        $("#categories_grid").gridalicious({
+            gutter: 20,
+            width: 260
+          });
         return this;
     }
 });
@@ -357,6 +368,7 @@ category.Views.Main = Backbone.View.extend({
         this.filters.bind('remove', this.render);
         this.knowledges.bind("add", this.render);
         this.knowledges.bind("remove", this.render);
+
     },
     events : {
         "click .addFilter" : "addFilter",

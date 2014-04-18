@@ -126,6 +126,7 @@ global.Models.NotificationModel = Backbone.Model.extend({
     defaults : {
         id:"",
         type:"",
+        object : "",
         content : "",//description de la notification: "mise à jour sur le post"
         to : "",//cible: projet, post, document, ...
         from : "",//Qui est à l'origine: utilisateur, mise à jour, ...

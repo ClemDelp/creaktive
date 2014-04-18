@@ -122,7 +122,6 @@ CKLayout.Views.Main = Backbone.View.extend({
     removeKnowledge : function(e){
         e.preventDefault();
         this.model.destroy(); 
-        this.eventAggregator.trigger('removeKnowledge');
     },
     updateLabel : function(e){
         e.preventDefault();
@@ -130,7 +129,6 @@ CKLayout.Views.Main = Backbone.View.extend({
             color:e.target.getAttribute("data-label-color"),
             label:e.target.getAttribute("data-label-title")
         }).save();
-        this.eventAggregator.trigger("colorChanged")
         this.render();
     },
     render:function(){
@@ -162,13 +160,10 @@ CKLayout.Views.Main = Backbone.View.extend({
             eventAggregator : this.eventAggregator
         }).render().el);
         // notification module
-        notif_to_send = new Backbone.Collection();
-        this.notifications.each(function(notification){
-            if(notification.get('to') == _this.model.get('id')){notif_to_send.add(notification)}
-        });
         $(this.el).append(new activitiesList.Views.Main({
             className       : "large-8 medium-8 small-8 columns floatLeft",
-            notifications   : notif_to_send,
+            model           : this.model,
+            notifications   : this.notifications,
             eventAggregator : this.eventAggregator
         }).render().el);
         // Footer

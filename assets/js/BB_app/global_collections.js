@@ -48,6 +48,14 @@ global.Collections.NotificationsCollection = Backbone.Collection.extend({
         this.bind("error", function(model, error){
             console.log( error );
         });
+        _.bindAll(this, 'serverCreate');
+        this.ioBind('create', this.serverCreate, this);
+    },
+    comparator: function(m){
+        return -m.get('comparator');
+    },
+    serverCreate : function(new_notif){
+        this.add(new_notif);
     }
 });
 /***************************************/

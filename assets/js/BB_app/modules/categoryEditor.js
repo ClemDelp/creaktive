@@ -21,6 +21,7 @@ categoryEditor.Views.Modal = Backbone.View.extend({
         _.bindAll(this, 'render', 'openCategoryEditorModal');
         // Variables
         this.notifications = json.notifications;
+        this.knowledges = new Backbone.Collection(); // The attach knowledges
         this.category = new Backbone.Model();
         this.user = json.user;
         this.categories = json.categories;
@@ -32,7 +33,8 @@ categoryEditor.Views.Modal = Backbone.View.extend({
     closeCategoryEditorModal : function(){
         $('#categoryEditorModal').foundation('reveal', 'close');
     },
-    openCategoryEditorModal : function(c_id){
+    openCategoryEditorModal : function(c_id,knowledges){
+        this.knowledges = knowledges;
         this.category = this.categories.get(c_id);
         this.render(function(){
             $('#categoryEditorModal').foundation('reveal', 'open'); 
@@ -43,6 +45,7 @@ categoryEditor.Views.Modal = Backbone.View.extend({
         $(this.el).html('');
         $(this.el).append(new categoryEditor.Views.Main({
             className : "panel row",
+            knowledges : this.knowledges,
             notifications : this.notifications,
             category : this.category,
             user : this.user,
@@ -55,9 +58,10 @@ categoryEditor.Views.Modal = Backbone.View.extend({
 /***************************************/
 categoryEditor.Views.Main = Backbone.View.extend({
     initialize:function(json){
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render','updateCategory');
         // Variables
         this.notifications          = json.notifications;
+        this.knowledges             = json.knowledges;
         this.category               = json.category;
         this.user                   = json.user;
         this.eventAggregator        = json.eventAggregator;
@@ -78,16 +82,54 @@ categoryEditor.Views.Main = Backbone.View.extend({
     },
     removeCategory : function(e){
         e.preventDefault();
-        this.category.destroy(); 
-        this.eventAggregator.trigger('removeKnowledge');
+        if (confirm("If you delete this category, the system will delete the reference in each knowledge, would you continue?")) {
+            this.category.destroy();
+            _this = this;
+            // change knowledge reference
+            this.knowledges.each(function(knowledge){
+                knowledge.set({
+                    tags : _.without(knowledge.get('tags'),_this.category.get('title')),
+                    date : getDate(),
+                    user : _this.user
+                }).save();
+            });
+            this.eventAggregator.trigger('removeCategory',this.category.get('id'));
+        }
     },
     updateCategory : function(e){
         e.preventDefault();
+        _this = this;
+        if(this.category.get('title') != $(this.el).find(".title_category").val()){
+            if (confirm("The title of the category has changed, would you want to change all references in the relevant knowledge?")) {
+                // change knowledge reference
+                this.knowledges.each(function(knowledge){
+                    new_tags_array = []
+                    knowledge.get('tags').forEach(function(tag){
+                        if(_this.category.get('title') == tag){
+                            new_tags_array.unshift($(_this.el).find(".title_category").val());
+                        }else{
+                            new_tags_array.unshift(tag);
+                        }
+                    });
+                    knowledge.set({
+                        tags : new_tags_array,
+                        date : getDate(),
+                        user : _this.user
+                    }).save();
+                });
+                // Set the category title
+                this.category.set({
+                    title : $(this.el).find(".title_category").val(),
+                    date: getDate()
+                });
+                this.eventAggregator.trigger('updateCategory',this.category.get('id'),this.category.get('title'))
+            }
+        }
         this.category.set({
             user : this.user,
             description:CKEDITOR.instances.editor.getData(),
             date: getDate()
-        }).save();
+        }).save(); 
         this.mode = "normal";
         this.render();
     },

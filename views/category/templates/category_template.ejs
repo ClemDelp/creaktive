@@ -34,7 +34,7 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Right part -->
 <script type="text/template" id="category-notcategorized-template">
-    <a href="#" data-dropdown="drop{{-knowledge.id}}" class="tiny radius round button dropdown secondary CKBulle expand" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}"><strong>{{- knowledge.title }}</strong></a><br>
+    <a href="#" data-dropdown="drop{{-knowledge.id}}" class="tiny radius round button dropdown secondary CKBulle" style="border-style:dotted;border-color:{{-knowledge.color}};color:{{-knowledge.color}}"><strong>{{- knowledge.title }}</strong></a>
     <ul id="drop{{-knowledge.id}}" data-dropdown-content class="f-dropdown">
         {{ _.each(poches, function(poche) { }}
             <li><a href="#" class="moveTo" data-knowledge-id="{{- knowledge.id }}" data-catg-title="{{-poche.title}}">{{-poche.title}}</a></li>

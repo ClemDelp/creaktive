@@ -22,11 +22,9 @@
 
 
   find : function (req,res){
-    User.find({
-
-    }).done(function(err,users){
-      if(err) res.send(err)
-        res.send(users)
+    User.find().done(function(err,users){
+      if(err) res.send({err:err})
+      res.send(users)
     });
 
   },
@@ -34,17 +32,18 @@
   
   update : function(req,res){
   	User.findOne(req.body.params.id).done(function(err, user){
-  		if(err) res.send(err);
+  		if(err) res.send({err:err});
   		if(user){
   			User.update({id: req.body.params.id}, req.body.params).done(function(err,c){
-  				if(err) res.send(err)
+  				if(err) res.send({err:err})
             res.send(c);
         });
   		}else{
   			User.create(req.body.params).done(function(err,p){
-  				if(err) res.send(err)
+  				if(err) res.send({err:err})
             p.confirmed = true;
           p.save(function(err, u){
+            if(err) res.send({err:err})
             res.send(u);
           })
           
@@ -73,7 +72,7 @@
       confirmed : false,
       id : guid()
     }).done(function(err, user){
-      if(err) res.send(err)
+      if(err) res.send({err:err})
 
 
         var url = "";
@@ -99,7 +98,7 @@
         user_id : user.id,
         project_id : req.session.currentProject.id
       }).done(function(err, permission){
-        if(err) res.send(err)
+        if(err) res.send({err:err})
           res.send({user : user, permission : permission})
       })
     })
@@ -150,28 +149,63 @@
 
   userview : function(req,res){
     req.session.user = req.session.user || {id:"999999999", name : "guest", img:"img/default-user-icon-profile.png"}
-    Project.findOne(req.query.projectId).done(function (err,project){   
-      req.session.currentProject = project;
-      Permission.find().done(function (err, permissions){
-        User.find().done(function (err, users){        
+    // Project.findOne(req.query.projectId).done(function (err,project){   
+    //   req.session.currentProject = project;
+    //   Permission.find().done(function (err, permissions){
+    //     User.find().done(function (err, users){        
           
-          req.session.currentProject.permissions = [];
-          perms = _.where(permissions, {project_id : project.id});
-          _.each(perms, function (p){
-            p.user = _.findWhere(users,{id:p.user_id});
-            delete p.user_id;
-            delete p.project_id;
-            req.session.currentProject.permissions.push(p)
-          });           
-          console.log("lalala",req.session.currentProject)
-          res.view({
-            currentUser : JSON.stringify(req.session.user),
-            //projectTitle : req.session.currentProject.title,
-            projectId : req.session.currentProject.id,
-            currentProject : JSON.stringify(req.session.currentProject),
-          });
-        });        
-      });
-    }); 
+    //       req.session.currentProject.permissions = [];
+    //       perms = _.where(permissions, {project_id : project.id});
+    //       _.each(perms, function (p){
+    //         p.user = _.findWhere(users,{id:p.user_id});
+    //         delete p.user_id;
+    //         delete p.project_id;
+    //         req.session.currentProject.permissions.push(p)
+    //       });           
+    //       console.log("lalala",req.session.currentProject)
+    //       res.view({
+    //         currentUser : JSON.stringify(req.session.user),
+    //         //projectTitle : req.session.currentProject.title,
+    //         projectId : req.session.currentProject.id,
+    //         currentProject : JSON.stringify(req.session.currentProject),
+    //       });
+    //     });        
+    //   });
+    // }); 
+
+ Project.findOne(req.query.projectId).done(function(err, project){
+      req.session.currentProject = project;
+      
+      User.find().done(function(err,users){
+        Knowledge.find({project:project.id}).done(function(err,knowledges){
+          Poche.find({project:project.id}).done(function(err,poches){
+            Project.find().done(function(err,projects){
+              Concept.find({project:project.id}).done(function(err,concepts){
+                Link.find({project:project.id}).done(function(err,links){
+                  Notification.find().done(function(err,notifications){
+                    Permission.find().done(function(err, permissions){
+                      res.view({
+                        currentUser : JSON.stringify(req.session.user),
+                        projectTitle : req.session.currentProject.title,
+                        projectId : req.session.currentProject.id,
+                        currentProject : JSON.stringify(req.session.currentProject),
+                        users : JSON.stringify(users),
+                        knowledges : JSON.stringify(knowledges),
+                        poches : JSON.stringify(poches),
+                        projects : JSON.stringify(projects),
+                        concepts : JSON.stringify(concepts),
+                        links : JSON.stringify(links),
+                        notifications : JSON.stringify(notifications),
+                        permissions : JSON.stringify(permissions)
+                      });
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+    })
   },
 };

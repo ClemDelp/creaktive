@@ -1,7 +1,6 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <div id="topbar_container"></div>
 
-
 <script type="text/template" id="topbar-main-template">
   <nav class="top-bar" data-topbar>
     <ul class="title-area">
@@ -22,11 +21,11 @@
           <a href="http://creaktive.fr/documentation/" class="button round">Documentation</a>
         </li>
         <li class="divider"></li>
-        <li class="has-form">
+        <li>
           <a href="/editprofile">Profile</a>
         </li>
         <li class="divider"></li>
-        <li><a class="active" href="/logout">Logout</a></li>
+        <li><a class="active" id="logout" href="/logout"><center><img style="width:80%" src="/img/logout.png"></center></a></li>
 
         <li class="divider"></li>
         <li><a class="active openModal" href="#">Notifications<span class="top-bar-unread">{{-notifications_length}}</span></a></li>

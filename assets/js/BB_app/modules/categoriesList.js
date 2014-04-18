@@ -77,6 +77,9 @@ categoriesList.Views.Main = Backbone.View.extend({
         this.poches.bind("change",this.render);
         // Templates
         this.template_search = _.template($('#categoriesList-search-template').html());
+        // Event
+        this.poches.on('change',this.render,this)
+        this.poches.on('remove',this.render,this)
         
     },
     events : {

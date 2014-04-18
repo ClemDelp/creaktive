@@ -1,11 +1,13 @@
 <!-- Templates to load -->
 
 <%- partial('../app/templates/topbar_templates') %>
+<%- partial('../app/templates/welcome_templates') %>
 <br>
 <%- partial('templates/manager_template') %>
 <!-- Modules situés dans BB_app -->
 <script src="js/BB_app/modules/manager.js"></script>
 <script src="js/BB_app/modules/topbar.js"></script>
+<script src="js/BB_app/modules/welcome.js"></script>
 
 <script>
   $(document).ready(function () {
@@ -17,35 +19,12 @@
     rt(io, function(){
       global.initManager('<%- currentUser %>', function(){
         // Modules
-        topbar.init("manager");     
+        topbar.init("manager");
+        welcome.init();     
         manager.init();     
         /*activat of "hashchange events's monitoring"*/
         Backbone.history.start();  
       });
     });
   }) ;
-
-
-
-  function rt (io, callback) {
-  // as soon as this file is loaded, connect automatically, 
-  var socket = io.connect("/",{'sync disconnect on unload ': true});
-  socket.on('connect', function socketConnected() {
-    socket.get("/auth/openChannels", function(data){
-      // console.log(data.msg);
-      // console.log(data.channels);
-    });
-    console.log(
-      'Socket is now connected and globally accessible as `socket`.\n' + 
-      'e.g. to send a GET request to Sails, try \n' + 
-      '`socket.get("/", function (response) ' +
-        '{ console.log(response); })`'
-    );
-    callback();
-  });
-
-  window.socket = socket;
-
-};
-
 </script>
