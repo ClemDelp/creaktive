@@ -165,7 +165,7 @@ var welcome = {
   views: {},
   init: function () {
     this.views.Main = new this.Views.Main({
-      notifications : global.collections.all_notifs,
+      notifications : global.collections.all_notifs || global.collections.Notifications,
       user : global.models.current_user
     });
     this.views.Main.render();
@@ -231,7 +231,7 @@ var topbar = {
   init: function (page) {
     /*Init*/
     this.views.Main = new this.Views.Main({
-      notifications   : global.collections.all_notifs,
+      notifications   : global.collections.all_notifs || global.collections.Notifications,
       user            : global.models.current_user,
       eventAggregator : global.eventAggregator
     });
