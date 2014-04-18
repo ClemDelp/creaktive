@@ -16,8 +16,8 @@
 
  // AMAZON S3
  var crypto = require('crypto');
- var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY;
- var AWS_SECRET_KEY = process.env.AWS_SECRET_KEY;
+ var AWS_ACCESS_KEY = process.env.AWSAccessKeyId;
+ var AWS_SECRET_KEY = process.env.AWSSecretKey;
  var S3_BUCKET = process.env.S3_BUCKET
 //var io = require('socket.io');
 
@@ -62,6 +62,9 @@ module.exports = {
   */
 
   sign_s3 : function(req,res){
+    console.log(AWS_ACCESS_KEY)
+    console.log(AWS_SECRET_KEY)
+    console.log(S3_BUCKET)
     var object_name = req.query.s3_object_name;
     var mime_type = req.query.s3_object_type;
 
