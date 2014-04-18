@@ -16,8 +16,8 @@
 
  // AMAZON S3
  var crypto = require('crypto');
- var AWS_ACCESS_KEY = process.env.AWSAccessKeyId;
- var AWS_SECRET_KEY = process.env.AWSSecretKey;
+ var AWS_ACCESS_KEY = "AKIAJFDYWR6XAM4CBMCA";
+ var AWS_SECRET_KEY = "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";
  var S3_BUCKET = process.env.S3_BUCKET
 //var io = require('socket.io');
 
