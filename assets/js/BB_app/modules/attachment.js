@@ -25,8 +25,9 @@ attachment.Views.Main = Backbone.View.extend({
             onProgress: function(percent, message) {
                 $('#status').html('Upload progress: ' + percent + '% ' + message);
             },
-            onFinishS3Put: function(public_url) {
-                $('#status').html('Upload completed. Uploaded to: '+ public_url);
+            onFinishS3Put: function(public_url, file) {
+                console.log(file)
+                //$('#status').html('Upload completed. Uploaded to: '+ public_url);
                 console.log(public_url);
                 _this.model.get('attachment').unshift({
                     id : data.id,
