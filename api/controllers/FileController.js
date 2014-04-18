@@ -18,7 +18,7 @@
  var crypto = require('crypto');
  var AWS_ACCESS_KEY = "AKIAJFDYWR6XAM4CBMCA";
  var AWS_SECRET_KEY = "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";
- var S3_BUCKET = process.env.S3_BUCKET
+ var S3_BUCKET = "creaktiverenault"
 //var io = require('socket.io');
 
 var UPLOAD_PATH = 'upload';
@@ -62,9 +62,7 @@ module.exports = {
   */
 
   sign_s3 : function(req,res){
-    console.log(AWS_ACCESS_KEY)
-    console.log(AWS_SECRET_KEY)
-    console.log(S3_BUCKET)
+
     var object_name = req.query.s3_object_name;
     var mime_type = req.query.s3_object_type;
 

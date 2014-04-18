@@ -30,9 +30,9 @@ attachment.Views.Main = Backbone.View.extend({
                 //$('#status').html('Upload completed. Uploaded to: '+ public_url);
                 console.log(public_url);
                 _this.model.get('attachment').unshift({
-                    id : data.id,
-                    name : data.name,
-                    path : data.path,
+                    id : guid(),
+                    name : file.name,
+                    path : file.name,
                     url : public_url
                 });
                 _this.model.save();
