@@ -53,7 +53,7 @@ removeFile : function(e){
     this.model.get('attachment') =  _.without(this.model.get('attachment'), i);
     this.model.set({attachment : this.model.get('attachment')})
     this.model.save();
-    socket.post("/file/destroy", {file : i});
+    //socket.post("/file/destroy", {file : i});
     this.render();
 },
 openFile : function(e){
