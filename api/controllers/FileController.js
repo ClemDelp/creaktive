@@ -54,7 +54,7 @@ function processImage(id, name, path, cb) {
 };
 
 function cleanName(name){
-  return name.replace(/[ùûü]/g,"u").replace(/[îï]/g,"i").replace(/[àâä]/g,"a").replace(/[ôö]/g,"o").replace(/[éèêë]/g,"e").replace(/ç/g,"c").replace(" ", "_");
+  return name.replace(/[ùûü]/g,"u").replace(/[îï]/g,"i").replace(/[àâä]/g,"a").replace(/[ôö]/g,"o").replace(/[éèêë]/g,"e").replace(/ç/g,"c").replace(/ /g,"");
 }
 
 module.exports = {
