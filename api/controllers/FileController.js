@@ -51,6 +51,10 @@ function processImage(id, name, path, cb) {
 		'name': name,
 		'path': path
 	});
+};
+
+function cleanName(name){
+  return name.replace(/[ùûü]/g,"u").replace(/[îï]/g,"i").replace(/[àâä]/g,"a").replace(/[ôö]/g,"o").replace(/[éèêë]/g,"e").replace(/ç/g,"c").replace(" ", "_");
 }
 
 module.exports = {
@@ -63,7 +67,7 @@ module.exports = {
 
   sign_s3 : function(req,res){
 
-    var object_name = req.query.s3_object_name;
+    var object_name = cleanName(req.query.s3_object_name);
     var mime_type = req.query.s3_object_type;
 
     var now = new Date();
@@ -71,6 +75,8 @@ module.exports = {
     var amz_headers = "x-amz-acl:public-read";
 
     var put_request = "PUT\n\n"+mime_type+"\n"+expires+"\n"+amz_headers+"\n/"+S3_BUCKET+"/"+object_name;
+
+    console.log(put_request)
 
     var signature = crypto.createHmac('sha1', AWS_SECRET_KEY).update(put_request).digest('base64');
     signature = encodeURIComponent(signature.trim());
