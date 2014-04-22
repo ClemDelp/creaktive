@@ -10,23 +10,24 @@ var global = {
   collections: {},
   models: {},
   views: {},
-  init: function (currentUser, currentProject, users, knowledges, poches,projects, concepts, links, notifications, permissions,callback) {
+  init: function (json,callback) {
     //Variables
-    this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
-    this.models.currentProject = new this.Models.ProjectModel(currentProject); 
+    this.models.current_user = new this.Models.User(json.user); ; 
+    this.models.currentProject = new this.Models.ProjectModel(json.project);
+
     console.log("******* Connected as ", this.models.current_user.get("name"), " on ", this.models.currentProject.get("title"))
     this.eventAggregator = {};//this.concepts.first();
     _.extend(this.eventAggregator, Backbone.Events);
 
-    this.collections.Knowledges = new this.Collections.Knowledges(knowledges);
-    this.collections.Users = new this.Collections.UsersCollection(users);
-    this.collections.Poches = new this.Collections.Poches(poches);
-    this.collections.Projects = new this.Collections.ProjectsCollection(projects);
-    this.collections.Concepts = new this.Collections.ConceptsCollection(concepts);
-    this.collections.Links = new this.Collections.CKLinks(links);
-    this.collections.Permissions = new this.Collections.PermissionsCollection(permissions);
+    this.collections.Knowledges = new this.Collections.Knowledges(json.knowledges);
+    this.collections.Users = new this.Collections.UsersCollection(json.users);
+    this.collections.Poches = new this.Collections.Poches(json.poches);
+    this.collections.Projects = new this.Collections.ProjectsCollection(json.projects);
+    this.collections.Concepts = new this.Collections.ConceptsCollection(json.concepts);
+    this.collections.Links = new this.Collections.CKLinks(json.links);
+    this.collections.Permissions = new this.Collections.PermissionsCollection(json.permissions);
     // Notifications
-    this.collections.Notifications = new this.Collections.NotificationsCollection(notifications);
+    this.collections.Notifications = new this.Collections.NotificationsCollection(json.notifications);
     this.collections.Notifications.on('add',this.prepareNotifications,this)
     this.collections.Notifications.on('remove',this.prepareNotifications,this)
     this.collections.Notifications.on('change',this.prepareNotifications,this)
@@ -66,9 +67,9 @@ var global = {
     console.log("con",global.collections.concept_notifs.length)
     console.log("cat",global.collections.category_notifs.length)
   },
-  initManager :function (currentUser, callback) {
+  initManager :function (user, callback) {
     //Variables
-    this.models.current_user = new this.Models.User(JSON.parse(currentUser)); 
+    this.models.current_user = new this.Models.User(JSON.parse(user)); 
     console.log("******* Connected as ", this.models.current_user.get("name"))
     this.eventAggregator = {};//this.concepts.first();
     _.extend(this.eventAggregator, Backbone.Events);
@@ -81,6 +82,16 @@ var global = {
     this.collections.Links = new this.Collections.CKLinks();
     this.collections.Notifications = new this.Collections.NotificationsCollection();
     this.collections.Permissions = new this.Collections.PermissionsCollection();
+    // Notifications
+    this.collections.Notifications = new this.Collections.NotificationsCollection();
+    this.collections.Notifications.on('add',this.prepareNotifications,this)
+    this.collections.Notifications.on('remove',this.prepareNotifications,this)
+    this.collections.Notifications.on('change',this.prepareNotifications,this)
+    this.collections.all_notifs = new Backbone.Collection();
+    this.collections.knowledge_notifs = new Backbone.Collection();
+    this.collections.concept_notifs = new Backbone.Collection();
+    this.collections.category_notifs = new Backbone.Collection();
+    this.prepareNotifications();
 
     // Fetch
     global.collections.Users.fetch({reset:true,complete:function(){},success:function(){
