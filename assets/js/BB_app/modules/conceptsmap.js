@@ -27,10 +27,17 @@ conceptsmap.Views.ConceptsModal = Backbone.View.extend({
     },
     render:function(callback){
         $(this.el).empty();
-        $(this.el).append(new nodesMapping.Views.Main({
+        if(nodesMapping.views.nodesMapping){
+                nodesMapping.views.nodesMapping.remove();
+                nodesMapping.views.nodesMapping.undelegateEvents();
+                nodesMapping.views.nodesMapping.delegateEvents();
+                alert('nodesMapping removing');
+            }
+        nodesMapping.views.nodesMapping = new nodesMapping.Views.Main({
             collection : this.concepts,
             eventAggregator : this.eventAggregator
-        }).render().el);
+        });
+        $(this.el).append(nodesMapping.views.nodesMapping.render().el);
         // Render it in our div
         if(callback) callback();
 
@@ -197,26 +204,32 @@ conceptsmap.Views.Main = Backbone.View.extend({
             }
         });
         // Concepts list modal
-        this.ConceptsListModal_view = new conceptsmap.Views.ConceptsModal({
+        if(conceptsmap.views.conceptsModal){
+            conceptsmap.views.conceptsModal.remove();
+        }
+        conceptsmap.views.conceptsModal = new conceptsmap.Views.ConceptsModal({
             concepts : c_categorized,
             eventAggregator : this.eventAggregator
         });
+        $("#"+conceptsmap.views.conceptsModal.el.id).on('close',this.againstFounderBug);
         // CKLayout
-        this.CKLayoutModal_view = new CKLayout.Views.Modal({
+        conceptsmap.views.cklayout = new CKLayout.Views.Modal({
             notifications : this.notifications,
             type : "concept",
             user : this.user,
             concepts : this.concepts,
             eventAggregator : this.eventAggregator
         });
+        $("#"+conceptsmap.views.cklayout.el.id).on('close',this.againstFounderBug);
         // CKLinks
-        this.CKLinkModal_view = new cklink.Views.Modal({
+        conceptsmap.views.cklink = new cklink.Views.Modal({
             knowledges : this.knowledges,
             poches : this.poches,
             concepts : this.concepts,
             links : this.links,
             eventAggregator : this.eventAggregator
         });
+        $("#"+conceptsmap.views.cklink.el.id).on('close',this.againstFounderBug);
         ////////////////////////////
         // Backbone events              
         this.listenTo(this.concepts,"change",this.resetMap);
@@ -244,6 +257,9 @@ conceptsmap.Views.Main = Backbone.View.extend({
         "click .cut" : "cut",
         "click .paste" : "paste",
         "click .linkK" : "linkK"
+    },
+    againstFounderBug : function(){
+        MM.App.current.startEditing();
     },
     editContent : function(e){
         e.preventDefault();
@@ -416,14 +432,15 @@ conceptsmap.Views.Main = Backbone.View.extend({
 
     },
     resetMap : function(model,collection,options){
+        alert("reset map")
         console.log("RESET ", options)
         // Si il n'y a pas d'options, c'est un élément renvoyé par le serveur via les sockets.
-        //if(options){ 
+        if(options){ 
             MM.App.init(_this.eventAggregator);
             socket.get("/concept/generateTree", function(data) {
                 MM.App.setMap(MM.Map.fromJSON(data.tree));
             });        
-        //}
+        }
     },
     fullScreen : function(e){
         e.preventDefault();
@@ -450,9 +467,6 @@ conceptsmap.Views.Main = Backbone.View.extend({
             $("#concept_notif_"+key).html('<span class="top-bar-unread">'+concept_notifs[key]+'</span>')
         });
     },
-    close : function(){
-         this.close();
-    },
     render : function(){
         $(this.el).empty()
         var _this = this;
@@ -468,7 +482,12 @@ conceptsmap.Views.Main = Backbone.View.extend({
             // Left part
             $(this.el).append(this.template_actionsMap());
             // Middle part
-            if(conceptsmap.views.v){alert('ddd')}
+            if(conceptsmap.views.v){
+                conceptsmap.views.v.remove();
+                conceptsmap.views.v.undelegateEvents();
+                conceptsmap.views.v.delegateEvents();
+                alert('ddd');
+            }
             conceptsmap.views.v = new conceptsmap.Views.MiddlePart({
                 className        : "panel large-9 medium-9 small-9 columns",
                 notifications    : this.notifications,

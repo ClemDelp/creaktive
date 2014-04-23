@@ -19,7 +19,7 @@ nodesMapping.Views.Mapping = Backbone.View.extend({
         this.collection_render = this.collection;
         this.eventAggregator = json.eventAggregator;
         // Events
-        this.eventAggregator.on('search', this.Search, this);
+        this.listenTo(this.eventAggregator,'search', this.Search, this);
         // Templates
         this.template = _.template($('#nodesMapping-tag-template').html());
     },
@@ -44,9 +44,9 @@ nodesMapping.Views.Main = Backbone.View.extend({
         this.collection = json.collection;
         this.eventAggregator = json.eventAggregator;
         // Events
-        this.collection.bind("add",this.render,this);
-        this.collection.bind("remove",this.render,this);
-        this.collection.bind("change",this.render,this);
+        this.listenTo(this.collection,"add",this.render,this);
+        this.listenTo(this.collection,"remove",this.render,this);
+        this.listenTo(this.collection,"change",this.render,this);
         // Templates
         this.template_search = _.template($('#nodesMapping-search-template').html());
     },
@@ -71,10 +71,14 @@ nodesMapping.Views.Main = Backbone.View.extend({
         // Input search
         $(this.el).append(this.template_search());
         // Node map
-        $(this.el).append(new nodesMapping.Views.Mapping({
+        if(nodesMapping.views.mapping){
+            nodesMapping.views.mapping.remove();
+        }
+        nodesMapping.views.mapping = new nodesMapping.Views.Mapping({
             collection:this.collection,
             eventAggregator:this.eventAggregator
-        }).render().el);
+        });
+        $(this.el).append(nodesMapping.views.mapping.render().el);
         
         return this;
     }

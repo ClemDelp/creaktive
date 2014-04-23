@@ -76,6 +76,7 @@ CKLayout.Views.Modal = Backbone.View.extend({
             $('#CKLayoutModal').foundation('reveal', 'open'); 
             $(document).foundation();
         }); 
+        
     },
     render:function(callback){
         $(this.el).html('');
