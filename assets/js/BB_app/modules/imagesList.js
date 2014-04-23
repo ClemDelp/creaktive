@@ -16,7 +16,7 @@ imagesList.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Variables
         this.model = json.model;
-        console.log("moooodel",this.model)
+        //console.log("moooodel",this.model)
         this.attachments = this.model.get('attachment');
         this.knowledges = json.knowledges;
         this.eventAggregator = json.eventAggregator;
