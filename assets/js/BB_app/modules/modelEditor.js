@@ -42,15 +42,15 @@ modelEditor.Views.Main = Backbone.View.extend({
     updateKnowledge : function(e){
         e.preventDefault();
         //alert(CKEDITOR.instances.editor.getData())
-        this.model.set({
+        this.model.save({
             user : this.user,
             title:$(this.el).find(".title").val(),
             content:CKEDITOR.instances.editor.getData(),
             date: getDate(),
             date2:new Date().getTime()
         });
-        this.model.save();
         this.mode = "normal";
+        this.eventAggregator.trigger("updateMap")
         this.render();
     },
     editMode : function(e){

@@ -232,7 +232,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
         $("#"+conceptsmap.views.cklink.el.id).on('close',this.againstFounderBug);
         ////////////////////////////
         // Backbone events              
-        this.listenTo(this.concepts,"change",this.resetMap);
+        //this.listenTo(this.concepts,"change",this.resetMap);
         this.listenTo(this.concepts,"remove",this.resetMap);
         // Events
         this.listenTo(this.notifications,'change',this.actualizeNotification,this);
@@ -240,6 +240,8 @@ conceptsmap.Views.Main = Backbone.View.extend({
         this.listenTo(this.notifications,'remove',this.actualizeNotification,this);
         this.listenTo(this.eventAggregator,'change',this.action,this);
         this.listenTo(this.eventAggregator,"undo", this.performUndo, this);
+
+        this.listenTo(this.eventAggregator, 'updateMap', this.resetMap, this);
 
         this.template_actionsMap = _.template($("#conceptsmap_actionsMap_template").html());
     },
@@ -432,15 +434,13 @@ conceptsmap.Views.Main = Backbone.View.extend({
 
     },
     resetMap : function(model,collection,options){
-        alert("reset map")
-        console.log("RESET ", options)
+            console.log("RESET ", options)
         // Si il n'y a pas d'options, c'est un élément renvoyé par le serveur via les sockets.
-        if(options){ 
+
             MM.App.init(_this.eventAggregator);
             socket.get("/concept/generateTree", function(data) {
                 MM.App.setMap(MM.Map.fromJSON(data.tree));
             });        
-        }
     },
     fullScreen : function(e){
         e.preventDefault();

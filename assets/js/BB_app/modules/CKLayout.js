@@ -126,10 +126,11 @@ CKLayout.Views.Main = Backbone.View.extend({
     },
     updateLabel : function(e){
         e.preventDefault();
-        this.model.set({
+        this.model.save({
             color:e.target.getAttribute("data-label-color"),
             label:e.target.getAttribute("data-label-title")
-        }).save();
+        });
+        if(this.type === "concept") this.eventAggregator.trigger("updateMap")
         this.render();
     },
     render:function(){
