@@ -9,7 +9,7 @@ conceptsmap.Views.ConceptsModal = Backbone.View.extend({
         this.concepts = json.concepts;
         this.eventAggregator = json.eventAggregator;
         // Events
-        this.eventAggregator.on("openConceptsMappingModal", this.openModal); 
+        this.listenTo(this.eventAggregator,"openConceptsMappingModal", this.openModal); 
     },
     events: {
         "click .action" : "action"
@@ -47,7 +47,7 @@ conceptsmap.Views.NotCategorized = Backbone.View.extend({
         this.concepts_render = this.concepts;
         this.eventAggregator = json.eventAggregator;
         // Events
-        this.eventAggregator.on('concept_search', this.search, this);
+        this.listenTo(this.eventAggregator,'concept_search', this.search, this);
         // Templates
         this.template = _.template($('#conceptsmap-notcategorized-template').html());
     },
@@ -158,11 +158,11 @@ conceptsmap.Views.MiddlePart = Backbone.View.extend({
         this.concepts.bind("change",this.resetMap);
         //this.concepts.bind("remove",this.resetMap);
         // Events
-        this.notifications.on('change',this.actualizeNotification,this);
-        this.notifications.on('add',this.actualizeNotification,this);
-        this.notifications.on('remove',this.actualizeNotification,this);
-        this.eventAggregator.on('change',this.action,this);
-        this.eventAggregator.on("undo", this.performUndo, this);
+        this.listenTo(this.notifications,'change',this.actualizeNotification,this);
+        this.listenTo(this.notifications,'add',this.actualizeNotification,this);
+        this.listenTo(this.notifications,'remove',this.actualizeNotification,this);
+        this.listenTo(this.eventAggregator,'change',this.action,this);
+        this.listenTo(this.eventAggregator,"undo", this.performUndo, this);
 
         this.template = _.template($("#conceptsmap_map_template").html());
     },        
@@ -219,14 +219,14 @@ conceptsmap.Views.Main = Backbone.View.extend({
         });
         ////////////////////////////
         // Backbone events              
-        this.concepts.bind("change",this.resetMap);
-        this.concepts.bind("remove",this.resetMap);
+        this.listenTo(this.concepts,"change",this.resetMap);
+        this.listenTo(this.concepts,"remove",this.resetMap);
         // Events
-        this.notifications.on('change',this.actualizeNotification,this);
-        this.notifications.on('add',this.actualizeNotification,this);
-        this.notifications.on('remove',this.actualizeNotification,this);
-        this.eventAggregator.on('change',this.action,this);
-        this.eventAggregator.on("undo", this.performUndo, this);
+        this.listenTo(this.notifications,'change',this.actualizeNotification,this);
+        this.listenTo(this.notifications,'add',this.actualizeNotification,this);
+        this.listenTo(this.notifications,'remove',this.actualizeNotification,this);
+        this.listenTo(this.eventAggregator,'change',this.action,this);
+        this.listenTo(this.eventAggregator,"undo", this.performUndo, this);
 
         this.template_actionsMap = _.template($("#conceptsmap_actionsMap_template").html());
     },
@@ -439,7 +439,6 @@ conceptsmap.Views.Main = Backbone.View.extend({
         _this = this;
         concept_notifs = {};
         this.notifications.each(function(notif){
-            console.log(notif.get('to').title)
             if(concept_notifs[notif.get('to').id]){ 
                 concept_notifs[notif.get('to').id] = concept_notifs[notif.get('to').id]+1;
             }else{
@@ -450,6 +449,9 @@ conceptsmap.Views.Main = Backbone.View.extend({
         _.keys(concept_notifs).forEach(function(key){
             $("#concept_notif_"+key).html('<span class="top-bar-unread">'+concept_notifs[key]+'</span>')
         });
+    },
+    close : function(){
+         this.close();
     },
     render : function(){
         $(this.el).empty()
@@ -466,13 +468,15 @@ conceptsmap.Views.Main = Backbone.View.extend({
             // Left part
             $(this.el).append(this.template_actionsMap());
             // Middle part
-            $(this.el).append(new conceptsmap.Views.MiddlePart({
+            if(conceptsmap.views.v){alert('ddd')}
+            conceptsmap.views.v = new conceptsmap.Views.MiddlePart({
                 className        : "panel large-9 medium-9 small-9 columns",
                 notifications    : this.notifications,
                 concepts         : this.concepts,
                 user             : this.user,
                 eventAggregator  : this.eventAggregator
-            }).render().el);
+            });
+            $(this.el).append(conceptsmap.views.v.render().el);
             // Right part
             $(this.el).append(new conceptsmap.Views.RightPart({
                 className : "large-2 medium-2 small-2 columns",
