@@ -1,0 +1,9 @@
+<script type="text/template" id="imagesList-diapo-template">
+	<hr>
+	<p><strong>Images :</strong></p>
+	<ul class="clearing-thumbs" data-clearing>
+	{{ _.each(images, function(image){ }}
+		<li class="large-1 medium-1 small-1"><a href="{{- image.url }}"><img class="th" title="{{- image.name }}" src="{{- image.url }}"></a></li>
+	{{ }); }}
+	</ul>
+</script>

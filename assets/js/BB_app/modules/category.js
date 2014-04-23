@@ -267,8 +267,8 @@ category.Views.RightPart = Backbone.View.extend({
         return this;
     }
 });
-// Modal
 /////////////////////////////////////////
+// Modal
 category.Views.Modal = Backbone.View.extend({
     el:"#category_modal_container",
     initialize:function(json){

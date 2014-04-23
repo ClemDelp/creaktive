@@ -159,6 +159,12 @@ CKLayout.Views.Main = Backbone.View.extend({
             user            : this.user,
             eventAggregator : this.eventAggregator
         }).render().el);
+        // IMG List module
+        $(this.el).append(new imagesList.Views.Main({
+            className       : "large-8 medium-8 small-8 columns",
+            model           : this.model,
+            eventAggregator : this.eventAggregator
+        }).render().el);
         // notification module
         $(this.el).append(new activitiesList.Views.Main({
             className       : "large-8 medium-8 small-8 columns floatLeft",

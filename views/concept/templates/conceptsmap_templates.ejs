@@ -1,52 +1,134 @@
 <div id="conceptsmap_container"></div>
-
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Modals -->
-
-  
- <!-- //////////////////////////////////////////////////////////////////////: -->
-<script type="text/template" id="conceptsmap_template">
-	<div class="columns large-1 medium-1">
-		<a href="#" class="button tiny" data-dropdown="help-dropdown">Help</a>
-		<a href="#" class="button tiny addUnlinked">Insert</a>
-		<a href="#" title="Edit content" class="panel button tiny editContent"><img src="img/edit.png"></a>
-		<a href="#" title="Link knowledges" class="panel button tiny linkK"><img src="img/link.png"></a>
-		<a href="#" title="Center (End)" class="panel button tiny resetView"><img src="img/centrer.png"></a>
-		<a href="#" title="Zoom in (+)" class="panel button tiny scaleUp"><img src="img/plus.png"></a>
-		<a href="#" title="Zoom out (-)" class="panel button tiny scaleDown"><img src="img/moins.png"></a>
-		<a href="#" title="Add (Enter)" class="panel button tiny addSubIdea"><img src="img/add.png"></a>
-		<a href="#" title="Delete (Del)" class="panel button tiny removeSubIdea"><img src="img/sup.png"></a>
-		<a href="#" title="Undo (Ctrl-z)" class="panel button tiny undo"><img src="img/undo.png"></a>
-		<a href="#" title="Redo (Ctrl-y)" class="panel button tiny redo"><img src="img/redo.png"></a>
-		<a href="#" title="Copy (Ctrl-c)" class="panel button tiny copy"><img src="img/copy.png"></a>
-		<a href="#" title="Cut (Ctrl-x)" class="panel button tiny cut"><img src="img/cut.png"></a>
-		<a href="#" title="Paste (Ctrl-v)" class="panel button tiny paste"><img src="img/paste.png"></a>
+<div id="conceptsmap_conceptsListModal_container" class="reveal-modal small" data-reveal></div>
+<!-- //////////////////////////////////////////////////////////////////////: -->
+<!-- Right part -->
+<script type="text/template" id="conceptsmap-search-template">
+    <h5>{{-title}}</h5><hr>
+    <div class="row collapse">
+	    <div class="small-10 columns">
+	      	<input type="text" class="new_c_notCategorized search" placeholder="search in {{-title}}...">
+	    </div>
+	    <div class="small-2 columns">
+	      	<a href="#" class="button postfix add">+</a>
+	    </div>
 	</div>
-	
 
-	<div class="large-11 medium-11 columns" >
-		<ul id="port">
-			<div id="tip">
-				Press ‘Tab’ to Insert Child, ‘Enter’ to Insert Sibling Node.
-			</div>
-			
-		</ul>
-		<div id="throbber"></div>
-	</div> 
+</script>
+
+<script type="text/template" id="conceptsmap-notcategorized-template">
+    {{ _.each(conceptsNotCategorized,function(concept){ }}
+    	<a href="#" data-dropdown="drop{{-concept.id}}" class="tiny radius round button dropdown secondary CKBulle" style="border-style:dotted;border-color:{{-concept.color}};color:{{-concept.color}}"><strong>{{- concept.title }}</strong></a>
+	    <ul id="drop{{-concept.id}}" data-dropdown-content class="f-dropdown">
+	        <li><a href="#" class="openConceptsMappingModal" data-concept-id="{{- concept.id }}">link to the map</a></li>
+	        <li><a href="#" class="remove" data-concept-id="{{- concept.id }}">remove</a></li>
+	    </ul>	
+    {{ }); }}
+</script>
+ <!-- //////////////////////////////////////////////////////////////////////: -->
+<script type="text/template" id="conceptsmap_actionsMap_template">
+	<div class="columns large-1 medium-1 small-1">	
+		<h5>Map actions</h5><hr>
+		<div class="row small-12 medium-12 large-12">
+			<img src="img/help.png" title="">
+	        <strong><a href="#" data-reveal-id="helpModal" data-reveal>Help</a></strong>
+	        <hr style="margin-top:3px;margin-bottom:3px">
+	    </div> 
+	    <div class="row small-12 medium-12 large-12">
+			<img src="img/edit.png" title="edit">
+	        <strong><a href="#" title="Edit content" class="editContent">Edit</a></strong>
+	        <hr style="margin-top:3px;margin-bottom:3px">
+	    </div> 
+	    <div class="row small-12 medium-12 large-12">
+			<img src="img/link.png" title="link">
+	        <strong><a href="#" title="Link knowledges" class="linkK">Link</a></strong>
+	        <hr style="margin-top:3px;margin-bottom:3px">
+	    </div>
+	    <div class="row small-12 medium-12 large-12">
+			<img src="img/centrer.png" title="center">
+	        <strong><a href="#" title="Center (End)" class="resetView">Center</a></strong>
+	        <hr style="margin-top:3px;margin-bottom:3px">
+	    </div>  
+	    <div class="row small-12 medium-12 large-12">
+			<img src="img/plus.png" title="zoom in">
+	        <strong><a href="#" title="Zoom in (+)" class="scaleUp">Zoom in </a><small>(+)</small></strong>
+	        <hr style="margin-top:3px;margin-bottom:3px">
+	    </div> 
+	    <div class="row small-12 medium-12 large-12">
+			<img src="img/moins.png" title="zoom out">
+	        <strong><a href="#" title="Zoom out (-)" class="scaleDown">Zoom out </a><small>(-)</small></strong>
+	        <hr style="margin-top:3px;margin-bottom:3px">
+	    </div> 
+	    <div class="row small-12 medium-12 large-12">
+			<img src="img/add.png" title="add">
+	        <strong><a href="#" title="Add (Enter)" class="addSubIdea">Add </a><small>(Enter)</small></strong>
+	        <hr style="margin-top:3px;margin-bottom:3px">
+	    </div>
+	    <div class="row small-12 medium-12 large-12">
+			<img src="img/sup.png" title="Delete">
+	        <strong><a href="#" title="Delete (Del)" class="removeSubIdea">Delete </a><small>(Del)</small></strong>
+	        <hr style="margin-top:3px;margin-bottom:3px">
+	    </div> 
+	    <div class="row small-12 medium-12 large-12">
+			<img src="img/undo.png" title="Undo">
+	        <strong><a href="#" title="Undo (Ctrl-z)" class="undo">Undo </a><small>(Ctrl-z)</small></strong>
+	        <hr style="margin-top:3px;margin-bottom:3px">
+	    </div>  
+	    <div class="row small-12 medium-12 large-12">
+			<img src="img/redo.png" title="Redo">
+	        <strong><a href="#" title="Redo (Ctrl-y)" class="redo">Redo </a><small>(Ctrl-y)</small></strong>
+	        <hr style="margin-top:3px;margin-bottom:3px">
+	    </div>  
+	    <div class="row small-12 medium-12 large-12">
+			<img src="img/copy.png" title="Copy">
+	        <strong><a href="#" title="Copy (Ctrl-c)" class="copy">Copy </a><small>(Ctrl-c)</small></strong>
+	        <hr style="margin-top:3px;margin-bottom:3px">
+	    </div>
+	    <div class="row small-12 medium-12 large-12">
+			<img src="img/cut.png" title="Cut">
+	        <strong><a href="#" title="Cut (Ctrl-x)" class="cut">Cut </a><small>(Ctrl-x)</small></strong>
+	        <hr style="margin-top:3px;margin-bottom:3px">
+	    </div>  
+	    <div class="row small-12 medium-12 large-12">
+			<img src="img/paste.png" title="Paste">
+	        <strong><a href="#" title="" class="paste">Paste </a><small>(Ctrl-v)</small></strong>
+	        <hr style="margin-top:3px;margin-bottom:3px">
+	    </div> 
+    </div> 
+</script>
+
+<script type="text/template" id="conceptsmap_map_template">
+	<a href="#" class="button tiny secondary fullScreen" style="float:right">
+		<img style="" class="large-6 medium-6 small-6" src="img/fullscreen.png" title="fullscreen/minimize">
+	</a>
+	<ul id="port">
+		<div id="tip">
+			Press ‘Tab’ to Insert Child, ‘Enter’ to Insert Sibling Node.
+		</div>
+	</ul>
+	<div id="throbber"></div>
 </script>
 
 
-<div id="help-dropdown" data-dropdown-content class="f-dropdown content">
+<div id="helpModal" class="reveal-modal tiny" data-reveal>
+	<center><h3>Help</h3></center>
+	<p><span>Navigation</span></p>
 
-		<h3>Help</h3>
-		<p><span>Navigation</span></p>
-		<table class="navigation"><tbody><tr><td>Pan the map</td><td>W/A/S/D</td></tr><tr><td>Move selection</td><td>↑/←/↓/→</td></tr><tr><td>Select root</td><td>Home</td></tr><tr><td>Select parent</td><td>Backspace</td></tr><tr><td>Center map</td><td>End</td></tr><tr><td>Zoom in/Zoom out</td><td>+/−</td></tr><tr><td>Fold/Unfold</td><td>F</td></tr></tbody></table>
-		<p><span>Manipulation</span></p>
-		<table class="manipulation"><tbody><tr><td>Insert a sibling</td><td>↩</td></tr><tr><td>Insert a child</td><td>Tab/Insert</td></tr><tr><td>Swap sibling</td><td>Ctrl+↑/Ctrl+↓</td></tr><tr><td>Change side</td><td>Ctrl+←/Ctrl+→</td></tr><tr><td>Delete an item</td><td>Delete</td></tr><tr><td>Copy</td><td>Ctrl+C</td></tr><tr><td>Cut</td><td>Ctrl+X</td></tr><tr><td>Paste</td><td>Ctrl+V</td></tr></tbody></table>
-		<p><span>Editing</span></p>
-		<table class="editing"><tbody><tr><td>Set value</td><td>V</td></tr><tr><td>Yes/No/Maybe</td><td>Y/N/M</td></tr><tr><td>Edit item</td><td>Spacebar/F2</td></tr><tr><td>Line break</td><td>Shift+↩/Ctrl+↩</td></tr><tr><td>Bold</td><td>Ctrl+B</td></tr><tr><td>Italic</td><td>Ctrl+I</td></tr><tr><td>Underline</td><td>Ctrl+U</td></tr><tr><td>Strike-through</td><td>Ctrl+S</td></tr></tbody></table>
-		<p><span>Other</span></p>
-		<table class="other"><tbody><tr><td>Undo/Redo</td><td>Ctrl+Z/Ctrl+Y</td></tr><tr><td>Save map</td><td>Ctrl+S</td></tr><tr><td>Save as…</td><td>Ctrl+Shift+S</td></tr><tr><td>Load map</td><td>Ctrl+O</td></tr><tr><td>Show/hide help</td><td>?</td></tr><tr><td>Show/hide UI</td><td>*</td></tr></tbody></table>
+	<table style="width:100%" class="navigation"><tbody><tr><td>Pan the map</td><td>W/A/S/D</td></tr><tr><td>Move selection</td><td>↑/←/↓/→</td></tr><tr><td>Select root</td><td>Home</td></tr><tr><td>Select parent</td><td>Backspace</td></tr><tr><td>Center map</td><td>End</td></tr><tr><td>Zoom in/Zoom out</td><td>+/−</td></tr><tr><td>Fold/Unfold</td><td>F</td></tr></tbody></table>
+	
+	<p><span>Manipulation</span></p>
+
+	<table style="width:100%" class="manipulation"><tbody><tr><td>Insert a sibling</td><td>↩</td></tr><tr><td>Insert a child</td><td>Tab/Insert</td></tr><tr><td>Swap sibling</td><td>Ctrl+↑/Ctrl+↓</td></tr><tr><td>Change side</td><td>Ctrl+←/Ctrl+→</td></tr><tr><td>Delete an item</td><td>Delete</td></tr><tr><td>Copy</td><td>Ctrl+C</td></tr><tr><td>Cut</td><td>Ctrl+X</td></tr><tr><td>Paste</td><td>Ctrl+V</td></tr></tbody></table>
+	
+	<p><span>Editing</span></p>
+
+	<table style="width:100%" class="editing"><tbody><tr><td>Set value</td><td>V</td></tr><tr><td>Yes/No/Maybe</td><td>Y/N/M</td></tr><tr><td>Edit item</td><td>Spacebar/F2</td></tr><tr><td>Line break</td><td>Shift+↩/Ctrl+↩</td></tr><tr><td>Bold</td><td>Ctrl+B</td></tr><tr><td>Italic</td><td>Ctrl+I</td></tr><tr><td>Underline</td><td>Ctrl+U</td></tr><tr><td>Strike-through</td><td>Ctrl+S</td></tr></tbody></table>
+	
+	<p><span>Other</span></p>
+
+	<table style="width:100%" class="other"><tbody><tr><td>Undo/Redo</td><td>Ctrl+Z/Ctrl+Y</td></tr><tr><td>Save map</td><td>Ctrl+S</td></tr><tr><td>Save as…</td><td>Ctrl+Shift+S</td></tr><tr><td>Load map</td><td>Ctrl+O</td></tr><tr><td>Show/hide help</td><td>?</td></tr><tr><td>Show/hide UI</td><td>*</td></tr></tbody></table>
+	<a class="close-reveal-modal">&#215;</a>
 </div>
 
 

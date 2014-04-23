@@ -27,11 +27,11 @@ var global = {
     this.collections.Links = new this.Collections.CKLinks(json.links);
     this.collections.Permissions = new this.Collections.PermissionsCollection(json.permissions);
     // Notifications
-    this.collections.Notifications = new this.Collections.NotificationsCollection(json.notifications);
-    this.collections.Notifications.on('add',this.prepareNotifications,this)
-    this.collections.Notifications.on('remove',this.prepareNotifications,this)
-    this.collections.Notifications.on('change',this.prepareNotifications,this)
-    this.collections.all_notifs = new Backbone.Collection();
+    this.collections.all_notifs = new this.Collections.NotificationsCollection(json.notifications);
+    this.collections.all_notifs.on('add',this.prepareNotifications,this)
+    this.collections.all_notifs.on('remove',this.prepareNotifications,this)
+    this.collections.all_notifs.on('change',this.prepareNotifications,this)
+    this.collections.personal_notifs = new Backbone.Collection();
     this.collections.knowledge_notifs = new Backbone.Collection();
     this.collections.concept_notifs = new Backbone.Collection();
     this.collections.category_notifs = new Backbone.Collection();
@@ -41,18 +41,18 @@ var global = {
   },
   prepareNotifications : function(){
     // init
-    this.collections.all_notifs.reset();
+    this.collections.personal_notifs.reset();
     this.collections.knowledge_notifs.reset();
     this.collections.concept_notifs.reset();
     this.collections.category_notifs.reset();
     // On fait un premier tri en ne gardant que les notifications non valider pour cet utilisateur
-    this.collections.Notifications.each(function(notif){
+    this.collections.all_notifs.each(function(notif){
       if((_.indexOf(notif.get('read'), global.models.current_user.get('id')) == -1)){
-        global.collections.all_notifs.add(notif);
+        global.collections.personal_notifs.add(notif);
       }
     });
     // Puis on les reparties dans les collections correspondantes pour les préparer pour les différents modules
-    this.collections.all_notifs.each(function(notif){
+    this.collections.personal_notifs.each(function(notif){
       if(notif.get('object') == "Knowledge"){
         global.collections.knowledge_notifs.add(notif);
       }else if(notif.get('object') == "Concept"){
@@ -63,6 +63,7 @@ var global = {
     });
 
     console.log("all",global.collections.all_notifs.length)
+    console.log("all",global.collections.personal_notifs.length)
     console.log("kno",global.collections.knowledge_notifs.length)
     console.log("con",global.collections.concept_notifs.length)
     console.log("cat",global.collections.category_notifs.length)
@@ -80,14 +81,14 @@ var global = {
     this.collections.Projects = new this.Collections.ProjectsCollection();
     this.collections.Concepts = new this.Collections.ConceptsCollection();
     this.collections.Links = new this.Collections.CKLinks();
-    this.collections.Notifications = new this.Collections.NotificationsCollection();
+    this.collections.all_notifs = new this.Collections.NotificationsCollection();
     this.collections.Permissions = new this.Collections.PermissionsCollection();
     // Notifications
-    this.collections.Notifications = new this.Collections.NotificationsCollection();
-    this.collections.Notifications.on('add',this.prepareNotifications,this)
-    this.collections.Notifications.on('remove',this.prepareNotifications,this)
-    this.collections.Notifications.on('change',this.prepareNotifications,this)
-    this.collections.all_notifs = new Backbone.Collection();
+    this.collections.all_notifs = new this.Collections.NotificationsCollection();
+    this.collections.all_notifs.on('add',this.prepareNotifications,this)
+    this.collections.all_notifs.on('remove',this.prepareNotifications,this)
+    this.collections.all_notifs.on('change',this.prepareNotifications,this)
+    this.collections.personal_notifs = new Backbone.Collection();
     this.collections.knowledge_notifs = new Backbone.Collection();
     this.collections.concept_notifs = new Backbone.Collection();
     this.collections.category_notifs = new Backbone.Collection();
@@ -100,7 +101,7 @@ var global = {
           global.collections.Projects.fetch({reset:true,success:function(){
             global.collections.Concepts.fetch({reset:true,success:function(){
               global.collections.Links.fetch({reset:true,success:function(){
-                global.collections.Notifications.fetch({reset:true,success:function(){
+                global.collections.all_notifs.fetch({reset:true,success:function(){
                   global.collections.Permissions.fetch({reset:true,success:function(){
       
                   }});
@@ -176,7 +177,7 @@ var welcome = {
   views: {},
   init: function () {
     this.views.Main = new this.Views.Main({
-      notifications : global.collections.all_notifs || global.collections.Notifications,
+      notifications : global.collections.personal_notifs || global.collections.all_notifs,
       user : global.models.current_user
     });
     this.views.Main.render();
@@ -242,7 +243,7 @@ var topbar = {
   init: function (page) {
     /*Init*/
     this.views.Main = new this.Views.Main({
-      notifications   : global.collections.all_notifs || global.collections.Notifications,
+      notifications   : global.collections.personal_notifs || global.collections.all_notifs,
       user            : global.models.current_user,
       eventAggregator : global.eventAggregator
     });
@@ -304,7 +305,8 @@ var explorer = {
   init: function () {
     /*Init*/
     this.views.main = new this.Views.Main({
-      notifications : global.collections.knowledge_notifs,
+      a_notifications : global.collections.all_notifs,
+      k_notifications : global.collections.knowledge_notifs,
       projects    : global.collections.Projects,
       concepts    : global.collections.Concepts,
       knowledges  : global.collections.Knowledges,
@@ -359,18 +361,4 @@ var attachment = {
   init: function () {}
 };
 /////////////////////////////////////////////////
-// var concepts = {
-//   // Classes
-//   Collections: {},
-//   Models: {},
-//   Views: {},
-//   // Instances
-//   collections: {},
-//   models: {},
-//   views: {},
-//   init: function () {
-//     /*Init*/
 
-//   }
-// };
-/////////////////////////////////////////////////

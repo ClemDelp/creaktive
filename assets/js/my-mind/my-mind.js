@@ -4640,10 +4640,12 @@ MM.Layout.getAll = function() {
 	_syncPort: function() {
 		//this.portSize = [window.innerWidth - this.ui.getWidth(), window.innerHeight];
 		this.portSize = [window.innerWidth, window.innerHeight];
-		this._port.style.width = this.portSize[0] + "px";
+		// this._port.style.width = this.portSize[0] + "px";
+		// this._port.style.height = this.portSize[1] + "px";
+		this._port.style.width = "100%";
 		this._port.style.height = this.portSize[1] + "px";
 		//this._throbber.style.right = (20 + this.ui.getWidth())+ "px";
-		this._throbber.style.right = (20 + "px");
+		//this._throbber.style.right = (20 + "px");
 		if (this.map) { this.map.ensureItemVisibility(this.current); }
 	}
 }

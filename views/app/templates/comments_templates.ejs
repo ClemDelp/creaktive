@@ -1,24 +1,23 @@
 <script type="text/template" id="comments-template">
- 	<fieldset>
- 		<legend>Discussions ({{- comments.length }})</legend>
- 			<ul>
-			{{ _.each(comments, function(comment) { }}  
- 				<li title="{{- comment.date }}"><strong><small>{{- comment.user.name }}</small></strong> :
- 				{{- comment.content }} - 
- 				<a class="remove" title="remove" data-id-comment="{{- comment.id }}" style="color:red">x</a></li>
-			{{ }); }}
-			</ul>
-		<div class="row">
-			<div class="small-12 large-12 medium-12 columns">
-				<div class="row collapse">
-					<div class="small-10 columns">
-						<input type="text" class="input_comment" placeholder="your comment">
-					</div>
-					<div class="small-2 columns">
-						<input type="submit" class="button prefix add" value="+">
-					</div>
+	<hr>
+	<p><strong>Discussions ({{- comments.length }}) :</strong></p>
+	<ul>
+	{{ _.each(comments, function(comment) { }}  
+			<li title="{{- comment.date }}"><strong><small>{{- comment.user.name }}</small></strong> :
+			{{- comment.content }} - 
+			<a class="remove" title="remove" data-id-comment="{{- comment.id }}" style="color:red">x</a></li>
+	{{ }); }}
+	</ul>
+	<div class="row">
+		<div class="small-12 large-12 medium-12 columns">
+			<div class="row collapse">
+				<div class="small-10 columns">
+					<input type="text" class="input_comment" placeholder="your comment">
+				</div>
+				<div class="small-2 columns">
+					<input type="submit" class="button prefix add" value="+">
 				</div>
 			</div>
 		</div>
- 	</fieldset>
+	</div>
 </script>

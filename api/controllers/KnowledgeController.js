@@ -118,7 +118,7 @@
             Project.find().done(function(err,projects){
               Concept.find({project:project.id}).done(function(err,concepts){
                 Link.find({project:project.id}).done(function(err,links){
-                  Notification.find().done(function(err,notifications){
+                  Notification.find({project_id:project.id}).done(function(err,notifications){
                     Permission.find().done(function(err, permissions){
                       res.view({
                         currentUser : JSON.stringify(req.session.user),

@@ -97,7 +97,7 @@ notification.Views.Main = Backbone.View.extend({
         notif = this.notifications.get(e.target.getAttribute('data-id-notification'));
         notif.set({read : _.union(notif.get('read'),this.user.get('id'))});
         notif.save();
-        //$(this.el).find("#notification_"+notif.get('id')).hide('slow');
+        $(this.el).find("#notification_"+notif.get('id')).hide('slow');
     },
     render : function(){
         $(this.el).html('');
