@@ -19,8 +19,37 @@ module.exports = {
     
   
    managerview : function (req,res){
-  	req.session.user = req.session.user || {id:"999999999", name : "guest", img:"img/default-user-icon-profile.png"}
-   	res.view({currentUser:JSON.stringify(req.session.user)});
+   	Permission.find({user_id:req.session.user.id}).done(function(err,permissions){
+   		if(err) res.send(err);
+   		allowed_projects = _.pluck(permissions,"project_id");
+   		User.find().done(function(err,users){
+		    Knowledge.find({project : allowed_projects}).done(function(err,knowledges){
+		      Poche.find({project : allowed_projects}).done(function(err,poches){
+		        Project.find({id : allowed_projects}).done(function(err,projects){
+		          Concept.find({project : allowed_projects}).done(function(err,concepts){
+		            Link.find({project : allowed_projects}).done(function(err,links){
+		              Notification.find({project_id : allowed_projects}).done(function(err,notifications){
+		                  res.view({
+		                    currentUser : JSON.stringify(req.session.user),
+		                    users : JSON.stringify(users),
+		                    knowledges : JSON.stringify(knowledges),
+		                    poches : JSON.stringify(poches),
+		                    projects : JSON.stringify(projects),
+		                    concepts : JSON.stringify(concepts),
+		                    links : JSON.stringify(links),
+		                    notifications : JSON.stringify(notifications)
+		                  });
+		              })
+		            })
+		          })
+		        })
+		      })
+		    })
+		  })
+   	})
+   
+	  
+
   },
 
   /**

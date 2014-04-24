@@ -268,12 +268,13 @@ explorer.Views.Main = Backbone.View.extend({
         this.poches             = json.poches;
         this.links              = json.links;
         this.user               = json.user;
-        this.notifications      = json.notifications;
+        this.all_notifications  = json.a_notifications;
+        this.notifications      = json.k_notifications;
         this.filters            = new explorer.Collections.Filters();
         this.eventAggregator    = json.eventAggregator;
         // Modals
         this.CKLayoutModal_view = new CKLayout.Views.Modal({
-            notifications : this.notifications,
+            notifications : this.all_notifications,
             type : "knowledge",
             user : this.user,
             knowledges : this.knowledges,
@@ -495,6 +496,7 @@ explorer.Views.Main = Backbone.View.extend({
         }).render().el);
         
         $(document).foundation();
+
         return this;
     }
 });

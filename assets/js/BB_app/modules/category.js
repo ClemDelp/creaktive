@@ -46,7 +46,8 @@ category.Views.Category = Backbone.View.extend({
         // Notifications
         _notifNbr = 0;
         this.notifications.each(function(notification){
-            if((notification.get('to') == _this.poche.get('id'))&&( _.indexOf(notification.get('read'),_this.user.get('id')) == -1 )){_notifNbr = _notifNbr+1;}
+            //console.log(notification.get('to').id," ",_this.poche.get('id'))
+            if(notification.get('to').id == _this.poche.get('id')){_notifNbr = _notifNbr+1;}
         });
         // Category template
         $(this.el).html(this.template_list({
@@ -267,8 +268,8 @@ category.Views.RightPart = Backbone.View.extend({
         return this;
     }
 });
-// Modal
 /////////////////////////////////////////
+// Modal
 category.Views.Modal = Backbone.View.extend({
     el:"#category_modal_container",
     initialize:function(json){
@@ -329,11 +330,8 @@ category.Views.Modal = Backbone.View.extend({
             category_origin : this.category_origin,
             poches : this.poches.toJSON()
         }));
-
-       
         // Render it in our div
         if(callback) callback();
-
     }
 });
 /////////////////////////////////////////
@@ -344,7 +342,8 @@ category.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
-        this.notifications      = json.notifications;
+        this.all_notifications  = json.a_notifications;
+        this.cat_notifications  = json.c_notifications;
         this.knowledges         = json.knowledges;
         this.poches             = json.poches;
         this.user               = json.user;
@@ -357,13 +356,13 @@ category.Views.Main = Backbone.View.extend({
             eventAggregator : this.eventAggregator
         });
         this.categoryEditorModal_view = new categoryEditor.Views.Modal({
-            notifications : this.notifications,
+            notifications : this.all_notifications,
             user : this.user,
             categories : this.poches,
             eventAggregator : this.eventAggregator
         });
         // Events                 
-        this.notifications.bind("reset", this.render);
+        this.cat_notifications.bind("reset", this.render);
         this.filters.bind('add', this.render);
         this.filters.bind('remove', this.render);
         this.knowledges.bind("add", this.render);
@@ -428,11 +427,6 @@ category.Views.Main = Backbone.View.extend({
         }
     },
     render : function(){
-        // alert(this.knowledges.filter(function(knowledge){return knowledge.get('tags').length == 0;}).length)
-        // this.knowledges.each(function(k){
-        //     console.log(k.get('title'));
-        //     console.log(k.get('tags'))
-        // })
         $(this.el).html("");
         // init
         poches_to_render = new Backbone.Collection(); 
@@ -455,7 +449,7 @@ category.Views.Main = Backbone.View.extend({
         $(this.el).append(leftPart_view.render().el);
         // Middle part
         middlePart_view = new category.Views.MiddlePart({
-            notifications:this.notifications,
+            notifications:this.cat_notifications,
             knowledges:this.knowledges,
             poches : poches_to_render,
             filters : this.filters,

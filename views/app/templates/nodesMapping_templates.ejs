@@ -1,0 +1,14 @@
+<script type="text/template" id="nodesMapping-search-template">
+	<center>
+	    <h3>{{-from.title}}</h3>
+	    <p>Select a concept father</p>
+	    <hr>
+    </center>
+    <input type="text" class="search" placeholder="search...">
+</script>
+
+<script type="text/template" id="nodesMapping-tag-template">
+    {{ _.each(collection,function(to){ }}
+        <a href="#" data-id-from="{{-from.id}}" data-id-to="{{-to.id}}" class="tiny button round action">{{-to.title}}</a>
+    {{ }); }} 
+</script>

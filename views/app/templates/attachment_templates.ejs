@@ -1,13 +1,12 @@
 <script type="text/template" id="attachment-list-template">
-	<fieldset>
- 		<legend>Attachments ({{- model.attachment.length }})</legend>
-		<ul>
-		{{ _.each(model.attachment, function(file) { }}
-		      <li><a href="{{- file.url}}"  target="_blank" class="" data-file-path="{{- file.path}}" title="open">{{- file.name.substring(0,20) }}...</a>
-		      <a href="#" style="color:red" class="removeFile" data-file-id="{{- file.id}}" title="remove">x</a></li>
-		{{ }); }}
-		</ul>
-		<input id="uploadFile" type="file" />
-		<p id="status">Please select a file</p>
-	</fieldset>
+	<hr>
+	<p><strong>Attachments ({{- model.attachment.length }}) :</strong></p>
+	<ul>
+	{{ _.each(model.attachment, function(file) { }}
+	      <li><a href="{{- file.url}}"  target="_blank" class="" data-file-path="{{- file.path}}" title="open">{{- file.name.substring(0,20) }}...</a>
+	      <a href="#" style="color:red" class="removeFile" data-file-id="{{- file.id}}" title="remove">x</a></li>
+	{{ }); }}
+	</ul>
+	<input id="uploadFile" type="file" />
+	<span id="status" class="label round">Please select a file</span>
 </script>

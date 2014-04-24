@@ -72,14 +72,11 @@ categoriesList.Views.Main = Backbone.View.extend({
         this.knowledges = json.knowledges;
         this.eventAggregator = json.eventAggregator;
         // Events
-        this.poches.bind("add",this.render);
-        this.poches.bind("remove",this.render);
-        this.poches.bind("change",this.render);
+        this.poches.bind("add",this.render,this);
+        this.poches.bind("remove",this.render,this);
+        this.poches.bind("change",this.render,this);
         // Templates
         this.template_search = _.template($('#categoriesList-search-template').html());
-        // Event
-        this.poches.on('change',this.render,this)
-        this.poches.on('remove',this.render,this)
         
     },
     events : {

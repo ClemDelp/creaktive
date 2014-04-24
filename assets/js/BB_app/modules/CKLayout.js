@@ -76,6 +76,7 @@ CKLayout.Views.Modal = Backbone.View.extend({
             $('#CKLayoutModal').foundation('reveal', 'open'); 
             $(document).foundation();
         }); 
+        
     },
     render:function(callback){
         $(this.el).html('');
@@ -125,10 +126,11 @@ CKLayout.Views.Main = Backbone.View.extend({
     },
     updateLabel : function(e){
         e.preventDefault();
-        this.model.set({
+        this.model.save({
             color:e.target.getAttribute("data-label-color"),
             label:e.target.getAttribute("data-label-title")
-        }).save();
+        });
+        if(this.type === "concept") this.eventAggregator.trigger("updateMap")
         this.render();
     },
     render:function(){
@@ -157,6 +159,12 @@ CKLayout.Views.Main = Backbone.View.extend({
             className       : "large-4 medium-4 small-4 columns floatRight",
             model           : this.model,
             user            : this.user,
+            eventAggregator : this.eventAggregator
+        }).render().el);
+        // IMG List module
+        $(this.el).append(new imagesList.Views.Main({
+            className       : "large-8 medium-8 small-8 columns",
+            model           : this.model,
             eventAggregator : this.eventAggregator
         }).render().el);
         // notification module

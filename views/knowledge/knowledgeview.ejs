@@ -20,6 +20,7 @@
 <%- partial('../app/templates/categoriesList_templates') %>
 <%- partial('../app/templates/projectsList_templates') %>
 <%- partial('../app/templates/activitiesList_templates') %>
+<%- partial('../app/templates/imagesList_templates') %>
 <!-- Modules situés dans assets/js/BB_app -->
 <script type="text/javascript" src="js/BB_app/modules/modelEditor.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/comments.js"></script>
@@ -33,7 +34,7 @@
 <script type="text/javascript" src="js/BB_app/modules/categoriesList.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/projectsList.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/activitiesList.js"></script>
-
+<script type="text/javascript" src="js/BB_app/modules/imagesList.js"></script>
 <script>
   ///////////////////////////////////////////////////
   $(document).ready(function () {
@@ -72,6 +73,7 @@
         explorer.init();
         /*activat of "hashchange events's monitoring"*/
         Backbone.history.start();  
+        
       });
     });
 

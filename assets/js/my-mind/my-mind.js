@@ -875,9 +875,8 @@ MM.Map.prototype.hide = function() {
 MM.Map.prototype.center = function() {
 	var node = this._root.getDOM().node;
 	var port = MM.App.portSize;
-	var left = (port[0] - node.offsetWidth)/2;
-	var top = (port[1] - node.offsetHeight)/2;
-	
+	var left = (port[0] - node.offsetWidth)/8;
+	var top = (port[1] - node.offsetHeight)/3;
 	this._moveTo(Math.round(left), Math.round(top));
 
 	return this;
@@ -1160,9 +1159,11 @@ MM.Action.AppendItem.prototype.undo = function() {
 }
 
 MM.Action.RemoveItem = function(item) {
-	this._item = item;
-	this._parent = item.getParent();
-	this._index = this._parent.getChildren().indexOf(this._item);
+	 if (confirm("The children concepts will also be removed, do you want to continue?")) {
+		this._item = item;
+		this._parent = item.getParent();
+		this._index = this._parent.getChildren().indexOf(this._item);
+	}
 }
 MM.Action.RemoveItem.prototype = Object.create(MM.Action.prototype);
 MM.Action.RemoveItem.prototype.perform = function() {
@@ -4640,10 +4641,12 @@ MM.Layout.getAll = function() {
 	_syncPort: function() {
 		//this.portSize = [window.innerWidth - this.ui.getWidth(), window.innerHeight];
 		this.portSize = [window.innerWidth, window.innerHeight];
-		this._port.style.width = this.portSize[0] + "px";
+		// this._port.style.width = this.portSize[0] + "px";
+		// this._port.style.height = this.portSize[1] + "px";
+		this._port.style.width = "100%";
 		this._port.style.height = this.portSize[1] + "px";
 		//this._throbber.style.right = (20 + this.ui.getWidth())+ "px";
-		this._throbber.style.right = (20 + "px");
+		//this._throbber.style.right = (20 + "px");
 		if (this.map) { this.map.ensureItemVisibility(this.current); }
 	}
 }

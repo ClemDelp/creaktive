@@ -35,7 +35,7 @@ activitiesList.Views.Main = Backbone.View.extend({
         this.notifications.each(function(notification){
             if(notification.get('to').id == _this.model.get('id')){notif_to_render.add(notification)}
         });
-        $(this.el).append(this.template({notifications : this.notifications.toJSON()}));
+        $(this.el).append(this.template({notifications : notif_to_render.toJSON()}));
         
         return this;
     }

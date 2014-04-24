@@ -50,8 +50,9 @@ removeFile : function(e){
     _.each(this.model.get('attachment'), function(f){
         if(f.id === e.target.getAttribute('data-file-id')) i = f
     })
-    this.model.get('attachment') =  _.without(this.model.get('attachment'), i);
-    this.model.set({attachment : this.model.get('attachment')})
+    console.log("eeeeeee",i)
+    console.log(_.without(this.model.get('attachment'), i))
+    this.model.set({attachment : _.without(this.model.get('attachment'), i)})
     this.model.save();
     //socket.post("/file/destroy", {file : i});
     this.render();
