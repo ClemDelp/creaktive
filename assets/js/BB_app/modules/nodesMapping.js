@@ -15,6 +15,7 @@ nodesMapping.Views.Mapping = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
+        this.model = json.model;
         this.collection = json.collection;
         this.collection_render = this.collection;
         this.eventAggregator = json.eventAggregator;
@@ -31,7 +32,10 @@ nodesMapping.Views.Mapping = Backbone.View.extend({
         // Init
         $(this.el).html('');
         // Concepts mapping template
-        $(this.el).append(this.template({collection : this.collection_render.toJSON()}));
+        $(this.el).append(this.template({
+            from : this.model.toJSON(),
+            collection : this.collection_render.toJSON()
+        }));
 
         return this;
     }
@@ -41,6 +45,7 @@ nodesMapping.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
+        this.model = json.model;
         this.collection = json.collection;
         this.eventAggregator = json.eventAggregator;
         // Events
@@ -69,12 +74,13 @@ nodesMapping.Views.Main = Backbone.View.extend({
         // Init
         $(this.el).html('');
         // Input search
-        $(this.el).append(this.template_search());
+        $(this.el).append(this.template_search({from : this.model.toJSON()}));
         // Node map
         if(nodesMapping.views.mapping){
             nodesMapping.views.mapping.remove();
         }
         nodesMapping.views.mapping = new nodesMapping.Views.Mapping({
+            model : this.model,
             collection:this.collection,
             eventAggregator:this.eventAggregator
         });

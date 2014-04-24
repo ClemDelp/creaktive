@@ -4,22 +4,28 @@
 conceptsmap.Views.ConceptsModal = Backbone.View.extend({
     el:"#conceptsmap_conceptsListModal_container",
     initialize:function(json){
-        _.bindAll(this, 'render', 'openModal');
+        _.bindAll(this, 'render', 'openConceptsMappingModal',"linkCtoC");
         // Variables
         this.concepts = json.concepts;
+        this.concept  = new Backbone.Model();
         this.eventAggregator = json.eventAggregator;
         // Events
-        this.listenTo(this.eventAggregator,"openConceptsMappingModal", this.openModal); 
+        this.listenTo(this.eventAggregator,"openConceptsMappingModal", this.openConceptsMappingModal); 
     },
     events: {
-        "click .action" : "action"
+        "click .action" : "linkCtoC"
     },
-    action : function(e){
+    linkCtoC : function(e){
         e.preventDefault();
-        alert('action!');
+        concept_child = this.concepts.get(e.target.getAttribute("data-id-from"));
+        console.log(this.concepts,"    ", concept_child,"   ",e.target.getAttribute("data-id-from"))
+        concept_child.set({id_father:e.target.getAttribute("data-id-to")});
+        concept_child.save();
+        this.eventAggregator.trigger('updateMap');
         $('#conceptsmap_conceptsListModal_container').foundation('reveal', 'close'); 
     },
-    openModal : function(){
+    openConceptsMappingModal : function(concept){
+        this.concept = concept;
         this.render(function(){
             $('#conceptsmap_conceptsListModal_container').foundation('reveal', 'open'); 
             $(document).foundation();
@@ -27,20 +33,27 @@ conceptsmap.Views.ConceptsModal = Backbone.View.extend({
     },
     render:function(callback){
         $(this.el).empty();
-        if(nodesMapping.views.nodesMapping){
-                nodesMapping.views.nodesMapping.remove();
-                nodesMapping.views.nodesMapping.undelegateEvents();
-                nodesMapping.views.nodesMapping.delegateEvents();
-                alert('nodesMapping removing');
+        /////
+        var c_categorized = new Backbone.Collection();
+        this.concepts.each(function(concept){
+            if(concept.get('id_father') != "none"){
+                c_categorized.add(concept);
             }
+        });
+        ///
+        if(nodesMapping.views.nodesMapping){
+            nodesMapping.views.nodesMapping.remove();
+        }
+        ////
         nodesMapping.views.nodesMapping = new nodesMapping.Views.Main({
-            collection : this.concepts,
+            model : this.concept,
+            collection : c_categorized,
             eventAggregator : this.eventAggregator
         });
         $(this.el).append(nodesMapping.views.nodesMapping.render().el);
+
         // Render it in our div
         if(callback) callback();
-
     }
 });
 /////////////////////////////////////////
@@ -77,7 +90,7 @@ conceptsmap.Views.NotCategorized = Backbone.View.extend({
         $(this.el).append(this.template({
             conceptsNotCategorized : c_not_categorized.toJSON()
         }));
-
+        //$(document).foundation();
         return this;
     }
 });
@@ -92,14 +105,19 @@ conceptsmap.Views.RightPart = Backbone.View.extend({
         this.eventAggregator = json.eventAggregator;
         // Templates
         this.template_search = _.template($('#conceptsmap-search-template').html());
-        //Styles
-        //$(this.el).attr( "style","position: fixed;");
+        // Events
+        this.listenTo(this.concepts,'change',this.render,this)
     },
     events : {
         "keyup .search" : "search",
         "click .add" : "addConceptNotCategorized",
         "click .remove" : "remove",
-        "click .openConceptsMappingModal" : "openConceptsMappingModal"
+        "click .openConceptsMappingModal" : "openConceptsMappingModal",
+        "click .edit" : "editConcept"
+    },
+    editConcept : function(e){
+        e.preventDefault();
+        this.eventAggregator.trigger('openModelEditorModal',e.target.getAttribute("data-concept-id"));
     },
     remove : function(e){
         e.preventDefault();
@@ -108,7 +126,8 @@ conceptsmap.Views.RightPart = Backbone.View.extend({
     },
     openConceptsMappingModal : function(e){
         e.preventDefault();
-        this.eventAggregator.trigger('openConceptsMappingModal');
+        concept = this.concepts.get(e.target.getAttribute("data-concept-id"))
+        this.eventAggregator.trigger('openConceptsMappingModal',concept);
     },
     addConceptNotCategorized : function(e){
         e.preventDefault();
@@ -172,6 +191,8 @@ conceptsmap.Views.MiddlePart = Backbone.View.extend({
         this.listenTo(this.eventAggregator,"undo", this.performUndo, this);
 
         this.template = _.template($("#conceptsmap_map_template").html());
+        // Style
+        $(this.el).attr( "style","overflow:hidden")
     },        
     render : function(){
         $(this.el).append(this.template());
@@ -184,7 +205,7 @@ conceptsmap.Views.MiddlePart = Backbone.View.extend({
 conceptsmap.Views.Main = Backbone.View.extend({
     el:"#conceptsmap_container",
     initialize : function(json) {
-        _.bindAll(this, 'render','actualizeNotification');
+        _.bindAll(this, 'render','actualizeNotification','recursiveUnlink');
         // Variables
         this.notifications      = json.notifications;
         this.knowledges         = json.knowledges;
@@ -197,18 +218,13 @@ conceptsmap.Views.Main = Backbone.View.extend({
         this.mode               = "normal";
         ////////////////////////////
         // Modals
-        var c_categorized = new Backbone.Collection();
-        this.concepts.each(function(concept){
-            if(concept.get('id_father') != "none"){
-                c_categorized.add(concept);
-            }
-        });
+
         // Concepts list modal
         if(conceptsmap.views.conceptsModal){
             conceptsmap.views.conceptsModal.remove();
         }
         conceptsmap.views.conceptsModal = new conceptsmap.Views.ConceptsModal({
-            concepts : c_categorized,
+            concepts : this.concepts,
             eventAggregator : this.eventAggregator
         });
         $("#"+conceptsmap.views.conceptsModal.el.id).on('close',this.againstFounderBug);
@@ -230,9 +246,9 @@ conceptsmap.Views.Main = Backbone.View.extend({
             eventAggregator : this.eventAggregator
         });
         $("#"+conceptsmap.views.cklink.el.id).on('close',this.againstFounderBug);
+        $("#helpModal").on('close',this.againstFounderBug);
         ////////////////////////////
         // Backbone events              
-        //this.listenTo(this.concepts,"change",this.resetMap);
         this.listenTo(this.concepts,"remove",this.resetMap);
         // Events
         this.listenTo(this.notifications,'change',this.actualizeNotification,this);
@@ -246,6 +262,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
         this.template_actionsMap = _.template($("#conceptsmap_actionsMap_template").html());
     },
     events : {
+        "click .unlink" : "unlinkConcept",
         "click .fullScreen" : "fullScreen",
         "click .resetView" : "resetView",
         "click .scaleUp" : "scaleUp",
@@ -259,6 +276,26 @@ conceptsmap.Views.Main = Backbone.View.extend({
         "click .cut" : "cut",
         "click .paste" : "paste",
         "click .linkK" : "linkK"
+    },
+    unlinkConcept : function(e){
+        e.preventDefault();
+        if (confirm("The children concepts will also be unlinked, do you want to continue?")) {
+            conceptsToUnlink = [];
+            this.recursiveUnlink(conceptsToUnlink,MM.App.current._id);
+            conceptsToUnlink.forEach(function(concept){
+                concept.set({id_father : "none"});
+                concept.save();
+            });
+            this.eventAggregator.trigger('updateMap');
+        }
+    },
+    recursiveUnlink : function(conceptsToUnlink,currentConceptId){
+        conceptsToUnlink.unshift(this.concepts.get(currentConceptId));
+        _this = this;
+        this.concepts.where({id_father : currentConceptId}).forEach(function(concept){
+            console.log(concept.get('title'));
+            _this.recursiveUnlink(conceptsToUnlink,concept.get('id'));
+        });
     },
     againstFounderBug : function(){
         MM.App.current.startEditing();
@@ -362,7 +399,11 @@ conceptsmap.Views.Main = Backbone.View.extend({
     },
     removeSubIdea : function(e){
         e.preventDefault();
-        this.eventAggregator.trigger('add_button')
+        var item = MM.App.current;
+        var action = new MM.Action.RemoveItem(item, item.getChildren().length);
+        MM.App.action(action);  
+        MM.Command.Edit.execute();
+        MM.publish("command-child");
     },
     undo : function(e){
         e.preventDefault();
@@ -486,10 +527,9 @@ conceptsmap.Views.Main = Backbone.View.extend({
                 conceptsmap.views.v.remove();
                 conceptsmap.views.v.undelegateEvents();
                 conceptsmap.views.v.delegateEvents();
-                alert('ddd');
             }
             conceptsmap.views.v = new conceptsmap.Views.MiddlePart({
-                className        : "panel large-9 medium-9 small-9 columns",
+                className        : "panel large-8 medium-8 small-8 columns",
                 notifications    : this.notifications,
                 concepts         : this.concepts,
                 user             : this.user,

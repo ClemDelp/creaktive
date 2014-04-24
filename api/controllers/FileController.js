@@ -63,7 +63,7 @@ module.exports = {
 
   sign_s3 : function(req,res){
 
-    var object_name = req.query.s3_object_name;
+    var object_name = safeFilename(req.query.s3_object_name);
     var mime_type = req.query.s3_object_type;
 
     var now = new Date();

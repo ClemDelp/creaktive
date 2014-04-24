@@ -304,7 +304,7 @@ var MM = {
  	this._dom = {
  		node: document.createElement("li"),
  		content: document.createElement("div"),
- 		//notif: document.createElement("span"),
+ 		notif: document.createElement("span"),
  		status: document.createElement("span"),
  		value: document.createElement("span"),
  		text: document.createElement("div"),
@@ -315,7 +315,7 @@ var MM = {
  	}
  	this._dom.node.id = "map";
  	this._dom.content.id = "map";
- 	//this._dom.notif.id = "";
+ 	this._dom.notif.id = "";
  	this._dom.status.id = "map"
  	this._dom.value.id = "map";
  	this._dom.text.id = "map";
@@ -325,7 +325,7 @@ var MM = {
 
  	this._dom.node.classList.add("item");
  	this._dom.content.classList.add("content");
- 	//this._dom.notif.classList.add("notif");
+ 	this._dom.notif.classList.add("notif");
  	this._dom.status.classList.add("status");
  	this._dom.value.classList.add("value");
  	this._dom.text.classList.add("text");
@@ -334,7 +334,7 @@ var MM = {
  	this._dom.unlinked.classList.add("unlinked");
 
  	this._dom.content.appendChild(this._dom.text); /* status+value are appended in layout */
- 	//this._dom.content.appendChild(this._dom.notif); /* status+value are appended in layout */
+ 	this._dom.content.appendChild(this._dom.notif); /* status+value are appended in layout */
  	this._dom.node.appendChild(this._dom.canvas);
  	this._dom.node.appendChild(this._dom.content);
  	/* toggle+children are appended when children exist */
@@ -376,7 +376,7 @@ var MM = {
  	(data.children || []).forEach(function(child) {
  		this.insertChild(MM.Item.fromJSON(child));
  	}, this);
- 	//this._dom.notif.id = "concept_notif_"+this._id;
+ 	this._dom.notif.id = "concept_notif_"+this._id;
  	return this;
  }
 
@@ -875,9 +875,8 @@ MM.Map.prototype.hide = function() {
 MM.Map.prototype.center = function() {
 	var node = this._root.getDOM().node;
 	var port = MM.App.portSize;
-	var left = (port[0] - node.offsetWidth)/2;
-	var top = (port[1] - node.offsetHeight)/2;
-	
+	var left = (port[0] - node.offsetWidth)/8;
+	var top = (port[1] - node.offsetHeight)/3;
 	this._moveTo(Math.round(left), Math.round(top));
 
 	return this;
@@ -1160,9 +1159,11 @@ MM.Action.AppendItem.prototype.undo = function() {
 }
 
 MM.Action.RemoveItem = function(item) {
-	this._item = item;
-	this._parent = item.getParent();
-	this._index = this._parent.getChildren().indexOf(this._item);
+	 if (confirm("The children concepts will also be removed, do you want to continue?")) {
+		this._item = item;
+		this._parent = item.getParent();
+		this._index = this._parent.getChildren().indexOf(this._item);
+	}
 }
 MM.Action.RemoveItem.prototype = Object.create(MM.Action.prototype);
 MM.Action.RemoveItem.prototype.perform = function() {

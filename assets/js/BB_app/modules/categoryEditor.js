@@ -30,6 +30,9 @@ categoryEditor.Views.Modal = Backbone.View.extend({
         this.eventAggregator.on("openCategoryEditorModal", this.openCategoryEditorModal);
         this.eventAggregator.on("removeCategory", this.closeCategoryEditorModal);
     },
+    alert : function(){
+        alert("azazza")
+    },
     closeCategoryEditorModal : function(){
         $('#categoryEditorModal').foundation('reveal', 'close');
     },
@@ -149,13 +152,10 @@ categoryEditor.Views.Main = Backbone.View.extend({
             $(this.el).append(this.template_category_edition({category : this.category.toJSON()}));    
         }
         // notification module
-        notif_to_send = new Backbone.Collection();
-        this.notifications.each(function(notification){
-            if(notification.get('to') == _this.category.get('id')){notif_to_send.add(notification)}
-        });
         $(this.el).append(new activitiesList.Views.Main({
             className       : "expand",
-            notifications   : notif_to_send,
+            model           : this.category,
+            notifications   : this.notifications,
             eventAggregator : this.eventAggregator
         }).render().el);
         
