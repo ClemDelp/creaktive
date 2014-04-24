@@ -495,6 +495,8 @@ explorer.Views.Main = Backbone.View.extend({
             eventAggregator : this.eventAggregator
         }).render().el);
         
+        $(document).foundation();
+
         return this;
     }
 });
