@@ -19,7 +19,6 @@
  var AWS_ACCESS_KEY = "AKIAJFDYWR6XAM4CBMCA";
  var AWS_SECRET_KEY = "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";
  var S3_BUCKET = "creaktiverenault"
-//var io = require('socket.io');
 
 var UPLOAD_PATH = 'upload';
 
@@ -63,8 +62,10 @@ module.exports = {
 
   sign_s3 : function(req,res){
 
-    var object_name = req.query.s3_object_name;
+    var object_name = req.query.s3_object_name.replace("-","");
     var mime_type = req.query.s3_object_type;
+
+    console.log(object_name)
 
     var now = new Date();
     var expires = Math.ceil((now.getTime() + 10000)/1000); // 10 seconds from now
@@ -82,6 +83,9 @@ module.exports = {
         signed_request: url+"?AWSAccessKeyId="+AWS_ACCESS_KEY+"&Expires="+expires+"&Signature="+signature,
         url: url
     };
+
+    console.log(credentials.signed_request);
+
     res.write(JSON.stringify(credentials));
     res.end();
   },
