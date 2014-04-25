@@ -233,7 +233,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
             notifications : this.notifications,
             type : "concept",
             user : this.user,
-            concepts : this.concepts,
+            collection : this.concepts,
             eventAggregator : this.eventAggregator
         });
         $("#"+conceptsmap.views.cklayout.el.id).on('close',this.againstFounderBug);

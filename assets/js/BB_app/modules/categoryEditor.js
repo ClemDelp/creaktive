@@ -131,6 +131,7 @@ categoryEditor.Views.Main = Backbone.View.extend({
         this.category.set({
             user : this.user,
             description:CKEDITOR.instances.editor.getData(),
+            content:CKEDITOR.instances.editor.getData(),
             date: getDate()
         }).save(); 
         this.mode = "normal";

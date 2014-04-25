@@ -1,24 +1,6 @@
 /////////////////////////////////////////////////////////////////////
 /*Explorer*/
 /////////////////////////////////////////////////////////////////////
-global.Models.Poche = Backbone.Model.extend({
-    defaults : {
-        id : "",
-        title : "",
-        user : "",
-        color : "",
-        description : "",
-        date : ""
-    },
-    initialize : function Poche() {
-        //console.log('Poche Constructor');
-        this.urlRoot = "poche";
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    }
-});
-
 global.Models.File = Backbone.Model.extend({
     defaults : {
         id : "",
@@ -63,6 +45,16 @@ global.Models.Knowledge = global.Models.CKObject.extend({
 global.Models.ConceptModel = global.Models.CKObject.extend({
     initialize : function Comment() {
         this.urlRoot = "concept";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+/***************************************/
+global.Models.Poche = global.Models.CKObject.extend({
+    initialize : function Poche() {
+        //console.log('Poche Constructor');
+        this.urlRoot = "poche";
         this.bind("error", function(model, error){
             console.log( error );
         });

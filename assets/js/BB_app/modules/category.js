@@ -355,10 +355,17 @@ category.Views.Main = Backbone.View.extend({
             knowledges : this.knowledges,
             eventAggregator : this.eventAggregator
         });
-        this.categoryEditorModal_view = new categoryEditor.Views.Modal({
+        // this.categoryEditorModal_view = new categoryEditor.Views.Modal({
+        //     notifications : this.all_notifications,
+        //     user : this.user,
+        //     categories : this.poches,
+        //     eventAggregator : this.eventAggregator
+        // });
+        this.CKLayoutModal_view = new CKLayout.Views.Modal({
             notifications : this.all_notifications,
+            type : "knowledge",
             user : this.user,
-            categories : this.poches,
+            collection : this.poches,
             eventAggregator : this.eventAggregator
         });
         // Events                 
@@ -379,10 +386,16 @@ category.Views.Main = Backbone.View.extend({
         e.preventDefault();
         global.models.newP = new global.Models.Poche({
             id: guid(),
+            project: this.project.get('id'),
+            tags: [],
             title: $(this.el).find(".category_title").val(),
-            user : "clem",
-            color : "#FF0000",
-            date : getDate()
+            user : this.user,
+            attachment: [],
+            comments: new Backbone.Collection(),
+            content: "",
+            date : getDate(),
+            date2:new Date().getTime()
+
         });
         global.models.newP.save();
         this.poches.add(global.models.newP);

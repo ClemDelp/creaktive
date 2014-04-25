@@ -39,6 +39,10 @@
     "*" : "authenticated"
   }, 
 
+  "CkviewerController" : {
+    "*" : "authenticated"
+  }, 
+
   "AnalyseController" : {
     "*" : "authenticated"
   }, 
