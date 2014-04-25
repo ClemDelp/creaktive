@@ -64,6 +64,7 @@ CKLayout.Views.Modal = Backbone.View.extend({
         this.collection = json.collection;
         this.eventAggregator = json.eventAggregator;
         // Events
+        this.eventAggregator.on("removeModel", this.closeModelEditorModal);
         this.eventAggregator.on("removeKnowledge", this.closeModelEditorModal);
         this.eventAggregator.on("openModelEditorModal", this.openModelEditorModal);
     },
@@ -118,11 +119,33 @@ CKLayout.Views.Main = Backbone.View.extend({
     },
     events : {
         "click .updateLabel" : "updateLabel",
-        "click .remove" : "removeKnowledge"
+        "click .remove" : "removeModel"
     },
-    removeKnowledge : function(e){
+    removeModel : function(e){
         e.preventDefault();
-        this.model.destroy(); 
+        _this = this;
+        ///////////////////////////////////////
+        // Si c'est une category on doit supprimer le tag qui référence cette category
+        if(this.type == "Category"){
+            if (confirm("If you delete this category, the system will delete the reference in each knowledge, would you continue?")) {
+                // change knowledge reference
+                global.collections.Knowledges.each(function(knowledge){
+                    knowledge.set({
+                        tags : _.without(knowledge.get('tags'),_this.model.get('title')),
+                        date : getDate(),
+                        user : _this.user
+                    }).save();
+                });
+                this.model.destroy();
+                this.eventAggregator.trigger('removeCategory',this.model.get('id'));
+            }
+        ///////////////////////////////////////    
+        }else{
+            if (confirm("All references attached to this item will also be removed, would you continue?")) {
+                this.model.destroy();
+            }
+        }
+        this.eventAggregator.trigger('removeModel');
     },
     updateLabel : function(e){
         e.preventDefault();
@@ -144,6 +167,7 @@ CKLayout.Views.Main = Backbone.View.extend({
         // Model editor module
         $(this.el).append(new modelEditor.Views.Main({
             className       : "large-8 medium-8 small-8 columns",
+            type            : this.type,
             user            : this.user,
             model           : this.model,
             eventAggregator : this.eventAggregator

@@ -177,10 +177,11 @@ var category = {
     this.views.Main = new this.Views.Main({
       a_notifications   : global.collections.all_notifs,
       c_notifications   : global.collections.category_notifs,
-      knowledges  : global.collections.Knowledges,
-      poches      : global.collections.Poches,
-      user        : global.models.current_user,
-      eventAggregator : global.eventAggregator,
+      project           : global.models.currentProject,
+      knowledges        : global.collections.Knowledges,
+      poches            : global.collections.Poches,
+      user              : global.models.current_user,
+      eventAggregator   : global.eventAggregator,
     });   
     this.views.Main.render()
   }

@@ -277,7 +277,7 @@ explorer.Views.Main = Backbone.View.extend({
             notifications : this.all_notifications,
             type : "knowledge",
             user : this.user,
-            knowledges : this.knowledges,
+            collection : this.knowledges,
             eventAggregator : this.eventAggregator
         });
         // Events
