@@ -100,9 +100,11 @@
 
   "FileController" : {
     "*" : "authenticated"
+  },
+
+  "S3Controller" : {
+    "*" : true
   }
-
-
   /*
   // Here's an example of adding some policies to a controller
   RabbitController: {

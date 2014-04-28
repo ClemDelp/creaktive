@@ -21,7 +21,7 @@ attachment.Views.Main = Backbone.View.extend({
         _this = this;
         var s3upload = new S3Upload({
             file_dom_selector: 'uploadFile',
-            s3_sign_put_url: '/file/sign_s3',
+            s3_sign_put_url: '/S3/sign_s3',
             onProgress: function(percent, message) {
                 $('#status').html('Upload progress: ' + percent + '% ' + message);
             },

@@ -28,9 +28,16 @@ module.exports = {
       defaultsTo : false
     },
 
+    super : {
+      type : 'boolean',
+      required : true,
+      defaultsTo : false
+    },
+
     toJSON: function() {
       var obj = this.toObject();
       delete obj.pw;
+      if(obj.super) delete obj.super;
       return obj;
     },
 
