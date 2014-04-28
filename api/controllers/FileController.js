@@ -15,10 +15,12 @@
  var rimraf = require('rimraf');
 
  // AMAZON S3
+
+ //Si erreur request has expired : changer l'heure de l'OS sur automatique
  var crypto = require('crypto');
- var AWS_ACCESS_KEY = "AKIAJFDYWR6XAM4CBMCA";
- var AWS_SECRET_KEY = "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";
- var S3_BUCKET = "creaktiverenault"
+ var AWS_ACCESS_KEY = process.env.AWSAccessKeyId || "AKIAJFDYWR6XAM4CBMCA";
+ var AWS_SECRET_KEY = process.env.AWSSecretKey || "UsDohYM/hLOKvuUaB5VSiW7BcJieYVdBn8XuixvA";
+ var S3_BUCKET = process.env.S3_BUCKET || "creaktivetest";
 //var io = require('socket.io');
 
 var UPLOAD_PATH = 'upload';
@@ -66,6 +68,8 @@ module.exports = {
   */
 
   sign_s3 : function(req,res){
+
+    console.log(AWS_SECRET_KEY, S3_BUCKET )
 
     var object_name = safeFilename(req.query.s3_object_name).replace(/-/g,"");;
     var mime_type = req.query.s3_object_type;
