@@ -275,7 +275,6 @@ explorer.Views.Main = Backbone.View.extend({
         // Modals
         this.CKLayoutModal_view = new CKLayout.Views.Modal({
             notifications : this.all_notifications,
-            type : "knowledge",
             user : this.user,
             collection : this.knowledges,
             eventAggregator : this.eventAggregator

@@ -18,7 +18,6 @@ modelEditor.Views.Main = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
         // Variables
-        this.type = json.type;
         this.user = json.user;
         this.model = json.model;
         this.eventAggregator = json.eventAggregator;
@@ -45,7 +44,7 @@ modelEditor.Views.Main = Backbone.View.extend({
         _this = this;
         //////////////////////////////////////
         // Si cest une category et que le titre change on doit updater tous tags qui référence les K
-        if(this.type == "Category"){
+        if(this.model.get('type') === "category"){
             if(this.model.get('title') != $(this.el).find(".title").val()){
                 if (confirm("The title of the category has changed, would you want to change all references in the relevant knowledge?")) {
                     // change knowledge reference
