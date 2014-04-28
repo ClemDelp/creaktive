@@ -60,7 +60,6 @@ CKLayout.Views.Modal = Backbone.View.extend({
         this.notifications = json.notifications;
         this.model = new Backbone.Model();
         this.user = json.user;
-        this.type = json.type;
         this.collection = json.collection;
         this.eventAggregator = json.eventAggregator;
         // Events
@@ -84,7 +83,6 @@ CKLayout.Views.Modal = Backbone.View.extend({
         $(this.el).append(new CKLayout.Views.Main({
             className : "panel row",
             notifications : this.notifications,
-            type : this.type,
             model : this.model,
             user : this.user,
             eventAggregator : this.eventAggregator
@@ -104,9 +102,8 @@ CKLayout.Views.Main = Backbone.View.extend({
         this.user               = json.user;
         this.eventAggregator    = json.eventAggregator;
         // Labels
-        this.type               = json.type;
         this.labels             = Backbone.Collection;
-        if(this.type === "concept"){
+        if(this.model.get('type') === "concept"){
             this.labels = CKLayout.collections.CLabels;
         }else{
             this.labels = CKLayout.collections.KLabels;
@@ -119,14 +116,41 @@ CKLayout.Views.Main = Backbone.View.extend({
     },
     events : {
         "click .updateLabel" : "updateLabel",
+        "click .toConcept" : "convertInConcept",
+        "click .toKnowledge" : "convertInKnowledge",
+        "click .toCategory" : "convertInCategory",
         "click .remove" : "removeModel"
+    },
+    convertInConcept : function(e){
+        e.preventDefault();
+        newModel = new global.Models.ConceptModel(this.model.toJSON());
+        console.log("newModel",newModel)
+        newModel.set({id_father : "none"});
+        console.log("newModel",newModel)
+        newModel.save();
+        this.model.destroy();
+        this.eventAggregator.trigger('removeModel');
+    },
+    convertInKnowledge : function(e){
+        e.preventDefault();
+        newModel = new global.Models.Knowledge(this.model.toJSON());
+        newModel.save();
+        this.model.destroy();
+        this.eventAggregator.trigger('removeModel');
+    },
+    convertInCategory : function(e){
+        e.preventDefault();
+        newModel = new global.Models.Poche(this.model.toJSON());
+        newModel.save();
+        this.model.destroy();
+        this.eventAggregator.trigger('removeModel');
     },
     removeModel : function(e){
         e.preventDefault();
         _this = this;
         ///////////////////////////////////////
         // Si c'est une category on doit supprimer le tag qui référence cette category
-        if(this.type == "Category"){
+        if(this.model.get('type') == "category"){
             if (confirm("If you delete this category, the system will delete the reference in each knowledge, would you continue?")) {
                 // change knowledge reference
                 global.collections.Knowledges.each(function(knowledge){
@@ -153,7 +177,7 @@ CKLayout.Views.Main = Backbone.View.extend({
             color:e.target.getAttribute("data-label-color"),
             label:e.target.getAttribute("data-label-title")
         });
-        if(this.type === "concept") this.eventAggregator.trigger("updateMap")
+        if(this.model.get('type') === "concept") this.eventAggregator.trigger("updateMap")
         this.render();
     },
     render:function(){
@@ -167,7 +191,6 @@ CKLayout.Views.Main = Backbone.View.extend({
         // Model editor module
         $(this.el).append(new modelEditor.Views.Main({
             className       : "large-8 medium-8 small-8 columns",
-            type            : this.type,
             user            : this.user,
             model           : this.model,
             eventAggregator : this.eventAggregator

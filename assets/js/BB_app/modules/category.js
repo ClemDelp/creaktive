@@ -365,7 +365,6 @@ category.Views.Main = Backbone.View.extend({
         // });
         this.CKLayoutModal_view = new CKLayout.Views.Modal({
             notifications : this.all_notifications,
-            type : "Category",
             user : this.user,
             collection : this.poches,
             eventAggregator : this.eventAggregator
