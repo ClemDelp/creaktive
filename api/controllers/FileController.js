@@ -16,9 +16,9 @@
 
  // AMAZON S3
  var crypto = require('crypto');
- var AWS_ACCESS_KEY = "AKIAJFDYWR6XAM4CBMCA";
- var AWS_SECRET_KEY = "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";
- var S3_BUCKET = "creaktiverenault"
+ var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY || "AKIAJFDYWR6XAM4CBMCA";
+ var AWS_SECRET_KEY = process.env.AWS_SECRET_KEY || "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";
+ var S3_BUCKET = process.env.S3_BUCKET || "creaktivemines"
 //var io = require('socket.io');
 
 var UPLOAD_PATH = 'upload';
