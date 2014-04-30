@@ -3,7 +3,7 @@
 	<p><strong>Attachments ({{- model.attachment.length }}) :</strong></p>
 	<ul>
 	{{ _.each(model.attachment, function(file) { }}
-	      <li><a href="{{- file.url}}"  target="_blank" class="" data-file-path="{{- file.path}}" title="open">{{- file.name.substring(0,20) }}...</a>
+	      <li><a href="/S3/getPrivateUrl?amz_id={{- file.url}}"  target="_blank" class="" data-file-path="{{- file.path}}" title="open">{{- file.name.substring(0,20) }}...</a>
 	      <a href="#" style="color:red" class="removeFile" data-file-id="{{- file.id}}" title="remove">x</a></li>
 	{{ }); }}
 	</ul>
