@@ -97,6 +97,7 @@
   "ConceptController" : {
     "conceptview" : ["authenticated", "allowedProjects","forceHTTPs"],
     "find" : ["authenticated", "canRead"],
+    "generateTree" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"] 
   },
   
