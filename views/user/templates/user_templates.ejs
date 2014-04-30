@@ -21,6 +21,7 @@
 					          		<option data-id-user="{{- permission.user.id }}" {{if((permission.right != "r")&&(permission.right != "rw")){ }}selected{{ } }} value="u">unlink</option>
 			          				<option data-id-user="{{- permission.user.id }}" {{if(permission.right == "r"){ }}selected{{ } }} value="r">Read only</option>
 			          				<option data-id-user="{{- permission.user.id }}" {{if(permission.right == "rw"){ }}selected{{ } }} value="rw">Read and write</option>
+			          				<option data-id-user="{{- permission.user.id }}" {{if(permission.right == "admin"){ }}selected{{ } }} value="admin">Project administrator</option>
 					        	</select>
 					        </div>
 					        <div class="small-2 columns">
@@ -51,6 +52,7 @@
 					          		<option value="u">none</option>
 					          		<option value="r">Read only</option>
 					          		<option value="rw">Read and write</option>
+					          		<option value="admin">Project administrator</option>
 					        	</select>
 					        </div>
 					        <div class="small-2 columns">

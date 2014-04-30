@@ -43,56 +43,6 @@
     "*" : "authenticated"
   }, 
 
-  "AnalyseController" : {
-    "*" : "authenticated"
-  }, 
-
-  "ProjectController" : {
-    "*" : "authenticated",
-    "destroy" : ["authenticated", "canManageProject" ],
-  
-  }, 
-  "ManagerController" : {
-    "managerview" : ["authenticated", "forceHTTPs"],
-    "editprofileview" : ["authenticated", "forceHTTPs"]
-  },
-  "UserController" : {
-    "inviteUser" : ["authenticated", "canWrite"],
-    "userview" : ["authenticated", "forceHTTPs"],
-    "editprofileview" : ["authenticated", "forceHTTPs"],
-    "editprofile" : "authenticated",
-    "changepassword" :"authenticated",
-    "find" : ["authenticated", "canRead"],
-  },
-  "PermissionController" : {
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"]
-  },
-
-  "NotificationController" : {
-    "*" : ["authenticated"],
-  },
-
-  "ConceptController" : {
-    "conceptview" : ["authenticated", "forceHTTPs"],
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"] 
-  },
-  
-  "KnowledgeController" : {
-    "knowledgeview" : ["authenticated", "forceHTTPs"],
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"]
-  },
-  "CategoryController" : {
-    "categoryview" : ["authenticated", "forceHTTPs"],
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"]
-  },
-  "LinkController" : {
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"]
-  },
   "PocheController" : {
     "find" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"]
@@ -103,8 +53,65 @@
   },
 
   "S3Controller" : {
-    "*" : true
-  }
+    "*" : "authenticated"
+  },
+
+
+  "LinkController" : {
+    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated", "canWrite"]
+  },
+
+  "ProjectController" : {
+    "*" : "authenticated",
+    "destroy" : ["authenticated", "canRemoveProject" ],
+
+  }, 
+
+  "NotificationController" : {
+    "*" : ["authenticated"],
+  },
+
+  "PermissionController" : {
+    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated", "canManageUsers"]
+  },
+
+  /*********** VIEWS ******************/
+  "ManagerController" : {
+    "managerview" : ["authenticated", "allowedProjects","forceHTTPs"],
+    "editprofileview" : ["authenticated", "forceHTTPs"]
+  },
+  "UserController" : {
+    "inviteUser" : ["authenticated",  "canWrite"],
+    "userview" : ["authenticated", "allowedProjects","forceHTTPs"],
+    "editprofileview" : ["authenticated", "forceHTTPs"],
+    "editprofile" : "authenticated",
+    "changepassword" :"authenticated",
+    "find" : ["authenticated", "canRead"],
+  },
+  "AnalyseController" : {
+    "analyseview" : ["authenticated", "allowedProjects","forceHTTPs"],
+  }, 
+
+  "ConceptController" : {
+    "conceptview" : ["authenticated", "allowedProjects","forceHTTPs"],
+    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated", "canWrite"] 
+  },
+  
+  "KnowledgeController" : {
+    "knowledgeview" : ["authenticated", "allowedProjects","forceHTTPs"],
+    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated", "canWrite"]
+  },
+  "CategoryController" : {
+    "categoryview" : ["authenticated", "allowedProjects","forceHTTPs"],
+    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated", "canWrite"]
+  },
+
+
   /*
   // Here's an example of adding some policies to a controller
   RabbitController: {
