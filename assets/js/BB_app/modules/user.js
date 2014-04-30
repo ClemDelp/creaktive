@@ -116,7 +116,7 @@ user.Views.Main = Backbone.View.extend({
                 permissions_to_remove.forEach(function(permission){
                     permission.destroy();
                 });    
-            }else if((right_ == "r")||(right_=="rw")){
+            }else if((right_ == "r")||(right_=="rw")||(right_=="admin")){
                 permissions_to_update = this.permissions.filter(function(permission){return ((permission.get('project_id') == project_id) && (permission.get('user_id') == user_id))});
                 permissions_to_update.forEach(function(permission){
                     permission.set({"right":right_});

@@ -40,7 +40,7 @@ module.exports = {
         id: guid(),
         user_id : req.session.user.id,
         project_id : project.id,
-        right : "rw"
+        right : "admin"
       }).done(function(err, perm){
         if(err) res.send(err)
         res.send(project)
@@ -65,7 +65,7 @@ module.exports = {
             id: guid(),
             user_id : req.session.user.id,
             project_id : project.id,
-            right : "rw"
+            right : "admin"
           }).done(function(err, perm){
             if(err) res.send(err)
               res.send(project)
