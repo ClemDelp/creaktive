@@ -14,7 +14,7 @@
 #map.content {
 	position: relative;
 	display: inline-block;
-	white-space: nowrap;
+	max-width: 220px;
 	cursor: pointer;
 	-webkit-border-radius: 1000px;
 	border-radius: 1000px;
