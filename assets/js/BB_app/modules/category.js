@@ -77,6 +77,7 @@ category.Views.Categories = Backbone.View.extend({
     },
     openCategoryEditorModal : function(e){
         e.preventDefault();
+
         // Get category knowledges
         category_model = this.poches.get(e.target.getAttribute("data-category-id"))
         list_of_knowledges = new Backbone.Collection();
@@ -85,7 +86,7 @@ category.Views.Categories = Backbone.View.extend({
                 if(category_model.get('title') == tag){list_of_knowledges.add(knowledge);}
             });
         });
-        this.eventAggregator.trigger('openCategoryEditorModal',e.target.getAttribute("data-category-id"),list_of_knowledges);
+        this.eventAggregator.trigger('openModelEditorModal',e.target.getAttribute("data-category-id"));
     },
     openModal: function(e){
         e.preventDefault();
@@ -340,12 +341,13 @@ category.Views.Modal = Backbone.View.extend({
 category.Views.Main = Backbone.View.extend({
     el:"#category_container",
     initialize : function(json) {
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render',"newCategory");
         // Variables
         this.all_notifications  = json.a_notifications;
         this.cat_notifications  = json.c_notifications;
         this.knowledges         = json.knowledges;
         this.poches             = json.poches;
+        this.project            = json.project;
         this.user               = json.user;
         this.filters            = new category.Collections.Filters();
         this.eventAggregator    = json.eventAggregator;
@@ -355,10 +357,16 @@ category.Views.Main = Backbone.View.extend({
             knowledges : this.knowledges,
             eventAggregator : this.eventAggregator
         });
-        this.categoryEditorModal_view = new categoryEditor.Views.Modal({
+        // this.categoryEditorModal_view = new categoryEditor.Views.Modal({
+        //     notifications : this.all_notifications,
+        //     user : this.user,
+        //     categories : this.poches,
+        //     eventAggregator : this.eventAggregator
+        // });
+        this.CKLayoutModal_view = new CKLayout.Views.Modal({
             notifications : this.all_notifications,
             user : this.user,
-            categories : this.poches,
+            collection : this.poches,
             eventAggregator : this.eventAggregator
         });
         // Events                 
@@ -379,10 +387,16 @@ category.Views.Main = Backbone.View.extend({
         e.preventDefault();
         global.models.newP = new global.Models.Poche({
             id: guid(),
+            project: this.project.get('id'),
+            tags: [],
             title: $(this.el).find(".category_title").val(),
-            user : "clem",
-            color : "#FF0000",
-            date : getDate()
+            user : this.user,
+            attachment: [],
+            comments: new Backbone.Collection(),
+            content: "",
+            date : getDate(),
+            date2:new Date().getTime()
+
         });
         global.models.newP.save();
         this.poches.add(global.models.newP);

@@ -8,8 +8,8 @@
 
     S3Upload.prototype.file_dom_selector = 'file_upload';
 
-    S3Upload.prototype.onFinishS3Put = function(public_url) {
-      return console.log('base.onFinishS3Put()', public_url);
+    S3Upload.prototype.onFinishS3Put = function(amz_id) {
+      return console.log('base.onFinishS3Put()', amz_id);
     };
 
     S3Upload.prototype.onProgress = function(percent, status) {
@@ -58,7 +58,7 @@
     S3Upload.prototype.executeOnSignedUrl = function(file, callback) {
       var this_s3upload, xhr;
       this_s3upload = this;
-      this.s3_object_name = guid();
+      this.s3_object_name = guid().replace(/-/g,"");
       xhr = new XMLHttpRequest();
       xhr.open('GET', this.s3_sign_put_url + '?s3_object_type=' + file.type + '&s3_object_name=' + this.s3_object_name, true);
       xhr.overrideMimeType('text/plain; charset=x-user-defined');
@@ -79,7 +79,7 @@
       return xhr.send();
     };
 
-    S3Upload.prototype.uploadToS3 = function(file, url, public_url) {
+    S3Upload.prototype.uploadToS3 = function(file, url, amz_id) {
       var this_s3upload, xhr;
       this_s3upload = this;
       xhr = this.createCORSRequest('PUT', url);
@@ -89,7 +89,7 @@
         xhr.onload = function() {
           if (xhr.status === 200) {
             this_s3upload.onProgress(100, 'Upload completed.');
-            return this_s3upload.onFinishS3Put(public_url,file);
+            return this_s3upload.onFinishS3Put(amz_id,file);
           } else {
             return this_s3upload.onError('Upload error: ' + xhr.status);
           }
@@ -106,15 +106,15 @@
         };
       }
       xhr.setRequestHeader('Content-Type', file.type);
-      xhr.setRequestHeader('x-amz-acl', 'public-read');
+      xhr.setRequestHeader('x-amz-acl', 'private');
       return xhr.send(file);
     };
 
     S3Upload.prototype.uploadFile = function(file) {
       var this_s3upload;
       this_s3upload = this;
-      return this.executeOnSignedUrl(file, function(signedURL, publicURL) {
-        return this_s3upload.uploadToS3(file, signedURL, publicURL);
+      return this.executeOnSignedUrl(file, function(signedURL, amz_id) {
+        return this_s3upload.uploadToS3(file, signedURL, amz_id);
       });
     };
 

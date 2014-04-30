@@ -21,19 +21,16 @@ attachment.Views.Main = Backbone.View.extend({
         _this = this;
         var s3upload = new S3Upload({
             file_dom_selector: 'uploadFile',
-            s3_sign_put_url: '/file/sign_s3',
+            s3_sign_put_url: '/S3/upload_sign',
             onProgress: function(percent, message) {
                 $('#status').html('Upload progress: ' + percent + '% ' + message);
             },
-            onFinishS3Put: function(public_url, file) {
-                console.log(file)
-                //$('#status').html('Upload completed. Uploaded to: '+ public_url);
-                console.log(public_url);
+            onFinishS3Put: function(amz_id, file) {
                 _this.model.get('attachment').unshift({
                     id : guid(),
                     name : file.name,
                     path : file.name,
-                    url : public_url
+                    url : amz_id
                 });
                 _this.model.save();
                 _this.render();
@@ -50,7 +47,6 @@ removeFile : function(e){
     _.each(this.model.get('attachment'), function(f){
         if(f.id === e.target.getAttribute('data-file-id')) i = f
     })
-    console.log("eeeeeee",i)
     console.log(_.without(this.model.get('attachment'), i))
     this.model.set({attachment : _.without(this.model.get('attachment'), i)})
     this.model.save();

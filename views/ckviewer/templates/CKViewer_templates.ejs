@@ -1,0 +1,33 @@
+<!-- //////////////////////////////////////////////////////// -->
+<div id="ckviewer_container" ></div>
+<div id="rect" style="position:absolute;filter:Alpha(Opacity=50);-moz-opacity:0.50; opacity:0.50;background-color: #00BFFF"></div> 
+<!-- //////////////////////////////////////////////////////// -->
+<!-- Modal -->
+<div id="ckviewerModal" class="reveal-modal" data-reveal></div>
+<script type='text/template' id='CKViewer_modalContent_templates'>
+    {{= knowledge.content }}
+</script>
+<!-- //////////////////////////////////////////////////////// -->
+<script type="text/template" id="CKViewer_action_template" >
+  <a href="#" id="select" class="button tiny expad round">Zoom</a>
+  <a href="#"  class="button tiny expand allKnowledges">KnowledgeMap</a>
+</script>
+
+<script type="text/template" id="CKViewer_conceptsmap_template" >
+  <center><h3>C</h3></center><hr>
+  <div id="main" >
+    <ul id="port" ></ul>
+    <div id="throbber"></div>
+  </div>
+</script>
+
+<script type="text/template" id="CKViewer_knowledgesmap_template" >
+  <center><h3>K</h3></center><hr>
+  {{ _.each(knowledges, function (model) { }}
+      <a href="#" id="title" class="button small round openModal" data-id-knowledge="{{- model.id }}" data-reveal>{{- model.title }}</a>
+  {{ }); }}
+</script>
+
+<script type="text/template" id="CKViewer_slide_template" >
+
+</script>

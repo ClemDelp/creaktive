@@ -192,7 +192,7 @@ conceptsmap.Views.MiddlePart = Backbone.View.extend({
 
         this.template = _.template($("#conceptsmap_map_template").html());
         // Style
-        $(this.el).attr( "style","overflow:hidden")
+        //$(this.el).attr( "style","overflow:hidden")
     },        
     render : function(){
         $(this.el).append(this.template());
@@ -231,9 +231,8 @@ conceptsmap.Views.Main = Backbone.View.extend({
         // CKLayout
         conceptsmap.views.cklayout = new CKLayout.Views.Modal({
             notifications : this.notifications,
-            type : "concept",
             user : this.user,
-            concepts : this.concepts,
+            collection : this.concepts,
             eventAggregator : this.eventAggregator
         });
         $("#"+conceptsmap.views.cklayout.el.id).on('close',this.againstFounderBug);
@@ -249,6 +248,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
         $("#helpModal").on('close',this.againstFounderBug);
         ////////////////////////////
         // Backbone events              
+        //this.listenTo(this.concepts,"change",this.render);
         this.listenTo(this.concepts,"remove",this.resetMap);
         // Events
         this.listenTo(this.notifications,'change',this.actualizeNotification,this);
@@ -529,7 +529,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
                 conceptsmap.views.v.delegateEvents();
             }
             conceptsmap.views.v = new conceptsmap.Views.MiddlePart({
-                className        : "panel large-8 medium-8 small-8 columns",
+                className        : "panel large-10 medium-10 small-10 columns",
                 notifications    : this.notifications,
                 concepts         : this.concepts,
                 user             : this.user,
@@ -538,7 +538,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
             $(this.el).append(conceptsmap.views.v.render().el);
             // Right part
             $(this.el).append(new conceptsmap.Views.RightPart({
-                className : "large-2 medium-2 small-2 columns",
+                className : "large-1 medium-1 small-1 columns",
                 project : this.project,
                 user : this.user,
                 concepts : this.concepts,

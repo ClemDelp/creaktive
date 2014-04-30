@@ -42,6 +42,7 @@ module.exports.routes = {
   '/elasticsearch/searchKnowledge': "ElasticsearchController.searchKnowledge",
   
   '/analyse': "AnalyseController.analyseview",
+  '/ckviewer': "CkviewerController.ckviewerview",
   '/categories': "CategoryController.categoryview",
   '/knowledges': "KnowledgeController.knowledgeview",
   '/conceptsMap': "ConceptController.conceptview",

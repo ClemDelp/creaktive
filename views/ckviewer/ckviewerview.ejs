@@ -2,46 +2,30 @@
 <script src="/js/vendor/backbone.iosync.js"></script>
 <script src="/js/vendor/backbone.iobind.js"></script>
 <!-- ******************************** -->
-<!-- Gridalicious -->
-<script src="/js/vendor/jquery.grid-a-licious.js"></script>
+<!-- my-mind -->
+<script src="/js/my-mind/mymind-ckviewer.js"></script>
+<link rel="stylesheet" href="styles/map/font.css" />
+<link rel="stylesheet" href="styles/map/style.css" />
+<link rel="stylesheet" href="styles/map/print.css" media="print" />
 <!-- ******************************** -->
-<script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
+<!-- Zoom js -->
+<script src="/js/vendor/zoom.js"></script> 
+<script src="/js/vendor/zoon.js"></script>
 <!-- ******************************** -->
-<!-- CKEditor -->
-<script src="/js/ckeditor/ckeditor.js"></script>
-
 <!-- Templates to load -->
 <%- partial('../app/templates/topbar_templates') %>
 <%- partial('../app/templates/title_templates') %>
-<%- partial('templates/category_template') %>
-<%- partial('../app/templates/categoriesList_templates') %>
-
-<%- partial('../app/templates/activitiesList_templates') %>
-<%- partial('../app/templates/imagesList_templates') %>
-<%- partial('../app/templates/modelEditor_templates') %>
-<%- partial('../app/templates/comments_templates') %>
-<%- partial('../app/templates/attachment_templates') %>
-<%- partial('../app/templates/CKLayout_templates') %>
-
+<%- partial('templates/CKViewer_templates') %>
 <!-- Modules situés dans assets/js/BB_app -->
-<script type="text/javascript" src="js/BB_app/modules/modelEditor.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/comments.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/attachment.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/CKLayout.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/activitiesList.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/imagesList.js"></script>
-
 <script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/title.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/category.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/categoriesList.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/categoryEditor.js"></script>
-
+<script type="text/javascript" src="js/BB_app/modules/CKViewer.js"></script>
 
 <script>
+  var zoomflag=false;
+
   ///////////////////////////////////////////////////
   $(document).ready(function () {
-    console.log( "CreaKtive DOM loaded!" );
     ////////////////////////////////////////
     Backbone.Model.prototype.toJSON = function() {
       return JSON.parse(JSON.stringify(this.attributes));
@@ -69,16 +53,11 @@
         c.members = new global.Collections.UsersCollection(c.members);
       })
 
-      _.each(json.poches, function(p){
-        p.comments = new global.Collections.Comments(p.comments);
-        p.members = new global.Collections.UsersCollection(p.members);
-      })
-
       global.init(json, function(){
         /*Modules*/
         topbar.init();
-        title.init(json.project,"category");
-        category.init();
+        title.init(json.project,"ckviewer");
+        CKViewer.init();
         ////////////////////////////////////////
         /*activat of "hashchange events's monitoring"*/
 

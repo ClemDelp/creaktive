@@ -9,18 +9,11 @@
  function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
  function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
 
+/********** FILE UPLOAD ********/
 
- var fs = require('fs');
- var mkdirp = require('mkdirp');
- var rimraf = require('rimraf');
-
- // AMAZON S3
- var crypto = require('crypto');
- var AWS_ACCESS_KEY = process.env.AWS_ACCESS_KEY || "AKIAJFDYWR6XAM4CBMCA";
- var AWS_SECRET_KEY = process.env.AWS_SECRET_KEY || "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";
- var S3_BUCKET = process.env.S3_BUCKET || "creaktivemines"
-//var io = require('socket.io');
-
+var fs = require('fs');
+var mkdirp = require('mkdirp');
+var rimraf = require('rimraf');
 var UPLOAD_PATH = 'upload';
 
 
@@ -59,39 +52,6 @@ function cleanName(name){
 
 module.exports = {
 
-  /* e.g.
-  sayHello: function (req, res) {
-    res.send('hello world!');
-  }
-  */
-
-  sign_s3 : function(req,res){
-
-    var object_name = safeFilename(req.query.s3_object_name).replace(/-/g,"");;
-    var mime_type = req.query.s3_object_type;
-
-    var now = new Date();
-    var expires = Math.ceil((now.getTime() + 10000)/1000); // 10 seconds from now
-    var amz_headers = "x-amz-acl:public-read";
-
-    var put_request = "PUT\n\n"+mime_type+"\n"+expires+"\n"+amz_headers+"\n/"+S3_BUCKET+"/"+object_name;
-
-    console.log(put_request)
-
-    var signature = crypto.createHmac('sha1', AWS_SECRET_KEY).update(put_request).digest('base64');
-    signature = encodeURIComponent(signature.trim());
-    signature = signature.replace('%2B','+');
-
-    var url = 'https://'+S3_BUCKET+'.s3.amazonaws.com/'+object_name;
-
-    var credentials = {
-        signed_request: url+"?AWSAccessKeyId="+AWS_ACCESS_KEY+"&Expires="+expires+"&Signature="+signature,
-        url: url
-    };
-    res.write(JSON.stringify(credentials));
-    res.end();
-  },
-
   get: function (req, res) {
   	res.download(req.query.path);
   },
@@ -104,7 +64,6 @@ module.exports = {
  },
 
  upload: function(req, res) {
-  console.log("tututututututututu",req.files)
   var file = req.files[0];
 
   async.auto({
