@@ -25,6 +25,8 @@ global.Models.CKObject = Backbone.Model.extend({
         color: "#C0392B",
         members:[],
         attachment:[],
+        top : "",
+        left:"",
         project:""
     },
     parse : function(serverObj){
@@ -47,7 +49,9 @@ global.Models.Knowledge = global.Models.CKObject.extend({
 global.Models.ConceptModel = global.Models.CKObject.extend({
     initialize : function Comment() {
         this.urlRoot = "concept";
-        this.set({type : "concept"});
+        this.set({
+            type : "concept"
+        });
         this.bind("error", function(model, error){
             console.log( error );
         });

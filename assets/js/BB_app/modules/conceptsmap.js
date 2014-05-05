@@ -554,6 +554,8 @@ conceptsmap.Views.Main = Backbone.View.extend({
             _this.actualizeNotification(); 
         });
         
+        
+        
         $(document).foundation();
     }
 });

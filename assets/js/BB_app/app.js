@@ -93,6 +93,26 @@ var analyse = {
   }
 };
 /////////////////////////////////////////////////
+var bbmap = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    this.views.main = new this.Views.Main({
+      el : "#bbmap_container",
+      concepts    : global.collections.Concepts,
+      user        : global.models.current_user,
+      eventAggregator : global.eventAggregator
+    });
+    this.views.main.render();
+  }
+};
+/////////////////////////////////////////////////
 var manager = {
   // Classes
   Collections: {},

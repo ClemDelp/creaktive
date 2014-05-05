@@ -41,6 +41,7 @@ module.exports.routes = {
   '/elasticsearch/ping': "ElasticsearchController.pingServer",
   '/elasticsearch/searchKnowledge': "ElasticsearchController.searchKnowledge",
   
+  '/bbmap': "BBmapController.bbmapview",
   '/analyse': "AnalyseController.analyseview",
   '/ckviewer': "CkviewerController.ckviewerview",
   '/categories': "CategoryController.categoryview",

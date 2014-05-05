@@ -56,6 +56,10 @@
     "*" : "authenticated"
   },
 
+  "bbmap" : {
+    "*" : "authenticated"
+  },
+
 
   "LinkController" : {
     "find" : ["authenticated", "canRead"],

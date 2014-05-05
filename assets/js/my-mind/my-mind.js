@@ -2037,6 +2037,7 @@ MM.Layout.getAll = function() {
  * Generic graph child layout routine. Updates item's orthogonal size according to the sum of its children.
  */
  MM.Layout.Graph._layoutItem = function(item, rankDirection) {
+
  	var sizeProps = ["width", "height"];
  	var posProps = ["left", "top"];
  	var rankIndex = (rankDirection == "left" || rankDirection == "right" ? 0 : 1);
@@ -2083,7 +2084,6 @@ MM.Layout.getAll = function() {
 
  MM.Layout.Graph._layoutChildren = function(children, rankDirection, offset, bbox) {
  	var posProps = ["left", "top"];
-
  	var rankIndex = (rankDirection == "left" || rankDirection == "right" ? 0 : 1);
  	var childIndex = (rankIndex+1) % 2;
  	var rankPosProp = posProps[rankIndex];
@@ -4352,6 +4352,8 @@ MM.Layout.getAll = function() {
 		this._cursor[0] = e.clientX;
 		this._cursor[1] = e.clientY;
 
+		//console.log(this._cursor[0],this._cursor[1])
+
 		if (item && !item.isRoot()) { 
 			this._mode = "drag";
 			this._item = item;
@@ -4366,6 +4368,8 @@ MM.Layout.getAll = function() {
 		var dy = e.clientY - this._cursor[1];
 		this._cursor[0] = e.clientX;
 		this._cursor[1] = e.clientY;
+
+		//console.log(this._cursor[0],this._cursor[1])
 
 		switch (this._mode) {
 			case "drag":
@@ -4416,6 +4420,8 @@ MM.Layout.getAll = function() {
 		this._pos[1] += dy;
 		this._ghost.style.left = this._pos[0] + "px";
 		this._ghost.style.top = this._pos[1] + "px";
+
+		console.log(this._pos[0],this._pos[1])
 
 		var state = this._computeDragState();
 	}
