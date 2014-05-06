@@ -417,6 +417,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
     },
     action:function(actions){
         console.log("actions: ",actions);
+        _this = this;
         if (actions instanceof MM.Action.InsertNewItem){
             this.concepts.create({
                 id:actions._item._id,
@@ -431,35 +432,47 @@ conceptsmap.Views.Main = Backbone.View.extend({
                 attachment: "",
                 color: actions._item._color,
                 members:[],
-                attachment:[]
+                attachment:[],
+                siblingNumber : _this.concepts.where({id_father:actions._parent._id}).length +1
             },{silent:true});
         }
         else if (actions instanceof MM.Action.AppendItem){
-            console.log(actions._parent,actions._item);
             var copy = this.concepts.findWhere({title : actions._item._dom.text.innerText})
             copy.set({
                 id : actions._item._id,
                 id_father : actions._parent._id,
                 user: this.user,
+                siblingNumber : _this.concepts.where({id_father:actions._parent._id}).length +1
             });
             copy.save({silent:true});
             this.concepts.add(copy)
         }
         else if (actions instanceof MM.Action.MoveItem){ 
-            console.log(actions._item, actions._newParent, actions._newIndex, actions._newSide);
-            this.concepts.get(actions._item._id).set({'id_father':actions._newParent._id}).save({silent:true});
+            this.concepts.get(actions._item._id).set({
+                id_father:actions._newParent._id, 
+                siblingNumber : _this.concepts.where({id_father:actions._newParent._id}).length +1
+            }).save({silent:true});
         }
         else if (actions instanceof MM.Action.RemoveItem){ 
             _this = this;
-            console.log(actions._item);
-            this.concepts.get(actions._item._id).destroy({silent:true}); 
+
+            var concept = this.concepts.get(actions._item._id);
+            var siblings = this.concepts.where({parent_id:concept.get("parent_id")})
+            _.each(siblings, function(sibling){
+                if(sibling.get("siblingNumber") > concept.get('siblingNumber')){
+                    sibling.save({siblingNumber:sibling.get('siblingNumber')-1})
+                }
+            })
+            
+
+            concept.destroy({silent:true}); 
             
             _.each(actions._item._children, function(child){
                 _this.concepts.get(child._id).destroy({silent:true}); 
             });
         }
         else if (actions instanceof MM.Action.SetColor){ 
-            console.log(actions._item, actions._color);
+
             this.concepts.get(actions._item._id).set({'color':actions._color}).save({silent:true});
         }
         //else if (actions instanceof MM.Action.SetLayout){console.log(actions._item, actions._layout);}
@@ -467,7 +480,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
         //else if (actions instanceof MM.Action.SetSide){ console.log(actions._item, actions._side);}
         //else if (actions instanceof MM.Action.SetStatus){console.log(actions._item, actions._status);}
         else if (actions instanceof MM.Action.SetText){ 
-            console.log(actions._item, actions._text);
+
             concept = this.concepts.get(actions._item._id).set({'title':actions._text}, {silent:true});
             concept.save({silent:true});
         }

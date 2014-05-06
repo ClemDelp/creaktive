@@ -128,12 +128,14 @@ generateTree : function(req,res){
     * @children : all children nodes
     */ 
     populate = function(father, children){
+      children = _.sortBy(children, "siblingNumber").reverse();
       for (var i = children.length - 1; i >= 0; i--) {
 
         createChildren(father, children[i])
         
         var c = _.where(this.concepts, {id_father : children[i].id})
         if(c.length > 0){
+          
           this.populate(children[i], c)
         }
       };
@@ -157,7 +159,7 @@ generateTree : function(req,res){
       c0.text = c0.title;
       c0.layout = "graph-bottom";
       children = _.where(concepts, {id_father : c0.id});
-      
+
       populate(c0, children)
       
       json.root = c0
