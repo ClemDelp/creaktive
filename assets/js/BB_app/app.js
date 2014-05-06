@@ -105,10 +105,15 @@ var bbmap = {
   init: function () {
     this.views.main = new this.Views.Main({
       el : "#bbmap_container",
-      project     : global.models.currentProject,
+      notifications : global.collections.concept_notifs,
       concepts    : global.collections.Concepts,
+      project     : global.models.currentProject,
       user        : global.models.current_user,
+      knowledges  : global.collections.Knowledges,
+      poches      : global.collections.Poches,
+      links       : global.collections.Links,
       eventAggregator : global.eventAggregator
+
     });
     this.views.main.render();
   }

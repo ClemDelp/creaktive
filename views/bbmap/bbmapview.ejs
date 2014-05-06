@@ -1,33 +1,61 @@
 <!-- Javascript libs -->
 <script src="/js/vendor/backbone.iosync.js"></script>
 <script src="/js/vendor/backbone.iobind.js"></script>
+<script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
+<script src="/js/ckeditor/ckeditor.js"></script>
 <!-- ******************************** -->
 <!-- Css to load -->
-<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.css" rel="stylesheet">        
 <link rel="stylesheet" href="styles/jsplumb/jsplumb.css">
 <link rel="stylesheet" href="styles/jsplumb/demo.css">
 <!-- ******************************** -->
-<!-- Templates to load -->
-<%- partial('../app/templates/topbar_templates') %>
-<%- partial('../app/templates/title_templates') %>
-<%- partial('templates/bbmap_templates') %>
 <!-- Modules to load -->
-<script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
+<%- partial('../app/templates/nodesMapping_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/nodesMapping.js"></script>
+
+<%- partial('../app/templates/topbar_templates') %>
+<script src="js/BB_app/modules/topbar.js"></script>
+
+<%- partial('../app/templates/title_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/title.js"></script>
+
+<%- partial('templates/bbmap_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/bbmap.js"></script>
 
-<!-- <div class="demo chart-demo" id="chart-demo">
-    <div class="window" id="chartWindow1">window one</div>
-    <div class="window" id="chartWindow2">window two</div>
-    <div class="window" id="chartWindow3">window three</div>
-    <div class="window" id="chartWindow4">window four</div>
-    <div class="window" id="chartWindow5">window five</div>
-    <div class="window" id="chartWindow6">window six</div>
-</div>            
- -->
+<%- partial('../app/templates/cklink_template') %>
+<script type="text/javascript" src="js/BB_app/modules/cklink.js"></script>
 
+<%- partial('../app/templates/categoriesList_templates') %>
+
+<%- partial('../app/templates/modelEditor_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/modelEditor.js"></script>
+
+<%- partial('../app/templates/comments_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/comments.js"></script>
+
+
+<%- partial('../app/templates/attachment_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/attachment.js"></script>
+
+<%- partial('../app/templates/CKLayout_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/CKLayout.js"></script>
+
+<%- partial('../app/templates/activitiesList_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/activitiesList.js"></script>
+
+<%- partial('../app/templates/imagesList_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/imagesList.js"></script>
+
+<%- partial('../app/templates/categoriesList_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/categoriesList.js"></script>
+
+<%- partial('../category/templates/category_template') %>
+<script type="text/javascript" src="js/BB_app/modules/category.js"></script>
+
+<!-- ******************************** -->
+<!-- Container -->
 <div id="bbmap_container" class="demo chart-demo"></div>
-
+<!-- ******************************** -->
+<!-- Script -->
 <script>
   ///////////////////////////////////////////////////
   $(document).ready(function () {
