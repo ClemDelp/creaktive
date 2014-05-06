@@ -508,7 +508,8 @@ conceptsmap.Views.Main = Backbone.View.extend({
             $("#concept_notif_"+key).html('<span class="top-bar-unread">'+concept_notifs[key]+'</span>')
         });
 
-        MM.App.adjustFontSize(1)
+        MM.App.adjustFontSize(1);
+
     },
     render : function(){
         $(this.el).empty()
