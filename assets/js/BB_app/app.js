@@ -105,6 +105,7 @@ var bbmap = {
   init: function () {
     this.views.main = new this.Views.Main({
       el : "#bbmap_container",
+      project     : global.models.currentProject,
       concepts    : global.collections.Concepts,
       user        : global.models.current_user,
       eventAggregator : global.eventAggregator

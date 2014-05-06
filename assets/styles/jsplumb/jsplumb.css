@@ -107,11 +107,11 @@ body {
 .demo {
   position: relative;
   width:100%;
-  background-color:white;    
+  /*background-color:white;    */
   overflow:auto;  
-  margin-top: 53px;
-  margin-bottom:25px;
-  height: 600px;
+  /*margin-top: 53px;*/
+  /*margin-bottom:25px;*/
+  height: 100%;
 }
 
 .explanation {

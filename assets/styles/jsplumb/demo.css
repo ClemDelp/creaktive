@@ -1,8 +1,10 @@
 /** ELEMENTS **/
 .chart-demo .window { 
 	border:0.1em dotted #d4e06b; 	
-	width:14em; height:4em; 	
-	line-height:4em;	
+	width:10em; 
+	height:auto; 	
+	line-height:1em;	
+	z-index:4;
 }
 
 /** HOVER EFFECTS **/
@@ -20,3 +22,21 @@
 #chartWindow6 { left:47em;top:30em;}
 #chartWindow7 { top:18em;left:46em;}
 #chartWindow8 { left:63em;top:38em;}
+
+.ep {
+	float:right;
+	width:1em;
+	height:1em;
+	background-color:orange;
+	cursor:pointer;
+	box-shadow: 0px 0px 2px black;
+	-webkit-transition:-webkit-box-shadow 0.25s ease-in;
+	-moz-transition:-moz-box-shadow 0.25s ease-in;
+	transition:box-shadow 0.25s ease-in;
+}
+
+.ep:hover {
+	box-shadow: 0px 0px 6px black;
+}
+
+.chart-demo .dragHover { border:2px solid orange; }
