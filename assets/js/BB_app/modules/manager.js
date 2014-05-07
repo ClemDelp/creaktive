@@ -112,6 +112,7 @@ manager.Views.Main = Backbone.View.extend({
     },
 
     removeProject : function (e){
+        e.preventDefault();
         _this = this;
         if(confirm("Will remove the project and all its data! Confirm?")){
             console.log("Remove project");

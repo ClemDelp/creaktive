@@ -34,7 +34,7 @@ imagesList.Views.Main = Backbone.View.extend({
         })
         // get the diapo
         $(this.el).append(this.template_diapo({images:images}));
-        
+        $(document).foundation();
         
         return this;
     }

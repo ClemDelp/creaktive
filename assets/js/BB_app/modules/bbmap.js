@@ -75,8 +75,8 @@ bbmap.Views.Child = Backbone.View.extend({
         $(this.el).empty();
         $(this.el).append(this.concept.get('title'))
         $(this.el).append('<div class="ep"></div>')
-        $(this.el).append('<div class="editContent">edit</div>')
-        $(this.el).append('<div class="linkCK">link</div>')
+        $(this.el).append('<div class="ed editContent">e</div>')
+        $(this.el).append('<div class="lk linkCK">l</div>')
 
         return this;
     }

@@ -15,8 +15,11 @@
                 <li><a href="#" class="updateLabel" data-model-id="{{-model.id}}" data-label-color="{{-label.color}}" data-label-title="{{-label.title}}">{{-label.title}}</a></li>
               {{ }); }}
               {{ if(model.type != "concept") }}<li><a href="#" class="toConcept">convert in concept</a></li>
-              {{ if((model.type != "concept") && (model.type != "knowledge")) }}<li><a href="#" class="toKnowledge">convert in knowledge</a></li>
-              {{ if((model.type != "concept") && (model.type != "category")) }}<li><a href="#" class="toCategory">convert in category</a></li>
+              {{ if((model.type != "concept") && (model.type != "knowledge")){ }}
+                <li><a href="#" class="toKnowledge">convert in knowledge</a></li>
+              {{ }else if((model.type != "concept") && (model.type != "category")){ }}
+                <li><a href="#" class="toCategory">convert in category</a></li>
+              {{ } }}
               <li><a href="#" class="remove">remove</a></li>
             </ul>
         </div>
