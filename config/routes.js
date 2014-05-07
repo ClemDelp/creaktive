@@ -47,6 +47,7 @@ module.exports.routes = {
   '/categories': "CategoryController.categoryview",
   '/knowledges': "KnowledgeController.knowledgeview",
   '/conceptsMap': "ConceptController.conceptview",
+  '/ckpreviewer': "CkpreviewerController.ckpreviewerview",
 
   'get /login' : 'AuthController.login',
   'post /login' : 'AuthController.process',

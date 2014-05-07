@@ -356,10 +356,36 @@ var CKViewer = {
   views: {},
   init: function () {
     this.views.Main = new this.Views.Main({
+        a_notifications   : global.collections.all_notifs,
         links : global.collections.Links,
         knowledges : global.collections.Knowledges,
-        Concepts : global.collections.Concepts,
-        eventAggregator : global.eventAggregator
+        concepts : global.collections.Concepts,
+        eventAggregator : global.eventAggregator,
+        poches : global.collections.Poches,
+        user : global.models.current_user,
+    });   
+    this.views.Main.render();
+  }
+};
+////////////////////////////////////////////////
+var CKPreviewer = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    this.views.Main = new this.Views.Main({
+        a_notifications   : global.collections.all_notifs,
+        links : global.collections.Links,
+        knowledges : global.collections.Knowledges,
+        concepts : global.collections.Concepts,
+        eventAggregator : global.eventAggregator,
+        poches : global.collections.Poches,
+        user : global.models.current_user,
     });   
     this.views.Main.render();
   }

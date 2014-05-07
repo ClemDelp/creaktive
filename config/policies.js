@@ -51,6 +51,15 @@
   "FileController" : {
     "*" : "authenticated"
   },
+  
+  "CkpreviewerController" : {
+    "*" : "authenticated"
+  }, 
+
+
+  "AnalyseController" : {
+    "*" : "authenticated"
+  },
 
   "S3Controller" : {
     "*" : "authenticated"

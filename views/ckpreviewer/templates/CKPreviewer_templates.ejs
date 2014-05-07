@@ -1,29 +1,20 @@
 <!-- //////////////////////////////////////////////////////// -->
-<div id="ckviewer_container" ></div>
+<div id="CKPreviewer_container" ></div>
 <div id="rect" style="position:absolute;filter:Alpha(Opacity=50);-moz-opacity:0.50; opacity:0.50;background-color: #00BFFF"></div> 
 <!-- //////////////////////////////////////////////////////// -->
 <!-- Modal -->
-<div id="ckviewerModal" class="reveal-modal" data-reveal></div>
-<script type='text/template' id='CKViewer_modalContent_templates'>
+<div id="CKPreviewerModal" class="reveal-modal" data-reveal></div>
+<script type='text/template' id='CKPreviewer_modalContent_templates'>
     <center><h3>{{- knowledge.title }}</h3></center><hr>
     {{= knowledge.content }}
 </script>
 <!-- //////////////////////////////////////////////////////// -->
-<script type='text/template' id='CKViewer_title_template'>
-    <a href="/ckpreviewer?projectId={{- project.id}}" class="button tiny secondary " style="float:right">
-      Edit
-    </a>
-    <div class="expand panel">
-      <center>
-        <h3>{{-project.title }}</h3>
-      </center>
-    </div>
+<script type="text/template" id="CKPreviewer_action_template" >
+  <a href="#" id="select" class="button tiny expad ">Zoom</a>
 </script>
 
-<script type="text/template" id="CKViewer_conceptsmap_template" >
-  <a href="/conceptsMap?projectId={{- project.id}}" class="button tiny secondary " style="float:left">
-    Edit
-  </a>
+<script type="text/template" id="CKPreviewer_conceptsmap_template" >
+
   <center><h3>C</h3></center><hr>
   <div id="main" >
     <ul id="port" ></ul>
@@ -31,18 +22,7 @@
   </div>
 </script>
 
-
-<script type="text/template" id="CKViewer-Khead-template">
-  <a href="#" id="allknowledges" class="button tiny secondary " style="float:left">
-    reset
-  </a>
-  <a href="/categories?projectId={{- project.id}}" class="button tiny secondary " style="float:right">
-    Edit
-  </a>
-  <center><h3>K</h3></center><hr>
-</script>
-
-<script type="text/template" id="CKViewer_knowledgesmap_template">
+<script type="text/template" id="CKPreviewer_knowledgesmap_template">
     <div class="item">    
         <ul class="pricing-table">
             <li class="price"class="title">
@@ -63,11 +43,23 @@
 </script>
 
 <!-- category-notcategorized -->
-<script type="text/template" id="CKViewer-notcategorized-template">
+<script type="text/template" id="CKPreviewer-notcategorized-template">
 <div class="item">
-    <a href="#"  class="tiny radius round openModal button secondary expand CKBulle" data-knowledge-id="{{-knowledge.id}}" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}"><strong data-knowledge-id="{{-knowledge.id}}">{{- knowledge.title }}</strong></a> 
+    <a href="#"  class="tiny radius round openModal button expand secondary CKBulle" data-knowledge-id="{{-knowledge.id}}" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}"><strong data-knowledge-id="{{-knowledge.id}}">{{- knowledge.title }}</strong></a> 
 </div>
 </script>
 
+<script type="text/template" id="CKPreviewer-Khead-template">
+  <a href="#" class="button tiny secondary fullScreen" style="float:right">
+    <img style="" class="large-6 medium-6 small-6" src="img/fullscreen.png" title="fullscreen/minimize">
+  </a>
+  <a href="#" id="allknowledges" class="button tiny secondary " style="float:left">
+    reset
+  </a>
+  <center><h3>K</h3></center><hr>
+</script>
 
 
+<script type="text/template" id="CKPreviewer_slide_template" >
+
+</script>
