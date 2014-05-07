@@ -14,20 +14,23 @@
 <!-- ******************************** -->
 <!-- Templates to load -->
 <%- partial('../app/templates/topbar_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
+
+<%- partial('../app/templates/title_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/title.js"></script>
 
 <%- partial('templates/CKViewer_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/CKViewer.js"></script>
+
 
 
 <!-- Modules situés dans assets/js/BB_app -->
 
 
 
-<script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
 
-<script type="text/javascript" src="js/BB_app/modules/CKViewer.js"></script>
 
 <script>
-  var project;
   ///////////////////////////////////////////////////
   $(document).ready(function () {
     ////////////////////////////////////////
@@ -62,9 +65,8 @@
       })
       global.init(json, function(){
         /*Modules*/
+        title.init(json.project,"ckviewer");
         topbar.init();
-        //title.init(json.project,"ckviewer");
-        project= json.project;
         CKViewer.init();
         ////////////////////////////////////////
         /*activat of "hashchange events's monitoring"*/

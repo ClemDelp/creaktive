@@ -3,27 +3,13 @@
 <div id="rect" style="position:absolute;filter:Alpha(Opacity=50);-moz-opacity:0.50; opacity:0.50;background-color: #00BFFF"></div> 
 <!-- //////////////////////////////////////////////////////// -->
 <!-- Modal -->
-<div id="ckviewerModal" class="reveal-modal" data-reveal></div>
+<div id="ckviewerModal" class="reveal-modal small" data-reveal></div>
 <script type='text/template' id='CKViewer_modalContent_templates'>
     <center><h3>{{- knowledge.title }}</h3></center><hr>
     {{= knowledge.content }}
 </script>
 <!-- //////////////////////////////////////////////////////// -->
-<script type='text/template' id='CKViewer_title_template'>
-    <a href="/ckpreviewer?projectId={{- project.id}}" class="button tiny secondary " style="float:right">
-      Edit
-    </a>
-    <div class="expand panel">
-      <center>
-        <h3>{{-project.title }}</h3>
-      </center>
-    </div>
-</script>
-
 <script type="text/template" id="CKViewer_conceptsmap_template" >
-  <a href="/conceptsMap?projectId={{- project.id}}" class="button tiny secondary " style="float:left">
-    Edit
-  </a>
   <center><h3>C</h3></center><hr>
   <div id="main" >
     <ul id="port" ></ul>
@@ -35,9 +21,6 @@
 <script type="text/template" id="CKViewer-Khead-template">
   <a href="#" id="allknowledges" class="button tiny secondary " style="float:left">
     reset
-  </a>
-  <a href="/categories?projectId={{- project.id}}" class="button tiny secondary " style="float:right">
-    Edit
   </a>
   <center><h3>K</h3></center><hr>
 </script>

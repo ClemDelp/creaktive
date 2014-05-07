@@ -356,6 +356,7 @@ var CKViewer = {
   views: {},
   init: function () {
     this.views.Main = new this.Views.Main({
+        project           : global.models.currentProject,
         a_notifications   : global.collections.all_notifs,
         links : global.collections.Links,
         knowledges : global.collections.Knowledges,

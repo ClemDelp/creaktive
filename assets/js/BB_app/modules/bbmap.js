@@ -1,6 +1,6 @@
 bbmap.Views.Child = Backbone.View.extend({
     initialize : function(json){
-        _.bindAll(this, 'render','savePosition');
+        _.bindAll(this, 'render','savePosition','editTitle','theHandler','editContent','linkCK','addEndpoint','addLink','makeSource');
         // Variables
         this.concept = json.concept;
         // Events
@@ -20,7 +20,27 @@ bbmap.Views.Child = Backbone.View.extend({
     },
     events : {
         "click .editContent" : "editContent",
-        "click .linkCK" : "linkCK"
+        "click .linkCK" : "linkCK",
+        "dblclick .editTitle" : "editTitle",
+        "keydown": "theHandler",
+        "focusout" : "focusout"
+    },
+    focusout : function(e){
+        bbmap.views.main.instance.toggleDraggable($(this.el));
+        $(this.el).find(".editTitle").attr('contenteditable','false');
+        this.concept.set({title:$(this.el).find(".editTitle").html()}).save();
+    },
+    theHandler : function(e){
+        if(e.keyCode == 13){
+            bbmap.views.main.instance.toggleDraggable($(this.el));
+            $(this.el).find(".editTitle").attr('contenteditable','false');
+            this.concept.set({title:$(this.el).find(".editTitle").html()}).save();
+        }
+    },
+    editTitle : function(e){
+        e.preventDefault();
+        bbmap.views.main.instance.toggleDraggable($(this.el));
+        $(this.el).find(".editTitle").attr('contenteditable','true');
     },
     editContent : function(e){
         e.preventDefault();
@@ -73,7 +93,7 @@ bbmap.Views.Child = Backbone.View.extend({
     },
     render : function(){
         $(this.el).empty();
-        $(this.el).append(this.concept.get('title'))
+        $(this.el).append('<span class="editTitle">'+this.concept.get('title')+'</span>');
         $(this.el).append('<div class="ep"></div>')
         $(this.el).append('<div class="ed editContent">e</div>')
         $(this.el).append('<div class="lk linkCK">l</div>')
@@ -84,7 +104,7 @@ bbmap.Views.Child = Backbone.View.extend({
 /***************************************/
 bbmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render','alert');
         ////////////////////////////
         // Variables
         this.notifications      = json.notifications;
@@ -96,6 +116,8 @@ bbmap.Views.Main = Backbone.View.extend({
         this.links              = json.links;
         this.eventAggregator    = json.eventAggregator;
         this.mode               = "normal";
+
+        $("#CKLayoutModal").on('close',this.alert);
         ////////////////////////////
         // CKLayout
         conceptsmap.views.cklayout = new CKLayout.Views.Modal({
@@ -134,11 +156,17 @@ bbmap.Views.Main = Backbone.View.extend({
             ],
             Container:"bbmap_container"
         });  
+
+        this.instance.setSuspendDrawing(false,true);
         ////////////////////////////
         // Events
         this.listenTo(this.notifications,'change',this.actualizeNotification,this);
         this.listenTo(this.notifications,'add',this.actualizeNotification,this);
         this.listenTo(this.notifications,'remove',this.actualizeNotification,this);     
+    },
+    alert : function(e){
+        //console.log(this.instance);
+        bbmap.views.main.jsPlumbEventsInit();
     },
     events : {
         "click .addUnlinked" : "addUnlinkedConcept",
@@ -148,6 +176,7 @@ bbmap.Views.Main = Backbone.View.extend({
 
         new_concept = new global.Models.ConceptModel({
             id : guid(),
+            type : "concept",
             id_father: "none",
             project: this.project.get('id'),
             title: "new concept",
@@ -162,6 +191,8 @@ bbmap.Views.Main = Backbone.View.extend({
             concept : new_concept
         });
 
+        console.log("new view ",new_view)
+
         $(_this.el).append(new_view.render().el);
         
         new_view.addEndpoint();
@@ -174,12 +205,14 @@ bbmap.Views.Main = Backbone.View.extend({
         // init
         _this = this;
         instance = _this.instance;
+        this.instance.unbind();
         var windows = jsPlumb.getSelector(".chart-demo .window");
         ///////////////////////
         // Add child
         this.instance.bind("endpointClick", function(endpoint, originalEvent){
             new_concept = new global.Models.ConceptModel({
                 id : guid(),
+                type : "concept",
                 id_father: endpoint.elementId,
                 top : $("#"+endpoint.elementId).position().top + 50,
                 left : $("#"+endpoint.elementId).position().left,
@@ -228,7 +261,7 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         ///////////////////////
         // Enable drag&drop
-        this.instance.draggable(windows);        
+        //this.instance.draggable(windows);        
     },
     render : function(){
         ///////////////////////

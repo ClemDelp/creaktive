@@ -73,6 +73,12 @@ CKViewer.Views.Categories = Backbone.View.extend({
         el = this.el;
         eventAggregator_ = this.eventAggregator;
         // For each poches
+        notcategorized_view = new CKViewer.Views.NotCategorized({
+            knowledges:this.knowledges,
+            eventAggregator:this.eventAggregator
+        });
+        $(this.el).append(notcategorized_view.render().el);
+        
         this.poches.each(function(poche){
             list_of_knowledges = new Backbone.Collection();
             this.knowledges.each(function(knowledge){
@@ -90,11 +96,8 @@ CKViewer.Views.Categories = Backbone.View.extend({
             });
             $(this.el).append(list_view.render().el);}
         });
-        notcategorized_view = new CKViewer.Views.NotCategorized({
-            knowledges:this.knowledges,
-            eventAggregator:this.eventAggregator
-        });
-        $(this.el).append(notcategorized_view.render().el);
+        
+        
 
         return this;
     }
@@ -182,7 +185,7 @@ CKViewer.Views.KnowledgesMap = Backbone.View.extend({
         $(this.el).append(lists_view.render().el);
         $("#categories_grid").gridalicious({
              gutter: 20,
-             width: 130
+             width: 200
            });
         return this;
     }
@@ -261,6 +264,7 @@ CKViewer.Views.Main = Backbone.View.extend({
     el:"#ckviewer_container",
     initialize : function(json) {
         _.bindAll(this, 'render');
+        this.project  = json.project;
         this.all_notifications  = json.a_notifications;
         this.links = json.links;
         this.concepts = json.concepts;
@@ -270,15 +274,13 @@ CKViewer.Views.Main = Backbone.View.extend({
         this.user = json.user;
         // Modals
         if(CKViewer.views.modal){CKViewer.views.modal.remove();}
-        CKViewer.views.modal = new CKViewer.Views.Modal({
+            CKViewer.views.modal = new CKViewer.Views.Modal({
             eventAggregator : this.eventAggregator
         });
-
     },
 
     render : function(){
         $(this.el).empty();
-
         // Middle part
         if(CKViewer.views.middle_part_view){CKViewer.views.middle_part_view.remove();}
         CKViewer.views.middle_part_view = new CKViewer.Views.MiddlePart({
@@ -290,7 +292,7 @@ CKViewer.Views.Main = Backbone.View.extend({
             poches : this.poches,
             user : this.user
         });
-        $(this.el).append(_.template($("#CKViewer_title_template").html()));
+        //$(this.el).append(_.template($("#CKViewer_title_template").html()));
         $(this.el).append(CKViewer.views.middle_part_view.render().el);
 
         // Get Map and generate it
@@ -301,7 +303,7 @@ CKViewer.Views.Main = Backbone.View.extend({
         
          $("#categories_grid").gridalicious({
              gutter: 20,
-             width: 130
+             width: 200
            });
 
         $(document).foundation();
