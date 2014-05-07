@@ -3,10 +3,7 @@ module.exports = function(req, res, next) {
  
 	'use strict';
 
-	var project_id = "";
-	if(req.session.currentProject) project_id = req.session.currentProject.id;
-	else if (req.query.projectId) project_id = req.query.projectId
-	else if(req.body.params.projectId) project_id = req.body.params.project;
+	var project_id = req.body.params.project;
 
 	Permission.find({
 		user_id : req.session.user.id,

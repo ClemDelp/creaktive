@@ -1,6 +1,6 @@
 module.exports = function(req, res, next) {
 
-	var project_id = req.session.currentProject.id;
+	var project_id = req.body.params.id;
 
 	Permission.find({
 		user_id : req.session.user.id,
