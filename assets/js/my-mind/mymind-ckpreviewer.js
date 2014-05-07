@@ -874,10 +874,8 @@ MM.Map.prototype.hide = function() {
 
 MM.Map.prototype.center = function() {
 	var node = this._root.getDOM().node;
-	var port = MM.App.portSize;
-	var left = (port[0] - node.offsetWidth)/8;
-	var top = (port[1] - node.offsetHeight)/3;
-	this._moveTo(Math.round(left), Math.round(top));
+	node.style.left = "30%";
+	node.style.top = "20%";
 
 	return this;
 }
@@ -4314,15 +4312,15 @@ MM.Layout.getAll = function() {
 			if (item == MM.App.current && MM.App.editing) { return; }
 
 			document.activeElement && document.activeElement.blur(); /* blur the panel FIXME only if activeElement is in the UI? */
-			this._startDrag(e, item);
+		//	this._startDrag(e, item);
 			break;
 
 			case "mousemove":
-			this._processDrag(e);
+		//	this._processDrag(e);
 			break;
 
 			case "mouseup":
-			this._endDrag(e);
+		//	this._endDrag(e);
 			break;
 
 			case "wheel":

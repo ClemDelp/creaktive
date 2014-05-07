@@ -6,28 +6,31 @@
 <script src="/js/vendor/jquery.grid-a-licious.js"></script>
 <!-- ******************************** -->
 <!-- my-mind -->
-<script src="/js/my-mind/mymind-ckviewer.js"></script>
+<script src="/js/my-mind/mymind-ckpreviewer.js"></script>
 <link rel="stylesheet" href="styles/map/font.css" />
 <link rel="stylesheet" href="styles/map/style.css" />
 <link rel="stylesheet" href="styles/map/print.css" media="print" />
 <!-- ******************************** -->
+<!-- Zoom js -->
+<script src="/js/vendor/zoom.js"></script> 
+<script src="/js/vendor/zoon.js"></script>
 <!-- ******************************** -->
 <!-- Templates to load -->
 <%- partial('../app/templates/topbar_templates') %>
-
-<%- partial('templates/CKViewer_templates') %>
+<%- partial('../app/templates/title_templates') %>
+<%- partial('templates/CKPreviewer_templates') %>
 
 
 <!-- Modules situés dans assets/js/BB_app -->
 
 
-
 <script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
-
-<script type="text/javascript" src="js/BB_app/modules/CKViewer.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/title.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/CKPreviewer.js"></script>
 
 <script>
-  var project;
+  var zoomflag=false;
+
   ///////////////////////////////////////////////////
   $(document).ready(function () {
     ////////////////////////////////////////
@@ -63,9 +66,8 @@
       global.init(json, function(){
         /*Modules*/
         topbar.init();
-        //title.init(json.project,"ckviewer");
-        project= json.project;
-        CKViewer.init();
+        title.init(json.project,"ckpreviewer");
+        CKPreviewer.init();
         ////////////////////////////////////////
         /*activat of "hashchange events's monitoring"*/
 

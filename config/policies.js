@@ -43,6 +43,11 @@
     "*" : "authenticated"
   }, 
 
+  "CkpreviewerController" : {
+    "*" : "authenticated"
+  }, 
+
+
   "AnalyseController" : {
     "*" : "authenticated"
   }, 
