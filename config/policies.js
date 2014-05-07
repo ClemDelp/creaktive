@@ -83,7 +83,7 @@
     "editprofileview" : ["authenticated", "forceHTTPs"]
   },
   "UserController" : {
-    "inviteUser" : ["authenticated",  "canWrite"],
+    "inviteUser" : ["authenticated"],
     "userview" : ["authenticated", "allowedProjects","forceHTTPs"],
     "editprofileview" : ["authenticated", "forceHTTPs"],
     "editprofile" : "authenticated",
