@@ -878,7 +878,7 @@ MM.Map.prototype.center = function() {
 	var left = (port[0] - node.offsetWidth)/8;
 	var top = (port[1] - node.offsetHeight)/3;
 	this._moveTo(Math.round(left), Math.round(top));
-
+	MM.App.width=node.offsetWidth;
 	return this;
 }
 
@@ -4530,6 +4530,7 @@ MM.Layout.getAll = function() {
  		ghost: null
  	},
  	_fontSize: 100,
+ 	width: 0,
 
  	action: function(action) {
  		this.eventAggregator.trigger("change",action);
@@ -4570,14 +4571,14 @@ MM.Layout.getAll = function() {
  	},
 
  	adjustFontSize1: function(diff) {
- 		this._fontSize = Math.max(0, 100 + 5*diff);
+ 		this._fontSize = Math.max(10, 100 + 10*diff);
  		this._port.style.fontSize = this._fontSize + "%";
  		this.map.update();
  		this.map.ensureItemVisibility(this.current);
  	},
 
  	adjustFontSize: function(diff) {
- 		this._fontSize = Math.max(30, this._fontSize + 10*diff);
+ 		this._fontSize = Math.max(10, this._fontSize + 10*diff);
  		this._port.style.fontSize = this._fontSize + "%";
  		this.map.update();
  		this.map.ensureItemVisibility(this.current);
@@ -4633,7 +4634,6 @@ MM.Layout.getAll = function() {
 		
 		this._syncPort();
 		this.setMap(new MM.Map());
-
 	},
 
 	_syncPort: function() {

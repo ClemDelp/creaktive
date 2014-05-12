@@ -208,6 +208,7 @@ CKViewer.Views.MiddlePart = Backbone.View.extend({
         if(CKViewer.views.conceptsmap){CKViewer.views.conceptsmap.remove();}
         CKViewer.views.conceptsmap = new CKViewer.Views.ConceptsMap({
             className        : "large-6 medium-6 small-6 columns",
+            id               : "conceptes",
             eventAggregator  : this.eventAggregator,
             concepts         : this.concepts
         });
@@ -272,6 +273,7 @@ CKViewer.Views.Main = Backbone.View.extend({
         this.eventAggregator = json.eventAggregator;
         this.poches = json.poches;
         this.user = json.user;
+        this.width = 0;
         // Modals
         if(CKViewer.views.modal){CKViewer.views.modal.remove();}
             CKViewer.views.modal = new CKViewer.Views.Modal({
@@ -298,15 +300,24 @@ CKViewer.Views.Main = Backbone.View.extend({
         // Get Map and generate it
         MM.App.init(this.eventAggregator);
         socket.get("/concept/generateTree", function(data) {
-            MM.App.setMap(MM.Map.fromJSON(data.tree));
+            MM.App.setMap(MM.Map.fromJSON(data.tree));            
+            this.width= MM.App.width;
+            var frame=document.getElementById("main").offsetWidth;
+            var s=Math.floor(10*(frame/this.width)*(frame/this.width))-10;
+            MM.App.adjustFontSize1(s);
         });
-        
+
+
+
          $("#categories_grid").gridalicious({
              gutter: 20,
              width: 200
            });
 
         $(document).foundation();
+        $(document).ready(function () {
+            document.getElementById("conceptes").style.overflow="hidden";
+        });
     }
 });
 /***************************************/
