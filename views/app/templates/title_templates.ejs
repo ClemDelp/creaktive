@@ -4,11 +4,12 @@
     <div class="expand panel">
         <center>
             <h3>{{-project.title }}</h3>
-            <a href="/bbmap?projectId={{- project.id}}" class="{{if(page == 'concept'){ }}success {{ } }}button secondary round tiny">concept</a>
-            <a href="/ckviewer?projectId={{- project.id}}" class="{{if(page == 'knowledge'){ }}success {{ } }}button secondary round tiny">CK</a>
+            <a href="/conceptsmap?projectId={{- project.id}}" class="{{if(page == 'concept'){ }}success {{ } }}button secondary round tiny">Map 1</a>
+            <a href="/bbmap?projectId={{- project.id}}" class="{{if(page == 'bbmap'){ }}success {{ } }}button secondary round tiny">Map 2</a>
+            <a href="/ckviewer?projectId={{- project.id}}" class="{{if(page == 'ckviewer'){ }}success {{ } }}button secondary round tiny">CK</a>
             <a href="/categories?projectId={{- project.id}}" class="{{if(page == 'category'){ }}success {{ } }}button secondary round tiny">Category</a>
-            <a href="/knowledges?projectId={{- project.id}}" class="{{if(page == 'category'){ }}success {{ } }}button secondary round tiny">Knowledge</a>
-            <a href="/userManager?projectId={{- project.id}}" class="{{if(page == 'members'){ }}success {{ } }}button secondary round tiny">users</a>
+            <a href="/knowledges?projectId={{- project.id}}" class="{{if(page == 'knowledge'){ }}success {{ } }}button secondary round tiny">Knowledge</a>
+            <a href="/userManager?projectId={{- project.id}}" class="{{if(page == 'members'){ }}success {{ } }}button secondary round tiny">Users</a>
         </center>
     </div>
 </script>
