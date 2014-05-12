@@ -4,9 +4,10 @@ module.exports = function(req, res, next) {
 	'use strict';
 
 		var project_id = "";
-	console.log(req.body)
-	
-	project_id = req.body.params.project;
+
+	if(req.session.currentProject) project_id = req.session.currentProject.id;
+	else if (req.query.projectId) project_id = req.query.projectId
+	else if(req.body.params.projectId) project_id = req.body.params.projectId;
 
 	Permission.find({
 		user_id : req.session.user.id,
@@ -14,7 +15,6 @@ module.exports = function(req, res, next) {
 	}).done( function (err, perm){
 		if(err) next(err);
 		if(perm.length !== 0){
-			console.log(perm)
 			if (perm[0].right == "rw" || perm[0].right == "admin") next();
 			else res.send({err : "You have read-only permission" });
 		} 

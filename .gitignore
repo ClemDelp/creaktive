@@ -27,6 +27,8 @@ node_modules
 
 upload
 
+.env
+
 # mongodb files on cloud 9
 data
 mongod

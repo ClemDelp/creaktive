@@ -73,8 +73,6 @@
       id : guid()
     }).done(function(err, user){
       if(err) res.send({err:err})
-
-
         var url = "";
       if(req.baseUrl == "http://localhost:1337"){
         url = req.baseUrl + "/register?id=" + user.id;
@@ -84,8 +82,7 @@
         u = u.slice(0, u.lastIndexOf(":"))
         url = u + "/register?id=" + user.id;
       }
-
-      
+     
       sails.config.email.sendRegistrationMail(user.email, url,function(err, msg){
         if(err) console.log(err)
           console.log(msg)

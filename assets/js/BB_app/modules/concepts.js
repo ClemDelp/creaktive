@@ -220,12 +220,14 @@ concepts.Views.MapView = Backbone.View.extend({
         console.log("******",command, args);
         _this = this;
         if (command === 'addSubIdea') {
+            
             new_concept = new global.Models.ConceptModel({
                 id : args[2],
                 title : args[1],
                 user : this.currentUser,
                 id_father : args[0],
                 position : _this.concepts.get(args[0]).get("position") + 1
+                siblingOrder : 
                 // date, content, color
             });
 

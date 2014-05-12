@@ -9,7 +9,6 @@ module.exports = function(req, res, next) {
 	}).done( function (err, perm){
 		if(err) next(err);
 		if(perm.length !== 0){
-			console.log(perm)
 			if (perm[0].right == "admin") next();
 			else res.send({err : "Only project administrators can manage users" });
 		} 

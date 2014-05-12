@@ -2,31 +2,41 @@
 var nodemailer = require("nodemailer");
 
 module.exports.email = {
-	
 
 	smtpGmail : nodemailer.createTransport("SMTP", {
         host: "smtp.gmail.com", // hostname
 	    secureConnection: true, // use SSL
 	    port: 465, // port for secure SMTP
 	    auth: {
-	        user: "creaktive.contact@gmail.com",
-	        pass: "creaktive30"
+	        user:  "creaktive.contact@gmail.com",
+	        pass:  "creaktive30"
+	    }
+	}),
+	
+
+	smtpTransport : nodemailer.createTransport("SMTP", {
+        service: "Mailgun",
+	    auth: {
+	        user: process.env.MAILGUN_SMTP_LOGIN ,
+	        pass: process.env.MAILGUN_SMTP_PASSWORD
 	    }
 	}),
 
 
 	sendRegistrationMail : function(to, url, cb){
 		var html = "<h1>Bonjour</h1></br>Vous avez reçu une invitation sur CreaKtive</br> " + url
-
 		mailOptions = {
 		    from: "CreaKtive ✔ contact@creaktive.fr", // sender address
 		    to: to, // list of receivers
 		    subject: "Invititation on CreaKtive", // Subject line
 		    generateTextFromHTML: true,
 		    html: html, // plaintext body
-		},
+		};
 
-		this.smtpGmail.sendMail(mailOptions, function(error, response){
+		var transport = this.smtpGmail;
+		if(process.env.MAILGUN_SMTP_SERVER) transport = this.smtpTransport
+
+		transport.sendMail(mailOptions, function(error, response){
 		    if(error){
 		        cb(error)
 		    }else{
@@ -47,9 +57,12 @@ module.exports.email = {
 		    subject: "New user on CreaKtive-minesparis", // Subject line
 		    generateTextFromHTML: true,
 		    html: html, // plaintext body
-		},
+		};
 
-		this.smtpGmail.sendMail(mailOptions, function(error, response){
+		var transport = this.smtpGmail;
+		if(process.env.MAILGUN_SMTP_SERVER) transport = this.smtpTransport
+
+		transport.sendMail(mailOptions, function(error, response){
 		    if(error){
 		        cb(error)
 		    }else{
