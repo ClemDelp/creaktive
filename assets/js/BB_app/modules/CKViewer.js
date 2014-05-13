@@ -294,17 +294,19 @@ CKViewer.Views.Main = Backbone.View.extend({
             poches : this.poches,
             user : this.user
         });
-        //$(this.el).append(_.template($("#CKViewer_title_template").html()));
         $(this.el).append(CKViewer.views.middle_part_view.render().el);
 
         // Get Map and generate it
         MM.App.init(this.eventAggregator);
         socket.get("/concept/generateTree", function(data) {
             MM.App.setMap(MM.Map.fromJSON(data.tree));            
-            this.width= MM.App.width;
-            var frame=document.getElementById("main").offsetWidth;
-            var s=Math.floor(10*(frame/this.width)*(frame/this.width))-10;
-            MM.App.adjustFontSize1(s);
+             this.width= MM.App.width;
+             var frame=document.getElementById("main").offsetWidth;
+             var s=Math.floor(10*(frame/this.width)*(frame/this.width))-10;
+             MM.App.adjustFontSize1(s);
+             if(parseInt($("#map.current")[0].style.left)<0){
+                $("#map.current")[0].style.left="5%";
+             };
         });
 
 
