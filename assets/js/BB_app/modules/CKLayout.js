@@ -70,8 +70,8 @@ CKLayout.Views.Modal = Backbone.View.extend({
     closeModelEditorModal : function(){
         $('#CKLayoutModal').foundation('reveal', 'close');
     },
-    openModelEditorModal : function(k_id){
-        this.model = this.collection.get(k_id);
+    openModelEditorModal : function(id){
+        this.model = this.collection.get(id);
         this.render(function(){
             $('#CKLayoutModal').foundation('reveal', 'open'); 
             try{

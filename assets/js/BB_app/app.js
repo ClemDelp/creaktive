@@ -200,7 +200,7 @@ var category = {
   views: {},
   init: function () {
     /*Init*/
-    this.views.Main = new this.Views.Main({
+    this.views.main = new this.Views.Main({
       a_notifications   : global.collections.all_notifs,
       c_notifications   : global.collections.category_notifs,
       project           : global.models.currentProject,
@@ -209,7 +209,7 @@ var category = {
       user              : global.models.current_user,
       eventAggregator   : global.eventAggregator,
     });   
-    this.views.Main.render()
+    this.views.main.render()
   }
 };
 /////////////////////////////////////////////////

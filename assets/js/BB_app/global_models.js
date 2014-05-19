@@ -36,6 +36,19 @@ global.Models.CKObject = Backbone.Model.extend({
     },
 });
 /***************************************/
+global.Models.Filter = Backbone.Model.extend({
+    defaults : {
+        id : "",
+        type : "",
+        model : ""
+    },
+    initialize : function Poche() {
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+/***************************************/
 global.Models.Knowledge = global.Models.CKObject.extend({
     initialize : function Post() {
         this.urlRoot = "knowledge";

@@ -22,7 +22,15 @@ global.Collections.Knowledges = Backbone.Collection.extend({
     },
     initialize : function() {
         this.url = "Knowledge";
-        //console.log('Post collection Constructor');
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+/***************************************/
+global.Collections.Filters = Backbone.Collection.extend({
+    model : global.Models.Filter,
+    initialize : function() {
         this.bind("error", function(model, error){
             console.log( error );
         });
