@@ -17,16 +17,26 @@
 	</div>
 </script>
 
-
 <script type="text/template" id="manager-project-template">
     <div class="item">
 	    <ul class="pricing-table">
-		  	<li class="price">{{-project.title }}</li>
-		  	<li class="description">{{-project.content }}</li>
-			<li class="cta-button"><a class="button" href="/ckviewer?projectId={{- project.id}}">Open</a></li>
+		  	<li class="price">
+		  		{{-project.title }}
+		  		<span style="width:8%;float:right;cursor:pointer">
+	                <img src="img/edit.png" class="openProjectModal" data-model-id="{{-project.id}}" title="edit">
+	            </span>
+		  	</li>
+		  	<li class="description">
+		  		{{ if(project.content == ""){ }}Add a description via the project editor{{ }else{project.content} }}<br>
+		  		Create by {{-project.author.name}} at {{-project.date}}
+		  	</li>
+			<li class="cta-button">
+				<a class="button success expand" href="/ckviewer?projectId={{- project.id}}">Open</a>
+			</li>
 		</ul>
     </div>
 </script>
+
 <!-- 
 <center>
 

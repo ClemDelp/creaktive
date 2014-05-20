@@ -103,15 +103,25 @@ CKLayout.Views.Main = Backbone.View.extend({
         CKLayout.init(); // Pour instancier les labels
         // Variables
         this.notifications      = json.notifications;
+        this.notif_to_render    = new Backbone.Collection();
         this.model              = json.model;
         this.user               = json.user;
         this.eventAggregator    = json.eventAggregator;
-        // Labels
-        this.labels             = Backbone.Collection;
+        // Init
+        _this = this;
+        this.labels             = new Backbone.Collection();
         if(this.model.get('type') === "concept"){
             this.labels = CKLayout.collections.CLabels;
-        }else{
+            this.notifications.each(function(notification){
+                if(notification.get('to').id == _this.model.get('id')){_this.notif_to_render.add(notification)}
+            });
+        }else if((this.model.get('type') === "category")||(this.model.get('type') === "knowledge")){
             this.labels = CKLayout.collections.KLabels;
+            this.notifications.each(function(notification){
+                if(notification.get('to').id == _this.model.get('id')){_this.notif_to_render.add(notification)}
+            });
+        }else if(this.model.get('type') === "project"){
+            this.notif_to_render.add(this.notifications.where({project_id : this.model.get('id')}))
         }
         // Events
         this.model.on('change',this.render)
@@ -222,8 +232,8 @@ CKLayout.Views.Main = Backbone.View.extend({
         // notification module
         $(this.el).append(new activitiesList.Views.Main({
             className       : "large-8 medium-8 small-8 columns floatLeft",
-            model           : this.model,
-            notifications   : this.notifications,
+            //model           : this.model,
+            notifications   : this.notif_to_render,
             eventAggregator : this.eventAggregator
         }).render().el);
         // Footer

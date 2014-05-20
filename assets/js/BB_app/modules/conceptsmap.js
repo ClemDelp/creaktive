@@ -57,119 +57,6 @@ conceptsmap.Views.ConceptsModal = Backbone.View.extend({
     }
 });
 /////////////////////////////////////////
-// Right Part
-/////////////////////////////////////////
-// conceptsmap.Views.NotCategorized = Backbone.View.extend({
-//     initialize : function(json) {
-//         _.bindAll(this, 'render');
-//         // Variables
-//         this.concepts = json.concepts;
-//         this.concepts_render = this.concepts;
-//         this.eventAggregator = json.eventAggregator;
-//         // Events
-//         this.listenTo(this.eventAggregator,'concept_search', this.search, this);
-//         // Templates
-//         this.template = _.template($('#conceptsmap-notcategorized-template').html());
-//     },
-//     search: function(matched){
-//         this.concepts_render = matched;
-//         this.render();
-//     },
-//     render : function(){
-//         // Init
-//         $(this.el).html('');
-//         _this = this;
-//         // Get concepts not categorized
-//         var c_not_categorized = new Backbone.Collection();
-//         this.concepts_render.each(function(concept){
-//             if(concept.get('id_father') == "none"){
-//                 c_not_categorized.add(concept);
-//             }
-//         });
-//         // Add to template
-//         $(this.el).append(this.template({
-//             conceptsNotCategorized : c_not_categorized.toJSON()
-//         }));
-//         //$(document).foundation();
-//         return this;
-//     }
-// });
-/***************************************/
-// conceptsmap.Views.RightPart = Backbone.View.extend({
-//     initialize : function(json) {
-//         _.bindAll(this, 'render');
-//         // Variables
-//         this.project = json.project;
-//         this.user = json.user;
-//         this.concepts = json.concepts; 
-//         this.eventAggregator = json.eventAggregator;
-//         // Templates
-//         this.template_search = _.template($('#conceptsmap-search-template').html());
-//         // Events
-//         this.listenTo(this.concepts,'change',this.render,this)
-//     },
-//     events : {
-//         "keyup .search" : "search",
-//         "click .add" : "addConceptNotCategorized",
-//         "click .remove" : "remove",
-//         "click .openConceptsMappingModal" : "openConceptsMappingModal",
-//         "click .edit" : "editConcept"
-//     },
-//     editConcept : function(e){
-//         e.preventDefault();
-//         this.eventAggregator.trigger('openModelEditorModal',e.target.getAttribute("data-concept-id"));
-//     },
-//     remove : function(e){
-//         e.preventDefault();
-//         this.concepts.get( e.target.getAttribute("data-concept-id") ).destroy();
-//         this.render();
-//     },
-//     openConceptsMappingModal : function(e){
-//         e.preventDefault();
-//         concept = this.concepts.get(e.target.getAttribute("data-concept-id"))
-//         this.eventAggregator.trigger('openConceptsMappingModal',concept);
-//     },
-//     addConceptNotCategorized : function(e){
-//         e.preventDefault();
-//         new_concept = new global.Models.ConceptModel({
-//             id : guid(),
-//             id_father: "none",
-//             project: this.project.get('id'),
-//             tags: [],
-//             title: $(this.el).find('.new_c_notCategorized').val(),
-//             user: this.user
-//         });
-//         new_concept.save();
-//         this.concepts.add(new_concept);
-//         this.render();
-//     },
-//     search: function(e){
-//         e.preventDefault();
-//         var research = e.target.value;
-//         var research_size = research.length;
-//         var matched = new Backbone.Collection();
-//         this.concepts.each(function(c){
-//             if(research.toLowerCase() == c.get('title').substr(0,research_size).toLowerCase()){
-//                 matched.add(c);
-//             }
-//         });
-//         this.eventAggregator.trigger('concept_search',matched);
-//     },
-//     render : function(){
-//         $(this.el).html('');
-//         // Input search
-//         $(this.el).append(this.template_search({title:"C not categorized"}));
-//         // Concepts part
-//         notcategorized_view = new conceptsmap.Views.NotCategorized({
-//             concepts:this.concepts,
-//             eventAggregator:this.eventAggregator
-//         });
-//         $(this.el).append(notcategorized_view.render().el);
-
-//         return this;
-//     }
-// });
-/////////////////////////////////////////
 // Middle Part
 /////////////////////////////////////////
 conceptsmap.Views.MiddlePart = Backbone.View.extend({
@@ -207,7 +94,8 @@ conceptsmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render','actualizeNotification','recursiveUnlink');
         // Variables
-        this.notifications      = json.notifications;
+        this.a_notifications    = json.a_notifications;
+        this.c_notifications    = json.c_notifications;
         this.knowledges         = json.knowledges;
         this.concepts           = json.concepts;
         this.user               = json.user;
@@ -216,8 +104,6 @@ conceptsmap.Views.Main = Backbone.View.extend({
         this.links              = json.links;
         this.eventAggregator    = json.eventAggregator;
         ////////////////////////////
-        // Modals
-
         // Concepts list modal
         if(conceptsmap.views.conceptsModal){
             conceptsmap.views.conceptsModal.remove();
@@ -229,7 +115,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
         $("#"+conceptsmap.views.conceptsModal.el.id).on('close',this.againstFounderBug);
         // CKLayout
         conceptsmap.views.cklayout = new CKLayout.Views.Modal({
-            notifications : this.notifications,
+            notifications : this.a_notifications,
             user : this.user,
             collection : this.concepts,
             eventAggregator : this.eventAggregator
@@ -250,14 +136,14 @@ conceptsmap.Views.Main = Backbone.View.extend({
         //this.listenTo(this.concepts,"change",this.render);
         this.listenTo(this.concepts,"remove",this.resetMap);
         // Events
-        this.listenTo(this.notifications,'change',this.actualizeNotification,this);
-        this.listenTo(this.notifications,'add',this.actualizeNotification,this);
-        this.listenTo(this.notifications,'remove',this.actualizeNotification,this);
+        this.listenTo(this.c_notifications,'change',this.actualizeNotification,this);
+        this.listenTo(this.c_notifications,'add',this.actualizeNotification,this);
+        this.listenTo(this.c_notifications,'remove',this.actualizeNotification,this);
         this.listenTo(this.eventAggregator,'change',this.action,this);
         this.listenTo(this.eventAggregator,"undo", this.performUndo, this);
 
         this.listenTo(this.eventAggregator, 'updateMap', this.resetMap, this);
-
+        this.template = _.template($("#conceptsmap_map_template").html());
         this.template_actionsMap = _.template($("#conceptsmap_actionsMap_template").html());
     },
     events : {
@@ -497,7 +383,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
     actualizeNotification : function(){
         _this = this;
         concept_notifs = {};
-        this.notifications.each(function(notif){
+        this.c_notifications.each(function(notif){
             if(concept_notifs[notif.get('to').id]){ 
                 concept_notifs[notif.get('to').id] = concept_notifs[notif.get('to').id]+1;
             }else{
@@ -509,7 +395,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
             $("#concept_notif_"+key).html('<span class="top-bar-unread">'+concept_notifs[key]+'</span>')
         });
 
-        MM.App.adjustFontSize(1);
+        //MM.App.adjustFontSize(1);
 
     },
     render : function(){
@@ -518,21 +404,21 @@ conceptsmap.Views.Main = Backbone.View.extend({
         // Left part
         $(this.el).append(this.template_actionsMap());
         // Middle part
-        if(conceptsmap.views.v){
-            conceptsmap.views.v.remove();
-            conceptsmap.views.v.undelegateEvents();
-            conceptsmap.views.v.delegateEvents();
-        }
-        conceptsmap.views.v = new conceptsmap.Views.MiddlePart({
-            className        : "panel large-12 medium-12 small-12 columns",
-            notifications    : this.notifications,
-            concepts         : this.concepts,
-            user             : this.user,
-            eventAggregator  : this.eventAggregator
-        });
-        $(this.el).append(conceptsmap.views.v.render().el);
+        // if(conceptsmap.views.v){
+        //     conceptsmap.views.v.remove();
+        //     conceptsmap.views.v.undelegateEvents();
+        //     conceptsmap.views.v.delegateEvents();
+        // }
+        // conceptsmap.views.v = new conceptsmap.Views.MiddlePart({
+        //     className        : "panel large-12 medium-12 small-12 columns",
+        //     notifications    : this.c_notifications,
+        //     concepts         : this.concepts,
+        //     user             : this.user,
+        //     eventAggregator  : this.eventAggregator
+        // });
+        // $(this.el).append(conceptsmap.views.v.render().el);
             
-        
+        $(this.el).append(this.template());
 
         MM.App.init(this.eventAggregator);
         socket.get("/concept/generateTree", function(data) {

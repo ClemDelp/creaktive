@@ -13,6 +13,7 @@ global.Models.File = Backbone.Model.extend({
 global.Models.CKObject = Backbone.Model.extend({
     defaults : {
         id:"",
+        author : "",
         user: "",
         type : "",
         title : "",
@@ -27,8 +28,7 @@ global.Models.CKObject = Backbone.Model.extend({
         attachment:[],
         top : "",
         left:"",
-        project:"",
-        conceptsMapJson : {}
+        project:""
     },
     parse : function(serverObj){
         serverObj.comments = new global.Collections.Comments(serverObj.comments);

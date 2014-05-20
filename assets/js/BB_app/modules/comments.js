@@ -34,6 +34,7 @@ comments.Views.Main = Backbone.View.extend({
     render : function() {
         $(this.el).html("");
         // Comments + new comment input
+        console.log("model: ",this.model)
         $(this.el).append(this.template({
             user : this.user,
             model : this.model,

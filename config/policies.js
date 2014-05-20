@@ -40,8 +40,9 @@
   }, 
 
   "CkviewerController" : {
-    "*" : "authenticated"
-  }, 
+   "ckviewerview" : ["authenticated", "allowedProjects","forceHTTPs"],
+   "*" : "authenticated"
+  },
 
   "PocheController" : {
     "find" : ["authenticated", "canRead"],
@@ -95,6 +96,7 @@
     "managerview" : ["authenticated", "allowedProjects","forceHTTPs"],
     "editprofileview" : ["authenticated", "forceHTTPs"]
   },
+
   "UserController" : {
     "inviteUser" : ["authenticated",  "canWrite"],
     "userview" : ["authenticated", "allowedProjects","forceHTTPs"],
@@ -103,6 +105,7 @@
     "changepassword" :"authenticated",
     "find" : ["authenticated", "canRead"],
   },
+
   "AnalyseController" : {
     "analyseview" : ["authenticated", "allowedProjects","forceHTTPs"],
   }, 
@@ -119,6 +122,7 @@
     "find" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"]
   },
+
   "CategoryController" : {
     "categoryview" : ["authenticated", "allowedProjects","forceHTTPs"],
     "find" : ["authenticated", "canRead"],

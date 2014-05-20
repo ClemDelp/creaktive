@@ -19,6 +19,13 @@ manager.Views.Projects = Backbone.View.extend({
         // Templates
         this.template_project = _.template($('#manager-project-template').html());              
     },
+    events : {
+        "click .openProjectModal"  : "openProjectModal",
+    },
+    openProjectModal : function(e){
+        e.preventDefault();
+        manager.views.p_cklayout_modal.openModelEditorModal(e.target.getAttribute("data-model-id"));
+    },
     projectsSearch: function(matched_projects){
         this.projects_render = matched_projects;
         this.render();
@@ -76,6 +83,8 @@ manager.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Params
         // Variables
+        this.perso_notifs = json.perso_notifs;
+        this.all_notifs = json.all_notifs;
         this.permissions = json.permissions;
         this.projects = json.projects;
         this.knowledges = json.knowledges;
@@ -83,8 +92,15 @@ manager.Views.Main = Backbone.View.extend({
         this.links = json.links;
         this.users = json.users;
         this.poches = json.poches;
-        this.currentUser = json.currentUser;
+        this.user = json.user;
         this.eventAggregator    = json.eventAggregator;
+        // CKLayout for project
+        manager.views.p_cklayout_modal = new CKLayout.Views.Modal({
+            notifications : this.all_notifs,
+            user : this.user,
+            collection : this.projects,
+            eventAggregator : this.eventAggregator
+        });
         // Events
         this.permissions.bind("reset", this.render);
         this.projects.bind("add", this.render);
@@ -99,12 +115,16 @@ manager.Views.Main = Backbone.View.extend({
     },
     newProject : function(e){
         e.preventDefault();
+        console.log(this.user)
         new_project = new global.Models.ProjectModel({
             id:guid(),
+            author : this.user,
             title: $("#project_title").val(),
-            description : $("#project_description").val(),
-            kLabels : [{color : "#27AE60", label:"Validated"},  {color : "#F39C12", label:"Processing"}, {color : "#C0392B", label:"Missing"}],
-            cLabels : [{color : "#27AE60", label:"Known"}, {color : "#F39C12", label:"Reachable"}, {color : "#C0392B", label:"Alternative"}]
+            date: getDate(),
+            date2:new Date().getTime()
+            //description : $("#project_description").val(),
+            //kLabels : [{color : "#27AE60", label:"Validated"},  {color : "#F39C12", label:"Processing"}, {color : "#C0392B", label:"Missing"}],
+            //cLabels : [{color : "#27AE60", label:"Known"}, {color : "#F39C12", label:"Reachable"}, {color : "#C0392B", label:"Alternative"}]
         });
         new_project.save();
         this.projects.add(new_project);
@@ -118,7 +138,6 @@ manager.Views.Main = Backbone.View.extend({
             console.log("Remove project");
             project_id = e.target.getAttribute("data-id-project");
             project = this.projects.get(project_id);
-            this.projects.remove(project);
             project.destroy();
 
             _.each(this.concepts.where({project : project_id}), function(concept){

@@ -131,6 +131,8 @@ var manager = {
   init: function () {
     /*Init*/
     this.views.Main = new this.Views.Main({
+      perso_notifs: global.collections.personal_notifs,
+      all_notifs  : global.collections.all_notifs,
       permissions : global.collections.Permissions,
       projects    : global.collections.Projects,
       concepts    : global.collections.Concepts,
@@ -176,7 +178,8 @@ var conceptsmap = {
   init: function () {
     /*Init*/
     this.views.Main = new this.Views.Main({
-      notifications : global.collections.concept_notifs,
+      a_notifications : global.collections.all_notifs,
+      c_notifications : global.collections.concept_notifs,
       concepts    : global.collections.Concepts,
       project     : global.models.currentProject,
       user        : global.models.current_user,
