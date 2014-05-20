@@ -27,7 +27,8 @@ global.Models.CKObject = Backbone.Model.extend({
         attachment:[],
         top : "",
         left:"",
-        project:""
+        project:"",
+        conceptsMapJson : {}
     },
     parse : function(serverObj){
         serverObj.comments = new global.Collections.Comments(serverObj.comments);
