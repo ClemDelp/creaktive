@@ -43,8 +43,18 @@
             </div>
         </div>
         <div class="small-4 large-4 medium-4 columns">
-            <a href="#" class="button small secondary openMoveModal">move to</a> 
-            <a href="#" class="button small secondary openCopyModal">copy to</a>
+            <a href="#" data-dropdown="drop" class="small secondary button dropdown">move to</a>
+            <ul id="drop" data-dropdown-content class="f-dropdown">
+                {{ _.each(poches, function(poche){ }}
+                    <li><a href="#" class="move" data-catg-title="{{-poche.title}}">{{-poche.title}}</a></li>
+                {{ }); }} 
+            </ul>
+            <a href="#" data-dropdown="drop" class="small secondary button dropdown">copy to</a>
+            <ul id="drop" data-dropdown-content class="f-dropdown">
+                {{ _.each(poches, function(poche){ }}
+                    <li><a href="#" class="copy" data-catg-title="{{-poche.title}}">{{-poche.title}}</a></li>
+                {{ }); }} 
+            </ul>
             <a href="#" class="button small secondary uncategorized">unlink</a>
             <a href="#" class="button small secondary remove">remove</a>
         </div>
@@ -62,10 +72,10 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <script type="text/template" id="category-notCategorized-template">
     <div class="item">
-        <a href="#" class="button tiny radius round expand secondary CKBulle Kselectable" data-knowledge-id="{{-knowledge.id}}" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}">
-            <strong data-knowledge-id="{{-knowledge.id}}">{{- knowledge.title }}</strong>
+        <a href="#" class="button tiny radius round expand secondary CKBulle Kselectable" data-knowledge-id="{{-knowledge.id}}" data-catg-origin="none" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}">
+            <strong data-knowledge-id="{{-knowledge.id}}" data-catg-origin="none">{{- knowledge.title }}</strong>
             <span style="width:8%;float:right">
-                <img src="img/edit.png" class="openModal" data-model-id="{{-knowledge.id}}" title="edit">
+                <img src="img/edit.png" class="openKnowledgeModal" data-model-id="{{-knowledge.id}}" title="edit">
             </span>
         </a>
     </div>
@@ -80,6 +90,9 @@
                     {{if(notifNbr != 0){ }}
                         <span class="top-bar-unread" data-category-id="{{-category.id}}">{{-notifNbr}}</span>
                     {{ } }}
+                    <span style="width:8%;float:right">
+                        <img src="img/edit.png" class="openCategoryModal" data-model-id="{{-category.id}}" title="edit">
+                    </span>
                 </a>
             </li>
             <li class="bullet-item">
@@ -94,7 +107,7 @@
                 {{ _.each(knowledges, function(knowledge) { }}
                     <a href="#" class="button tiny radius round expand secondary CKBulle Kselectable" data-knowledge-id="{{-knowledge.id}}" data-catg-origin="{{- category.title}}"  style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}">
                         <strong data-knowledge-id="{{-knowledge.id}}" data-catg-origin="{{- category.title}}">{{- knowledge.title }}</strong>
-                        <span style="width:8%;float:right"><img src="img/edit.png" class="openModal" data-model-id="{{-knowledge.id}}" title="edit"></span>
+                        <span style="width:8%;float:right"><img src="img/edit.png" class="openKnowledgeModal" data-model-id="{{-knowledge.id}}" title="edit"></span>
                     </a>
                 {{ }); }}   
             </li>

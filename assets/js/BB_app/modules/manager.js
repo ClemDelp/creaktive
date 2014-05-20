@@ -147,15 +147,22 @@ manager.Views.Main = Backbone.View.extend({
         $(this.el).append(this.template_search());
         // Projects
         $(this.el).append(new manager.Views.Projects({
-            permissions : this.permissions,
-            projects : this.projects,
-            knowledges : this.knowledges,
-            concepts : this.concepts,
-            links : this.links,
-            users : this.users,
-            poches : this.poches,
+            id              : "categories_grid",
+            className       : "panel expand gridalicious",
+            permissions     : this.permissions,
+            projects        : this.projects,
+            knowledges      : this.knowledges,
+            concepts        : this.concepts,
+            links           : this.links,
+            users           : this.users,
+            poches          : this.poches,
             eventAggregator : this.eventAggregator
         }).render().el);
+
+        $("#categories_grid").gridalicious({
+            gutter: 20,
+            width: 260
+        });
 
         $(document).foundation();
         return this;

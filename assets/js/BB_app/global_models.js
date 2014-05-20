@@ -82,6 +82,23 @@ global.Models.Poche = global.Models.CKObject.extend({
     }
 });
 /***************************************/
+global.Models.ProjectModel = global.Models.CKObject.extend({
+    // defaults : {
+    //     id : "",
+    //     title : "no projects",
+    //     conceptsMapJson : {},
+    //     date : getDate()
+    // },
+    initialize : function Doc() {
+        //console.log('Project Constructor');
+        this.urlRoot = "project";
+        this.set({type : "project"});
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    },
+});
+/***************************************/
 global.Models.Comment = Backbone.Model.extend({
     model: this,
     defaults : {
@@ -119,21 +136,7 @@ global.Models.User = Backbone.Model.extend({
 /*-----------------------------------------------------------------*/
 /*Model*/
 /*-----------------------------------------------------------------*/
-global.Models.ProjectModel = Backbone.Model.extend({
-    defaults : {
-        id : "",
-        title : "no projects",
-        conceptsMapJson : {},
-        date : getDate()
-    },
-    initialize : function Doc() {
-        //console.log('Project Constructor');
-        this.urlRoot = "project";
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    },
-});
+
 /***************************************/
 global.Models.NotificationModel = Backbone.Model.extend({
     defaults : {
