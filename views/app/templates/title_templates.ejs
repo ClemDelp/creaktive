@@ -4,9 +4,12 @@
     <div class="expand panel">
         <center>
             <a style="float:left" href="/conceptsmap?projectId={{- project.id}}" class="{{if(page == 'concept'){ }}success {{ } }}button secondary round tiny"><<<< Edit Concept</a>
-            <a href="/bbmap?projectId={{- project.id}}" class="button secondary round tiny">P mode</a>
-            <a href="/ckviewer?projectId={{- project.id}}" class="button round small">{{-project.title }}</a>
-            <a href="/bbmap?projectId={{- project.id}}" class="button secondary round tiny">D mode</a>
+            <a href="#" data-dropdown="drop" class="button round small dropdown"><strong><u>{{-project.title }}</u></strong></a>
+            <ul id="drop" data-dropdown-content class="f-dropdown">
+              <li><a href="/ckviewer?projectId={{- project.id}}">Mode normal</a></li>
+              <li><a href="/bbmap?projectId={{- project.id}}">Mode draft</a></li>
+              <li><a href="#">Mode presentation</a></li>
+            </ul>
             <a style="float:right" href="/categories?projectId={{- project.id}}" class="{{if(page == 'category'){ }}success {{ } }}button secondary round tiny">Edit Knowledge >>>></a>
         </center>
 

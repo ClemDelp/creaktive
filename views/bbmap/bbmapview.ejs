@@ -3,6 +3,7 @@
 <script src="/js/vendor/backbone.iobind.js"></script>
 <script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
 <script src="/js/ckeditor/ckeditor.js"></script>
+<script src="/js/vendor/zoom.js"></script>
 <!-- ******************************** -->
 <!-- Css to load -->
 <link rel="stylesheet" href="styles/jsplumb/jsplumb.css">
@@ -94,7 +95,7 @@
         bbmap.init();
         /*activat of "hashchange events's monitoring"*/
         Backbone.history.start();  
-        
+        $(document).foundation();
       });
     });
 

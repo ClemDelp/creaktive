@@ -27,7 +27,7 @@
 	            </span>
 		  	</li>
 		  	<li class="description">
-		  		{{ if(project.content == ""){ }}Add a description via the project editor{{ }else{project.content} }}<br>
+		  		{{ if(project.content == ""){ }}Add a description via the project editor{{ }else{ }} {{=project.content}} {{ } }}<br>
 		  		Create by {{-project.author.name}} at {{-project.date}}
 		  	</li>
 			<li class="cta-button">
