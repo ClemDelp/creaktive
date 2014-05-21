@@ -1,29 +1,50 @@
 bbmap.Views.Child = Backbone.View.extend({
     initialize : function(json){
-        _.bindAll(this, 'render','savePosition','editTitle','theHandler','editContent','linkCK','addEndpoint','addLink','makeSource');
+        _.bindAll(this, 'render','savePosition','editTitle','theHandler','addEndpoint','addLink','makeSource');
         // Variables
         this.concept = json.concept;
+        this.endpoints = [];
         // Events
         $(this.el).click(this.savePosition)
-        // Templates
-
         //style
         $(this.el).attr( "style","top: "+this.concept.get('top')+"px;left:"+this.concept.get('left')+"px");
         
     },
-    events : {},
-    savePosition: function(){
-        this.concept.set({
-            top:$(this.el).position().top,
-            left:$(this.el).position().left
-        }).save();
+    savePosition: function(e){
+        if(($(this.el).position().top != 0)&&($(this.el).position().left != 0)){
+            // Si la view n'a pas été supprimée on save
+            this.concept.set({
+                top:$(this.el).position().top / bbmap.views.main.zoom,
+                left:$(this.el).position().left / bbmap.views.main.zoom
+            }).save();    
+        }
+
+        //console.log("offset : x"+$(this.el).offset().left+" - y"+$(this.el).offset().top)
+        console.log("position : x"+this.concept.get('left')+" - y"+this.concept.get('top'))
     },
     events : {
-        "click .editContent" : "editContent",
-        "click .linkCK" : "linkCK",
         "dblclick .editTitle" : "editTitle",
         "keydown": "theHandler",
-        "focusout" : "focusout"
+        "focusout" : "focusout",
+        "click .sup" : "removeConcept"
+    },
+    removeConcept : function(e){
+        e.preventDefault();
+        concept = this.concept;
+        if(confirm("this concept will be remove, would you continue?")){
+            this.endpoints.forEach(function(ep){
+                bbmap.views.main.instance.deleteEndpoint(ep);
+            })
+            bbmap.views.main.instance.detachAllConnections($(this.el));
+            // put all the child node parent_id attributes to none
+            childrens = bbmap.views.main.concepts.where({id_father : concept.get('id')})
+            childrens.forEach(function(child){
+                child.set({id_father : "none"}).save();
+            })
+            this.remove();
+            // $(this.el).hide('slow');
+            this.concept.destroy();
+        }
     },
     focusout : function(e){
         bbmap.views.main.instance.toggleDraggable($(this.el));
@@ -42,26 +63,18 @@ bbmap.Views.Child = Backbone.View.extend({
         bbmap.views.main.instance.toggleDraggable($(this.el));
         $(this.el).find(".editTitle").attr('contenteditable','true');
     },
-    editContent : function(e){
-        e.preventDefault();
-        bbmap.views.main.eventAggregator.trigger('openModelEditorModal',this.concept.get('id'));
-    },
-    linkCK : function(e){
-        e.preventDefault();
-        bbmap.views.main.eventAggregator.trigger('openCKLinkModal',this.concept.get('id'));
-    },
     addEndpoint : function(){
         // Add endpoints
-        bbmap.views.main.instance.addEndpoint($(this.el), {
+        this.endpoints.unshift(bbmap.views.main.instance.addEndpoint($(this.el), {
             uuid:this.concept.get('id') + "-bottom",
             anchor:"Bottom",
             maxConnections:-1
-        });
-        bbmap.views.main.instance.addEndpoint($(this.el), {
+        }));
+        this.endpoints.unshift(bbmap.views.main.instance.addEndpoint($(this.el), {
             uuid:this.concept.get('id') + "-top",
             anchor:"Top",
             maxConnections:-1
-        });
+        }));
     },
     addLink : function(){
         // Add Link
@@ -71,8 +84,7 @@ bbmap.Views.Child = Backbone.View.extend({
             }catch(err){
                 console.log(err);
             }  
-        }
-        
+        }   
         // Enable drag&drop
         bbmap.views.main.instance.draggable($(this.el));  
     },
@@ -94,17 +106,15 @@ bbmap.Views.Child = Backbone.View.extend({
     render : function(){
         $(this.el).empty();
         $(this.el).append('<span class="editTitle">'+this.concept.get('title')+'</span>');
-        $(this.el).append('<div class="ep"></div>')
-        $(this.el).append('<div class="ed editContent">e</div>')
-        $(this.el).append('<div class="lk linkCK">l</div>')
-
+        $(this.el).append('<div class="ep">-></div>')
+        $(this.el).append('<div class="sup">x</div>')
         return this;
     }
 });
 /***************************************/
 bbmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
-        _.bindAll(this, 'render','alert');
+        _.bindAll(this, 'render');
         ////////////////////////////
         // Variables
         this.notifications      = json.notifications;
@@ -116,32 +126,18 @@ bbmap.Views.Main = Backbone.View.extend({
         this.links              = json.links;
         this.eventAggregator    = json.eventAggregator;
         this.mode               = "normal";
-
-        $("#CKLayoutModal").on('close',this.alert);
-        ////////////////////////////
-        // CKLayout
-        conceptsmap.views.cklayout = new CKLayout.Views.Modal({
-            notifications : this.notifications,
-            user : this.user,
-            collection : this.concepts,
-            eventAggregator : this.eventAggregator
-        });
-        ////////////////////////////
-        // CKLinks
-        conceptsmap.views.cklink = new cklink.Views.Modal({
-            knowledges : this.knowledges,
-            poches : this.poches,
-            concepts : this.concepts,
-            links : this.links,
-            eventAggregator : this.eventAggregator
-        });
+        this.zoom               = 1;
+        // Templates
+        this.bar_el = $(this.el).find('#actionbar');
+        this.map_el = $(this.el).find('#map');
+        this.template_actionbar = _.template($('#bbmap-actionbar-template').html());
         ////////////////////////////
         // JsPlumb
         this.color = "gray";
         this.instance = jsPlumb.getInstance({           
             Connector : [ "Bezier", { curviness:50 } ],
             DragOptions : { cursor: "pointer", zIndex:2000 },
-            PaintStyle : { strokeStyle:this.color, lineWidth:2 },
+            PaintStyle : { strokeStyle:this.color, lineWidth:1 },
             EndpointStyle : { radius:5, fillStyle:this.color },
             HoverPaintStyle : {strokeStyle:"#ec9f2e" },
             EndpointHoverStyle : {fillStyle:"#ec9f2e" },
@@ -154,29 +150,40 @@ bbmap.Views.Main = Backbone.View.extend({
                 } ],
                 [ "Label", { label:"x", id:"label", cssClass:"aLabel" }]
             ],
-            Container:"bbmap_container"
+            Container:"map"
         });  
-        this.instance.setZoom(0.5)
-        this.instance.setSuspendDrawing(false,true);
+        //this.instance.setSuspendDrawing(false,true);
         ////////////////////////////
         // Events
         this.listenTo(this.notifications,'change',this.actualizeNotification,this);
         this.listenTo(this.notifications,'add',this.actualizeNotification,this);
         this.listenTo(this.notifications,'remove',this.actualizeNotification,this);     
     },
-    alert : function(e){
-        //console.log(this.instance);
-        bbmap.views.main.jsPlumbEventsInit();
-    },
     events : {
         "click .addUnlinked" : "addUnlinkedConcept",
+        "click .zoomin" : "zoomin",
+        "click .zoomout" : "zoomout",
+    },
+    zoomin : function(e){
+        e.preventDefault();
+
+        this.zoom = this.zoom - 0.1;
+        this.setZoom(this.zoom);
+    },
+    zoomout : function(e){
+        e.preventDefault();
+        this.zoom = this.zoom + 0.1;
+        this.setZoom(this.zoom);
     },
     setZoom : function(zoom) {
       transformOrigin = [ 0.5, 0.5 ];
-      el = this.el;
+      console.log(this.el)
+      console.log(this.map_el[0])
+      el = this.map_el[0];
       var p = [ "webkit", "moz", "ms", "o" ],
           s = "scale(" + zoom + ")",
-          oString = (transformOrigin[0] * 100) + "% " + (transformOrigin[1] * 100) + "%";
+          // oString = (transformOrigin[0] * 100) + "% " + (transformOrigin[1] * 100) + "%";
+          oString = "0 0";
 
       for (var i = 0; i < p.length; i++) {
         el.style[p[i] + "Transform"] = s;
@@ -190,7 +197,6 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     addUnlinkedConcept : function(e){
         e.preventDefault();
-
         new_concept = new global.Models.ConceptModel({
             id : guid(),
             type : "concept",
@@ -208,9 +214,7 @@ bbmap.Views.Main = Backbone.View.extend({
             concept : new_concept
         });
 
-        console.log("new view ",new_view)
-
-        $(_this.el).append(new_view.render().el);
+        this.map_el.append(new_view.render().el);
         
         new_view.addEndpoint();
         new_view.addLink();
@@ -222,7 +226,7 @@ bbmap.Views.Main = Backbone.View.extend({
         // init
         _this = this;
         instance = _this.instance;
-        this.instance.unbind();
+        //this.instance.unbind();
         var windows = jsPlumb.getSelector(".chart-demo .window");
         ///////////////////////
         // Add child
@@ -245,8 +249,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 id : new_concept.get('id'),
                 concept : new_concept
             });
-
-            $(_this.el).append(new_view.render().el);
+            _this.map_el.append(new_view.render().el);
             
             new_view.addEndpoint();
             new_view.addLink();
@@ -283,10 +286,13 @@ bbmap.Views.Main = Backbone.View.extend({
     render : function(){
         ///////////////////////
         // Init
-        $(this.el).empty();
         _this = this;
-        $(this.el).append('<a href="#" class="tiny button secondary addUnlinked">Add a unlinked concept</a>')
+        this.bar_el.empty();
+        this.map_el.empty();
         views = [];
+        ///////////////////////
+        // Action bar
+        this.bar_el.append(this.template_actionbar());
         ///////////////////////
         // Views creation process
         this.concepts.each(function(concept){
@@ -299,29 +305,26 @@ bbmap.Views.Main = Backbone.View.extend({
         ///////////////////////
         // Views render process
         views.forEach(function(view){
-            $(_this.el).append(view.render().el);
+            _this.map_el.append(view.render().el);
         });
-
-        //jsPlumb.doWhileSuspended(function() {
-            ///////////////////////
-            // Views addEndPoint process
-            views.forEach(function(view){
-                view.addEndpoint();
-            })
-            ///////////////////////
-            // Views addEndLink process
-            views.forEach(function(view){
-                view.addLink();
-            })
-            ///////////////////////
-            // Views addEndLink process
-            views.forEach(function(view){
-                view.makeSource();
-            })
-            ///////////////////////
-            // Initialize jsPlumb events
-            this.jsPlumbEventsInit();
-        //}, true);
+        ///////////////////////
+        // Views addEndPoint process
+        views.forEach(function(view){
+            view.addEndpoint();
+        })
+        ///////////////////////
+        // Views addEndLink process
+        views.forEach(function(view){
+            view.addLink();
+        })
+        ///////////////////////
+        // Views addEndLink process
+        views.forEach(function(view){
+            view.makeSource();
+        })
+        ///////////////////////
+        // Initialize jsPlumb events
+        this.jsPlumbEventsInit();
 
         return this;
     }

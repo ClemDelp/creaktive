@@ -13,7 +13,7 @@
     color:orange;
 }
 
-.ep {
+/*.ep {
 	float:right;
 	width:10px;
 	height:1em;
@@ -24,7 +24,37 @@
 	-moz-transition:-moz-box-shadow 0.25s ease-in;
 	transition:box-shadow 0.25s ease-in;
 }
+*/
+.ep {
+	position:absolute;
+	bottom: 37%;
+	right: 5px;
+	width:1em;
+	height:1em;
+	background-color:orange;
+	cursor:pointer;
+	box-shadow: 0px 0px 2px black;
+	-webkit-transition:-webkit-box-shadow 0.25s ease-in;
+	-moz-transition:-moz-box-shadow 0.25s ease-in;
+	transition:box-shadow 0.25s ease-in;
+}
 
+.sup {
+	position:absolute;
+	bottom: 37%;
+	/*right: 5px;*/
+	width:1em;
+	height:1em;
+	border:1px dotted red;
+	color: red;
+	cursor:pointer;
+	box-shadow: 0px 0px 2px red;
+	-webkit-transition:-webkit-box-shadow 0.25s ease-in;
+	-moz-transition:-moz-box-shadow 0.25s ease-in;
+	transition:box-shadow 0.25s ease-in;
+}
+
+/*
 .ed {
 	float:right;
 	width:1em;
@@ -47,9 +77,9 @@
 	-webkit-transition:-webkit-box-shadow 0.25s ease-in;
 	-moz-transition:-moz-box-shadow 0.25s ease-in;
 	transition:box-shadow 0.25s ease-in;
-}
+}*/
 
-.ed:hover, .lk:hover, .ep:hover {
+.sup:hover, .ep:hover {
 	box-shadow: 0px 0px 6px black;
 }
 

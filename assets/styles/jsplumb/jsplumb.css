@@ -39,7 +39,7 @@ body {
     padding:0;
     margin:0;    
     font-family:'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;    
-    background-color: whitesmoke;
+    /*background-color: whitesmoke;*/
 }
 
 #headerWrapper {
@@ -106,12 +106,13 @@ body {
 
 .demo {
   position: relative;
-  width:100%;
+  /*width:100%;*/
+  width:10000px;
   background-color:white;    
   overflow:auto;  
-  margin-top: 53px;
-  margin-bottom:25px;
-  height: 600px;
+  /*margin-top: 53px;
+  margin-bottom:25px;*/
+  height: 10000px;
 }
 
 .explanation {
