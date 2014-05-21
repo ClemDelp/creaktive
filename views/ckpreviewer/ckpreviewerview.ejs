@@ -13,7 +13,8 @@
 <!-- ******************************** -->
 <!-- Zoom js -->
 <script src="/js/vendor/zoom.js"></script> 
-<script src="/js/vendor/zoon.js"></script>
+<script src="/js/vendor/jquery.zoomooz.js"></script>
+<script src="/js/vendor/jquery.sortable.js"></script>
 <!-- ******************************** -->
 <!-- Templates to load -->
 <%- partial('../app/templates/topbar_templates') %>
@@ -30,7 +31,7 @@
 
 <script>
   var zoomflag=false;
-
+  var slideflag=false;
   ///////////////////////////////////////////////////
   $(document).ready(function () {
     ////////////////////////////////////////

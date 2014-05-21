@@ -173,7 +173,7 @@ CKPreviewer.Views.KnowledgesMap = Backbone.View.extend({
         $(this.el).append(_.template($("#CKPreviewer-Khead-template").html()));
         lists_view = new CKPreviewer.Views.Categories({
             id              : "categories_grid",
-            className       : "row panel custom_row gridalicious",
+            className       : "row custom_row gridalicious",
             knowledges      : this.knowledges_to_render,
             poches          : this.poches,
             user            : this.user,
@@ -184,83 +184,6 @@ CKPreviewer.Views.KnowledgesMap = Backbone.View.extend({
              gutter: 20,
              width: 130
            });
-        return this;
-    }
-});
-/////////////////////////////////////////
-CKPreviewer.Views.Slides = Backbone.View.extend({
-    initialize : function(json){
-        _.bindAll(this, 'render');
-        this.eventAggregator = json.eventAggregator;
-        // Templates
-        
-    },
-    events : {
-        
-    },
-    render : function(){
-        return this;
-    }
-});
-/////////////////////////////////////////
-CKPreviewer.Views.MiddlePart = Backbone.View.extend({
-    initialize : function(json){
-        _.bindAll(this, 'render');
-        this.knowledges = json.knowledges;
-        this.concepts = json.concepts;
-        this.links = json.links;
-        this.eventAggregator = json.eventAggregator;  
-        this.poches = json.poches;
-        this.user = json.user;
-    },
-    render : function(){
-        // Concepts map
-        if(CKPreviewer.views.conceptsmap){CKPreviewer.views.conceptsmap.remove();}
-        CKPreviewer.views.conceptsmap = new CKPreviewer.Views.ConceptsMap({
-            className        : "large-7 medium-7 small-7 columns",
-            eventAggregator  : this.eventAggregator,
-            concepts         : this.concepts
-        });
-        $(this.el).append(CKPreviewer.views.conceptsmap.render().el);
-
-        // Knowledge map
-        if(CKPreviewer.views.knowledgesmap){CKPreviewer.views.knowledgesmap.remove();}
-        CKPreviewer.views.knowledgesmap = new CKPreviewer.Views.KnowledgesMap({
-            className        : "large-5 medium-5 small-5 columns",
-            links            : this.links,
-            knowledges       : this.knowledges,
-            eventAggregator  : this.eventAggregator,
-            poches           : this.poches,
-            user             : this.user
-        });
-        $(this.el).append(CKPreviewer.views.knowledgesmap.render().el);
-
-        return this;
-    }
-});
-/////////////////////////////////////////
-CKPreviewer.Views.Actions = Backbone.View.extend({
-    initialize : function(json){
-        _.bindAll(this, 'render');
-        this.eventAggregator = json.eventAggregator;
-        // Templates
-        this.template = _.template($("#CKPreviewer_action_template").html()); 
-    },
-    events : {
-        "click #select" : "zoom",
-    },
-    zoom : function(){
-      if(!zoomflag){
-          $("#select").addClass('disabled');
-          zoomflag=true;
-         }
-         else{
-          $("#select").removeClass('disabled');
-          zoomflag=false;
-        }
-    },
-    render : function(){
-        $(this.el).append(this.template());
         return this;
     }
 });
@@ -292,6 +215,271 @@ CKPreviewer.Views.ConceptsMap = Backbone.View.extend({
     }
 });
 /////////////////////////////////////////
+CKPreviewer.Views.MiddlePart = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        this.knowledges = json.knowledges;
+        this.concepts = json.concepts;
+        this.links = json.links;
+        this.eventAggregator = json.eventAggregator;  
+        this.poches = json.poches;
+        this.user = json.user;
+    },
+    render : function(){
+        // Concepts map
+        if(CKPreviewer.views.conceptsmap){CKPreviewer.views.conceptsmap.remove();}
+        CKPreviewer.views.conceptsmap = new CKPreviewer.Views.ConceptsMap({
+            className        : "large-7 medium-7 small-7 columns",
+            id               : "conceptes",
+            eventAggregator  : this.eventAggregator,
+            concepts         : this.concepts
+        });
+        $(this.el).append(CKPreviewer.views.conceptsmap.render().el);
+
+        // Knowledge map
+        if(CKPreviewer.views.knowledgesmap){CKPreviewer.views.knowledgesmap.remove();}
+        CKPreviewer.views.knowledgesmap = new CKPreviewer.Views.KnowledgesMap({
+            className        : "large-5 medium-5 small-5 columns",
+            links            : this.links,
+            knowledges       : this.knowledges,
+            eventAggregator  : this.eventAggregator,
+            poches           : this.poches,
+            user             : this.user
+        });
+        $(this.el).append(CKPreviewer.views.knowledgesmap.render().el);
+
+        return this;
+    }
+});
+/////////////////////////////////////////
+CKPreviewer.Views.Actions = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        this.eventAggregator = json.eventAggregator;
+        this.slideorder= 0;
+        // Templates
+        this.template = _.template($("#CKPreviewer_action_template").html()); 
+    },
+    events : {
+        "click #select" : "zoom",
+        "click #slide" : "addslide",
+    },
+    zoom : function(){
+      if((!zoomflag)&&(!slideflag)){
+
+        $("#select").addClass('disabled');
+        zoomflag=true;
+        var startX = 0, startY = 0;
+        var flag = false;
+        var rectLeft = "0px", rectTop = "0px", rectHeight = "0px", rectWidth = "0px";
+        var rect = document.getElementById("rect");
+        rect.style.visibility = 'hidden';
+        rect.style.width = 0;
+        rect.style.height = 0;
+        rect.style.zIndex = 1000;
+
+        document.onmousedown = function(e){
+          if(zoomflag){
+            e.preventDefault();
+            flag = true;
+            try{
+                var evt = window.event || e;
+                var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+                var scrollLeft = document.body.scrollLeft || document.documentElement.scrollLeft;
+                startX = evt.clientX + scrollLeft;
+                startY = evt.clientY + scrollTop;
+
+                rect.style.left = startX + "px";
+                rect.style.top = startY + "px";
+                rect.style.width = 0;
+                rect.style.height = 0;
+                rect.style.visibility = 'visible';
+            }catch(e){
+                //alert(e);
+                }
+        }}
+
+        document.onmouseup = function(){
+            try{
+              rect.style.visibility = 'hidden';
+              zoom.to({
+                x: parseInt(rect.style.left),
+                y: parseInt(rect.style.top),
+                width: parseInt(rect.style.width),
+                height: parseInt(rect.style.height)
+              });
+            }catch(e){
+              //alert(e);
+            }
+            flag = false;
+        }
+
+        document.onmousemove = function(e){
+            if(zoomflag&&flag){
+                try{
+                  var evt = window.event || e;
+                  var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+                  var scrollLeft = document.body.scrollLeft || document.documentElement.scrollLeft;
+                  rectLeft = (startX - evt.clientX - scrollLeft > 0 ? evt.clientX + scrollLeft : startX) + "px";
+                  rectTop = (startY - evt.clientY - scrollTop > 0 ? evt.clientY + scrollTop : startY) + "px";
+                  rectHeight = Math.abs(startY - evt.clientY - scrollTop) + "px";
+                  rectWidth = Math.abs(startX - evt.clientX - scrollLeft) + "px";
+                  rect.style.left = rectLeft;
+                  rect.style.top = rectTop;
+                  rect.style.width = rectWidth;
+                  rect.style.height = rectHeight;
+                }catch(e){
+                //alert(e);
+                } 
+            }
+        }
+        }
+        else{
+          $("#select").removeClass('disabled');
+          zoomflag=false;
+        }
+    },
+    addslide : function(){
+      if((!zoomflag)&&(!slideflag)){
+        $("#slide").addClass('disabled');
+        slideflag=true;
+        var addone=true;
+        var startX = 0, startY = 0;
+        var flag = false;
+        var rectLeft = "0px", rectTop = "0px", rectHeight = "0px", rectWidth = "0px";
+        var rect = document.createElement("DIV");
+        rect.style.visibility = 'hidden';
+        rect.id="slide"+this.slideorder;
+        rect.className="zoomTarget";
+        rect.style.position='absolute';
+        rect.style.filter='Alpha(Opacity=50)';
+        rect.style.opacity=0.50;
+        rect.style.background= '#00BFFF';
+        rect.style.width = 0;
+        rect.style.height = 0;
+        rect.style.zIndex = 1000;
+        //$(".zoomContainer")[0].appendChild(rect);
+        document.body.appendChild(rect);
+        this.slideorder+=1;
+        _this = this;
+
+        document.onmousedown = function(e){
+          if(slideflag){  
+            e.preventDefault();
+            flag = true;
+            try{
+                var evt = window.event || e;
+                var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+                var scrollLeft = document.body.scrollLeft || document.documentElement.scrollLeft;
+                startX = evt.clientX + scrollLeft;
+                startY = evt.clientY + scrollTop;
+
+                rect.style.left = startX + "px";
+                rect.style.top = startY + "px";
+                rect.style.width = 0;
+                rect.style.height = 0;
+                rect.style.visibility = 'visible';
+            }catch(e){
+                //alert(e);
+            }
+        }}
+
+        document.onmouseup = function(){
+          if(slideflag&&flag){
+            try{
+                rect.style.visibility = 'hidden';
+                $("#slide").removeClass('disabled');
+                 
+                slideflag=false;
+                zoom.to({
+                    x: parseInt(rect.style.left),
+                    y: parseInt(rect.style.top),
+                    width: parseInt(rect.style.width),
+                    height: parseInt(rect.style.height)
+                });
+            }catch(e){
+              //alert(e);
+            }
+            if(addone){_this.eventAggregator.trigger("addslide"); }  
+            addone=false;  
+            flag = false;
+          }
+        }
+
+        document.onmousemove = function(e){
+            if(slideflag&&flag){
+                try{
+                  var evt = window.event || e;
+                  var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+                  var scrollLeft = document.body.scrollLeft || document.documentElement.scrollLeft;
+                  rectLeft = (startX - evt.clientX - scrollLeft > 0 ? evt.clientX + scrollLeft : startX) + "px";
+                  rectTop = (startY - evt.clientY - scrollTop > 0 ? evt.clientY + scrollTop : startY) + "px";
+                  rectHeight = Math.abs(startY - evt.clientY - scrollTop) + "px";
+                  rectWidth = Math.abs(startX - evt.clientX - scrollLeft) + "px";
+                  rect.style.left = rectLeft;
+                  rect.style.top = rectTop;
+                  rect.style.width = rectWidth;
+                  rect.style.height = rectHeight;
+                }catch(e){
+                //alert(e);
+                } 
+            }
+        }
+        }
+    },
+    render : function(){
+        $(this.el).append(this.template());
+        return this;
+    }
+});
+
+/////////////////////////////////////////
+// SLIDES
+/////////////////////////////////////////
+CKPreviewer.Views.Slides = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        list_of_slides = new Backbone.Collection();
+        this.eventAggregator = json.eventAggregator;
+        this.eventAggregator.on("addslide", this.addslide, this);
+        this.slideorder = 0;
+        this.selectedSlide = 0;
+        // Templates
+        this.template = _.template($('#CKPreviewer_slides_template').html());
+    },
+    events : {      
+        "click #slide" : "checkslide", 
+    },
+    addslide : function(){
+        slide1 = new Backbone.Model({slideorder : this.slideorder});
+        this.slideorder+=1;
+        list_of_slides.add(slide1);
+        this.render();
+    },
+    checkslide : function(e){
+        var i = e.target.getAttribute("slideorder");
+        var item = document.getElementById("slide"+i);
+        if(item.style.visibility == 'visible'){
+            item.style.visibility='hidden';
+            this.selectedSlide=0;
+        }else{
+            item.style.visibility = 'visible';
+            this.selectedSlide = i;
+        };
+    },
+    render : function(){
+        $(this.el).html(''); 
+        $(this.el).append(this.template({
+            slides : list_of_slides.toJSON()
+        }));
+        $('.sortable').sortable();
+        $(".zoomTarget").zoomTarget();
+        $(".zoomButton").zoomButton();
+        return this;
+    }
+});
+
+/////////////////////////////////////////
 // MAIN
 /////////////////////////////////////////
 CKPreviewer.Views.Main = Backbone.View.extend({
@@ -306,6 +494,7 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         this.poches = json.poches;
         this.user = json.user;
         this.mode = "normal";
+        this.width = 0;
         // Modals
         if(CKPreviewer.views.modal){CKPreviewer.views.modal.remove();}
         CKPreviewer.views.modal = new CKPreviewer.Views.Modal({
@@ -374,6 +563,13 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         MM.App.init(this.eventAggregator);
         socket.get("/concept/generateTree", function(data) {
             MM.App.setMap(MM.Map.fromJSON(data.tree));
+            this.width= MM.App.width;
+            var frame=document.getElementById("main").offsetWidth;
+            var s=Math.floor(10*(frame/this.width)*(frame/this.width))-10;
+            MM.App.adjustFontSize1(s);
+            if(parseInt($("#map.current")[0].style.left)<0){
+                $("#map.current")[0].style.left="5%";
+            };
         });
         
          $("#categories_grid").gridalicious({
@@ -382,6 +578,11 @@ CKPreviewer.Views.Main = Backbone.View.extend({
            });
 
         $(document).foundation();
+        $(document).ready(function () {
+            document.getElementById("conceptes").style.overflow="hidden";
+            $(".zoomTarget").zoomTarget();
+            $(".zoomButton").zoomButton();
+        });
     }
 });
 /***************************************/

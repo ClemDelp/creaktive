@@ -875,8 +875,8 @@ MM.Map.prototype.hide = function() {
 MM.Map.prototype.center = function() {
 	var node = this._root.getDOM().node;
 	node.style.left = "30%";
-	node.style.top = "20%";
-
+	node.style.top = "10%";
+	MM.App.width=node.offsetWidth;
 	return this;
 }
 
@@ -4528,6 +4528,7 @@ MM.Layout.getAll = function() {
  		ghost: null
  	},
  	_fontSize: 100,
+ 	width: 0,
 
  	action: function(action) {
  		this.eventAggregator.trigger("change",action);

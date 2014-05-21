@@ -1,6 +1,10 @@
 <!-- //////////////////////////////////////////////////////// -->
 <div id="CKPreviewer_container" ></div>
 <div id="rect" style="position:absolute;filter:Alpha(Opacity=50);-moz-opacity:0.50; opacity:0.50;background-color: #00BFFF"></div> 
+<div class="zoomViewport demo" style="position:absolute; left:0%; top:0%; width:100%; hight:100%">
+    <div class="zoomContainer"style=" left:0%; top:0%; width:100%; hight:100%">
+    </div>
+</div>
 <!-- //////////////////////////////////////////////////////// -->
 <!-- Modal -->
 <div id="CKPreviewerModal" class="reveal-modal" data-reveal></div>
@@ -11,14 +15,13 @@
 <!-- //////////////////////////////////////////////////////// -->
 <script type="text/template" id="CKPreviewer_action_template" >
   <a href="#" id="select" class="button tiny expad ">Zoom</a>
+  <a href="#" id="slide" class="button tiny expad ">Add</a>
 </script>
 
 <script type="text/template" id="CKPreviewer_conceptsmap_template" >
-
   <center><h3>C</h3></center><hr>
   <div id="main" >
     <ul id="port" ></ul>
-    <div id="throbber"></div>
   </div>
 </script>
 
@@ -60,6 +63,14 @@
 </script>
 
 
-<script type="text/template" id="CKPreviewer_slide_template" >
-
+<script type="text/template" id="CKPreviewer_slides_template" >
+<div class="zoomButton" data-type="prev" data-root=".demo">prev</div>
+<div class="zoomButton" data-type="next" data-root=".demo">next</div>
+  <ul class = "sortable">
+    {{ _.each(slides, function(slide) { }}
+        <li id = "slide" style = "list-style: none;border: 1px solid #CCC;background: #F6F6F6;color: #1C94C4;margin: 5px;padding: 5px;line-height: 80px;float: left;width: 80px;height: 80px;text-align: center;" slideorder="{{-slide.slideorder}}">
+        slide{{-slide.slideorder+1}}
+        </li>
+    {{ }); }}
+  </ul>
 </script>
