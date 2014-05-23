@@ -5,12 +5,27 @@
 	height:auto; 	
 	line-height:1em;	
 	z-index:4;
+	font-weight:bold;
+}
+
+.chart-demo .window.knowledge { 
+	border:0.15em dotted red; 	
+	width:20em; 
+}
+
+.chart-demo .window.concept { 
+	border:0.15em dotted green; 	
 }
 
 /** HOVER EFFECTS **/
-.chart-demo .window:hover, .chart-demo .window._jsPlumb_source_hover, .chart-demo .window._jsPlumb_target_hover {
-    border:1px solid orange;
-    color:orange;
+.chart-demo .window.knowledge:hover, .chart-demo .window.knowledge._jsPlumb_source_hover, .chart-demo .window.knowledge._jsPlumb_target_hover {
+    border:0.2em solid red;
+    color:red;
+}
+
+.chart-demo .window.concept:hover, .chart-demo .window.concept._jsPlumb_source_hover, .chart-demo .window.concept._jsPlumb_target_hover {
+    border:0.2em solid green;
+    color:green;
 }
 
 /*.ep {
@@ -27,60 +42,64 @@
 */
 .ep {
 	position:absolute;
-	bottom: 37%;
-	right: 5px;
+	bottom: 0%;
+	left: 0px;
 	width:1em;
 	height:1em;
-	background-color:orange;
+	/*background-color:green;*/
+	color : green;
 	cursor:pointer;
-	box-shadow: 0px 0px 2px black;
+	/*box-shadow: 0px 0px 2px black;
 	-webkit-transition:-webkit-box-shadow 0.25s ease-in;
 	-moz-transition:-moz-box-shadow 0.25s ease-in;
-	transition:box-shadow 0.25s ease-in;
+	transition:box-shadow 0.25s ease-in;*/
+}
+.ep2 {
+	position:absolute;
+	bottom: 0%;
+	right: 0px;
+	width:1em;
+	height:1em;
+	/*background-color:red;*/
+	color : red;
+	cursor:pointer;
+	/*box-shadow: 0px 0px 2px black;
+	-webkit-transition:-webkit-box-shadow 0.25s ease-in;
+	-moz-transition:-moz-box-shadow 0.25s ease-in;
+	transition:box-shadow 0.25s ease-in;*/
 }
 
 .sup {
 	position:absolute;
-	bottom: 37%;
+	bottom: 100%;
+	left:0px;
 	/*right: 5px;*/
-	width:1em;
-	height:1em;
-	border:1px dotted red;
+	width:auto;
+	height:auto;
+	/*border:1px dotted red;*/
 	color: red;
 	cursor:pointer;
-	box-shadow: 0px 0px 2px red;
+	/*box-shadow: 0px 0px 2px red;
 	-webkit-transition:-webkit-box-shadow 0.25s ease-in;
 	-moz-transition:-moz-box-shadow 0.25s ease-in;
-	transition:box-shadow 0.25s ease-in;
+	transition:box-shadow 0.25s ease-in;*/
 }
 
-/*
-.ed {
-	float:right;
-	width:1em;
-	height:1em;
-	background-color:blue;
-	cursor:pointer;
-	box-shadow: 0px 0px 2px black;
-	-webkit-transition:-webkit-box-shadow 0.25s ease-in;
-	-moz-transition:-moz-box-shadow 0.25s ease-in;
-	transition:box-shadow 0.25s ease-in;
-}
-
-.lk {
-	float:right;
-	width:1em;
-	height:1em;
-	background-color:red;
-	cursor:pointer;
-	box-shadow: 0px 0px 2px black;
-	-webkit-transition:-webkit-box-shadow 0.25s ease-in;
-	-moz-transition:-moz-box-shadow 0.25s ease-in;
-	transition:box-shadow 0.25s ease-in;
-}*/
-
-.sup:hover, .ep:hover {
+.sup:hover{
 	box-shadow: 0px 0px 6px black;
+	background-color:red;
+	color:white;
 }
 
-.chart-demo .dragHover { border:2px solid orange; }
+.ep:hover{
+	box-shadow: 0px 0px 6px black;
+	background-color:green;
+	color:white;
+}
+.ep2:hover {
+	box-shadow: 0px 0px 6px black;
+	background-color:red;
+	color:white;
+}
+
+.chart-demo .knowledge.dragHover, .chart-demo .concept.dragHover { border:2px solid orange; }

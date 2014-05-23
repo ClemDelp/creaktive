@@ -2,13 +2,18 @@
 <!-- Container -->
 <div id="bbmap_container" style="overflow:auto">
 	<div id="actionbar"></div>
-	<div id="map" class="demo chart-demo panel"></div>
+	
+	<div id="map_container" class="panel" style="height:800px;overflow:hidden">
+		<div id="map" class="demo chart-demo"></div>
+	</div>
 </div>
+<div id="editBox" title="EditBox"></div>
 <!-- ******************************** -->
 <script type="text/template" id="bbmap-actionbar-template">
     <div class="expand">
     	<center>
-    		<a href="#" class="tiny button secondary addUnlinked">Add a unlinked concept</a>
+    		<a href="#" class="tiny button secondary addUnlinkedC">Add a unlinked concept</a>
+    		<a href="#" class="tiny button secondary addUnlinkedK">Add a unlinked knowledge</a>
     		<a href="#" class="tiny button secondary zoomout">+</a>
     		<a href="#" class="tiny button secondary zoomin">-</a>
     	</center>
