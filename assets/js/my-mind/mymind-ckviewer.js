@@ -454,6 +454,26 @@ var MM = {
  	return this._dom.text.innerHTML.replace(/<br\s*\/?>/g, "\n");
  }
 
+ MM.Item.prototype.getId = function() {
+ 	return this._id;
+ }
+
+ MM.Item.prototype.collapseLevel = function() {
+
+ 	var item = this;
+ 	var parentItem = this._parent;
+ 	if (item.isRoot()){ return;}
+ 	else{ 
+	parentItem.getChildren().forEach(function(child) {
+			if(item._id!=child._id){
+				child._collapsed = true;
+				child.update();
+			}
+		});
+	parentItem.collapseLevel();
+	}
+ }
+
  MM.Item.prototype.collapse = function() {
  	if (this._collapsed) { return; }
  	this._collapsed = true;
@@ -876,9 +896,9 @@ MM.Map.prototype.center = function() {
 	var node = this._root.getDOM().node;
 	var port = MM.App.portSize;
 	var left = (port[0] - node.offsetWidth)/8;
-	var top = (port[1] - node.offsetHeight)/3;
+	var top = (port[1] - node.offsetHeight)/8;
 	this._moveTo(Math.round(left), Math.round(top));
-
+	MM.App.width=node.offsetWidth;
 	return this;
 }
 
@@ -4300,7 +4320,18 @@ MM.Layout.getAll = function() {
  	switch (e.type) {
  		case "click":
  		var item = MM.App.map.getItemFor(e.target);
- 		if (item) { MM.App.select(item); }
+ 		if (item) { MM.App.select(item); 
+ 					if (item.isCollapsed()){item.expand();}  		
+ 					item.collapseLevel();
+ 					MM.App.map.center();
+			 		var width= MM.App.width;
+             		var frame=document.getElementById("main").offsetWidth;
+             		var s=Math.floor(10*(frame/width))-10;
+             		MM.App.adjustFontSize(s);
+             		$("#map.item")[0].style.left="5%";
+             		$("#map.item")[0].style.top="10%";
+ 				}
+
  		break;
 
  		/*case "dblclick":
@@ -4530,6 +4561,7 @@ MM.Layout.getAll = function() {
  		ghost: null
  	},
  	_fontSize: 100,
+ 	width: 0,
 
  	action: function(action) {
  		this.eventAggregator.trigger("change",action);
@@ -4555,6 +4587,49 @@ MM.Layout.getAll = function() {
  		this.map.show(this._port);
  	},
 
+ 	deep: function(item) {
+ 		var d=0;
+ 		var maxdeep=0;
+ 		var currentdeep=0;
+ 		if (item.getChildren()==null) {return 1;}
+ 		else{
+ 			item.getChildren().forEach(function(child) {
+			currentdeep=MM.App.deep(child);
+			if (currentdeep>maxdeep){maxdeep=currentdeep};
+			})
+		}
+		return maxdeep+1;
+ 	},
+
+ 	expandall: function(item){
+ 		if(item.getChildren()!=null){
+ 			item.getChildren().forEach(function(child) {
+				if(child.isCollapsed()){child.expand();}
+				MM.App.expandall(child);
+			})
+ 		}else{return;}
+ 		MM.App.map.center();
+ 		var width= MM.App.width;
+        var frame=document.getElementById("main").offsetWidth;
+        var s=Math.floor(10*(frame/width))-10;
+        MM.App.adjustFontSize(s);
+        $("#map.item")[0].style.left="5%";
+        $("#map.item")[0].style.top="10%";
+ 	},
+
+ 	levelcollapse: function(item,level){
+ 		if(level>1){
+			item.getChildren().forEach(function(child) {
+				if(child.isCollapsed()){child.expand();}
+				MM.App.levelcollapse(child,level-1);
+			})
+ 		}
+ 		else{item.getChildren().forEach(function(child) {
+				child.collapse();
+			})
+ 		}
+ 	},
+
  	select: function(item) {
  		if (item == this.current) { return; }
 
@@ -4570,14 +4645,14 @@ MM.Layout.getAll = function() {
  	},
 
  	adjustFontSize1: function(diff) {
- 		this._fontSize = Math.max(0, 100 + 5*diff);
+ 		this._fontSize = Math.max(10, 100 + 10*diff);
  		this._port.style.fontSize = this._fontSize + "%";
  		this.map.update();
  		this.map.ensureItemVisibility(this.current);
  	},
 
  	adjustFontSize: function(diff) {
- 		this._fontSize = Math.max(30, this._fontSize + 10*diff);
+ 		this._fontSize = Math.max(10, this._fontSize + 10*diff);
  		this._port.style.fontSize = this._fontSize + "%";
  		this.map.update();
  		this.map.ensureItemVisibility(this.current);
@@ -4633,7 +4708,6 @@ MM.Layout.getAll = function() {
 		
 		this._syncPort();
 		this.setMap(new MM.Map());
-
 	},
 
 	_syncPort: function() {
