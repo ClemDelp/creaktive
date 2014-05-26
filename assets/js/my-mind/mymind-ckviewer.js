@@ -4328,8 +4328,14 @@ MM.Layout.getAll = function() {
              		var frame=document.getElementById("main").offsetWidth;
              		var s=Math.floor(10*(frame/width))-10;
              		MM.App.adjustFontSize1(s);
-             		$("#map.item")[0].style.left="5%";
-             		$("#map.item")[0].style.top="10%";
+            		MM.App.map.center();
+            		while(MM.App.width>frame){
+            		    MM.App.adjustFontSize1(-1);
+            		    MM.App.map.center();
+            		}
+            		s=(100-100*(MM.App.width/frame))/2;
+            		$("#map.item")[0].style.left=s+"%";
+            		$("#map.item")[0].style.top="10%";
  				}
 
  		break;
@@ -4613,8 +4619,16 @@ MM.Layout.getAll = function() {
         var frame=document.getElementById("main").offsetWidth;
         var s=Math.floor(10*(frame/width))-10;
         MM.App.adjustFontSize1(s);
-        $("#map.item")[0].style.left="5%";
+
+        MM.App.map.center();
+        while(MM.App.width>frame){
+            MM.App.adjustFontSize1(-1);
+            MM.App.map.center();
+        }
+        s=(100-100*(MM.App.width/frame))/2;
+        $("#map.item")[0].style.left=s+"%";
         $("#map.item")[0].style.top="10%";
+
  	},
 
  	levelcollapse: function(item,level){

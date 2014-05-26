@@ -388,14 +388,22 @@ CKViewer.Views.Main = Backbone.View.extend({
             var frame=document.getElementById("main").offsetWidth;
             var s=Math.floor(10*(frame/this.width))-10;
             MM.App.adjustFontSize1(s);
-            $("#map.current")[0].style.left="5%";
+
+            MM.App.map.center();
+            while(MM.App.width>frame){
+                MM.App.adjustFontSize1(-1);
+                MM.App.map.center();
+            }
+            s=(100-100*(MM.App.width/frame))/2;
+            $("#map.current")[0].style.left=s+"%";
             $("#map.current")[0].style.top="10%";
-            document.getElementById("conceptes").style.overflow="hidden";
 
             this.deep=MM.App.deep(MM.Map.fromJSON(data.tree).getRoot());
             for(var i=1; i<this.deep; i++){
                 document.getElementById("drop1").innerHTML += '<li>' + '<a id="level" href="#" level="' + i + '">' + 'Level' + i + '</a>' + '</li>';
             }
+
+            document.getElementById("conceptes").style.overflow="hidden";
         });
 
 
