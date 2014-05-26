@@ -4646,6 +4646,7 @@ MM.Layout.getAll = function() {
 
  	adjustFontSize1: function(diff) {
  		this._fontSize = Math.max(10, 100 + 10*diff);
+ 		this._fontSize = Math.min(400, 100 + 10*diff);
  		this._port.style.fontSize = this._fontSize + "%";
  		this.map.update();
  		this.map.ensureItemVisibility(this.current);

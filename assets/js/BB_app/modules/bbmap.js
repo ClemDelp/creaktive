@@ -183,7 +183,7 @@ bbmap.Views.Node = Backbone.View.extend({
             }  
         }   
         // Enable drag&drop
-        //bbmap.views.main.instance.draggable($(this.el));  
+        bbmap.views.main.instance.draggable($(this.el));  
     },
     makeTarget : function(){
         ///////////////////////
