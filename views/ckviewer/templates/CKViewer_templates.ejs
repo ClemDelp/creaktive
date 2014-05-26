@@ -11,20 +11,18 @@
 <!-- //////////////////////////////////////////////////////// -->
 
 <script type="text/template" id="CKViewer_action_template">
-    <div class="expand panel">
-        <center>
-          <a href="#" id="mod1" class="button tiny secondary disabled">Mod1</a>
-          <a href="#" id="mod2" class="button tiny secondary">Mod2</a>
-          <a href="#" id="allconcepts" class="button tiny secondary">ResetC</a>
-          <a href="#" id="allknowledges" class="button tiny secondary">ResetK</a>
-          <a href="#" data-dropdown="drop1" class="button tiny secondary dropdown">MapLevel</a><br>
-          <ul id="drop1" data-dropdown-content class="f-dropdown"></ul>
-        </center>
-    </div>
+  <center>
+    <a href="#" id="mod1" class="button tiny secondary disabled">Mod1</a>
+    <a href="#" id="mod2" class="button tiny secondary">Mod2</a>
+    <a href="#" id="allconcepts" class="button tiny secondary">ResetC</a>
+    <a href="#" id="allknowledges" class="button tiny secondary">ResetK</a>
+    <a href="#" data-dropdown="drop1" class="button tiny secondary dropdown">MapLevel</a><br>
+    <ul id="drop1" data-dropdown-content class="f-dropdown"></ul>
+  </center>
 </script>
 
 <script type="text/template" id="CKViewer_conceptsmap_template" >
-  <center><h3>C</h3></center><hr>
+  <h3 style="float:left">C</h3>
   <div id="main" >
     <ul id="port"></ul>
   </div>
@@ -32,8 +30,7 @@
 
 
 <script type="text/template" id="CKViewer-Khead-template">
-  <a href="/ckpreviewer?projectId={{- project.id}}" class="button secondary round tiny" style="float:right">Edit</a>
-  <center><h3>K</h3></center><hr>
+  <h3 style="float:right">K</h3>
 </script>
 
 <script type="text/template" id="CKViewer_knowledgesmap_template">

@@ -149,7 +149,7 @@ body {
 
 a, a:visited {
     text-decoration:none;
-    color:black;
+    /*color:black;*/
     border-radius:0.2em;
     -webkit-transition: color 0.15s ease-in;
     -moz-transition: color 0.15s ease-in;

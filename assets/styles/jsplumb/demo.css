@@ -1,8 +1,9 @@
 /** ELEMENTS **/
 .chart-demo .window { 
 	border:0.1em dotted #d4e06b; 	
-	width:10em; 
-	height:auto; 	
+	width:auto; 
+	height:auto;
+	min-height: 3%;	
 	line-height:1em;	
 	z-index:4;
 	font-weight:bold;
@@ -10,11 +11,13 @@
 
 .chart-demo .window.knowledge { 
 	border:0.15em dotted red; 	
-	width:20em; 
+	/*width:20em;*/
+	max-width: 20em;
 }
 
 .chart-demo .window.concept { 
-	border:0.15em dotted green; 	
+	border:0.15em dotted green;
+	max-width: 10em;
 }
 
 /** HOVER EFFECTS **/
@@ -72,7 +75,7 @@
 .sup {
 	position:absolute;
 	bottom: 100%;
-	left:0px;
+	right:0px;
 	/*right: 5px;*/
 	width:auto;
 	height:auto;

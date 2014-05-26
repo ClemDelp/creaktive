@@ -26,6 +26,8 @@ global.Models.CKObject = Backbone.Model.extend({
         color: "#C0392B",
         members:[],
         attachment:[],
+        id_father: "",
+        id_fathers: [],
         top : "",
         left:"",
         project:""

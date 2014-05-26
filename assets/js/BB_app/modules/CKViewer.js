@@ -268,12 +268,7 @@ CKViewer.Views.MiddlePart = Backbone.View.extend({
         this.project = json.project;
     },
     render : function(){
-        //Action map
-        if(CKViewer.views.actions_view){CKViewer.views.actions_view.remove();}
-        CKViewer.views.actions_view = new CKViewer.Views.Actions({
-            eventAggregator  : this.eventAggregator
-        });
-        $(this.el).append(CKViewer.views.actions_view.render().el);
+        
         // Concepts map
         if(CKViewer.views.conceptsmap){CKViewer.views.conceptsmap.remove();}
         CKViewer.views.conceptsmap = new CKViewer.Views.ConceptsMap({
@@ -366,6 +361,13 @@ CKViewer.Views.Main = Backbone.View.extend({
     render : function(){
         $(this.el).empty();
         // Middle part
+        //Action map
+        if(CKViewer.views.actions_view){CKViewer.views.actions_view.remove();}
+        CKViewer.views.actions_view = new CKViewer.Views.Actions({
+            eventAggregator  : this.eventAggregator
+        });
+        $(this.el).append(CKViewer.views.actions_view.render().el);
+        // Concept map
         if(CKViewer.views.middle_part_view){CKViewer.views.middle_part_view.remove();}
         CKViewer.views.middle_part_view = new CKViewer.Views.MiddlePart({
             className        : "panel large-12 medium-12 small-12 columns",
