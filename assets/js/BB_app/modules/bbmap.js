@@ -3,13 +3,10 @@ bbmap.Views.Node = Backbone.View.extend({
         _.bindAll(this, 'render','savePosition','editTitle','addEndpoint','addLink','makeTarget');
         // Variables
         this.model = json.model;
-        this.endpoints = [];
+        this.endpoints = []; 
         // Events
         $(this.el).click(this.savePosition);
         this.listenTo(this.model,"change", this.render); 
-        //style
-        $(this.el).attr( "style","top: "+this.model.get('top')+"px;left:"+this.model.get('left')+"px");
-        
     },
     savePosition: function(e){
         if(($(this.el).position().top != 0)&&($(this.el).position().left != 0)){
@@ -26,7 +23,28 @@ bbmap.Views.Node = Backbone.View.extend({
         "dblclick .content" : "editTitle",
         "click .sup" : "removeModel",
         "click .ep" : "addConceptChild",
-        "click .ep2" : "addKnowledgeChild"
+        "click .ep2" : "addKnowledgeChild",
+        "click .ep3" : "reorganize",
+    },
+    reorganize : function(e){
+        e.preventDefault();
+        el_top = this.model.get('top');
+        el_left = this.model.get('left');
+        child_top = this.model.get('top') + 125;
+        el_childs = bbmap.views.main.concepts.where({id_father : this.model.get('id')});
+        nbr_childs = el_childs.length;
+        max_width = 100; // max width per element
+        space = 100;
+        L_childs = (max_width + space) * nbr_childs;
+        left_pos = (el_left + (max_width/2)) - (L_childs/2) + (space/2);
+        console.log("L_childs: ",L_childs," - el_left: ",el_left," - left_pos: ",left_pos)
+        // Set child position
+        el_childs.forEach(function(el){
+            el.set({top : child_top,left:left_pos}).save();
+            left_pos = left_pos+max_width+space;
+        });
+        bbmap.views.main.instance.reset();
+        bbmap.views.main.render();
     },
     addConceptChild : function(e){
         e.preventDefault();
@@ -168,40 +186,19 @@ bbmap.Views.Node = Backbone.View.extend({
     addLink : function(){
         // Add Link
         _this = this;
-        if((this.model.get('type') == "concept")&&(this.model.get('id_father')) && (this.model.get('id_father') != "none")){
-            try{
+        try{
+            if((this.model.get('type') == "concept")&&(this.model.get('id_father')) && (this.model.get('id_father') != "none")){
                 bbmap.views.main.instance.connect({uuids:[this.model.get('id_father')+"-bottom", this.model.get('id')+"-top" ]}); 
-            }catch(err){
-                console.log(err);
-            }
-        }else if((this.model.get('type') == 'knowledge') && (bbmap.views.main.ckOperator == true)){
-            // Get all CKLink 
-            k_links = bbmap.views.main.links.where({knowledge : this.model.get('id')});
-            console.log("liiiiiiiink: ",k_links)
-            try{
+            }else if((this.model.get('type') == 'knowledge') && (bbmap.views.main.ckOperator == true)){
+                // Get all CKLink 
+                k_links = bbmap.views.main.links.where({knowledge : this.model.get('id')});
                 k_links.forEach(function(link){
                     bbmap.views.main.instance.connect({uuids:[link.get('concept')+"-right", _this.model.get('id')+"-left" ]});     
-                }); 
-            }catch(err){
-                console.log(err);
-            } 
+                });         
+            }
+        }catch(err){
+            console.log(err);
         }
-        // if((this.model.get('type') == "concept") || ((this.model.get('type') == 'knowledge') && (bbmap.views.main.ckOperator == true))){
-        //     if((this.model.get('id_father')) && (this.model.get('id_father') != "none")){
-        //         try{
-        //             if(this.model.get('type') == "concept"){
-        //                 bbmap.views.main.instance.connect({uuids:[this.model.get('id_father')+"-bottom", this.model.get('id')+"-top" ]}); 
-        //             }else if(this.model.get('type') == "knowledge"){
-        //                 this.model.get('id_fathers').forEach(function(id_father){
-        //                     bbmap.views.main.instance.connect({uuids:[id_father+"-right", _this.model.get('id')+"-left" ]});     
-        //                 }); 
-        //             }
-        //         }catch(err){
-        //             console.log(err);
-        //         }  
-        //     }   
-                
-        // }
         // Enable drag&drop
         bbmap.views.main.instance.draggable($(this.el));  
     },
@@ -223,12 +220,16 @@ bbmap.Views.Node = Backbone.View.extend({
         
     },
     render : function(){
+        //style
+        $(this.el).attr( "style","top: "+this.model.get('top')+"px;left:"+this.model.get('left')+"px");
+        // Init
         $(this.el).empty();
         $(this.el).append('<span class="editTitle">'+this.model.get('title')+'</span>');
         if((this.model.get('type') == "knowledge")&&(bbmap.views.main.KcontentVisibility == true))$(this.el).append('<span class="content">'+this.model.get('content')+'</span>');
         if((this.model.get('type') == "concept")&&(bbmap.views.main.CcontentVisibility == true))$(this.el).append('<span class="content">'+this.model.get('content')+'</span>');
         if(this.model.get('type') == 'concept') $(this.el).append('<div class="ep">+</div>')
         if(this.model.get('type') == 'concept') $(this.el).append('<div class="ep2">+</div>')
+        if(this.model.get('type') == 'concept') $(this.el).append('<div class="ep3">*</div>')
         $(this.el).append('<div class="sup">x</div>')
         return this;
     }
@@ -341,38 +342,23 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .zoomout" : "zoomout",
         "click .resetZoom" : "resetZoom",
         "click .resetPosition" : "resetPosition",
-        "click .reorganize" : "reorganize",
+        // "click .reorganize" : "reorganize",
     },
-    reorganize : function(e){
-        //e.preventDefault();
-        max_large = 0;
-        // Build the dictionary k-catg
-        dictionary = {};
-        // creation des clefs
-        this.concepts.each(function(concept){
-            dictionary[concept.get('id')] = [];
-        });
-        this.concepts.each(function(concept){
-            if((concept.get('id_father') != "none")&&( concept.get('id_father') != "")) dictionary[concept.get('id_father')].unshift(dictionary[concept.get('id')]);
-        });
+    // reorganize : function(e){
+    //     e.preventDefault();
+    //     max_large = 0;
+    //     // Build the dictionary k-catg
+    //     dictionary = {};
+    //     // creation des clefs
+    //     this.concepts.each(function(concept){
+    //         dictionary[concept.get('id')] = [];
+    //     });
+    //     this.concepts.each(function(concept){
+    //         if((concept.get('id_father') != "none")&&( concept.get('id_father') != "")) dictionary[concept.get('id_father')].unshift(concept.get('id'));
+    //     });
         
-        console.log("dictionnary: ",dictionary)
-        // this.knowledges.each(function(k){
-        //     k.get('tags').forEach(function(tag){
-        //         dictionary[tag].knowledges = _.union(dictionary[tag].knowledges,[k])
-        //     });
-        // });
-        // for(var key in dictionary){
-        //     $(_this.el).append(new category.Views.Category({
-        //         notifications   : _this.notifications,
-        //         knowledges      : new Backbone.Collection(dictionary[key].knowledges),
-        //         poche           : dictionary[key].model,
-        //         poches          : _this.poches,
-        //         user            : _this.user,
-        //         eventAggregator : _this.eventAggregator
-        //     }).render().el);
-        // }
-    },
+    //     console.log("dictionnary: ",dictionary)
+    // },
     resetPosition : function(e){
         e.preventDefault();
         $(this.map_el).attr( "style","top:0px;left:0px");

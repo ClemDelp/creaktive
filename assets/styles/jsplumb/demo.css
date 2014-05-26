@@ -3,7 +3,7 @@
 	border:0.1em dotted #d4e06b; 	
 	width:auto; 
 	height:auto;
-	min-height: 3%;	
+	
 	line-height:1em;	
 	z-index:4;
 	font-weight:bold;
@@ -17,6 +17,7 @@
 
 .chart-demo .window.concept { 
 	border:0.15em dotted green;
+	min-height: 3%;	
 	max-width: 10em;
 }
 
@@ -71,6 +72,20 @@
 	-moz-transition:-moz-box-shadow 0.25s ease-in;
 	transition:box-shadow 0.25s ease-in;*/
 }
+.ep3 {
+	position:absolute;
+	bottom: 100%;
+	left: 0px;
+	width:1em;
+	height:1em;
+	/*background-color:red;*/
+	color : blue;
+	cursor:pointer;
+	/*box-shadow: 0px 0px 2px black;
+	-webkit-transition:-webkit-box-shadow 0.25s ease-in;
+	-moz-transition:-moz-box-shadow 0.25s ease-in;
+	transition:box-shadow 0.25s ease-in;*/
+}
 
 .sup {
 	position:absolute;
@@ -102,6 +117,11 @@
 .ep2:hover {
 	box-shadow: 0px 0px 6px black;
 	background-color:red;
+	color:white;
+}
+.ep3:hover {
+	box-shadow: 0px 0px 6px black;
+	background-color:blue;
 	color:white;
 }
 
