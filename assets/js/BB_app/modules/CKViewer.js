@@ -277,7 +277,7 @@ CKViewer.Views.MiddlePart = Backbone.View.extend({
         // Concepts map
         if(CKViewer.views.conceptsmap){CKViewer.views.conceptsmap.remove();}
         CKViewer.views.conceptsmap = new CKViewer.Views.ConceptsMap({
-            className        : "large-8 medium-8 small-8 columns",
+            className        : "large-7 medium-7 small-7 columns",
             id               : "conceptes",
             eventAggregator  : this.eventAggregator,
             concepts         : this.concepts
@@ -287,7 +287,7 @@ CKViewer.Views.MiddlePart = Backbone.View.extend({
         // Knowledge map
         if(CKViewer.views.knowledgesmap){CKViewer.views.knowledgesmap.remove();}
         CKViewer.views.knowledgesmap = new CKViewer.Views.KnowledgesMap({
-            className        : "large-4 medium-4 small-4 columns",
+            className        : "large-5 medium-5 small-5 columns",
             links            : this.links,
             knowledges       : this.knowledges,
             eventAggregator  : this.eventAggregator,
