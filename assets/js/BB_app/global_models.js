@@ -27,7 +27,6 @@ global.Models.CKObject = Backbone.Model.extend({
         members:[],
         attachment:[],
         id_father: "",
-        id_fathers: [],
         top : "",
         left:"",
         project:""

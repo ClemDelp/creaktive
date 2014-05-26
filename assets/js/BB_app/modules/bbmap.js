@@ -56,10 +56,11 @@ bbmap.Views.Node = Backbone.View.extend({
     },
     addKnowledgeChild : function(e){
         e.preventDefault();
+        // On crée la K
         new_knowledge = new global.Models.Knowledge({
             id : guid(),
             type : "knowledge",
-            id_fathers: [this.model.get('id')],
+            //id_fathers: [this.model.get('id')],
             top : ($(this.el).position().top + 100) / bbmap.views.main.zoom,
             left : $(this.el).position().left / bbmap.views.main.zoom,
             project: bbmap.views.main.project.get('id'),
@@ -67,15 +68,28 @@ bbmap.Views.Node = Backbone.View.extend({
             user: bbmap.views.main.user
         });
         new_knowledge.save();
+        // On l'ajoute à la collection
         bbmap.views.main.knowledges.add(new_knowledge);
-
+        // On crée le link entre C et K
+        new_cklink = new global.Models.CKLink({
+            id :guid(),
+            user : bbmap.views.main.user,
+            date : getDate(),
+            concept : this.model.get('id'),
+            knowledge : new_knowledge.get('id')
+        });
+        new_cklink.save();
+        // On ajoute le link à la collection
+        bbmap.views.main.links.add(new_cklink);
+        // On crée la vue
         new_view = new bbmap.Views.Node({
             className : "window knowledge",
             id : new_knowledge.get('id'),
             model : new_knowledge,
         });
+        // On l'ajoute à la map
         bbmap.views.main.map_el.append(new_view.render().el);
-        
+        // Puis on ajoute les elements de la bulle
         new_view.addEndpoint();
         new_view.addLink();
         new_view.makeTarget();
@@ -160,10 +174,13 @@ bbmap.Views.Node = Backbone.View.extend({
             }catch(err){
                 console.log(err);
             }
-        }else if((this.model.get('type') == 'knowledge') &&(this.model.get('id_fathers')) && (this.model.get('id_fathers').length > 0) && (bbmap.views.main.ckOperator == true)){
+        }else if((this.model.get('type') == 'knowledge') && (bbmap.views.main.ckOperator == true)){
+            // Get all CKLink 
+            k_links = bbmap.views.main.links.where({knowledge : this.model.get('id')});
+            console.log("liiiiiiiink: ",k_links)
             try{
-                this.model.get('id_fathers').forEach(function(id_father){
-                    bbmap.views.main.instance.connect({uuids:[id_father+"-right", _this.model.get('id')+"-left" ]});     
+                k_links.forEach(function(link){
+                    bbmap.views.main.instance.connect({uuids:[link.get('concept')+"-right", _this.model.get('id')+"-left" ]});     
                 }); 
             }catch(err){
                 console.log(err);
@@ -324,6 +341,37 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .zoomout" : "zoomout",
         "click .resetZoom" : "resetZoom",
         "click .resetPosition" : "resetPosition",
+        "click .reorganize" : "reorganize",
+    },
+    reorganize : function(e){
+        //e.preventDefault();
+        max_large = 0;
+        // Build the dictionary k-catg
+        dictionary = {};
+        // creation des clefs
+        this.concepts.each(function(concept){
+            dictionary[concept.get('id')] = [];
+        });
+        this.concepts.each(function(concept){
+            if((concept.get('id_father') != "none")&&( concept.get('id_father') != "")) dictionary[concept.get('id_father')].unshift(dictionary[concept.get('id')]);
+        });
+        
+        console.log("dictionnary: ",dictionary)
+        // this.knowledges.each(function(k){
+        //     k.get('tags').forEach(function(tag){
+        //         dictionary[tag].knowledges = _.union(dictionary[tag].knowledges,[k])
+        //     });
+        // });
+        // for(var key in dictionary){
+        //     $(_this.el).append(new category.Views.Category({
+        //         notifications   : _this.notifications,
+        //         knowledges      : new Backbone.Collection(dictionary[key].knowledges),
+        //         poche           : dictionary[key].model,
+        //         poches          : _this.poches,
+        //         user            : _this.user,
+        //         eventAggregator : _this.eventAggregator
+        //     }).render().el);
+        // }
     },
     resetPosition : function(e){
         e.preventDefault();
@@ -388,7 +436,6 @@ bbmap.Views.Main = Backbone.View.extend({
         new_knowledge = new global.Models.Knowledge({
             id : guid(),
             type : "knowledge",
-            id_fathers: [],
             project: this.project.get('id'),
             title: "new knowledge",
             user: this.user
@@ -447,8 +494,8 @@ bbmap.Views.Main = Backbone.View.extend({
             var resp = confirm("Delete connection?");
             if(conn.scope == "cTok"){
                 if(resp == true){
-                    k_target = _this.knowledges.get(conn.targetId);
-                    k_target.set({id_fathers : _.without(k_target.get('id_fathers'), conn.sourceId)}).save(); 
+                    // k_target = _this.knowledges.get(conn.targetId);
+                    // k_target.set({id_fathers : _.without(k_target.get('id_fathers'), conn.sourceId)}).save(); 
                     links_to_remove = _this.links.where({concept : conn.sourceId, knowledge : conn.targetId});
                     links_to_remove.forEach(function(link){
                         link.destroy();
@@ -480,8 +527,8 @@ bbmap.Views.Main = Backbone.View.extend({
                 console.log("source: ",info.sourceId," - target: ",info.targetId)
                 k_target = bbmap.views.main.knowledges.get(info.targetId);
                 console.log('k_target: ',k_target)
-                new_id_fathers = _.union(k_target.get('id_fathers'), [info.sourceId]);
-                k_target.set({id_fathers : new_id_fathers}).save();
+                // new_id_fathers = _.union(k_target.get('id_fathers'), [info.sourceId]);
+                // k_target.set({id_fathers : new_id_fathers}).save();
                 // CKLink
                 new_cklink = new global.Models.CKLink({
                     id :guid(),
