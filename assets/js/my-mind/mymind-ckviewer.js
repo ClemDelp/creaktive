@@ -4327,7 +4327,7 @@ MM.Layout.getAll = function() {
 			 		var width= MM.App.width;
              		var frame=document.getElementById("main").offsetWidth;
              		var s=Math.floor(10*(frame/width))-10;
-             		MM.App.adjustFontSize(s);
+             		MM.App.adjustFontSize1(s);
              		$("#map.item")[0].style.left="5%";
              		$("#map.item")[0].style.top="10%";
  				}
@@ -4612,7 +4612,7 @@ MM.Layout.getAll = function() {
  		var width= MM.App.width;
         var frame=document.getElementById("main").offsetWidth;
         var s=Math.floor(10*(frame/width))-10;
-        MM.App.adjustFontSize(s);
+        MM.App.adjustFontSize1(s);
         $("#map.item")[0].style.left="5%";
         $("#map.item")[0].style.top="10%";
  	},
@@ -4645,7 +4645,8 @@ MM.Layout.getAll = function() {
  	},
 
  	adjustFontSize1: function(diff) {
- 		this._fontSize = Math.max(10, 100 + 10*diff);
+ 		this._fontSize = Math.max(10, this._fontSize + 10*diff);
+ 		this._fontSize = Math.min(200,this._fontSize);
  		this._port.style.fontSize = this._fontSize + "%";
  		this.map.update();
  		this.map.ensureItemVisibility(this.current);
