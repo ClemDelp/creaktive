@@ -3,6 +3,23 @@
 	background-image: url("/img/pattern.png");
 }
 
+
+
+.demo {
+  	top: -500px;
+	left: -500px;
+	position: relative;
+  	/*width:100%;*/
+  	width:10000px;
+  	background-color:white;    
+  	overflow:auto;  
+  	/*margin-top: 53px;
+  	margin-bottom:25px;*/
+  	height: 1500px;
+}
+
+
+
 /** ELEMENTS **/
 .chart-demo .window { 
 	border:0.1em dotted #d4e06b; 	

@@ -104,17 +104,6 @@ body {
   max-height: 1000px;
 }
 
-.demo {
-  position: relative;
-  /*width:100%;*/
-  width:10000px;
-  background-color:white;    
-  overflow:auto;  
-  /*margin-top: 53px;
-  margin-bottom:25px;*/
-  height: 1500px;
-}
-
 .explanation {
   position: absolute;
   text-align: center;
