@@ -12,8 +12,8 @@ bbmap.Views.Node = Backbone.View.extend({
         if(($(this.el).position().top != 0)&&($(this.el).position().left != 0)){
             // Si la view n'a pas été supprimée on save
             this.model.set({
-                top:$(this.el).position().top / bbmap.views.main.zoom,
-                left:$(this.el).position().left / bbmap.views.main.zoom
+                top:$(this.el).position().top / bbmap.views.main.zoom.get('val'),
+                left:$(this.el).position().left / bbmap.views.main.zoom.get('val')
             }).save();    
         }
         console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
@@ -43,8 +43,7 @@ bbmap.Views.Node = Backbone.View.extend({
             el.set({top : child_top,left:left_pos}).save();
             left_pos = left_pos+max_width+space;
         });
-        bbmap.views.main.instance.reset();
-        bbmap.views.main.render();
+        bbmap.views.main.reset();
     },
     addConceptChild : function(e){
         e.preventDefault();
@@ -52,8 +51,8 @@ bbmap.Views.Node = Backbone.View.extend({
             id : guid(),
             type : "concept",
             id_father: this.model.get('id'),
-            top : ($(this.el).position().top + 100) / bbmap.views.main.zoom,
-            left : $(this.el).position().left / bbmap.views.main.zoom,
+            top : ($(this.el).position().top + 100) / bbmap.views.main.zoom.get('val'),
+            left : $(this.el).position().left / bbmap.views.main.zoom.get('val'),
             project: bbmap.views.main.project.get('id'),
             title: "new concept",
             user: bbmap.views.main.user
@@ -79,8 +78,8 @@ bbmap.Views.Node = Backbone.View.extend({
             id : guid(),
             type : "knowledge",
             //id_fathers: [this.model.get('id')],
-            top : ($(this.el).position().top + 100) / bbmap.views.main.zoom,
-            left : $(this.el).position().left / bbmap.views.main.zoom,
+            top : ($(this.el).position().top + 100) / bbmap.views.main.zoom.get('val'),
+            left : $(this.el).position().left / bbmap.views.main.zoom.get('val'),
             project: bbmap.views.main.project.get('id'),
             title: "new knowledge",
             user: bbmap.views.main.user
@@ -294,7 +293,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.poches             = json.poches;
         this.links              = json.links;
         this.eventAggregator    = json.eventAggregator;
-        this.zoom               = 1;
+        this.zoom               = new Backbone.Model({val : 1});
         this.KcontentVisibility = true;
         this.CcontentVisibility = false;
         this.ckOperator         = true;
@@ -328,6 +327,7 @@ bbmap.Views.Main = Backbone.View.extend({
         bbmap.views.editBox = new bbmap.Views.EditBox({el : "#editBox"});
         ////////////////////////////
         // Events
+        this.listenTo(this.zoom,'change',this.updateZoomDisplay,this)
         this.listenTo(this.notifications,'change',this.actualizeNotification,this);
         this.listenTo(this.notifications,'add',this.actualizeNotification,this);
         this.listenTo(this.notifications,'remove',this.actualizeNotification,this);     
@@ -344,6 +344,9 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .resetPosition" : "resetPosition",
         // "click .reorganize" : "reorganize",
     },
+    updateZoomDisplay : function(){
+        this.bar_el.find('#zoom_val').html(this.zoom.get('val'))
+    },
     // reorganize : function(e){
     //     e.preventDefault();
     //     max_large = 0;
@@ -359,48 +362,50 @@ bbmap.Views.Main = Backbone.View.extend({
         
     //     console.log("dictionnary: ",dictionary)
     // },
+    reset : function(e){
+        this.instance.repaintEverything();
+        this.setZoom(this.zoom.get('val'));
+        //this.render();
+    },
     resetPosition : function(e){
         e.preventDefault();
         $(this.map_el).attr( "style","top:0px;left:0px");
-        this.setZoom(this.zoom);
+        this.setZoom(this.zoom.get('val'));
     },
     resetZoom : function(e){
         e.preventDefault();
-        this.zoom = 1;
-        this.setZoom(1);
+        this.zoom.set({val : 1});
+        this.setZoom(this.zoom.get('val'));
     },
     setCKOperator : function(e){
         e.preventDefault();
         if(this.ckOperator == true){this.ckOperator = false}else{this.ckOperator = true;}
-        this.instance.reset();
-        this.render();
+        this.reset();
     },
     setKcontentVisibility : function(e){
         e.preventDefault();
         if(this.KcontentVisibility == true){this.KcontentVisibility = false}else{this.KcontentVisibility = true;} 
-        this.instance.reset();
-        this.render();
+        this.reset();
     },
     setCcontentVisibility : function(e){
         e.preventDefault();
         if(this.CcontentVisibility == true){this.CcontentVisibility = false}else{this.CcontentVisibility = true;} 
-        this.instance.reset();
-        this.render();
+        this.reset();
     },
     zoomin : function(e){
         e.preventDefault();
-        this.zoom = this.zoom - 0.1;
-        this.setZoom(this.zoom);
+        new_zoom = Math.round((this.zoom.get('val') - 0.1)*100)/100;
+        this.zoom.set({val : new_zoom});
+        this.setZoom(this.zoom.get('val'));
     },
     zoomout : function(e){
         e.preventDefault();
-        this.zoom = this.zoom + 0.1;
-        this.setZoom(this.zoom);
+        new_zoom = Math.round((this.zoom.get('val') + 0.1)*100)/100;
+        this.zoom.set({val : new_zoom});
+        this.setZoom(this.zoom.get('val'));
     },
     setZoom : function(zoom) {
       transformOrigin = [ 0.5, 0.5 ];
-      console.log(this.el)
-      console.log(this.map_el[0])
       el = this.map_el[0];
       var p = [ "webkit", "moz", "ms", "o" ],
           s = "scale(" + zoom + ")",
@@ -543,6 +548,7 @@ bbmap.Views.Main = Backbone.View.extend({
         ///////////////////////
         // Action bar
         this.bar_el.append(this.template_actionbar());
+        this.bar_el.find("#zoom_val").html(this.zoom.get('val'))
         ///////////////////////
         // Concepts views
         this.concepts.each(function(concept){
@@ -587,22 +593,3 @@ bbmap.Views.Main = Backbone.View.extend({
         return this;
     }
 });
-
-
-// window.setZoom = function(zoom, instance, transformOrigin, el) {
-//   transformOrigin = transformOrigin || [ 0.5, 0.5 ];
-//   el = el || instance.Defaults.Container;
-//   var p = [ "webkit", "moz", "ms", "o" ],
-//       s = "scale(" + zoom + ")",
-//       oString = (transformOrigin[0] * 100) + "% " + (transformOrigin[1] * 100) + "%";
-
-//   for (var i = 0; i < p.length; i++) {
-//     el.style[p[i] + "Transform"] = s;
-//     el.style[p[i] + "TransformOrigin"] = oString;
-//   }
-
-//   el.style["transform"] = s;
-//   el.style["transformOrigin"] = oString;
-
-//   instance.setZoom(zoom);    
-// };
