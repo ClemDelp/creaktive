@@ -210,6 +210,7 @@ var category = {
       knowledges        : global.collections.Knowledges,
       poches            : global.collections.Poches,
       user              : global.models.current_user,
+      users             : global.collections.Users,
       eventAggregator   : global.eventAggregator,
     });   
     this.views.main.render()

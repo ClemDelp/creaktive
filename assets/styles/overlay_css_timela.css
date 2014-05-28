@@ -5,6 +5,10 @@
   background:url("/img/Creaktive_Sprites_02.png") 0 0 no-repeat;
 }
 
+#categories_grid{
+	min-height: 600px;
+}
+
 body{
 	/*background-image:url(/img/pattern.png);*/
 	background-color: #f2f2f2;

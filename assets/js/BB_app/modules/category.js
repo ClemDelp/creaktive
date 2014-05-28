@@ -121,9 +121,14 @@ category.Views.ActionBar = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
-        this.poches = json.poches;   
+        this.poches = json.poches; 
+        this.filters = new Backbone.Collection();
+        // Events
+        this.listenTo(this.filters,"add",this.render);  
+        this.listenTo(this.filters,"remove",this.render);  
         // Templates
         this.template = _.template($('#category-actionBar-template').html());
+        this.template_filters = _.template($('#category-filters-template').html());
     },
     events : {
         "click .remove" : "removeKselected",
@@ -131,6 +136,28 @@ category.Views.ActionBar = Backbone.View.extend({
         "click .uncategorized" : "uncategorized",
         "click .copy" : "copyTo",
         "click .move" : "moveTo",
+        "click .addFilter" : "addFilter",
+        "click .removeFilter" : "removeFilter",
+    },
+    removeFilter : function(e){
+        e.preventDefault();
+        console.log(this.filters)
+        this.filters.remove(e.target.getAttribute('data-filter-id'));
+    },
+    addFilter : function(e){
+        e.preventDefault();
+        type = e.target.getAttribute('data-filter-type');
+        val = e.target.getAttribute('data-filter-val');
+        f = new global.Models.Filter();
+        if(type == 'state'){
+            f.set({id : guid(),type : type,model : val});
+        }else if(type == 'user'){
+            f.set({id : guid(),type : type,model :  category.views.main.users.get(val)});
+        }else if(type == 'category'){
+            f.set({id : guid(),type : type,model :  category.views.main.poches.get(val)});
+        }
+        this.filters.add(f);
+        console.log(this.filters);
     },
     copyTo : function(e){
         e.preventDefault();
@@ -209,11 +236,20 @@ category.Views.ActionBar = Backbone.View.extend({
         category.views.main.knowledges.add(newK);
     },
     render : function(){
-        $(this.el).html('');
+        $(this.el).empty();
         // Add ActionBar
         $(this.el).append(this.template({
-            poches : this.poches.toJSON()
+            poches : this.poches.toJSON(),
+            users : category.views.main.users.toJSON()
         }));
+        // Custom filters before send to the template
+        filters_custom = new Backbone.Collection();
+        this.filters.each(function(filter){
+            if(filter.get('type') == 'user') filters_custom.add(new Backbone.Model({id:filter.get('id'),title:filter.get('model').get('name')}));
+            else if(filter.get('type') == 'state') filters_custom.add(new Backbone.Model({id:filter.get('id'),title:filter.get('model')}));
+            else if(filter.get('type') == 'category') filters_custom.add(new Backbone.Model({id:filter.get('id'),title:filter.get('model').get('title')}));
+        });
+        if(this.filters.length > 0) $(this.el).append(this.template_filters({filters_custom : filters_custom.toJSON()}));
 
         return this;
     }
@@ -232,6 +268,7 @@ category.Views.Main = Backbone.View.extend({
         this.poches             = json.poches;
         this.project            = json.project;
         this.user               = json.user;
+        this.users              = json.users;
 
         this.eventAggregator    = json.eventAggregator;
         this.Kselected          = new Backbone.Collection();        

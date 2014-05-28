@@ -59,15 +59,41 @@
             <a href="#" class="button small secondary remove">remove</a>
         </div>
         <div class="small-4 large-4 medium-4 columns">
-            <a href="#" class="button secondary tiny notLinked">not linked</a>
-            <a href="#" class="button secondary tiny notCategorized">not categorised</a>
-            <a href="#" class="button secondary tiny validated">Validated</a>
-            <a href="#" class="button secondary tiny processing">Processing</a>
-            <a href="#" class="button secondary tiny missing">Missing</a>
+            <a href="#" data-dropdown="dropfilters" class="tiny secondary button dropdown">States</a>
+            <ul id="dropfilters" data-dropdown-content class="f-dropdown">
+                <li><a href="#" class="addFilter" data-filter-type="state" data-filter-val="notLinked">not linked</a></li>
+                <li><a href="#" class="addFilter" data-filter-type="state" data-filter-val="notCategorized">not categorised</a></li>
+                <li><a href="#" class="addFilter" data-filter-type="state" data-filter-val="validated">Validated</a></li>
+                <li><a href="#" class="addFilter" data-filter-type="state" data-filter-val="processing">Processing</a></li>
+                <li><a href="#" class="addFilter" data-filter-type="state" data-filter-val="missing">Missing</a></li>  
+            </ul>
+            <a href="#" data-dropdown="dropusers" class="tiny secondary button dropdown">Users</a>
+            <ul id="dropusers" data-dropdown-content class="f-dropdown">
+                {{ _.each(users, function(user){ }}
+                    <li><a href="#" class="addFilter" data-filter-type="user" data-filter-val="{{-user.id}}">{{-user.name}}</a></li>
+                {{ }); }} 
+            </ul>
+            <a href="#" data-dropdown="dropcategories" class="tiny secondary button dropdown">Categories</a>
+            <ul id="dropcategories" data-dropdown-content class="f-dropdown">
+                {{ _.each(poches, function(poche){ }}
+                    <li><a href="#" class="addFilter" data-filter-type="category" data-filter-val="{{-poche.id}}">{{-poche.title}}</a></li>
+                {{ }); }}  
+            </ul>
         </div>
         
     </div>
     <div class="row"></div>
+</script>
+<!-- //////////////////////////////////////////////////////////////////////: -->
+<script type="text/template" id="category-filters-template">
+    <div class="row large-12 medium-12 small-12">
+        <ul class="breadcrumbs">
+            <li>Context : </li>
+            {{ _.each(filters_custom, function(filter){ }}
+                <li><a href="#" class="removeFilter" data-filter-id="{{-filter.id}}">{{-filter.title}}</a></li>
+            {{ }); }}
+        </ul>
+    </div>
 </script>
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <script type="text/template" id="category-notCategorized-template">

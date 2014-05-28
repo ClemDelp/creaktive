@@ -297,6 +297,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.KcontentVisibility = true;
         this.CcontentVisibility = false;
         this.ckOperator         = true;
+        this.positionRef        = 550;
         // Templates
         this.bar_el = $(this.el).find('#actionbar');
         this.map_el = $(this.el).find('#map');
@@ -347,21 +348,6 @@ bbmap.Views.Main = Backbone.View.extend({
     updateZoomDisplay : function(){
         this.bar_el.find('#zoom_val').html(this.zoom.get('val'))
     },
-    // reorganize : function(e){
-    //     e.preventDefault();
-    //     max_large = 0;
-    //     // Build the dictionary k-catg
-    //     dictionary = {};
-    //     // creation des clefs
-    //     this.concepts.each(function(concept){
-    //         dictionary[concept.get('id')] = [];
-    //     });
-    //     this.concepts.each(function(concept){
-    //         if((concept.get('id_father') != "none")&&( concept.get('id_father') != "")) dictionary[concept.get('id_father')].unshift(concept.get('id'));
-    //     });
-        
-    //     console.log("dictionnary: ",dictionary)
-    // },
     reset : function(e){
         this.instance.repaintEverything();
         this.setZoom(this.zoom.get('val'));
@@ -369,7 +355,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     resetPosition : function(e){
         e.preventDefault();
-        $(this.map_el).attr( "style","top:0px;left:0px");
+        $(this.map_el).attr( "style","top:-"+this.positionRef+"px;left:-"+this.positionRef+"px");
         this.setZoom(this.zoom.get('val'));
     },
     resetZoom : function(e){
@@ -380,7 +366,7 @@ bbmap.Views.Main = Backbone.View.extend({
     setCKOperator : function(e){
         e.preventDefault();
         if(this.ckOperator == true){this.ckOperator = false}else{this.ckOperator = true;}
-        this.reset();
+        this.render();
     },
     setKcontentVisibility : function(e){
         e.preventDefault();
@@ -427,6 +413,8 @@ bbmap.Views.Main = Backbone.View.extend({
         new_knowledge = new global.Models.Knowledge({
             id : guid(),
             type : "knowledge",
+            top : this.positionRef,
+            left: this.positionRef,
             project: this.project.get('id'),
             title: "new knowledge",
             user: this.user
@@ -452,6 +440,8 @@ bbmap.Views.Main = Backbone.View.extend({
             id : guid(),
             type : "concept",
             id_father: "none",
+            top : this.positionRef,
+            left: this.positionRef,
             project: this.project.get('id'),
             title: "new concept",
             user: this.user
@@ -514,24 +504,25 @@ bbmap.Views.Main = Backbone.View.extend({
             }   
         });
         this.instance.bind("connection", function(info, originalEvent) {
-            if(info.connection.scope == "cTok"){
-                console.log("source: ",info.sourceId," - target: ",info.targetId)
-                k_target = bbmap.views.main.knowledges.get(info.targetId);
-                console.log('k_target: ',k_target)
-                // new_id_fathers = _.union(k_target.get('id_fathers'), [info.sourceId]);
-                // k_target.set({id_fathers : new_id_fathers}).save();
-                // CKLink
-                new_cklink = new global.Models.CKLink({
-                    id :guid(),
-                    user : _this.user,
-                    date : getDate(),
-                    concept : info.sourceId,
-                    knowledge : info.targetId
-                });
-                new_cklink.save();
+            if(originalEvent){
+                if(info.connection.scope == "cTok"){
+                    console.log("source: ",info.sourceId," - target: ",info.targetId)
+                    k_target = bbmap.views.main.knowledges.get(info.targetId);
+                    console.log('k_target: ',k_target)
+                    // CKLink
+                    new_cklink = new global.Models.CKLink({
+                        id :guid(),
+                        user : _this.user,
+                        date : getDate(),
+                        concept : info.sourceId,
+                        knowledge : info.targetId
+                    });
+                    new_cklink.save();
+                    _this.links.add(new_cklink);
 
-            }else{
-                bbmap.views.main.concepts.get(info.targetId).set({id_father : info.sourceId}).save();
+                }else{
+                    bbmap.views.main.concepts.get(info.targetId).set({id_father : info.sourceId}).save();
+                }    
             }
         });
         ///////////////////////
