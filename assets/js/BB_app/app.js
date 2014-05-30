@@ -211,6 +211,7 @@ var category = {
       poches            : global.collections.Poches,
       user              : global.models.current_user,
       users             : global.collections.Users,
+      links             : global.collections.Links,
       eventAggregator   : global.eventAggregator,
     });   
     this.views.main.render()

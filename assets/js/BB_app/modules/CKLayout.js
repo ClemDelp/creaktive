@@ -181,10 +181,11 @@ CKLayout.Views.Main = Backbone.View.extend({
         ///////////////////////////////////////    
         }else{
             if (confirm("All references attached to this item will also be removed, would you continue?")) {
+                this.eventAggregator.trigger('removeModel');
                 this.model.destroy();
             }
         }
-        this.eventAggregator.trigger('removeModel');
+        
     },
     updateLabel : function(e){
         e.preventDefault();
