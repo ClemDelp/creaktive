@@ -345,6 +345,9 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .resetPosition" : "resetPosition",
         // "click .reorganize" : "reorganize",
     },
+    hello : function(name){
+        return "hello "+name;
+    },
     updateZoomDisplay : function(){
         this.bar_el.find('#zoom_val').html(this.zoom.get('val'))
     },
