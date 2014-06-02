@@ -9,7 +9,7 @@ global.Models.File = Backbone.Model.extend({
     },
 
 });
-
+/***************************************/
 global.Models.CKObject = Backbone.Model.extend({
     defaults : {
         id:"",
@@ -17,7 +17,7 @@ global.Models.CKObject = Backbone.Model.extend({
         user: "",
         type : "",
         title : "",
-        content : "",/*use for url post type*/
+        content : "",
         tags : [],
         comments: [],
         date : "",
@@ -36,6 +36,21 @@ global.Models.CKObject = Backbone.Model.extend({
         serverObj.members = new global.Collections.UsersCollection(serverObj.members);
         return serverObj;
     },
+});
+/***************************************/
+global.Models.Backup = Backbone.Model.extend({
+    defaults : {
+        id : "",
+        date : "",
+        date2 : "",
+        project_id : ""
+    },
+    initialize : function Poche() {
+        this.urlRoot = "backup";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
 });
 /***************************************/
 global.Models.Filter = Backbone.Model.extend({

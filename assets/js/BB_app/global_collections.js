@@ -28,6 +28,15 @@ global.Collections.Knowledges = Backbone.Collection.extend({
     }
 });
 /***************************************/
+global.Collections.Backups = Backbone.Collection.extend({
+    model : global.Models.Backup,
+    initialize : function() {
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+/***************************************/
 global.Collections.Filters = Backbone.Collection.extend({
     model : global.Models.Filter,
     initialize : function() {

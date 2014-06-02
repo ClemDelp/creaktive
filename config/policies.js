@@ -123,6 +123,10 @@
     "*" : ["authenticated", "canWrite"]
   },
 
+  "BackupController" : {
+    "*" : ["authenticated"]
+  },
+
   "CategoryController" : {
     "categoryview" : ["authenticated", "allowedProjects","forceHTTPs"],
     "find" : ["authenticated", "canRead"],

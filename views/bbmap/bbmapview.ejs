@@ -56,21 +56,24 @@
       json.links = <%- links %>;
       json.notifications = <%- notifications %>;
       json.permissions = <%- permissions %>;
-
+      json.backups = <%- backups %>;
+      
       _.each(json.knowledges, function(k){
         k.comments = new global.Collections.Comments(k.comments);
         k.members = new global.Collections.UsersCollection(k.members);
-      })
+      });
+
       _.each(json.concepts, function(c){
         c.comments = new global.Collections.Comments(c.comments);
         c.members = new global.Collections.UsersCollection(c.members);
-      })
+      });
 
       global.init(json, function(){
         // Modules
         title.init(json.project,"bbmap");
         topbar.init();
         bbmap.init();
+        
         /*activat of "hashchange events's monitoring"*/
         Backbone.history.start();  
         $(document).foundation();

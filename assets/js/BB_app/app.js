@@ -26,6 +26,7 @@ var global = {
     this.collections.Concepts = new this.Collections.ConceptsCollection(json.concepts);
     this.collections.Links = new this.Collections.CKLinks(json.links);
     this.collections.Permissions = new this.Collections.PermissionsCollection(json.permissions);
+    this.collections.Backups = new this.Collections.Backups(json.backups);
     // Notifications
     this.collections.all_notifs = new this.Collections.NotificationsCollection(json.notifications);
     this.collections.all_notifs.on('add',this.prepareNotifications,this)
@@ -36,7 +37,7 @@ var global = {
     this.collections.concept_notifs = new Backbone.Collection();
     this.collections.category_notifs = new Backbone.Collection();
     this.prepareNotifications();
-  
+    
     callback();
   },
   prepareNotifications : function(){
@@ -63,14 +64,32 @@ var global = {
     });
 
     console.log("all",global.collections.all_notifs.length)
-    console.log("all",global.collections.personal_notifs.length)
+    console.log("perso",global.collections.personal_notifs.length)
     console.log("kno",global.collections.knowledge_notifs.length)
     console.log("con",global.collections.concept_notifs.length)
     console.log("cat",global.collections.category_notifs.length)
   }
 };
-/////////////////////////////////////////////////////////////////////////////////////////////
-// MANAGER PART
+/////////////////////////////////////////////////
+var cron = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    this.views.main = new this.Views.Main({
+      backups : global.collections.Backups,
+      project     : global.models.currentProject,
+      notifications : global.collections.all_notifs,
+      eventAggregator : global.eventAggregator
+    });
+    this.views.main.render();
+  }
+};
 /////////////////////////////////////////////////////////////////////////////////////////////
 var analyse = {
   // Classes
@@ -89,9 +108,10 @@ var analyse = {
       links : global.collections.Links,
       eventAggregator : global.eventAggregator
     }); 
-    this.views.Main.render()
+    this.views.Main.render();
   }
 };
+
 /////////////////////////////////////////////////
 var bbmap = {
   // Classes
@@ -361,6 +381,7 @@ var CKViewer = {
   views: {},
   init: function () {
     this.views.Main = new this.Views.Main({
+        backups : global.collections.Backups,
         project           : global.models.currentProject,
         a_notifications   : global.collections.all_notifs,
         links : global.collections.Links,

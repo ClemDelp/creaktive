@@ -37,6 +37,7 @@ module.exports.routes = {
   '/userManager': "UserController.userview",
 
   '/sparql/query': "SparqlController.query",
+  '/backup': "BackupController.create",
 
   '/elasticsearch/ping': "ElasticsearchController.pingServer",
   '/elasticsearch/searchKnowledge': "ElasticsearchController.searchKnowledge",

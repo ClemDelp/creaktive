@@ -51,7 +51,8 @@
       json.links = <%- links %>;
       json.notifications = <%- notifications %>;
       json.permissions = <%- permissions %>;
-
+      json.backups = <%- backups %>;
+      
       _.each(json.knowledges, function(k){
         k.comments = new global.Collections.Comments(k.comments);
         k.members = new global.Collections.UsersCollection(k.members);
@@ -69,6 +70,7 @@
         title.init(json.project,"ckviewer");
         topbar.init();
         CKViewer.init();
+        cron.init();
         ////////////////////////////////////////
         /*activat of "hashchange events's monitoring"*/
 

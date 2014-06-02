@@ -42,39 +42,20 @@
   </head>
 
   <body>
-
-    <%- partial('app/templates/notification_templates') %>
-
-    <!-- Include the view file for the current controller/route -->
-  
-
     <script src="/js/vendor/backbone.iosync.js"></script>
     <script src="/js/vendor/backbone.iobind.js"></script>
     <script type="text/javascript" src="js/vendor/socket.io.js"></script>
     <script type="text/javascript" src="js/sails.io.js"></script>
-
     <script src="js/BB_app/global_functions.js"></script>
-    <!-- Interface client/server -->
-
     <script type="text/javascript" src="js/BB_app/app.js"></script>
+    <%- partial('app/templates/notification_templates') %>
     <script type="text/javascript" src="js/BB_app/modules/notification.js"></script>
+    <script type="text/javascript" src="js/BB_app/modules/cron.js"></script>
     <!-- Global objects -->
     <script src="js/BB_app/global_models.js"></script>
     <script src="js/BB_app/global_collections.js"></script>
 
-    
-
-
-      <%- body %>
-
-  <!--  <script type="text/javascript" src="js/BB_app/modules/notifications.js"></script> -->
-
-
-
-    <!--
-      Foundation Javascript
-      ========================
-    --> 
+    <%- body %>
 
     <script src="js/foundation.min.js"></script>
     <script src="js/foundation/foundation.abide.js"></script>
