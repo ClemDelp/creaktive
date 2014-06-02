@@ -358,7 +358,13 @@ CKViewer.Views.Main = Backbone.View.extend({
             eventAggregator : this.eventAggregator
         });
     },
+    events : {
 
+    },
+    reloadBackup : function(e){
+        e.preventDefault();
+        
+    },
     render : function(){
         $(this.el).empty();
         // Middle part

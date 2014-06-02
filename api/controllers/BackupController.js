@@ -54,31 +54,76 @@ create : function (req,res){
 
 update : function(req, res){
  Backup.findOne(req.body.params.id).done(function(err, backup){
-  if(err) res.send(err);
-  if(backup){
-   Backup.update({id: req.body.params.id}, req.body.params).done(function(err,b){
     if(err) res.send(err);
-    Notification.objectUpdated(req,res,"Backup", b[0], function(notification){
-      res.send(notification);
+    ///////////////////////
+    // Udpate
+    if(backup){
+     Backup.update({id: req.body.params.id}, req.body.params).done(function(err,b){
+      if(err) res.send(err);
+      Notification.objectUpdated(req,res,"Backup", b[0], function(notification){
+        res.send(notification);
+      });
+
+      res.send(b[0]);   
+
+
     });
+    ///////////////////////
+    // Create
+    }else{
+      var backup = req.body.params;
+      backup.project = req.session.currentProject.id
+      Backup.create(backup).done(function(err,b){
+        if(err) res.send(err);
+        // ////////////////////////////////////////
+        // // get all the data to create the backup
+        // var concepts = [];
+        // var knowledges = [];
+        // var cklinks = [];
+        // var categories = [];
+        // // Concept
+        // Concept.find({
+        //   project : req.session.currentProject.id
+        // }).done(function(err,cs){
+        //   if(err) res.send(err)
+        //   concepts = cs;
+        //   // Knowledges
+        //   Knowledge.find({
+        //     project : req.session.currentProject.id
+        //   }).done(function(err,ks){
+        //     if(err) res.send(err)
+        //     knowledges = ks;
+        //     // CKLinks
+        //     Link.find({
+        //       project : req.session.currentProject.id
+        //     }).done(function(err,ls){
+        //       if(err) res.send(err) 
+        //       cklinks = ls;
+        //       // Categories
+        //       Poche.find({
+        //         project : req.session.currentProject.id
+        //       }).done(function(err,ps){
+        //         if(err) res.send(err) 
+        //         categories = ps;
+        //         console.log("dataaaaaaa: ",concepts.length,knowledges.length,categories.length,cklinks.length)
+        //       });
+        //     });
+        //   });
+        // });
+        
+        
+        
+        
+        ////////////////////////////////////////
+        // Notification
+        Notification.objectCreated(req,res,"Backup", b, function(notification){
+          res.send(notification);
+        });
+        res.send(b);
 
-    res.send(b[0]);   
-
-
+      });
+    }
   });
- }else{
-  var backup = req.body.params;
-  backup.project = req.session.currentProject.id
-  Backup.create(backup).done(function(err,b){
-    if(err) res.send(err);
-    Notification.objectCreated(req,res,"Backup", b, function(notification){
-      res.send(notification);
-    });
-    res.send(b);
-
-  })
-}
-})
 },
 
 destroy : function(req,res){

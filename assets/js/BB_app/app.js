@@ -83,6 +83,10 @@ var cron = {
   init: function () {
     this.views.main = new this.Views.Main({
       backups : global.collections.Backups,
+      knowledges : global.collections.Knowledges,
+      concepts : global.collections.Concepts,
+      categories : global.collections.Poches,
+      cklinks : global.collections.Links,
       project     : global.models.currentProject,
       notifications : global.collections.all_notifs,
       eventAggregator : global.eventAggregator

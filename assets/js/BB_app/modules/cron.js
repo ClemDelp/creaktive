@@ -7,6 +7,12 @@ cron.Views.Main = Backbone.View.extend({
         // Variables
         this.backups            = json.backups;
         this.project            = json.project;
+
+        this.knowledges         = json.knowledges;
+        this.concepts           = json.concepts;
+        this.categories         = json.categories;
+        this.cklinks            = json.cklinks;
+        
         this.notifications      = json.notifications;
         this.eventAggregator    = json.eventAggregator;
     },
@@ -35,6 +41,10 @@ cron.Views.Main = Backbone.View.extend({
             alert("backup created!")
             new_backup = new global.Models.Backup({
                 id : guid(),
+                knowledges_collection : this.knowledges,
+                concepts_collection : this.concepts,
+                categories_collection : this.categories,
+                cklinks_collection : this.cklinks,
                 date: getDate(),
                 date2:new Date().getTime(),
                 project_id : this.project.get('id')

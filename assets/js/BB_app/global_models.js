@@ -41,6 +41,10 @@ global.Models.CKObject = Backbone.Model.extend({
 global.Models.Backup = Backbone.Model.extend({
     defaults : {
         id : "",
+        knowledges_collection : "",
+        concepts_collection : "",
+        categories_collection : "",
+        cklinks_collection : "",
         date : "",
         date2 : "",
         project_id : ""

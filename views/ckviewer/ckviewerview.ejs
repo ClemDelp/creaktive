@@ -56,15 +56,18 @@
       _.each(json.knowledges, function(k){
         k.comments = new global.Collections.Comments(k.comments);
         k.members = new global.Collections.UsersCollection(k.members);
-      })
+      });
+
       _.each(json.concepts, function(c){
         c.comments = new global.Collections.Comments(c.comments);
         c.members = new global.Collections.UsersCollection(c.members);
-      })
+      });
+
       _.each(json.poches, function(p){
         p.comments = new global.Collections.Comments(p.comments);
         p.members = new global.Collections.UsersCollection(p.members);
-      })
+      });
+
       global.init(json, function(){
         /*Modules*/
         title.init(json.project,"ckviewer");
