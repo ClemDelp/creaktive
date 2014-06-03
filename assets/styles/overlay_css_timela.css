@@ -9,6 +9,22 @@
 	min-height: 600px;
 }
 
+.panel.title{
+	padding: 0px;
+}
+
+.button.secondary.title {
+background-color: white;
+border-color: #bababa;
+color: #333333;
+margin:0px;
+}
+
+.button.secondary.title:hover, .button.secondary.title:focus, .button.secondary.title:hover, .button.secondary.title:focus {
+      background-color: #e9e9e9; }
+.button.secondary.title:hover, .button.secondary.title:focus, .button.secondary.title:hover, .button.secondary.title:focus {
+      color: #333333; }
+
 body{
 	/*background-image:url(/img/pattern.png);*/
 	background-color: #f2f2f2;

@@ -15,7 +15,7 @@
   	overflow:auto;  
   	/*margin-top: 53px;
   	margin-bottom:25px;*/
-  	height: 1500px;
+  	height: 3000px;
 }
 
 
@@ -39,7 +39,7 @@
 
 .chart-demo .window.concept { 
 	border:0.15em dotted green;
-	min-height: 3%;	
+	min-height: 2%;	
 	max-width: 10em;
 }
 
