@@ -1,0 +1,74 @@
+<!-- Javascript libs -->
+<script src="/js/vendor/backbone.iosync.js"></script>
+<script src="/js/vendor/backbone.iobind.js"></script>
+<!-- ******************************** -->
+<!-- FileUpload -->
+<script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
+<!-- ******************************** -->
+<!-- CKEditor -->
+<script src="/js/ckeditor/ckeditor.js"></script>
+<!-- Templates to load -->
+<%- partial('../app/templates/topbar_templates') %>
+<%- partial('../app/templates/title_templates') %>
+<%- partial('../app/templates/welcome_templates') %>
+<%- partial('templates/notification_templates') %>
+
+<script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/title.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/welcome.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/notification.js"></script>
+
+
+<script>
+  $(document).ready(function () {
+
+    Backbone.Model.prototype.toJSON = function() {
+      return JSON.parse(JSON.stringify(this.attributes));
+    };
+
+    rt(io, function(){
+      var json = {};
+      json.users = <%- users %>;
+      json.user = <%- currentUser %>;
+      json.knowledges = <%- knowledges %>;
+      json.projects = <%- projects %>;
+      json.poches = <%- poches %>;
+      json.concepts = <%- concepts %>;
+      json.links = <%- links %>;
+      json.notifications = <%- notifications %>;
+
+      _.each(json.knowledges, function(k){
+        k.comments = new global.Collections.Comments(k.comments);
+        k.members = new global.Collections.UsersCollection(k.members);
+      })
+      _.each(json.concepts, function(c){
+        c.comments = new global.Collections.Comments(c.comments);
+        c.members = new global.Collections.UsersCollection(c.members);
+      })
+
+      _.each(json.projects, function(p){
+        p.comments = new global.Collections.Comments(p.comments);
+        p.members = new global.Collections.UsersCollection(p.members);
+      })
+
+      _.each(json.poches, function(p){
+        p.comments = new global.Collections.Comments(p.comments);
+        p.members = new global.Collections.UsersCollection(p.members);
+      })
+
+      global.init(json, function(){
+        // Modules
+        topbar.init();
+        welcome.init();     
+        notification.init();
+        /*activat of "hashchange events's monitoring"*/
+        Backbone.history.start();  
+        
+      });
+      
+    });
+  }) ;
+</script>
+
+
+

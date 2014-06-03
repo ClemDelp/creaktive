@@ -39,7 +39,7 @@
 
 .chart-demo .window.concept { 
 	border:0.15em dotted green;
-	min-height: 2%;	
+	min-height: 50px;	
 	max-width: 10em;
 }
 

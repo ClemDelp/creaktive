@@ -1,54 +1,6 @@
 /////////////////////////////////////////
-// Notifications
+// MAIN
 /////////////////////////////////////////
-var notification = {
-  // Classes
-  Collections: {},
-  Models: {},
-  Views: {},
-  // Instances
-  collections: {},
-  models: {},
-  views: {},
-  init: function () {}
-};
-/////////////////////////////////////////
-// VIEWS
-/////////////////////////////////////////
-notification.Views.Modal = Backbone.View.extend({
-    el:"#NotificationModal",
-    initialize:function(json){
-        _.bindAll(this, 'render', 'openNotificationModal');
-        // Variables
-        this.user               = json.user;
-        this.notifications      = json.notifications;
-        this.eventAggregator    = json.eventAggregator;
-        // Events
-        this.eventAggregator.on("openNotificationModal", this.openNotificationModal);
-        this.eventAggregator.on("closeNotificationModal", this.closeNotificationModal);
-    },
-    closeNotificationModal : function(){
-        $('#NotificationModal').foundation('reveal', 'close');  
-    },
-    openNotificationModal : function(){
-        this.render(function(){
-            $('#NotificationModal').foundation('reveal', 'open'); 
-            $(document).foundation();
-        }); 
-    },
-    render:function(callback){
-        $(this.el).html('');
-        $(this.el).append(new notification.Views.Main({
-            className        : "panel row",
-            user             : this.user,
-            notifications    : this.notifications,
-            eventAggregator  : this.eventAggregator
-        }).render().el);
-        // Render it in our div
-        if(callback) callback();
-    }
-});
-/***************************************/
 notification.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render','globalValidation');
@@ -58,6 +10,7 @@ notification.Views.Main = Backbone.View.extend({
         this.eventAggregator    = json.eventAggregator;
         // Template
         this.template = _.template($('#notification-log-template').html());
+        this.template_action = _.template($('#notification-actions-template').html());
         // Event
         this.notifications.on('add',this.render,this);
     },
@@ -100,7 +53,10 @@ notification.Views.Main = Backbone.View.extend({
         $(this.el).find("#notification_"+notif.get('id')).hide('slow');
     },
     render : function(){
-        $(this.el).html('');
+        $(this.el).empty();
+        // Action bar
+        $(this.el).append(this.template_action());
+        // All Notifications
         $(this.el).append(this.template({
             notifications : this.notifications.toJSON()
         }));

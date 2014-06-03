@@ -1,4 +1,18 @@
-/***************************************/
+/////////////////////////////////////////////////
+var comments = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {}
+};
+/////////////////////////////////////////////////
+// MAIN
+/////////////////////////////////////////////////
 comments.Views.Main = Backbone.View.extend({
     initialize : function(json) { 
         //console.log("comments view constructor!");

@@ -5,20 +5,6 @@
     <input type="text" class="search" placeholder="search in {{-title}}...">
 </script>
 <!-- //////////////////////////////////////////////////////////////////////: -->
-<!-- Modal part -->
-<div id="category_modal_container" class="reveal-modal small" data-reveal></div>
-
-<script type="text/template" id="category-modal-template">
-    <center>
-        <h3>{{-mode}} to</h3>
-        <p>select a category</p>
-    </center>
-    {{ _.each(poches, function(poche) { }}
-        <a href="#" class="button success round {{-mode}}" data-catg-title="{{-poche.title}}">{{-poche.title}}</a>
-    {{ }); }}   
-    <a class="close-reveal-modal">&#215;</a>
-</script>
-<!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Barre d'action -->
 <script type="text/template" id="category-actionBar-template">
     <div class="expand">
@@ -45,14 +31,14 @@
         <div class="small-4 large-4 medium-4 columns">
             <a href="#" data-dropdown="dropmoveto" class="small secondary button dropdown">move to</a>
             <ul id="dropmoveto" data-dropdown-content class="f-dropdown">
-                {{ _.each(poches, function(poche){ }}
-                    <li><a href="#" class="move" data-catg-title="{{-poche.title}}">{{-poche.title}}</a></li>
+                {{ _.each(categories, function(category){ }}
+                    <li><a href="#" class="move" data-catg-title="{{-category.title}}">{{-category.title}}</a></li>
                 {{ }); }} 
             </ul>
             <a href="#" data-dropdown="dropcopyto" class="small secondary button dropdown">copy to</a>
             <ul id="dropcopyto" data-dropdown-content class="f-dropdown">
-                {{ _.each(poches, function(poche){ }}
-                    <li><a href="#" class="copy" data-catg-title="{{-poche.title}}">{{-poche.title}}</a></li>
+                {{ _.each(categories, function(category){ }}
+                    <li><a href="#" class="copy" data-catg-title="{{-category.title}}">{{-category.title}}</a></li>
                 {{ }); }} 
             </ul>
             <a href="#" class="button small secondary uncategorized">unlink</a>
@@ -75,8 +61,8 @@
             </ul>
             <a href="#" data-dropdown="dropcategories" class="tiny secondary button dropdown">Categories</a>
             <ul id="dropcategories" data-dropdown-content class="f-dropdown">
-                {{ _.each(poches, function(poche){ }}
-                    <li><a href="#" class="addFilter" data-filter-type="category" data-filter-val="{{-poche.id}}">{{-poche.title}}</a></li>
+                {{ _.each(categories, function(category){ }}
+                    <li><a href="#" class="addFilter" data-filter-type="category" data-filter-val="{{-category.id}}">{{-category.title}}</a></li>
                 {{ }); }}  
             </ul>
         </div>
@@ -98,11 +84,13 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <script type="text/template" id="category-notCategorized-template">
     <div class="item">
-        <a href="#" class="button tiny radius round expand secondary CKBulle Kselectable" data-knowledge-id="{{-knowledge.id}}" data-catg-origin="none" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}">
-            <strong data-knowledge-id="{{-knowledge.id}}" data-catg-origin="none">{{- knowledge.title }}</strong>
+        <a id="bulle{{-knowledge.id}}" href="#" class="button tiny radius round expand secondary CKBulle" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}">
+            <input data-knowledge-id="{{-knowledge.id}}" data-catg-origin="none" type="checkbox" class="Kselectable">
+            <strong>{{- knowledge.title }}</strong>
             <span style="width:8%;float:right">
                 <img src="img/edit.png" class="openKnowledgeModal" data-model-id="{{-knowledge.id}}" title="edit">
             </span>
+            {{ if(notifs_nbr > 0){ }}<span class="top-bar-unread">{{-notifs_nbr}}</span>{{ } }}
         </a>
     </div>
 </script>
@@ -113,8 +101,8 @@
             <li class="price"class="title">
                 <a href="#" class="button tiny success radius expand openCategoryEditorModal" data-category-id="{{-category.id}}">
                     <strong data-category-id="{{-category.id}}">{{- category.title}}</strong>
-                    {{if(notifNbr != 0){ }}
-                        <span class="top-bar-unread" data-category-id="{{-category.id}}">{{-notifNbr}}</span>
+                    {{if(notifs_nbr > 0){ }}
+                        <span class="top-bar-unread" data-category-id="{{-category.id}}">{{-notifs_nbr}}</span>
                     {{ } }}
                     <span style="width:8%;float:right">
                         <img src="img/edit.png" class="openCategoryModal" data-model-id="{{-category.id}}" title="edit">
@@ -131,9 +119,13 @@
                     </div>
                 </div>
                 {{ _.each(knowledges, function(knowledge) { }}
-                    <a href="#" class="button tiny radius round expand secondary CKBulle Kselectable" data-knowledge-id="{{-knowledge.id}}" data-catg-origin="{{- category.title}}"  style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}">
-                        <strong data-knowledge-id="{{-knowledge.id}}" data-catg-origin="{{- category.title}}">{{- knowledge.title }}</strong>
-                        <span style="width:8%;float:right"><img src="img/edit.png" class="openKnowledgeModal" data-model-id="{{-knowledge.id}}" title="edit"></span>
+                    <a href="#" id="bulle{{-knowledge.id}}" class="button tiny radius round expand secondary CKBulle" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}">
+                        <input name="k" value="{{-knowledge.id}}" data-knowledge-id="{{-knowledge.id}}" data-catg-origin="{{- category.title}}" type="checkbox" class="Kselectable">
+                        <strong>{{- knowledge.title }}</strong>
+                        <span style="width:8%;float:right">
+                            <img src="img/edit.png" class="openKnowledgeModal" data-model-id="{{-knowledge.id}}" title="edit">
+                        </span>
+                        {{ if(k_dict_notif[knowledge.id] > 0){ }}<span class="top-bar-unread">{{-k_dict_notif[knowledge.id]}}</span>{{ } }}
                     </a>
                 {{ }); }}   
             </li>

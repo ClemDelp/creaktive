@@ -1,4 +1,19 @@
-/***************************************/
+
+/////////////////////////////////////////////////
+var attachment = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {}
+};
+/////////////////////////////////////////////////
+// MAIN
+/////////////////////////////////////////////////
 attachment.Views.Main = Backbone.View.extend({
     initialize : function(json) { 
         //console.log("comments view constructor!");

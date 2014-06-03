@@ -285,7 +285,6 @@ bbmap.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         ////////////////////////////
         // Variables
-        this.notifications      = json.notifications;
         this.knowledges         = json.knowledges;
         this.concepts           = json.concepts;
         this.user               = json.user;
@@ -329,9 +328,6 @@ bbmap.Views.Main = Backbone.View.extend({
         ////////////////////////////
         // Events
         this.listenTo(this.zoom,'change',this.updateZoomDisplay,this)
-        this.listenTo(this.notifications,'change',this.actualizeNotification,this);
-        this.listenTo(this.notifications,'add',this.actualizeNotification,this);
-        this.listenTo(this.notifications,'remove',this.actualizeNotification,this);     
     },
     events : {
         "click .addUnlinkedC" : "addUnlinkedConcept",

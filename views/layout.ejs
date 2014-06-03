@@ -7,19 +7,10 @@
       exactly the same way as with your other view templates.
     -->
     <title><%- title %></title>
-
-    <!-- Viewport mobile tag for sensible mobile support -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-
-
-    <!--
-      Client-side Javascript
-      ========================
-    --> 
-
-    <script src="js/vendor/custom.modernizr.js"></script>  
+    <link rel="stylesheet" href="styles/foundation2.css" />
+    <script src="js/vendor/modernizr.js"></script>
     <script type='text/javascript' src='js/vendor/jquery-1.10.2.js'></script>
-    
     <script src="js/vendor/underscore.js"></script>
     <script>
       _.templateSettings = {
@@ -42,27 +33,24 @@
   </head>
 
   <body>
+    
     <script src="/js/vendor/backbone.iosync.js"></script>
     <script src="/js/vendor/backbone.iobind.js"></script>
     <script type="text/javascript" src="js/vendor/socket.io.js"></script>
     <script type="text/javascript" src="js/sails.io.js"></script>
     <script src="js/BB_app/global_functions.js"></script>
     <script type="text/javascript" src="js/BB_app/app.js"></script>
-    <%- partial('app/templates/notification_templates') %>
-    <script type="text/javascript" src="js/BB_app/modules/notification.js"></script>
     <script type="text/javascript" src="js/BB_app/modules/cron.js"></script>
     <!-- Global objects -->
     <script src="js/BB_app/global_models.js"></script>
     <script src="js/BB_app/global_collections.js"></script>
+    <script src="js/BB_app/notification_api.js"></script>
 
     <%- body %>
 
-    <script src="js/foundation.min.js"></script>
-    <script src="js/foundation/foundation.abide.js"></script>
-    <script src="js/foundation/foundation.equalizer.js"></script>
+    
 
     <script>
-      $(document).foundation();
       /////////////////////////////////////////////////////////////////////////////////////////////
       // Realtime connection
       /////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,6 +80,11 @@
       };
     </script>
 
+    <script src="js/foundation.min.js"></script>
+    <script src="js/foundation/foundation.abide.js"></script>
+    <script>
+      $(document).foundation();
+    </script>
 
   </body>
 </html>

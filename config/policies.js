@@ -83,6 +83,7 @@
   }, 
 
   "NotificationController" : {
+    "notificationview" : ["authenticated", "allowedProjects","forceHTTPs"],
     "*" : ["authenticated"],
   },
 
@@ -116,7 +117,7 @@
     "generateTree" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"] 
   },
-  
+
   "KnowledgeController" : {
     "knowledgeview" : ["authenticated", "allowedProjects","forceHTTPs"],
     "find" : ["authenticated", "canRead"],

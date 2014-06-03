@@ -14,13 +14,6 @@ topbar.Views.TopBar = Backbone.View.extend({
         this.notifications.on('change',this.render,this);
         this.notifications.on('add',this.render,this);
     },
-    events : {
-        "click .openModal" : "openModal"
-    },
-    openModal : function(e){
-        e.preventDefault();
-        this.eventAggregator.trigger('openNotificationModal');
-    },
     render : function(){
         $(this.el).html('');
         $(this.el).append(this.template({
@@ -40,12 +33,6 @@ topbar.Views.Main = Backbone.View.extend({
         this.user               = json.user;
         this.notifications      = json.notifications;
         this.eventAggregator    = json.eventAggregator; 
-        // Notification Modal
-        new notification.Views.Modal({
-            user             : this.user,
-            notifications    : this.notifications,
-            eventAggregator  : this.eventAggregator
-        });
     },
     render : function(){
         $(this.el).html('');

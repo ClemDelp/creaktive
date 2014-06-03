@@ -62,6 +62,9 @@ CKLayout.Views.Modal = Backbone.View.extend({
         this.user = json.user;
         this.collection = json.collection;
         this.eventAggregator = json.eventAggregator;
+        // Element
+        this.content_el = $(this.el).find('#cklayout_content_container');
+        this.activities_el = $(this.el).find('#cklayout_activities_container');
         // Events
         this.eventAggregator.on("removeModel", this.closeModelEditorModal);
         this.eventAggregator.on("removeKnowledge", this.closeModelEditorModal);
@@ -84,8 +87,10 @@ CKLayout.Views.Modal = Backbone.View.extend({
         
     },
     render:function(callback){
-        $(this.el).html('');
-        $(this.el).append(new CKLayout.Views.Main({
+        this.content_el.empty();
+        this.activities_el.empty();
+        this.content_el.append(new CKLayout.Views.Main({
+            activities_el : this.activities_el,
             className : "panel row",
             notifications : this.notifications,
             model : this.model,
@@ -102,6 +107,7 @@ CKLayout.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         CKLayout.init(); // Pour instancier les labels
         // Variables
+        this.activities_el      = json.activities_el;
         this.notifications      = json.notifications;
         this.notif_to_render    = new Backbone.Collection();
         this.model              = json.model;
@@ -231,8 +237,8 @@ CKLayout.Views.Main = Backbone.View.extend({
             eventAggregator : this.eventAggregator
         }).render().el);
         // notification module
-        $(this.el).append(new activitiesList.Views.Main({
-            className       : "large-8 medium-8 small-8 columns floatLeft",
+        this.activities_el.append(new activitiesList.Views.Main({
+            className       : "expand",
             //model           : this.model,
             notifications   : this.notif_to_render,
             eventAggregator : this.eventAggregator

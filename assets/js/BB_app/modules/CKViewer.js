@@ -343,7 +343,6 @@ CKViewer.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         this.backups = json.backups;
         this.project  = json.project;
-        this.all_notifications  = json.a_notifications;
         this.links = json.links;
         this.concepts = json.concepts;
         this.knowledges = json.knowledges;

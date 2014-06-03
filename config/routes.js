@@ -38,6 +38,7 @@ module.exports.routes = {
 
   '/sparql/query': "SparqlController.query",
   '/backup': "BackupController.create",
+  '/activities': "NotificationController.notificationview",
 
   '/elasticsearch/ping': "ElasticsearchController.pingServer",
   '/elasticsearch/searchKnowledge': "ElasticsearchController.searchKnowledge",

@@ -486,7 +486,6 @@ CKPreviewer.Views.Main = Backbone.View.extend({
     el:"#CKPreviewer_container",
     initialize : function(json) {
         _.bindAll(this, 'render');
-        this.all_notifications  = json.a_notifications;
         this.links = json.links;
         this.concepts = json.concepts;
         this.knowledges = json.knowledges;

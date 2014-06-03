@@ -1,4 +1,16 @@
 /////////////////////////////////////////////////
+var cklink = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {}
+};
+/////////////////////////////////////////////////
 // Right Part
 /////////////////////////////////////////////////
 cklink.Views.Knowledges = Backbone.View.extend({

@@ -36,11 +36,10 @@ var global = {
     this.collections.knowledge_notifs = new Backbone.Collection();
     this.collections.concept_notifs = new Backbone.Collection();
     this.collections.category_notifs = new Backbone.Collection();
-    this.prepareNotifications();
-    
-    callback();
+    this.prepareNotifications(callback);
+
   },
-  prepareNotifications : function(){
+  prepareNotifications : function(callback){
     // init
     this.collections.personal_notifs.reset();
     this.collections.knowledge_notifs.reset();
@@ -68,6 +67,28 @@ var global = {
     console.log("kno",global.collections.knowledge_notifs.length)
     console.log("con",global.collections.concept_notifs.length)
     console.log("cat",global.collections.category_notifs.length)
+
+    callback();
+  }
+};
+/////////////////////////////////////////////////
+var notification = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    this.views.main = new this.Views.Main({
+      el : "#notification_container",
+      user        : global.models.current_user,
+      notifications : global.collections.personal_notifs,
+      eventAggregator : global.eventAggregator
+    });
+    this.views.main.render();
   }
 };
 /////////////////////////////////////////////////
@@ -129,7 +150,6 @@ var bbmap = {
   init: function () {
     this.views.main = new this.Views.Main({
       el : "#bbmap_container",
-      notifications : global.collections.concept_notifs,
       concepts    : global.collections.Concepts,
       project     : global.models.currentProject,
       user        : global.models.current_user,
@@ -183,7 +203,7 @@ var welcome = {
   views: {},
   init: function () {
     this.views.Main = new this.Views.Main({
-      notifications : global.collections.personal_notifs || global.collections.all_notifs,
+      notifications : global.collections.personal_notifs,
       user : global.models.current_user
     });
     this.views.Main.render();
@@ -201,7 +221,7 @@ var conceptsmap = {
   views: {},
   init: function () {
     /*Init*/
-    this.views.Main = new this.Views.Main({
+    this.views.main = new this.Views.Main({
       a_notifications : global.collections.all_notifs,
       c_notifications : global.collections.concept_notifs,
       concepts    : global.collections.Concepts,
@@ -212,7 +232,7 @@ var conceptsmap = {
       links       : global.collections.Links,
       eventAggregator : global.eventAggregator
     }); 
-    this.views.Main.render();
+    this.views.main.render();
   }
 };
 /////////////////////////////////////////////////
@@ -230,9 +250,10 @@ var category = {
     this.views.main = new this.Views.Main({
       a_notifications   : global.collections.all_notifs,
       c_notifications   : global.collections.category_notifs,
+      k_notifications   : global.collections.knowledge_notifs,
       project           : global.models.currentProject,
       knowledges        : global.collections.Knowledges,
-      poches            : global.collections.Poches,
+      categories        : global.collections.Poches,
       user              : global.models.current_user,
       users             : global.collections.Users,
       links             : global.collections.Links,
@@ -254,7 +275,7 @@ var topbar = {
   init: function (page) {
     /*Init*/
     this.views.Main = new this.Views.Main({
-      notifications   : global.collections.personal_notifs || global.collections.all_notifs,
+      notifications   : global.collections.personal_notifs,
       user            : global.models.current_user,
       eventAggregator : global.eventAggregator
     });
@@ -333,45 +354,6 @@ var explorer = {
   }
 };
 /////////////////////////////////////////////////
-var cklink = {
-  // Classes
-  Collections: {},
-  Models: {},
-  Views: {},
-  // Instances
-  collections: {},
-  models: {},
-  views: {},
-  init: function () {
-    /*Init*/
-
-  }
-};
-/////////////////////////////////////////////////
-var comments = {
-  // Classes
-  Collections: {},
-  Models: {},
-  Views: {},
-  // Instances
-  collections: {},
-  models: {},
-  views: {},
-  init: function () {}
-};
-/////////////////////////////////////////////////
-var attachment = {
-  // Classes
-  Collections: {},
-  Models: {},
-  Views: {},
-  // Instances
-  collections: {},
-  models: {},
-  views: {},
-  init: function () {}
-};
-/////////////////////////////////////////////////
 // JIAN
 /////////////////////////////////////////////////
 var CKViewer = {
@@ -387,7 +369,6 @@ var CKViewer = {
     this.views.Main = new this.Views.Main({
         backups : global.collections.Backups,
         project           : global.models.currentProject,
-        a_notifications   : global.collections.all_notifs,
         links : global.collections.Links,
         knowledges : global.collections.Knowledges,
         concepts : global.collections.Concepts,
@@ -410,7 +391,6 @@ var CKPreviewer = {
   views: {},
   init: function () {
     this.views.Main = new this.Views.Main({
-        a_notifications   : global.collections.all_notifs,
         links : global.collections.Links,
         knowledges : global.collections.Knowledges,
         concepts : global.collections.Concepts,
