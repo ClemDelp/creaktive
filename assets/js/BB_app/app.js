@@ -6,10 +6,12 @@ var global = {
   Collections: {},
   Models: {},
   Views: {},
+  Functions: {},
   // Instances
   collections: {},
   models: {},
   views: {},
+  functions: {},
   init: function (json,callback) {
     //Variables
     this.models.current_user = new this.Models.User(json.user); ; 
@@ -36,10 +38,12 @@ var global = {
     this.collections.knowledge_notifs = new Backbone.Collection();
     this.collections.concept_notifs = new Backbone.Collection();
     this.collections.category_notifs = new Backbone.Collection();
-    this.prepareNotifications(callback);
+    this.prepareNotifications();
+
+    callback();
 
   },
-  prepareNotifications : function(callback){
+  prepareNotifications : function(){
     // init
     this.collections.personal_notifs.reset();
     this.collections.knowledge_notifs.reset();
@@ -68,7 +72,6 @@ var global = {
     console.log("con",global.collections.concept_notifs.length)
     console.log("cat",global.collections.category_notifs.length)
 
-    callback();
   }
 };
 /////////////////////////////////////////////////

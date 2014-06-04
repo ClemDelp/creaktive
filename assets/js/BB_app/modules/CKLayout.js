@@ -75,6 +75,12 @@ CKLayout.Views.Modal = Backbone.View.extend({
     },
     openModelEditorModal : function(id){
         this.model = this.collection.get(id);
+        collection_test = new global.Collections.Knowledges(this.model)
+        console.log(collection_test);
+        collection_test.fetch({
+            success:function(){},
+            complete:function(collection, response, options){}
+        })
         this.render(function(){
             $('#CKLayoutModal').foundation('reveal', 'open'); 
             try{
@@ -130,10 +136,14 @@ CKLayout.Views.Main = Backbone.View.extend({
             this.notif_to_render.add(this.notifications.where({project_id : this.model.get('id')}))
         }
         // Events
-        this.model.on('change',this.render)
+        this.model.on('change',this.fetch,this)
         // Templates
         this.template_hearder = _.template($('#CKLayout-header-template').html());
         this.template_footer = _.template($('#CKLayout-footer-template').html());
+    },
+    fetch : function(){
+        
+        this.render();
     },
     events : {
         "click .updateLabel" : "updateLabel",
@@ -203,7 +213,8 @@ CKLayout.Views.Main = Backbone.View.extend({
         this.render();
     },
     render:function(){
-        $(this.el).html('');
+        $(this.el).empty();
+        this.activities_el.empty();
         _this = this;
         // Header
         $(this.el).append(this.template_hearder({
@@ -212,30 +223,31 @@ CKLayout.Views.Main = Backbone.View.extend({
         }));
         // Model editor module
         $(this.el).append(new modelEditor.Views.Main({
-            className       : "large-8 medium-8 small-8 columns",
+            className       : "large-12 medium-12 small-12",
             user            : this.user,
+            model           : this.model,
+            eventAggregator : this.eventAggregator
+        }).render().el);
+        // IMG List module
+        $(this.el).append(new imagesList.Views.Main({
+            className       : "large-6 medium-6 small-6 columns",
             model           : this.model,
             eventAggregator : this.eventAggregator
         }).render().el);
         // Attachment module
         $(this.el).append(new attachment.Views.Main({
-            className       : "large-4 medium-4 small-4 columns",
+            className       : "large-6 medium-6 small-6 columns",
             model           : this.model,
             eventAggregator : this.eventAggregator
         }).render().el);
         // Comments module
         $(this.el).append(new comments.Views.Main({
-            className       : "large-4 medium-4 small-4 columns floatRight",
+            className       : "large-12 medium-12 small-12",
             model           : this.model,
             user            : this.user,
             eventAggregator : this.eventAggregator
         }).render().el);
-        // IMG List module
-        $(this.el).append(new imagesList.Views.Main({
-            className       : "large-8 medium-8 small-8 columns",
-            model           : this.model,
-            eventAggregator : this.eventAggregator
-        }).render().el);
+        
         // notification module
         this.activities_el.append(new activitiesList.Views.Main({
             className       : "expand",

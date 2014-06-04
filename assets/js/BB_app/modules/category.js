@@ -265,8 +265,8 @@ category.Views.Main = Backbone.View.extend({
         this.Kselected          = new Backbone.Collection();     
         ////////////////////////////
         // Notifications builder
-        this.catgs_notifs_dict = notif.dict_modelIdToNotifsNumber(this.categories,this.categories_notifs);
-        this.ks_notifs_dict = notif.dict_modelIdToNotifsNumber(this.knowledges,this.knowledges_notifs);   
+        this.catgs_notifs_dict = global.Functions.dict_modelIdToNotifsNumber(this.categories,this.categories_notifs);
+        this.ks_notifs_dict = global.Functions.dict_modelIdToNotifsNumber(this.knowledges,this.knowledges_notifs);   
         // CKLayout for knowledge 
         category.views.k_cklayout_modal = new CKLayout.Views.Modal({
             notifications : this.all_notifications,

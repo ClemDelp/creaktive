@@ -3,9 +3,12 @@
 	<p><strong>Discussions ({{- comments.length }}) :</strong></p>
 	<ul>
 	{{ _.each(comments, function(comment) { }}  
-			<li title="{{- comment.date }}"><strong><small>{{- comment.user.name }}</small></strong> :
-			{{- comment.content }} - 
-			<a class="remove" title="remove" data-id-comment="{{- comment.id }}" style="color:red">x</a></li>
+			<li title="{{- comment.date }}">
+				<img class="large-1 small-1 medium-1 roundedImage" src="{{- comment.user.img }}">
+				<strong><small>{{- comment.user.name }}</small></strong> :
+				{{- comment.content }} - 
+				<a class="remove" title="remove" data-id-comment="{{- comment.id }}" style="color:red">x</a>
+			</li>
 	{{ }); }}
 	</ul>
 	<div class="row">
