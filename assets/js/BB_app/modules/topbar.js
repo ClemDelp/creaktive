@@ -6,18 +6,15 @@ topbar.Views.TopBar = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Variables
         this.user = json.user;
-        this.notifications      = json.notifications;
         this.eventAggregator    = json.eventAggregator;
         // Templates     
         this.template = _.template($("#topbar-main-template").html());
         // Events
-        this.notifications.on('change',this.render,this);
-        this.notifications.on('add',this.render,this);
+        
     },
     render : function(){
         $(this.el).html('');
         $(this.el).append(this.template({
-            notifications_length : this.notifications.length,
             user : this.user.toJSON()
         }));
 
@@ -31,7 +28,6 @@ topbar.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Variables
         this.user               = json.user;
-        this.notifications      = json.notifications;
         this.eventAggregator    = json.eventAggregator; 
     },
     render : function(){
@@ -40,7 +36,6 @@ topbar.Views.Main = Backbone.View.extend({
         // TopBar view
         $(this.el).append(new topbar.Views.TopBar({
             user : this.user,
-            notifications : this.notifications,
             eventAggregator : this.eventAggregator
         }).render().el);
 

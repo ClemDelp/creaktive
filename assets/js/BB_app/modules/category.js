@@ -15,8 +15,8 @@ category.Views.Category = Backbone.View.extend({
         _this = this;
         // Category template
         $(this.el).html(this.template_list({
-            notifs_nbr      : category.views.main.catgs_notifs_dict[this.category.get('id')],
-            k_dict_notif    : category.views.main.ks_notifs_dict,
+            notifs_nbr      : category.views.main.dic_notifs[this.category.get('id')].news.length,
+            dic_notifs    : category.views.main.dic_notifs,
             knowledges      : this.knowledges.toJSON(), 
             category        : this.category.toJSON(),
         }));
@@ -77,8 +77,8 @@ category.Views.Categories = Backbone.View.extend({
         this.knowledges.each(function(k){
             if(k.get('tags').length == 0){
                 $(_this.el).append(template({
-                    notifs_nbr    : category.views.main.ks_notifs_dict[k.get('id')],
-                    knowledge       : k.toJSON()
+                    notifs_nbr    : category.views.main.dic_notifs[k.get('id')].news.length,
+                    knowledge     : k.toJSON()
                 }));
             }
         });
@@ -251,9 +251,8 @@ category.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render',"newCategory");
         // Variables
-        this.all_notifications  = json.a_notifications;
-        this.categories_notifs  = json.c_notifications;
-        this.knowledges_notifs  = json.k_notifications;
+        this.all_notifs         = json.all_notifs;
+        this.dic_notifs         = json.dic_notifs;
         this.knowledges         = json.knowledges;
         this.categories         = json.categories;
         this.project            = json.project;
@@ -263,20 +262,18 @@ category.Views.Main = Backbone.View.extend({
         this.filters            = new Backbone.Collection();
         this.eventAggregator    = json.eventAggregator;
         this.Kselected          = new Backbone.Collection();     
-        ////////////////////////////
-        // Notifications builder
-        this.catgs_notifs_dict = global.Functions.dict_modelIdToNotifsNumber(this.categories,this.categories_notifs);
-        this.ks_notifs_dict = global.Functions.dict_modelIdToNotifsNumber(this.knowledges,this.knowledges_notifs);   
         // CKLayout for knowledge 
         category.views.k_cklayout_modal = new CKLayout.Views.Modal({
-            notifications : this.all_notifications,
+            all_notifs : this.all_notifs, // Le déclancheur pour le real time
+            dic_notifs : this.dic_notifs, // Le dictionnaire des notifications
             user : this.user,
             collection : this.knowledges,
             eventAggregator : this.eventAggregator
         });
         // CKLayout for category
         category.views.c_cklayout_modal = new CKLayout.Views.Modal({
-            notifications : this.all_notifications,
+            all_notifs : this.all_notifs, // Le déclancheur pour le real time
+            dic_notifs : this.dic_notifs, // Le dictionnaire des notifications
             user : this.user,
             collection : this.categories,
             eventAggregator : this.eventAggregator

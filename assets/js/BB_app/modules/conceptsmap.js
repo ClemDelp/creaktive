@@ -94,8 +94,8 @@ conceptsmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render','actualizeNotification','recursiveUnlink');
         // Variables
-        this.a_notifications    = json.a_notifications;
-        this.c_notifications    = json.c_notifications;
+        this.all_notifs         = json.all_notifs;
+        this.dic_notifs         = json.dic_notifs;
         this.knowledges         = json.knowledges;
         this.concepts           = json.concepts;
         this.user               = json.user;
@@ -115,9 +115,10 @@ conceptsmap.Views.Main = Backbone.View.extend({
         $("#"+conceptsmap.views.conceptsModal.el.id).on('close',this.againstFounderBug);
         // CKLayout
         conceptsmap.views.cklayout = new CKLayout.Views.Modal({
-            notifications : this.a_notifications,
-            user : this.user,
-            collection : this.concepts,
+            all_notifs  : this.all_notifs, // Le déclancheur pour le real time
+            dic_notifs  : this.dic_notifs, // Le dictionnaire des notifications
+            user        : this.user,
+            collection  : this.concepts,
             eventAggregator : this.eventAggregator
         });
         $("#"+conceptsmap.views.cklayout.el.id).on('close',this.againstFounderBug);
@@ -136,9 +137,9 @@ conceptsmap.Views.Main = Backbone.View.extend({
         //this.listenTo(this.concepts,"change",this.render);
         this.listenTo(this.concepts,"remove",this.resetMap);
         // Events
-        this.listenTo(this.c_notifications,'change',this.actualizeNotification,this);
-        this.listenTo(this.c_notifications,'add',this.actualizeNotification,this);
-        this.listenTo(this.c_notifications,'remove',this.actualizeNotification,this);
+        this.listenTo(this.all_notifs,'change',this.actualizeNotification,this);
+        this.listenTo(this.all_notifs,'add',this.actualizeNotification,this);
+        this.listenTo(this.all_notifs,'remove',this.actualizeNotification,this);
         this.listenTo(this.eventAggregator,'change',this.action,this);
         this.listenTo(this.eventAggregator,"undo", this.performUndo, this);
 
@@ -382,18 +383,11 @@ conceptsmap.Views.Main = Backbone.View.extend({
     },
     actualizeNotification : function(){
         _this = this;
-        concept_notifs = {};
-        this.c_notifications.each(function(notif){
-            if(concept_notifs[notif.get('to').id]){ 
-                concept_notifs[notif.get('to').id] = concept_notifs[notif.get('to').id]+1;
-            }else{
-                concept_notifs[notif.get('to').id] = 1;
-            } 
-        });
         
-        _.keys(concept_notifs).forEach(function(key){
-            $("#concept_notif_"+key).html('<span class="top-bar-unread">'+concept_notifs[key]+'</span>')
-        });
+        this.concepts.each(function(concept){
+            if(_this.dic_notifs[concept.get('id')].news.length > 0)$("#concept_notif_"+concept.get('id')).html('<span class="top-bar-unread">'+_this.dic_notifs[concept.get('id')].news.length+'</span>')
+        })
+        
 
         //MM.App.adjustFontSize(1);
 
@@ -432,3 +426,25 @@ conceptsmap.Views.Main = Backbone.View.extend({
     }
 });
 /***************************************/
+// render : function(){
+//         var _this = this;
+//         var renderTemplate = function(){
+//             var renderedContent = _this.template();
+//             $(_this.el).append(renderedContent)
+//         };
+//         var initMap = function(){
+//             MM.App.init(_this.eventAggregator);
+
+//             socket.get("/concept/generateTree", function(data) {
+//                 MM.App.setMap(MM.Map.fromJSON(data.tree));
+//             });   
+//         }
+
+//         var dfd = $.Deferred();
+//         dfd.done(renderTemplate).done(initMap);
+//         dfd.resolve();
+        
+//         $(document).foundation();
+
+//         return this;
+//     }

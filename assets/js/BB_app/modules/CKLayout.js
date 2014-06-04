@@ -57,48 +57,47 @@ CKLayout.Views.Modal = Backbone.View.extend({
     initialize:function(json){
         _.bindAll(this, 'render', 'openModelEditorModal');
         // Variables
-        this.notifications = json.notifications;
-        this.model = new Backbone.Model();
-        this.user = json.user;
-        this.collection = json.collection;
-        this.eventAggregator = json.eventAggregator;
+        this.all_notifs         = json.all_notifs;
+        this.dic_notifs         = json.dic_notifs
+        this.model              = new Backbone.Model();
+        this.user               = json.user;
+        this.collection         = json.collection;
+        this.eventAggregator    = json.eventAggregator;
         // Element
-        this.content_el = $(this.el).find('#cklayout_content_container');
-        this.activities_el = $(this.el).find('#cklayout_activities_container');
+        this.content_el         = $(this.el).find('#cklayout_content_container');
+        this.activities_el      = $(this.el).find('#cklayout_activities_container');
         // Events
-        this.eventAggregator.on("removeModel", this.closeModelEditorModal);
-        this.eventAggregator.on("removeKnowledge", this.closeModelEditorModal);
+        this.eventAggregator.on("closeModelEditorModal", this.closeModelEditorModal);
         this.eventAggregator.on("openModelEditorModal", this.openModelEditorModal);
     },
     closeModelEditorModal : function(){
-        $('#CKLayoutModal').foundation('reveal', 'close');
+        $(this.el).foundation('reveal', 'close');
     },
     openModelEditorModal : function(id){
+        _this = this;
         this.model = this.collection.get(id);
         collection_test = new global.Collections.Knowledges(this.model)
         console.log(collection_test);
-        collection_test.fetch({
-            success:function(){},
-            complete:function(collection, response, options){}
-        })
-        this.render(function(){
-            $('#CKLayoutModal').foundation('reveal', 'open'); 
-            try{
-                $(document).foundation();
-            }catch(err){
-                console.log(err);
-            }
+        collection_test.fetch({complete:function(){_this.render()}});
+        // this.render(function(){
+        //     $('#CKLayoutModal').foundation('reveal', 'open'); 
+        //     try{
+        //         $(document).foundation();
+        //     }catch(err){
+        //         console.log(err);
+        //     }
 
-        }); 
-        
+        // }); 
     },
     render:function(callback){
+        $(this.el).foundation('reveal', 'open'); 
         this.content_el.empty();
         this.activities_el.empty();
         this.content_el.append(new CKLayout.Views.Main({
             activities_el : this.activities_el,
             className : "panel row",
-            notifications : this.notifications,
+            all_notifs : this.all_notifs,
+            dic_notifs : this.dic_notifs,
             model : this.model,
             user : this.user,
             eventAggregator : this.eventAggregator
@@ -113,44 +112,43 @@ CKLayout.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         CKLayout.init(); // Pour instancier les labels
         // Variables
+        this.all_notifs         = json.all_notifs;
         this.activities_el      = json.activities_el;
-        this.notifications      = json.notifications;
-        this.notif_to_render    = new Backbone.Collection();
         this.model              = json.model;
+        this.dic_notifs         = json.dic_notifs
+        this.model_notifs       = this.dic_notifs[this.model.get('id')];        
         this.user               = json.user;
         this.eventAggregator    = json.eventAggregator;
-        // Init
-        _this = this;
         this.labels             = new Backbone.Collection();
-        if(this.model.get('type') === "concept"){
+        ////////////////////
+        // Label
+        if(this.model.get('type') == "concept"){
             this.labels = CKLayout.collections.CLabels;
-            this.notifications.each(function(notification){
-                if(notification.get('to').id == _this.model.get('id')){_this.notif_to_render.add(notification)}
-            });
-        }else if((this.model.get('type') === "category")||(this.model.get('type') === "knowledge")){
+        }else if(this.model.get('type') === "knowledge"){
             this.labels = CKLayout.collections.KLabels;
-            this.notifications.each(function(notification){
-                if(notification.get('to').id == _this.model.get('id')){_this.notif_to_render.add(notification)}
-            });
-        }else if(this.model.get('type') === "project"){
-            this.notif_to_render.add(this.notifications.where({project_id : this.model.get('id')}))
         }
+        ///////////////////
+        // Notifications
+        // _this = this;
+        // if(this.model.get('type') != "project"){
+        //     this.notifications.each(function(notification){
+        //         if(notification.get('to').id == _this.model.get('id')){_this.notif_to_render.add(notification)}
+        //     });
+        // }else{
+        //     this.notif_to_render.add(this.notifications.where({project_id : this.model.get('id')}))
+        // }
         // Events
-        this.model.on('change',this.fetch,this)
+        this.model.on('change',this.render,this)
         // Templates
         this.template_hearder = _.template($('#CKLayout-header-template').html());
         this.template_footer = _.template($('#CKLayout-footer-template').html());
-    },
-    fetch : function(){
-        
-        this.render();
     },
     events : {
         "click .updateLabel" : "updateLabel",
         "click .toConcept" : "convertInConcept",
         "click .toKnowledge" : "convertInKnowledge",
         "click .toCategory" : "convertInCategory",
-        "click .remove" : "removeModel"
+        "click .remove" : "closeModelEditorModal"
     },
     convertInConcept : function(e){
         e.preventDefault();
@@ -160,23 +158,23 @@ CKLayout.Views.Main = Backbone.View.extend({
         console.log("newModel",newModel)
         newModel.save();
         this.model.destroy();
-        this.eventAggregator.trigger('removeModel');
+        this.eventAggregator.trigger('closeModelEditorModal');
     },
     convertInKnowledge : function(e){
         e.preventDefault();
         newModel = new global.Models.Knowledge(this.model.toJSON());
         newModel.save();
         this.model.destroy();
-        this.eventAggregator.trigger('removeModel');
+        this.eventAggregator.trigger('closeModelEditorModal');
     },
     convertInCategory : function(e){
         e.preventDefault();
         newModel = new global.Models.Poche(this.model.toJSON());
         newModel.save();
         this.model.destroy();
-        this.eventAggregator.trigger('removeModel');
+        this.eventAggregator.trigger('closeModelEditorModal');
     },
-    removeModel : function(e){
+    closeModelEditorModal : function(e){
         e.preventDefault();
         _this = this;
         ///////////////////////////////////////
@@ -197,7 +195,7 @@ CKLayout.Views.Main = Backbone.View.extend({
         ///////////////////////////////////////    
         }else{
             if (confirm("All references attached to this item will also be removed, would you continue?")) {
-                this.eventAggregator.trigger('removeModel');
+                this.eventAggregator.trigger('closeModelEditorModal');
                 this.model.destroy();
             }
         }
@@ -251,12 +249,13 @@ CKLayout.Views.Main = Backbone.View.extend({
         // notification module
         this.activities_el.append(new activitiesList.Views.Main({
             className       : "expand",
-            //model           : this.model,
-            notifications   : this.notif_to_render,
+            all_notifs      : this.all_notifs,
+            model_notifs    : this.model_notifs,
             eventAggregator : this.eventAggregator
         }).render().el);
         // Footer
         $(this.el).append(this.template_footer({model:this.model.toJSON()}));
+        $(document).foundation();
 
         return this;
     }

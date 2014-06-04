@@ -1,8 +1,24 @@
 <script type="text/template" id="activitiesList-template">
-  <h5><strong>Activities</strong>({{- notifications.length }}) : <a href="#" class="button round tiny alert">close all</a></h5>
+  <h5><strong>New activities</strong>({{- news_notifs.length }}) : <a href="#" class="button round tiny alert">close all</a></h5>
   <table width="100%">
       <tbody>
-      {{_.each(notifications,function(notification){ }}
+      {{_.each(news_notifs,function(notification){ }}
+          <tr>
+            <td width="100"><img class="large-4 small-4 medium-4 roundedImage" src="{{- notification.from.img }}"></td>
+            <td><strong>{{- notification.from.name}}</strong></td>
+            <td><small>{{- notification.date}}</small></td>
+            <td>{{- notification.content }}</td>
+            <td><a href="#" class="remove" style="color:green">open</a></td>
+            <td><a href="#" class="remove" style="color:red">close</a></td>
+          </tr>
+      {{ }); }}
+      </tbody>
+  </table>
+  <hr>
+  <h5><strong>Read activities</strong>({{- read_notifs.length }}) : <a href="#" class="button round tiny alert">close all</a></h5>
+  <table width="100%">
+      <tbody>
+      {{_.each(read_notifs,function(notification){ }}
           <tr>
             <td width="100"><img class="large-4 small-4 medium-4 roundedImage" src="{{- notification.from.img }}"></td>
             <td><strong>{{- notification.from.name}}</strong></td>

@@ -60,11 +60,6 @@
         p.members = new global.Collections.UsersCollection(p.members);
       })
 
-      _.each(json.poches, function(p){
-        p.comments = new global.Collections.Comments(p.comments);
-        p.members = new global.Collections.UsersCollection(p.members);
-      })
-
       global.init(json, function(){
         // Modules
         topbar.init();

@@ -17,25 +17,23 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <script type="text/template" id="CKLayout-header-template">
 	<div class="row">
-        <div class="large-10 medium-10 small-10 columns">
+        <div class="large-6 medium-6 small-6 columns">
             <h2 style="display:inline">{{- model.title}}</h2> - 
             <span class="success round label" style="background-color:{{- model.color }};display:inline">{{- model.label}}</span>
         </div>
-        <div class="large-2 medium-2 small-2 columns">
-            <a href="#" data-dropdown="label{{-model.id}}" class="button tiny round dropdown">Actions</a>
-            <ul id="label{{-model.id}}" data-dropdown-content class="f-dropdown">
-              {{ _.each(labels, function(label){ }}
-                <li><a href="#" class="updateLabel" data-model-id="{{-model.id}}" data-label-color="{{-label.color}}" data-label-title="{{-label.title}}">{{-label.title}}</a></li>
-              {{ }); }}
-              {{ if(model.type != "concept"){ }}
-                <li><a href="#" class="toConcept">convert in concept</a></li>
-              {{ }else if((model.type != "concept") && (model.type != "knowledge")){ }}
-                <li><a href="#" class="toKnowledge">convert in knowledge</a></li>
-              {{ }else if((model.type != "concept") && (model.type != "category")){ }}
-                <li><a href="#" class="toCategory">convert in category</a></li>
-              {{ } }}
-              <li><a href="#" class="remove">remove</a></li>
-            </ul>
+        <div class="large-6 medium-6 small-6 columns">
+            {{ _.each(labels, function(label){ }}
+              <a href="#" class="button tiny secondary updateLabel" data-model-id="{{-model.id}}" data-label-color="{{-label.color}}" data-label-title="{{-label.title}}">{{-label.title}}</a>
+            {{ }); }}
+            {{ if(model.type != "concept"){ }}
+              <a href="#" class="button tiny secondary toConcept">to concept</a>
+            {{ }else if((model.type != "concept") && (model.type != "knowledge")){ }}
+              <a href="#" class="button tiny secondary toKnowledge">to knowledge</a>
+            {{ }else if((model.type != "concept") && (model.type != "category")){ }}
+              <a href="#" class="button tiny secondary toCategory">to category</a>
+            {{ } }}
+            <a href="#" class="button tiny alert remove">remove</a>
+        
         </div>
     </div>
 </script>
@@ -51,6 +49,7 @@
         {{ _.each(model.tags, function(tag) { }}
             <span class="success round label" style="cursor:pointer">{{-tag}}</span>
         {{ }); }}
+        type: <strong>{{-model.type}}</strong>
     </div>
     </div>
 </script>

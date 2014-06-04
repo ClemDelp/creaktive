@@ -95,7 +95,9 @@
   /*********** VIEWS ******************/
   "ManagerController" : {
     "managerview" : ["authenticated", "allowedProjects","forceHTTPs"],
-    "editprofileview" : ["authenticated", "forceHTTPs"]
+    "editprofileview" : ["authenticated", "forceHTTPs"],
+    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated", "canWrite"]
   },
 
   "UserController" : {

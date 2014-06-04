@@ -33,41 +33,11 @@ manager.Views.Projects = Backbone.View.extend({
     render : function(){
         $(this.el).html('');
         _this = this;
-        this.projects_render.each(function(_project){
-            // List to complete by research
-            concepts_list   = [];
-            links_list      = [];
-            knowledges_list = [];
-            categories_list = [];
-            users_list      = [];
-            // Research
-            _this.concepts.each(function(concept){
-                if(concept.get('project') == _project.get('id')){concepts_list.unshift(concept.get('id'));}
-            });
-            _this.links.each(function(link){
-                if(_.indexOf(concepts_list, link.get('concept') > -1)){links_list.unshift(link.get('id'));}
-            });
-            _this.knowledges.each(function(knowledge){
-                if(knowledge.get('project') == _project.get('id')){knowledges_list.unshift(knowledge.get('id'));}
-                _.union(categories_list,knowledge.get('tags'));
-            });
-            _this.permissions.each(function(permission){
-                if(permission.get('project_id') == _project.get('id')){users_list.unshift(permission.get('id'));}
-            });
-            // Calculs
-            _nbrConc = concepts_list.length;
-            _nbrLink = links_list.length;
-            _nbrUser = users_list.length;
-            _nbrCatg = categories_list.length;
-            _nbrKnow = knowledges_list.length;
+        this.projects_render.each(function(project){
             // Append the template
             $(_this.el).append(_this.template_project({
-                project : _project.toJSON(),
-                nbrConc : _nbrConc,
-                nbrKnow : _nbrKnow,
-                nbrCatg : _nbrCatg,
-                nbrLink : _nbrLink,
-                nbrUser : _nbrUser
+                notifNbr : manager.views.main.dic_notifs[project.get('id')].news.length,
+                project  : project.toJSON(),
             }));
         });
 
@@ -83,20 +53,22 @@ manager.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Params
         // Variables
-        this.perso_notifs = json.perso_notifs;
-        this.all_notifs = json.all_notifs;
-        this.permissions = json.permissions;
-        this.projects = json.projects;
-        this.knowledges = json.knowledges;
-        this.concepts = json.concepts;
-        this.links = json.links;
-        this.users = json.users;
-        this.poches = json.poches;
-        this.user = json.user;
+        this.all_notifs         = json.all_notifs;
+        this.dic_notifs         = json.dic_notifs;
+        console.log('dictionaaaaaaary',this.dic_notifs)
+        this.permissions        = json.permissions;
+        this.projects           = json.projects;
+        this.knowledges         = json.knowledges;
+        this.concepts           = json.concepts;
+        this.links              = json.links;
+        this.users              = json.users;
+        this.poches             = json.poches;
+        this.user               = json.user;
         this.eventAggregator    = json.eventAggregator;
         // CKLayout for project
         manager.views.p_cklayout_modal = new CKLayout.Views.Modal({
-            notifications : this.all_notifs,
+            all_notifs : this.all_notifs, // Le déclancheur pour le real time
+            dic_notifs : this.dic_notifs, // Le dictionnaire des notifications
             user : this.user,
             collection : this.projects,
             eventAggregator : this.eventAggregator

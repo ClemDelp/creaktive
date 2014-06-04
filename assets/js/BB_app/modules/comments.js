@@ -24,8 +24,8 @@ comments.Views.Main = Backbone.View.extend({
         this.template = _.template($('#comments-template').html());
     },
     events : {
-        'click .add' : 'addComment',
-        'click .remove' : 'removeComment'
+        'click .addComment' : 'addComment',
+        'click .removeComment' : 'removeComment'
     },
     addComment: function(e){
         e.preventDefault(); 
@@ -36,19 +36,15 @@ comments.Views.Main = Backbone.View.extend({
             content : $(this.el).find(".input_comment").val()
         });
         this.model.save();
-        this.render();
     },
     removeComment : function(e){
         e.preventDefault();
         comment = this.model.get('comments').get(e.target.getAttribute("data-id-comment"));
         this.model.get('comments').remove(comment);
         this.model.save();
-        this.render();
     },
     render : function() {
-        $(this.el).html("");
-        // Comments + new comment input
-        console.log("model: ",this.model)
+        $(this.el).empty();
         $(this.el).append(this.template({
             user : this.user,
             model : this.model,

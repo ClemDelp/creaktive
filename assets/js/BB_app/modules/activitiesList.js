@@ -15,13 +15,14 @@ activitiesList.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
-        //this.model = json.model;
-        this.notifications = json.notifications;
+        this.all_notifs      = json.all_notifs;
+        this.news_notifs     = json.model_notifs.news;
+        this.read_notifs     = json.model_notifs.read;
         this.eventAggregator = json.eventAggregator;
         // Events
-        this.notifications.bind("add",this.render);
-        this.notifications.bind("remove",this.render);
-        this.notifications.bind("change",this.render);
+        this.all_notifs.bind("add",this.render);
+        this.all_notifs.bind("remove",this.render);
+        this.all_notifs.bind("change",this.render);
         // Templates
         this.template = _.template($('#activitiesList-template').html());     
     },
@@ -35,7 +36,10 @@ activitiesList.Views.Main = Backbone.View.extend({
         // this.notifications.each(function(notification){
         //     if(notification.get('to').id == _this.model.get('id')){notif_to_render.add(notification)}
         // });
-        $(this.el).append(this.template({notifications : this.notifications.toJSON()}));
+        $(this.el).append(this.template({
+          news_notifs : this.news_notifs.toJSON(),
+          read_notifs : this.read_notifs.toJSON()
+        }));
         
         return this;
     }

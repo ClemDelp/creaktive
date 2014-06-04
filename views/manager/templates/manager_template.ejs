@@ -22,6 +22,9 @@
 	    <ul class="pricing-table">
 		  	<li class="price">
 		  		{{-project.title }}
+		  		{{if(notifNbr > 0){ }}
+                    <span class="top-bar-unread">{{-notifNbr}}</span>
+                {{ } }}
 		  		<span style="width:8%;float:right;cursor:pointer">
 	                <img src="img/edit.png" class="openProjectModal" data-model-id="{{-project.id}}" title="edit">
 	            </span>
