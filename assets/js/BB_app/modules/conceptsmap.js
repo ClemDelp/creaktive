@@ -383,14 +383,12 @@ conceptsmap.Views.Main = Backbone.View.extend({
     },
     actualizeNotification : function(){
         _this = this;
-        
+        console.log(this.dic_notifs)
         this.concepts.each(function(concept){
+            console.log(_this.dic_notifs[concept.get('id')])
             if(_this.dic_notifs[concept.get('id')].news.length > 0)$("#concept_notif_"+concept.get('id')).html('<span class="top-bar-unread">'+_this.dic_notifs[concept.get('id')].news.length+'</span>')
         })
-        
-
         //MM.App.adjustFontSize(1);
-
     },
     render : function(){
         $(this.el).empty()

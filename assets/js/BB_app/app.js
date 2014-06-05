@@ -48,7 +48,7 @@ var global = {
     callback();
 
   },
-  prepareNotifications : function(){
+  prepareNotifications : function(){//alert('prepareNotifications')
     // init
     // this.collections.personal_notifs.reset();
     // this.collections.knowledge_notifs.reset();
@@ -72,7 +72,7 @@ var global = {
     // });
     ////////////////////////////
     // Dictionaries 
-    this.NotificationsDictionary = global.Functions.getNotificationsDictionary(global.models.current_user,global.collections.all_notifs);
+    this.NotificationsDictionary = global.Functions.getNotificationsDictionary(global.models.current_user,global.collections.all_notifs,global.collections.Projects,global.collections.Knowledges,global.collections.Concepts,global.collections.Poches);
     this.ModelsNotificationsDictionary = this.NotificationsDictionary.models;
     this.ProjectsNotificationsDictionary = this.NotificationsDictionary.projects;
     this.AllNewsNotificationsDictionary = this.NotificationsDictionary.allNews;
