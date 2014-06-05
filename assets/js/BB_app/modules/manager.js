@@ -20,7 +20,7 @@ manager.Views.Projects = Backbone.View.extend({
         this.template_project = _.template($('#manager-project-template').html());              
     },
     events : {
-        "click .openProjectModal"  : "openProjectModal",
+        "dblclick .openProjectModal"  : "openProjectModal",
     },
     openProjectModal : function(e){
         e.preventDefault();
@@ -36,7 +36,8 @@ manager.Views.Projects = Backbone.View.extend({
         this.projects_render.each(function(project){
             // Append the template
             $(_this.el).append(_this.template_project({
-                notifNbr : manager.views.main.dic_notifs[project.get('id')].news.length,
+                notifNbr : manager.views.main.projects_notifs[project.get('id')].news.length,
+                userNbr  : manager.views.main.users_rec_dic[project.get('id')],
                 project  : project.toJSON(),
             }));
         });
@@ -51,11 +52,9 @@ manager.Views.Main = Backbone.View.extend({
     el : $("#manager-container"),
     initialize : function(json) {
         _.bindAll(this, 'render');
-        // Params
         // Variables
-        this.all_notifs         = json.all_notifs;
-        this.dic_notifs         = json.dic_notifs;
-        console.log('dictionaaaaaaary',this.dic_notifs)
+        this.projects_notifs    = json.projects_notifs;
+        this.users_rec_dic      = json.users_rec_dic;
         this.permissions        = json.permissions;
         this.projects           = json.projects;
         this.knowledges         = json.knowledges;
@@ -67,14 +66,12 @@ manager.Views.Main = Backbone.View.extend({
         this.eventAggregator    = json.eventAggregator;
         // CKLayout for project
         manager.views.p_cklayout_modal = new CKLayout.Views.Modal({
-            all_notifs : this.all_notifs, // Le déclancheur pour le real time
-            dic_notifs : this.dic_notifs, // Le dictionnaire des notifications
-            user : this.user,
-            collection : this.projects,
+            models_notifs   : this.projects_notifs, // Le déclancheur pour le real time
+            user            : this.user,
+            collection      : this.projects,
             eventAggregator : this.eventAggregator
         });
         // Events
-        this.permissions.bind("reset", this.render);
         this.projects.bind("add", this.render);
         this.projects.bind("remove", this.render);
         // Templates

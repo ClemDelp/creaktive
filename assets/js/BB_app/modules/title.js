@@ -17,6 +17,7 @@ title.Views.Main = Backbone.View.extend({
     },
     render : function(){
         $(this.el).html(this.template({project: this.project,page : this.page}));
+        $(document).foundation();
         return this;
     }
 });

@@ -45,6 +45,7 @@
       json.concepts = <%- concepts %>;
       json.links = <%- links %>;
       json.notifications = <%- notifications %>;
+      json.permissions = <%- permissions %>;
 
       _.each(json.knowledges, function(k){
         k.comments = new global.Collections.Comments(k.comments);

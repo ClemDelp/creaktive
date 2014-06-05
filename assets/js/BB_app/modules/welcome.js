@@ -4,24 +4,25 @@ welcome.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
-        this.all_notifs         = json.all_notifs;
-        this.all_news_notifs    = json.new_notifs;
+        this.allNews_notifs    = json.allNews_notifs;
         this.user               = json.user;
         this.eventAggregator    = json.eventAggregator;
         // Events
-        this.all_notifs.on('change',this.render)
-        this.all_notifs.on('add',this.render)
-        this.all_notifs.on('remove',this.render)
+        this.eventAggregator.on('AllNewsNotificationsDictionary',this.actualize,this);
         // Templates
         this.template = _.template($('#welcome-template').html());
     },
     events : {},
+    actualize : function(dic){
+        this.allNews_notifs = dic;
+        this.render();
+    },
     render : function(){
         // Init
         $(this.el).empty();
         $(this.el).append(this.template({
             user        : this.user.toJSON(),
-            notifNbre   : this.all_news_notifs.length
+            notifNbre   : this.allNews_notifs.length
         }))
         
         return this;

@@ -21,17 +21,20 @@
     <div class="item">
 	    <ul class="pricing-table">
 		  	<li class="price">
-		  		{{-project.title }}
-		  		{{if(notifNbr > 0){ }}
-                    <span class="top-bar-unread">{{-notifNbr}}</span>
-                {{ } }}
-		  		<span style="width:8%;float:right;cursor:pointer">
-	                <img src="img/edit.png" class="openProjectModal" data-model-id="{{-project.id}}" title="edit">
-	            </span>
+		  		<a href="#" class="openProjectModal manager button radius secondary" data-model-id="{{-project.id}}">
+		  			<h3 data-model-id="{{-project.id}}">{{-project.title }}
+					{{if(notifNbr > 0){ }}
+	                    <span class="top-bar-unread">{{-notifNbr}}</span>
+	                {{ } }}
+	                </h3>
+		  		</a>
 		  	</li>
 		  	<li class="description">
 		  		{{ if(project.content == ""){ }}Add a description via the project editor{{ }else{ }} {{=project.content}} {{ } }}<br>
 		  		Create by {{-project.author.name}} at {{-project.date}}
+		  	</li>
+		  	<li class="description">
+		  		<strong style="color:green">{{-userNbr}}</strong> users on this project <a href="/userManager?projectId={{- project.id}}" class="button tiny round secondary">manage users</a>
 		  	</li>
 			<li class="cta-button">
 				<a class="button success expand" href="/ckviewer?projectId={{- project.id}}">Open</a>

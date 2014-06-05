@@ -34,10 +34,7 @@ var global = {
     this.collections.all_notifs.on('add',this.prepareNotifications,this)
     this.collections.all_notifs.on('remove',this.prepareNotifications,this)
     this.collections.all_notifs.on('change',this.prepareNotifications,this)
-    // this.collections.personal_notifs = new Backbone.Collection();
-    // this.collections.knowledge_notifs = new Backbone.Collection();
-    // this.collections.concept_notifs = new Backbone.Collection();
-    // this.collections.category_notifs = new Backbone.Collection();
+
     this.NotificationsDictionary = {};
     this.ModelsNotificationsDictionary = {};
     this.ProjectsNotificationsDictionary = {};
@@ -45,31 +42,13 @@ var global = {
     this.AllReadNotificationsDictionary = {};
 
     this.prepareNotifications();
+
+    this.ProjectsUsersDictionary = this.Functions.getProjectsUsersDictionary(this.collections.Projects,this.collections.Permissions);
+
     callback();
 
   },
   prepareNotifications : function(){
-    // init
-    // this.collections.personal_notifs.reset();
-    // this.collections.knowledge_notifs.reset();
-    // this.collections.concept_notifs.reset();
-    // this.collections.category_notifs.reset();
-    // // On fait un premier tri en ne gardant que les notifications non valider pour cet utilisateur
-    // this.collections.all_notifs.each(function(notif){
-    //   if((_.indexOf(notif.get('read'), global.models.current_user.get('id')) == -1)){
-    //     global.collections.personal_notifs.add(notif);
-    //   }
-    // });
-    // // Puis on les reparties dans les collections correspondantes pour les préparer pour les différents modules
-    // this.collections.personal_notifs.each(function(notif){
-    //   if(notif.get('object') == "Knowledge"){
-    //     global.collections.knowledge_notifs.add(notif);
-    //   }else if(notif.get('object') == "Concept"){
-    //     global.collections.concept_notifs.add(notif);
-    //   }else if(notif.get('object') == "Poche"){
-    //     global.collections.category_notifs.add(notif);
-    //   }
-    // });
     ////////////////////////////
     // Dictionaries 
     this.NotificationsDictionary = global.Functions.getNotificationsDictionary(global.models.current_user,global.collections.all_notifs,global.collections.Projects,global.collections.Knowledges,global.collections.Concepts,global.collections.Poches);
@@ -83,16 +62,6 @@ var global = {
     this.eventAggregator.trigger("ProjectsNotificationsDictionary",this.ProjectsNotificationsDictionary);
     this.eventAggregator.trigger("AllNewsNotificationsDictionary",this.AllNewsNotificationsDictionary);
     this.eventAggregator.trigger("AllReadNotificationsDictionary",this.AllReadNotificationsDictionary);
-    // this.dictionary_Categories_Notifs = global.Functions.dict_modelIdToNotifsNumber(global.collections.Poches,global.collections.category_notifs);
-    // this.dictionary_Knowledges_Notifs = global.Functions.dict_modelIdToNotifsNumber(global.collections.Knowledges,global.collections.knowledge_notifs);
-    // this.dictionary_Concepts_Notifs = global.Functions.dict_modelIdToNotifsNumber(global.collections.Concepts,global.collections.concept_notifs);
-
-
-    // console.log("all",global.collections.all_notifs.length)
-    // console.log("perso",global.collections.personal_notifs.length)
-    // console.log("kno",global.collections.knowledge_notifs.length)
-    // console.log("con",global.collections.concept_notifs.length)
-    // console.log("cat",global.collections.category_notifs.length)
   }
 };
 /////////////////////////////////////////////////
@@ -199,7 +168,8 @@ var manager = {
   init: function () {
     /*Init*/
     this.views.main = new this.Views.Main({
-      dic_notifs      : global.ProjectsNotificationsDictionary, // Le dictionnaire des notifications
+      projects_notifs : global.ProjectsNotificationsDictionary, // Le dictionnaire des notifications
+      users_rec_dic   : global.ProjectsUsersDictionary,
       permissions     : global.collections.Permissions,
       projects        : global.collections.Projects,
       concepts        : global.collections.Concepts,
@@ -226,8 +196,8 @@ var welcome = {
   views: {},
   init: function () {
     this.views.Main = new this.Views.Main({
-      new_notifs  : global.AllNewsNotificationsDictionary, // Le dictionnaire de toutes les nouvelles notifications
-      user : global.models.current_user,
+      allNews_notifs  : global.AllNewsNotificationsDictionary, // Le dictionnaire de toutes les nouvelles notifications
+      user            : global.models.current_user,
       eventAggregator : global.eventAggregator
     });
     this.views.Main.render();
@@ -246,7 +216,7 @@ var conceptsmap = {
   init: function () {
     /*Init*/
     this.views.main = new this.Views.Main({
-      dic_notifs  : global.ModelsNotificationsDictionary, // Le dictionnaire des notifications
+      models_notifs  : global.ModelsNotificationsDictionary, // Le dictionnaire des notifications
       concepts    : global.collections.Concepts,
       project     : global.models.currentProject,
       user        : global.models.current_user,

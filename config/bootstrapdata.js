@@ -10,6 +10,7 @@ module.exports.bootstrapdata = {
               Concept.find({project : req.session.allowedProjects}).done(function(err,concepts){
                 Link.find({project : req.session.allowedProjects}).done(function(err,links){
                   Notification.find({project_id : req.session.allowedProjects}).done(function(err,notifications){
+                    Permission.find().done(function(err, permissions){
                       res.view({
                         currentUser : JSON.stringify(req.session.user),
                         users : JSON.stringify(users),
@@ -18,8 +19,10 @@ module.exports.bootstrapdata = {
                         projects : JSON.stringify(projects),
                         concepts : JSON.stringify(concepts),
                         links : JSON.stringify(links),
-                        notifications : JSON.stringify(notifications)
+                        notifications : JSON.stringify(notifications),
+                        permissions : JSON.stringify(permissions)
                       });
+                    });
                   })
                 })
               })

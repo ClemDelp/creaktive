@@ -217,26 +217,26 @@ CKLayout.Views.Main = Backbone.View.extend({
         }));
         // Model editor module
         $(this.el).append(new modelEditor.Views.Main({
-            className       : "large-12 medium-12 small-12",
+            
             user            : this.user,
             model           : this.model,
             eventAggregator : this.eventAggregator
         }).render().el);
         // IMG List module
         $(this.el).append(new imagesList.Views.Main({
-            className       : "large-6 medium-6 small-6 columns",
+            
             model           : this.model,
             eventAggregator : this.eventAggregator
         }).render().el);
         // Attachment module
         $(this.el).append(new attachment.Views.Main({
-            className       : "large-6 medium-6 small-6 columns",
+            
             model           : this.model,
             eventAggregator : this.eventAggregator
         }).render().el);
         // Comments module
         $(this.el).append(new comments.Views.Main({
-            className       : "large-12 medium-12 small-12",
+            
             model           : this.model,
             user            : this.user,
             eventAggregator : this.eventAggregator
@@ -246,7 +246,7 @@ CKLayout.Views.Main = Backbone.View.extend({
         this.activities_el.append(new activitiesList.Views.Main({
             className       : "row panel",
             model           : this.model,
-            models_notifs      : this.models_notifs,
+            models_notifs   : this.models_notifs,
             eventAggregator : this.eventAggregator
         }).render().el);
         // Footer

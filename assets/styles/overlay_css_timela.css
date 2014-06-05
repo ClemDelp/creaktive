@@ -20,6 +20,11 @@ color: #333333;
 margin:0px;
 }
 
+.manager.button{
+	background-color: #f6f6f6;
+	margin:0px;
+}
+
 #CKLayoutModal{
 	top : 0px;
 	background-color: transparent;

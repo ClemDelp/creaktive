@@ -57,36 +57,6 @@ conceptsmap.Views.ConceptsModal = Backbone.View.extend({
     }
 });
 /////////////////////////////////////////
-// Middle Part
-/////////////////////////////////////////
-// conceptsmap.Views.MiddlePart = Backbone.View.extend({
-//     initialize : function(json) {
-//         _.bindAll(this, 'render');
-//         // Variables
-//         this.notifications      = json.notifications;
-//         this.concepts           = json.concepts;
-//         this.user               = json.user;
-//         this.eventAggregator    = json.eventAggregator;
-//         // Backbone events              
-//         this.concepts.bind("change",this.resetMap);
-//         //this.concepts.bind("remove",this.resetMap);
-//         // Events
-//         this.listenTo(this.notifications,'change',this.actualizeNotification,this);
-//         this.listenTo(this.notifications,'add',this.actualizeNotification,this);
-//         this.listenTo(this.notifications,'remove',this.actualizeNotification,this);
-//         this.listenTo(this.eventAggregator,'change',this.action,this);
-//         this.listenTo(this.eventAggregator,"undo", this.performUndo, this);
-
-//         this.template = _.template($("#conceptsmap_map_template").html());
-//         // Style
-//         //$(this.el).attr( "style","overflow:hidden")
-//     },        
-//     render : function(){
-//         $(this.el).append(this.template());
-//         return this;
-//     }
-// });
-/////////////////////////////////////////
 // Main
 /////////////////////////////////////////
 conceptsmap.Views.Main = Backbone.View.extend({
@@ -94,8 +64,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render','actualizeNotification','recursiveUnlink');
         // Variables
-        this.all_notifs         = json.all_notifs;
-        this.dic_notifs         = json.dic_notifs;
+        this.models_notifs      = json.models_notifs;
         this.knowledges         = json.knowledges;
         this.concepts           = json.concepts;
         this.user               = json.user;
@@ -115,8 +84,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
         $("#"+conceptsmap.views.conceptsModal.el.id).on('close',this.againstFounderBug);
         // CKLayout
         conceptsmap.views.cklayout = new CKLayout.Views.Modal({
-            all_notifs  : this.all_notifs, // Le déclancheur pour le real time
-            dic_notifs  : this.dic_notifs, // Le dictionnaire des notifications
+            models_notifs  : this.models_notifs, // Le dictionnaire des notifications
             user        : this.user,
             collection  : this.concepts,
             eventAggregator : this.eventAggregator
@@ -384,10 +352,10 @@ conceptsmap.Views.Main = Backbone.View.extend({
             });        
     },
     actualizeNotification : function(dic){
-        if(dic)this.dic_notifs = dic;
+        if(dic)this.models_notifs = dic;
         _this = this;
         this.concepts.each(function(concept){
-            if(_this.dic_notifs[concept.get('id')].news.length > 0)$("#concept_notif_"+concept.get('id')).html('<span class="top-bar-unread">'+_this.dic_notifs[concept.get('id')].news.length+'</span>')
+            if(_this.models_notifs[concept.get('id')].news.length > 0)$("#concept_notif_"+concept.get('id')).html('<span class="top-bar-unread">'+_this.models_notifs[concept.get('id')].news.length+'</span>')
         })
         //MM.App.adjustFontSize(1);
     },
