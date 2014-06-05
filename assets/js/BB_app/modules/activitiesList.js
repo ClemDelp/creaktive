@@ -16,7 +16,6 @@ activitiesList.Views.Main = Backbone.View.extend({
         // Variables
         this.model           = json.model;
         this.models_notifs   = json.models_notifs;
-        console.log("tututu",this.models_notifs)   
         this.news_notifs     = this.models_notifs[this.model.get('id')].news;
         this.read_notifs     = this.models_notifs[this.model.get('id')].read;
         this.eventAggregator = json.eventAggregator;

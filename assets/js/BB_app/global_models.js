@@ -83,9 +83,7 @@ global.Models.Knowledge = global.Models.CKObject.extend({
 global.Models.ConceptModel = global.Models.CKObject.extend({
     initialize : function Comment() {
         this.urlRoot = "concept";
-        this.set({
-            type : "concept"
-        });
+        this.set({type : "concept"});
         this.bind("error", function(model, error){
             console.log( error );
         });

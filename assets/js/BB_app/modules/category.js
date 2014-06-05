@@ -16,7 +16,7 @@ category.Views.Category = Backbone.View.extend({
         // Category template
         $(this.el).html(this.template_list({
             notifs_nbr      : category.views.main.models_notifs[this.category.get('id')].news.length,
-            models_notifs    : category.views.main.models_notifs,
+            models_notifs   : category.views.main.models_notifs,
             knowledges      : this.knowledges.toJSON(), 
             category        : this.category.toJSON(),
         }));

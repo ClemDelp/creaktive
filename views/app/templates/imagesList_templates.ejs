@@ -3,7 +3,7 @@
         <legend align=left>Images ({{-images.length}})</legend>
         <ul class="clearing-thumbs" data-clearing>
 			{{ _.each(images, function(image){ }}
-				<li class="large-3 medium-3 small-3"><a href="/S3/getPrivateUrl?amz_id={{- image.url }}"><img class="th" title="{{- image.name }}" src="/S3/getPrivateUrl?amz_id={{- image.url }}"></a></li>
+				<li class="large-3 medium-3 small-3"><a href="/S3/getPrivateUrl?amz_id={{- image.url }}"><img class="large-12 medium-12 small-12 th" title="{{- image.name }}" src="/S3/getPrivateUrl?amz_id={{- image.url }}"></a></li>
 			{{ }); }}
 		</ul>
     </fieldset>

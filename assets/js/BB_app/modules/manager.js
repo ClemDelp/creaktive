@@ -5,6 +5,7 @@ manager.Views.Projects = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
         // Params
+        this.projects_notifs    = json.projects_notifs;
         this.permissions        = json.permissions;
         this.projects           = json.projects;
         this.projects_render    = this.projects;
@@ -16,11 +17,20 @@ manager.Views.Projects = Backbone.View.extend({
         this.eventAggregator    = json.eventAggregator;
         // Events
         this.eventAggregator.on('projects_search', this.projectsSearch, this);
+        this.eventAggregator.on('ProjectsNotificationsDictionary', this.actualize, this);
         // Templates
         this.template_project = _.template($('#manager-project-template').html());              
     },
     events : {
         "dblclick .openProjectModal"  : "openProjectModal",
+    },
+    actualize : function(dic){
+        this.projects_notifs = dic;
+        this.render();
+        $("#categories_grid").gridalicious({
+            gutter: 20,
+            width: 260
+        });
     },
     openProjectModal : function(e){
         e.preventDefault();
@@ -31,17 +41,20 @@ manager.Views.Projects = Backbone.View.extend({
         this.render();
     },
     render : function(){
-        $(this.el).html('');
+        $(this.el).empty('');
         _this = this;
         this.projects_render.each(function(project){
+            // Important! si on cré un nouveau projet le dictionnaire des notifs indiquera undefined pour ce nouveau model
+            notifNbr = 0;
+            if(_this.projects_notifs[project.get('id')] != undefined) _this.projects_notifs[project.get('id')].news.length;
             // Append the template
             $(_this.el).append(_this.template_project({
-                notifNbr : manager.views.main.projects_notifs[project.get('id')].news.length,
+                notifNbr : notifNbr,
                 userNbr  : manager.views.main.users_rec_dic[project.get('id')],
                 project  : project.toJSON(),
             }));
         });
-
+        
         return this;
     }
 });
@@ -144,6 +157,7 @@ manager.Views.Main = Backbone.View.extend({
             links           : this.links,
             users           : this.users,
             poches          : this.poches,
+            projects_notifs : this.projects_notifs,
             eventAggregator : this.eventAggregator
         }).render().el);
 
@@ -151,6 +165,7 @@ manager.Views.Main = Backbone.View.extend({
             gutter: 20,
             width: 260
         });
+        
 
         $(document).foundation();
         return this;
