@@ -1,4 +1,3 @@
-/**************************************/
 var activitiesList = {
   // Classes
   Collections: {},
@@ -15,18 +14,26 @@ activitiesList.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
-        this.all_notifs      = json.all_notifs;
-        this.news_notifs     = json.model_notifs.news;
-        this.read_notifs     = json.model_notifs.read;
+        this.model           = json.model;
+        this.models_notifs   = json.models_notifs;        
+        this.news_notifs     = this.models_notifs[this.model.get('id')].news;
+        this.read_notifs     = this.models_notifs[this.model.get('id')].read;
         this.eventAggregator = json.eventAggregator;
-        // Events
-        this.all_notifs.bind("add",this.render);
-        this.all_notifs.bind("remove",this.render);
-        this.all_notifs.bind("change",this.render);
+        // En fonction du type on ecoute sur l'event adequat
+        if(this.model.get('type') == 'project') this.eventAggregator.bind("ProjectsNotificationsDictionary",this.actualize,this);
+        else this.eventAggregator.bind("ModelsNotificationsDictionary",this.actualize,this);
         // Templates
         this.template = _.template($('#activitiesList-template').html());     
     },
     events : {},
+    actualize : function(models_notifs){
+      console.log(models_notifs)
+      console.log(this.model.get('id'))
+      console.log(models_notifs[this.model.get('id')])
+      this.news_notifs = models_notifs[this.model.get('id')].news;
+      this.read_notifs = models_notifs[this.model.get('id')].read;
+      this.render();
+    },
     render : function(){
         // Init
         $(this.el).html('');
@@ -44,4 +51,3 @@ activitiesList.Views.Main = Backbone.View.extend({
         return this;
     }
 });
-/**************************************/

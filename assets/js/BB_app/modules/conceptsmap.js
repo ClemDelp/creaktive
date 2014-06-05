@@ -59,33 +59,33 @@ conceptsmap.Views.ConceptsModal = Backbone.View.extend({
 /////////////////////////////////////////
 // Middle Part
 /////////////////////////////////////////
-conceptsmap.Views.MiddlePart = Backbone.View.extend({
-    initialize : function(json) {
-        _.bindAll(this, 'render');
-        // Variables
-        this.notifications      = json.notifications;
-        this.concepts           = json.concepts;
-        this.user               = json.user;
-        this.eventAggregator    = json.eventAggregator;
-        // Backbone events              
-        this.concepts.bind("change",this.resetMap);
-        //this.concepts.bind("remove",this.resetMap);
-        // Events
-        this.listenTo(this.notifications,'change',this.actualizeNotification,this);
-        this.listenTo(this.notifications,'add',this.actualizeNotification,this);
-        this.listenTo(this.notifications,'remove',this.actualizeNotification,this);
-        this.listenTo(this.eventAggregator,'change',this.action,this);
-        this.listenTo(this.eventAggregator,"undo", this.performUndo, this);
+// conceptsmap.Views.MiddlePart = Backbone.View.extend({
+//     initialize : function(json) {
+//         _.bindAll(this, 'render');
+//         // Variables
+//         this.notifications      = json.notifications;
+//         this.concepts           = json.concepts;
+//         this.user               = json.user;
+//         this.eventAggregator    = json.eventAggregator;
+//         // Backbone events              
+//         this.concepts.bind("change",this.resetMap);
+//         //this.concepts.bind("remove",this.resetMap);
+//         // Events
+//         this.listenTo(this.notifications,'change',this.actualizeNotification,this);
+//         this.listenTo(this.notifications,'add',this.actualizeNotification,this);
+//         this.listenTo(this.notifications,'remove',this.actualizeNotification,this);
+//         this.listenTo(this.eventAggregator,'change',this.action,this);
+//         this.listenTo(this.eventAggregator,"undo", this.performUndo, this);
 
-        this.template = _.template($("#conceptsmap_map_template").html());
-        // Style
-        //$(this.el).attr( "style","overflow:hidden")
-    },        
-    render : function(){
-        $(this.el).append(this.template());
-        return this;
-    }
-});
+//         this.template = _.template($("#conceptsmap_map_template").html());
+//         // Style
+//         //$(this.el).attr( "style","overflow:hidden")
+//     },        
+//     render : function(){
+//         $(this.el).append(this.template());
+//         return this;
+//     }
+// });
 /////////////////////////////////////////
 // Main
 /////////////////////////////////////////
@@ -137,9 +137,11 @@ conceptsmap.Views.Main = Backbone.View.extend({
         //this.listenTo(this.concepts,"change",this.render);
         this.listenTo(this.concepts,"remove",this.resetMap);
         // Events
-        this.listenTo(this.all_notifs,'change',this.actualizeNotification,this);
-        this.listenTo(this.all_notifs,'add',this.actualizeNotification,this);
-        this.listenTo(this.all_notifs,'remove',this.actualizeNotification,this);
+        // this.listenTo(this.all_notifs,'change',this.actualizeNotification,this);
+        // this.listenTo(this.all_notifs,'add',this.actualizeNotification,this);
+        // this.listenTo(this.all_notifs,'remove',this.actualizeNotification,this);
+        this.eventAggregator.on('ModelsNotificationsDictionary',this.actualizeNotification,this);
+
         this.listenTo(this.eventAggregator,'change',this.action,this);
         this.listenTo(this.eventAggregator,"undo", this.performUndo, this);
 
@@ -381,11 +383,10 @@ conceptsmap.Views.Main = Backbone.View.extend({
                 MM.App.setMap(MM.Map.fromJSON(data.tree));
             });        
     },
-    actualizeNotification : function(){
+    actualizeNotification : function(dic){
+        if(dic)this.dic_notifs = dic;
         _this = this;
-        console.log(this.dic_notifs)
         this.concepts.each(function(concept){
-            console.log(_this.dic_notifs[concept.get('id')])
             if(_this.dic_notifs[concept.get('id')].news.length > 0)$("#concept_notif_"+concept.get('id')).html('<span class="top-bar-unread">'+_this.dic_notifs[concept.get('id')].news.length+'</span>')
         })
         //MM.App.adjustFontSize(1);

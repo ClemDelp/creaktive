@@ -15,8 +15,8 @@ category.Views.Category = Backbone.View.extend({
         _this = this;
         // Category template
         $(this.el).html(this.template_list({
-            notifs_nbr      : category.views.main.dic_notifs[this.category.get('id')].news.length,
-            dic_notifs    : category.views.main.dic_notifs,
+            notifs_nbr      : category.views.main.models_notifs[this.category.get('id')].news.length,
+            models_notifs    : category.views.main.models_notifs,
             knowledges      : this.knowledges.toJSON(), 
             category        : this.category.toJSON(),
         }));
@@ -77,7 +77,7 @@ category.Views.Categories = Backbone.View.extend({
         this.knowledges.each(function(k){
             if(k.get('tags').length == 0){
                 $(_this.el).append(template({
-                    notifs_nbr    : category.views.main.dic_notifs[k.get('id')].news.length,
+                    notifs_nbr    : category.views.main.models_notifs[k.get('id')].news.length,
                     knowledge     : k.toJSON()
                 }));
             }
@@ -251,8 +251,7 @@ category.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render',"newCategory");
         // Variables
-        this.all_notifs         = json.all_notifs;
-        this.dic_notifs         = json.dic_notifs;
+        this.models_notifs      = json.models_notifs;
         this.knowledges         = json.knowledges;
         this.categories         = json.categories;
         this.project            = json.project;
@@ -264,16 +263,14 @@ category.Views.Main = Backbone.View.extend({
         this.Kselected          = new Backbone.Collection();     
         // CKLayout for knowledge 
         category.views.k_cklayout_modal = new CKLayout.Views.Modal({
-            all_notifs : this.all_notifs, // Le déclancheur pour le real time
-            dic_notifs : this.dic_notifs, // Le dictionnaire des notifications
+            models_notifs : this.models_notifs, // Le dictionnaire des notifications
             user : this.user,
             collection : this.knowledges,
             eventAggregator : this.eventAggregator
         });
         // CKLayout for category
         category.views.c_cklayout_modal = new CKLayout.Views.Modal({
-            all_notifs : this.all_notifs, // Le déclancheur pour le real time
-            dic_notifs : this.dic_notifs, // Le dictionnaire des notifications
+            models_notifs : this.models_notifs, // Le dictionnaire des notifications
             user : this.user,
             collection : this.categories,
             eventAggregator : this.eventAggregator

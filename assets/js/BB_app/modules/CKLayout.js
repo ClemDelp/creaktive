@@ -57,8 +57,7 @@ CKLayout.Views.Modal = Backbone.View.extend({
     initialize:function(json){
         _.bindAll(this, 'render', 'openModelEditorModal');
         // Variables
-        this.all_notifs         = json.all_notifs;
-        this.dic_notifs         = json.dic_notifs
+        this.models_notifs         = json.models_notifs
         this.model              = new Backbone.Model();
         this.user               = json.user;
         this.collection         = json.collection;
@@ -74,30 +73,29 @@ CKLayout.Views.Modal = Backbone.View.extend({
         $(this.el).foundation('reveal', 'close');
     },
     openModelEditorModal : function(id){
-        _this = this;
         this.model = this.collection.get(id);
-        collection_test = new global.Collections.Knowledges(this.model)
-        console.log(collection_test);
-        collection_test.fetch({complete:function(){_this.render()}});
-        // this.render(function(){
-        //     $('#CKLayoutModal').foundation('reveal', 'open'); 
-        //     try{
-        //         $(document).foundation();
-        //     }catch(err){
-        //         console.log(err);
-        //     }
-
-        // }); 
+        collection_test = new Backbone.Collection();
+        if(this.model.get('type') == 'project') collection_test = new global.Collections.ProjectsCollection(this.model);
+        else if(this.model.get('type') == 'knowledge') collection_test = new global.Collections.Knowledges(this.model);
+        else if(this.model.get('type') == 'category') collection_test = new global.Collections.Poches(this.model);
+        else if(this.model.get('type') == 'concept') collection_test = new global.Collections.ConceptsCollection(this.model);
+        collection_test.fetch({complete:function(){}});
+        this.render(function(){
+            $('#CKLayoutModal').foundation('reveal', 'open'); 
+            try{
+                $(document).foundation();
+            }catch(err){
+                console.log(err);
+            }
+        }); 
     },
     render:function(callback){
-        $(this.el).foundation('reveal', 'open'); 
         this.content_el.empty();
         this.activities_el.empty();
         this.content_el.append(new CKLayout.Views.Main({
             activities_el : this.activities_el,
             className : "panel row",
-            all_notifs : this.all_notifs,
-            dic_notifs : this.dic_notifs,
+            models_notifs : this.models_notifs,
             model : this.model,
             user : this.user,
             eventAggregator : this.eventAggregator
@@ -112,11 +110,9 @@ CKLayout.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         CKLayout.init(); // Pour instancier les labels
         // Variables
-        this.all_notifs         = json.all_notifs;
         this.activities_el      = json.activities_el;
         this.model              = json.model;
-        this.dic_notifs         = json.dic_notifs
-        this.model_notifs       = this.dic_notifs[this.model.get('id')];        
+        this.models_notifs         = json.models_notifs       
         this.user               = json.user;
         this.eventAggregator    = json.eventAggregator;
         this.labels             = new Backbone.Collection();
@@ -249,8 +245,8 @@ CKLayout.Views.Main = Backbone.View.extend({
         // notification module
         this.activities_el.append(new activitiesList.Views.Main({
             className       : "expand",
-            all_notifs      : this.all_notifs,
-            model_notifs    : this.model_notifs,
+            model           : this.model,
+            models_notifs      : this.models_notifs,
             eventAggregator : this.eventAggregator
         }).render().el);
         // Footer

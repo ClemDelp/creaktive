@@ -17,7 +17,10 @@ global.Functions.dict_modelIdToNotifsNumber = function(models_Collection,notifs_
 
 global.Functions.getNotificationsDictionary = function(user_model,notifications,projects,knowledges,concepts,categories){
 	var dictionary = {"projects":{},"models":{},"allNews":{},"allRead":{}};
-	// Init
+	/////////////////////////////
+	// CREATION DES KEYS
+	/////////////////////////////
+	//
 	dictionary.allNews = new Backbone.Collection();
 	dictionary.allRead = new Backbone.Collection();
 	// 
@@ -41,7 +44,9 @@ global.Functions.getNotificationsDictionary = function(user_model,notifications,
 		dictionary.models[notif.get('to').id] = {"news" : new Backbone.Collection(),"read" : new Backbone.Collection()};
 		dictionary.projects[notif.get('project_id')] = {"news" : new Backbone.Collection(),"read" : new Backbone.Collection()};
 	});
-	// Build
+	/////////////////////////////
+	// CREATION DES VALUES
+	/////////////////////////////
 	notifications.each(function(notif){
 		if((_.indexOf(notif.get('read'), user_model.get('id')) == -1)){
         	dictionary.models[notif.get('to').id].news.add(notif);

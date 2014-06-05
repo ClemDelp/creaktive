@@ -48,7 +48,7 @@ var global = {
     callback();
 
   },
-  prepareNotifications : function(){//alert('prepareNotifications')
+  prepareNotifications : function(){
     // init
     // this.collections.personal_notifs.reset();
     // this.collections.knowledge_notifs.reset();
@@ -73,10 +73,16 @@ var global = {
     ////////////////////////////
     // Dictionaries 
     this.NotificationsDictionary = global.Functions.getNotificationsDictionary(global.models.current_user,global.collections.all_notifs,global.collections.Projects,global.collections.Knowledges,global.collections.Concepts,global.collections.Poches);
+    
     this.ModelsNotificationsDictionary = this.NotificationsDictionary.models;
     this.ProjectsNotificationsDictionary = this.NotificationsDictionary.projects;
     this.AllNewsNotificationsDictionary = this.NotificationsDictionary.allNews;
     this.AllReadNotificationsDictionary = this.NotificationsDictionary.allRead;
+
+    this.eventAggregator.trigger("ModelsNotificationsDictionary",this.ModelsNotificationsDictionary);
+    this.eventAggregator.trigger("ProjectsNotificationsDictionary",this.ProjectsNotificationsDictionary);
+    this.eventAggregator.trigger("AllNewsNotificationsDictionary",this.AllNewsNotificationsDictionary);
+    this.eventAggregator.trigger("AllReadNotificationsDictionary",this.AllReadNotificationsDictionary);
     // this.dictionary_Categories_Notifs = global.Functions.dict_modelIdToNotifsNumber(global.collections.Poches,global.collections.category_notifs);
     // this.dictionary_Knowledges_Notifs = global.Functions.dict_modelIdToNotifsNumber(global.collections.Knowledges,global.collections.knowledge_notifs);
     // this.dictionary_Concepts_Notifs = global.Functions.dict_modelIdToNotifsNumber(global.collections.Concepts,global.collections.concept_notifs);
@@ -193,7 +199,6 @@ var manager = {
   init: function () {
     /*Init*/
     this.views.main = new this.Views.Main({
-      all_notifs      : global.collections.all_notifs, // Le déclancheur pour le real time
       dic_notifs      : global.ProjectsNotificationsDictionary, // Le dictionnaire des notifications
       permissions     : global.collections.Permissions,
       projects        : global.collections.Projects,
@@ -221,7 +226,6 @@ var welcome = {
   views: {},
   init: function () {
     this.views.Main = new this.Views.Main({
-      all_notifs  : global.collections.all_notifs, // Le déclancheur pour le real time
       new_notifs  : global.AllNewsNotificationsDictionary, // Le dictionnaire de toutes les nouvelles notifications
       user : global.models.current_user,
       eventAggregator : global.eventAggregator
@@ -242,7 +246,6 @@ var conceptsmap = {
   init: function () {
     /*Init*/
     this.views.main = new this.Views.Main({
-      all_notifs  : global.collections.all_notifs, // Le déclancheur pour le real time
       dic_notifs  : global.ModelsNotificationsDictionary, // Le dictionnaire des notifications
       concepts    : global.collections.Concepts,
       project     : global.models.currentProject,
@@ -268,8 +271,7 @@ var category = {
   init: function () {
     /*Init*/
     this.views.main = new this.Views.Main({
-      all_notifs            : global.collections.all_notifs, // Le déclancheur pour le real time
-      dic_notifs            : global.ModelsNotificationsDictionary, // Le dictionnaire des notifications
+      models_notifs         : global.ModelsNotificationsDictionary, // Le dictionnaire des notifications
       project               : global.models.currentProject,
       knowledges            : global.collections.Knowledges,
       categories            : global.collections.Poches,
