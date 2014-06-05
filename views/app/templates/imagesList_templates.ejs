@@ -1,9 +1,10 @@
 <script type="text/template" id="imagesList-diapo-template">
-	<hr>
-	<p><strong>Images :</strong></p>
-	<ul class="clearing-thumbs" data-clearing>
-	{{ _.each(images, function(image){ }}
-		<li class="large-3 medium-3 small-3"><a href="/S3/getPrivateUrl?amz_id={{- image.url }}"><img class="th" title="{{- image.name }}" src="/S3/getPrivateUrl?amz_id={{- image.url }}"></a></li>
-	{{ }); }}
-	</ul>
+	<fieldset>
+        <legend align=left>Images ({{-images.length}})</legend>
+        <ul class="clearing-thumbs" data-clearing>
+			{{ _.each(images, function(image){ }}
+				<li class="large-3 medium-3 small-3"><a href="/S3/getPrivateUrl?amz_id={{- image.url }}"><img class="th" title="{{- image.name }}" src="/S3/getPrivateUrl?amz_id={{- image.url }}"></a></li>
+			{{ }); }}
+		</ul>
+    </fieldset>
 </script>

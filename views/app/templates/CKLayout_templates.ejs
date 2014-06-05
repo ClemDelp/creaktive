@@ -16,40 +16,29 @@
 </div>
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <script type="text/template" id="CKLayout-header-template">
-	<div class="row">
-        <div class="large-6 medium-6 small-6 columns">
-            <h2 style="display:inline">{{- model.title}}</h2> - 
-            <span class="success round label" style="background-color:{{- model.color }};display:inline">{{- model.label}}</span>
-        </div>
-        <div class="large-6 medium-6 small-6 columns">
-            {{ _.each(labels, function(label){ }}
-              <a href="#" class="button tiny secondary updateLabel" data-model-id="{{-model.id}}" data-label-color="{{-label.color}}" data-label-title="{{-label.title}}">{{-label.title}}</a>
-            {{ }); }}
-            {{ if(model.type != "concept"){ }}
-              <a href="#" class="button tiny secondary toConcept">to concept</a>
-            {{ }else if((model.type != "concept") && (model.type != "knowledge")){ }}
-              <a href="#" class="button tiny secondary toKnowledge">to knowledge</a>
-            {{ }else if((model.type != "concept") && (model.type != "category")){ }}
-              <a href="#" class="button tiny secondary toCategory">to category</a>
-            {{ } }}
-            <a href="#" class="button tiny alert remove">remove</a>
-        
-        </div>
-    </div>
+	
+  <h2>
+    {{-model.title}} 
+    {{ if(model.type != "category"){ }}<span class="success round label" style="background-color:{{- model.color }}">{{- model.label}}</span>{{ } }}
+    <span class="round label">{{-model.type}}</span>
+    {{ _.each(model.tags, function(tag) { }}
+        <span class="success round label" style="cursor:pointer">{{-tag}}</span>
+    {{ }); }}
+  </h2>
+  <hr> 
+  {{ _.each(labels, function(label){ }}
+    <a href="#" class="button tiny secondary updateLabel" data-model-id="{{-model.id}}" data-label-color="{{-label.color}}" data-label-title="{{-label.title}}">{{-label.title}}</a>
+  {{ }); }}
+  {{ if(model.type == "knowledge"){ }}
+    <a href="#" class="button tiny secondary toCategory">convert to category</a>
+  {{ }else if(model.type == "category"){ }}
+    <a href="#" class="button tiny secondary toKnowledge">convert to knowledge</a>
+  {{ } }}
+  <a href="#" class="button tiny alert remove">remove</a>
+    
 </script>
 
 <script type="text/template" id="CKLayout-footer-template">
-	<div class="row">
-		<div class="large-12 medium-12 small-12 columns">
-      <br>
-      <i>Last update by <b>{{-model.user.name}}</b> at {{-model.date}}</i>
-    </div>
-    <div class="large-12 medium-12 small-12 columns">
-        <span class="secondary round label">tags ({{- model.tags.length }})</span> -
-        {{ _.each(model.tags, function(tag) { }}
-            <span class="success round label" style="cursor:pointer">{{-tag}}</span>
-        {{ }); }}
-        type: <strong>{{-model.type}}</strong>
-    </div>
-    </div>
+	<hr>
+  <i>Last update by <b>{{-model.user.name}}</b> at {{-model.date}}</i>
 </script>

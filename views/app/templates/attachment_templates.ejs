@@ -1,12 +1,13 @@
 <script type="text/template" id="attachment-list-template">
-	<hr>
-	<p><strong>Attachments ({{- model.attachment.length }}) :</strong></p>
-	<ul>
-	{{ _.each(model.attachment, function(file) { }}
-	      <li><a href="/S3/getPrivateUrl?amz_id={{- file.url}}"  target="_blank" class="" data-file-path="{{- file.path}}" title="open">{{- file.name.substring(0,50) }}...</a>
-	      <a href="#" style="color:red" class="removeFile" data-file-id="{{- file.id}}" title="remove">x</a></li>
-	{{ }); }}
-	</ul>
-	<input id="uploadFile" type="file" />
-	<span id="status" class="label round">Please select a file</span>
+	<fieldset>
+        <legend align=left>Attachments ({{- model.attachment.length }})</legend>
+		<ul>
+			{{ _.each(model.attachment, function(file) { }}
+			      <li><a href="/S3/getPrivateUrl?amz_id={{- file.url}}"  target="_blank" class="" data-file-path="{{- file.path}}" title="open">{{- file.name.substring(0,50) }}...</a>
+			      <a href="#" style="color:red" class="removeFile" data-file-id="{{- file.id}}" title="remove">x</a></li>
+			{{ }); }}
+		</ul>
+		<input id="uploadFile" type="file" />
+		<span id="status" class="label round">Please select a file</span>
+    </fieldset>	
 </script>

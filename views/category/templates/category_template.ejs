@@ -84,12 +84,8 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <script type="text/template" id="category-notCategorized-template">
     <div class="item">
-        <a id="bulle{{-knowledge.id}}" href="#" class="button tiny radius round expand secondary CKBulle" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}">
-            <input data-knowledge-id="{{-knowledge.id}}" data-catg-origin="none" type="checkbox" class="Kselectable">
-            <strong>{{- knowledge.title }}</strong>
-            <span style="width:8%;float:right">
-                <img src="img/edit.png" class="openKnowledgeModal" data-model-id="{{-knowledge.id}}" title="edit">
-            </span>
+        <a id="bulle{{-knowledge.id}}" href="#" class="button tiny radius round expand secondary CKBulle openKnowledgeModal Kselectable" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}" data-model-id="{{-knowledge.id}}" data-catg-origin="none">
+            <strong data-model-id="{{-knowledge.id}}" data-catg-origin="none">{{- knowledge.title }}</strong>
             {{ if(notifs_nbr > 0){ }}<span class="top-bar-unread">{{-notifs_nbr}}</span>{{ } }}
         </a>
     </div>
@@ -99,14 +95,11 @@
     <div class="item">    
         <ul class="pricing-table">
             <li class="price"class="title">
-                <a href="#" class="button tiny success radius expand openCategoryEditorModal" data-category-id="{{-category.id}}">
+                <a href="#" class="button tiny success radius expand openCategoryModal" data-model-id="{{-category.id}}">
                     <strong data-category-id="{{-category.id}}">{{- category.title}}</strong>
                     {{if(notifs_nbr > 0){ }}
                         <span class="top-bar-unread" data-category-id="{{-category.id}}">{{-notifs_nbr}}</span>
                     {{ } }}
-                    <span style="width:8%;float:right">
-                        <img src="img/edit.png" class="openCategoryModal" data-model-id="{{-category.id}}" title="edit">
-                    </span>
                 </a>
             </li>
             <li class="bullet-item">
@@ -119,12 +112,8 @@
                     </div>
                 </div>
                 {{ _.each(knowledges, function(knowledge) { }}
-                    <a href="#" id="bulle{{-knowledge.id}}" class="button tiny radius round expand secondary CKBulle" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}">
-                        <input name="k" value="{{-knowledge.id}}" data-knowledge-id="{{-knowledge.id}}" data-catg-origin="{{- category.title}}" type="checkbox" class="Kselectable">
-                        <strong>{{- knowledge.title }}</strong>
-                        <span style="width:8%;float:right">
-                            <img src="img/edit.png" class="openKnowledgeModal" data-model-id="{{-knowledge.id}}" title="edit">
-                        </span>
+                    <a id="bulle{{-knowledge.id}}" href="#" class="button tiny radius round expand secondary CKBulle openKnowledgeModal Kselectable" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}" data-model-id="{{-knowledge.id}}" data-catg-origin="none">
+                        <strong data-model-id="{{-knowledge.id}}" data-catg-origin="none">{{- knowledge.title }}</strong>
                         {{ if(models_notifs[knowledge.id].news.length > 0){ }}<span class="top-bar-unread">{{-models_notifs[knowledge.id].news.length}}</span>{{ } }}
                     </a>
                 {{ }); }}   

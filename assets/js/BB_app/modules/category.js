@@ -35,8 +35,8 @@ category.Views.Categories = Backbone.View.extend({
     },
     events : {
         "click .addKnowledge" : "addKnowledge",
-        "click .openKnowledgeModal"  : "openKnowledgeModal",
-        "click .openCategoryModal"  : "openCategoryModal",
+        "dblclick .openKnowledgeModal"  : "openKnowledgeModal",
+        "dblclick .openCategoryModal"  : "openCategoryModal",
     },
     openKnowledgeModal : function(e){
         e.preventDefault();
@@ -290,7 +290,7 @@ category.Views.Main = Backbone.View.extend({
     },
     setSelectedK : function(e){
         e.preventDefault();
-        k_id = e.target.getAttribute('data-knowledge-id');
+        k_id = e.target.getAttribute('data-model-id');
         k = this.knowledges.get(k_id);
         if(this.Kselected.where({id : k_id}).length > 0){
             this.Kselected.remove(k);

@@ -244,7 +244,7 @@ CKLayout.Views.Main = Backbone.View.extend({
         
         // notification module
         this.activities_el.append(new activitiesList.Views.Main({
-            className       : "expand",
+            className       : "row panel",
             model           : this.model,
             models_notifs      : this.models_notifs,
             eventAggregator : this.eventAggregator
