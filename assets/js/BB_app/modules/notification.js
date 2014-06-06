@@ -1,3 +1,23 @@
+/////////////////////////////////////////////////
+var notification = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    this.views.main = new this.Views.Main({
+      el              : "#notification_container",
+      user            : global.models.current_user,
+      notifications   : global.collections.personal_notifs,
+      eventAggregator : global.eventAggregator
+    });
+    this.views.main.render();
+  }
+};
 /////////////////////////////////////////
 // MAIN
 /////////////////////////////////////////

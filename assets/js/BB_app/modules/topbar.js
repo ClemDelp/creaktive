@@ -1,3 +1,22 @@
+/////////////////////////////////////////////////
+var topbar = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function (page) {
+    /*Init*/
+    this.views.Main = new this.Views.Main({
+      user            : global.models.current_user,
+      eventAggregator : global.eventAggregator
+    });
+    this.views.Main.render();
+  }
+};
 /////////////////////////////////////////
 // VIEWS
 /////////////////////////////////////////

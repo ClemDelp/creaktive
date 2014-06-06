@@ -1,3 +1,24 @@
+/////////////////////////////////////////////////
+var user = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function (project_) {
+    /*Init*/
+    this.views.Main = new this.Views.Main({
+      project     : project_,
+      users       : global.collections.Users,
+      permissions : global.collections.Permissions,
+      eventAggregator : global.eventAggregator
+    });  
+    this.views.Main.render()
+  }
+};
 /////////////////////////////////////////
 // Users list
 /////////////////////////////////////////
@@ -165,4 +186,4 @@ user.Views.Main = Backbone.View.extend({
         );
     }
 });
-/***************************************/
+/////////////////////////////////////////

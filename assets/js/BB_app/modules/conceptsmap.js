@@ -1,3 +1,27 @@
+/////////////////////////////////////////////////
+var conceptsmap = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    this.views.main = new this.Views.Main({
+      concepts    : global.collections.Concepts,
+      project     : global.models.currentProject,
+      user        : global.models.current_user,
+      knowledges  : global.collections.Knowledges,
+      poches      : global.collections.Poches,
+      links       : global.collections.Links,
+      eventAggregator : global.eventAggregator
+    }); 
+    this.views.main.render();
+  }
+};
 /////////////////////////////////////////
 // Modals Part
 /////////////////////////////////////////
@@ -64,7 +88,6 @@ conceptsmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render','actualizeNotification','recursiveUnlink');
         // Variables
-        this.models_notifs      = json.models_notifs;
         this.knowledges         = json.knowledges;
         this.concepts           = json.concepts;
         this.user               = json.user;
@@ -84,7 +107,6 @@ conceptsmap.Views.Main = Backbone.View.extend({
         $("#"+conceptsmap.views.conceptsModal.el.id).on('close',this.againstFounderBug);
         // CKLayout
         conceptsmap.views.cklayout = new CKLayout.Views.Modal({
-            models_notifs  : this.models_notifs, // Le dictionnaire des notifications
             user        : this.user,
             collection  : this.concepts,
             eventAggregator : this.eventAggregator
@@ -351,11 +373,10 @@ conceptsmap.Views.Main = Backbone.View.extend({
                 MM.App.setMap(MM.Map.fromJSON(data.tree));
             });        
     },
-    actualizeNotification : function(dic){
-        if(dic)this.models_notifs = dic;
+    actualizeNotification : function(){
         _this = this;
         this.concepts.each(function(concept){
-            if(_this.models_notifs[concept.get('id')].news.length > 0)$("#concept_notif_"+concept.get('id')).html('<span class="top-bar-unread">'+_this.models_notifs[concept.get('id')].news.length+'</span>')
+            if(global.ModelsNotificationsDictionary[concept.get('id')].news.length > 0)$("#concept_notif_"+concept.get('id')).html('<span class="top-bar-unread">'+global.ModelsNotificationsDictionary[concept.get('id')].news.length+'</span>')
         })
         //MM.App.adjustFontSize(1);
     },

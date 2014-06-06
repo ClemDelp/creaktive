@@ -1,3 +1,25 @@
+////////////////////////////////////////////////
+var CKPreviewer = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    this.views.Main = new this.Views.Main({
+        links : global.collections.Links,
+        knowledges : global.collections.Knowledges,
+        concepts : global.collections.Concepts,
+        eventAggregator : global.eventAggregator,
+        poches : global.collections.Poches,
+        user : global.models.current_user,
+    });   
+    this.views.Main.render();
+  }
+};
 ////////////////////////////////////////////////////////////
 // VIEWS
 CKPreviewer.Views.Modal = Backbone.View.extend({

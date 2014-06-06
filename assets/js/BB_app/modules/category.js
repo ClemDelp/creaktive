@@ -1,3 +1,27 @@
+/////////////////////////////////////////////////
+var category = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    this.views.main = new this.Views.Main({
+      project               : global.models.currentProject,
+      knowledges            : global.collections.Knowledges,
+      categories            : global.collections.Poches,
+      user                  : global.models.current_user,
+      users                 : global.collections.Users,
+      links                 : global.collections.Links,
+      eventAggregator       : global.eventAggregator,
+    });   
+    this.views.main.render();
+  }
+};
 /////////////////////////////////////////
 // Middle Part
 /////////////////////////////////////////
@@ -15,8 +39,8 @@ category.Views.Category = Backbone.View.extend({
         _this = this;
         // Category template
         $(this.el).html(this.template_list({
-            notifs_nbr      : category.views.main.models_notifs[this.category.get('id')].news.length,
-            models_notifs   : category.views.main.models_notifs,
+            notifs_nbr      : global.ModelsNotificationsDictionary[this.category.get('id')].news.length,
+            models_notifs   : global.ModelsNotificationsDictionary,
             knowledges      : this.knowledges.toJSON(), 
             category        : this.category.toJSON(),
         }));
@@ -77,7 +101,7 @@ category.Views.Categories = Backbone.View.extend({
         this.knowledges.each(function(k){
             if(k.get('tags').length == 0){
                 $(_this.el).append(template({
-                    notifs_nbr    : category.views.main.models_notifs[k.get('id')].news.length,
+                    notifs_nbr    : global.ModelsNotificationsDictionary[k.get('id')].news.length,
                     knowledge     : k.toJSON()
                 }));
             }
@@ -251,7 +275,6 @@ category.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render',"newCategory");
         // Variables
-        this.models_notifs      = json.models_notifs;
         this.knowledges         = json.knowledges;
         this.categories         = json.categories;
         this.project            = json.project;
@@ -263,14 +286,12 @@ category.Views.Main = Backbone.View.extend({
         this.Kselected          = new Backbone.Collection();     
         // CKLayout for knowledge 
         category.views.k_cklayout_modal = new CKLayout.Views.Modal({
-            models_notifs : this.models_notifs, // Le dictionnaire des notifications
             user : this.user,
             collection : this.knowledges,
             eventAggregator : this.eventAggregator
         });
         // CKLayout for category
         category.views.c_cklayout_modal = new CKLayout.Views.Modal({
-            models_notifs : this.models_notifs, // Le dictionnaire des notifications
             user : this.user,
             collection : this.categories,
             eventAggregator : this.eventAggregator

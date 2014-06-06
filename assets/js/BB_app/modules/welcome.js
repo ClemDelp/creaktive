@@ -1,4 +1,25 @@
-/***************************************/
+/////////////////////////////////////////////////
+var welcome = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    this.views.Main = new this.Views.Main({
+      allNews_notifs  : global.AllNewsNotificationsDictionary, // Le dictionnaire de toutes les nouvelles notifications
+      user            : global.models.current_user,
+      eventAggregator : global.eventAggregator
+    });
+    this.views.Main.render();
+  }
+};
+/////////////////////////////////////////////////
+// MAIN
+/////////////////////////////////////////////////
 welcome.Views.Main = Backbone.View.extend({
     el : "#welcome_container",
     initialize : function(json) {
@@ -28,4 +49,4 @@ welcome.Views.Main = Backbone.View.extend({
         return this;
     }
 });
-/***************************************/
+/////////////////////////////////////////////////

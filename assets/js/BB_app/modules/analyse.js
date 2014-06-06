@@ -1,3 +1,24 @@
+/////////////////////////////////////////////////////////////////////////////////////////////
+var analyse = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    this.views.Main = new this.Views.Main({
+      concepts : global.collections.Concepts,
+      knowledges : global.collections.Knowledges,
+      links : global.collections.Links,
+      eventAggregator : global.eventAggregator
+    }); 
+    this.views.Main.render();
+  }
+};
 /////////////////////////////////////////
 // CONCETP TABLE
 /////////////////////////////////////////

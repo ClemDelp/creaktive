@@ -1,3 +1,24 @@
+/////////////////////////////////////////////////
+var title = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function (_project,_page) {
+    /*Init*/
+    this.views.Main = new this.Views.Main({
+      project           : _project,
+      page              : _page,
+      user              : global.models.current_user,
+      eventAggregator   : global.eventAggregator
+    });  
+    this.views.Main.render();
+  }
+};
 /////////////////////////////////////////
 // Main
 /////////////////////////////////////////
@@ -21,4 +42,4 @@ title.Views.Main = Backbone.View.extend({
         return this;
     }
 });
-/***************************************/
+/////////////////////////////////////////

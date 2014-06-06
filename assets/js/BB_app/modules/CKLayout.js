@@ -57,7 +57,6 @@ CKLayout.Views.Modal = Backbone.View.extend({
     initialize:function(json){
         _.bindAll(this, 'render', 'openModelEditorModal');
         // Variables
-        this.models_notifs         = json.models_notifs
         this.model              = new Backbone.Model();
         this.user               = json.user;
         this.collection         = json.collection;
@@ -95,7 +94,6 @@ CKLayout.Views.Modal = Backbone.View.extend({
         this.content_el.append(new CKLayout.Views.Main({
             activities_el : this.activities_el,
             className : "panel row",
-            models_notifs : this.models_notifs,
             model : this.model,
             user : this.user,
             eventAggregator : this.eventAggregator
@@ -112,27 +110,15 @@ CKLayout.Views.Main = Backbone.View.extend({
         // Variables
         this.activities_el      = json.activities_el;
         this.model              = json.model;
-        this.models_notifs         = json.models_notifs       
         this.user               = json.user;
         this.eventAggregator    = json.eventAggregator;
         this.labels             = new Backbone.Collection();
-        ////////////////////
         // Label
         if(this.model.get('type') == "concept"){
             this.labels = CKLayout.collections.CLabels;
         }else if(this.model.get('type') === "knowledge"){
             this.labels = CKLayout.collections.KLabels;
         }
-        ///////////////////
-        // Notifications
-        // _this = this;
-        // if(this.model.get('type') != "project"){
-        //     this.notifications.each(function(notification){
-        //         if(notification.get('to').id == _this.model.get('id')){_this.notif_to_render.add(notification)}
-        //     });
-        // }else{
-        //     this.notif_to_render.add(this.notifications.where({project_id : this.model.get('id')}))
-        // }
         // Events
         this.model.on('change',this.render,this)
         // Templates
@@ -246,7 +232,6 @@ CKLayout.Views.Main = Backbone.View.extend({
         this.activities_el.append(new activitiesList.Views.Main({
             className       : "row panel",
             model           : this.model,
-            models_notifs   : this.models_notifs,
             eventAggregator : this.eventAggregator
         }).render().el);
         // Footer

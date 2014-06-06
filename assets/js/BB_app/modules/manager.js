@@ -1,4 +1,33 @@
 /////////////////////////////////////////////////
+var manager = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    this.views.main = new this.Views.Main({
+      projects_notifs : global.ProjectsNotificationsDictionary, // Le dictionnaire des notifications
+      users_rec_dic   : global.ProjectsUsersDictionary,
+      permissions     : global.collections.Permissions,
+      projects        : global.collections.Projects,
+      concepts        : global.collections.Concepts,
+      knowledges      : global.collections.Knowledges,
+      experts         : global.collections.Users,
+      poches          : global.collections.Poches,
+      links           : global.collections.Links,
+      users           : global.collections.Users,
+      user            : global.models.current_user,
+      eventAggregator : global.eventAggregator
+    }); 
+    this.views.main.render()
+  }
+};
+/////////////////////////////////////////////////
 // Projects list
 /////////////////////////////////////////////////
 manager.Views.Projects = Backbone.View.extend({
@@ -27,10 +56,7 @@ manager.Views.Projects = Backbone.View.extend({
     actualize : function(dic){
         this.projects_notifs = dic;
         this.render();
-        $("#categories_grid").gridalicious({
-            gutter: 20,
-            width: 260
-        });
+        manager.views.main.formatGrid();
     },
     openProjectModal : function(e){
         e.preventDefault();
@@ -39,9 +65,10 @@ manager.Views.Projects = Backbone.View.extend({
     projectsSearch: function(matched_projects){
         this.projects_render = matched_projects;
         this.render();
+        manager.views.main.formatGrid();
     },
     render : function(){
-        $(this.el).empty('');
+        $(this.el).empty();
         _this = this;
         this.projects_render.each(function(project){
             // Important! si on cré un nouveau projet le dictionnaire des notifs indiquera undefined pour ce nouveau model
@@ -142,6 +169,12 @@ manager.Views.Main = Backbone.View.extend({
         });
         this.eventAggregator.trigger('projects_search',matched);
     },
+    formatGrid : function(){
+        $("#categories_grid").gridalicious({
+            gutter: 20,
+            width: 260
+        });
+    },
     render : function() {
         $(this.el).html('');
         // Search bar
@@ -161,11 +194,7 @@ manager.Views.Main = Backbone.View.extend({
             eventAggregator : this.eventAggregator
         }).render().el);
 
-        $("#categories_grid").gridalicious({
-            gutter: 20,
-            width: 260
-        });
-        
+        this.formatGrid();
 
         $(document).foundation();
         return this;

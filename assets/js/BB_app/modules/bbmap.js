@@ -1,3 +1,29 @@
+/////////////////////////////////////////////////
+var bbmap = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    this.views.main = new this.Views.Main({
+      el : "#bbmap_container",
+      concepts        : global.collections.Concepts,
+      project         : global.models.currentProject,
+      user            : global.models.current_user,
+      knowledges      : global.collections.Knowledges,
+      poches          : global.collections.Poches,
+      links           : global.collections.Links,
+      eventAggregator : global.eventAggregator
+
+    });
+    this.views.main.render();
+  }
+};
+/////////////////////////////////////////////////
 bbmap.Views.Node = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render','savePosition','editTitle','addEndpoint','addLink','makeTarget');
@@ -233,7 +259,7 @@ bbmap.Views.Node = Backbone.View.extend({
         return this;
     }
 });
-/***************************************/
+/////////////////////////////////////////////////
 bbmap.Views.EditBox = Backbone.View.extend({
     initialize : function(e){
         _.bindAll(this, 'render','saveEdition');
@@ -279,7 +305,9 @@ bbmap.Views.EditBox = Backbone.View.extend({
         callBack();
     }
 });
-/***************************************/
+/////////////////////////////////////////////////
+// MAIN
+/////////////////////////////////////////////////
 bbmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
@@ -583,3 +611,4 @@ bbmap.Views.Main = Backbone.View.extend({
         return this;
     }
 });
+/////////////////////////////////////////////////

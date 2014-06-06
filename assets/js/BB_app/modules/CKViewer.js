@@ -1,3 +1,27 @@
+/////////////////////////////////////////////////
+var CKViewer = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    this.views.Main = new this.Views.Main({
+        backups : global.collections.Backups,
+        project           : global.models.currentProject,
+        links : global.collections.Links,
+        knowledges : global.collections.Knowledges,
+        concepts : global.collections.Concepts,
+        eventAggregator : global.eventAggregator,
+        poches : global.collections.Poches,
+        user : global.models.current_user,
+    });   
+    this.views.Main.render();
+  }
+};
 ////////////////////////////////////////////////////////////
 // VIEWS
 CKViewer.Views.Modal = Backbone.View.extend({
