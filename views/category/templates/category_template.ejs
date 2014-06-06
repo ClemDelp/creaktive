@@ -112,8 +112,8 @@
                     </div>
                 </div>
                 {{ _.each(knowledges, function(knowledge) { }}
-                    <a id="bulle{{-knowledge.id}}" href="#" class="button tiny radius round expand secondary CKBulle openKnowledgeModal Kselectable" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}" data-model-id="{{-knowledge.id}}" data-catg-origin="none">
-                        <strong data-model-id="{{-knowledge.id}}" data-catg-origin="none">{{- knowledge.title }}</strong>
+                    <a id="bulle{{-knowledge.id}}" href="#" class="button tiny radius round expand secondary CKBulle openKnowledgeModal Kselectable" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}" data-model-id="{{-knowledge.id}}" data-catg-origin="{{-category.title}}">
+                        <strong data-model-id="{{-knowledge.id}}" data-catg-origin="{{-category.title}}">{{- knowledge.title }}</strong>
                         {{ if(models_notifs[knowledge.id].news.length > 0){ }}<span class="top-bar-unread">{{-models_notifs[knowledge.id].news.length}}</span>{{ } }}
                     </a>
                 {{ }); }}   

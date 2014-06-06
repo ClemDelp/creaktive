@@ -21,10 +21,21 @@ global.Collections.Knowledges = Backbone.Collection.extend({
         return -m.get('date2');
     },
     initialize : function() {
-        this.url = "Knowledge";
+        this.url = "knowledge";
         this.bind("error", function(model, error){
             console.log( error );
         });
+         _.bindAll(this, 'serverCreate','serverUpdate');
+        this.ioBind('create', this.serverCreate, this);
+        this.ioBind('update', this.serverUpdate, this);
+    },
+    serverCreate : function(new_knowledge){
+        alert("Knowledge create")
+        this.add(new_knowledge);
+    },
+    serverUpdate : function(knowledge){
+        alert("Knowledge update")
+        this.remove(knowledge.id)//set(knowledge.attributes);
     }
 });
 /***************************************/
@@ -72,6 +83,7 @@ global.Collections.NotificationsCollection = Backbone.Collection.extend({
         return -m.get('comparator');
     },
     serverCreate : function(new_notif){
+        alert("pouette")
         this.add(new_notif);
     }
 });

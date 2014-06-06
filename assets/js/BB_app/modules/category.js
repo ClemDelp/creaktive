@@ -33,9 +33,10 @@ category.Views.Category = Backbone.View.extend({
         this.category           = json.category;
         // Templates
         this.template_list = _.template($('#category-list-template').html());
+        //global.eventAggregator.bind("ModelsNotificationsDictionary",this.actualize,this);
     },
     render:function(){
-        $(this.el).html('');
+        $(this.el).empty();
         _this = this;
         // Category template
         $(this.el).html(this.template_list({
@@ -92,7 +93,7 @@ category.Views.Categories = Backbone.View.extend({
         category.views.main.knowledges.add(newK);
     },
     render:function(){
-        $(this.el).html('');
+        $(this.el).empty();
         //init
         _this = this;
         ////////////////////////////
@@ -298,12 +299,19 @@ category.Views.Main = Backbone.View.extend({
         });
         // Events
         this.listenTo(this.filters,"add",this.render);  
-        this.listenTo(this.filters,"remove",this.render);                  
-        this.knowledges.bind("add", this.render);
-        this.knowledges.bind("remove", this.render);
+        this.listenTo(this.filters,"remove",this.render);
+
+        this.knowledges.on("add", this.render,this);
+        this.knowledges.on("remove", this.render,this);
+        global.collections.Knowledges.on("change", this.alert,this);
+
         this.categories.on('remove',this.render,this);
         this.categories.on('change',this.render,this);
         this.eventAggregator.on('categories_list_render', this.render, this);
+    },
+    alert : function(){
+        console.log("global: ",global.collections.Knowledges)
+        console.log("local: ",this.knowledges)
     },
     events : {
         "click .newCategory" : "newCategory",
@@ -425,8 +433,14 @@ category.Views.Main = Backbone.View.extend({
         ks = ks_filtered;
     },
     ///////////////////////////////////////////////////////
+    formatGrid : function(){
+        $("#categories_grid").gridalicious({
+            gutter: 20,
+            width: 260
+        });
+    },
     render : function(){
-        $(this.el).html("");
+        $(this.el).empty();
         // init
         this.Kselected.reset();
         // Apply filters
@@ -449,10 +463,7 @@ category.Views.Main = Backbone.View.extend({
         });
         $(this.el).append(lists_view.render().el);
         
-        $("#categories_grid").gridalicious({
-            gutter: 20,
-            width: 260
-        });
+        this.formatGrid();
 
         return this;
     }

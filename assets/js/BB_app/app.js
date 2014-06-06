@@ -56,7 +56,8 @@ var global = {
     console.log("******* Connected as ", this.models.current_user.get("name"), " on ", this.models.currentProject.get("title"))    
     callback();
   },
-  prepareNotifications : function(){alert("prepareNotifications")
+  prepareNotifications : function(){
+    console.log("prepareNotificatioooooooooooooooooooooooons !!!")
     ////////////////////////////
     // Dictionaries 
     this.NotificationsDictionary = global.Functions.getNotificationsDictionary(global.models.current_user,global.collections.all_notifs,global.collections.Projects,global.collections.Knowledges,global.collections.Concepts,global.collections.Poches);

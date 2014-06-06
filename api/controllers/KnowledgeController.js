@@ -57,8 +57,8 @@
         // Update the Knowledge
   			Knowledge.update({id: req.body.params.id}, req.body.params).done(function(err,c){
   				if(err) res.send(err);
+          req.socket.broadcast.to(req.session.currentProject.id).emit("knowledge:update", c[0]);
           Notification.objectUpdated(req,res,"Knowledge", c[0], function(notification){
-
             res.send(notification);
           });
 
@@ -72,6 +72,7 @@
         k.project = req.session.currentProject.id
         Knowledge.create(k).done(function(err,knowledge){
           if(err) res.send(err);
+          req.socket.broadcast.to(req.session.currentProject.id).emit("knowledge:create", knowledge);
           Notification.objectCreated(req,res,"Knowledge", knowledge, function(notification){
             // knowledge.notifications.unshift(notification);
             // knowledge.save(function(err) {

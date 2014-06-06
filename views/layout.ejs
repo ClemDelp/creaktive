@@ -64,6 +64,14 @@
             console.log("xxxxxx",x)
           });
 
+          socket.on('knowledge:create', function socketConnected(x) {
+            console.log("xxxxxxxx-knowledge:create",x)
+          });
+
+          socket.on('knowledge:update', function socketConnected(x) {
+            console.log("xxxxxxxx-knowledge:update",x)
+          });
+
           console.log(
             'Socket is now connected and globally accessible as `socket`.\n' + 
             'e.g. to send a GET request to Sails, try \n' + 
