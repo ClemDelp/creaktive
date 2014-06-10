@@ -91,6 +91,7 @@
   destroy : function(req,res){
     Knowledge.findOne(req.body.params.id).done(function(err,k){
       if(err) console.log(err);
+      req.socket.broadcast.to(req.session.currentProject.id).emit("knowledge:remove", k);
       k.destroy(function(err){
         if(err) console.log(err)
           res.send({msg:"destroyed"})

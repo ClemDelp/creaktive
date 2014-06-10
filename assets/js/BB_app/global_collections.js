@@ -9,6 +9,19 @@ global.Collections.Poches = Backbone.Collection.extend({
         this.bind("error", function(model, error){
             console.log( error );
         });
+        _.bindAll(this, 'serverCreate','serverUpdate','serverRemove');
+        this.ioBind('create', this.serverCreate, this);
+        this.ioBind('update', this.serverUpdate, this);
+        this.ioBind('remove', this.serverRemove, this);
+    },
+    serverCreate : function(category){
+        this.add(category);
+    },
+    serverUpdate : function(category){
+        global.eventAggregator.trigger(category.id,category);
+    },
+    serverRemove : function(category){
+        this.remove(category.id);
     }
 });
 /////////////////////////////////////////////////////////////////////
@@ -25,17 +38,19 @@ global.Collections.Knowledges = Backbone.Collection.extend({
         this.bind("error", function(model, error){
             console.log( error );
         });
-         _.bindAll(this, 'serverCreate','serverUpdate');
+        _.bindAll(this, 'serverCreate','serverUpdate','serverRemove');
         this.ioBind('create', this.serverCreate, this);
         this.ioBind('update', this.serverUpdate, this);
+        this.ioBind('remove', this.serverRemove, this);
     },
     serverCreate : function(new_knowledge){
-        alert("Knowledge create")
         this.add(new_knowledge);
     },
     serverUpdate : function(knowledge){
-        alert("Knowledge update")
-        this.remove(knowledge.id)//set(knowledge.attributes);
+        global.eventAggregator.trigger(knowledge.id,knowledge);
+    },
+    serverRemove : function(knowledge){
+        this.remove(knowledge.id);
     }
 });
 /***************************************/
@@ -83,7 +98,6 @@ global.Collections.NotificationsCollection = Backbone.Collection.extend({
         return -m.get('comparator');
     },
     serverCreate : function(new_notif){
-        alert("pouette")
         this.add(new_notif);
     }
 });
@@ -120,6 +134,19 @@ global.Collections.ConceptsCollection = Backbone.Collection.extend({
     },
     initialize : function() {
         //console.log('Comments Collection Constructor');
+        _.bindAll(this, 'serverCreate','serverUpdate','serverRemove');
+        this.ioBind('create', this.serverCreate, this);
+        this.ioBind('update', this.serverUpdate, this);
+        this.ioBind('remove', this.serverRemove, this);
+    },
+    serverCreate : function(model){
+        this.add(model);
+    },
+    serverUpdate : function(model){
+        global.eventAggregator.trigger(model.id,model);
+    },
+    serverRemove : function(model){
+        this.remove(model.id);
     }
 });
 /***************************************/

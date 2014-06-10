@@ -23,7 +23,31 @@ var category = {
   }
 };
 /////////////////////////////////////////
-// Middle Part
+category.Views.Knowledge = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        // Variable
+        this.knowledge     = json.knowledge;
+        this.categoryTitle      = json.categoryTitle;
+        // Event
+        global.eventAggregator.on(this.knowledge.get('id'),this.actualize,this);
+        this.knowledge.on('change',this.render,this);
+        // Templates
+        this.template_list = _.template($('#category-knowledge-template').html());
+    },
+    actualize : function(k){
+        this.knowledge.set(k);
+    },
+    render:function(){
+        $(this.el).empty();
+        $(this.el).html(this.template_list({
+            nbre_notifs     : global.ModelsNotificationsDictionary[this.knowledge.get('id')].news.length,
+            knowledge       : this.knowledge.toJSON(),
+            title           : this.categoryTitle
+        }));
+        return this;
+    }
+});
 /////////////////////////////////////////
 category.Views.Category = Backbone.View.extend({
     initialize : function(json){
@@ -32,19 +56,33 @@ category.Views.Category = Backbone.View.extend({
         this.knowledges         = json.knowledges;
         this.category           = json.category;
         // Templates
-        this.template_list = _.template($('#category-list-template').html());
-        //global.eventAggregator.bind("ModelsNotificationsDictionary",this.actualize,this);
+        this.template_poche = _.template($('#category-poche-template').html());
+        // Event
+        global.eventAggregator.on(this.category.get('id'),this.actualize,this);
+        this.category.on('change',this.render,this);
+    },
+    actualize : function(c){
+        this.category.set(c);
     },
     render:function(){
         $(this.el).empty();
         _this = this;
-        // Category template
-        $(this.el).html(this.template_list({
+        // Creation de l'item category vide
+       $(this.el).html(this.template_poche({
             notifs_nbr      : global.ModelsNotificationsDictionary[this.category.get('id')].news.length,
-            models_notifs   : global.ModelsNotificationsDictionary,
-            knowledges      : this.knowledges.toJSON(), 
             category        : this.category.toJSON(),
         }));
+        // On lui ajoute les objects knowledges
+        this.knowledges.each(function(knowledge){
+            _this.$("#poche"+_this.category.get('id')+"container").append(new category.Views.Knowledge({
+                knowledge : knowledge,
+                categoryTitle : _this.category.get('title')
+            }).render().el);   
+        });
+        $("#categories_grid").gridalicious({
+            gutter: 20,
+            width: 260
+        });
         return this;
     }
 });
@@ -55,8 +93,6 @@ category.Views.Categories = Backbone.View.extend({
         // Variable
         this.knowledges         = json.knowledges;
         this.categories         = json.categories;
-        // Templates
-        this.template_notCategorized = _.template($('#category-notCategorized-template').html());
     },
     events : {
         "click .addKnowledge" : "addKnowledge",
@@ -101,10 +137,11 @@ category.Views.Categories = Backbone.View.extend({
         template = this.template_notCategorized;
         this.knowledges.each(function(k){
             if(k.get('tags').length == 0){
-                $(_this.el).append(template({
-                    notifs_nbr    : global.ModelsNotificationsDictionary[k.get('id')].news.length,
-                    knowledge     : k.toJSON()
-                }));
+                $(_this.el).append(new category.Views.Knowledge({
+                    className : "item",
+                    knowledge : k,
+                    categoryTitle : "none"
+                }).render().el);
             }
         });
         ////////////////////////////
@@ -115,7 +152,12 @@ category.Views.Categories = Backbone.View.extend({
         })
         this.knowledges.each(function(k){
             k.get('tags').forEach(function(tag){
-                dictionary[tag].knowledges = _.union(dictionary[tag].knowledges,[k])
+                try{
+                    dictionary[tag].knowledges = _.union(dictionary[tag].knowledges,[k])    
+                }catch(e){
+                    console.log(tag," doesn't exit anymore")
+                }
+                
             });
         });
         // Category
@@ -303,15 +345,11 @@ category.Views.Main = Backbone.View.extend({
 
         this.knowledges.on("add", this.render,this);
         this.knowledges.on("remove", this.render,this);
-        global.collections.Knowledges.on("change", this.alert,this);
 
+        this.categories.on('add',this.render,this);
         this.categories.on('remove',this.render,this);
-        this.categories.on('change',this.render,this);
+        //this.categories.on('change',this.render,this);
         this.eventAggregator.on('categories_list_render', this.render, this);
-    },
-    alert : function(){
-        console.log("global: ",global.collections.Knowledges)
-        console.log("local: ",this.knowledges)
     },
     events : {
         "click .newCategory" : "newCategory",
@@ -360,7 +398,8 @@ category.Views.Main = Backbone.View.extend({
         //         })
         //     }
         // );
-        this.render();
+        
+        //this.render();
     },
     ///////////////////////////////////////////////////////
     applyFilter : function(){

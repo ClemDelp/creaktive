@@ -1127,6 +1127,7 @@ MM.Action.prototype.getName = function() {
 };
 
 MM.Action.InsertNewItem = function(parent, index) {
+	alert('InsertNewItem')
 	this._parent = parent;
 	this._index = index;
 	this._item = new MM.Item();

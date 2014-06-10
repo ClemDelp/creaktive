@@ -86,7 +86,7 @@ conceptsmap.Views.ConceptsModal = Backbone.View.extend({
 conceptsmap.Views.Main = Backbone.View.extend({
     el:"#conceptsmap_container",
     initialize : function(json) {
-        _.bindAll(this, 'render','actualizeNotification','recursiveUnlink');
+        _.bindAll(this, 'render');
         // Variables
         this.knowledges         = json.knowledges;
         this.concepts           = json.concepts;
@@ -154,26 +154,26 @@ conceptsmap.Views.Main = Backbone.View.extend({
         "click .paste" : "paste",
         "click .linkK" : "linkK"
     },
-    unlinkConcept : function(e){
-        e.preventDefault();
-        if (confirm("The children concepts will also be unlinked, do you want to continue?")) {
-            conceptsToUnlink = [];
-            this.recursiveUnlink(conceptsToUnlink,MM.App.current._id);
-            conceptsToUnlink.forEach(function(concept){
-                concept.set({id_father : "none"});
-                concept.save();
-            });
-            this.eventAggregator.trigger('updateMap');
-        }
-    },
-    recursiveUnlink : function(conceptsToUnlink,currentConceptId){
-        conceptsToUnlink.unshift(this.concepts.get(currentConceptId));
-        _this = this;
-        this.concepts.where({id_father : currentConceptId}).forEach(function(concept){
-            console.log(concept.get('title'));
-            _this.recursiveUnlink(conceptsToUnlink,concept.get('id'));
-        });
-    },
+    // unlinkConcept : function(e){
+    //     e.preventDefault();
+    //     if (confirm("The children concepts will also be unlinked, do you want to continue?")) {
+    //         conceptsToUnlink = [];
+    //         this.recursiveUnlink(conceptsToUnlink,MM.App.current._id);
+    //         conceptsToUnlink.forEach(function(concept){
+    //             concept.set({id_father : "none"});
+    //             concept.save();
+    //         });
+    //         this.eventAggregator.trigger('updateMap');
+    //     }
+    // },
+    // recursiveUnlink : function(conceptsToUnlink,currentConceptId){
+    //     conceptsToUnlink.unshift(this.concepts.get(currentConceptId));
+    //     _this = this;
+    //     this.concepts.where({id_father : currentConceptId}).forEach(function(concept){
+    //         console.log(concept.get('title'));
+    //         _this.recursiveUnlink(conceptsToUnlink,concept.get('id'));
+    //     });
+    // },
     againstFounderBug : function(){
         MM.App.current.startEditing();
     },

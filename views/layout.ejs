@@ -59,18 +59,17 @@
             console.log(data.msg);
             console.log(data.channels);
           });
-
-          socket.on('notification:create', function socketConnected(x) {
-            console.log("xxxxxx",x)
-          });
-
-          socket.on('knowledge:create', function socketConnected(x) {
-            console.log("xxxxxxxx-knowledge:create",x)
-          });
-
-          socket.on('knowledge:update', function socketConnected(x) {
-            console.log("xxxxxxxx-knowledge:update",x)
-          });
+          // Notification
+          socket.on('notification:create', function socketConnected(x) {console.log("xxxxxx",x)});
+          // Knowledge
+          socket.on('knowledge:create', function socketConnected(x) {console.log("xxxxxxxx-knowledge:create",x)});
+          socket.on('knowledge:update', function socketConnected(x) {console.log("xxxxxxxx-knowledge:update",x)});
+          socket.on('knowledge:remove', function socketConnected(x) {console.log("xxxxxxxx-knowledge:remove",x)});
+          // Category
+          socket.on('poche:create', function socketConnected(x) {console.log("xxxxxxxx-poche:create",x)});
+          socket.on('poche:update', function socketConnected(x) {console.log("xxxxxxxx-poche:update",x)});
+          socket.on('poche:remove', function socketConnected(x) {console.log("xxxxxxxx-poche:remove",x)});
+          
 
           console.log(
             'Socket is now connected and globally accessible as `socket`.\n' + 

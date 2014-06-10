@@ -56,6 +56,19 @@ var global = {
     console.log("******* Connected as ", this.models.current_user.get("name"), " on ", this.models.currentProject.get("title"))    
     callback();
   },
+  // prepareKCATGdictionary : function(){
+  //   ////////////////////////////
+  //   // Build the dictionary k-catg
+  //   dictionary = {};
+  //   global.collections.Poches.each(function(category){
+  //       dictionary[category.get('title')] = {"model":category,"knowledges":[]};
+  //   })
+  //   global.collections.Knowledges.each(function(k){
+  //       k.get('tags').forEach(function(tag){
+  //           dictionary[tag].knowledges = _.union(dictionary[tag].knowledges,[k])
+  //       });
+  //   });
+  // },
   prepareNotifications : function(){
     console.log("prepareNotificatioooooooooooooooooooooooons !!!")
     ////////////////////////////

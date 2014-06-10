@@ -25,7 +25,7 @@ modelEditor.Views.Main = Backbone.View.extend({
         this.template_model_normal = _.template($('#modelEditor-normal-template').html());
         this.template_model_edition = _.template($('#modelEditor-edition-template').html());
         // Events
-        this.model.bind('change',this.render);
+        //this.model.bind('change',this.render);
     },
     events : {
         "click .edit"  : "editMode",

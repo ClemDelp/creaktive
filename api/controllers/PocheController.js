@@ -56,6 +56,7 @@ update : function(req, res){
   if(concept){
    Poche.update({id: req.body.params.id}, req.body.params).done(function(err,c){
     if(err) res.send(err);
+    req.socket.broadcast.to(req.session.currentProject.id).emit("poche:update", c[0]);
     Notification.objectUpdated(req,res,"Poche", c[0], function(notification){
       res.send(notification);
     });
@@ -69,6 +70,7 @@ update : function(req, res){
   p.project = req.session.currentProject.id
   Poche.create(p).done(function(err,c){
     if(err) res.send(err);
+    req.socket.broadcast.to(req.session.currentProject.id).emit("poche:create", c);
     Notification.objectCreated(req,res,"Poche", c, function(notification){
       res.send(notification);
     });
@@ -82,6 +84,7 @@ update : function(req, res){
 destroy : function(req,res){
   Poche.findOne(req.body.params.id).done(function(err,poche){
     if(err) console.log(err);
+    req.socket.broadcast.to(req.session.currentProject.id).emit("poche:remove", poche);
     poche.destroy(function(err){
       if(err) console.log(err)
         res.send({msg:"destroyed"})

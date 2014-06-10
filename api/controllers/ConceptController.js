@@ -55,9 +55,7 @@
           id: req.body.params.id
         }, req.body.params).done(function(err,c){
           if(err) res.send(err);
-          
-          
-
+          req.socket.broadcast.to(req.session.currentProject.id).emit("concept:update", c[0]);
           Notification.objectUpdated(req,res,"Concept", c[0], function(notification){
             res.send(notification);
           });
@@ -71,7 +69,7 @@
         concept.project = req.session.currentProject.id;
         Concept.create(concept).done(function(err,c){
           if(err) res.send(err);
-
+          req.socket.broadcast.to(req.session.currentProject.id).emit("concept:create", c);
           Notification.objectCreated(req,res,"Concept", c, function(notification){
             res.send(notification);
           });
@@ -82,10 +80,10 @@
     })
   },
 
-
   destroy : function(req,res){
     Concept.findOne(req.body.params.id).done(function(err,concept){
       if(err) console.log(err);
+      req.socket.broadcast.to(req.session.currentProject.id).emit("concept:remove", concept);
       concept.destroy(function(err){
         if(err) console.log(err)
           res.send({msg:"destroyed"})
