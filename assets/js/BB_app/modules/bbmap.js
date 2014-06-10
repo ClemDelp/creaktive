@@ -84,18 +84,8 @@ bbmap.Views.Node = Backbone.View.extend({
             user: bbmap.views.main.user
         });
         new_concept.save();
-        bbmap.views.main.concepts.add(new_concept);
 
-        new_view = new bbmap.Views.Node({
-            className : "window concept",
-            id : new_concept.get('id'),
-            model : new_concept,
-        });
-        bbmap.views.main.map_el.append(new_view.render().el);
-        
-        new_view.addEndpoint();
-        new_view.addLink();
-        new_view.makeTarget();
+        bbmap.views.main.addConceptToView(new_concept);
     },
     addKnowledgeChild : function(e){
         e.preventDefault();
@@ -111,8 +101,6 @@ bbmap.Views.Node = Backbone.View.extend({
             user: bbmap.views.main.user
         });
         new_knowledge.save();
-        // On l'ajoute à la collection
-        bbmap.views.main.knowledges.add(new_knowledge);
         // On crée le link entre C et K
         new_cklink = new global.Models.CKLink({
             id :guid(),
@@ -124,18 +112,8 @@ bbmap.Views.Node = Backbone.View.extend({
         new_cklink.save();
         // On ajoute le link à la collection
         bbmap.views.main.links.add(new_cklink);
-        // On crée la vue
-        new_view = new bbmap.Views.Node({
-            className : "window knowledge",
-            id : new_knowledge.get('id'),
-            model : new_knowledge,
-        });
-        // On l'ajoute à la map
-        bbmap.views.main.map_el.append(new_view.render().el);
-        // Puis on ajoute les elements de la bulle
-        new_view.addEndpoint();
-        new_view.addLink();
-        new_view.makeTarget();
+
+        bbmap.views.main.addKnowledgeToView(new_knowledge);
     },
     removeModel : function(e){
         e.preventDefault();
@@ -300,7 +278,7 @@ bbmap.Views.EditBox = Backbone.View.extend({
     render : function(callBack){
         $(this.el).empty();
         $(this.el).append('<input id="title" type="text" value="'+this.model.get("title")+'">');
-        $(this.el).append('<textarea class="ckeditor"  name="editor" rows="10" cols="80">'+this.model.get('content')+'</textarea>');
+        $(this.el).append('<textarea class="ckeditor" id="'+this.model.get('id')+'_content" name="editor" rows="10" cols="80">'+this.model.get('content')+'</textarea>');
         $(this.el).append('<br><a href="#" id="save" class="button tiny expand secondary" style="margin-bottom:0px">save</a>');
         callBack();
     }
@@ -325,6 +303,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.CcontentVisibility = false;
         this.ckOperator         = true;
         this.positionRef        = 550;
+        this.nodes_views        = {};
         // Templates
         this.bar_el = $(this.el).find('#actionbar');
         this.map_el = $(this.el).find('#map');
@@ -355,11 +334,23 @@ bbmap.Views.Main = Backbone.View.extend({
         bbmap.views.editBox = new bbmap.Views.EditBox({el : "#editBox"});
         ////////////////////////////
         // Events
-        this.listenTo(this.zoom,'change',this.updateZoomDisplay,this)
+        this.listenTo(this.zoom,'change',this.updateZoomDisplay,this);
+
+        global.eventAggregator.on('concept:create',this.addConceptToView,this);
+        global.eventAggregator.on('concept:remove',this.removeModelToView,this);
+        global.eventAggregator.on('concept:update',this.test,this);
+
+        global.eventAggregator.on('knowledge:create',this.addKnowledgeToView,this);
+        global.eventAggregator.on('knowledge:remove',this.removeModelToView,this);
+
+    },
+    test : function(model){
+        console.log("eeeeeeee",model)
+        console.log('tututututututut',global.Functions.whatChangeInModel(this.concepts.get(model.get('id')),model)); 
     },
     events : {
-        "click .addUnlinkedC" : "addUnlinkedConcept",
-        "click .addUnlinkedK" : "addUnlinkedKnowledge",
+        "click .addUnlinkedC" : "createUnlinkedConcept",
+        "click .addUnlinkedK" : "createUnlinkedKnowledge",
         "click .Kcontent" : "setKcontentVisibility",
         "click .Ccontent" : "setCcontentVisibility",
         "click .ckOperator" : "setCKOperator",
@@ -369,9 +360,10 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .resetPosition" : "resetPosition",
         // "click .reorganize" : "reorganize",
     },
-    hello : function(name){
-        return "hello "+name;
-    },
+    /////////////////////////////////////////
+    // Real-time
+    
+    /////////////////////////////////////////
     updateZoomDisplay : function(){
         this.bar_el.find('#zoom_val').html(this.zoom.get('val'))
     },
@@ -435,7 +427,9 @@ bbmap.Views.Main = Backbone.View.extend({
 
       this.instance.setZoom(zoom);    
     },
-    addUnlinkedKnowledge : function(e){
+    //////////////////////////////////////////
+    // Knowledge
+    createUnlinkedKnowledge : function(e){
         e.preventDefault();
         new_knowledge = new global.Models.Knowledge({
             id : guid(),
@@ -447,7 +441,6 @@ bbmap.Views.Main = Backbone.View.extend({
             user: this.user
         });
         new_knowledge.save();
-        this.knowledges.add(new_knowledge);
 
         new_view = new bbmap.Views.Node({
             className : "window knowledge",
@@ -461,7 +454,27 @@ bbmap.Views.Main = Backbone.View.extend({
         new_view.addLink();
         new_view.makeTarget();
     },
-    addUnlinkedConcept : function(e){
+    addKnowledgeToView : function(k){
+        this.knowledges.add(k);
+        
+        // On crée la vue
+        new_view = new bbmap.Views.Node({
+            className : "window knowledge",
+            id : k.get('id'),
+            model : k,
+        });
+        // On l'ajoute à la map
+        this.map_el.append(new_view.render().el);
+        // Puis on ajoute les elements de la bulle
+        new_view.addEndpoint();
+        new_view.addLink();
+        new_view.makeTarget();
+
+        this.nodes_views[k.get('id')] = new_view;
+    },
+    //////////////////////////////////////////
+    // Concept
+    createUnlinkedConcept : function(e){
         e.preventDefault();
         new_concept = new global.Models.ConceptModel({
             id : guid(),
@@ -474,7 +487,6 @@ bbmap.Views.Main = Backbone.View.extend({
             user: this.user
         });
         new_concept.save();
-        this.concepts.add(new_concept);
 
         new_view = new bbmap.Views.Node({
             className : "window concept",
@@ -482,11 +494,40 @@ bbmap.Views.Main = Backbone.View.extend({
             model : new_concept,
         });
 
+        this.addConceptToView(new_concept);
+
+    },
+    addConceptToView : function(c){
+        this.concepts.add(c);
+        new_view = new bbmap.Views.Node({
+            className : "window concept",
+            id : c.get('id'),
+            model : c,
+        });
+
         this.map_el.append(new_view.render().el);
         
         new_view.addEndpoint();
         new_view.addLink();
         new_view.makeTarget();
+
+        this.nodes_views[c.get('id')] = new_view;
+    },
+    //////////////////////////////////////////
+    removeModelToView : function(model){
+        model_view = this.nodes_views[model.get('id')]
+        model_view.endpoints.forEach(function(ep){
+            bbmap.views.main.instance.deleteEndpoint(ep);
+        })
+        bbmap.views.main.instance.detachAllConnections($(model_view.el));
+        // put all the child node parent_id attributes to none
+        if(model.get('type') == 'concept'){
+            childrens = bbmap.views.main.concepts.where({id_father : model.get('id')})
+            childrens.forEach(function(child){
+                child.set({id_father : "none"}).save();
+            });
+        } 
+        model_view.remove();
 
     },
     jsPlumbEventsInit : function(){
@@ -562,7 +603,7 @@ bbmap.Views.Main = Backbone.View.extend({
         _this = this;
         this.bar_el.empty();
         this.map_el.empty();
-        views = [];
+        nodes_views = {};
         ///////////////////////
         // Action bar
         this.bar_el.append(this.template_actionbar());
@@ -570,44 +611,58 @@ bbmap.Views.Main = Backbone.View.extend({
         ///////////////////////
         // Concepts views
         this.concepts.each(function(concept){
-            views.unshift(new bbmap.Views.Node({
+            nodes_views[concept.get('id')] = new bbmap.Views.Node({
                 className : "window concept",
                 id : concept.get('id'),
                 model : concept,
-            }));
+            });
         });
         // knowledges views
         this.knowledges.each(function(knowledge){
-            views.unshift(new bbmap.Views.Node({
+            nodes_views[knowledge.get('id')] = new bbmap.Views.Node({
                 className : "window knowledge",
                 id : knowledge.get('id'),
                 model : knowledge,
-            }));
+            });
         });
         ///////////////////////
         // Views render process
-        views.forEach(function(view){
-            _this.map_el.append(view.render().el);
+        this.concepts.forEach(function(model){
+            _this.map_el.append(nodes_views[model.get('id')].render().el);    
+        });
+        this.knowledges.forEach(function(model){
+            _this.map_el.append(nodes_views[model.get('id')].render().el);    
         });
         ///////////////////////
         // Views addEndPoint process
-        views.forEach(function(view){
-            view.addEndpoint();
-        })
+        this.concepts.forEach(function(model){
+            nodes_views[model.get('id')].addEndpoint();    
+        });
+        this.knowledges.forEach(function(model){
+            nodes_views[model.get('id')].addEndpoint();    
+        });
         ///////////////////////
         // Views addEndLink process
-        views.forEach(function(view){
-            view.addLink();
-        })
+        this.concepts.forEach(function(model){
+            nodes_views[model.get('id')].addLink();    
+        });
+        this.knowledges.forEach(function(model){
+            nodes_views[model.get('id')].addLink();    
+        });
         ///////////////////////
         // Views addEndLink process
-        views.forEach(function(view){
-            view.makeTarget();
-        })
+        this.concepts.forEach(function(model){
+            nodes_views[model.get('id')].makeTarget();    
+        });
+        this.knowledges.forEach(function(model){
+            nodes_views[model.get('id')].makeTarget();    
+        });
         ///////////////////////
         // Initialize jsPlumb events
         this.jsPlumbEventsInit();
         $( "#map" ).draggable();
+
+        this.nodes_views = nodes_views;
         return this;
     }
 });

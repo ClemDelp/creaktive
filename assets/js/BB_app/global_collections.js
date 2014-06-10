@@ -43,14 +43,17 @@ global.Collections.Knowledges = Backbone.Collection.extend({
         this.ioBind('update', this.serverUpdate, this);
         this.ioBind('remove', this.serverRemove, this);
     },
-    serverCreate : function(new_knowledge){
-        this.add(new_knowledge);
+    serverCreate : function(model){
+        //this.add(new_knowledge);
+        global.eventAggregator.trigger("knowledge:create",new Backbone.Model(model));
     },
     serverUpdate : function(knowledge){
         global.eventAggregator.trigger(knowledge.id,knowledge);
     },
-    serverRemove : function(knowledge){
-        this.remove(knowledge.id);
+    serverRemove : function(model){
+        //this.remove(knowledge.id);
+        global.eventAggregator.trigger("knowledge:remove",new Backbone.Model(model));
+
     }
 });
 /***************************************/
@@ -140,13 +143,16 @@ global.Collections.ConceptsCollection = Backbone.Collection.extend({
         this.ioBind('remove', this.serverRemove, this);
     },
     serverCreate : function(model){
-        this.add(model);
+        //this.add(model);
+        global.eventAggregator.trigger("concept:create",new Backbone.Model(model));
     },
     serverUpdate : function(model){
-        global.eventAggregator.trigger(model.id,model);
+        global.eventAggregator.trigger("concept:update",new Backbone.Model(model));
     },
     serverRemove : function(model){
-        this.remove(model.id);
+        //this.remove(new Backbone.Model(model));
+        global.eventAggregator.trigger("concept:remove",new Backbone.Model(model));
+
     }
 });
 /***************************************/

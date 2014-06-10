@@ -127,15 +127,15 @@ conceptsmap.Views.Main = Backbone.View.extend({
         //this.listenTo(this.concepts,"change",this.render);
         this.listenTo(this.concepts,"remove",this.resetMap);
         // Events
-        // this.listenTo(this.all_notifs,'change',this.actualizeNotification,this);
-        // this.listenTo(this.all_notifs,'add',this.actualizeNotification,this);
-        // this.listenTo(this.all_notifs,'remove',this.actualizeNotification,this);
-        this.eventAggregator.on('ModelsNotificationsDictionary',this.actualizeNotification,this);
+        global.eventAggregator.on("concepts:add",this.realtime_addConcept,this);
+        global.eventAggregator.on("concepts:remove",this.realtime_removeConcept,this);
+        global.eventAggregator.on("concepts:update",this.realtime_updateConcept,this);
 
+        this.eventAggregator.on('ModelsNotificationsDictionary',this.actualizeNotification,this);
         this.listenTo(this.eventAggregator,'change',this.action,this);
         this.listenTo(this.eventAggregator,"undo", this.performUndo, this);
-
         this.listenTo(this.eventAggregator, 'updateMap', this.resetMap, this);
+        // Template
         this.template = _.template($("#conceptsmap_map_template").html());
         this.template_actionsMap = _.template($("#conceptsmap_actionsMap_template").html());
     },
@@ -153,6 +153,15 @@ conceptsmap.Views.Main = Backbone.View.extend({
         "click .cut" : "cut",
         "click .paste" : "paste",
         "click .linkK" : "linkK"
+    },
+    realtime_addConcept : function(concept){
+        
+    },
+    realtime_removeConcept : function(concept){
+        localStorage.getItem("mm.app." + concept.id);
+    },
+    realtime_updateConcept : function(concept){
+
     },
     // unlinkConcept : function(e){
     //     e.preventDefault();

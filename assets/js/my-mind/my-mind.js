@@ -603,6 +603,7 @@ var MM = {
 
  MM.Item.prototype.insertChild = function(child, index) {
  	/* Create or remove child as necessary. This must be done before computing the index (inserting own child) */
+ 	console.log("insert chiiiiiild",child,index)
  	var newChild = false;
  	if (!child) { 
  		child = new MM.Item();
@@ -1127,7 +1128,6 @@ MM.Action.prototype.getName = function() {
 };
 
 MM.Action.InsertNewItem = function(parent, index) {
-	alert('InsertNewItem')
 	this._parent = parent;
 	this._index = index;
 	this._item = new MM.Item();
