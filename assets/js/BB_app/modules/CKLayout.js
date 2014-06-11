@@ -84,7 +84,7 @@ CKLayout.Views.Modal = Backbone.View.extend({
             try{
                 $(document).foundation();
             }catch(err){
-                console.log("",err);
+                console.log(err);
             }
         }); 
     },

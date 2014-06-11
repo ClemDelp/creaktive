@@ -41,6 +41,7 @@ comments.Views.Main = Backbone.View.extend({
             content : $(this.el).find(".input_comment").val()
         });
         this.model.save();
+        console.log('tutu')
     },
     removeComment : function(e){
         e.preventDefault();
