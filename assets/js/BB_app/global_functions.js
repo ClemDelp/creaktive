@@ -66,14 +66,11 @@ global.Functions.getNotificationsDictionary = function(user_model,notifications,
 }
 
 global.Functions.whatChangeInModel = function(origin_m,new_m){
-	console.log("origin_m",origin_m," - new_m",new_m)
 	var keys = [];
 	for (var k in origin_m.attributes){
 		if(origin_m.attributes[k] != new_m.attributes[k]){
-			console.log("lalalala",k,origin_m.attributes[k],new_m.attributes[k]);	
 			keys.unshift(k);
 		}
 	}
-	console.log('tititititititititi',keys)
 	return keys;
 }

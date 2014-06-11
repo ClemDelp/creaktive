@@ -59,9 +59,9 @@ category.Views.Category = Backbone.View.extend({
         this.template_poche = _.template($('#category-poche-template').html());
         // Event
         global.eventAggregator.on(this.category.get('id'),this.actualize,this);
-        this.category.on('change',this.render,this);
+        //this.category.on('change',this.render,this);
     },
-    actualize : function(c){
+    actualize : function(c){alert("actualize category")
         this.category.set(c);
     },
     render:function(){
@@ -97,7 +97,7 @@ category.Views.Categories = Backbone.View.extend({
     events : {
         "click .addKnowledge" : "addKnowledge",
         "dblclick .openKnowledgeModal"  : "openKnowledgeModal",
-        "dblclick .openCategoryModal"  : "openCategoryModal",
+        "click .openCategoryModal"  : "openCategoryModal",
     },
     openKnowledgeModal : function(e){
         e.preventDefault();

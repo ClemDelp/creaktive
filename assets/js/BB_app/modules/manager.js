@@ -34,7 +34,6 @@ manager.Views.Projects = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
         // Params
-        this.projects_notifs    = json.projects_notifs;
         this.permissions        = json.permissions;
         this.projects           = json.projects;
         this.projects_render    = this.projects;
@@ -51,7 +50,7 @@ manager.Views.Projects = Backbone.View.extend({
         this.template_project = _.template($('#manager-project-template').html());              
     },
     events : {
-        "dblclick .openProjectModal"  : "openProjectModal",
+        "click .openProjectModal"  : "openProjectModal",
     },
     actualize : function(dic){
         this.projects_notifs = dic;
@@ -71,12 +70,9 @@ manager.Views.Projects = Backbone.View.extend({
         $(this.el).empty();
         _this = this;
         this.projects_render.each(function(project){
-            // Important! si on cré un nouveau projet le dictionnaire des notifs indiquera undefined pour ce nouveau model
-            notifNbr = 0;
-            if(_this.projects_notifs[project.get('id')] != undefined) _this.projects_notifs[project.get('id')].news.length;
             // Append the template
             $(_this.el).append(_this.template_project({
-                notifNbr : notifNbr,
+                notifNbr : global.ProjectsNotificationsDictionary[project.get('id')].news.length,
                 userNbr  : manager.views.main.users_rec_dic[project.get('id')],
                 project  : project.toJSON(),
             }));
@@ -93,7 +89,6 @@ manager.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
-        this.projects_notifs    = json.projects_notifs;
         this.users_rec_dic      = json.users_rec_dic;
         this.permissions        = json.permissions;
         this.projects           = json.projects;
@@ -106,7 +101,6 @@ manager.Views.Main = Backbone.View.extend({
         this.eventAggregator    = json.eventAggregator;
         // CKLayout for project
         manager.views.p_cklayout_modal = new CKLayout.Views.Modal({
-            models_notifs   : this.projects_notifs, // Le déclancheur pour le real time
             user            : this.user,
             collection      : this.projects,
             eventAggregator : this.eventAggregator
@@ -137,7 +131,6 @@ manager.Views.Main = Backbone.View.extend({
         });
         new_project.save();
         this.projects.add(new_project);
-        
     },
 
     removeProject : function (e){
@@ -190,7 +183,6 @@ manager.Views.Main = Backbone.View.extend({
             links           : this.links,
             users           : this.users,
             poches          : this.poches,
-            projects_notifs : this.projects_notifs,
             eventAggregator : this.eventAggregator
         }).render().el);
 

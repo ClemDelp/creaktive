@@ -73,18 +73,18 @@ CKLayout.Views.Modal = Backbone.View.extend({
     },
     openModelEditorModal : function(id){
         this.model = this.collection.get(id);
-        collection_test = new Backbone.Collection();
-        if(this.model.get('type') == 'project') collection_test = new global.Collections.ProjectsCollection(this.model);
-        else if(this.model.get('type') == 'knowledge') collection_test = new global.Collections.Knowledges(this.model);
-        else if(this.model.get('type') == 'category') collection_test = new global.Collections.Poches(this.model);
-        else if(this.model.get('type') == 'concept') collection_test = new global.Collections.ConceptsCollection(this.model);
-        collection_test.fetch({complete:function(){}});
+        // collection_test = new Backbone.Collection();
+        // if(this.model.get('type') == 'project') collection_test = new global.Collections.ProjectsCollection(this.model);
+        // else if(this.model.get('type') == 'knowledge') collection_test = new global.Collections.Knowledges(this.model);
+        // else if(this.model.get('type') == 'category') collection_test = new global.Collections.Poches(this.model);
+        // else if(this.model.get('type') == 'concept') collection_test = new global.Collections.ConceptsCollection(this.model);
+        // collection_test.fetch({complete:function(){}});
         this.render(function(){
             $('#CKLayoutModal').foundation('reveal', 'open'); 
             try{
                 $(document).foundation();
             }catch(err){
-                console.log(err);
+                console.log("",err);
             }
         }); 
     },

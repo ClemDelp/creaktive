@@ -22,10 +22,15 @@ comments.Views.Main = Backbone.View.extend({
         this.user = json.user;
         // Templates
         this.template = _.template($('#comments-template').html());
+        // Events
+        this.listenTo(this.model,"remove",this.removeView,this);     
     },
     events : {
         'click .addComment' : 'addComment',
         'click .removeComment' : 'removeComment'
+    },
+    removeView : function(){
+      this.remove();
     },
     addComment: function(e){
         e.preventDefault(); 

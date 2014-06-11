@@ -125,11 +125,11 @@ conceptsmap.Views.Main = Backbone.View.extend({
         ////////////////////////////
         // Backbone events              
         //this.listenTo(this.concepts,"change",this.render);
-        this.listenTo(this.concepts,"remove",this.resetMap);
+        //this.listenTo(this.concepts,"remove",this.resetMap);
         // Events
-        global.eventAggregator.on("concepts:add",this.realtime_addConcept,this);
-        global.eventAggregator.on("concepts:remove",this.realtime_removeConcept,this);
-        global.eventAggregator.on("concepts:update",this.realtime_updateConcept,this);
+        global.eventAggregator.on("concept:create",this.addConcept,this);
+        global.eventAggregator.on("concept:remove",this.removeConcept,this);
+        global.eventAggregator.on("concept:update",this.updateConcept,this);
 
         this.eventAggregator.on('ModelsNotificationsDictionary',this.actualizeNotification,this);
         this.listenTo(this.eventAggregator,'change',this.action,this);
@@ -138,6 +138,29 @@ conceptsmap.Views.Main = Backbone.View.extend({
         // Template
         this.template = _.template($("#conceptsmap_map_template").html());
         this.template_actionsMap = _.template($("#conceptsmap_actionsMap_template").html());
+    },
+    addConcept : function(concept){
+        var id_father = concept.get('id_father');
+        var parent = MM.Map.prototype.getItemById(id_father);
+        var action = new MM.Action.InsertNewItem2(parent, parent.getChildren().length, concept.get('id'));
+        MM.App.action(action);  
+        MM.Command.Edit.execute();
+        MM.publish("command-child");
+    },
+    removeConcept : function(concept){
+        var item = MM.Map.prototype.getItemById(concept.get('id'));
+        var action = new MM.Action.RemoveItem2(item);
+        MM.App.action(action);  
+        MM.Command.Edit.execute();
+        MM.publish("command-child");
+    },
+    // Update just title right now
+    updateConcept : function(concept){
+        var item = MM.Map.prototype.getItemById(concept.get('id'));
+        var action = new MM.Action.SetText2(item, concept.get('title'));
+        MM.App.action(action);  
+        MM.Command.Edit.execute();
+        MM.publish("command-child");
     },
     events : {
         "click .unlink" : "unlinkConcept",
@@ -154,35 +177,6 @@ conceptsmap.Views.Main = Backbone.View.extend({
         "click .paste" : "paste",
         "click .linkK" : "linkK"
     },
-    realtime_addConcept : function(concept){
-        
-    },
-    realtime_removeConcept : function(concept){
-        localStorage.getItem("mm.app." + concept.id);
-    },
-    realtime_updateConcept : function(concept){
-
-    },
-    // unlinkConcept : function(e){
-    //     e.preventDefault();
-    //     if (confirm("The children concepts will also be unlinked, do you want to continue?")) {
-    //         conceptsToUnlink = [];
-    //         this.recursiveUnlink(conceptsToUnlink,MM.App.current._id);
-    //         conceptsToUnlink.forEach(function(concept){
-    //             concept.set({id_father : "none"});
-    //             concept.save();
-    //         });
-    //         this.eventAggregator.trigger('updateMap');
-    //     }
-    // },
-    // recursiveUnlink : function(conceptsToUnlink,currentConceptId){
-    //     conceptsToUnlink.unshift(this.concepts.get(currentConceptId));
-    //     _this = this;
-    //     this.concepts.where({id_father : currentConceptId}).forEach(function(concept){
-    //         console.log(concept.get('title'));
-    //         _this.recursiveUnlink(conceptsToUnlink,concept.get('id'));
-    //     });
-    // },
     againstFounderBug : function(){
         MM.App.current.startEditing();
     },
@@ -366,7 +360,7 @@ conceptsmap.Views.Main = Backbone.View.extend({
         //else if (actions instanceof MM.Action.SetSide){ console.log(actions._item, actions._side);}
         //else if (actions instanceof MM.Action.SetStatus){console.log(actions._item, actions._status);}
         else if (actions instanceof MM.Action.SetText){ 
-
+            console.log("iiddddddd",actions._item._id)
             concept = this.concepts.get(actions._item._id).set({'title':actions._text}, {silent:true});
             concept.save({silent:true});
         }

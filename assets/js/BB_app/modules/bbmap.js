@@ -338,15 +338,23 @@ bbmap.Views.Main = Backbone.View.extend({
 
         global.eventAggregator.on('concept:create',this.addConceptToView,this);
         global.eventAggregator.on('concept:remove',this.removeModelToView,this);
-        global.eventAggregator.on('concept:update',this.test,this);
+        global.eventAggregator.on('concept:update',this.modelUpdate,this);
 
         global.eventAggregator.on('knowledge:create',this.addKnowledgeToView,this);
         global.eventAggregator.on('knowledge:remove',this.removeModelToView,this);
+        global.eventAggregator.on('knowledge:update',this.modelUpdate,this);
 
     },
-    test : function(model){
-        console.log("eeeeeeee",model)
-        console.log('tututututututut',global.Functions.whatChangeInModel(this.concepts.get(model.get('id')),model)); 
+    modelUpdate : function(model){
+        var attributesUpdated = global.Functions.whatChangeInModel(this.concepts.get(model.get('id')),model);
+        if((_.indexOf(attributesUpdated,"left") != -1)||(_.indexOf(attributesUpdated,"top") != -1)){
+            // Si c'est la position qui a changée
+            $(this.nodes_views[model.get('id')].el).attr( "style","top: "+model.get('top')+"px;left:"+model.get('left')+"px");
+        }else if(_.indexOf(attributesUpdated,"title") != -1){
+            // Si cest le title
+            alert("title updated")
+        }
+        this.instance.repaintEverything();
     },
     events : {
         "click .addUnlinkedC" : "createUnlinkedConcept",

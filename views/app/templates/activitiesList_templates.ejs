@@ -13,7 +13,6 @@
     <legend align=left>
       New activities</strong>({{- news_notifs.length }})
       <a href="#" class="button tiny success round closeAllActivities">close all</a>
-      <a href="#" class="button tiny alert round removeAllActivities">remove all</a>
     </legend>
 
     <table width="100%">
@@ -25,30 +24,9 @@
             <td><small>{{- notification.date}}</small></td>
             <td>{{- notification.content }}</td>
             <td><a href="#" class="closeActivity" style="color:green">close</a></td>
-            <td><a href="#" class="removeActivity" style="color:red">remove</a></td>            
           </tr>
       {{ }); }}
       </tbody>
     </table>
   </fieldset> 
-
-  <fieldset>
-    <legend align=left>
-      Read activities</strong>({{- read_notifs.length }}) 
-      <a href="#" class="button tiny alert round removeAllActivities">remove all</a>
-    </legend>
-    <table width="100%">
-      <tbody>
-      {{_.each(read_notifs,function(notification){ }}
-          <tr>
-            <td width="100"><img class="large-4 small-4 medium-4 roundedImage" src="{{- notification.from.img }}"></td>
-            <td><strong>{{- notification.from.name}}</strong></td>
-            <td><small>{{- notification.date}}</small></td>
-            <td>{{- notification.content }}</td>
-            <td><a href="#" class="removeActivity" style="color:red">remove</a></td>
-          </tr>
-      {{ }); }}
-      </tbody>
-    </table> 
-  </fieldset>   
 </script>

@@ -31,7 +31,7 @@ var global = {
     this.collections.Concepts = new this.Collections.ConceptsCollection(json.concepts);
     this.collections.Links = new this.Collections.CKLinks(json.links);
     this.collections.Backups = new this.Collections.Backups(json.backups);
-    this.collections.all_notifs = new this.Collections.NotificationsCollection(json.notifications);
+    this.collections.Notifications = new this.Collections.NotificationsCollection(json.notifications);
     // Dictionaries    
     this.ProjectsUsersDictionary = this.Functions.getProjectsUsersDictionary(this.collections.Projects,this.collections.Permissions);// dictionaire pour le nombre d'utilisateur par projet
     this.NotificationsDictionary = {};
@@ -44,11 +44,12 @@ var global = {
     //////////////////////////////////////////////////////////////////
     this.collections.Poches.on('add',this.prepareNotifications,this);
     this.collections.Projects.on('add',this.prepareNotifications,this);
+    this.collections.Projects.on('remove',this.prepareNotifications,this);
     this.collections.Knowledges.on('add',this.prepareNotifications,this);
     this.collections.Concepts.on('add',this.prepareNotifications,this);
-    this.collections.all_notifs.on('add',this.prepareNotifications,this);
-    this.collections.all_notifs.on('remove',this.prepareNotifications,this);
-    this.collections.all_notifs.on('change',this.prepareNotifications,this);
+    this.collections.Notifications.on('add',this.prepareNotifications,this);
+    this.collections.Notifications.on('remove',this.prepareNotifications,this);
+    this.collections.Notifications.on('change',this.prepareNotifications,this);
     //////////////////////////////////////////////////////////////////
     // Init
     //////////////////////////////////////////////////////////////////
@@ -56,29 +57,18 @@ var global = {
     console.log("******* Connected as ", this.models.current_user.get("name"), " on ", this.models.currentProject.get("title"))    
     callback();
   },
-  // prepareKCATGdictionary : function(){
-  //   ////////////////////////////
-  //   // Build the dictionary k-catg
-  //   dictionary = {};
-  //   global.collections.Poches.each(function(category){
-  //       dictionary[category.get('title')] = {"model":category,"knowledges":[]};
-  //   })
-  //   global.collections.Knowledges.each(function(k){
-  //       k.get('tags').forEach(function(tag){
-  //           dictionary[tag].knowledges = _.union(dictionary[tag].knowledges,[k])
-  //       });
-  //   });
-  // },
   prepareNotifications : function(){
-    console.log("prepareNotificatioooooooooooooooooooooooons !!!")
     ////////////////////////////
     // Dictionaries 
-    this.NotificationsDictionary = global.Functions.getNotificationsDictionary(global.models.current_user,global.collections.all_notifs,global.collections.Projects,global.collections.Knowledges,global.collections.Concepts,global.collections.Poches);
+    this.NotificationsDictionary = global.Functions.getNotificationsDictionary(global.models.current_user,global.collections.Notifications,global.collections.Projects,global.collections.Knowledges,global.collections.Concepts,global.collections.Poches);
     
     this.ModelsNotificationsDictionary = this.NotificationsDictionary.models;
     this.ProjectsNotificationsDictionary = this.NotificationsDictionary.projects;
     this.AllNewsNotificationsDictionary = this.NotificationsDictionary.allNews;
     this.AllReadNotificationsDictionary = this.NotificationsDictionary.allRead;
+
+    console.log("AllNews : ",this.AllNewsNotificationsDictionary.length)
+    console.log("AllRead : ",this.AllReadNotificationsDictionary.length)
 
     this.eventAggregator.trigger("ModelsNotificationsDictionary",this.ModelsNotificationsDictionary);
     this.eventAggregator.trigger("ProjectsNotificationsDictionary",this.ProjectsNotificationsDictionary);
