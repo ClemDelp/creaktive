@@ -60,13 +60,16 @@ CKLayout.Views.Modal = Backbone.View.extend({
         this.model              = new Backbone.Model();
         this.user               = json.user;
         this.collection         = json.collection;
-        this.eventAggregator    = json.eventAggregator;
         // Element
         this.content_el         = $(this.el).find('#cklayout_content_container');
         this.activities_el      = $(this.el).find('#cklayout_activities_container');
         // Events
-        this.eventAggregator.on("closeModelEditorModal", this.closeModelEditorModal);
-        this.eventAggregator.on("openModelEditorModal", this.openModelEditorModal);
+        this.listenTo(this.model,"remove",this.removeView,this);     
+        global.eventAggregator.on("closeModelEditorModal", this.closeModelEditorModal);
+        global.eventAggregator.on("openModelEditorModal", this.openModelEditorModal);
+    },
+    removeView : function(){
+        this.remove();
     },
     closeModelEditorModal : function(){
         $(this.el).foundation('reveal', 'close');
@@ -96,7 +99,6 @@ CKLayout.Views.Modal = Backbone.View.extend({
             className : "panel row",
             model : this.model,
             user : this.user,
-            eventAggregator : this.eventAggregator
         }).render().el);
         // Render it in our div
         if(callback) callback();
@@ -111,7 +113,6 @@ CKLayout.Views.Main = Backbone.View.extend({
         this.activities_el      = json.activities_el;
         this.model              = json.model;
         this.user               = json.user;
-        this.eventAggregator    = json.eventAggregator;
         this.labels             = new Backbone.Collection();
         // Label
         if(this.model.get('type') == "concept"){
@@ -121,6 +122,7 @@ CKLayout.Views.Main = Backbone.View.extend({
         }
         // Events
         this.model.on('change',this.render,this)
+        this.listenTo(this.model,"remove",this.removeView,this);     
         // Templates
         this.template_hearder = _.template($('#CKLayout-header-template').html());
         this.template_footer = _.template($('#CKLayout-footer-template').html());
@@ -132,6 +134,10 @@ CKLayout.Views.Main = Backbone.View.extend({
         "click .toCategory" : "convertInCategory",
         "click .remove" : "closeModelEditorModal"
     },
+    removeView : function(){
+        //this.remove();
+        $("#CKLayoutModal").foundation('reveal', 'close');
+    },
     convertInConcept : function(e){
         e.preventDefault();
         newModel = new global.Models.ConceptModel(this.model.toJSON());
@@ -140,21 +146,21 @@ CKLayout.Views.Main = Backbone.View.extend({
         console.log("newModel",newModel)
         newModel.save();
         this.model.destroy();
-        this.eventAggregator.trigger('closeModelEditorModal');
+        global.eventAggregator.trigger('closeModelEditorModal');
     },
     convertInKnowledge : function(e){
         e.preventDefault();
         newModel = new global.Models.Knowledge(this.model.toJSON());
         newModel.save();
         this.model.destroy();
-        this.eventAggregator.trigger('closeModelEditorModal');
+        global.eventAggregator.trigger('closeModelEditorModal');
     },
     convertInCategory : function(e){
         e.preventDefault();
         newModel = new global.Models.Poche(this.model.toJSON());
         newModel.save();
         this.model.destroy();
-        this.eventAggregator.trigger('closeModelEditorModal');
+        global.eventAggregator.trigger('closeModelEditorModal');
     },
     closeModelEditorModal : function(e){
         e.preventDefault();
@@ -172,12 +178,12 @@ CKLayout.Views.Main = Backbone.View.extend({
                     }).save();
                 });
                 this.model.destroy();
-                this.eventAggregator.trigger('removeCategory',this.model.get('id'));
+                global.eventAggregator.trigger('removeCategory',this.model.get('id'));
             }
         ///////////////////////////////////////    
         }else{
             if (confirm("All references attached to this item will also be removed, would you continue?")) {
-                this.eventAggregator.trigger('closeModelEditorModal');
+                global.eventAggregator.trigger('closeModelEditorModal');
                 this.model.destroy();
             }
         }
@@ -189,7 +195,7 @@ CKLayout.Views.Main = Backbone.View.extend({
             color:e.target.getAttribute("data-label-color"),
             label:e.target.getAttribute("data-label-title")
         });
-        if(this.model.get('type') === "concept") this.eventAggregator.trigger("updateMap")
+        if(this.model.get('type') === "concept") global.eventAggregator.trigger("updateMap")
         this.render();
     },
     render:function(){
@@ -206,33 +212,28 @@ CKLayout.Views.Main = Backbone.View.extend({
             
             user            : this.user,
             model           : this.model,
-            eventAggregator : this.eventAggregator
         }).render().el);
         // IMG List module
         $(this.el).append(new imagesList.Views.Main({
             
             model           : this.model,
-            eventAggregator : this.eventAggregator
         }).render().el);
         // Attachment module
         $(this.el).append(new attachment.Views.Main({
             
             model           : this.model,
-            eventAggregator : this.eventAggregator
         }).render().el);
         // Comments module
         $(this.el).append(new comments.Views.Main({
             
             model           : this.model,
             user            : this.user,
-            eventAggregator : this.eventAggregator
         }).render().el);
         
         // notification module
         this.activities_el.append(new activitiesList.Views.Main({
             className       : "row panel",
             model           : this.model,
-            eventAggregator : this.eventAggregator
         }).render().el);
         // Footer
         $(this.el).append(this.template_footer({model:this.model.toJSON()}));

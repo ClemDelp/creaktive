@@ -20,7 +20,6 @@ modelEditor.Views.Main = Backbone.View.extend({
         // Variables
         this.user = json.user;
         this.model = json.model;
-        this.eventAggregator = json.eventAggregator;
         this.mode = "normal";
         this.template_model_normal = _.template($('#modelEditor-normal-template').html());
         this.template_model_edition = _.template($('#modelEditor-edition-template').html());
@@ -68,7 +67,7 @@ modelEditor.Views.Main = Backbone.View.extend({
                         title : $(this.el).find(".title").val(),
                         date: getDate()
                     });
-                    this.eventAggregator.trigger('updateCategory',this.model.get('id'),this.model.get('title'))
+                    global.eventAggregator.trigger('updateCategory',this.model.get('id'),this.model.get('title'))
                 }
             }
             this.model.set({
@@ -89,7 +88,7 @@ modelEditor.Views.Main = Backbone.View.extend({
             });       
         }
         this.mode = "normal";
-        this.eventAggregator.trigger("updateMap")
+        global.eventAggregator.trigger("updateMap")
         this.render();
     },
     editMode : function(e){

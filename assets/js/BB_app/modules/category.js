@@ -93,11 +93,22 @@ category.Views.Categories = Backbone.View.extend({
         // Variable
         this.knowledges         = json.knowledges;
         this.categories         = json.categories;
+        // Events
+        this.listenTo(global.eventAggregator,"knowledge:create",this.rt_addKnowledge,this);
+        this.listenTo(global.eventAggregator,"knowledge:remove",this.rt_removeKnowledge,this);
     },
     events : {
         "click .addKnowledge" : "addKnowledge",
         "dblclick .openKnowledgeModal"  : "openKnowledgeModal",
         "click .openCategoryModal"  : "openCategoryModal",
+    },
+    rt_removeKnowledge : function(knowledge){
+        // Create the knowledge (sign with category if categories are in context)
+        category.views.main.knowledges.remove(knowledge);
+    },
+    rt_addKnowledge : function(knowledge){
+        // Create the knowledge (sign with category if categories are in context)
+        category.views.main.knowledges.add(knowledge);
     },
     openKnowledgeModal : function(e){
         e.preventDefault();

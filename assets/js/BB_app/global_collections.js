@@ -15,7 +15,7 @@ global.Collections.Poches = Backbone.Collection.extend({
         this.ioBind('remove', this.serverRemove, this);
     },
     serverCreate : function(category){
-        this.add(category);
+        this.fetch();
     },
     serverUpdate : function(category){
         global.eventAggregator.trigger(category.id,category);
