@@ -41,13 +41,14 @@ comments.Views.Main = Backbone.View.extend({
             content : $(this.el).find(".input_comment").val()
         });
         this.model.save();
-        console.log('tutu')
+        this.render();
     },
     removeComment : function(e){
         e.preventDefault();
         comment = this.model.get('comments').get(e.target.getAttribute("data-id-comment"));
         this.model.get('comments').remove(comment);
         this.model.save();
+        this.render();
     },
     render : function() {
         $(this.el).empty();

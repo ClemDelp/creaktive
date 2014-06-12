@@ -52,6 +52,7 @@ attachment.Views.Main = Backbone.View.extend({
                 $('#status').html('Upload error: ' + status);
             }
         });
+        this.render();
 },
 removeFile : function(e){
     console.log(e.target.getAttribute('data-file-id'))

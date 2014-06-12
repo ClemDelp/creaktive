@@ -30,7 +30,26 @@ activitiesList.Views.Main = Backbone.View.extend({
         // Templates
         this.template = _.template($('#activitiesList-template').html());     
     },
-    events : {},
+    events : {
+      "click .closeAll" : "globalValidation",
+      "click .close" : "simpleValidation"
+    },
+    globalValidation : function(e){
+        e.preventDefault();
+        _this = this;
+        this.models_notifs[this.model.get('id')].news.each(function(notif){
+            notif.set({read : _.union(notif.get('read'),global.models.current_user.get('id'))});
+            notif.save();
+        });
+        this.render();
+    },
+    simpleValidation : function(e){
+        e.preventDefault();
+        notif = this.models_notifs[this.model.get('id')].news.get(e.target.getAttribute('data-id-notification'));
+        notif.set({read : _.union(notif.get('read'),global.models.current_user.get('id'))});
+        notif.save();
+        this.render();
+    },
     removeView : function(){
       this.remove();
     },

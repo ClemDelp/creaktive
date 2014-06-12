@@ -61,8 +61,9 @@ category.Views.Category = Backbone.View.extend({
         global.eventAggregator.on(this.category.get('id'),this.actualize,this);
         //this.category.on('change',this.render,this);
     },
-    actualize : function(c){alert("actualize category")
+    actualize : function(c){
         this.category.set(c);
+        //this.render();
     },
     render:function(){
         $(this.el).empty();
@@ -222,7 +223,6 @@ category.Views.ActionBar = Backbone.View.extend({
             f.set({id : guid(),type : type,model : val});
         }
         category.views.main.filters.add(f);
-        console.log(category.views.main.filters);
     },
     copyTo : function(e){
         e.preventDefault();
@@ -355,7 +355,7 @@ category.Views.Main = Backbone.View.extend({
         this.listenTo(this.filters,"remove",this.render);
 
         this.knowledges.on("add", this.render,this);
-        this.knowledges.on("remove", this.render,this);
+        //this.knowledges.on("remove", this.render,this);
 
         this.categories.on('add',this.render,this);
         this.categories.on('remove',this.render,this);
@@ -415,7 +415,7 @@ category.Views.Main = Backbone.View.extend({
     ///////////////////////////////////////////////////////
     applyFilter : function(){
         _this = this;
-        var ks = new global.Collections.Knowledges();
+        var ks = new this.knowledges();
         this.knowledges.each(function(k){ks.add(k)});
 
         this.filters.each(function(f){
@@ -495,9 +495,9 @@ category.Views.Main = Backbone.View.extend({
         this.Kselected.reset();
         // Apply filters
         if(this.filters.length == 0){
-            ks = this.knowledges;
+            knows = this.knowledges;
         }else{
-            ks = this.applyFilter();
+            knows = this.applyFilter();
         }
         // Action Bar
         category.views.actionBar = new category.Views.ActionBar({
@@ -508,7 +508,7 @@ category.Views.Main = Backbone.View.extend({
         lists_view = new category.Views.Categories({
             id                  : "categories_grid",
             className           : "panel expand gridalicious",
-            knowledges          : ks,
+            knowledges          : knows,
             categories          : this.categories
         });
         $(this.el).append(lists_view.render().el);

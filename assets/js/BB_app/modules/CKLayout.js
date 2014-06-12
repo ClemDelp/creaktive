@@ -76,12 +76,6 @@ CKLayout.Views.Modal = Backbone.View.extend({
     },
     openModelEditorModal : function(id){
         this.model = this.collection.get(id);
-        // collection_test = new Backbone.Collection();
-        // if(this.model.get('type') == 'project') collection_test = new global.Collections.ProjectsCollection(this.model);
-        // else if(this.model.get('type') == 'knowledge') collection_test = new global.Collections.Knowledges(this.model);
-        // else if(this.model.get('type') == 'category') collection_test = new global.Collections.Poches(this.model);
-        // else if(this.model.get('type') == 'concept') collection_test = new global.Collections.ConceptsCollection(this.model);
-        // collection_test.fetch({complete:function(){}});
         this.render(function(){
             $('#CKLayoutModal').foundation('reveal', 'open'); 
             try{
@@ -105,6 +99,28 @@ CKLayout.Views.Modal = Backbone.View.extend({
     }
 });
 /***************************************/
+CKLayout.Views.Header = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this,'render');
+        this.model = json.model;
+        this.labels = json.labels;
+        // Events
+        this.listenTo(this.model,'change',this.render,this);
+        // Templates
+        this.template_hearder = _.template($('#CKLayout-header-template').html());
+    },
+    render : function(){
+        $(this.el).empty();
+        // Header
+        $(this.el).append(this.template_hearder({
+            model:this.model.toJSON(),
+            labels:this.labels.toJSON()
+        }));
+        return this;
+    }
+});
+
+/***************************************/
 CKLayout.Views.Main = Backbone.View.extend({
     initialize:function(json){
         _.bindAll(this, 'render');
@@ -121,10 +137,10 @@ CKLayout.Views.Main = Backbone.View.extend({
             this.labels = CKLayout.collections.KLabels;
         }
         // Events
-        this.model.on('change',this.render,this)
-        this.listenTo(this.model,"remove",this.removeView,this);     
+        //this.model.on('change',this.render,this)
+        this.listenTo(this.model,"remove",this.removeView,this);   
+        this.listenTo(global.eventAggregator,this.model.get('id'),this.actualize,this) 
         // Templates
-        this.template_hearder = _.template($('#CKLayout-header-template').html());
         this.template_footer = _.template($('#CKLayout-footer-template').html());
     },
     events : {
@@ -133,6 +149,10 @@ CKLayout.Views.Main = Backbone.View.extend({
         "click .toKnowledge" : "convertInKnowledge",
         "click .toCategory" : "convertInCategory",
         "click .remove" : "closeModelEditorModal"
+    },
+    actualize : function(model){
+        this.model = model;
+        this.render();
     },
     removeView : function(){
         //this.remove();
@@ -203,13 +223,12 @@ CKLayout.Views.Main = Backbone.View.extend({
         this.activities_el.empty();
         _this = this;
         // Header
-        $(this.el).append(this.template_hearder({
-            model:this.model.toJSON(),
-            labels:this.labels.toJSON()
-        }));
+        $(this.el).append(new CKLayout.Views.Header({
+            model : this.model,
+            labels : this.labels
+        }).render().el);
         // Model editor module
         $(this.el).append(new modelEditor.Views.Main({
-            
             user            : this.user,
             model           : this.model,
         }).render().el);

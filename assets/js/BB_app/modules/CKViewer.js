@@ -222,8 +222,8 @@ CKViewer.Views.KnowledgesMap = Backbone.View.extend({
         });
         $(this.el).append(lists_view.render().el);
         $("#categories_grid").gridalicious({
-             gutter: 20,
-             width: 200
+             gutter: 10,
+             width: 150
            });
         return this;
     }
@@ -441,8 +441,8 @@ CKViewer.Views.Main = Backbone.View.extend({
 
 
          $("#categories_grid").gridalicious({
-             gutter: 20,
-             width: 200
+             gutter: 10,
+             width: 150
            });
 
         $(document).foundation();

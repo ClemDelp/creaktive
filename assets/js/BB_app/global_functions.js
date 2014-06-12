@@ -74,3 +74,17 @@ global.Functions.whatChangeInModel = function(origin_m,new_m){
 	}
 	return keys;
 }
+
+global.Functions.format_ckobject_collection = function(collection){
+	collection.each(function(model){
+		global.Functions.format_ckobject_model(model);        
+    });
+    return collection;
+}
+
+global.Functions.format_ckobject_model = function(model){
+	console.log('iiiiiii',model.get('comments'))
+	model.set({comments : new global.Collections.Comments(model.get('comments'))});
+    model.set({members : new global.Collections.UsersCollection(model.get('members'))});
+    return model;
+}
