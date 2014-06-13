@@ -33,18 +33,18 @@
 
   },
 
-  create : function (req,res){
-    var c = req.body.params;
-    c.project = req.session.currentProject.id;
+  // create : function (req,res){
+  //   var c = req.body.params;
+  //   c.project = req.session.currentProject.id;
 
-    Concept.create(c).done(function(err, concept){
-      if(err) res.send(err);
-      Notification.objectCreated(req,res,"Concept", c.id, function(notification){
-          res.send(notification);
-      });
-      res.send(concept);
-    });
-  },
+  //   Concept.create(c).done(function(err, concept){
+  //     if(err) res.send(err);
+  //     Notification.objectCreated(req,res,"Concept", c.id, function(notification){
+  //         res.send(notification);
+  //     });
+  //     res.send(concept);
+  //   });
+  // },
 
   update : function(req, res){
 
@@ -66,6 +66,11 @@
 
       }else{
         var concept = req.body.params;
+        ///////////////////////////
+        concept.type = "concept";
+        concept.top = 550;
+        concept.left = 550;
+        ///////////////////////////
         concept.project = req.session.currentProject.id;
         Concept.create(concept).done(function(err,c){
           if(err) res.send(err);
@@ -83,7 +88,7 @@
   destroy : function(req,res){
     Concept.findOne(req.body.params.id).done(function(err,concept){
       if(err) console.log(err);
-      req.socket.broadcast.to(req.session.currentProject.id).emit("concept:remove", concept);
+      req.socket.broadcast.to(req.session.currentProject.id).emit("concept:remove2", concept);
       concept.destroy(function(err){
         if(err) console.log(err)
           res.send({msg:"destroyed"})

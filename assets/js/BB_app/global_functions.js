@@ -83,8 +83,15 @@ global.Functions.format_ckobject_collection = function(collection){
 }
 
 global.Functions.format_ckobject_model = function(model){
-	console.log('iiiiiii',model.get('comments'))
 	model.set({comments : new global.Collections.Comments(model.get('comments'))});
     model.set({members : new global.Collections.UsersCollection(model.get('members'))});
     return model;
+}
+
+global.Functions.cloneCollection = function(collection){
+	var ks_cloned = new Backbone.Collection();
+    collection.each(function(model) {
+      ks_cloned.add(new Backbone.Model(model.toJSON()));
+    });
+    return ks_cloned;
 }

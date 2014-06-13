@@ -24,7 +24,7 @@ module.exports = {
 find : function (req,res){
     if(req.body.params.projectId){
       Backup.find({
-       project : req.session.currentProject.id
+       project_id : req.session.currentProject.id
      }).done(function(err,backups){
       if(err) res.send(err)
         res.send(backups)
@@ -75,50 +75,6 @@ update : function(req, res){
       backup.project = req.session.currentProject.id
       Backup.create(backup).done(function(err,b){
         if(err) res.send(err);
-        // ////////////////////////////////////////
-        // // get all the data to create the backup
-        // var concepts = [];
-        // var knowledges = [];
-        // var cklinks = [];
-        // var categories = [];
-        // // Concept
-        // Concept.find({
-        //   project : req.session.currentProject.id
-        // }).done(function(err,cs){
-        //   if(err) res.send(err)
-        //   concepts = cs;
-        //   // Knowledges
-        //   Knowledge.find({
-        //     project : req.session.currentProject.id
-        //   }).done(function(err,ks){
-        //     if(err) res.send(err)
-        //     knowledges = ks;
-        //     // CKLinks
-        //     Link.find({
-        //       project : req.session.currentProject.id
-        //     }).done(function(err,ls){
-        //       if(err) res.send(err) 
-        //       cklinks = ls;
-        //       // Categories
-        //       Poche.find({
-        //         project : req.session.currentProject.id
-        //       }).done(function(err,ps){
-        //         if(err) res.send(err) 
-        //         categories = ps;
-        //         console.log("dataaaaaaa: ",concepts.length,knowledges.length,categories.length,cklinks.length)
-        //       });
-        //     });
-        //   });
-        // });
-        
-        
-        
-        
-        ////////////////////////////////////////
-        // Notification
-        Notification.objectCreated(req,res,"Backup", b, function(notification){
-          res.send(notification);
-        });
         res.send(b);
 
       });

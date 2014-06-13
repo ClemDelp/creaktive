@@ -19,6 +19,7 @@ var category = {
       links                 : global.collections.Links,
       eventAggregator       : global.eventAggregator,
     });   
+    this.views.main.renderActionBar();
     this.views.main.render();
   }
 };
@@ -28,12 +29,31 @@ category.Views.Knowledge = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Variable
         this.knowledge     = json.knowledge;
-        this.categoryTitle      = json.categoryTitle;
+        this.categoryTitle = json.categoryTitle;
         // Event
         global.eventAggregator.on(this.knowledge.get('id'),this.actualize,this);
         this.knowledge.on('change',this.render,this);
         // Templates
         this.template_list = _.template($('#category-knowledge-template').html());
+    },
+    events : {
+        "click .Kselectable" : "setSelectedK",
+    },
+    setSelectedK : function(e){
+        e.preventDefault();
+        var k_id = e.target.getAttribute('data-model-id');
+        var catg_origin = e.target.getAttribute('data-catg-origin');
+
+        k = category.views.main.knowledges.get(k_id);
+        if(category.views.main.Kselected.where({id : k_id}).length > 0){
+            category.views.main.Kselected.remove(k);
+            $(this.el).find("#bulle"+k_id+"_"+catg_origin).css("background-color","");            
+        }else{
+            k.set({category_origin : catg_origin});
+            category.views.main.Kselected.add(k);
+            $(this.el).find("#bulle"+k_id+"_"+catg_origin).css("background-color","#bababa");  
+        }
+        console.log('knowledges selected:',category.views.main.Kselected);
     },
     actualize : function(k){
         this.knowledge.set(k);
@@ -43,7 +63,7 @@ category.Views.Knowledge = Backbone.View.extend({
         $(this.el).html(this.template_list({
             nbre_notifs     : global.ModelsNotificationsDictionary[this.knowledge.get('id')].news.length,
             knowledge       : this.knowledge.toJSON(),
-            title           : this.categoryTitle
+            categoryTitle   : this.categoryTitle
         }));
         return this;
     }
@@ -203,12 +223,17 @@ category.Views.ActionBar = Backbone.View.extend({
         "click .copy" : "copyTo",
         "click .move" : "moveTo",
         "click .addFilter" : "addFilter",
+        "click .changeFilterMode" : "changeFilterMode",
         "click .removeFilter" : "removeFilter",
     },
     removeFilter : function(e){
         e.preventDefault();
         console.log(category.views.main.filters)
         category.views.main.filters.remove(e.target.getAttribute('data-filter-id'));
+    },
+    changeFilterMode : function(e){
+        e.preventDefault();
+        category.views.main.filterMode.set({mode : e.target.getAttribute('data-filter-mode')});
     },
     addFilter : function(e){
         e.preventDefault();
@@ -223,6 +248,7 @@ category.Views.ActionBar = Backbone.View.extend({
             f.set({id : guid(),type : type,model : val});
         }
         category.views.main.filters.add(f);
+        console.log("filters : ",category.views.main.filters)
     },
     copyTo : function(e){
         e.preventDefault();
@@ -301,6 +327,8 @@ category.Views.ActionBar = Backbone.View.extend({
         // Save the new knowledge
         newK.save();
         category.views.main.knowledges.add(newK);
+        category.views.main.ks_to_render = category.views.main.knowledges;
+        category.views.main.render();
     },
     render : function(){
         $(this.el).empty();
@@ -328,8 +356,12 @@ category.Views.Main = Backbone.View.extend({
     el:"#category_container",
     initialize : function(json) {
         _.bindAll(this, 'render',"newCategory");
+        // Elements
+        this.bar_el = $(this.el).find('#category-actionBar');
+        this.grid_el = $(this.el).find('#category-grid');
         // Variables
         this.knowledges         = json.knowledges;
+        this.ks_to_render       = this.knowledges;
         this.categories         = json.categories;
         this.project            = json.project;
         this.links              = json.links;
@@ -337,7 +369,8 @@ category.Views.Main = Backbone.View.extend({
         this.users              = json.users;
         this.filters            = new Backbone.Collection();
         this.eventAggregator    = json.eventAggregator;
-        this.Kselected          = new Backbone.Collection();     
+        this.Kselected          = new Backbone.Collection();  
+        this.filterMode         = new Backbone.Model({mode : "and"}) ;   
         // CKLayout for knowledge 
         category.views.k_cklayout_modal = new CKLayout.Views.Modal({
             user : this.user,
@@ -351,6 +384,7 @@ category.Views.Main = Backbone.View.extend({
             eventAggregator : this.eventAggregator
         });
         // Events
+        this.listenTo(this.filterMode,"change",this.render)
         this.listenTo(this.filters,"add",this.render);  
         this.listenTo(this.filters,"remove",this.render);
 
@@ -361,26 +395,42 @@ category.Views.Main = Backbone.View.extend({
         this.categories.on('remove',this.render,this);
         //this.categories.on('change',this.render,this);
         this.eventAggregator.on('categories_list_render', this.render, this);
+        this.eventAggregator.on('knowledge_search', this.actualize, this);
+
+        
     },
     events : {
         "click .newCategory" : "newCategory",
-        "click .Kselectable" : "setSelectedK"
+        "click .Kselectable" : "setSelectedK",
+        "keyup .search" : "search",
     },
-    setSelectedK : function(e){
-        e.preventDefault();
-        k_id = e.target.getAttribute('data-model-id');
-        k = this.knowledges.get(k_id);
-        if(this.Kselected.where({id : k_id}).length > 0){
-            this.Kselected.remove(k);
-            $(e.target).prop('checked',false);
-            $(this.el).find("#bulle"+k_id).css("background-color","");            
-        }else{
-            k.set({category_origin : e.target.getAttribute('data-catg-origin')});
-            this.Kselected.add(k);
-            $(e.target).prop('checked',true);
-            $(this.el).find("#bulle"+k_id).css("background-color","#bababa");            
-        }
+    search: function(e){
+        var research = e.target.value;
+        var research_size = research.length;
+        var matched = new Backbone.Collection();
+        this.knowledges.each(function(k){
+            if(research.toLowerCase() == k.get('title').substr(0,research_size).toLowerCase()){
+                matched.add(k);
+            }
+        });
+        this.ks_to_render = matched;
+        this.render();
     },
+    // setSelectedK : function(e){
+    //     e.preventDefault();
+    //     k_id = e.target.getAttribute('data-model-id');
+    //     k = this.knowledges.get(k_id);
+    //     if(this.Kselected.where({id : k_id}).length > 0){
+    //         this.Kselected.remove(k);
+    //         $(e.target).prop('checked',false);
+    //         $(this.el).find("#bulle"+k_id).css("background-color","");            
+    //     }else{
+    //         k.set({category_origin : e.target.getAttribute('data-catg-origin')});
+    //         this.Kselected.add(k);
+    //         $(e.target).prop('checked',true);
+    //         $(this.el).find("#bulle"+k_id).css("background-color","#bababa");            
+    //     }
+    // },
     newCategory : function(e){
         e.preventDefault();
         global.models.newP = new global.Models.Poche({
@@ -415,19 +465,37 @@ category.Views.Main = Backbone.View.extend({
     ///////////////////////////////////////////////////////
     applyFilter : function(){
         _this = this;
-        var ks = new this.knowledges();
-        this.knowledges.each(function(k){ks.add(k)});
+        var ks_cloned = global.Functions.cloneCollection(this.ks_to_render);
 
         this.filters.each(function(f){
-            if(f.get('type') == "concept"){        _this.filterByConcept(ks,_this.links,f);}
-            if(f.get('type') == "project"){        _this.filterByProject(ks,f);}
-            if(f.get('type') == "category"){       _this.filterByPoche(ks,_this.links,f);}
-            if(f.get('type') == "user"){           _this.filterByExpert(ks,_this.links,f);}
-            if(f.get('type') == "state"){          _this.filterByState(ks,_this.links,f);}
-            if(f.get('type') == "notLinked"){      _this.filterByNotLinked(ks,_this.links);}
-            if(f.get('type') == "notCategorised"){ _this.filterByNotCategorised(ks,_this.links);}
+            if(f.get('type') == "concept"){        ks_cloned = _this.applyFilterMode(ks_cloned,_this.filterByConcept(ks_cloned,_this.links,f));}
+            if(f.get('type') == "project"){        ks_cloned = _this.applyFilterMode(ks_cloned,_this.filterByProject(ks_cloned,f));}
+            if(f.get('type') == "category"){       ks_cloned = _this.applyFilterMode(ks_cloned,_this.filterByPoche(ks_cloned,_this.links,f));}
+            if(f.get('type') == "user"){           ks_cloned = _this.applyFilterMode(ks_cloned,_this.filterByExpert(ks_cloned,_this.links,f));}
+            if(f.get('type') == "state"){          ks_cloned = _this.applyFilterMode(ks_cloned,_this.filterByState(ks_cloned,_this.links,f));}
+            if(f.get('type') == "notLinked"){      ks_cloned = _this.applyFilterMode(ks_cloned,_this.filterByNotLinked(ks_cloned,_this.links));}
+            if(f.get('type') == "notCategorised"){ ks_cloned = _this.applyFilterMode(ks_cloned,_this.filterByNotCategorised(ks_cloned,_this.links));}
         });
-        return ks;
+        return ks_cloned;
+    },
+    applyFilterMode : function(old_collection,last_collection){
+        var new_collection = new Backbone.Collection();
+        var mode = this.filterMode.get('mode');
+        // Si il n'y a q'un filtre on applique le mode "and"
+        if(this.filters.length > 1){
+            if(mode == "and"){
+                new_collection = last_collection;
+            }else if(mode == "or"){
+                old_array = old_collection.toArray();
+                last_array = last_collection.toArray();
+                new_array = _.uniq(old_array,last_array);
+                new_collection.add(new_array);
+            }    
+        }else{
+            new_collection = last_collection;
+        }
+        
+        return new_collection;
     },
     filterByNotLinked : function(ks,links){
         var list_to_remove = [];
@@ -441,6 +509,7 @@ category.Views.Main = Backbone.View.extend({
         list_to_remove.forEach(function(k){
             ks.remove(k);
         });
+        return ks;
     },
     filterByNotCategorised : function(ks,links){
         var list_to_remove = [];
@@ -452,14 +521,14 @@ category.Views.Main = Backbone.View.extend({
         list_to_remove.forEach(function(k){
             ks.remove(k);
         });
+        return ks;
     },
     filterByPoche : function(ks,links,f){
-        var ks_filtered = [];
+        var ks_filtered = new Backbone.Collection();
         ks.each(function(k){
-            if(_.indexOf(k.get('tags'),f.get('model').get('title')) != -1) ks_filtered.unshift(k);
+            if(_.indexOf(k.get('tags'),f.get('model').get('title')) != -1) ks_filtered.add(k);
         });
-        ks.reset();
-        ks.add(ks_filtered);
+        return ks_filtered;
     },
     filterByExpert : function(ks,links,f){
         var ks_filtered = new global.Collections.Knowledges();
@@ -470,7 +539,7 @@ category.Views.Main = Backbone.View.extend({
                 return false;
             }
         });
-        ks = ks_filtered;
+        return ks_filtered;
     },
     filterByState : function(ks,links,f){
         var ks_filtered = new global.Collections.Knowledges();
@@ -480,7 +549,7 @@ category.Views.Main = Backbone.View.extend({
                 return false;
             } 
         });
-        ks = ks_filtered;
+        return ks_filtered;
     },
     ///////////////////////////////////////////////////////
     formatGrid : function(){
@@ -489,21 +558,25 @@ category.Views.Main = Backbone.View.extend({
             width: 260
         });
     },
-    render : function(){
-        $(this.el).empty();
-        // init
-        this.Kselected.reset();
-        // Apply filters
-        if(this.filters.length == 0){
-            knows = this.knowledges;
-        }else{
-            knows = this.applyFilter();
-        }
+    renderActionBar : function(){
+        this.bar_el.empty();
         // Action Bar
         category.views.actionBar = new category.Views.ActionBar({
             categories : this.categories,
         });
-        $(this.el).append(category.views.actionBar.render().el);
+        this.bar_el.append(category.views.actionBar.render().el);
+    },
+    render : function(){
+        this.grid_el.empty();
+        // init
+        this.Kselected.reset();
+        // Apply filters
+        var knows = new Backbone.Collection();
+        if(this.filters.length == 0){
+            knows = this.ks_to_render;
+        }else{
+            knows = this.applyFilter();
+        }
         // Category de cards
         lists_view = new category.Views.Categories({
             id                  : "categories_grid",
@@ -511,7 +584,7 @@ category.Views.Main = Backbone.View.extend({
             knowledges          : knows,
             categories          : this.categories
         });
-        $(this.el).append(lists_view.render().el);
+        $(this.grid_el).append(lists_view.render().el);
         
         this.formatGrid();
 

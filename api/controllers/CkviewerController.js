@@ -57,6 +57,10 @@ module.exports = {
   },
 
   ckviewerview : function(req,res){
+    project = req.session.currentProject;
+    console.log('tuuuuuuuuuuuuuuu',project)
+    
+    sails.config.backup.cron(req,res);
     sails.config.bootstrapdata.bootstrapdata(req,res);
   },
 

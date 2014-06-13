@@ -12,7 +12,7 @@ global.Collections.Poches = Backbone.Collection.extend({
         _.bindAll(this, 'serverCreate','serverUpdate','serverRemove');
         this.ioBind('create', this.serverCreate, this);
         this.ioBind('update', this.serverUpdate, this);
-        this.ioBind('remove', this.serverRemove, this);
+        this.ioBind('remove2', this.serverRemove, this);
     },
     serverCreate : function(category){
         this.add(new global.Models.Poche(category));
@@ -43,7 +43,7 @@ global.Collections.Knowledges = Backbone.Collection.extend({
         _.bindAll(this, 'serverCreate','serverUpdate','serverRemove');
         this.ioBind('create', this.serverCreate, this);
         this.ioBind('update', this.serverUpdate, this);
-        this.ioBind('remove', this.serverRemove, this);
+        this.ioBind('remove2', this.serverRemove, this);
     },
     serverCreate : function(model){
         //this.add(new_knowledge);
@@ -53,6 +53,8 @@ global.Collections.Knowledges = Backbone.Collection.extend({
         model = new global.Models.Knowledge(model);
         model = global.Functions.format_ckobject_model(model);
         global.eventAggregator.trigger(model.get('id'),model);
+
+        global.eventAggregator.trigger("knowledge:update",model);
     },
     serverRemove : function(model){
         //this.remove(knowledge.id);
@@ -69,10 +71,10 @@ global.Collections.ConceptsCollection = Backbone.Collection.extend({
     },
     initialize : function() {
         //console.log('Comments Collection Constructor');
-        _.bindAll(this, 'serverCreate','serverUpdate','serverRemove');
+        _.bindAll(this, 'serverCreate');
         this.ioBind('create', this.serverCreate, this);
         this.ioBind('update', this.serverUpdate, this);
-        this.ioBind('remove', this.serverRemove, this);
+        this.ioBind('remove2', this.serverRemove, this);
     },
     serverCreate : function(model){
         //this.add(model);
@@ -82,7 +84,7 @@ global.Collections.ConceptsCollection = Backbone.Collection.extend({
         model = new global.Models.Knowledge(model);
         model = global.Functions.format_ckobject_model(model);
         global.eventAggregator.trigger(model.get('id'),model);
-
+        
         global.eventAggregator.trigger("concept:update",model);
     },
     serverRemove : function(model){

@@ -130,9 +130,10 @@ bbmap.Views.Node = Backbone.View.extend({
                     child.set({id_father : "none"}).save();
                 });
             } 
+            model.destroy();
             this.remove();
             // $(this.el).hide('slow');
-            model.destroy();
+            
         }
     },
     editTitle : function(e){
@@ -346,7 +347,10 @@ bbmap.Views.Main = Backbone.View.extend({
 
     },
     modelUpdate : function(model){
-        var attributesUpdated = global.Functions.whatChangeInModel(this.concepts.get(model.get('id')),model);
+        var attributesUpdated = [];
+        if(model.get('type') == "concept") attributesUpdated = global.Functions.whatChangeInModel(this.concepts.get(model.get('id')),model);
+        if(model.get('type') == "knowledge") attributesUpdated = global.Functions.whatChangeInModel(this.knowledges.get(model.get('id')),model);
+
         if((_.indexOf(attributesUpdated,"left") != -1)||(_.indexOf(attributesUpdated,"top") != -1)){
             // Si c'est la position qui a changée
             $(this.nodes_views[model.get('id')].el).attr( "style","top: "+model.get('top')+"px;left:"+model.get('left')+"px");
@@ -536,7 +540,6 @@ bbmap.Views.Main = Backbone.View.extend({
             });
         } 
         model_view.remove();
-
     },
     jsPlumbEventsInit : function(){
         ///////////////////////
