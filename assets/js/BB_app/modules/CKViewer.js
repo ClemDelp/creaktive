@@ -279,7 +279,17 @@ CKViewer.Views.Actions = Backbone.View.extend({
         MM.App.levelcollapse(MM.App.map.getRoot(),l);
     },
     render : function(){
-        $(this.el).append(this.template());
+        var myDate=new Date();
+        var myDay = myDate.getDate();
+        var myMonth = myDate.getMonth()+1;
+        var myYear = myDate.getFullYear();
+        console.log(myMonth);
+        $(this.el).append(this.template({
+            day : myDay,
+            month : myMonth,
+            year : myYear
+        }));
+
         return this;
     }
 });
@@ -426,6 +436,7 @@ CKViewer.Views.Main = Backbone.View.extend({
     },
     renderActionbar : function(){
         this.bar_el.empty();
+
         //Action map
         if(CKViewer.views.actions_view){CKViewer.views.actions_view.remove();}
         CKViewer.views.actions_view = new CKViewer.Views.Actions({
