@@ -519,7 +519,6 @@ CKViewer.Views.Main = Backbone.View.extend({
             document.getElementById("conceptes").style.overflow="hidden";
 
             newConceptsTree = data.tree;
-            newLeft = s;
         });
 
             newKnowledges = this.knowledges;
@@ -544,7 +543,8 @@ CKViewer.Views.Main = Backbone.View.extend({
                 MM.App.adjustFontSize1(-1);
                 MM.App.map.center();
             }
-            $("#map.current")[0].style.left=newLeft+"px";
+            var s = (frame - $("canvas")[0].width)/2;
+            $("#map.current")[0].style.left=s+"px";
             $("#map.current")[0].style.top="20px";
 
             this.level_el = $("#ckviewer_container").find('#drop1');
