@@ -19,6 +19,7 @@ var CKViewer = {
         poches : global.collections.Poches,
         user : global.models.current_user,
     });   
+    this.views.main.renderActionbar();
     this.views.main.render();
   }
 };
@@ -239,6 +240,7 @@ CKViewer.Views.Actions = Backbone.View.extend({
     events : {
         "click #allknowledges" : "resetK",
         "click #allconcepts" : "resetC",
+        "click #all" : "resetAll",
         "click #level" : "chooselevel",
         "click #mod1" : "mod1",
         "click #mod2" : "mod2"
@@ -258,6 +260,10 @@ CKViewer.Views.Actions = Backbone.View.extend({
             $("#mod2").addClass('disabled');
             modflag=false;
         }
+    },
+    resetAll : function(e){
+        e.preventDefault;
+        this.eventAggregator.trigger("resetAll");
     },
     resetC : function(e){
         e.preventDefault;
@@ -365,6 +371,8 @@ CKViewer.Views.Main = Backbone.View.extend({
     el:"#ckviewer_container",
     initialize : function(json) {
         _.bindAll(this, 'render');
+        this.bar_el = $(this.el).find('#ckviewer-actionBar');
+        this.grid_el = $(this.el).find('#ckviewer-grid');
         this.backups = json.backups;
         this.project  = json.project;
         this.links = json.links;
@@ -380,14 +388,24 @@ CKViewer.Views.Main = Backbone.View.extend({
             CKViewer.views.modal = new CKViewer.Views.Modal({
             eventAggregator : this.eventAggregator
         });
+        this.eventAggregator.on("resetAll", this.resetAll, this);
     },
     events : {
 
     },
-    reloadBackup : function(e){
-        e.preventDefault();
-        var backup_id = e.target.getAttribute("data-backup-id")
-        var backup_id = id;
+    resetAll : function(){
+        this.links = newCklinks;
+        this.concepts = newConceptsTree;
+        this.knowledges = newKnowledges;
+        this.poches = newCategories;
+        this.renderActionbar();
+        iniflag = false;
+        this.render();
+    },
+    reloadBackup : function(model){
+        var backup_id = model.id;
+        _this = this;
+        //var backup_id = id;
         // Concept tree
         socket.post(
             '/backup/getData',
@@ -397,22 +415,71 @@ CKViewer.Views.Main = Backbone.View.extend({
                 var knowledges = data.knowledges;
                 var categories = data.categories;
                 var cklinks = data.cklinks;
-                // console.log("successs!",conceptsTree)
-                // console.log("successs!",knowledges)
-                // console.log("successs!",categories)
-                // console.log("successs!",cklinks)
+                //console.log("successs!",conceptsTree);
+                // console.log("successs!",knowledges);
+                // console.log("successs!",categories);
+                // console.log("successs!",cklinks);
+                _this.links = new global.Collections.CKLinks(cklinks);
+                _this.concepts = conceptsTree;
+                _this.knowledges = new global.Collections.Knowledges(knowledges);
+                _this.poches = new global.Collections.Poches(categories);
+                iniflag = false;
+                _this.render();
             }
         );
     },
-    render : function(){
-        $(this.el).empty();
-        // Middle part
+    renderActionbar : function(){
+        this.bar_el.empty();
         //Action map
         if(CKViewer.views.actions_view){CKViewer.views.actions_view.remove();}
         CKViewer.views.actions_view = new CKViewer.Views.Actions({
             eventAggregator  : this.eventAggregator
         });
         $(this.el).append(CKViewer.views.actions_view.render().el);
+        $('#datepicker').Zebra_DatePicker({
+            //format: 'd/m/Y',
+            onChange: function(view, elements) {
+                if (view == 'days') {
+                    elements.each(function() {
+                        dateArr = $(this).data('date').split('-');
+                        v1 = new Date(dateArr[0],(parseInt(dateArr[1])-1).toString(),dateArr[2]);
+                        date = $(this);
+                        CKViewer.views.main.backups.each(function(model) {
+                            backupdateArr = model.attributes.date.split('-')[0].split('/');
+                            v2 = new Date(backupdateArr[2],backupdateArr[1],backupdateArr[0]);
+                            if((v2-v1)==0){
+                                date.css({
+                                    color:              'red'
+                                });
+                            }
+                        });
+                    });
+                }
+            },
+            onSelect: function(date){
+                dateArr = date.split('-');
+                hasBackup = false;
+                v1 = new Date(dateArr[0],(parseInt(dateArr[1])-1).toString(),dateArr[2]);
+                CKViewer.views.main.backups.each(function(model) {
+                    backupdateArr = model.attributes.date.split('-')[0].split('/');
+                    v2 = new Date(backupdateArr[2],backupdateArr[1],backupdateArr[0]);
+                    if((v2-v1)==0){
+                        CKViewer.views.main.reloadBackup(model);
+                        hasBackup  = true;
+                    }
+                });
+                if(!hasBackup){
+                    alert("No backup");
+                }else{
+                    hasBackup = true;
+                }
+            }
+        });
+
+    },
+    render : function(){
+        this.grid_el.empty();
+        // Middle part
         // Concept map
         if(CKViewer.views.middle_part_view){CKViewer.views.middle_part_view.remove();}
         CKViewer.views.middle_part_view = new CKViewer.Views.MiddlePart({
@@ -428,23 +495,25 @@ CKViewer.Views.Main = Backbone.View.extend({
         $(this.el).append(CKViewer.views.middle_part_view.render().el);
 
         // Get Map and generate it
+
+        if (iniflag) {
         MM.App.init(this.eventAggregator);
         socket.get("/concept/generateTree", function(data) {
             MM.App.setMap(MM.Map.fromJSON(data.tree));    
 
             this.width= MM.App.width;
             var frame=document.getElementById("main").offsetWidth;
-            var s=Math.floor(10*(frame/this.width))-10;
-            MM.App.adjustFontSize1(s);
-
+            var scale=Math.floor(10*(frame/this.width))-10;
+            MM.App.adjustFontSize1(scale);
             MM.App.map.center();
             while(MM.App.width>frame){
                 MM.App.adjustFontSize1(-1);
                 MM.App.map.center();
             }
-            s=(100-100*(MM.App.width/frame))/2;
-            $("#map.current")[0].style.left=s+"%";
-            $("#map.current")[0].style.top="10%";
+
+            var s = (frame - $("canvas")[0].width)/2;
+            $("#map.current")[0].style.left=s+"px";
+            $("#map.current")[0].style.top="20px";
 
             this.deep=MM.App.deep(MM.Map.fromJSON(data.tree).getRoot());
             for(var i=1; i<this.deep; i++){
@@ -452,8 +521,45 @@ CKViewer.Views.Main = Backbone.View.extend({
             }
 
             document.getElementById("conceptes").style.overflow="hidden";
+
+            newConceptsTree = data.tree;
+            newLeft = s;
         });
 
+            newKnowledges = this.knowledges;
+            newCategories = this.poches;
+            newCklinks = this.links;
+        }else{
+            MM.App.init(this.eventAggregator);
+            MM.App.setMap(MM.Map.fromJSON(this.concepts));    
+            var frame=document.getElementById("main").offsetWidth;
+
+            MM.App.adjustFontSize1(0);
+            if($("canvas")[0].width>frame){
+                while($("canvas")[0].width>frame){
+                    MM.App.adjustFontSize1(-1);
+                    MM.App.map.center();
+                }            
+            }else{
+                while($("canvas")[0].width<frame){
+                    MM.App.adjustFontSize1(1);
+                    MM.App.map.center();
+                }
+                MM.App.adjustFontSize1(-1);
+                MM.App.map.center();
+            }
+            $("#map.current")[0].style.left=newLeft+"px";
+            $("#map.current")[0].style.top="20px";
+
+
+
+            this.deep=MM.App.deep(MM.Map.fromJSON(this.concepts).getRoot());
+            for(var i=1; i<this.deep; i++){
+                document.getElementById("drop1").innerHTML += '<li>' + '<a id="level" href="#" level="' + i + '">' + 'Level' + i + '</a>' + '</li>';
+            }
+
+            document.getElementById("conceptes").style.overflow="hidden";
+        }
 
 
          $("#categories_grid").gridalicious({
@@ -462,6 +568,7 @@ CKViewer.Views.Main = Backbone.View.extend({
            });
 
         $(document).foundation();
+
 
     }
 });

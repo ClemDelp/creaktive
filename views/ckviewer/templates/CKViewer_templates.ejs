@@ -1,5 +1,8 @@
 <!-- //////////////////////////////////////////////////////// -->
-<div id="ckviewer_container" ></div>
+<div id="ckviewer_container" >
+    <div id="ckviewer-actionBar"></div>
+    <div id="ckviewer-grid"></div>
+</div>
 <div id="rect" style="position:absolute;filter:Alpha(Opacity=50);-moz-opacity:0.50; opacity:0.50;background-color: #00BFFF"></div> 
 <!-- //////////////////////////////////////////////////////// -->
 <!-- Modal -->
@@ -12,10 +15,12 @@
 
 <script type="text/template" id="CKViewer_action_template">
   <center>
+    <input id="datepicker" type=”text”>
     <a href="#" id="mod1" class="button tiny secondary disabled">Mod1</a>
     <a href="#" id="mod2" class="button tiny secondary">Mod2</a>
     <a href="#" id="allconcepts" class="button tiny secondary">ResetC</a>
     <a href="#" id="allknowledges" class="button tiny secondary">ResetK</a>
+    <a href="#" id="all" class="button tiny secondary">ResetAll</a>
     <a href="#" data-dropdown="drop1" class="button tiny secondary dropdown">MapLevel</a><br>
     <ul id="drop1" data-dropdown-content class="f-dropdown"></ul>
   </center>
