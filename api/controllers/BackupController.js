@@ -92,7 +92,66 @@ destroy : function(req,res){
   });
 },
 
+/////////////////////////////////////////
+getData : function(req,res){
+  backup_id = req.param('backup_id');
+  this.concepts = [];
+  this.tree = "";
+  
+  createIdea = function(concept){
+    idea = concept;
+    idea.text = concept.title
+    if (concept.color != "") idea.color = concept.color
+      idea.shape = "box";
+    idea.children=[];
+    return idea;
+  }
+  
+  createChildren = function (father, child){
+    father.children.push(child);
+  };
 
+  populate = function(father, children){
+    children = _.sortBy(children, "siblingNumber").reverse();
+    for (var i = children.length - 1; i >= 0; i--) {
+
+      createChildren(father, children[i])
+      
+      var c = _.where(this.concepts, {id_father : children[i].id})
+      if(c.length > 0){
+        
+        this.populate(children[i], c)
+      }
+    };
+
+  };
+  
+  Backup.find({_id: backup_id }).done(function(err, backup){
+    //console.log('backuuuuuuuuuuup',backup)
+    if(err) res.send(err);
+    concepts = backup[0].concepts_collection;
+    //console.log("concepts_collectionnnnnn: ",backup[0]['concepts_collection'])
+    //transform all concept in map idea
+    _.each(concepts, function(concept){
+      createIdea(concept);
+    })
+
+    var json = {root : {}};
+
+    c0 = _.findWhere(concepts, {position : 0});
+    c0.text = c0.title;
+    c0.layout = "graph-bottom";
+    children = _.where(concepts, {id_father : c0.id});
+
+    populate(c0, children)
+    
+    json.root = c0
+    json.id ="dhflkjhfsdkljhfdslk"
+
+
+    res.send({"conceptsTree" : json, "knowledges" : backup[0].knowledges_collection, "cklinks" : backup[0].cklinks_collection, "categories" : backup[0].categories_collection});
+  });
+},
 
 
   /**

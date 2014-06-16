@@ -7,9 +7,8 @@
             <a href="#" data-dropdown="drop" class="button secondary small title dropdown"><h3>{{-project.title }}</h3></a>
             <ul id="drop" data-dropdown-content class="f-dropdown">
               <li><a href="/">Manager</a></li>
-              <li><a href="/ckviewer?projectId={{- project.id}}">Mode normal</a></li>
-              <li><a href="/bbmap?projectId={{- project.id}}">Mode draft</a></li>
-              <li><a href="#">Mode presentation</a></li>
+              <li><a href="/ckviewer?projectId={{- project.id}}">CK - Classic</a></li>
+              <li><a href="/bbmap?projectId={{- project.id}}">CK - Draft</a></li>
             </ul>
             <a style="float:right;margin-top:20px" href="/categories?projectId={{- project.id}}" class="{{if(page == 'category'){ }}success {{ } }}button secondary tiny title">Edit Knowledge >>>></a>
         </center>

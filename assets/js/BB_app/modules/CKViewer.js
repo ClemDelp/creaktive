@@ -9,7 +9,7 @@ var CKViewer = {
   models: {},
   views: {},
   init: function () {
-    this.views.Main = new this.Views.Main({
+    this.views.main = new this.Views.Main({
         backups : global.collections.Backups,
         project           : global.models.currentProject,
         links : global.collections.Links,
@@ -19,7 +19,7 @@ var CKViewer = {
         poches : global.collections.Poches,
         user : global.models.current_user,
     });   
-    this.views.Main.render();
+    this.views.main.render();
   }
 };
 ////////////////////////////////////////////////////////////
@@ -386,7 +386,23 @@ CKViewer.Views.Main = Backbone.View.extend({
     },
     reloadBackup : function(e){
         e.preventDefault();
-        
+        var backup_id = e.target.getAttribute("data-backup-id")
+        var backup_id = id;
+        // Concept tree
+        socket.post(
+            '/backup/getData',
+            {backup_id: backup_id}, 
+            function (data) {
+                var conceptsTree = data.conceptsTree;
+                var knowledges = data.knowledges;
+                var categories = data.categories;
+                var cklinks = data.cklinks;
+                // console.log("successs!",conceptsTree)
+                // console.log("successs!",knowledges)
+                // console.log("successs!",categories)
+                // console.log("successs!",cklinks)
+            }
+        );
     },
     render : function(){
         $(this.el).empty();

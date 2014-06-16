@@ -147,29 +147,29 @@ generateTree : function(req,res){
 
 
     Concept.find({
-      project : req.session.currentProject.id
-    }).done(function(err,concepts){
-      if(err) res.send(err);
-      this.concepts = concepts;
-      //transform all concept in map idea
-      _.each(concepts, function(concept){
-        createIdea(concept);
-      })
+        project : req.session.currentProject.id
+      }).done(function(err,concepts){
+        if(err) res.send(err);
+        this.concepts = concepts;
+        //transform all concept in map idea
+        _.each(concepts, function(concept){
+          createIdea(concept);
+        })
 
-      var json = {root : {}};
+        var json = {root : {}};
 
-      c0 = _.findWhere(concepts, {position : 0});
-      c0.text = c0.title;
-      c0.layout = "graph-bottom";
-      children = _.where(concepts, {id_father : c0.id});
+        c0 = _.findWhere(concepts, {position : 0});
+        c0.text = c0.title;
+        c0.layout = "graph-bottom";
+        children = _.where(concepts, {id_father : c0.id});
 
-      populate(c0, children)
-      
-      json.root = c0
-      json.id ="dhflkjhfsdkljhfdslk"
+        populate(c0, children)
+        
+        json.root = c0
+        json.id ="dhflkjhfsdkljhfdslk"
 
-      res.send({tree : json});
-    });
+        res.send({tree : json});
+      });
   },
   
   conceptview : function(req,res){
