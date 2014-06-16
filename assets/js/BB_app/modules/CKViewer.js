@@ -502,7 +502,7 @@ CKViewer.Views.Main = Backbone.View.extend({
             var scale=Math.floor(10*(frame/this.width))-10;
             MM.App.adjustFontSize1(scale);
             MM.App.map.center();
-            while(MM.App.width>frame){
+            while((MM.App.width>frame)&&(MM.App._fontSize>10)){
                 MM.App.adjustFontSize1(-1);
                 MM.App.map.center();
             }
@@ -532,12 +532,12 @@ CKViewer.Views.Main = Backbone.View.extend({
 
             MM.App.adjustFontSize1(0);
             if($("canvas")[0].width>frame){
-                while($("canvas")[0].width>frame){
+                while(($("canvas")[0].width>frame)&&(MM.App._fontSize>10)){
                     MM.App.adjustFontSize1(-1);
                     MM.App.map.center();
                 }            
             }else{
-                while($("canvas")[0].width<frame){
+                while(($("canvas")[0].width<frame)&&(MM.App._fontSize<200)){
                     MM.App.adjustFontSize1(1);
                     MM.App.map.center();
                 }
@@ -547,8 +547,8 @@ CKViewer.Views.Main = Backbone.View.extend({
             $("#map.current")[0].style.left=newLeft+"px";
             $("#map.current")[0].style.top="20px";
 
-
-
+            this.level_el = $("#ckviewer_container").find('#drop1');
+            this.level_el.empty();
             this.deep=MM.App.deep(MM.Map.fromJSON(this.concepts).getRoot());
             for(var i=1; i<this.deep; i++){
                 document.getElementById("drop1").innerHTML += '<li>' + '<a id="level" href="#" level="' + i + '">' + 'Level' + i + '</a>' + '</li>';

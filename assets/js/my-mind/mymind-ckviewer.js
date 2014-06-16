@@ -4329,7 +4329,7 @@ MM.Layout.getAll = function() {
              		var s=Math.floor(10*(frame/width))-10;
              		MM.App.adjustFontSize1(s);
             		MM.App.map.center();
-            		while(MM.App.width>frame){
+            		while((MM.App.width>frame)&&(MM.App._fontSize>10)){
             		    MM.App.adjustFontSize1(-1);
             		    MM.App.map.center();
             		}
@@ -4621,13 +4621,13 @@ MM.Layout.getAll = function() {
         MM.App.adjustFontSize1(s);
 
         MM.App.map.center();
-        while(MM.App.width>frame){
+        while((MM.App.width>frame)&&(MM.App._fontSize>10)){
             MM.App.adjustFontSize1(-1);
             MM.App.map.center();
         }
-        s=(100-100*(MM.App.width/frame))/2;
-        $("#map.item")[0].style.left=s+"%";
-        $("#map.item")[0].style.top="10%";
+        var s = (frame - $("canvas")[0].width)/2;
+        $("#map.item")[0].style.left=s+"px";
+        $("#map.item")[0].style.top="20px";
 
  	},
 
