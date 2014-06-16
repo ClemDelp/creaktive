@@ -11,6 +11,9 @@
 <link rel="stylesheet" href="styles/map/style.css" />
 <link rel="stylesheet" href="styles/map/print.css" media="print" />
 <!-- ******************************** -->
+<!-- zebradatepicker -->
+<script src="/js/vendor/zebradatepicker.js"></script>
+<link rel="stylesheet" href="styles/zebradatepicker/metallic.css" type="text/css"/>
 <!-- ******************************** -->
 <!-- Templates to load -->
 <%- partial('../app/templates/topbar_templates') %>
@@ -32,7 +35,14 @@
 
 <script>
   ///////////////////////////////////////////////////
-  var modflag=true;
+  var modflag = true;
+  var iniflag = true;
+  var newConceptsTree;
+  var newKnowledges;
+  var newCategories;
+  var newCklinks;
+  var newScale;
+  var newLeft;
   $(document).ready(function () {
     ////////////////////////////////////////
     Backbone.Model.prototype.toJSON = function() {

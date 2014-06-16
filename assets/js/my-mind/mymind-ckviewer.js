@@ -4333,9 +4333,9 @@ MM.Layout.getAll = function() {
             		    MM.App.adjustFontSize1(-1);
             		    MM.App.map.center();
             		}
-            		s=(100-100*(MM.App.width/frame))/2;
-            		$("#map.item")[0].style.left=s+"%";
-            		$("#map.item")[0].style.top="10%";
+            		var s = (frame - $("canvas")[0].width)/2;
+            		$("#map.item")[0].style.left=s+"px";
+            		$("#map.item")[0].style.top="20px";
  				}
 
  		break;
