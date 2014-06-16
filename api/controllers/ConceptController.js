@@ -68,8 +68,8 @@
         var concept = req.body.params;
         ///////////////////////////
         concept.type = "concept";
-        concept.top = 550;
-        concept.left = 550;
+        if((concept.top)&&(concept.top == 0))concept.top = 550;
+        if((concept.left)&&(concept.left == 0))concept.left = 550;
         ///////////////////////////
         concept.project = req.session.currentProject.id;
         Concept.create(concept).done(function(err,c){

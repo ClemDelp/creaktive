@@ -149,7 +149,12 @@ getData : function(req,res){
     json.id ="dhflkjhfsdkljhfdslk"
 
 
-    res.send({"conceptsTree" : json, "knowledges" : backup[0].knowledges_collection, "cklinks" : backup[0].cklinks_collection, "categories" : backup[0].categories_collection});
+    res.send({
+      "conceptsTree" : json, 
+      "knowledges" : backup[0].knowledges_collection, 
+      "cklinks" : backup[0].cklinks_collection, 
+      "categories" : backup[0].categories_collection
+    });
   });
 },
 

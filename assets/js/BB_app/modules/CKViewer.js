@@ -382,12 +382,11 @@ CKViewer.Views.Main = Backbone.View.extend({
         });
     },
     events : {
-
+        "click .date" : "reloadBackup"
     },
     reloadBackup : function(e){
         e.preventDefault();
         var backup_id = e.target.getAttribute("data-backup-id")
-        var backup_id = id;
         // Concept tree
         socket.post(
             '/backup/getData',
@@ -397,10 +396,11 @@ CKViewer.Views.Main = Backbone.View.extend({
                 var knowledges = data.knowledges;
                 var categories = data.categories;
                 var cklinks = data.cklinks;
-                // console.log("successs!",conceptsTree)
-                // console.log("successs!",knowledges)
-                // console.log("successs!",categories)
-                // console.log("successs!",cklinks)
+                
+                console.log("conceptsTree!",conceptsTree)
+                console.log("Knowledges!",knowledges)
+                console.log("Categories!",categories)
+                console.log("Cklinks!",cklinks)
             }
         );
     },

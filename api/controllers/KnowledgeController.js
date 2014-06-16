@@ -71,8 +71,8 @@
         var k = req.body.params;
         ///////////////////////////
         k.type = "knowledge";
-        k.top = 550;
-        k.left = 550;
+        if((k.top)&&(k.top == 0))k.top = 550;
+        if((k.left)&&(k.left == 0))k.left = 550;
         ///////////////////////////
         k.project = req.session.currentProject.id
         Knowledge.create(k).done(function(err,knowledge){

@@ -250,7 +250,7 @@ bbmap.Views.EditBox = Backbone.View.extend({
         this.model.save({
             user : bbmap.views.main.user,
             title:$(this.el).find("#title").val(),
-            content:CKEDITOR.instances.editor.getData(),
+            content:CKEDITOR.instances[this.model.get('id')+'_content'].getData(),
             date: getDate(),
             date2:new Date().getTime()
         });
@@ -265,13 +265,12 @@ bbmap.Views.EditBox = Backbone.View.extend({
         }else if(type == "concept"){
             this.model = bbmap.views.main.concepts.get(id_model);
         }
-        this.render(function(){
+        this.render(function(model_id){
             $(_this.el).dialog( "open" );
-            CKEDITOR.replaceAll('ckeditor');
+            CKEDITOR.replaceAll('ckeditor_bbmap');
             CKEDITOR.config.toolbar = [
                ['Bold','Italic','Underline','NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','Image','Table','-','Link','Smiley','TextColor','BGColor']
             ] ;
-            // $( "#editBox" ).draggable();
         });
         
         $("#save").click(this.saveEdition)
@@ -279,7 +278,7 @@ bbmap.Views.EditBox = Backbone.View.extend({
     render : function(callBack){
         $(this.el).empty();
         $(this.el).append('<input id="title" type="text" value="'+this.model.get("title")+'">');
-        $(this.el).append('<textarea class="ckeditor" id="'+this.model.get('id')+'_content" name="editor" rows="10" cols="80">'+this.model.get('content')+'</textarea>');
+        $(this.el).append('<textarea class="ckeditor_bbmap" id="'+this.model.get('id')+'_content" name="editor" rows="10" cols="80">'+this.model.get('content')+'</textarea>');
         $(this.el).append('<br><a href="#" id="save" class="button tiny expand secondary" style="margin-bottom:0px">save</a>');
         callBack();
     }
