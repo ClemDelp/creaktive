@@ -140,7 +140,8 @@
   },
 
   editprofileview : function(req,res){
-    res.view({user : req.session.user});
+    sails.config.bootstrapdata.bootstrapmanager(req,res);
+    //res.view({user : req.session.user});
   },
 
 

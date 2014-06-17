@@ -60,8 +60,10 @@ category.Views.Knowledge = Backbone.View.extend({
     },
     render:function(){
         $(this.el).empty();
+        var nbre_notifs = 0;
+        try{nbre_notifs = global.ModelsNotificationsDictionary[this.knowledge.get('id')].news.length;}catch(err){console.error(err);}
         $(this.el).html(this.template_list({
-            nbre_notifs     : global.ModelsNotificationsDictionary[this.knowledge.get('id')].news.length,
+            nbre_notifs     : nbre_notifs,
             knowledge       : this.knowledge.toJSON(),
             categoryTitle   : this.categoryTitle
         }));
@@ -384,17 +386,18 @@ category.Views.Main = Backbone.View.extend({
             eventAggregator : this.eventAggregator
         });
         // Events
-        this.listenTo(this.filterMode,"change",this.render)
-        this.listenTo(this.filters,"add",this.render);  
-        this.listenTo(this.filters,"remove",this.render);
+        this.listenTo(this.filterMode,"change",this.globalRender);  
+        
+        this.listenTo(this.filters,"add",this.globalRender);  
+        this.listenTo(this.filters,"remove",this.globalRender);
 
         this.knowledges.on("add", this.render,this);
         //this.knowledges.on("remove", this.render,this);
 
-        this.categories.on('add',this.render,this);
-        this.categories.on('remove',this.render,this);
+        this.categories.on('add',this.globalRender,this);
+        this.categories.on('remove',this.globalRender,this);
         //this.categories.on('change',this.render,this);
-        this.eventAggregator.on('categories_list_render', this.render, this);
+        this.eventAggregator.on('categories_list_render', this.globalRender, this);
         this.eventAggregator.on('knowledge_search', this.actualize, this);
 
         
@@ -557,6 +560,10 @@ category.Views.Main = Backbone.View.extend({
             gutter: 20,
             width: 260
         });
+    },
+    globalRender : function(){
+        this.renderActionBar();
+        this.render();
     },
     renderActionBar : function(){
         this.bar_el.empty();

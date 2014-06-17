@@ -1,0 +1,81 @@
+<div id="editProfile_container"></div>
+<!-- //////////////////////////////////////////////////////////////////////: -->
+<script type="text/template" id="editProfile-profile-template">
+    <br>
+    <center class="panel row">
+        <div class="row">
+            <h1>Your profile</h1>
+            <hr>
+            <img class="large-2 medium-2 small-2" src= "{{- user.img }}" id="avatar"/>      
+            <br>
+            <a href="#" class="button secondary small round" data-dropdown="drop2">Change me</a>
+        </div>
+
+        <div id="drop2" data-dropdown-content class="f-dropdown content">
+          <ul class="large-block-grid-4 medium-block-grid-5  small-block-grid-2">
+            <li><img src= "img/profiles/1.png" onclick="select('img/profiles/1.png')" /> </li>
+            <li><img src= "img/profiles/2.png" onclick="select('img/profiles/2.png')"/> </li>
+            <li><img src= "img/profiles/3.png" onclick="select('img/profiles/3.png')"/> </li>
+            <li><img src= "img/profiles/4.png" onclick="select('img/profiles/4.png')"/> </li>
+            <li><img src= "img/profiles/5.png" onclick="select('img/profiles/5.png')"/> </li>
+            <li><img src= "img/profiles/6.png" onclick="select('img/profiles/6.png')"/> </li>
+            <li><img src= "img/profiles/7.png" onclick="select('img/profiles/7.png')"/> </li>
+            <li><img src= "img/profiles/8.png" onclick="select('img/profiles/8.png')"/> </li>
+            <li><img src= "img/profiles/9.png" onclick="select('img/profiles/9.png')"/> </li>
+            <li><img src= "img/profiles/10.png" onclick="select('img/profiles/10.png')"/> </li>
+            <li><img src= "img/profiles/11.png" onclick="select('img/profiles/11.png')"/> </li>
+            <li><img src= "img/profiles/12.png" onclick="select('img/profiles/12.png')"/> </li>
+            <li><img src= "img/profiles/13.png" onclick="select('img/profiles/13.png')"/> </li>
+            <li><img src= "img/profiles/14.png" onclick="select('img/profiles/14.png')"/> </li>
+            <li><img src= "img/profiles/15.png" onclick="select('img/profiles/15.png')"/> </li>
+            <li><img src= "img/profiles/16.png" onclick="select('img/profiles/16.png')"/> </li>
+            <li><img src= "img/profiles/17.png" onclick="select('img/profiles/17.png')"/> </li>
+            <li><img src= "img/profiles/18.png" onclick="select('img/profiles/18.png')"/> </li>
+          </ul>
+        </div>
+
+
+        <div class="row">
+            <form data-abide action="/editProfile" method="post">
+
+                <div class="large-4 medium-4 small-4 image-field">
+                    <input type="hidden" id="image" name="image" value="{{- user.img }}"/>
+                </div>
+
+                <div class="large-4 medium-4 small-4 name-field">
+                    <label>Name <small>required</small></label>
+                    <input type="text" name="username" value="{{- user.name }}"/>
+                </div>
+                <div class="large-4 medium-4 small-4 email-field">
+                    <label>Email adress <small>required</small></label>
+                    <input type="email" name="email" value="{{- user.email }}" required>
+                </div>
+
+                <button class="button secondary round" type="submit">Submit</button>
+            </form>
+
+            <form data-abide action="/changepassword" method="post">
+
+                <div class="large-4 medium-4 small-4 old-password-field">
+                    <label>Old password <small>required</small></label>
+                    <input type="password" name="oldpassword" />
+                    <small class="error">Your password must match the requirements</small>
+                </div>
+
+                <div class="large-4 medium-4 small-4 password-field">
+                    <label>New password <small>required</small></label>
+                    <input type="password" name="password" />
+                                <small class="error">Passwords must be at least 8 characters with 1 capital letter, 1 number, and one special character.</small>
+                </div>
+                <div class="large-4 medium-4 small-4 confirm-password-field">
+                    <label>Confirm new password <small>required</small></label>
+                    <input type="password" name="confirmPassword" data-equalto="password">
+                                <small class="error">Passwords must be at least 8 characters with 1 capital letter, 1 number, and one special character.</small>
+                </div>
+
+                <button class="button secondary small round" type="submit">Change password</button>
+
+            </form>
+        </div>
+    </center>
+</script>
