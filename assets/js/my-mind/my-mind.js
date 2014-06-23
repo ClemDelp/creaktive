@@ -838,6 +838,28 @@ MM.Map.prototype.fromJSON = function(data) {
 	return this;
 }
 
+MM.Map.prototype.getItemById = function(id){
+	var nodes = MM.getItemsCollection();
+	return nodes[id];
+}
+
+MM.getItemsCollection = function(){
+	var json_map = MM.App.map.getRoot();
+	var nodes = {};
+	var nodes = MM.getNodesRecursive(nodes,json_map);
+	return nodes;
+}
+
+MM.getNodesRecursive = function(nodes,json){
+	nodes[json._id] = json;
+	if(json.getChildren()){
+		json.getChildren().forEach(function(child){
+			MM.getNodesRecursive(nodes,child);
+		});
+	}
+	return nodes;
+}
+
 MM.Map.prototype.toJSON = function() {
 	var data = {
 		root: this._root.toJSON(),
@@ -875,8 +897,8 @@ MM.Map.prototype.hide = function() {
 MM.Map.prototype.center = function() {
 	var node = this._root.getDOM().node;
 	var port = MM.App.portSize;
-	var left = (port[0] - node.offsetWidth)/8;
-	var top = (port[1] - node.offsetHeight)/3;
+	var left = (port[0] - node.offsetWidth)/2;
+	var top = (port[1] - node.offsetHeight)/2;
 	this._moveTo(Math.round(left), Math.round(top));
 
 	return this;
@@ -1131,12 +1153,26 @@ MM.Action.InsertNewItem = function(parent, index) {
 	this._index = index;
 	this._item = new MM.Item();
 }
+MM.Action.InsertNewItem2 = function(parent, index, id) {
+	this._parent = parent;
+	this._index = index;
+	this._item = new MM.Item();
+	this._item._id = id;
+}
+
 MM.Action.InsertNewItem.prototype = Object.create(MM.Action.prototype);
 MM.Action.InsertNewItem.prototype.perform = function() {
 	this._parent.expand(); /* FIXME remember? */
 	this._item = this._parent.insertChild(this._item, this._index);
 	MM.App.select(this._item);
 }
+MM.Action.InsertNewItem2.prototype = Object.create(MM.Action.prototype);
+MM.Action.InsertNewItem2.prototype.perform = function() {
+	this._parent.expand(); /* FIXME remember? */
+	this._item = this._parent.insertChild(this._item, this._index);
+	MM.App.select(this._item);
+}
+
 MM.Action.InsertNewItem.prototype.undo = function() {
 	this._parent.removeChild(this._item);
 	MM.App.select(this._parent);
@@ -1157,19 +1193,33 @@ MM.Action.AppendItem.prototype.undo = function() {
 	MM.App.select(this._parent);
 	MM.App.eventAggregator.trigger("undo", "AppendItem", [this._item]);
 }
-
+/////////////////////////////
 MM.Action.RemoveItem = function(item) {
-	 if (confirm("The children concepts will also be removed, do you want to continue?")) {
+	 //if (confirm("The children concepts will also be removed, do you want to continue?")) {
 		this._item = item;
 		this._parent = item.getParent();
 		this._index = this._parent.getChildren().indexOf(this._item);
-	}
+	//}
 }
 MM.Action.RemoveItem.prototype = Object.create(MM.Action.prototype);
 MM.Action.RemoveItem.prototype.perform = function() {
 	this._parent.removeChild(this._item);
 	MM.App.select(this._parent);
 }
+/////////////////////////////
+MM.Action.RemoveItem2 = function(item) {
+	 //if (confirm("The children concepts will also be removed, do you want to continue?")) {
+		this._item = item;
+		this._parent = item.getParent();
+		this._index = this._parent.getChildren().indexOf(this._item);
+	//}
+}
+MM.Action.RemoveItem2.prototype = Object.create(MM.Action.prototype);
+MM.Action.RemoveItem2.prototype.perform = function() {
+	this._parent.removeChild(this._item);
+	MM.App.select(this._parent);
+}
+/////////////////////////////
 MM.Action.RemoveItem.prototype.undo = function() {
 	this._parent.insertChild(this._item, this._index);
 	MM.App.select(this._item);
@@ -1259,7 +1309,7 @@ MM.Action.SetColor.prototype.perform = function() {
 MM.Action.SetColor.prototype.undo = function() {
 	this._item.setColor(this._oldColor);
 }
-
+///////////////////////////////
 MM.Action.SetText = function(item, text) {
 	this._item = item;
 	this._text = text;
@@ -1272,6 +1322,20 @@ MM.Action.SetText.prototype.perform = function() {
 	var numText = Number(this._text);
 	if (numText == this._text) { this._item.setValue(numText); }
 }
+///////////////////////////////
+MM.Action.SetText2 = function(item, text) {
+	this._item = item;
+	this._text = text;
+	this._oldText = item.getText();
+	this._oldValue = item.getValue(); /* adjusting text can also modify value! */
+}
+MM.Action.SetText2.prototype = Object.create(MM.Action.prototype);
+MM.Action.SetText2.prototype.perform = function() {
+	this._item.setText(this._text);
+	var numText = Number(this._text);
+	if (numText == this._text) { this._item.setValue(numText); }
+}
+///////////////////////////////
 MM.Action.SetText.prototype.undo = function() {
 	this._item.setText(this._oldText);
 	this._item.setValue(this._oldValue);
@@ -2037,6 +2101,7 @@ MM.Layout.getAll = function() {
  * Generic graph child layout routine. Updates item's orthogonal size according to the sum of its children.
  */
  MM.Layout.Graph._layoutItem = function(item, rankDirection) {
+
  	var sizeProps = ["width", "height"];
  	var posProps = ["left", "top"];
  	var rankIndex = (rankDirection == "left" || rankDirection == "right" ? 0 : 1);
@@ -2083,7 +2148,6 @@ MM.Layout.getAll = function() {
 
  MM.Layout.Graph._layoutChildren = function(children, rankDirection, offset, bbox) {
  	var posProps = ["left", "top"];
-
  	var rankIndex = (rankDirection == "left" || rankDirection == "right" ? 0 : 1);
  	var childIndex = (rankIndex+1) % 2;
  	var rankPosProp = posProps[rankIndex];
@@ -4352,6 +4416,8 @@ MM.Layout.getAll = function() {
 		this._cursor[0] = e.clientX;
 		this._cursor[1] = e.clientY;
 
+		//console.log(this._cursor[0],this._cursor[1])
+
 		if (item && !item.isRoot()) { 
 			this._mode = "drag";
 			this._item = item;
@@ -4366,6 +4432,8 @@ MM.Layout.getAll = function() {
 		var dy = e.clientY - this._cursor[1];
 		this._cursor[0] = e.clientX;
 		this._cursor[1] = e.clientY;
+
+		//console.log(this._cursor[0],this._cursor[1])
 
 		switch (this._mode) {
 			case "drag":
@@ -4416,6 +4484,8 @@ MM.Layout.getAll = function() {
 		this._pos[1] += dy;
 		this._ghost.style.left = this._pos[0] + "px";
 		this._ghost.style.top = this._pos[1] + "px";
+
+		console.log(this._pos[0],this._pos[1])
 
 		var state = this._computeDragState();
 	}

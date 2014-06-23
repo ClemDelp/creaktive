@@ -1,0 +1,85 @@
+<!-- Javascript libs -->
+<script src="/js/vendor/backbone.iosync.js"></script>
+<script src="/js/vendor/backbone.iobind.js"></script>
+<!-- ******************************** -->
+<!-- Gridalicious -->
+<script src="/js/vendor/jquery.grid-a-licious.js"></script>
+<!-- ******************************** -->
+<!-- my-mind -->
+<script src="/js/my-mind/mymind-ckpreviewer.js"></script>
+<link rel="stylesheet" href="styles/map/font.css" />
+<link rel="stylesheet" href="styles/map/style.css" />
+<link rel="stylesheet" href="styles/map/print.css" media="print" />
+<!-- ******************************** -->
+<!-- Zoom js -->
+<script src="/js/vendor/zoom.js"></script> 
+<script src="/js/vendor/jquery.zoomooz.js"></script>
+<script src="/js/vendor/jquery.sortable.js"></script>
+<!-- ******************************** -->
+<!-- Templates to load -->
+<%- partial('../app/templates/topbar_templates') %>
+<%- partial('../app/templates/title_templates') %>
+<%- partial('templates/CKPreviewer_templates') %>
+
+
+<!-- Modules situés dans assets/js/BB_app -->
+
+
+<script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/title.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/CKPreviewer.js"></script>
+
+<script>
+  var zoomflag=false;
+  var slideflag=false;
+  ///////////////////////////////////////////////////
+  $(document).ready(function () {
+    ////////////////////////////////////////
+    Backbone.Model.prototype.toJSON = function() {
+      return JSON.parse(JSON.stringify(this.attributes));
+    };
+    ////////////////////////////////////////
+    rt(io, function(){
+      var json = {};
+      json.project = <%- currentProject %>;
+      json.users = <%- users %>;
+      json.user = <%- currentUser %>;
+      json.knowledges = <%- knowledges %>;
+      json.projects = <%- projects %>;
+      json.poches = <%- poches %>;
+      json.concepts = <%- concepts %>;
+      json.links = <%- links %>;
+      json.notifications = <%- notifications %>;
+      json.permissions = <%- permissions %>;
+
+      _.each(json.knowledges, function(k){
+        k.comments = new global.Collections.Comments(k.comments);
+        k.members = new global.Collections.UsersCollection(k.members);
+      })
+      _.each(json.concepts, function(c){
+        c.comments = new global.Collections.Comments(c.comments);
+        c.members = new global.Collections.UsersCollection(c.members);
+      })
+      _.each(json.poches, function(p){
+        p.comments = new global.Collections.Comments(p.comments);
+        p.members = new global.Collections.UsersCollection(p.members);
+      })
+      global.init(json, function(){
+        /*Modules*/
+        topbar.init();
+        title.init(json.project,"ckpreviewer");
+        CKPreviewer.init();
+        ////////////////////////////////////////
+        /*activat of "hashchange events's monitoring"*/
+
+        Backbone.history.start();  
+      });
+    });
+
+  });
+
+
+</script>
+
+
+

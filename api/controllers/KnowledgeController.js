@@ -38,17 +38,17 @@
 
   },
 
-  create : function (req,res){
-    var k = req.body.params;
-    k.project = req.session.currentProject.id
-    Knowledge.create(k).done(function(err, knowledge){
-      if(err) res.send(err);
-      Notification.objectCreated(req,res,"Knowledge", knowledge.id, function(notification){
-        res.send(notification);
-      });
-      res.send(knowledge);
-    });
-  },
+  // create : function (req,res){
+  //   var k = req.body.params;
+  //   k.project = req.session.currentProject.id
+  //   Knowledge.create(k).done(function(err, knowledge){
+  //     if(err) res.send(err);
+  //     Notification.objectCreated(req,res,"Knowledge", knowledge.id, function(notification){
+  //       res.send(notification);
+  //     });
+  //     res.send(knowledge);
+  //   });
+  // },
 
   update : function(req, res){
   	Knowledge.findOne(req.body.params.id).done(function(err, knowledge){
@@ -57,8 +57,8 @@
         // Update the Knowledge
   			Knowledge.update({id: req.body.params.id}, req.body.params).done(function(err,c){
   				if(err) res.send(err);
+          req.socket.broadcast.to(req.session.currentProject.id).emit("knowledge:update", c[0]);
           Notification.objectUpdated(req,res,"Knowledge", c[0], function(notification){
-
             res.send(notification);
           });
 
@@ -69,9 +69,15 @@
   		}else{
         // Create a new knowledge
         var k = req.body.params;
+        ///////////////////////////
+        k.type = "knowledge";
+        if((k.top)&&(k.top == 0))k.top = 550;
+        if((k.left)&&(k.left == 0))k.left = 550;
+        ///////////////////////////
         k.project = req.session.currentProject.id
         Knowledge.create(k).done(function(err,knowledge){
           if(err) res.send(err);
+          req.socket.broadcast.to(req.session.currentProject.id).emit("knowledge:create", knowledge);
           Notification.objectCreated(req,res,"Knowledge", knowledge, function(notification){
             // knowledge.notifications.unshift(notification);
             // knowledge.save(function(err) {
@@ -90,6 +96,7 @@
   destroy : function(req,res){
     Knowledge.findOne(req.body.params.id).done(function(err,k){
       if(err) console.log(err);
+      req.socket.broadcast.to(req.session.currentProject.id).emit("knowledge:remove2", k);
       k.destroy(function(err){
         if(err) console.log(err)
           res.send({msg:"destroyed"})

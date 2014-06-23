@@ -57,61 +57,90 @@ CKLayout.Views.Modal = Backbone.View.extend({
     initialize:function(json){
         _.bindAll(this, 'render', 'openModelEditorModal');
         // Variables
-        this.notifications = json.notifications;
-        this.model = new Backbone.Model();
-        this.user = json.user;
-        this.collection = json.collection;
-        this.eventAggregator = json.eventAggregator;
+        this.model              = new Backbone.Model();
+        this.user               = json.user;
+        this.collection         = json.collection;
+        // Element
+        this.content_el         = $(this.el).find('#cklayout_content_container');
+        this.activities_el      = $(this.el).find('#cklayout_activities_container');
         // Events
-        this.eventAggregator.on("removeModel", this.closeModelEditorModal);
-        this.eventAggregator.on("removeKnowledge", this.closeModelEditorModal);
-        this.eventAggregator.on("openModelEditorModal", this.openModelEditorModal);
+        this.listenTo(this.model,"remove",this.removeView,this);     
+        global.eventAggregator.on("closeModelEditorModal", this.closeModelEditorModal);
+        global.eventAggregator.on("openModelEditorModal", this.openModelEditorModal);
+    },
+    removeView : function(){
+        this.remove();
     },
     closeModelEditorModal : function(){
-        $('#CKLayoutModal').foundation('reveal', 'close');
+        $(this.el).foundation('reveal', 'close');
     },
-    openModelEditorModal : function(k_id){
-        this.model = this.collection.get(k_id);
+    openModelEditorModal : function(id){
+        this.model = this.collection.get(id);
         this.render(function(){
             $('#CKLayoutModal').foundation('reveal', 'open'); 
-            $(document).foundation();
+            try{
+                $(document).foundation();
+            }catch(err){
+                console.log(err);
+            }
         }); 
-        
     },
     render:function(callback){
-        $(this.el).html('');
-        $(this.el).append(new CKLayout.Views.Main({
+        this.content_el.empty();
+        this.activities_el.empty();
+        this.content_el.append(new CKLayout.Views.Main({
+            activities_el : this.activities_el,
             className : "panel row",
-            notifications : this.notifications,
             model : this.model,
             user : this.user,
-            eventAggregator : this.eventAggregator
         }).render().el);
         // Render it in our div
         if(callback) callback();
     }
 });
 /***************************************/
+CKLayout.Views.Header = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this,'render');
+        this.model = json.model;
+        this.labels = json.labels;
+        // Events
+        this.listenTo(this.model,'change',this.render,this);
+        // Templates
+        this.template_hearder = _.template($('#CKLayout-header-template').html());
+    },
+    render : function(){
+        $(this.el).empty();
+        // Header
+        $(this.el).append(this.template_hearder({
+            model:this.model.toJSON(),
+            labels:this.labels.toJSON()
+        }));
+        return this;
+    }
+});
+
+/***************************************/
 CKLayout.Views.Main = Backbone.View.extend({
     initialize:function(json){
         _.bindAll(this, 'render');
         CKLayout.init(); // Pour instancier les labels
         // Variables
-        this.notifications      = json.notifications;
+        this.activities_el      = json.activities_el;
         this.model              = json.model;
         this.user               = json.user;
-        this.eventAggregator    = json.eventAggregator;
-        // Labels
-        this.labels             = Backbone.Collection;
-        if(this.model.get('type') === "concept"){
+        this.labels             = new Backbone.Collection();
+        // Label
+        if(this.model.get('type') == "concept"){
             this.labels = CKLayout.collections.CLabels;
-        }else{
+        }else if(this.model.get('type') === "knowledge"){
             this.labels = CKLayout.collections.KLabels;
         }
         // Events
-        this.model.on('change',this.render)
+        //this.model.on('change',this.render,this)
+        this.listenTo(this.model,"remove",this.removeView,this);   
+        this.listenTo(global.eventAggregator,this.model.get('id'),this.actualize,this) 
         // Templates
-        this.template_hearder = _.template($('#CKLayout-header-template').html());
         this.template_footer = _.template($('#CKLayout-footer-template').html());
     },
     events : {
@@ -119,7 +148,15 @@ CKLayout.Views.Main = Backbone.View.extend({
         "click .toConcept" : "convertInConcept",
         "click .toKnowledge" : "convertInKnowledge",
         "click .toCategory" : "convertInCategory",
-        "click .remove" : "removeModel"
+        "click .remove" : "closeModelEditorModal"
+    },
+    actualize : function(model){
+        this.model = model;
+        this.render();
+    },
+    removeView : function(){
+        //this.remove();
+        $("#CKLayoutModal").foundation('reveal', 'close');
     },
     convertInConcept : function(e){
         e.preventDefault();
@@ -129,23 +166,23 @@ CKLayout.Views.Main = Backbone.View.extend({
         console.log("newModel",newModel)
         newModel.save();
         this.model.destroy();
-        this.eventAggregator.trigger('removeModel');
+        global.eventAggregator.trigger('closeModelEditorModal');
     },
     convertInKnowledge : function(e){
         e.preventDefault();
         newModel = new global.Models.Knowledge(this.model.toJSON());
         newModel.save();
         this.model.destroy();
-        this.eventAggregator.trigger('removeModel');
+        global.eventAggregator.trigger('closeModelEditorModal');
     },
     convertInCategory : function(e){
         e.preventDefault();
         newModel = new global.Models.Poche(this.model.toJSON());
         newModel.save();
         this.model.destroy();
-        this.eventAggregator.trigger('removeModel');
+        global.eventAggregator.trigger('closeModelEditorModal');
     },
-    removeModel : function(e){
+    closeModelEditorModal : function(e){
         e.preventDefault();
         _this = this;
         ///////////////////////////////////////
@@ -161,15 +198,16 @@ CKLayout.Views.Main = Backbone.View.extend({
                     }).save();
                 });
                 this.model.destroy();
-                this.eventAggregator.trigger('removeCategory',this.model.get('id'));
+                global.eventAggregator.trigger('removeCategory',this.model.get('id'));
             }
         ///////////////////////////////////////    
         }else{
             if (confirm("All references attached to this item will also be removed, would you continue?")) {
+                global.eventAggregator.trigger('closeModelEditorModal');
                 this.model.destroy();
             }
         }
-        this.eventAggregator.trigger('removeModel');
+        
     },
     updateLabel : function(e){
         e.preventDefault();
@@ -177,52 +215,48 @@ CKLayout.Views.Main = Backbone.View.extend({
             color:e.target.getAttribute("data-label-color"),
             label:e.target.getAttribute("data-label-title")
         });
-        if(this.model.get('type') === "concept") this.eventAggregator.trigger("updateMap")
+        if(this.model.get('type') === "concept") global.eventAggregator.trigger("updateMap")
         this.render();
     },
     render:function(){
-        $(this.el).html('');
+        $(this.el).empty();
+        this.activities_el.empty();
         _this = this;
         // Header
-        $(this.el).append(this.template_hearder({
-            model:this.model.toJSON(),
-            labels:this.labels.toJSON()
-        }));
+        $(this.el).append(new CKLayout.Views.Header({
+            model : this.model,
+            labels : this.labels
+        }).render().el);
         // Model editor module
         $(this.el).append(new modelEditor.Views.Main({
-            className       : "large-8 medium-8 small-8 columns",
             user            : this.user,
             model           : this.model,
-            eventAggregator : this.eventAggregator
-        }).render().el);
-        // Attachment module
-        $(this.el).append(new attachment.Views.Main({
-            className       : "large-4 medium-4 small-4 columns",
-            model           : this.model,
-            eventAggregator : this.eventAggregator
-        }).render().el);
-        // Comments module
-        $(this.el).append(new comments.Views.Main({
-            className       : "large-4 medium-4 small-4 columns floatRight",
-            model           : this.model,
-            user            : this.user,
-            eventAggregator : this.eventAggregator
         }).render().el);
         // IMG List module
         $(this.el).append(new imagesList.Views.Main({
-            className       : "large-8 medium-8 small-8 columns",
+            
             model           : this.model,
-            eventAggregator : this.eventAggregator
         }).render().el);
-        // notification module
-        $(this.el).append(new activitiesList.Views.Main({
-            className       : "large-8 medium-8 small-8 columns floatLeft",
+        // Attachment module
+        $(this.el).append(new attachment.Views.Main({
+            
             model           : this.model,
-            notifications   : this.notifications,
-            eventAggregator : this.eventAggregator
+        }).render().el);
+        // Comments module
+        $(this.el).append(new comments.Views.Main({
+            
+            model           : this.model,
+            user            : this.user,
+        }).render().el);
+        
+        // notification module
+        this.activities_el.append(new activitiesList.Views.Main({
+            className       : "row panel",
+            model           : this.model,
         }).render().el);
         // Footer
         $(this.el).append(this.template_footer({model:this.model.toJSON()}));
+        $(document).foundation();
 
         return this;
     }

@@ -1,4 +1,16 @@
 /////////////////////////////////////////////////
+var cklink = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {}
+};
+/////////////////////////////////////////////////
 // Right Part
 /////////////////////////////////////////////////
 cklink.Views.Knowledges = Backbone.View.extend({
@@ -162,7 +174,7 @@ cklink.Views.Main = Backbone.View.extend({
         this.eventAggregator = json.eventAggregator;
         this.links = json.links;
         this.concepts = json.concepts;
-        this.filters = new category.Collections.Filters();
+        this.filters = new global.Collections.Filters();
         
 
         this.current_concept = json.current_concept;
@@ -194,7 +206,7 @@ cklink.Views.Main = Backbone.View.extend({
         e.preventDefault();
         model_ = this.poches.get(e.target.getAttribute("data-filter-model"));
         if(model_ != ""){
-            new_filter = new category.Models.Filter({
+            new_filter = new global.Models.Filter({
                 id:guid(),//e.target.getAttribute("data-filter-id"),
                 type:e.target.getAttribute("data-filter-type"),
                 model:model_

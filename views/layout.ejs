@@ -7,19 +7,10 @@
       exactly the same way as with your other view templates.
     -->
     <title><%- title %></title>
-
-    <!-- Viewport mobile tag for sensible mobile support -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-
-
-    <!--
-      Client-side Javascript
-      ========================
-    --> 
-
-    <script src="js/vendor/custom.modernizr.js"></script>  
+    <link rel="stylesheet" href="styles/foundation2.css" />
+    <script src="js/vendor/modernizr.js"></script>
     <script type='text/javascript' src='js/vendor/jquery-1.10.2.js'></script>
-    
     <script src="js/vendor/underscore.js"></script>
     <script>
       _.templateSettings = {
@@ -36,50 +27,26 @@
       Stylesheets
       ========================     
     -->
-    <link rel="stylesheet" href="styles/foundation.css">
     <link rel="stylesheet" type="text/css" href="styles/overlay_css_timela.css" /> 
 
   </head>
 
   <body>
-
-    <%- partial('app/templates/notification_templates') %>
-
-    <!-- Include the view file for the current controller/route -->
-  
-
+    
     <script src="/js/vendor/backbone.iosync.js"></script>
     <script src="/js/vendor/backbone.iobind.js"></script>
     <script type="text/javascript" src="js/vendor/socket.io.js"></script>
     <script type="text/javascript" src="js/sails.io.js"></script>
-
-    <script src="js/BB_app/global_functions.js"></script>
-    <!-- Interface client/server -->
-
     <script type="text/javascript" src="js/BB_app/app.js"></script>
-    <script type="text/javascript" src="js/BB_app/modules/notification.js"></script>
     <!-- Global objects -->
+    <script src="js/BB_app/global_functions.js"></script>
     <script src="js/BB_app/global_models.js"></script>
     <script src="js/BB_app/global_collections.js"></script>
 
-    
-
-
-      <%- body %>
-
-  <!--  <script type="text/javascript" src="js/BB_app/modules/notifications.js"></script> -->
-
-
-
-    <!--
-      Foundation Javascript
-      ========================
-    --> 
-
-    <script src="js/foundation.min.js"></script>
+    <%- body %>
+  
 
     <script>
-      $(document).foundation();
       /////////////////////////////////////////////////////////////////////////////////////////////
       // Realtime connection
       /////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,10 +59,21 @@
             console.log(data.msg);
             console.log(data.channels);
           });
-
-          socket.on('notification:create', function socketConnected(x) {
-            console.log("xxxxxx",x)
-          });
+          // Notification
+          socket.on('notification:create', function socketConnected(x) {console.log("xxxxxx",x)});
+          // Knowledge
+          socket.on('knowledge:create', function socketConnected(x) {console.log("xxxxxxxx-knowledge:create",x)});
+          socket.on('knowledge:update', function socketConnected(x) {console.log("xxxxxxxx-knowledge:update",x)});
+          socket.on('knowledge:remove2', function socketConnected(x) {console.log("xxxxxxxx-knowledge:remove",x)});
+          // Concept
+          socket.on('concept:create', function socketConnected(x) {console.log("xxxxxxxx-concept:create",x)});
+          socket.on('concept:update', function socketConnected(x) {console.log("xxxxxxxx-concept:update",x)});
+          socket.on('concept:remove2', function socketConnected(x) {console.log("xxxxxxxx-concept:remove",x)});
+          // Category
+          socket.on('poche:create', function socketConnected(x) {console.log("xxxxxxxx-poche:create",x)});
+          socket.on('poche:update', function socketConnected(x) {console.log("xxxxxxxx-poche:update",x)});
+          socket.on('poche:remove2', function socketConnected(x) {console.log("xxxxxxxx-poche:remove",x)});
+          
 
           console.log(
             'Socket is now connected and globally accessible as `socket`.\n' + 
@@ -109,6 +87,27 @@
       };
     </script>
 
-
+    <script src="js/foundation.min.js"></script>
+    <script src="js/foundation/foundation.abide.js"></script>
+    <script>
+      $(document).foundation();
+    </script>
+    <footer class="row">
+      <hr>
+      <div class="large-12 columns">
+      <div class="row">
+      <div class="large-5 columns">
+      <p>Copyright © 2014 CreaKtive, Inc.</p>
+      </div>
+      <div class="large-7 columns">
+      <ul class="inline-list right">
+      <li><a href="http://creaktive.fr/">Terms of service</a></li>
+      <li><a href="http://creaktive.fr/">Privacy Policy</a></li>
+      <li><a href="http://creaktive.fr/contact/">FAQ</a></li>
+      </ul>
+      </div>
+      </div>
+      </div>
+      </footer>
   </body>
 </html>

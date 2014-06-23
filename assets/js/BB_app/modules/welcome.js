@@ -1,34 +1,52 @@
-/***************************************/
+/////////////////////////////////////////////////
+var welcome = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    this.views.Main = new this.Views.Main({
+      allNews_notifs  : global.AllNewsNotificationsDictionary, // Le dictionnaire de toutes les nouvelles notifications
+      user            : global.models.current_user,
+      eventAggregator : global.eventAggregator
+    });
+    this.views.Main.render();
+  }
+};
+/////////////////////////////////////////////////
+// MAIN
+/////////////////////////////////////////////////
 welcome.Views.Main = Backbone.View.extend({
     el : "#welcome_container",
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
-        this.user = json.user;
-        this.notifications = json.notifications;
+        this.allNews_notifs    = json.allNews_notifs;
+        this.user               = json.user;
+        this.eventAggregator    = json.eventAggregator;
         // Events
-        this.notifications.on('reset',this.render)
-        this.notifications.on('change',this.render)
+        this.eventAggregator.on('AllNewsNotificationsDictionary',this.actualize,this);
         // Templates
         this.template = _.template($('#welcome-template').html());
     },
     events : {},
+    actualize : function(dic){
+        this.allNews_notifs = dic;
+        this.render();
+    },
     render : function(){
         // Init
-        $(this.el).html('');
-        _this = this;
-        // On filtre les notifs
-        notifNbre = 0;
-        this.notifications.each(function(notif){
-            if(_.indexOf(notif.get('read'), _this.user.get('id')) == -1){notifNbre = notifNbre+1;}
-        });
-
+        $(this.el).empty();
         $(this.el).append(this.template({
-            user:this.user.toJSON(),
-            notifNbre : notifNbre
+            user        : this.user.toJSON(),
+            notifNbre   : this.allNews_notifs.length
         }))
         
         return this;
     }
 });
-/***************************************/
+/////////////////////////////////////////////////

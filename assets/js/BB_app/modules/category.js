@@ -1,338 +1,354 @@
+/////////////////////////////////////////////////
+var category = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    this.views.main = new this.Views.Main({
+      project               : global.models.currentProject,
+      knowledges            : global.collections.Knowledges,
+      categories            : global.collections.Poches,
+      user                  : global.models.current_user,
+      users                 : global.collections.Users,
+      links                 : global.collections.Links,
+      eventAggregator       : global.eventAggregator,
+    });   
+    this.views.main.renderActionBar();
+    this.views.main.render();
+  }
+};
 /////////////////////////////////////////
-// Models & collections
-/////////////////////////////////////////
-category.Models.Filter = Backbone.Model.extend({
-    defaults : {
-        id : "",
-        type : "",
-        model : ""
+category.Views.Knowledge = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        // Variable
+        this.knowledge     = json.knowledge;
+        this.categoryTitle = json.categoryTitle;
+        // Event
+        global.eventAggregator.on(this.knowledge.get('id'),this.actualize,this);
+        this.knowledge.on('change',this.render,this);
+        // Templates
+        this.template_list = _.template($('#category-knowledge-template').html());
     },
-    initialize : function Poche() {
-        //console.log('Filter category Constructor');
-        this.bind("error", function(model, error){
-            //console.log( error );
-        });
+    events : {
+        "click .Kselectable" : "setSelectedK",
+    },
+    setSelectedK : function(e){
+        e.preventDefault();
+        var k_id = e.target.getAttribute('data-model-id');
+        var catg_origin = e.target.getAttribute('data-catg-origin');
+
+        k = category.views.main.knowledges.get(k_id);
+        if(category.views.main.Kselected.where({id : k_id}).length > 0){
+            category.views.main.Kselected.remove(k);
+            $(this.el).find("#bulle"+k_id+"_"+catg_origin).css("background-color","");            
+        }else{
+            k.set({category_origin : catg_origin});
+            category.views.main.Kselected.add(k);
+            $(this.el).find("#bulle"+k_id+"_"+catg_origin).css("background-color","#bababa");  
+        }
+        console.log('knowledges selected:',category.views.main.Kselected);
+    },
+    actualize : function(k){
+        this.knowledge.set(k);
+    },
+    render:function(){
+        $(this.el).empty();
+        var nbre_notifs = 0;
+        try{nbre_notifs = global.ModelsNotificationsDictionary[this.knowledge.get('id')].news.length;}catch(err){console.error(err);}
+        $(this.el).html(this.template_list({
+            nbre_notifs     : nbre_notifs,
+            knowledge       : this.knowledge.toJSON(),
+            categoryTitle   : this.categoryTitle
+        }));
+        return this;
     }
 });
-/***************************************/
-category.Collections.Filters = Backbone.Collection.extend({
-    model : category.Models.Filter,
-    initialize : function() {
-        //console.log('Filters category collection Constructor');
-        this.bind("error", function(model, error){
-            //console.log( error );
-        });
-    }
-});
-/////////////////////////////////////////
-// Middle Part
 /////////////////////////////////////////
 category.Views.Category = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
         // Variable
-        this.notifications      = json.notifications;
-        this.user               = json.user;
         this.knowledges         = json.knowledges;
-        this.poches             = json.poches;
-        this.poche              = json.poche;
-        this.eventAggregator    = json.eventAggregator;
+        this.category           = json.category;
         // Templates
-        this.template_list = _.template($('#category-list-template').html());
+        this.template_poche = _.template($('#category-poche-template').html());
+        // Event
+        global.eventAggregator.on(this.category.get('id'),this.actualize,this);
+        //this.category.on('change',this.render,this);
+    },
+    actualize : function(c){
+        this.category.set(c);
+        //this.render();
     },
     render:function(){
-        $(this.el).html('');
+        $(this.el).empty();
         _this = this;
-        // Notifications
-        _notifNbr = 0;
-        this.notifications.each(function(notification){
-            //console.log(notification.get('to').id," ",_this.poche.get('id'))
-            if(notification.get('to').id == _this.poche.get('id')){_notifNbr = _notifNbr+1;}
-        });
-        // Category template
-        $(this.el).html(this.template_list({
-            notifNbr : _notifNbr,
-            knowledges : this.knowledges.toJSON(), 
-            category : this.poche.toJSON(),
-            categories : this.poches.toJSON()
+        // Creation de l'item category vide
+       $(this.el).html(this.template_poche({
+            notifs_nbr      : global.ModelsNotificationsDictionary[this.category.get('id')].news.length,
+            category        : this.category.toJSON(),
         }));
+        // On lui ajoute les objects knowledges
+        this.knowledges.each(function(knowledge){
+            _this.$("#poche"+_this.category.get('id')+"container").append(new category.Views.Knowledge({
+                knowledge : knowledge,
+                categoryTitle : _this.category.get('title')
+            }).render().el);   
+        });
+        $("#categories_grid").gridalicious({
+            gutter: 20,
+            width: 260
+        });
         return this;
     }
 });
 /***************************************/
 category.Views.Categories = Backbone.View.extend({
     initialize : function(json){
-        _.bindAll(this, 'render',"openModal","openCategoryEditorModal");
+        _.bindAll(this, 'render');
         // Variable
-        this.notifications      = json.notifications;
         this.knowledges         = json.knowledges;
-        this.poches             = json.poches;
-        this.user               = json.user;
-        this.eventAggregator    = json.eventAggregator;
+        this.categories         = json.categories;
+        // Events
+        this.listenTo(global.eventAggregator,"knowledge:create",this.rt_addKnowledge,this);
+        this.listenTo(global.eventAggregator,"knowledge:remove",this.rt_removeKnowledge,this);
     },
     events : {
         "click .addKnowledge" : "addKnowledge",
-        "click .openModal"  : "openModal",
-        "click .openCategoryEditorModal" : "openCategoryEditorModal"
+        "dblclick .openKnowledgeModal"  : "openKnowledgeModal",
+        "click .openCategoryModal"  : "openCategoryModal",
     },
-    openCategoryEditorModal : function(e){
-        e.preventDefault();
-
-        // Get category knowledges
-        category_model = this.poches.get(e.target.getAttribute("data-category-id"))
-        list_of_knowledges = new Backbone.Collection();
-        this.knowledges.each(function(knowledge){
-            knowledge.get('tags').forEach(function(tag){
-                if(category_model.get('title') == tag){list_of_knowledges.add(knowledge);}
-            });
-        });
-        this.eventAggregator.trigger('openModelEditorModal',e.target.getAttribute("data-category-id"));
+    rt_removeKnowledge : function(knowledge){
+        // Create the knowledge (sign with category if categories are in context)
+        category.views.main.knowledges.remove(knowledge);
     },
-    openModal: function(e){
+    rt_addKnowledge : function(knowledge){
+        // Create the knowledge (sign with category if categories are in context)
+        category.views.main.knowledges.add(knowledge);
+    },
+    openKnowledgeModal : function(e){
         e.preventDefault();
-        this.eventAggregator.trigger("openModal",e.target.getAttribute("data-knowledge-id"),e.target.getAttribute("data-catg-origin"));
+        category.views.k_cklayout_modal.openModelEditorModal(e.target.getAttribute("data-model-id"));
+    },
+    openCategoryModal : function(e){
+        e.preventDefault();
+        category.views.c_cklayout_modal.openModelEditorModal(e.target.getAttribute("data-model-id"));
     },
     addKnowledge : function(e){
         e.preventDefault()
         catg_id = e.target.getAttribute('data-id-category')
-        poches_ = [e.target.getAttribute('data-title-category')];
-        // Create the knowledge (sign with poche if poches are in context)
+        categories_ = [e.target.getAttribute('data-title-category')];
+        // Create the knowledge (sign with category if categories are in context)
         newK = new global.Models.Knowledge({
-            id:guid(),
-            user: this.user,
+            id    :guid(),
+            user  : category.views.main.user,
             title : $(this.el).find('#category_new_k_title_'+catg_id).val(),
+            top   : 550,
+            left  : 550,
             //content : CKEDITOR.instances.new_k_content.getData(),
-            tags: poches_,
+            tags: categories_,
             comments:[],
             date: getDate(),
             date2:new Date().getTime()
         });
         // Save the new knowledge
         newK.save();
-        this.knowledges.add(newK);
-        this.render();
+        category.views.main.knowledges.add(newK);
     },
     render:function(){
-        $(this.el).html('');
+        $(this.el).empty();
         //init
-        knowledges = this.knowledges;
-        user = this.user;
-        poches = this.poches;
-        notifications = this.notifications;
-        el = this.el;
-        eventAggregator_ = this.eventAggregator;
-        // For each poches
-        this.poches.each(function(poche){
-            list_of_knowledges = new Backbone.Collection();
-            this.knowledges.each(function(knowledge){
-                knowledge.get('tags').forEach(function(tag){
-                    if(poche.get('title') == tag){list_of_knowledges.add(knowledge);}
-                });
-            });
-            list_view = new category.Views.Category({
-                notifications   : notifications,
-                knowledges      : list_of_knowledges,
-                poche           : poche,
-                poches          : poches,
-                user            : user,
-                eventAggregator : eventAggregator_
-            });
-            $(this.el).append(list_view.render().el);
-        });
-
-        return this;
-    }
-});
-/***************************************/
-category.Views.MiddlePart = Backbone.View.extend({
-    className: "small-9 medium-8 large-8 columns",
-    initialize : function(json) {
-        _.bindAll(this, 'render');
-        // Variables
-        this.notifications      = json.notifications;
-        this.knowledges         = json.knowledges;
-        this.poches             = json.poches;
-        this.filters            = json.filters;
-        this.user               = json.user;
-        this.eventAggregator    = json.eventAggregator;
-        // Events 
-        this.poches.on('remove',this.render,this)
-        this.poches.on('change',this.render,this)
-        this.eventAggregator.on('categories_list_render', this.render, this);
-        // Templates
-        this.template_filters = _.template($('#category-filters-template').html());
-        
-    },
-    render : function(){
-        $(this.el).html('');
-        // Context bar
-        $(this.el).append(this.template_filters({filters : this.filters.toJSON()}));
-        // Category de cards
-        lists_view = new category.Views.Categories({
-            id              : "categories_grid",
-            className       : "row panel custom_row gridalicious",
-            notifications   : this.notifications,
-            knowledges      : this.knowledges,
-            poches          : this.poches,
-            user            : this.user,
-            eventAggregator : this.eventAggregator
-        });
-        $(this.el).append(lists_view.render().el);
-        $("#categories_grid").gridalicious({
-            gutter: 20,
-            width: 260
-          });
-        return this;
-    }
-});
-/////////////////////////////////////////
-// Right Part
-/////////////////////////////////////////
-category.Views.NotCategorized = Backbone.View.extend({
-    initialize : function(json) {
-        _.bindAll(this, 'render');
-        // Variables
-        this.knowledges = json.knowledges;
-        this.knowledges_render = this.knowledges;
-        this.poches = json.poches;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.eventAggregator.on('knowledge_search', this.knowledgeSearch, this);
-        // Templates
-        this.template = _.template($('#category-notcategorized-template').html());
-        // Styles
-        //$(this.el).attr( "style","overflow: auto;max-height:200px");
-    },
-    knowledgeSearch: function(matched_knowledges){
-        this.knowledges_render = matched_knowledges;
-        this.render();
-    },
-    render : function(){
-        // Init
-        $(this.el).html('');
-        el_notcategorized_part=this.el;
-        template = this.template;
-        knowledges = this.knowledges;
-        poches_ = this.poches;
-        // For each poche
-        this.knowledges_render.each(function(knowledge_){
-            if(knowledge_.get('tags').length == 0){
-                $(el_notcategorized_part).append(template({
-                    knowledge : knowledge_.toJSON(),
-                    poches : poches_.toJSON()
-                }));
+        _this = this;
+        ////////////////////////////
+        // Knowledge not categorized
+        template = this.template_notCategorized;
+        this.knowledges.each(function(k){
+            if(k.get('tags').length == 0){
+                $(_this.el).append(new category.Views.Knowledge({
+                    className : "item",
+                    knowledge : k,
+                    categoryTitle : "none"
+                }).render().el);
             }
         });
+        ////////////////////////////
+        // Build the dictionary k-catg
+        dictionary = {};
+        this.categories.each(function(category){
+            dictionary[category.get('title')] = {"model":category,"knowledges":[]};
+        })
+        this.knowledges.each(function(k){
+            k.get('tags').forEach(function(tag){
+                try{
+                    dictionary[tag].knowledges = _.union(dictionary[tag].knowledges,[k])    
+                }catch(e){
+                    console.log(tag," doesn't exit anymore")
+                }
+                
+            });
+        });
+        // Category
+        for(var key in dictionary){
+            if((category.views.main.filters.length == 0)||((category.views.main.filters.length > 0)&&(dictionary[key].knowledges.length > 0))){
+                $(_this.el).append(new category.Views.Category({
+                    knowledges          : new Backbone.Collection(dictionary[key].knowledges),
+                    category            : dictionary[key].model
+                }).render().el);
+            }
+        }
 
         return this;
     }
 });
-/***************************************/
-category.Views.RightPart = Backbone.View.extend({
-    className: "small-2 medium-2 large-2 columns",
+/////////////////////////////////////////
+category.Views.ActionBar = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
-        this.knowledges = json.knowledges; 
-        this.poches = json.poches;   
-        this.eventAggregator = json.eventAggregator;
+        this.categories = json.categories; 
+         
         // Templates
-        this.template_search = _.template($('#category-search-template').html());
+        this.template = _.template($('#category-actionBar-template').html());
+        this.template_filters = _.template($('#category-filters-template').html());
     },
     events : {
-        "keyup .search" : "search",
+        "click .remove" : "removeKselected",
+        "click .newUnlinkedK" : "newUnlinkedK",
+        "click .uncategorized" : "uncategorized",
+        "click .copy" : "copyTo",
+        "click .move" : "moveTo",
+        "click .addFilter" : "addFilter",
+        "click .changeFilterMode" : "changeFilterMode",
+        "click .removeFilter" : "removeFilter",
     },
-    search: function(e){
+    removeFilter : function(e){
         e.preventDefault();
-        var research = e.target.value;
-        var research_size = research.length;
-        var matched = new Backbone.Collection();
-        this.knowledges.each(function(c){
-            if(research.toLowerCase() == c.get('title').substr(0,research_size).toLowerCase()){
-                matched.add(c);
-            }
-        });
-        this.eventAggregator.trigger('knowledge_search',matched);
+        console.log(category.views.main.filters)
+        category.views.main.filters.remove(e.target.getAttribute('data-filter-id'));
     },
-    render : function(){
-        $(this.el).html('');
-        // Input search
-        $(this.el).append(this.template_search({title:"K not categorized"}));
-        // Poches part
-        notcategorized_view = new category.Views.NotCategorized({
-            knowledges:this.knowledges,
-            poches : this.poches,
-            eventAggregator:this.eventAggregator
-        });
-        $(this.el).append(notcategorized_view.render().el);
-
-        return this;
-    }
-});
-/////////////////////////////////////////
-// Modal
-category.Views.Modal = Backbone.View.extend({
-    el:"#category_modal_container",
-    initialize:function(json){
-        _.bindAll(this, 'render', 'openModal');
-        // Variables
-        this.knowledge = new Backbone.Model();
-        this.knowledges = json.knowledges;
-        this.poches = json.poches;
-        this.category_origin = "none";
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.eventAggregator.on("openModal", this.openModal);
-        // Templates
-        this.template_modal = _.template($('#category-modal-template').html()); 
+    changeFilterMode : function(e){
+        e.preventDefault();
+        category.views.main.filterMode.set({mode : e.target.getAttribute('data-filter-mode')});
     },
-    events: {
-        "click .moveTo" : "moveTo",
-        "click .copyTo" : "copyTo",
+    addFilter : function(e){
+        e.preventDefault();
+        type = e.target.getAttribute('data-filter-type');
+        val = e.target.getAttribute('data-filter-val');
+        f = new global.Models.Filter();  
+        if(type == 'user'){
+            f.set({id : guid(),type : type,model :  category.views.main.users.get(val)});
+        }else if(type == 'category'){
+            f.set({id : guid(),type : type,model :  category.views.main.categories.get(val)});
+        }else{
+            f.set({id : guid(),type : type,model : val});
+        }
+        category.views.main.filters.add(f);
+        console.log("filters : ",category.views.main.filters)
     },
     copyTo : function(e){
         e.preventDefault();
         target = e.target.getAttribute("data-catg-title");
-        knowledge_id = e.target.getAttribute("data-knowledge-id");
-        knowledgeToSet = this.knowledges.get(knowledge_id);
-        knowledgeToSet.set({'tags':_.union(knowledgeToSet.get('tags'),[target])});
-        knowledgeToSet.save();
-        this.eventAggregator.trigger("categories_list_render");
-        $('#category_modal_container').foundation('reveal', 'close'); 
+        if(confirm(category.views.main.Kselected.length+" knowledges will be duplicated into "+target+" catgory, would you continue?")){
+            category.views.main.Kselected.each(function(model){
+                model.set({'tags':_.union(model.get('tags'),[target])}).save();
+            });
+        }
+        category.views.main.eventAggregator.trigger("categories_list_render");
     },
     moveTo : function(e){
         // Init
         e.preventDefault();
         target = e.target.getAttribute("data-catg-title");
-        origin = e.target.getAttribute("data-catg-orign");
-        knowledge_id = e.target.getAttribute("data-knowledge-id");
-        knowledgeToSet = this.knowledges.get(knowledge_id);
-        // Si K est déjà dans une poche ou enlève le tag de la poche d'origine
-        if(knowledgeToSet.get('tags').length != 0){
-            knowledgeToSet.set({'tags': _.without(knowledgeToSet.get('tags'),origin)});    
+        if(confirm(category.views.main.Kselected.length+" knowledges will be moved to "+target+" catgory, would you continue?")){
+            category.views.main.Kselected.each(function(model){
+                if(model.get('category_origin') != "none"){
+                    // Si la K est dans une category on supprime le tag correspondant
+                    model.set({'tags': _.without(model.get('tags'),model.get('category_origin'))});
+                }
+                // Dans tous les cas on ajoute le nouveau tag et on sauvegarde le model
+                model.set({'tags':_.union(model.get('tags'),[target])}).save();
+            }); 
         }
-        knowledgeToSet.set({'tags':_.union(knowledgeToSet.get('tags'),[target])});
-        knowledgeToSet.save();
-        this.eventAggregator.trigger("categories_list_render");
-        $('#category_modal_container').foundation('reveal', 'close'); 
+
+        category.views.main.eventAggregator.trigger("categories_list_render");
     },
-    openModal : function(k_id,catg_origin){
-        this.knowledge = this.knowledges.get(k_id);
-        this.category_origin = catg_origin;
-        this.render(function(){
-            $('#category_modal_container').foundation('reveal', 'open'); 
-            $(document).foundation();
-        }); 
+    uncategorized : function(e){
+        e.preventDefault();
+        if(confirm(category.views.main.Kselected.length+" knowledges will be uncategorized and all instances of this knowledge will also be uncategorized, would you continue?")){
+            category.views.main.Kselected.each(function(k){
+                k.set({tags : []}).save();
+            });
+        }
+        category.views.main.eventAggregator.trigger("categories_list_render");
     },
-    render:function(callback){
-        $(this.el).html('');
-        $(this.el).append(this.template_modal({
-            knowledge:this.knowledge.toJSON(),
-            category_origin : this.category_origin,
-            poches : this.poches.toJSON()
+    removeKselected : function(e){
+        e.preventDefault();
+        if(confirm(category.views.main.Kselected.length+" knowledges will be remove, would you continue?")){
+            modelsToDestroy = new Backbone.Collection();
+            category.views.main.Kselected.each(function(model){
+                if(model.get('tags').length == 0){
+                    // Si la K n'est pas categorized on la supprime
+                    modelsToDestroy.add(model);
+                }else if(model.get('tags').length == 1){
+                    // Si la K est dans une seul category on la supprime
+                    modelsToDestroy.add(model);
+                }else if(model.get('tags').length > 1){
+                    // Si la K est dans not categorized + dans une categorie ou dans 2 categories en mm temps on supprime juste le tag
+                    model.set({tags : _.without(model.get('tags'),model.get('category_origin'))}).save();
+                }
+            }); 
+            // Puis on supprime un a un avec la une boucle while pour ne pas en supprimer que un sur deux
+            while (model = modelsToDestroy.first()) {
+                model.destroy();
+            }
+
+            category.views.main.eventAggregator.trigger("categories_list_render");
+        }
+    },
+    newUnlinkedK : function(e){
+        e.preventDefault();
+        // Create the knowledge
+        newK = new global.Models.Knowledge({
+            id:guid(),
+            user: category.views.main.user,
+            top : 550,
+            left : 550,
+            title : $(this.el).find('#category_new_unlinked_k_title').val(),
+            tags: [],
+            comments:[],
+            date: getDate(),
+            date2:new Date().getTime()
+        });
+        // Save the new knowledge
+        newK.save();
+        category.views.main.knowledges.add(newK);
+        category.views.main.ks_to_render = category.views.main.knowledges;
+        category.views.main.render();
+    },
+    render : function(){
+        $(this.el).empty();
+        // Add ActionBar
+        $(this.el).append(this.template({
+            categories : this.categories.toJSON(),
+            users : category.views.main.users.toJSON()
         }));
-        // Render it in our div
-        if(callback) callback();
+        // Custom filters before send to the template
+        filters_custom = new Backbone.Collection();
+        category.views.main.filters.each(function(filter){
+            if(filter.get('type') == 'user') filters_custom.add(new Backbone.Model({id:filter.get('id'),title:filter.get('model').get('name')}));
+            else if(filter.get('type') == 'category') filters_custom.add(new Backbone.Model({id:filter.get('id'),title:filter.get('model').get('title')}));
+            else filters_custom.add(new Backbone.Model({id:filter.get('id'),title:filter.get('model')}));
+        });
+        if(category.views.main.filters.length > 0) $(this.el).append(this.template_filters({filters_custom : filters_custom.toJSON()}));
+
+        return this;
     }
 });
 /////////////////////////////////////////
@@ -342,47 +358,82 @@ category.Views.Main = Backbone.View.extend({
     el:"#category_container",
     initialize : function(json) {
         _.bindAll(this, 'render',"newCategory");
+        // Elements
+        this.bar_el = $(this.el).find('#category-actionBar');
+        this.grid_el = $(this.el).find('#category-grid');
         // Variables
-        this.all_notifications  = json.a_notifications;
-        this.cat_notifications  = json.c_notifications;
         this.knowledges         = json.knowledges;
-        this.poches             = json.poches;
+        this.ks_to_render       = this.knowledges;
+        this.categories         = json.categories;
         this.project            = json.project;
+        this.links              = json.links;
         this.user               = json.user;
-        this.filters            = new category.Collections.Filters();
+        this.users              = json.users;
+        this.filters            = new Backbone.Collection();
         this.eventAggregator    = json.eventAggregator;
-        // Modals
-        this.modal_view = new category.Views.Modal({
-            poches: this.poches,
-            knowledges : this.knowledges,
-            eventAggregator : this.eventAggregator
-        });
-        // this.categoryEditorModal_view = new categoryEditor.Views.Modal({
-        //     notifications : this.all_notifications,
-        //     user : this.user,
-        //     categories : this.poches,
-        //     eventAggregator : this.eventAggregator
-        // });
-        this.CKLayoutModal_view = new CKLayout.Views.Modal({
-            notifications : this.all_notifications,
+        this.Kselected          = new Backbone.Collection();  
+        this.filterMode         = new Backbone.Model({mode : "and"}) ;   
+        // CKLayout for knowledge 
+        category.views.k_cklayout_modal = new CKLayout.Views.Modal({
             user : this.user,
-            collection : this.poches,
+            collection : this.knowledges,
             eventAggregator : this.eventAggregator
         });
-        // Events                 
-        this.cat_notifications.bind("reset", this.render);
-        this.filters.bind('add', this.render);
-        this.filters.bind('remove', this.render);
-        this.knowledges.bind("add", this.render);
-        this.knowledges.bind("remove", this.render);
+        // CKLayout for category
+        category.views.c_cklayout_modal = new CKLayout.Views.Modal({
+            user : this.user,
+            collection : this.categories,
+            eventAggregator : this.eventAggregator
+        });
+        // Events
+        this.listenTo(this.filterMode,"change",this.globalRender);  
+        
+        this.listenTo(this.filters,"add",this.globalRender);  
+        this.listenTo(this.filters,"remove",this.globalRender);
 
+        this.knowledges.on("add", this.render,this);
+        //this.knowledges.on("remove", this.render,this);
+
+        this.categories.on('add',this.globalRender,this);
+        this.categories.on('remove',this.globalRender,this);
+        //this.categories.on('change',this.render,this);
+        this.eventAggregator.on('categories_list_render', this.globalRender, this);
+        this.eventAggregator.on('knowledge_search', this.actualize, this);
+
+        
     },
     events : {
-        "click .addFilter" : "addFilter",
-        "click .remove" : "removeFilter",
-        "click .moveTo" : "moveTo",
-        "click .newCategory" : "newCategory"
+        "click .newCategory" : "newCategory",
+        "click .Kselectable" : "setSelectedK",
+        "keyup .search" : "search",
     },
+    search: function(e){
+        var research = e.target.value;
+        var research_size = research.length;
+        var matched = new Backbone.Collection();
+        this.knowledges.each(function(k){
+            if(research.toLowerCase() == k.get('title').substr(0,research_size).toLowerCase()){
+                matched.add(k);
+            }
+        });
+        this.ks_to_render = matched;
+        this.render();
+    },
+    // setSelectedK : function(e){
+    //     e.preventDefault();
+    //     k_id = e.target.getAttribute('data-model-id');
+    //     k = this.knowledges.get(k_id);
+    //     if(this.Kselected.where({id : k_id}).length > 0){
+    //         this.Kselected.remove(k);
+    //         $(e.target).prop('checked',false);
+    //         $(this.el).find("#bulle"+k_id).css("background-color","");            
+    //     }else{
+    //         k.set({category_origin : e.target.getAttribute('data-catg-origin')});
+    //         this.Kselected.add(k);
+    //         $(e.target).prop('checked',true);
+    //         $(this.el).find("#bulle"+k_id).css("background-color","#bababa");            
+    //     }
+    // },
     newCategory : function(e){
         e.preventDefault();
         global.models.newP = new global.Models.Poche({
@@ -399,7 +450,7 @@ category.Views.Main = Backbone.View.extend({
 
         });
         global.models.newP.save();
-        this.poches.add(global.models.newP);
+        this.categories.add(global.models.newP);
         // SPARQL
         // socket.post(
         //     '/sparql/query',
@@ -411,82 +462,138 @@ category.Views.Main = Backbone.View.extend({
         //         })
         //     }
         // );
-        this.render();
-    },
-    moveTo : function(e){
-        // Init
-        e.preventDefault();
-        target = e.target.getAttribute("data-catg-title");
-        knowledge_id = e.target.getAttribute("data-knowledge-id");
-        knowledgeToSet = this.knowledges.get(knowledge_id);
         
-        knowledgeToSet.set({'tags':_.union(knowledgeToSet.get('tags'),[target])});
-        knowledgeToSet.save();
-        this.render();
+        //this.render();
     },
-    removeFilter: function(e){
-        e.preventDefault();
-        this.filters.remove(this.filters.get(e.target.getAttribute('data-id-filter')));
+    ///////////////////////////////////////////////////////
+    applyFilter : function(){
+        _this = this;
+        var ks_cloned = global.Functions.cloneCollection(this.ks_to_render);
+
+        this.filters.each(function(f){
+            if(f.get('type') == "concept"){        ks_cloned = _this.applyFilterMode(ks_cloned,_this.filterByConcept(ks_cloned,_this.links,f));}
+            if(f.get('type') == "project"){        ks_cloned = _this.applyFilterMode(ks_cloned,_this.filterByProject(ks_cloned,f));}
+            if(f.get('type') == "category"){       ks_cloned = _this.applyFilterMode(ks_cloned,_this.filterByPoche(ks_cloned,_this.links,f));}
+            if(f.get('type') == "user"){           ks_cloned = _this.applyFilterMode(ks_cloned,_this.filterByExpert(ks_cloned,_this.links,f));}
+            if(f.get('type') == "state"){          ks_cloned = _this.applyFilterMode(ks_cloned,_this.filterByState(ks_cloned,_this.links,f));}
+            if(f.get('type') == "notLinked"){      ks_cloned = _this.applyFilterMode(ks_cloned,_this.filterByNotLinked(ks_cloned,_this.links));}
+            if(f.get('type') == "notCategorised"){ ks_cloned = _this.applyFilterMode(ks_cloned,_this.filterByNotCategorised(ks_cloned,_this.links));}
+        });
+        return ks_cloned;
     },
-    addFilter: function(e){
-        e.preventDefault();
-        model_ = this.poches.get(e.target.getAttribute("data-filter-model"));
-        if(model_ != ""){
-            new_filter = new category.Models.Filter({
-                id:guid(),//e.target.getAttribute("data-filter-id"),
-                type:e.target.getAttribute("data-filter-type"),
-                model:model_
-            });
-            this.filters.add(new_filter);
-        }
-    },
-    render : function(){
-        $(this.el).html("");
-        // init
-        poches_to_render = new Backbone.Collection(); 
-        if(this.filters.length != 0){
-            this.filters.each(function(filter){
-                if(filter.get('type') == "poche"){poches_to_render.add(filter.get('model'))}
-            });
+    applyFilterMode : function(old_collection,last_collection){
+        var new_collection = new Backbone.Collection();
+        var mode = this.filterMode.get('mode');
+        // Si il n'y a q'un filtre on applique le mode "and"
+        if(this.filters.length > 1){
+            if(mode == "and"){
+                new_collection = last_collection;
+            }else if(mode == "or"){
+                old_array = old_collection.toArray();
+                last_array = last_collection.toArray();
+                new_array = _.uniq(old_array,last_array);
+                new_collection.add(new_array);
+            }    
         }else{
-            this.poches.each(function(poche){
-                poches_to_render.add(poche);
-            });
+            new_collection = last_collection;
         }
-        // Left part
-        leftPart_view = new categoriesList.Views.Main({
-            className       : "small-2 medium-2 large-2 columns",
-            knowledges:this.knowledges,
-            poches:this.poches,
-            eventAggregator:this.eventAggregator
-        });
-        $(this.el).append(leftPart_view.render().el);
-        // Middle part
-        middlePart_view = new category.Views.MiddlePart({
-            notifications:this.cat_notifications,
-            knowledges:this.knowledges,
-            poches : poches_to_render,
-            filters : this.filters,
-            user : this.user,
-            eventAggregator:this.eventAggregator
-        });
-        $(this.el).append(middlePart_view.render().el);
-        // Right part
-        right_part = new category.Views.RightPart({
-            knowledges:this.knowledges,
-            poches : this.poches,
-            eventAggregator:this.eventAggregator
-        });
-        $(this.el).append(right_part.render().el);
-        //Modal
-        this.modal_view.render();
         
+        return new_collection;
+    },
+    filterByNotLinked : function(ks,links){
+        var list_to_remove = [];
+        ks.each(function(k){
+            links.filter(function(link){
+                if(link.get('knowledge') == k.get('id')){
+                    list_to_remove.unshift(k);
+                }
+            });  
+        }); 
+        list_to_remove.forEach(function(k){
+            ks.remove(k);
+        });
+        return ks;
+    },
+    filterByNotCategorised : function(ks,links){
+        var list_to_remove = [];
+        ks.each(function(k){
+            if(k.get('tags').length > 0){
+                list_to_remove.unshift(k);
+            }   
+        });
+        list_to_remove.forEach(function(k){
+            ks.remove(k);
+        });
+        return ks;
+    },
+    filterByPoche : function(ks,links,f){
+        var ks_filtered = new Backbone.Collection();
+        ks.each(function(k){
+            if(_.indexOf(k.get('tags'),f.get('model').get('title')) != -1) ks_filtered.add(k);
+        });
+        return ks_filtered;
+    },
+    filterByExpert : function(ks,links,f){
+        var ks_filtered = new global.Collections.Knowledges();
+        ks.each(function(k){
+            console.log(k.attributes)
+            if(k.get('user').id == f.get('model').get('id')){
+                ks_filtered.add(k);
+                return false;
+            }
+        });
+        return ks_filtered;
+    },
+    filterByState : function(ks,links,f){
+        var ks_filtered = new global.Collections.Knowledges();
+        ks.each(function(k){
+            if(k.get('color') == f.get('model')){
+                ks_filtered.add(k);
+                return false;
+            } 
+        });
+        return ks_filtered;
+    },
+    ///////////////////////////////////////////////////////
+    formatGrid : function(){
         $("#categories_grid").gridalicious({
             gutter: 20,
             width: 260
-          });
-
-        $(document).foundation();
+        });
+    },
+    globalRender : function(){
+        this.renderActionBar();
+        this.render();
+    },
+    renderActionBar : function(){
+        this.bar_el.empty();
+        // Action Bar
+        category.views.actionBar = new category.Views.ActionBar({
+            categories : this.categories,
+        });
+        this.bar_el.append(category.views.actionBar.render().el);
+    },
+    render : function(){
+        this.grid_el.empty();
+        // init
+        this.Kselected.reset();
+        // Apply filters
+        var knows = new Backbone.Collection();
+        if(this.filters.length == 0){
+            knows = this.ks_to_render;
+        }else{
+            knows = this.applyFilter();
+        }
+        // Category de cards
+        lists_view = new category.Views.Categories({
+            id                  : "categories_grid",
+            className           : "panel expand gridalicious",
+            knowledges          : knows,
+            categories          : this.categories
+        });
+        $(this.grid_el).append(lists_view.render().el);
+        
+        this.formatGrid();
 
         return this;
     }

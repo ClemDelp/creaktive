@@ -2,29 +2,45 @@
 <script src="/js/vendor/backbone.iosync.js"></script>
 <script src="/js/vendor/backbone.iobind.js"></script>
 <!-- ******************************** -->
+<!-- Gridalicious -->
+<script src="/js/vendor/jquery.grid-a-licious.js"></script>
+<!-- ******************************** -->
 <!-- my-mind -->
 <script src="/js/my-mind/mymind-ckviewer.js"></script>
 <link rel="stylesheet" href="styles/map/font.css" />
 <link rel="stylesheet" href="styles/map/style.css" />
 <link rel="stylesheet" href="styles/map/print.css" media="print" />
 <!-- ******************************** -->
-<!-- Zoom js -->
-<script src="/js/vendor/zoom.js"></script> 
-<script src="/js/vendor/zoon.js"></script>
+<!-- zebradatepicker -->
+<script src="/js/vendor/zebradatepicker.js"></script>
+<link rel="stylesheet" href="styles/zebradatepicker/metallic.css" type="text/css"/>
 <!-- ******************************** -->
 <!-- Templates to load -->
 <%- partial('../app/templates/topbar_templates') %>
-<%- partial('../app/templates/title_templates') %>
-<%- partial('templates/CKViewer_templates') %>
-<!-- Modules situés dans assets/js/BB_app -->
 <script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
+
+<%- partial('../app/templates/title_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/title.js"></script>
+
+<%- partial('templates/CKViewer_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/CKViewer.js"></script>
 
-<script>
-  var zoomflag=false;
 
+
+<!-- Modules situés dans assets/js/BB_app -->
+
+
+
+
+
+<script>
   ///////////////////////////////////////////////////
+  var modflag = true;
+  var iniflag = true;
+  var newConceptsTree;
+  var newKnowledges;
+  var newCategories;
+  var newCklinks;
   $(document).ready(function () {
     ////////////////////////////////////////
     Backbone.Model.prototype.toJSON = function() {
@@ -43,20 +59,27 @@
       json.links = <%- links %>;
       json.notifications = <%- notifications %>;
       json.permissions = <%- permissions %>;
-
+      json.backups = <%- backups %>;
+      
       _.each(json.knowledges, function(k){
         k.comments = new global.Collections.Comments(k.comments);
         k.members = new global.Collections.UsersCollection(k.members);
-      })
+      });
+
       _.each(json.concepts, function(c){
         c.comments = new global.Collections.Comments(c.comments);
         c.members = new global.Collections.UsersCollection(c.members);
-      })
+      });
+
+      _.each(json.poches, function(p){
+        p.comments = new global.Collections.Comments(p.comments);
+        p.members = new global.Collections.UsersCollection(p.members);
+      });
 
       global.init(json, function(){
         /*Modules*/
-        topbar.init();
         title.init(json.project,"ckviewer");
+        topbar.init();
         CKViewer.init();
         ////////////////////////////////////////
         /*activat of "hashchange events's monitoring"*/

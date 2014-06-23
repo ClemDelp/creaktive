@@ -1,4 +1,18 @@
-/***************************************/
+/////////////////////////////////////////////////
+var comments = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {}
+};
+/////////////////////////////////////////////////
+// MAIN
+/////////////////////////////////////////////////
 comments.Views.Main = Backbone.View.extend({
     initialize : function(json) { 
         //console.log("comments view constructor!");
@@ -8,10 +22,15 @@ comments.Views.Main = Backbone.View.extend({
         this.user = json.user;
         // Templates
         this.template = _.template($('#comments-template').html());
+        // Events
+        this.listenTo(this.model,"remove",this.removeView,this);     
     },
     events : {
-        'click .add' : 'addComment',
-        'click .remove' : 'removeComment'
+        'click .addComment' : 'addComment',
+        'click .removeComment' : 'removeComment'
+    },
+    removeView : function(){
+      this.remove();
     },
     addComment: function(e){
         e.preventDefault(); 
@@ -32,8 +51,7 @@ comments.Views.Main = Backbone.View.extend({
         this.render();
     },
     render : function() {
-        $(this.el).html("");
-        // Comments + new comment input
+        $(this.el).empty();
         $(this.el).append(this.template({
             user : this.user,
             model : this.model,

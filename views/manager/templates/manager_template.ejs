@@ -10,25 +10,47 @@
 		          <input type="text" id="project_title" class="search" placeholder="new project title" required pattern="[a-zA-Z]+">
 		        </div>
 		        <div class="small-2 columns">
-		          <a class="button newProject postfix" href="#">Add</a>
+		          <a class="button newProject postfix" href="#">new</a>
 			    </div>
 	      	</form>
 	    </div>
 	</div>
 </script>
 
-
 <script type="text/template" id="manager-project-template">
-    <div class="panel large-12 medium-12 small-12">
-    <center>
+    <div class="item">
+	    <ul class="pricing-table">
+		  	<li class="price">
+		  		<a href="#" class="openProjectModal manager button radius secondary" data-model-id="{{-project.id}}">
+		  			<h3 data-model-id="{{-project.id}}">{{-project.title }}
+					{{if(notifNbr > 0){ }}
+	                    <span class="top-bar-unread">{{-notifNbr}}</span>
+	                {{ } }}
+	                </h3>
+		  		</a>
+		  	</li>
+		  	<li class="description">
+		  		{{ if(project.content == ""){ }}Add a description via the project editor{{ }else{ }} {{=project.content}} {{ } }}<br>
+		  		Create by {{-project.author.name}} at {{-project.date}}
+		  	</li>
+		  	<li class="description">
+		  		<strong style="color:green">{{-userNbr}}</strong> users on this project <a href="/userManager?projectId={{- project.id}}" class="button tiny round secondary">manage users</a>
+		  	</li>
+			<li class="cta-button">
+				<a class="button success expand" href="/ckviewer?projectId={{- project.id}}">Open</a>
+			</li>
+		</ul>
+    </div>
+</script>
 
-    	<h3>{{-project.title }}</h3>
+<!-- 
+<center>
+
+    	<h3></h3>
 	    <a href="/conceptsMap?projectId={{- project.id}}" class="button secondary round tiny">{{-nbrConc}} concepts</a>
 	    <a href="/knowledges?projectId={{- project.id}}" class="button secondary round tiny">{{-nbrKnow}} knowledges</a>
 	    <a href="/categories?projectId={{- project.id}}" class="button secondary round tiny">{{-nbrCatg}} categories</a>
 	    <a href="/analyse?projectId={{- project.id}}" class="button secondary round tiny">{{-nbrLink}} CKlinks</a>
 	    <a href="/userManager?projectId={{- project.id}}" class="button secondary round tiny">{{-nbrUser}} users</a>
 	    <a href="#" class="button tiny alert secondary round removeProject" data-id-project="{{- project.id}}">remove</a>
-    </center>
-    </div>
-</script>
+    </center> -->

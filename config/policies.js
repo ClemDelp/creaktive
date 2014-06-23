@@ -40,8 +40,9 @@
   }, 
 
   "CkviewerController" : {
-    "*" : "authenticated"
-  }, 
+   "ckviewerview" : ["authenticated", "allowedProjects","forceHTTPs"],
+   "*" : "authenticated"
+  },
 
   "PocheController" : {
     "find" : ["authenticated", "canRead"],
@@ -51,8 +52,21 @@
   "FileController" : {
     "*" : "authenticated"
   },
+  
+  "CkpreviewerController" : {
+    "*" : "authenticated"
+  }, 
+
+
+  "AnalyseController" : {
+    "*" : "authenticated"
+  },
 
   "S3Controller" : {
+    "*" : "authenticated"
+  },
+
+  "bbmap" : {
     "*" : "authenticated"
   },
 
@@ -69,6 +83,7 @@
   }, 
 
   "NotificationController" : {
+    "notificationview" : ["authenticated", "allowedProjects","forceHTTPs"],
     "*" : ["authenticated"],
   },
 
@@ -80,8 +95,11 @@
   /*********** VIEWS ******************/
   "ManagerController" : {
     "managerview" : ["authenticated", "allowedProjects","forceHTTPs"],
-    "editprofileview" : ["authenticated", "forceHTTPs"]
+    "editprofileview" : ["authenticated", "forceHTTPs"],
+    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated", "canWrite"]
   },
+
   "UserController" : {
     "inviteUser" : ["authenticated"],
     "userview" : ["authenticated", "allowedProjects","forceHTTPs"],
@@ -90,6 +108,7 @@
     "changepassword" :"authenticated",
     "find" : ["authenticated", "canRead"],
   },
+
   "AnalyseController" : {
     "analyseview" : ["authenticated", "allowedProjects","forceHTTPs"],
   }, 
@@ -100,12 +119,17 @@
     "generateTree" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"] 
   },
-  
+
   "KnowledgeController" : {
     "knowledgeview" : ["authenticated", "allowedProjects","forceHTTPs"],
     "find" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"]
   },
+
+  "BackupController" : {
+    "*" : ["authenticated"]
+  },
+
   "CategoryController" : {
     "categoryview" : ["authenticated", "allowedProjects","forceHTTPs"],
     "find" : ["authenticated", "canRead"],

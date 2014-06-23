@@ -1,4 +1,3 @@
-/***************************************/
 var activitiesList = {
   // Classes
   Collections: {},
@@ -15,29 +14,72 @@ activitiesList.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
-        this.model = json.model;
-        this.notifications = json.notifications;
-        this.eventAggregator = json.eventAggregator;
-        // Events
-        this.notifications.bind("add",this.render);
-        this.notifications.bind("remove",this.render);
-        this.notifications.bind("change",this.render);
+        this.model           = json.model;
+        if(this.model.get('type') == 'project'){
+          this.models_notifs = global.ProjectsNotificationsDictionary;
+          this.listenTo(global.eventAggregator,"ProjectsNotificationsDictionary",this.actualize,this); 
+          //global.eventAggregator.bind("ProjectsNotificationsDictionary",this.actualize,this);
+        }else{
+          this.models_notifs = global.ModelsNotificationsDictionary;
+          this.listenTo(global.eventAggregator,"ModelsNotificationsDictionary",this.actualize,this);
+          //global.eventAggregator.bind("ModelsNotificationsDictionary",this.actualize,this);
+        } 
+        // Event
+        this.listenTo(this.model,"remove",this.removeView,this);
+        //this.model.on("remove",this.remove,this);
         // Templates
         this.template = _.template($('#activitiesList-template').html());     
     },
-    events : {},
+    events : {
+      "click .closeAll" : "globalValidation",
+      "click .close" : "simpleValidation"
+    },
+    globalValidation : function(e){
+        e.preventDefault();
+        _this = this;
+        this.models_notifs[this.model.get('id')].news.each(function(notif){
+            notif.set({read : _.union(notif.get('read'),global.models.current_user.get('id'))});
+            notif.save();
+        });
+        this.render();
+    },
+    simpleValidation : function(e){
+        e.preventDefault();
+        notif = this.models_notifs[this.model.get('id')].news.get(e.target.getAttribute('data-id-notification'));
+        notif.set({read : _.union(notif.get('read'),global.models.current_user.get('id'))});
+        notif.save();
+        this.render();
+    },
+    removeView : function(){
+      this.remove();
+    },
+    actualize : function(models_notifs){
+      if(this.model.get('type') == 'project'){
+          this.models_notifs = global.ProjectsNotificationsDictionary;
+        }else{
+          this.models_notifs = global.ModelsNotificationsDictionary;
+        } 
+      //this.read_notifs = models_notifs[this.model.get('id')].read;
+      this.render();
+    },
     render : function(){
         // Init
-        $(this.el).html('');
+        
+        this.news_notifs     = this.models_notifs[this.model.get('id')].news;
+        //this.read_notifs     = this.models_notifs[this.model.get('id')].read;
+        $(this.el).empty();
         _this = this;
         // Poche list
-        notif_to_render = new Backbone.Collection();
-        this.notifications.each(function(notification){
-            if(notification.get('to').id == _this.model.get('id')){notif_to_render.add(notification)}
-        });
-        $(this.el).append(this.template({notifications : notif_to_render.toJSON()}));
+        // notif_to_render = new Backbone.Collection();
+        // this.notifications.each(function(notification){
+        //     if(notification.get('to').id == _this.model.get('id')){notif_to_render.add(notification)}
+        // });
+        $(this.el).append(this.template({
+          model       : this.model.toJSON(),
+          news_notifs : this.news_notifs.toJSON(),
+          //read_notifs : this.read_notifs.toJSON()
+        }));
         
         return this;
     }
 });
-/***************************************/

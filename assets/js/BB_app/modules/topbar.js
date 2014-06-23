@@ -1,3 +1,22 @@
+/////////////////////////////////////////////////
+var topbar = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function (page) {
+    /*Init*/
+    this.views.Main = new this.Views.Main({
+      user            : global.models.current_user,
+      eventAggregator : global.eventAggregator
+    });
+    this.views.Main.render();
+  }
+};
 /////////////////////////////////////////
 // VIEWS
 /////////////////////////////////////////
@@ -6,25 +25,15 @@ topbar.Views.TopBar = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Variables
         this.user = json.user;
-        this.notifications      = json.notifications;
         this.eventAggregator    = json.eventAggregator;
         // Templates     
         this.template = _.template($("#topbar-main-template").html());
         // Events
-        this.notifications.on('change',this.render,this);
-        this.notifications.on('add',this.render,this);
-    },
-    events : {
-        "click .openModal" : "openModal"
-    },
-    openModal : function(e){
-        e.preventDefault();
-        this.eventAggregator.trigger('openNotificationModal');
+        
     },
     render : function(){
         $(this.el).html('');
         $(this.el).append(this.template({
-            notifications_length : this.notifications.length,
             user : this.user.toJSON()
         }));
 
@@ -38,14 +47,7 @@ topbar.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Variables
         this.user               = json.user;
-        this.notifications      = json.notifications;
         this.eventAggregator    = json.eventAggregator; 
-        // Notification Modal
-        new notification.Views.Modal({
-            user             : this.user,
-            notifications    : this.notifications,
-            eventAggregator  : this.eventAggregator
-        });
     },
     render : function(){
         $(this.el).html('');
@@ -53,7 +55,6 @@ topbar.Views.Main = Backbone.View.extend({
         // TopBar view
         $(this.el).append(new topbar.Views.TopBar({
             user : this.user,
-            notifications : this.notifications,
             eventAggregator : this.eventAggregator
         }).render().el);
 

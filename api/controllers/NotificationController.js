@@ -79,7 +79,9 @@ module.exports = {
     });
   },
 
-
+  notificationview : function(req,res){
+    sails.config.bootstrapdata.bootstrapmanager(req,res);
+  },
 
 
 

@@ -454,6 +454,26 @@ var MM = {
  	return this._dom.text.innerHTML.replace(/<br\s*\/?>/g, "\n");
  }
 
+ MM.Item.prototype.getId = function() {
+ 	return this._id;
+ }
+
+ MM.Item.prototype.collapseLevel = function() {
+
+ 	var item = this;
+ 	var parentItem = this._parent;
+ 	if (item.isRoot()){ return;}
+ 	else{ 
+	parentItem.getChildren().forEach(function(child) {
+			if(item._id!=child._id){
+				child._collapsed = true;
+				child.update();
+			}
+		});
+	parentItem.collapseLevel();
+	}
+ }
+
  MM.Item.prototype.collapse = function() {
  	if (this._collapsed) { return; }
  	this._collapsed = true;
@@ -874,9 +894,11 @@ MM.Map.prototype.hide = function() {
 
 MM.Map.prototype.center = function() {
 	var node = this._root.getDOM().node;
-	node.style.left = "30%";
-	node.style.top = "10%";
-
+	var port = MM.App.portSize;
+	var left = (port[0] - node.offsetWidth)/8;
+	var top = (port[1] - node.offsetHeight)/8;
+	this._moveTo(Math.round(left), Math.round(top));
+	MM.App.width=node.offsetWidth;
 	return this;
 }
 
@@ -4298,7 +4320,24 @@ MM.Layout.getAll = function() {
  	switch (e.type) {
  		case "click":
  		var item = MM.App.map.getItemFor(e.target);
- 		if (item) { MM.App.select(item); }
+ 		if (item) { MM.App.select(item); 
+ 					if (item.isCollapsed()){item.expand();}  		
+ 					item.collapseLevel();
+ 					MM.App.map.center();
+			 		var width= MM.App.width;
+             		var frame=document.getElementById("main").offsetWidth;
+             		var s=Math.floor(10*(frame/width))-10;
+             		MM.App.adjustFontSize1(s);
+            		MM.App.map.center();
+            		while((MM.App.width>frame)&&(MM.App._fontSize>10)){
+            		    MM.App.adjustFontSize1(-1);
+            		    MM.App.map.center();
+            		}
+            		var s = (frame - $("canvas")[0].width)/2;
+            		$("#map.item")[0].style.left=s+"px";
+            		$("#map.item")[0].style.top="20px";
+ 				}
+
  		break;
 
  		/*case "dblclick":
@@ -4312,15 +4351,15 @@ MM.Layout.getAll = function() {
 			if (item == MM.App.current && MM.App.editing) { return; }
 
 			document.activeElement && document.activeElement.blur(); /* blur the panel FIXME only if activeElement is in the UI? */
-		//	this._startDrag(e, item);
+			this._startDrag(e, item);
 			break;
 
 			case "mousemove":
-		//	this._processDrag(e);
+			this._processDrag(e);
 			break;
 
 			case "mouseup":
-		//	this._endDrag(e);
+			this._endDrag(e);
 			break;
 
 			case "wheel":
@@ -4528,6 +4567,7 @@ MM.Layout.getAll = function() {
  		ghost: null
  	},
  	_fontSize: 100,
+ 	width: 0,
 
  	action: function(action) {
  		this.eventAggregator.trigger("change",action);
@@ -4553,6 +4593,57 @@ MM.Layout.getAll = function() {
  		this.map.show(this._port);
  	},
 
+ 	deep: function(item) {
+ 		var d=0;
+ 		var maxdeep=0;
+ 		var currentdeep=0;
+ 		if (item.getChildren()==null) {return 1;}
+ 		else{
+ 			item.getChildren().forEach(function(child) {
+			currentdeep=MM.App.deep(child);
+			if (currentdeep>maxdeep){maxdeep=currentdeep};
+			})
+		}
+		return maxdeep+1;
+ 	},
+
+ 	expandall: function(item){
+ 		if(item.getChildren()!=null){
+ 			item.getChildren().forEach(function(child) {
+				if(child.isCollapsed()){child.expand();}
+				MM.App.expandall(child);
+			})
+ 		}else{return;}
+ 		MM.App.map.center();
+ 		var width= MM.App.width;
+        var frame=document.getElementById("main").offsetWidth;
+        var s=Math.floor(10*(frame/width))-10;
+        MM.App.adjustFontSize1(s);
+
+        MM.App.map.center();
+        while((MM.App.width>frame)&&(MM.App._fontSize>10)){
+            MM.App.adjustFontSize1(-1);
+            MM.App.map.center();
+        }
+        var s = (frame - $("canvas")[0].width)/2;
+        $("#map.item")[0].style.left=s+"px";
+        $("#map.item")[0].style.top="20px";
+
+ 	},
+
+ 	levelcollapse: function(item,level){
+ 		if(level>1){
+			item.getChildren().forEach(function(child) {
+				if(child.isCollapsed()){child.expand();}
+				MM.App.levelcollapse(child,level-1);
+			})
+ 		}
+ 		else{item.getChildren().forEach(function(child) {
+				child.collapse();
+			})
+ 		}
+ 	},
+
  	select: function(item) {
  		if (item == this.current) { return; }
 
@@ -4568,14 +4659,15 @@ MM.Layout.getAll = function() {
  	},
 
  	adjustFontSize1: function(diff) {
- 		this._fontSize = Math.max(0, 100 + 5*diff);
+ 		this._fontSize = Math.max(10, this._fontSize + 10*diff);
+ 		this._fontSize = Math.min(200,this._fontSize);
  		this._port.style.fontSize = this._fontSize + "%";
  		this.map.update();
  		this.map.ensureItemVisibility(this.current);
  	},
 
  	adjustFontSize: function(diff) {
- 		this._fontSize = Math.max(30, this._fontSize + 10*diff);
+ 		this._fontSize = Math.max(10, this._fontSize + 10*diff);
  		this._port.style.fontSize = this._fontSize + "%";
  		this.map.update();
  		this.map.ensureItemVisibility(this.current);
@@ -4631,16 +4723,15 @@ MM.Layout.getAll = function() {
 		
 		this._syncPort();
 		this.setMap(new MM.Map());
-
 	},
 
 	_syncPort: function() {
-		this.portSize = [window.innerWidth/2, window.innerHeight];
+		this.portSize = [window.innerWidth, window.innerHeight];
 		//this.portSize = [document.getElementById("conceptsmap_container").style.width, document.getElementById("conceptsmap_container").style.height];
 		this._port.style.width = "100%";
 		this._port.style.height = this.portSize[1] + "px";
 		//this._throbber.style.right = (20 + this.ui.getWidth())+ "px";
-		this._throbber.style.right = (20 + "px");
+		//this._throbber.style.right = (20 + "px");
 		if (this.map) { this.map.ensureItemVisibility(this.current); }
 	}
 }

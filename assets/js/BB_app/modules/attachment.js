@@ -1,13 +1,25 @@
-/***************************************/
+
+/////////////////////////////////////////////////
+var attachment = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {}
+};
+/////////////////////////////////////////////////
+// MAIN
+/////////////////////////////////////////////////
 attachment.Views.Main = Backbone.View.extend({
     initialize : function(json) { 
         //console.log("comments view constructor!");
         _.bindAll(this, 'render');
         // Variables
         this.model = json.model;
-        this.eventAggregator = json.eventAggregator;
-        _eventAggregator = this.eventAggregator;
-        // Events
         // Templates
         this.template = _.template($('#attachment-list-template').html());
     },
@@ -40,6 +52,7 @@ attachment.Views.Main = Backbone.View.extend({
                 $('#status').html('Upload error: ' + status);
             }
         });
+        this.render();
 },
 removeFile : function(e){
     console.log(e.target.getAttribute('data-file-id'))

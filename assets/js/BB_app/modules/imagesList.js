@@ -19,7 +19,6 @@ imagesList.Views.Main = Backbone.View.extend({
         //console.log("moooodel",this.model)
         this.attachments = this.model.get('attachment');
         this.knowledges = json.knowledges;
-        this.eventAggregator = json.eventAggregator;
         // Templates
         this.template_diapo = _.template($('#imagesList-diapo-template').html());     
     },
@@ -34,7 +33,7 @@ imagesList.Views.Main = Backbone.View.extend({
         })
         // get the diapo
         $(this.el).append(this.template_diapo({images:images}));
-        
+        $(document).foundation();
         
         return this;
     }

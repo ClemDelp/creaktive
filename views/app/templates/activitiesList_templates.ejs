@@ -1,15 +1,32 @@
 <script type="text/template" id="activitiesList-template">
+  <h2>
+    {{-model.title}} 
+    {{ if((model.type != "category")&&(model.type != "project")){ }}<span class="success round label" style="background-color:{{- model.color }}">{{- model.label}}</span>{{ } }}    
+    <span class="round label">{{-model.type}}</span>
+    {{ _.each(model.tags, function(tag) { }}
+        <span class="success round label" style="cursor:pointer">{{-tag}}</span>
+    {{ }); }}
+  </h2>
   <hr>
-  <h5><strong>Activities</strong>({{- notifications.length }}) :</h5>
-  <table width="100%">
+
+  <fieldset>
+    <legend align=left>
+      New activities</strong>({{- news_notifs.length }})
+      <a href="#" class="button tiny success round closeAll">close all</a>
+    </legend>
+
+    <table width="100%">
       <tbody>
-      {{_.each(notifications,function(notification){ }}
+      {{_.each(news_notifs,function(notification){ }}
           <tr>
+            <td width="100"><img class="large-4 small-4 medium-4 roundedImage" src="{{- notification.from.img }}"></td>
             <td><strong>{{- notification.from.name}}</strong></td>
             <td><small>{{- notification.date}}</small></td>
             <td>{{- notification.content }}</td>
+            <td><a href="#" class="close" data-id-notification='{{-notification.id}}' style="color:green">close</a></td>
           </tr>
       {{ }); }}
       </tbody>
-  </table> 
+    </table>
+  </fieldset> 
 </script>

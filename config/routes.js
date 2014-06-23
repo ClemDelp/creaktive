@@ -37,15 +37,20 @@ module.exports.routes = {
   '/userManager': "UserController.userview",
 
   '/sparql/query': "SparqlController.query",
+  '/backup': "BackupController.create",
+  '/backup/getData': "BackupController.getData",
+  '/activities': "NotificationController.notificationview",
 
   '/elasticsearch/ping': "ElasticsearchController.pingServer",
   '/elasticsearch/searchKnowledge': "ElasticsearchController.searchKnowledge",
   
+  '/bbmap': "BBmapController.bbmapview",
   '/analyse': "AnalyseController.analyseview",
   '/ckviewer': "CkviewerController.ckviewerview",
   '/categories': "CategoryController.categoryview",
   '/knowledges': "KnowledgeController.knowledgeview",
   '/conceptsMap': "ConceptController.conceptview",
+  '/ckpreviewer': "CkpreviewerController.ckpreviewerview",
 
   'get /login' : 'AuthController.login',
   'post /login' : 'AuthController.process',

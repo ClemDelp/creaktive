@@ -1,3 +1,32 @@
+/////////////////////////////////////////////////
+var explorer = {
+  // Classes
+  Collections: {},
+  Models: {},
+  Views: {},
+  // Instances
+  collections: {},
+  models: {},
+  views: {},
+  init: function () {
+    /*Init*/
+    this.views.main = new this.Views.Main({
+      a_notifications : global.collections.all_notifs,
+      k_notifications : global.collections.knowledge_notifs,
+      projects    : global.collections.Projects,
+      concepts    : global.collections.Concepts,
+      knowledges  : global.collections.Knowledges,
+      experts     : global.collections.Users,
+      poches      : global.collections.Poches,
+      links       : global.collections.Links,
+      user        : global.models.current_user,
+      eventAggregator : global.eventAggregator,
+      style       : "grid"
+
+    });
+    this.views.main.render()
+  }
+};
 /////////////////////////////////////////
 // Models & collections
 /////////////////////////////////////////

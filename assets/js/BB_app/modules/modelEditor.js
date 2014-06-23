@@ -20,12 +20,11 @@ modelEditor.Views.Main = Backbone.View.extend({
         // Variables
         this.user = json.user;
         this.model = json.model;
-        this.eventAggregator = json.eventAggregator;
         this.mode = "normal";
         this.template_model_normal = _.template($('#modelEditor-normal-template').html());
         this.template_model_edition = _.template($('#modelEditor-edition-template').html());
         // Events
-        this.model.bind('change',this.render);
+        //this.model.bind('change',this.render);
     },
     events : {
         "click .edit"  : "editMode",
@@ -68,7 +67,7 @@ modelEditor.Views.Main = Backbone.View.extend({
                         title : $(this.el).find(".title").val(),
                         date: getDate()
                     });
-                    this.eventAggregator.trigger('updateCategory',this.model.get('id'),this.model.get('title'))
+                    global.eventAggregator.trigger('updateCategory',this.model.get('id'),this.model.get('title'))
                 }
             }
             this.model.set({
@@ -89,7 +88,7 @@ modelEditor.Views.Main = Backbone.View.extend({
             });       
         }
         this.mode = "normal";
-        this.eventAggregator.trigger("updateMap")
+        global.eventAggregator.trigger("updateMap")
         this.render();
     },
     editMode : function(e){
@@ -97,6 +96,15 @@ modelEditor.Views.Main = Backbone.View.extend({
         this.mode = "edition";
         this.render();
         CKEDITOR.replaceAll('ckeditor');
+        CKEDITOR.config.toolbar = [
+            { name: 'document', groups: [ 'mode', 'document', 'doctools' ], items: [ 'Print', '-', 'Templates', '-' , 'Maximize' ] },
+            { name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
+            { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },
+            { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+            { name: 'insert', items: [ 'Image', 'Link', 'Unlink', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar' ] },
+            { name: 'styles', items: [ 'Styles', 'Format', 'Font', 'FontSize' ] },
+            { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+        ];
     },
     render : function(){
         $(this.el).html('');
