@@ -4,6 +4,7 @@
 	:: Auth
 	-> controller
 ---------------------*/
+var bcrypt = require('bcrypt');
 var passport = require('passport');
 var xss = require('node-xss').clean;
 function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
@@ -12,6 +13,88 @@ function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+no
 
  
 var AuthController = {
+
+	resetpassword : function(req,res){
+		res.view();
+	},
+
+	processResetPassword : function(req,res){
+		var key = ""
+		var url = "";
+
+		bcrypt.genSalt(10, function(err, salt) {
+          bcrypt.hash(guid(), salt, function(err, hash) {
+            if (err) {
+              console.log(err);
+            }else{
+              key = hash;
+
+
+
+
+		User.find({
+			email : req.body.email
+		}).done(function(err, users){
+	      	var user = users[0];
+	      	if(req.baseUrl == "http://localhost:1337"){
+		        url = req.baseUrl + "/newpassword?id="+user.id+"&k=" + key;
+	      	} 
+	      	else{
+		        var u = req.baseUrl
+		        u = u.slice(0, u.lastIndexOf(":"))
+		        url = u + "/newpassword?id="+user.id+"&k=" + key;
+	      	}
+
+			user.recoveryLink = key;
+			user.save(function (err, u) {
+				if(err) console.log(err)
+				sails.config.email.sendPasswordRecovery(user.email, url,function(err, msg){
+			        if(err) console.log(err)
+			          console.log(msg)
+			      res.redirect("/resetconfirmation")
+			      });
+			});
+		})		
+
+		
+
+		            }
+          });
+        });
+	},
+
+	newpassword : function(req,res){
+		req.session.pendingUser = req.query.id;
+		req.session.pendingKey = req.query.k;
+		res.view();
+	},
+
+	processNewPassword : function(req,res){
+		User.findOne(req.session.pendingUser).done(function(err, user){
+			if(err) console.log(err)
+
+			if(req.session.pendingKey == user.recoveryLink){
+				console.log(req.body.password)
+				user.pw = req.body.password;
+				user.hashPassword(user, function(err, user){
+					if(err) console.log(err)
+					delete user.recoveryLink;
+				
+					user.save(function(err, u){
+						if(err) console.log(err)
+						res.redirect("/login");
+					})
+
+				})
+
+
+			}
+
+
+			req.session.pendingUser = ""
+			req.session.pendingKey = "";
+		})
+	},
 
 	registernew : function(req,res){
 		res.view();

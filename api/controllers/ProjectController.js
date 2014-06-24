@@ -77,17 +77,9 @@ module.exports = {
 
   
   destroy : function(req,res){
+
 		Project.findOne(req.body.params.id).done(function(err,project){
 		  if(err) console.log(err);
-      Permission.find({
-        project_id : project.id
-      }).done(function (err, permissions){
-        _.each(permissions, function(perm){
-          perm.destroy(function(err){
-            if(err) console.log(err);
-          });
-        })
-      })
       project.destroy(function(err){
         if(err) console.log(err)
           res.send({msg:"destroyed"})

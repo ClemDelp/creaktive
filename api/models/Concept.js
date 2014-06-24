@@ -22,8 +22,9 @@ module.exports = {
   	},
 
   beforeDestroy : function (values, cb){
-  	Link.find({
-      concept : values.id
+
+    Link.find({
+      concept : values.where.id
     }).done(function(err, links){
       _.each(links, function(l){
         l.destroy(function(err){

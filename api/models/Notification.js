@@ -41,13 +41,23 @@
   },
 
   objectUpdated : function(req,res, object, to, cb){
-  	console.log(req.body.action);
+
   	var action ="";
-  	if(req.body.action.title) action = "Title";
-  	if(req.body.action.color) action = "state";
-  	if(req.body.action.content) action = "Content";
-  	if(req.body.action.members) action = "Members";
-  	if(req.body.action.comments) action = "Comments";
+
+    if(req.body.action.length == 0) {
+      return
+    }
+
+    if(_.indexOf(req.body.action, "top") > -1 || _.indexOf(req.body.action, "left") >-1) {
+      return;
+    } 
+
+  	if(_.indexOf(req.body.action, "title") > -1) action = "title";
+  	if(_.indexOf(req.body.action, "color") > -1) action = "state";
+  	if(_.indexOf(req.body.action, "attachment") > -1) action = "attachment";
+    if(_.indexOf(req.body.action, "content") > -1) action = "content";
+  	if(_.indexOf(req.body.action, "comments") > -1) action = "comments";
+
 
   	Notification.create({
   		id : guid(),

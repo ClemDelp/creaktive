@@ -22,14 +22,45 @@ autoPK : false,
   },
 
   beforeDestroy : function (values, cb){
+    project_id = values.where.id
+    
     Permission.find({
-      project_id : values.id
+      project_id : project_id
     }).done(function(err, perms){
       _.each(perms, function(p){
         p.destroy(function(err){
           if(err) console.log(err)
         })
       })
+    })
+
+    Notification.find({
+      project_id : project_id
+    }).done(function(err, notifications){
+      _.each(notifications, function(n){
+        n.destroy(function(err){
+          if(err) console.log(err)
+        })
+      })
+    })
+
+    Concept.find({
+      project : project_id
+    }).done(function(err, concepts){
+      _.each(concepts, function(concept){
+        Link.find({concept : concept.id}).done(function(err,links){
+          if(err) console.log(err)
+            _.each(links, function(l){
+              l.destroy(function(err){
+                if(err) console.log(err)
+              })
+            })
+        })
+        concept.destroy(function(err){
+          if(err) console.log(err)
+        })
+      })
+
     })
 
     cb();

@@ -75,6 +75,16 @@ global.Functions.whatChangeInModel = function(origin_m,new_m){
 	return keys;
 }
 
+global.Functions.whatChangedInModel = function(model){
+	var keys = [];
+	for (var k in model.attributes){
+		if(model.attributes[k] != model._previousAttributes[k]){
+			keys.unshift(k);
+		}
+	}
+	return keys;
+}
+
 global.Functions.format_ckobject_collection = function(collection){
 	collection.each(function(model){
 		global.Functions.format_ckobject_model(model);        

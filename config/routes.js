@@ -63,6 +63,14 @@ module.exports.routes = {
     view : "auth/registrationconfirmed"
   },
 
+  "get /resetpassword" : "AuthController.resetpassword",
+  "post /resetpassword" : "AuthController.processresetpassword",
+  "get /resetconfirmation" : {
+    view : "auth/resetconfirmed"
+  },
+  'get /newpassword' : 'AuthController.newpassword',
+  'post /newpassword' : "AuthController.processNewPassword",
+
   'get /editprofile' : "UserController.editprofileview",
   'post /editprofile' : "UserController.editprofile",
   "post /changepassword" : "UserController.changepassword",

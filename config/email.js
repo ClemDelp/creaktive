@@ -50,11 +50,11 @@ module.exports.email = {
 	sendNewUserMail : function (user, cb){
 		
 		var html = "New user added on CreaKtive " + user.name + " " + user.email;  
-
+		var APP_NAME = process.env.APP_NAME || "local"
 		mailOptions = {
 		    from: "CreaKtive ✔ contact@creaktive.fr", // sender address
 		    to: "creaktive.contact@gmail.com",
-		    subject: "New user on CreaKtive-minesparis", // Subject line
+		    subject: "New user on CreaKtive (" + APP_NAME + ")" , // Subject line
 		    generateTextFromHTML: true,
 		    html: html, // plaintext body
 		};
@@ -72,6 +72,30 @@ module.exports.email = {
 		    //smtpTransport.close(); // shut down the connection pool, no more messages
 		});
 
+	},
+
+	sendPasswordRecovery : function(to,url,cb){
+		var html = "<h1>Bonjour</h1></br>Veuillez suivre le lien suivant pour créer un nouveau mot de passe</br> " + url;
+		mailOptions = {
+		    from: "CreaKtive ✔ contact@creaktive.fr", // sender address
+		    to: to, // list of receivers
+		    subject: "Password recovery", // Subject line
+		    generateTextFromHTML: true,
+		    html: html, // plaintext body
+		};
+
+		var transport = this.smtpGmail;
+		if(process.env.MAILGUN_SMTP_SERVER) transport = this.smtpTransport
+
+		transport.sendMail(mailOptions, function(error, response){
+		    if(error){
+		        cb(error)
+		    }else{
+		        cb(null, "Message sent: " + response.message);
+		    }
+		    // if you don't want to use this transport object anymore, uncomment following line
+		    //smtpTransport.close(); // shut down the connection pool, no more messages
+		});
 	}
 
 

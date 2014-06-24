@@ -88,11 +88,14 @@
   destroy : function(req,res){
     Concept.findOne(req.body.params.id).done(function(err,concept){
       if(err) console.log(err);
-      req.socket.broadcast.to(req.session.currentProject.id).emit("concept:remove2", concept);
-      concept.destroy(function(err){
-        if(err) console.log(err)
-          res.send({msg:"destroyed"})
-      })
+      if(concept.position == 0) res.send({err : "You can't remove c0"})
+      else{
+        req.socket.broadcast.to(req.session.currentProject.id).emit("concept:remove2", concept);
+        concept.destroy(function(err){
+          if(err) res.send(err)
+            res.send({msg:"destroyed"})
+        });
+      };
     });
   },
 

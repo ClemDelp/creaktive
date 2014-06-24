@@ -27,6 +27,10 @@
     'registernew' : true,
     'processRegistrationNew' : true,
     'register' : "forceHTTPs",
+    'resetpassword' : true,
+    'processResetPassword' : true,
+    'newpassword' : true,
+    'processnewpassword' : true,
     'processRegistration' : true,
     "openChannels" : ["authenticated"]
   },

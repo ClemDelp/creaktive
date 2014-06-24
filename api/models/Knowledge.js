@@ -16,6 +16,20 @@ module.exports = {
   	nickname: 'string'
   	*/
     
-  }
+  },
+
+  beforeDestroy : function (values, cb){
+  	Link.find({
+      knowledge : values.where.id
+    }).done(function(err, links){
+      _.each(links, function(l){
+        l.destroy(function(err){
+          if(err) console.log(err)
+        })
+      })
+    })
+
+  	cb();
+  },
 
 };
