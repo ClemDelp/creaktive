@@ -46,7 +46,12 @@ autoPK : false,
   		project : values.id,
       comments : [],
       members:[],
-      attachment:[]
+      attachment:[],
+      type : "concept",
+      id_father: "none",
+      top : 550,
+      left: 550
+
 
   	}).done(function(err, c0){
   		if(err) console.log(err);
