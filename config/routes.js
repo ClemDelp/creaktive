@@ -40,6 +40,7 @@ module.exports.routes = {
   '/backup': "BackupController.create",
   '/backup/getData': "BackupController.getData",
   '/activities': "NotificationController.notificationview",
+  '/contact': "ContactController.contactview",
 
   '/elasticsearch/ping': "ElasticsearchController.pingServer",
   '/elasticsearch/searchKnowledge': "ElasticsearchController.searchKnowledge",

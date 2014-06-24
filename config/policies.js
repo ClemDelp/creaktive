@@ -39,6 +39,10 @@
     "*" : "authenticated"
   }, 
 
+  "ContactController" : {
+    "*" : "authenticated"
+  }, 
+
   "CkviewerController" : {
    "ckviewerview" : ["authenticated", "allowedProjects","forceHTTPs"],
    "*" : "authenticated"
