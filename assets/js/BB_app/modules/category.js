@@ -42,10 +42,10 @@ category.Views.Knowledge = Backbone.View.extend({
     setSelectedK : function(e){
         e.preventDefault();
         var k_id = e.target.getAttribute('data-model-id');
-        var catg_origin = e.target.getAttribute('data-catg-origin');
-
+        var catg_origin = e.target.getAttribute('data-catg-origin').replace(/ /g, '');
         k = category.views.main.knowledges.get(k_id);
         if(category.views.main.Kselected.where({id : k_id}).length > 0){
+            console.log("unselect")
             category.views.main.Kselected.remove(k);
             $(this.el).find("#bulle"+k_id+"_"+catg_origin).css("background-color","");            
         }else{
