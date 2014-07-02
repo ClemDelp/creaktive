@@ -24,6 +24,51 @@ var bbmap = {
   }
 };
 /////////////////////////////////////////////////
+bbmap.Views.EditBox = Backbone.View.extend({
+    initialize : function(e){
+        _.bindAll(this, 'render','saveEdition');
+        this.model = new Backbone.Model();
+        $(this.el).dialog({autoOpen: false});
+    },
+    saveEdition : function(e){
+        e.preventDefault();
+        this.model.save({
+            user : bbmap.views.main.user,
+            title:$(this.el).find("#title").val(),
+            content:CKEDITOR.instances[this.model.get('id')+'_content'].getData(),
+            date: getDate(),
+            date2:new Date().getTime()
+        });
+        $(this.el).dialog( "close" );
+    },
+    openEditBox : function(id_model, type){
+        _this = this;
+        $(this.el).empty();
+        if(type == "knowledge"){
+            this.model = bbmap.views.main.knowledges.get(id_model);
+
+        }else if(type == "concept"){
+            this.model = bbmap.views.main.concepts.get(id_model);
+        }
+        this.render(function(model_id){
+            $(_this.el).dialog( "open" );
+            CKEDITOR.replaceAll('ckeditor_bbmap');
+            CKEDITOR.config.toolbar = [
+               ['Bold','Italic','Underline','NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','Image','Table','-','Link','Smiley','TextColor','BGColor']
+            ] ;
+        });
+        
+        $("#save").click(this.saveEdition)
+    },
+    render : function(callBack){
+        $(this.el).empty();
+        $(this.el).append('<input id="title" type="text" value="'+this.model.get("title")+'">');
+        $(this.el).append('<textarea class="ckeditor_bbmap" id="'+this.model.get('id')+'_content" name="editor" rows="10" cols="80">'+this.model.get('content')+'</textarea>');
+        $(this.el).append('<br><a href="#" id="save" class="button tiny expand secondary" style="margin-bottom:0px">save</a>');
+        callBack();
+    }
+});
+/////////////////////////////////////////////////
 bbmap.Views.Node = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render','savePosition','editTitle','addEndpoint','addLink','makeTarget');
@@ -33,6 +78,9 @@ bbmap.Views.Node = Backbone.View.extend({
         // Events
         $(this.el).click(this.savePosition);
         this.listenTo(this.model,"change", this.render); 
+        // Templates
+        this.template_bulle = _.template($('#bbmap-bulle-template').html());
+
     },
     savePosition: function(e){
         if(($(this.el).position().top != 0)&&($(this.el).position().left != 0)){
@@ -45,8 +93,8 @@ bbmap.Views.Node = Backbone.View.extend({
         console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
     },
     events : {
-        "dblclick .editTitle" : "editTitle",
-        "dblclick .content" : "editTitle",
+        "dblclick .bulle" : "editTitle",
+        "click .ep4" : "editTitle",
         "click .sup" : "removeModel",
         "click .ep" : "addConceptChild",
         "click .ep2" : "addKnowledgeChild",
@@ -228,59 +276,16 @@ bbmap.Views.Node = Backbone.View.extend({
         $(this.el).attr( "style","top: "+this.model.get('top')+"px;left:"+this.model.get('left')+"px");
         // Init
         $(this.el).empty();
-        $(this.el).append('<span class="editTitle">'+this.model.get('title')+'</span>');
-        if((this.model.get('type') == "knowledge")&&(bbmap.views.main.KcontentVisibility == true))$(this.el).append('<span class="content">'+this.model.get('content')+'</span>');
-        if((this.model.get('type') == "concept")&&(bbmap.views.main.CcontentVisibility == true))$(this.el).append('<span class="content">'+this.model.get('content')+'</span>');
-        if(this.model.get('type') == 'concept') $(this.el).append('<div class="ep">+</div>')
-        if(this.model.get('type') == 'concept') $(this.el).append('<div class="ep2">+</div>')
-        if(this.model.get('type') == 'concept') $(this.el).append('<div class="ep3">*</div>')
-        $(this.el).append('<div class="sup">x</div>')
+        $(this.el).append(this.template_bulle({model:this.model.toJSON()}));
+        // $(this.el).append('<span class="editTitle">'+this.model.get('title')+'</span>');
+        // if((this.model.get('type') == "knowledge")&&(bbmap.views.main.KcontentVisibility == true))$(this.el).append('<span class="content">'+this.model.get('content')+'</span>');
+        // if((this.model.get('type') == "concept")&&(bbmap.views.main.CcontentVisibility == true))$(this.el).append('<span class="content">'+this.model.get('content')+'</span>');
+        // if(this.model.get('type') == 'concept') $(this.el).append('<div class="ep icon">c</div>')
+        // if(this.model.get('type') == 'concept') $(this.el).append('<div class="ep2 icon">k</div>')
+        // if(this.model.get('type') == 'concept') $(this.el).append('<div class="ep3 icon">*</div>')
+        // if(this.model.get('type') == 'concept') $(this.el).append('<div class="ep4 icon">e</div>')
+        // $(this.el).append('<div class="sup">x</div>')
         return this;
-    }
-});
-/////////////////////////////////////////////////
-bbmap.Views.EditBox = Backbone.View.extend({
-    initialize : function(e){
-        _.bindAll(this, 'render','saveEdition');
-        this.model = new Backbone.Model();
-        $(this.el).dialog({autoOpen: false});
-    },
-    saveEdition : function(e){
-        e.preventDefault();
-        this.model.save({
-            user : bbmap.views.main.user,
-            title:$(this.el).find("#title").val(),
-            content:CKEDITOR.instances[this.model.get('id')+'_content'].getData(),
-            date: getDate(),
-            date2:new Date().getTime()
-        });
-        $(this.el).dialog( "close" );
-    },
-    openEditBox : function(id_model, type){
-        _this = this;
-        $(this.el).empty();
-        if(type == "knowledge"){
-            this.model = bbmap.views.main.knowledges.get(id_model);
-
-        }else if(type == "concept"){
-            this.model = bbmap.views.main.concepts.get(id_model);
-        }
-        this.render(function(model_id){
-            $(_this.el).dialog( "open" );
-            CKEDITOR.replaceAll('ckeditor_bbmap');
-            CKEDITOR.config.toolbar = [
-               ['Bold','Italic','Underline','NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','Image','Table','-','Link','Smiley','TextColor','BGColor']
-            ] ;
-        });
-        
-        $("#save").click(this.saveEdition)
-    },
-    render : function(callBack){
-        $(this.el).empty();
-        $(this.el).append('<input id="title" type="text" value="'+this.model.get("title")+'">');
-        $(this.el).append('<textarea class="ckeditor_bbmap" id="'+this.model.get('id')+'_content" name="editor" rows="10" cols="80">'+this.model.get('content')+'</textarea>');
-        $(this.el).append('<br><a href="#" id="save" class="button tiny expand secondary" style="margin-bottom:0px">save</a>');
-        callBack();
     }
 });
 /////////////////////////////////////////////////
@@ -367,13 +372,46 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .ckOperator" : "setCKOperator",
         "click .zoomin" : "zoomin",
         "click .zoomout" : "zoomout",
-        "click .resetZoom" : "resetZoom",
-        "click .resetPosition" : "resetPosition",
+        "click .reset" : "resetInterface",
+        "mouseenter .window.concept" : "showIcon", 
+        "mouseleave .window" : "hideIcon", 
         // "click .reorganize" : "reorganize",
+    },
+    showIcon : function(e){
+        e.preventDefault();
+        // var className = e.target.className.split(' ');
+        // var concepts_list = [];
+        // if(_.indexOf(className, "concept") > -1){
+        //     concepts_list = this.concepts.where({id_father:e.target.id});
+
+        // }else{
+        //     //alert('hover knowledges');
+        // }
+        // concepts_list.forEach(function(concept){
+        //     $("#"+concept.get('id')).css({border:'0.2em solid green',color:'green'});
+        //     //$("#"+concept.get('id')).trigger('mouseenter');
+        // })
+
+        $("#"+e.target.id+" .icon").show();
+    },
+    hideIcon : function(e){
+        e.preventDefault();
+        // var className = e.target.className.split(' ');
+        // var concepts_list = [];
+        // if(_.indexOf(className, "concept") > -1){
+        //     concepts_list = this.concepts.where({id_father:e.target.id});
+
+        // }else{
+        //     //alert('hover knowledges');
+        // }
+        // concepts_list.forEach(function(concept){
+        //     $("#"+concept.get('id')).css({border:'0.15em dotted green',color:'black'});
+        //     //$("#"+concept.get('id')).trigger('mouseenter');
+        // })
+        this.$(".icon").hide();
     },
     /////////////////////////////////////////
     // Real-time
-    
     /////////////////////////////////////////
     updateZoomDisplay : function(){
         this.bar_el.find('#zoom_val').html(this.zoom.get('val'))
@@ -383,13 +421,15 @@ bbmap.Views.Main = Backbone.View.extend({
         this.setZoom(this.zoom.get('val'));
         //this.render();
     },
-    resetPosition : function(e){
+    resetInterface : function(e){
         e.preventDefault();
-        $(this.map_el).attr( "style","top:-"+this.positionRef+"px;left:-"+this.positionRef+"px");
-        this.setZoom(this.zoom.get('val'));
+        this.resetZoom();
+        this.resetPosition();
     },
-    resetZoom : function(e){
-        e.preventDefault();
+    resetPosition : function(){
+        $(this.map_el).attr( "style","top:-"+this.positionRef+"px;left:-"+this.positionRef+"px");
+    },
+    resetZoom : function(){
         this.zoom.set({val : 1});
         this.setZoom(this.zoom.get('val'));
     },
@@ -622,7 +662,7 @@ bbmap.Views.Main = Backbone.View.extend({
         // Concepts views
         this.concepts.each(function(concept){
             nodes_views[concept.get('id')] = new bbmap.Views.Node({
-                className : "window concept",
+                className : "window concept bulle",
                 id : concept.get('id'),
                 model : concept,
             });
@@ -630,7 +670,7 @@ bbmap.Views.Main = Backbone.View.extend({
         // knowledges views
         this.knowledges.each(function(knowledge){
             nodes_views[knowledge.get('id')] = new bbmap.Views.Node({
-                className : "window knowledge",
+                className : "window knowledge bulle",
                 id : knowledge.get('id'),
                 model : knowledge,
             });
