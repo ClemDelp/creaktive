@@ -375,12 +375,62 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .reset" : "resetInterface",
         "mouseenter .window.knowledge" : "showIcon2", 
         "mouseenter .window.concept" : "showIcon", 
+        "click .window.concept" : "structureTree", 
         "mouseleave .window" : "hideIcon", 
         // "click .reorganize" : "reorganize",
     },
     showIcon2 : function(e){
         e.preventDefault();
         $("#"+e.target.id+" .sup").show();
+    },
+    structureTree : function(e){
+        e.preventDefault();
+        var id = e.target.id;
+        var model = this.concepts.get(e.target.id)
+        var tree = this.buildTree(model.toJSON())
+        console.log("treeeee",tree)
+        // tree = random_tree(3, 2)
+        // console.log(tree)
+        // // Label it with node offsets and get its extent.
+        e = tree.extent()
+        // // //console.log(e)
+        // // // Retrieve a bounding box [x,y,width,height] from the extent.
+        bb = bounding_box(e)
+        // // //console.log(bb)
+        // // // Label each node with its (x,y) coordinate placing root at given location.
+        tree.place(-bb[0] + horizontal_gap, -bb[1] + horizontal_gap)
+
+        // // Draw using the labels.
+        this.draw(tree)
+    },
+    // Draw a graph node.
+    node: function(lbl, x, y, sz) {
+      if (!sz) sz = node_size
+      var h = sz / 2
+      this.map_el.append('<div class="node window concept" style="left:' + (x - h) + 'px;top:' + (y - h) +
+          'px;width:' + sz + 'px;height:' + sz + 'px;line-height:' + sz +
+          'px;">' + lbl + '</div>')
+    },
+    draw : function (tree) {
+      var n_children = tree.children.length
+      for (var i = 0; i < n_children; i++) {
+        var child = tree.children[i]
+        //arc(this.x, this.y + 0.5 * node_size + 2, child.x, child.y - 0.5 * node_size)
+        this.draw(child)
+      }
+      this.node(tree.lbl, tree.x, tree.y)
+    },
+    buildTree : function(model) {
+        var childs = [];
+        var childrens = this.concepts.where({id_father : model.id});
+        if(childrens.length > 0){
+            childrens.forEach(function(child){
+                childs.push(bbmap.views.main.buildTree(child));
+            });    
+        }
+        var tree = new Tree('' + node_label++, childs);
+
+        return tree;
     },
     showIcon : function(e){
         e.preventDefault();
@@ -706,6 +756,12 @@ bbmap.Views.Main = Backbone.View.extend({
         $( "#map" ).draggable();
 
         this.nodes_views = nodes_views;
+
+        
+
+        
+
+
         return this;
     }
 });

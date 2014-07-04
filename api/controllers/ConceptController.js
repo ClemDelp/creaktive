@@ -174,6 +174,9 @@ generateTree : function(req,res){
         res.send({tree : json});
       });
   },
+
+
+  
   
   conceptview : function(req,res){
     sails.config.bootstrapdata.bootstrapdata(req,res);
