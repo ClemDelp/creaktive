@@ -112,7 +112,7 @@ global.Functions.cloneCollection = function(collection){
 ///////////////////////////////////////////////////////////////////////////////////////
 
     var node_size = 18
-    var horizontal_gap = 16
+    var horizontal_gap = 50
     var vertical_gap = 32
 
     // Draw a graph node.

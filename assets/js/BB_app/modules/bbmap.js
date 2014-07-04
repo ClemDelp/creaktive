@@ -377,7 +377,6 @@ bbmap.Views.Main = Backbone.View.extend({
         "mouseenter .window.concept" : "showIcon", 
         "click .window.concept" : "structureTree", 
         "mouseleave .window" : "hideIcon", 
-        // "click .reorganize" : "reorganize",
     },
     showIcon2 : function(e){
         e.preventDefault();
@@ -391,16 +390,15 @@ bbmap.Views.Main = Backbone.View.extend({
         console.log("treeeee",tree)
         // tree = random_tree(3, 2)
         // console.log(tree)
-        // // Label it with node offsets and get its extent.
+        // Label it with node offsets and get its extent.
         e = tree.extent()
-        // // //console.log(e)
-        // // // Retrieve a bounding box [x,y,width,height] from the extent.
+        //console.log(e)
+        // Retrieve a bounding box [x,y,width,height] from the extent.
         bb = bounding_box(e)
-        // // //console.log(bb)
-        // // // Label each node with its (x,y) coordinate placing root at given location.
+        //console.log(bb)
+        // Label each node with its (x,y) coordinate placing root at given location.
         tree.place(-bb[0] + horizontal_gap, -bb[1] + horizontal_gap)
-
-        // // Draw using the labels.
+        // Draw using the labels.
         this.draw(tree)
     },
     // Draw a graph node.
