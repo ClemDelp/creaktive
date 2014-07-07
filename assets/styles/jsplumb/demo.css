@@ -1,42 +1,30 @@
-.node {
-      position: absolute;
-      background-color: #0000cc;
-      color: #ffffff;
-      font-size: 12px;
-      font-family: sans-serif;
-      text-align: center;
-      vertical-align: middle;
-      border: 1px solid #000088;
-    }
 
-    .dot {
-      position: absolute;
-      background-color: black;
-      width: 1px;
-      height: 1px;
-      overflow:hidden;
-    }
 
 
 
     
 
+#map{
+		border : 0px;
+
+}
+
 #map_container{
 	height:800px;overflow:hidden;
-	background-image: url("/img/pattern.png");
+	/*background-image: url("/img/pattern.png");*/
 }
 
 body{
 	background-color: white;
 }
 .demo {
-  	top: -500px;
-	left: -500px;
+  	/*top: -500px;
+	left: -500px;*/
 	position: relative;
   	/*width:100%;*/
   	width:10000px;
   	background-color:white;    
-  	overflow:auto;  
+  	/*overflow:auto;  */
   	/*margin-top: 53px;
   	margin-bottom:25px;*/
   	height: 3000px;

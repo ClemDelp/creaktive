@@ -82,42 +82,44 @@ bbmap.Views.Node = Backbone.View.extend({
         this.template_bulle = _.template($('#bbmap-bulle-template').html());
 
     },
-    savePosition: function(e){
-        if(($(this.el).position().top != 0)&&($(this.el).position().left != 0)){
-            // Si la view n'a pas été supprimée on save
-            this.model.set({
-                top:$(this.el).position().top / bbmap.views.main.zoom.get('val'),
-                left:$(this.el).position().left / bbmap.views.main.zoom.get('val')
-            }).save();    
-        }
-        console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
-    },
     events : {
         "dblclick .bulle" : "editTitle",
         "click .ep4" : "editTitle",
         "click .sup" : "removeModel",
         "click .ep" : "addConceptChild",
         "click .ep2" : "addKnowledgeChild",
-        "click .ep3" : "reorganize",
     },
-    reorganize : function(e){
-        e.preventDefault();
-        el_top = this.model.get('top');
-        el_left = this.model.get('left');
-        child_top = this.model.get('top') + 125;
-        el_childs = bbmap.views.main.concepts.where({id_father : this.model.get('id')});
-        nbr_childs = el_childs.length;
-        max_width = 100; // max width per element
-        space = 100;
-        L_childs = (max_width + space) * nbr_childs;
-        left_pos = (el_left + (max_width/2)) - (L_childs/2) + (space/2);
-        console.log("L_childs: ",L_childs," - el_left: ",el_left," - left_pos: ",left_pos)
-        // Set child position
-        el_childs.forEach(function(el){
-            el.set({top : child_top,left:left_pos}).save();
-            left_pos = left_pos+max_width+space;
-        });
-        bbmap.views.main.reset();
+    setPosition : function(x, y, sz, h){
+
+        var left = (x - h);
+        var top  = (y - h);
+
+        var styles = {
+            'left': left +'px',
+            'top':  top  + 'px'
+        };
+        $(this.el).css( styles );
+        this.model.set({
+            top: top,
+            left: left
+        }).save();  
+    },
+    getPosition : function(){
+        var position = {};
+        position.left = $(this.el).position().left
+        position.top = $(this.el).position().top
+        return position;
+    },
+    savePosition: function(e){
+        var position = this.getPosition();
+        if((position.top != 0)&&($(this.el).position().left != 0)){
+            // Si la view n'a pas été supprimée on save
+            this.model.set({
+                top:position.top / bbmap.views.main.zoom.get('val'),
+                left:position.left / bbmap.views.main.zoom.get('val')
+            }).save();    
+        }
+        console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
     },
     addConceptChild : function(e){
         e.preventDefault();
@@ -277,14 +279,6 @@ bbmap.Views.Node = Backbone.View.extend({
         // Init
         $(this.el).empty();
         $(this.el).append(this.template_bulle({model:this.model.toJSON()}));
-        // $(this.el).append('<span class="editTitle">'+this.model.get('title')+'</span>');
-        // if((this.model.get('type') == "knowledge")&&(bbmap.views.main.KcontentVisibility == true))$(this.el).append('<span class="content">'+this.model.get('content')+'</span>');
-        // if((this.model.get('type') == "concept")&&(bbmap.views.main.CcontentVisibility == true))$(this.el).append('<span class="content">'+this.model.get('content')+'</span>');
-        // if(this.model.get('type') == 'concept') $(this.el).append('<div class="ep icon">c</div>')
-        // if(this.model.get('type') == 'concept') $(this.el).append('<div class="ep2 icon">k</div>')
-        // if(this.model.get('type') == 'concept') $(this.el).append('<div class="ep3 icon">*</div>')
-        // if(this.model.get('type') == 'concept') $(this.el).append('<div class="ep4 icon">e</div>')
-        // $(this.el).append('<div class="sup">x</div>')
         return this;
     }
 });
@@ -307,7 +301,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.KcontentVisibility = true;
         this.CcontentVisibility = false;
         this.ckOperator         = true;
-        this.positionRef        = 550;
+        this.positionRef        = 50;
         this.nodes_views        = {};
         // Templates
         this.bar_el = $(this.el).find('#actionbar');
@@ -349,154 +343,37 @@ bbmap.Views.Main = Backbone.View.extend({
         global.eventAggregator.on('knowledge:remove',this.removeModelToView,this);
         global.eventAggregator.on('knowledge:update',this.modelUpdate,this);
 
-    },
-    modelUpdate : function(model){
-        var attributesUpdated = [];
-        if(model.get('type') == "concept") attributesUpdated = global.Functions.whatChangeInModel(this.concepts.get(model.get('id')),model);
-        if(model.get('type') == "knowledge") attributesUpdated = global.Functions.whatChangeInModel(this.knowledges.get(model.get('id')),model);
+        $(this.el).mousewheel(function(event) {
+            console.log(event.deltaY);
+            if(event.deltaY == -1)bbmap.views.main.zoomin()
+            else bbmap.views.main.zoomout()
+        });
 
-        if((_.indexOf(attributesUpdated,"left") != -1)||(_.indexOf(attributesUpdated,"top") != -1)){
-            // Si c'est la position qui a changée
-            $(this.nodes_views[model.get('id')].el).attr( "style","top: "+model.get('top')+"px;left:"+model.get('left')+"px");
-        }else if(_.indexOf(attributesUpdated,"title") != -1){
-            // Si cest le title
-            alert("title updated")
-        }
-        this.instance.repaintEverything();
     },
     events : {
         "click .addUnlinkedC" : "createUnlinkedConcept",
         "click .addUnlinkedK" : "createUnlinkedKnowledge",
-        "click .Kcontent" : "setKcontentVisibility",
-        "click .Ccontent" : "setCcontentVisibility",
         "click .ckOperator" : "setCKOperator",
         "click .zoomin" : "zoomin",
         "click .zoomout" : "zoomout",
         "click .reset" : "resetInterface",
         "mouseenter .window.knowledge" : "showIcon2", 
         "mouseenter .window.concept" : "showIcon", 
-        "click .window.concept" : "structureTree", 
+        "click .ep3" : "structureTree",
         "mouseleave .window" : "hideIcon", 
-    },
-    showIcon2 : function(e){
-        e.preventDefault();
-        $("#"+e.target.id+" .sup").show();
-    },
-    structureTree : function(e){
-        e.preventDefault();
-        var id = e.target.id;
-        var model = this.concepts.get(e.target.id)
-        var tree = this.buildTree(model.toJSON())
-        console.log("treeeee",tree)
-        // tree = random_tree(3, 2)
-        // console.log(tree)
-        // Label it with node offsets and get its extent.
-        e = tree.extent()
-        //console.log(e)
-        // Retrieve a bounding box [x,y,width,height] from the extent.
-        bb = bounding_box(e)
-        //console.log(bb)
-        // Label each node with its (x,y) coordinate placing root at given location.
-        tree.place(-bb[0] + horizontal_gap, -bb[1] + horizontal_gap)
-        // Draw using the labels.
-        this.draw(tree)
-    },
-    // Draw a graph node.
-    node: function(lbl, x, y, sz) {
-      if (!sz) sz = node_size
-      var h = sz / 2
-      this.map_el.append('<div class="node window concept" style="left:' + (x - h) + 'px;top:' + (y - h) +
-          'px;width:' + sz + 'px;height:' + sz + 'px;line-height:' + sz +
-          'px;">' + lbl + '</div>')
-    },
-    draw : function (tree) {
-      var n_children = tree.children.length
-      for (var i = 0; i < n_children; i++) {
-        var child = tree.children[i]
-        //arc(this.x, this.y + 0.5 * node_size + 2, child.x, child.y - 0.5 * node_size)
-        this.draw(child)
-      }
-      this.node(tree.lbl, tree.x, tree.y)
-    },
-    buildTree : function(model) {
-        var childs = [];
-        var childrens = this.concepts.where({id_father : model.id});
-        if(childrens.length > 0){
-            childrens.forEach(function(child){
-                childs.push(bbmap.views.main.buildTree(child));
-            });    
-        }
-        var tree = new Tree('' + node_label++, childs);
 
-        return tree;
-    },
-    showIcon : function(e){
-        e.preventDefault();
-        // var className = e.target.className.split(' ');
-        // var concepts_list = [];
-        // if(_.indexOf(className, "concept") > -1){
-        //     concepts_list = this.concepts.where({id_father:e.target.id});
-
-        // }else{
-        //     //alert('hover knowledges');
-        // }
-        // concepts_list.forEach(function(concept){
-        //     $("#"+concept.get('id')).css({border:'0.2em solid green',color:'green'});
-        //     //$("#"+concept.get('id')).trigger('mouseenter');
-        // })
-
-        $("#"+e.target.id+" .icon").show();
-    },
-    hideIcon : function(e){
-        e.preventDefault();
-        this.$(".icon").hide();
     },
     /////////////////////////////////////////
-    // Real-time
+    // Zoom system
     /////////////////////////////////////////
-    updateZoomDisplay : function(){
-        this.bar_el.find('#zoom_val').html(this.zoom.get('val'))
-    },
-    reset : function(e){
-        this.instance.repaintEverything();
-        this.setZoom(this.zoom.get('val'));
-        //this.render();
-    },
-    resetInterface : function(e){
-        e.preventDefault();
-        this.resetZoom();
-        this.resetPosition();
-    },
-    resetPosition : function(){
-        $(this.map_el).attr( "style","top:-"+this.positionRef+"px;left:-"+this.positionRef+"px");
-    },
-    resetZoom : function(){
-        this.zoom.set({val : 1});
-        this.setZoom(this.zoom.get('val'));
-    },
-    setCKOperator : function(e){
-        e.preventDefault();
-        if(this.ckOperator == true){this.ckOperator = false}else{this.ckOperator = true;}
-        this.render();
-    },
-    setKcontentVisibility : function(e){
-        e.preventDefault();
-        if(this.KcontentVisibility == true){this.KcontentVisibility = false}else{this.KcontentVisibility = true;} 
-        this.reset();
-    },
-    setCcontentVisibility : function(e){
-        e.preventDefault();
-        if(this.CcontentVisibility == true){this.CcontentVisibility = false}else{this.CcontentVisibility = true;} 
-        this.reset();
-    },
     zoomin : function(e){
-        e.preventDefault();
+        //e.preventDefault();
         new_zoom = Math.round((this.zoom.get('val') - 0.1)*100)/100;
         this.zoom.set({val : new_zoom});
         this.setZoom(this.zoom.get('val'));
     },
     zoomout : function(e){
-        e.preventDefault();
+        //e.preventDefault();
         new_zoom = Math.round((this.zoom.get('val') + 0.1)*100)/100;
         this.zoom.set({val : new_zoom});
         this.setZoom(this.zoom.get('val'));
@@ -518,6 +395,109 @@ bbmap.Views.Main = Backbone.View.extend({
       el.style["transformOrigin"] = oString;
 
       this.instance.setZoom(zoom);    
+    },
+    /////////////////////////////////////////
+    // Tree re-structure
+    /////////////////////////////////////////
+    structureTree : function(e){
+        e.preventDefault();
+        var id = e.target.id;
+        var model = this.concepts.get(e.target.id)
+        var tree = this.buildTree(model.toJSON())
+        // tree = random_tree(3, 2)
+        // Label it with node offsets and get its extent.
+        e = tree.extent()
+        // Retrieve a bounding box [x,y,width,height] from the extent.
+        bb = bounding_box(e)
+        // Label each node with its (x,y) coordinate placing root at given location.
+        //tree.place(-bb[0] + horizontal_gap, -bb[1] + horizontal_gap)
+        var origin = this.nodes_views[model.get('id')].getPosition();
+        tree.place(origin.left , origin.top )
+        // Draw using the labels.
+        this.draw(tree);
+        this.instance.repaintEverything();
+    },
+    // Draw a graph node.
+    node: function(lbl, x, y, sz) {
+        if (!sz) sz = node_size
+        var h = sz / 2;
+        this.nodes_views[lbl].setPosition(x, y, sz, h);
+    },
+    draw : function (tree) {
+      var n_children = tree.children.length
+      for (var i = 0; i < n_children; i++) {
+        var child = tree.children[i]
+        //arc(this.x, this.y + 0.5 * node_size + 2, child.x, child.y - 0.5 * node_size)
+        this.draw(child)
+      }
+      this.node(tree.lbl, tree.x, tree.y)
+    },
+    buildTree : function(model) {
+        var childs = [];
+        var childrens = this.concepts.where({id_father : model.id});
+        if(childrens.length > 0){
+            childrens.forEach(function(child){
+                childs.push(bbmap.views.main.buildTree(child));
+            });    
+        }
+        var tree = new Tree(model.id, childs);
+        return tree;
+    },
+    /////////////////////////////////////////
+    // Hover bulle effect
+    /////////////////////////////////////////
+    showIcon : function(e){
+        e.preventDefault();
+        $("#"+e.target.id+" .icon").show();
+    },
+    showIcon2 : function(e){
+        e.preventDefault();
+        $("#"+e.target.id+" .sup").show();
+    },
+    hideIcon : function(e){
+        e.preventDefault();
+        this.$(".icon").hide();
+    },
+    modelUpdate : function(model){
+        var attributesUpdated = [];
+        if(model.get('type') == "concept") attributesUpdated = global.Functions.whatChangeInModel(this.concepts.get(model.get('id')),model);
+        if(model.get('type') == "knowledge") attributesUpdated = global.Functions.whatChangeInModel(this.knowledges.get(model.get('id')),model);
+
+        if((_.indexOf(attributesUpdated,"left") != -1)||(_.indexOf(attributesUpdated,"top") != -1)){
+            // Si c'est la position qui a changée
+            $(this.nodes_views[model.get('id')].el).attr( "style","top: "+model.get('top')+"px;left:"+model.get('left')+"px");
+        }else if(_.indexOf(attributesUpdated,"title") != -1){
+            // Si cest le title
+            alert("title updated")
+        }
+        this.instance.repaintEverything();
+    },
+    /////////////////////////////////////////
+    // Real-time
+    /////////////////////////////////////////
+    updateZoomDisplay : function(){
+        this.bar_el.find('#zoom_val').html(this.zoom.get('val'))
+    },
+    reset : function(e){
+        this.instance.repaintEverything();
+        this.setZoom(this.zoom.get('val'));
+    },
+    resetInterface : function(e){
+        e.preventDefault();
+        this.resetZoom();
+        this.resetPosition();
+    },
+    resetPosition : function(){
+        $(this.map_el).attr( "style","top:-"+this.positionRef+"px;left:-"+this.positionRef+"px");
+    },
+    resetZoom : function(){
+        this.zoom.set({val : 1});
+        this.setZoom(this.zoom.get('val'));
+    },
+    setCKOperator : function(e){
+        e.preventDefault();
+        if(this.ckOperator == true){this.ckOperator = false}else{this.ckOperator = true;}
+        this.render();
     },
     //////////////////////////////////////////
     // Knowledge
@@ -688,7 +668,7 @@ bbmap.Views.Main = Backbone.View.extend({
         // Enable drag&drop
         //this.instance.draggable(windows);        
     },
-    render : function(){
+    render : function(){        
         ///////////////////////
         // Init
         _this = this;
