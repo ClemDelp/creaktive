@@ -111,13 +111,13 @@ global.Functions.cloneCollection = function(collection){
 // DRAFT API
 ///////////////////////////////////////////////////////////////////////////////////////
 
-var node_size = 18
-var horizontal_gap = 200
-var vertical_gap = 80
+// var bbmap.node_size() = 18
+// var bbmap.horizontal_gap() = 200
+// var bbmap.vertical_gap() = 80
 
 // Draw a graph node.
 // function node(lbl, x, y, sz) {
-//   if (!sz) sz = node_size
+//   if (!sz) sz = bbmap.node_size()
 //   var h = sz / 2
 //   document.write('<div class="node window concept" style="left:' + (x - h) + 'px;top:' + (y - h) +
 //       'px;width:' + sz + 'px;height:' + sz + 'px;line-height:' + sz +
@@ -141,7 +141,7 @@ Tree.prototype.is_leaf = function() { return this.children.length == 0 }
 // information created by extent().
 Tree.prototype.place = function(x, y) {
   var n_children = this.children.length
-  var y_children = y + vertical_gap + node_size
+  var y_children = y + bbmap.vertical_gap() + bbmap.node_size()
   for (var i = 0; i < n_children; i++) {
     var child = this.children[i]
     child.place(x + child.offset, y_children)
@@ -155,7 +155,7 @@ Tree.prototype.place = function(x, y) {
 //   var n_children = this.children.length
 //   for (var i = 0; i < n_children; i++) {
 //     var child = this.children[i]
-//     //arc(this.x, this.y + 0.5 * node_size + 2, child.x, child.y - 0.5 * node_size)
+//     //arc(this.x, this.y + 0.5 * bbmap.node_size() + 2, child.x, child.y - 0.5 * bbmap.node_size())
 //     child.draw()
 //   }
 //   node(this.lbl, this.x, this.y)
@@ -186,7 +186,7 @@ Tree.prototype.extent = function() {
     // Find the necessary offset.
     offset = 0
     for (var j = 0; j < min(ext.length, rightmost.length); j++)
-      offset = max(offset, rightmost[j] - ext[j][0] + horizontal_gap)
+      offset = max(offset, rightmost[j] - ext[j][0] + bbmap.horizontal_gap())
     // Update rightmost
     for (var j = 0; j < ext.length; j++)
       if (j < rightmost.length)
@@ -227,7 +227,7 @@ Tree.prototype.extent = function() {
     this.children[i].offset -= 0.5 * offset
 
   // Merge the offset extents of the children into one for this tree
-  var rtn = [ [-0.5 * node_size, 0.5 * node_size] ]
+  var rtn = [ [-0.5 * bbmap.node_size(), 0.5 * bbmap.node_size()] ]
   // Keep track of subtrees currently on left and right edges.
   var lft = 0
   var rgt = n_children - 1
@@ -253,7 +253,7 @@ function bounding_box(extent) {
     x0 = min(x0, extent[i][0])
     x1 = max(x1, extent[i][1])
   }
-  return [x0, -0.5 * node_size, x1 - x0, (node_size + vertical_gap) * extent.length - vertical_gap ]
+  return [x0, -0.5 * bbmap.node_size(), x1 - x0, (bbmap.node_size() + bbmap.vertical_gap()) * extent.length - bbmap.vertical_gap() ]
 }
 
 function min(x, y) { return x < y ? x : y }

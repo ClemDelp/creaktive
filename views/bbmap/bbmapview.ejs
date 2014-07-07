@@ -3,8 +3,7 @@
 <script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
 <script src="/js/ckeditor/ckeditor.js"></script>
 <script src="/js/jquery.mousewheel.min.js"></script>
-<!-- <script src="/js/vendor/zoom.js"></script>
- --><!-- ******************************** -->
+<!-- ******************************** -->
 <!-- jquery ui -->
 <link rel="stylesheet" href="/styles/themes/base/jquery.ui.all.css">
 <script src="/js/ui/jquery.ui.core.js"></script>
@@ -34,12 +33,16 @@
 
 <%- partial('templates/bbmap_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/bbmap.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/bbmap_api.js"></script>
 <!-- ******************************** -->
 <!-- Script -->
 <script>
   ///////////////////////////////////////////////////
   $(document).ready(function () {
+
+    
+
+
+
     console.log( "CreaKtive DOM loaded!" );
     ////////////////////////////////////////
     Backbone.Model.prototype.toJSON = function() {
