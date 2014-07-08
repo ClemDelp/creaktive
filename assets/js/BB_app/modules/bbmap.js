@@ -132,8 +132,8 @@ bbmap.Views.Node = Backbone.View.extend({
             id : guid(),
             type : "concept",
             id_father: this.model.get('id'),
-            top : ($(this.el).position().top + 100) / bbmap.views.main.zoom.get('val'),
-            left : $(this.el).position().left / bbmap.views.main.zoom.get('val'),
+            top : ($(this.el).position().top + 100) / bbmap.zoom.get('val'),
+            left : $(this.el).position().left / bbmap.zoom.get('val'),
             project: bbmap.views.main.project.get('id'),
             title: "new concept",
             user: bbmap.views.main.user
@@ -149,8 +149,8 @@ bbmap.Views.Node = Backbone.View.extend({
             id : guid(),
             type : "knowledge",
             //id_fathers: [this.model.get('id')],
-            top : ($(this.el).position().top + 100) / bbmap.views.main.zoom.get('val'),
-            left : $(this.el).position().left / bbmap.views.main.zoom.get('val'),
+            top : ($(this.el).position().top + 100) / bbmap.zoom.get('val'),
+            left : $(this.el).position().left / bbmap.zoom.get('val'),
             project: bbmap.views.main.project.get('id'),
             title: "new knowledge",
             user: bbmap.views.main.user
@@ -294,6 +294,10 @@ bbmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         ////////////////////////////
+        // el
+        this.bar_el = $(this.el).find('#actionbar');
+        this.map_el = $(this.el).find('#map');
+        this.editor_el = $(this.el).find('#editor');
         // Variables
         this.knowledges         = json.knowledges;
         this.concepts           = json.concepts;
@@ -306,14 +310,9 @@ bbmap.Views.Main = Backbone.View.extend({
         this.KcontentVisibility = true;
         this.CcontentVisibility = false;
         this.ckOperator         = true;
-        this.positionRef        = 50;
+        this.positionRef        = 0;//550;
         this.nodes_views        = {};
-
-        
-
         // Templates
-        this.bar_el = $(this.el).find('#actionbar');
-        this.map_el = $(this.el).find('#map');
         this.template_actionbar = _.template($('#bbmap-actionbar-template').html());
         ////////////////////////////
         // JsPlumb
@@ -353,6 +352,7 @@ bbmap.Views.Main = Backbone.View.extend({
         global.eventAggregator.on('knowledge:update',this.modelUpdate,this);
 
         $(this.el).mousewheel(function(event) {
+            event.preventDefault();
             console.log(event.deltaY);
             if(event.deltaY == -1)bbmap.views.main.zoomin()
             else bbmap.views.main.zoomout()
@@ -370,7 +370,17 @@ bbmap.Views.Main = Backbone.View.extend({
         "mouseenter .window.concept" : "showIcon", 
         "click .ep3" : "structureTree",
         "mouseleave .window" : "hideIcon", 
-
+        "click .showEditor" : "showEditor", 
+        "click .hideEditor" : "hideEditor"
+    },
+    /////////////////////////////////////////
+    // Editor
+    /////////////////////////////////////////
+    showEditor : function(){
+        $('#editor').show('slow');
+    },
+    hideEditor : function(){
+        $('#editor').hide('slow');
     },
     /////////////////////////////////////////
     // Drag sub-Tree
@@ -721,6 +731,7 @@ bbmap.Views.Main = Backbone.View.extend({
         _this = this;
         this.bar_el.empty();
         this.map_el.empty();
+        this.editor_el.empty();
         nodes_views = {};
         ///////////////////////
         // Action bar
