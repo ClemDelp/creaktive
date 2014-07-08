@@ -373,14 +373,9 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .zoomin" : "zoomin",
         "click .zoomout" : "zoomout",
         "click .reset" : "resetInterface",
-        "mouseenter .window.knowledge" : "showIcon2", 
         "mouseenter .window.concept" : "showIcon", 
         "mouseleave .window" : "hideIcon", 
         // "click .reorganize" : "reorganize",
-    },
-    showIcon2 : function(e){
-        e.preventDefault();
-        $("#"+e.target.id+" .sup").show();
     },
     showIcon : function(e){
         e.preventDefault();
@@ -401,6 +396,18 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     hideIcon : function(e){
         e.preventDefault();
+        // var className = e.target.className.split(' ');
+        // var concepts_list = [];
+        // if(_.indexOf(className, "concept") > -1){
+        //     concepts_list = this.concepts.where({id_father:e.target.id});
+
+        // }else{
+        //     //alert('hover knowledges');
+        // }
+        // concepts_list.forEach(function(concept){
+        //     $("#"+concept.get('id')).css({border:'0.15em dotted green',color:'black'});
+        //     //$("#"+concept.get('id')).trigger('mouseenter');
+        // })
         this.$(".icon").hide();
     },
     /////////////////////////////////////////
