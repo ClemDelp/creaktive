@@ -31,50 +31,50 @@ var bbmap = {
   }
 };
 /////////////////////////////////////////////////
-bbmap.Views.EditBox = Backbone.View.extend({
-    initialize : function(e){
-        _.bindAll(this, 'render','saveEdition');
-        this.model = new Backbone.Model();
-        $(this.el).dialog({autoOpen: false});
-    },
-    saveEdition : function(e){
-        e.preventDefault();
-        this.model.save({
-            user : bbmap.views.main.user,
-            title:$(this.el).find("#title").val(),
-            content:CKEDITOR.instances[this.model.get('id')+'_content'].getData(),
-            date: getDate(),
-            date2:new Date().getTime()
-        });
-        $(this.el).dialog( "close" );
-    },
-    openEditBox : function(id_model, type){
-        _this = this;
-        $(this.el).empty();
-        if(type == "knowledge"){
-            this.model = bbmap.views.main.knowledges.get(id_model);
+// bbmap.Views.EditBox = Backbone.View.extend({
+//     initialize : function(e){
+//         _.bindAll(this, 'render','saveEdition');
+//         this.model = new Backbone.Model();
+//         $(this.el).dialog({autoOpen: false});
+//     },
+//     saveEdition : function(e){
+//         e.preventDefault();
+//         this.model.save({
+//             user : bbmap.views.main.user,
+//             title:$(this.el).find("#title").val(),
+//             content:CKEDITOR.instances[this.model.get('id')+'_content'].getData(),
+//             date: getDate(),
+//             date2:new Date().getTime()
+//         });
+//         $(this.el).dialog( "close" );
+//     },
+//     openEditBox : function(id_model, type){
+//         _this = this;
+//         $(this.el).empty();
+//         if(type == "knowledge"){
+//             this.model = bbmap.views.main.knowledges.get(id_model);
 
-        }else if(type == "concept"){
-            this.model = bbmap.views.main.concepts.get(id_model);
-        }
-        this.render(function(model_id){
-            $(_this.el).dialog( "open" );
-            CKEDITOR.replaceAll('ckeditor_bbmap');
-            CKEDITOR.config.toolbar = [
-               ['Bold','Italic','Underline','NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','Image','Table','-','Link','Smiley','TextColor','BGColor']
-            ] ;
-        });
+//         }else if(type == "concept"){
+//             this.model = bbmap.views.main.concepts.get(id_model);
+//         }
+//         this.render(function(model_id){
+//             $(_this.el).dialog( "open" );
+//             CKEDITOR.replaceAll('ckeditor_bbmap');
+//             CKEDITOR.config.toolbar = [
+//                ['Bold','Italic','Underline','NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','Image','Table','-','Link','Smiley','TextColor','BGColor']
+//             ] ;
+//         });
         
-        $("#save").click(this.saveEdition)
-    },
-    render : function(callBack){
-        $(this.el).empty();
-        $(this.el).append('<input id="title" type="text" value="'+this.model.get("title")+'">');
-        $(this.el).append('<textarea class="ckeditor_bbmap" id="'+this.model.get('id')+'_content" name="editor" rows="10" cols="80">'+this.model.get('content')+'</textarea>');
-        $(this.el).append('<br><a href="#" id="save" class="button tiny expand secondary" style="margin-bottom:0px">save</a>');
-        callBack();
-    }
-});
+//         $("#save").click(this.saveEdition)
+//     },
+//     render : function(callBack){
+//         $(this.el).empty();
+//         $(this.el).append('<input id="title" type="text" value="'+this.model.get("title")+'">');
+//         $(this.el).append('<textarea class="ckeditor_bbmap" id="'+this.model.get('id')+'_content" name="editor" rows="10" cols="80">'+this.model.get('content')+'</textarea>');
+//         $(this.el).append('<br><a href="#" id="save" class="button tiny expand secondary" style="margin-bottom:0px">save</a>');
+//         callBack();
+//     }
+// });
 /////////////////////////////////////////////////
 bbmap.Views.Node = Backbone.View.extend({
     initialize : function(json){
@@ -90,10 +90,20 @@ bbmap.Views.Node = Backbone.View.extend({
     },
     events : {
         "dblclick .bulle" : "editTitle",
+        "mouseenter .editTitle" : "editTitle",
         "click .ep4" : "editTitle",
         "click .sup" : "removeModel",
         "click .ep" : "addConceptChild",
         "click .ep2" : "addKnowledgeChild",
+    },
+    applyStyle : function(){
+        if(this.model.get('css')){
+            var left = $(this.el).position().left;
+            var top = $(this.el).position().top;
+            var style = 'top:' + top + 'px; left : ' + left + 'px;' + this.model.get('css');
+            console.log(style)
+            $(this.el).attr('style',style)
+        }
     },
     setPosition : function(x, y, sz, h){
         var left = (x - h);
@@ -193,7 +203,8 @@ bbmap.Views.Node = Backbone.View.extend({
     },
     editTitle : function(e){
         e.preventDefault();
-        bbmap.views.editBox.openEditBox(this.model.get('id'),this.model.get('type'));
+        bbmap.views.main.updateEditor(this.model);
+        //bbmap.views.editBox.openEditBox(this.model.get('id'),this.model.get('type'));
     },
     addEndpoint : function(){
         // Add endpoints
@@ -298,6 +309,11 @@ bbmap.Views.Main = Backbone.View.extend({
         this.bar_el = $(this.el).find('#actionbar');
         this.map_el = $(this.el).find('#map');
         this.editor_el = $(this.el).find('#editor');
+        this.editModel_el = $(this.el).find('#editModel');
+        this.attachementModel_el = $(this.el).find('#attachementModel');
+        this.discussionModel_el = $(this.el).find('#discussionModel');
+        this.activitiesModel_el = $(this.el).find('#activitiesModel');
+        this.css3Model_el = $(this.el).find('#css3Model');
         // Variables
         this.knowledges         = json.knowledges;
         this.concepts           = json.concepts;
@@ -337,7 +353,7 @@ bbmap.Views.Main = Backbone.View.extend({
         });  
         ////////////////////////////
         // Boite d'édition
-        bbmap.views.editBox = new bbmap.Views.EditBox({el : "#editBox"});
+        //bbmap.views.editBox = new bbmap.Views.EditBox({el : "#editBox"});
         ////////////////////////////
         // Events
         this.listenTo(bbmap.zoom,'change',this.updateZoomDisplay,this);
@@ -351,7 +367,7 @@ bbmap.Views.Main = Backbone.View.extend({
         global.eventAggregator.on('knowledge:remove',this.removeModelToView,this);
         global.eventAggregator.on('knowledge:update',this.modelUpdate,this);
 
-        $(this.el).mousewheel(function(event) {
+        this.map_el.mousewheel(function(event) {
             event.preventDefault();
             console.log(event.deltaY);
             if(event.deltaY == -1)bbmap.views.main.zoomin()
@@ -370,17 +386,58 @@ bbmap.Views.Main = Backbone.View.extend({
         "mouseenter .window.concept" : "showIcon", 
         "click .ep3" : "structureTree",
         "mouseleave .window" : "hideIcon", 
-        "click .showEditor" : "showEditor", 
-        "click .hideEditor" : "hideEditor"
+        "click .closeEditor" : "hideEditor"
     },
     /////////////////////////////////////////
-    // Editor
+    // Slinding editor bar
     /////////////////////////////////////////
-    showEditor : function(){
-        $('#editor').show('slow');
+    updateEditor : function(model){
+        this.editor_el.show('slow');
+        // Model editor module
+        if(bbmap.views.modelEditor)bbmap.views.modelEditor.remove();
+        bbmap.views.modelEditor = new modelEditor.Views.Main({
+            user            : this.user,
+            model           : model
+        });
+        // Templates list
+        if(bbmap.views.templatesList)bbmap.views.templatesList.remove();
+        bbmap.views.templatesList = new templatesList.Views.Main({
+            templates : this.project.get('templates'),
+            model : model
+        });
+        // IMG List module
+        if(bbmap.views.imagesList)bbmap.views.imagesList.remove();
+        bbmap.views.imagesList = new imagesList.Views.Main({
+            model           : model
+        });
+        // Attachment module
+        if(bbmap.views.attachment)bbmap.views.attachment.remove();
+        bbmap.views.attachment = new attachment.Views.Main({
+            model           : model
+        });
+        // Comments module
+        if(bbmap.views.comments)bbmap.views.comments.remove();
+        bbmap.views.comments = new comments.Views.Main({
+            model           : model,
+            user            : this.user
+        });
+        // notification module
+        if(bbmap.views.activitiesList)bbmap.views.activitiesList.remove();
+        bbmap.views.activitiesList = new activitiesList.Views.Main({
+            model           : model
+        });
+        
+        // Render & Append
+        this.editModel_el.html(bbmap.views.modelEditor.render().el);
+        this.editModel_el.append(bbmap.views.templatesList.render().el);
+        this.attachementModel_el.html(bbmap.views.imagesList.render().el);
+        this.attachementModel_el.append(bbmap.views.attachment.render().el);
+        this.discussionModel_el.append(bbmap.views.comments.render().el);
+        this.activitiesModel_el.html(bbmap.views.activitiesList.render().el);
     },
-    hideEditor : function(){
-        $('#editor').hide('slow');
+    hideEditor : function(e){
+        e.preventDefault();
+        this.editor_el.hide('slow');
     },
     /////////////////////////////////////////
     // Drag sub-Tree
@@ -727,12 +784,12 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     render : function(){        
         ///////////////////////
-        // Init
+        // init
+        nodes_views = {};
         _this = this;
+        // el
         this.bar_el.empty();
         this.map_el.empty();
-        this.editor_el.empty();
-        nodes_views = {};
         ///////////////////////
         // Action bar
         this.bar_el.append(this.template_actionbar());
@@ -761,6 +818,14 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         this.knowledges.forEach(function(model){
             _this.map_el.append(nodes_views[model.get('id')].render().el);    
+        });
+        ///////////////////////
+        // Apply style
+        this.concepts.forEach(function(model){
+            nodes_views[model.get('id')].applyStyle();    
+        });
+        this.knowledges.forEach(function(model){
+            nodes_views[model.get('id')].applyStyle();    
         });
         ///////////////////////
         // Views addEndPoint process
@@ -792,6 +857,15 @@ bbmap.Views.Main = Backbone.View.extend({
         $( "#map" ).draggable();
 
         this.nodes_views = nodes_views;
+        // css3 generator
+        if(bbmap.views.css3)bbmap.views.css3.remove();
+        bbmap.views.css3 = new CSS3GENERATOR.Views.Main();
+        // CSS3 Button generator
+        this.css3Model_el.html(bbmap.views.css3.render().el);
+        CSS3GENERATOR.attach_handlers();
+        CSS3GENERATOR.initialize_controls();
+        CSS3GENERATOR.update_styles();
+        $(document).foundation();
 
         return this;
     }

@@ -119,7 +119,6 @@ CKLayout.Views.Header = Backbone.View.extend({
         return this;
     }
 });
-
 /***************************************/
 CKLayout.Views.Main = Backbone.View.extend({
     initialize:function(json){
@@ -128,7 +127,7 @@ CKLayout.Views.Main = Backbone.View.extend({
         // Variables
         this.activities_el      = json.activities_el;
         this.model              = json.model;
-        this.user               = json.user;
+        this.user               = global.models.current_user;
         this.labels             = new Backbone.Collection();
         // Label
         if(this.model.get('type') == "concept"){

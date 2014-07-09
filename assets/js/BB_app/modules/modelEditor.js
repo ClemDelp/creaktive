@@ -97,14 +97,17 @@ modelEditor.Views.Main = Backbone.View.extend({
         this.render();
         CKEDITOR.replaceAll('ckeditor');
         CKEDITOR.config.toolbar = [
-            { name: 'document', groups: [ 'mode', 'document', 'doctools' ], items: [ 'Print', '-', 'Templates', '-' , 'Maximize' ] },
-            { name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
-            { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },
-            { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
-            { name: 'insert', items: [ 'Image', 'Link', 'Unlink', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar' ] },
-            { name: 'styles', items: [ 'Styles', 'Format', 'Font', 'FontSize' ] },
-            { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
-        ];
+           ['Bold','Italic','Underline','NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','Image','Table','-','Link','Smiley','TextColor','BGColor']
+        ] ;
+        // CKEDITOR.config.toolbar = [
+        //     { name: 'document', groups: [ 'mode', 'document', 'doctools' ], items: [ 'Print', '-', 'Templates', '-' , 'Maximize' ] },
+        //     { name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
+        //     { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },
+        //     { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+        //     { name: 'insert', items: [ 'Image', 'Link', 'Unlink', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar' ] },
+        //     { name: 'styles', items: [ 'Styles', 'Format', 'Font', 'FontSize' ] },
+        //     { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+        // ];
     },
     render : function(){
         $(this.el).html('');

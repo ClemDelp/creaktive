@@ -1,0 +1,10 @@
+<script type="text/template" id="templatesList-header-template">
+	<hr>
+	<p><strong>Templates : </strong></p>
+</script>
+
+<script type="text/template" id="templatesList-template">
+	{{ if(template != null){ }}
+		<a id="{{-template.id}}" href="#" class="button" title="click to apply this tempalte" style="{{- template.css }}">{{-template.title}}</>
+	{{ } }}
+</script>

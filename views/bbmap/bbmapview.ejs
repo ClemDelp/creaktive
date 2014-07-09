@@ -20,8 +20,24 @@
 <!-- ******************************** -->
 <!-- CKEditor -->
 <script src="/js/ckeditor/ckeditor.js"></script>
+
 <!-- ******************************** -->
 <!-- Modules to load -->
+<%- partial('../app/templates/activitiesList_templates') %>
+<%- partial('../app/templates/imagesList_templates') %>
+<%- partial('../app/templates/modelEditor_templates') %>
+<%- partial('../app/templates/comments_templates') %>
+<%- partial('../app/templates/attachment_templates') %>
+<%- partial('../app/templates/css3_templates') %>
+<%- partial('../app/templates/templatesList_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/modelEditor.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/comments.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/attachment.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/activitiesList.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/imagesList.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/css3.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/templatesList.js"></script>
+
 <%- partial('../app/templates/nodesMapping_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/nodesMapping.js"></script>
 
@@ -75,7 +91,7 @@
 
       global.init(json, function(){
         // Modules
-        title.init(json.project,"bbmap");
+        //title.init(json.project,"bbmap");
         topbar.init();
         bbmap.init();
         

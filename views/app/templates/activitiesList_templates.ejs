@@ -1,20 +1,6 @@
 <script type="text/template" id="activitiesList-template">
-  <h2>
-    {{-model.title}} 
-    {{ if((model.type != "category")&&(model.type != "project")){ }}<span class="success round label" style="background-color:{{- model.color }}">{{- model.label}}</span>{{ } }}    
-    <span class="round label">{{-model.type}}</span>
-    {{ _.each(model.tags, function(tag) { }}
-        <span class="success round label" style="cursor:pointer">{{-tag}}</span>
-    {{ }); }}
-  </h2>
-  <hr>
-
-  <fieldset>
-    <legend align=left>
-      New activities</strong>({{- news_notifs.length }})
-      <a href="#" class="button tiny success round closeAll">close all</a>
-    </legend>
-
+    New activities</strong>({{- news_notifs.length }})
+    <a href="#" class="button tiny success round closeAll">close all</a>
     <table width="100%">
       <tbody>
       {{_.each(news_notifs,function(notification){ }}
@@ -28,5 +14,4 @@
       {{ }); }}
       </tbody>
     </table>
-  </fieldset> 
 </script>
