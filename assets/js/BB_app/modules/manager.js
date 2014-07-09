@@ -59,7 +59,8 @@ manager.Views.Projects = Backbone.View.extend({
     },
     openProjectModal : function(e){
         e.preventDefault();
-        manager.views.p_cklayout_modal.openModelEditorModal(e.target.getAttribute("data-model-id"));
+        //manager.views.p_cklayout_modal.openModelEditorModal(e.target.getAttribute("data-model-id"));
+        this.eventAggregator.trigger("show_project_details", e.target.getAttribute("data-model-id"));
     },
     projectsSearch: function(matched_projects){
         this.projects_render = matched_projects;
@@ -81,6 +82,54 @@ manager.Views.Projects = Backbone.View.extend({
         return this;
     }
 });
+manager.Views.ProjectDetails = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        // Params
+        this.user               = json.user;
+        this.permissions        = json.permissions;
+        this.projects           = json.projects;
+        this.project_render     = null;
+        this.knowledges         = json.knowledges;
+        this.concepts           = json.concepts;
+        this.links              = json.links;
+        this.users              = json.users;
+        this.poches             = json.poches;
+        this.eventAggregator    = json.eventAggregator;
+        this.labels             = new Backbone.Collection();
+        // Events
+        this.eventAggregator.on('show_project_details', this.showDetails,this);
+        // Templates             
+    },
+    showDetails : function(project){
+        this.project_render = this.projects.get(project)
+        this.render();
+    },
+    render : function(){
+        $(this.el).empty();
+        _this = this;
+
+        if(this.project_render) {
+            // $(_this.el).append(_this.template_projectDetails);
+
+            $(this.el).append(new CKLayout.Views.Header({
+                model : this.project_render,
+                labels : this.labels
+            }).render().el);
+
+            $(_this.el).append(new modelEditor.Views.Main({
+                user            : this.user,
+                model           : this.project_render,
+            }).render().el);
+
+            $(_this.el).append(new activitiesList.Views.Main({
+                model           : this.project_render,
+            }).render().el);
+        }
+
+        return this;
+    }
+});
 /////////////////////////////////////////////////
 // MAIN
 /////////////////////////////////////////////////
@@ -99,12 +148,12 @@ manager.Views.Main = Backbone.View.extend({
         this.poches             = json.poches;
         this.user               = json.user;
         this.eventAggregator    = json.eventAggregator;
-        // CKLayout for project
-        manager.views.p_cklayout_modal = new CKLayout.Views.Modal({
-            user            : this.user,
-            collection      : this.projects,
-            eventAggregator : this.eventAggregator
-        });
+        // // CKLayout for project
+        // manager.views.p_cklayout_modal = new CKLayout.Views.Modal({
+        //     user            : this.user,
+        //     collection      : this.projects,
+        //     eventAggregator : this.eventAggregator
+        // });
         // Events
         this.projects.bind("add", this.render);
         this.projects.bind("remove", this.render);
@@ -114,7 +163,7 @@ manager.Views.Main = Backbone.View.extend({
     events : {
         "keyup .search" : "search",
         "click .newProject" : "newProject",
-        "click .removeProject" : "removeProject",
+        "click .remove" : "remove",
     },
     newProject : function(e){
         e.preventDefault();
@@ -175,7 +224,21 @@ manager.Views.Main = Backbone.View.extend({
         // Projects
         $(this.el).append(new manager.Views.Projects({
             id              : "categories_grid",
-            className       : "panel expand gridalicious",
+            className       : "expand gridalicious large-3 columns",
+            user            : this.user,
+            permissions     : this.permissions,
+            projects        : this.projects,
+            knowledges      : this.knowledges,
+            concepts        : this.concepts,
+            links           : this.links,
+            users           : this.users,
+            poches          : this.poches,
+            eventAggregator : this.eventAggregator
+        }).render().el);
+
+        $(this.el).append(new manager.Views.ProjectDetails({
+            id              : "project_details",
+            className       : "large-9 columns",
             permissions     : this.permissions,
             projects        : this.projects,
             knowledges      : this.knowledges,

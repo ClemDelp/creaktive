@@ -1,4 +1,5 @@
-<div id="manager-container" class="row"></div>
+<div id="manager-container" class="row panel"></div>
+
 
 <!--////////////////////////////////////////////////////////////////
 /*Manager templates*/-->
@@ -17,6 +18,11 @@
 	</div>
 </script>
 
+<script type="text/template" id="manager-project-details-template">
+	
+
+</script>
+
 <script type="text/template" id="manager-project-template">
     <div class="item">
 	    <ul class="pricing-table">
@@ -30,8 +36,7 @@
 		  		</a>
 		  	</li>
 		  	<li class="description">
-		  		{{ if(project.content == ""){ }}Add a description via the project editor{{ }else{ }} {{=project.content}} {{ } }}<br>
-		  		Create by {{-project.author.name}} at {{-project.date}}
+		  		Created by {{-project.author.name}} at {{-project.date}}
 		  	</li>
 		  	<li class="description">
 		  		<strong style="color:green">{{-userNbr}}</strong> users on this project <a href="/userManager?projectId={{- project.id}}" class="button tiny round secondary">manage users</a>
