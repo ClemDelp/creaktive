@@ -3,13 +3,24 @@ module.exports.bootstrapdata = {
   bootstrapmanager : function(req,res){
     req.session.user = req.session.user || {id:"999999999", name : "guest", img:"img/default-user-icon-profile.png"}
     ///////////////////////////////////////////////////
-    news_notifications = [];
-    Notification.find({project_id : req.session.allowedProjects}).done(function(err,notifications){
-      notifications.forEach(function(notif){
-        if((_.indexOf(notif.read, req.session.user.id) == -1)){
-          news_notifications.unshift(notif);
-        }
+    unread_notifications = [];
+    read_notifications = [];
+    
+    Notification.find()
+    .where({read : {'!' :req.session.user.id}})
+    .done(function(err,unotifications){
+      if(err) console.log(err);
+      unread_notifications = unotifications;
+      Notification.find()
+      .where({read : req.session.user.id})
+      .sort('comparator DESC')
+      .limit(10)
+      .done(function(err,rnotifications){
+        if(err) res.send(err);
+        read_notifications = _.groupBy(rnotifications, "project_id");
+
       });
+
     });
     ///////////////////////////////////////////////////
     User.find().done(function(err,users){
@@ -28,7 +39,8 @@ module.exports.bootstrapdata = {
                       projects : JSON.stringify(projects),
                       concepts : JSON.stringify(concepts),
                       links : JSON.stringify(links),
-                      notifications : JSON.stringify(news_notifications),
+                      notifications : JSON.stringify(unread_notifications),
+                      activityLog : JSON.stringify(read_notifications),
                       permissions : JSON.stringify(permissions)
                     });
                   });
@@ -50,14 +62,18 @@ module.exports.bootstrapdata = {
         req.session.currentProject = project;
         ///////////////////////////////////////////////////
         // Notifications
-        news_notifications = [];
+        unread_notifications = [];
+
         Notification.find({project_id : project.id}).done(function(err,notifications){
           notifications.forEach(function(notif){
             if((_.indexOf(notif.read, req.session.user.id) == -1)){
-              news_notifications.unshift(notif);
+              unread_notifications.unshift(notif);
             }
           });
         });
+
+        
+        
         ///////////////////////////////////////////////////
         // Backups
         backups_truncated = [];
@@ -86,7 +102,7 @@ module.exports.bootstrapdata = {
                         projects : JSON.stringify(projects),
                         concepts : JSON.stringify(concepts),
                         links : JSON.stringify(links),
-                        notifications : JSON.stringify(news_notifications),
+                        notifications : JSON.stringify(unread_notifications),
                         permissions : JSON.stringify(permissions),
                         backups : JSON.stringify(backups_truncated)
                       });

@@ -4,9 +4,9 @@ module.exports = function(req, res, next) {
  
 	'use strict';
 
-	_.each(req.body, function(p){
-		xss(p)
-	})
+	// _.each(req.body, function(p){
+	// 	xss(p)
+	// })
 	// Sockets
 	if(req.isSocket){
 		if(req.session && req.session.passport && req.session.passport.user){
