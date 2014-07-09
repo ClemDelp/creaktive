@@ -1,76 +1,129 @@
 <!-- //////////////////////////////////////////////////////// -->
 <div id="CKPreviewer_container" ></div>
-<div id="rect" style="position:absolute;filter:Alpha(Opacity=50);-moz-opacity:0.50; opacity:0.50;background-color: #00BFFF"></div> 
-<div class="zoomViewport demo" style="position:absolute; left:0%; top:0%; width:100%; hight:100%">
-    <div class="zoomContainer"style=" left:0%; top:0%; width:100%; hight:100%">
-    </div>
-</div>
+
+
 <!-- //////////////////////////////////////////////////////// -->
 <!-- Modal -->
-<div id="CKPreviewerModal" class="reveal-modal" data-reveal></div>
+<div id="CKPreviewerModal" class="reveal-modal" data-reveal></div> 
 <script type='text/template' id='CKPreviewer_modalContent_templates'>
+    <a href="#" id="selectzoon" class="button tiny  " style="float:left">Select</a>
+    <a href="#" id="newimage" class="button tiny  " style="float:left">New</a>
+    <a href="#" id="resizeimage" class="button tiny  " style="float:left">Resize</a>
+    <center><h3></h3></center><hr>
+    <image src="/S3/getPrivateUrl?amz_id={{- src}}"  id="cropbox"/><hr>
+    
+    <a href="#" id="addimage" class="button tiny  " style="float:right">Add</a>
+
+    <a class="close-reveal-modal">&#215;</a>
+</script>
+
+<!--<div id="ckpreviewerCKModal" class="reveal-modal small" data-reveal></div>
+<script type='text/template' id='CKPreviewer_ckmodalContent_templates'>
     <center><h3>{{- knowledge.title }}</h3></center><hr>
     {{= knowledge.content }}
-</script>
+    <hr>
+    <a href="#" id="addCK" class="button tiny  " style="float:right">Add</a>
+    <a class="close-reveal-modal">&#215;</a>
+</script>-->
 <!-- //////////////////////////////////////////////////////// -->
 <script type="text/template" id="CKPreviewer_action_template" >
-  <a href="#" id="select" class="button tiny expad ">Zoom</a>
-  <a href="#" id="slide" class="button tiny expad ">Add</a>
-</script>
-
-<script type="text/template" id="CKPreviewer_conceptsmap_template" >
-  <center><h3>C</h3></center><hr>
-  <div id="main" >
-    <ul id="port" ></ul>
+  <div class="expand">
+    <div class="small-6 large-6 medium-6 columns">
+      <center>
+        
+      <a href="#" id="drop0" data-dropdown="drop1" class="button tiny secondary dropdown"  style="float:right">Presentation</a><br>
+      <ul id="drop1" data-dropdown-content class="f-dropdown"></ul>
+      </center>
+    </div>
+    <div class="small-2 large-2 medium-2 columns">
+      <div class="row collapse custom_row">
+        <div class="small-10 columns">
+          <input class="presentation_title" type="text" placeholder="new presentation..."/>
+        </div>
+        <div class="small-2 columns">
+          <a href="#" id="add1" class="button success postfix">+</a>
+        </div>
+      </div>
+    </div>
+    <div class="small-4 large-4 medium-4 columns">
+    <a href="#" id="delete"  class="button tiny secondary "  style="float:left">Delete</a><br>
+    </div>
   </div>
+  <div class="row"></div>
 </script>
 
-<script type="text/template" id="CKPreviewer_knowledgesmap_template">
-    <div class="item">    
-        <ul class="pricing-table">
-            <li class="price"class="title">
-                <a href="#" class="button tiny success radius expand openModal" data-category-id="{{-category.id}}">
-                    <strong data-category-id="{{-category.id}}">{{- category.title}}</strong>
-                </a>
-            </li>
-            <li class="bullet-item">
-                
-                {{ _.each(knowledges, function(knowledge) { }}
-                    <a href="#" class="button openModal tiny radius round expand secondary CKBulle" data-knowledge-id="{{-knowledge.id}}" data-catg-origin="{{- category.title}}"  style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}">
-                        <strong data-knowledge-id="{{-knowledge.id}}" data-catg-origin="{{- category.title}}">{{- knowledge.title }}</strong>
-                    </a>
-                {{ }); }}   
-            </li>
-        </ul>
+
+<!-- //////////////////////////////////////////////////////// -->
+<script type="text/template" id="CKPreviewer_images_template" >
+  <ul class="radius tabs tiny" data-tab>
+    <li class="tab-title active"><a href="#panel2-1">I</a></li>
+    <li class="tab-title"><a href="#panel2-2">K</a></li>
+    <li class="tab-title"><a href="#panel2-3">C</a></li>
+    <li class="tab-title"><a href="#panel2-4">P</a></li>
+  </ul>
+  <div class="tabs-content">
+    <div class="content active" id="panel2-1">
+    <ul class="small-block-grid-2">
+      {{ _.each(images, function(image) { }}
+        <li id="image_container">
+          {{- image.updatedAt.substr(0,10)}}
+          <a class="qqq" style="float:right">&#215;</a>
+          <img class="th" id="image" data-image-id="{{- image.src}}" src="/S3/getPrivateUrl?amz_id={{- image.src}}">
+        </li>
+      {{ }); }}  
+    </ul>
+    </div>
+    <div class="content" id="panel2-2">
+      {{ _.each(knowledges, function(knowledge) { }}
+          <a href="#" class="button knowledge tiny radius   secondary CKBulle" data-knowledge-id="{{-knowledge.id}}" data-knowledge-content="{{-knowledge.content}}" data-knowledge-title="{{-knowledge.title}}" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}">
+            <strong data-knowledge-id="{{-knowledge.id}}" data-knowledge-content="{{-knowledge.content}}" data-knowledge-title="{{-knowledge.title}}">{{- knowledge.title }}</strong>
+          </a>
+      {{ }); }}  
+    </div>
+    <div class="content" id="panel2-3">
+      {{ _.each(concepts, function(concepte) { }}
+          <a href="#" class="button concept tiny radius   secondary CKBulle" data-concepte-id="{{-concepte.id}}" data-concepte-content="{{-concepte.content}}" data-concepte-title="{{-concepte.title}}">
+            <strong data-concepte-id="{{-concepte.id}}" data-concepte-content="{{-concepte.content}}" data-concepte-title="{{-concepte.title}}">{{- concepte.title }}</strong>
+          </a>
+      {{ }); }} 
+    </div>
+    <div class="content" id="panel2-4">
+      {{ _.each(poches, function(poche) { }}
+          <a href="#" class="button poche tiny radius   secondary CKBulle" data-poche-id="{{-poche.id}}" data-poche-cotent="{{-poche.content}}" data-poche-title="{{-poche.title}}">
+            <strong data-poche-id="{{-poche.id}}" >{{- poche.title }}</strong>
+          </a>
+      {{ }); }} 
+    </div>
+  </div>
+
+</script>
+
+
+<!-- //////////////////////////////////////////////////////// 
+<script type="text/template" id="CKPreviewer_slides_template" >
+  <ul id="slides" class="small-block-grid-1">
+    {{ _.each(thumbnails, function(thumbnail) { }}
+      <li>
+        <img class="th" id="slide" src="{{- thumbnail}}">
+      </li>
+    {{ }); }}  
+  </ul>
+</script>-->
+
+
+<!-- //////////////////////////////////////////////////////// -->
+<script type="text/template" id="CKPreviewer_editer_template" >
+    <div class="row" >
+        <textarea  class="ckeditor"  name="ckeditor" >
+        
+        </textarea> 
+        <hr>
+        <a href="#" class="button tiny round  createpresentation"style="float:right">Update</a>
+        <a href="#" class="button tiny round  clearpresentation"style="float:right">Clear</a>   
+        <a href="#" class="button tiny round  resetpresentation"style="float:right">Reset</a>  
+    </div>
+    <div style="position: absolute; opacity: 0.0;">
+      <div id="tempImageThumbnail"></div>
     </div>
 </script>
 
-<!-- category-notcategorized -->
-<script type="text/template" id="CKPreviewer-notcategorized-template">
-<div class="item">
-    <a href="#"  class="tiny radius round openModal button expand secondary CKBulle" data-knowledge-id="{{-knowledge.id}}" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}"><strong data-knowledge-id="{{-knowledge.id}}">{{- knowledge.title }}</strong></a> 
-</div>
-</script>
-
-<script type="text/template" id="CKPreviewer-Khead-template">
-  <a href="#" class="button tiny secondary fullScreen" style="float:right">
-    <img style="" class="large-6 medium-6 small-6" src="img/fullscreen.png" title="fullscreen/minimize">
-  </a>
-  <a href="#" id="allknowledges" class="button tiny secondary " style="float:left">
-    reset
-  </a>
-  <center><h3>K</h3></center><hr>
-</script>
-
-
-<script type="text/template" id="CKPreviewer_slides_template" >
-<div class="zoomButton" data-type="prev" data-root=".demo">prev</div>
-<div class="zoomButton" data-type="next" data-root=".demo">next</div>
-  <ul class = "sortable">
-    {{ _.each(slides, function(slide) { }}
-        <li id = "slide" style = "list-style: none;border: 1px solid #CCC;background: #F6F6F6;color: #1C94C4;margin: 5px;padding: 5px;line-height: 80px;float: left;width: 80px;height: 80px;text-align: center;" slideorder="{{-slide.slideorder}}">
-        slide{{-slide.slideorder+1}}
-        </li>
-    {{ }); }}
-  </ul>
-</script>

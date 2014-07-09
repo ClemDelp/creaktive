@@ -25,12 +25,13 @@ var fs = require('fs');
         8) options
     */
 	getPrivateUrl : function (req,res){
+
  		var cf = cloudfront.createClient(AWS_ACCESS_KEY,AWS_SECRET_KEY);
 		cf.keyPairId = process.env.AWS_CF_KEY_PAIR_ID ||"APKAINMRZ47Y6KNXIJQQ";
 		cf.privateKey = fs.readFileSync("pk-"+cf.keyPairId+".pem");
  		
  		var now = new Date();
-    	var expires = Math.ceil((now.getTime() + 10000)/1000); // 10 seconds from now
+    	var expires = Math.ceil((now.getTime() + 1000000)/1000); // 10 seconds from now
 
  		var hostname = process.env.AWS_CF_HOSTAME || "d2gsmu1q0g6u6n.cloudfront.net/" 
  		var path = req.query.amz_id;
@@ -41,12 +42,12 @@ var fs = require('fs');
 
 
  	upload_sign : function(req,res){
-
+    console.log(S3_BUCKET)
     var object_name = req.query.s3_object_name;
     var mime_type = req.query.s3_object_type;
 
     var now = new Date();
-    var expires = Math.ceil((now.getTime() + 10000)/1000); // 10 seconds from now
+    var expires = Math.ceil((now.getTime() + 1000000)/1000); // 10 seconds from now
     var amz_headers = "x-amz-acl:private";
 
     var put_request = "PUT\n\n"+mime_type+"\n"+expires+"\n"+amz_headers+"\n/"+S3_BUCKET+"/"+object_name;

@@ -8,6 +8,8 @@
 
     S3Upload.prototype.file_dom_selector = 'file_upload';
 
+    S3Upload.prototype.file = null;
+
     S3Upload.prototype.onFinishS3Put = function(amz_id) {
       return console.log('base.onFinishS3Put()', amz_id);
     };
@@ -20,12 +22,20 @@
       return console.log('base.onError()', status);
     };
 
+
     function S3Upload(options) {
       if (options == null) options = {};
       for (option in options) {
         this[option] = options[option];
       }
-      this.handleFileSelect(document.getElementById(this.file_dom_selector));
+
+      if(this.file){
+        this.onProgress(0, 'Upload started.');
+        this.uploadFile(this.file);
+      } 
+      
+      else this.handleFileSelect(document.getElementById(this.file_dom_selector));
+      
     }
 
     S3Upload.prototype.handleFileSelect = function(file_element) {

@@ -32,6 +32,10 @@ var global = {
     this.collections.Links = new this.Collections.CKLinks(json.links);
     this.collections.Backups = new this.Collections.Backups(json.backups);
     this.collections.Notifications = new this.Collections.NotificationsCollection(json.notifications);
+    this.collections.Screenshots = new this.Collections.Screenshots(json.screenshots);
+    this.collections.Slides = new this.Collections.Slides(json.slides);
+    this.collections.Presentations = new this.Collections.Presentations(json.presentations);
+
     // Dictionaries    
     this.ProjectsUsersDictionary = this.Functions.getProjectsUsersDictionary(this.collections.Projects,this.collections.Permissions);// dictionaire pour le nombre d'utilisateur par projet
     this.NotificationsDictionary = {};
