@@ -275,6 +275,7 @@ CKPreviewer.Views.Images = Backbone.View.extend({
     },
     events : {
         "click #image" : "addImg",
+        "click #deleteimage" : "delImg",
         "click .concept" : "addConcept",
         "click .knowledge" : "addKnowledge",
         "click .poche" : "addPoche",
@@ -297,6 +298,13 @@ CKPreviewer.Views.Images = Backbone.View.extend({
     //     poche = this.poches.get(e.target.getAttribute("data-poche-id"));
     //     this.eventAggregator.trigger("openCKModal",poche);
     // },
+    delImg : function(e){
+        e.preventDefault();
+        var imagesrc = e.target.getAttribute("data-image-id");
+        var screenshot_id = e.target.getAttribute("data-screenshot-id");
+
+        console.log(imagesrc,this.screenshots.get(screenshot_id) );
+    },
     addImg : function(e){
         e.preventDefault();
         var imagesrc = e.target.getAttribute("data-image-id");

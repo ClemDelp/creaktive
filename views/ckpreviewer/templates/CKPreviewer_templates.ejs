@@ -67,7 +67,7 @@
       {{ _.each(images, function(image) { }}
         <li id="image_container">
           {{- image.updatedAt.substr(0,10)}}
-          <a class="qqq" style="float:right">&#215;</a>
+          <a id="deleteimage" data-image-id="{{- image.src}}" data-screenshot-id="{{- image.id}}" style="float:right">&#215;</a>
           <img class="th" id="image" data-image-id="{{- image.src}}" src="/S3/getPrivateUrl?amz_id={{- image.src}}">
         </li>
       {{ }); }}  
