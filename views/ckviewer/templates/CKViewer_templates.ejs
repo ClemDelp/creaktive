@@ -47,7 +47,7 @@
             <li class="bullet-item">
                 
                 {{ _.each(knowledges, function(knowledge) { }}
-                    <a href="#" class="button openModal tiny radius round expand secondary CKBulle" data-knowledge-id="{{-knowledge.id}}" data-catg-origin="{{- category.title}}"  style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}">
+                    <a href="#" class="button openModal tiny radius round expand secondary CKBulle" data-knowledge-id="{{-knowledge.id}}" data-catg-origin="{{- category.title}}" style="{{-knowledge.css}}">
                         <strong data-knowledge-id="{{-knowledge.id}}" data-catg-origin="{{- category.title}}">{{- knowledge.title }}</strong>
                     </a>
                 {{ }); }}   
@@ -59,7 +59,7 @@
 <!-- category-notcategorized -->
 <script type="text/template" id="CKViewer-notcategorized-template">
 <div class="item">
-    <a href="#"  class="tiny radius round openModal button secondary expand CKBulle" data-knowledge-id="{{-knowledge.id}}" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}"><strong data-knowledge-id="{{-knowledge.id}}">{{- knowledge.title }}</strong></a> 
+    <a href="#"  class="tiny radius round openModal button secondary expand CKBulle" data-knowledge-id="{{-knowledge.id}}" style="{{-knowledge.css}}"><strong data-knowledge-id="{{-knowledge.id}}">{{- knowledge.title }}</strong></a> 
 </div>
 </script>
 

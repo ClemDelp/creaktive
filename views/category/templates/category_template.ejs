@@ -93,7 +93,7 @@
 </script>
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <script type="text/template" id="category-knowledge-template">
-        <a id="bulle{{-knowledge.id}}_{{-categoryTitle.replace(/ /g, '')}}" class="button tiny radius round expand secondary CKBulle openKnowledgeModal Kselectable" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}" data-model-id="{{-knowledge.id}}" data-catg-origin="{{-categoryTitle}}">
+        <a id="bulle{{-knowledge.id}}_{{-categoryTitle.replace(/ /g, '')}}" class="button tiny radius round expand secondary CKBulle openKnowledgeModal Kselectable" style="{{-knowledge.css}}" data-model-id="{{-knowledge.id}}" data-catg-origin="{{-categoryTitle}}">
             <strong id="title{{-knowledge.id}}" data-model-id="{{-knowledge.id}}" data-catg-origin="{{-categoryTitle}}">{{- knowledge.title }}</strong>
             {{ if(nbre_notifs > 0){ }}<span class="top-bar-unread">{{-nbre_notifs}}</span>{{ } }}
         </a>

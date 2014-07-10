@@ -30,6 +30,14 @@
 <%- partial('../app/templates/attachment_templates') %>
 <%- partial('../app/templates/css3_templates') %>
 <%- partial('../app/templates/templatesList_templates') %>
+
+<%- partial('../app/templates/nodesMapping_templates') %>
+<%- partial('../app/templates/topbar_templates') %>
+<%- partial('../app/templates/title_templates') %>
+<%- partial('templates/bbmap_templates') %>
+<%- partial('../app/templates/title_templates') %>
+
+<script type="text/javascript" src="js/BB_app/modules/title.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/modelEditor.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/comments.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/attachment.js"></script>
@@ -37,18 +45,16 @@
 <script type="text/javascript" src="js/BB_app/modules/imagesList.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/css3.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/templatesList.js"></script>
-
-<%- partial('../app/templates/nodesMapping_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/nodesMapping.js"></script>
-
-<%- partial('../app/templates/topbar_templates') %>
 <script src="js/BB_app/modules/topbar.js"></script>
-
-<%- partial('../app/templates/title_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/title.js"></script>
 
-<%- partial('templates/bbmap_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/bbmap.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/bbmap_node.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/bbmap_main.js"></script>
+
+
+
 <!-- ******************************** -->
 <!-- Script -->
 <script>
@@ -93,8 +99,8 @@
         // Modules
         //title.init(json.project,"bbmap");
         topbar.init();
+        title.init(json.project,"bbmap");
         bbmap.init();
-        
         /*activat of "hashchange events's monitoring"*/
         Backbone.history.start();  
         $(document).foundation();

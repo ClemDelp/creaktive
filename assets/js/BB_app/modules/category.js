@@ -47,7 +47,8 @@ category.Views.Knowledge = Backbone.View.extend({
         if(category.views.main.Kselected.where({id : k_id}).length > 0){
             console.log("unselect")
             category.views.main.Kselected.remove(k);
-            $(this.el).find("#bulle"+k_id+"_"+catg_origin).css("background-color","");            
+            if(k.get('css'))$(this.el).find("#bulle"+k_id+"_"+catg_origin).attr("style",k.get('css'));
+            else $(this.el).find("#bulle"+k_id+"_"+catg_origin).css("background-color","");
         }else{
             k.set({category_origin : catg_origin});
             category.views.main.Kselected.add(k);
