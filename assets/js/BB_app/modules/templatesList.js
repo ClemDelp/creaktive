@@ -59,7 +59,11 @@ templatesList.Views.Main = Backbone.View.extend({
         $(this.el).empty();
         $(this.el).append(this.template_header())
         this.templates.forEach(function(template){
-            $(_this.el).append(new templatesList.Views.Template({model:_this.model,template : template}).render().el);    
+            $(_this.el).append(new templatesList.Views.Template({
+                tagName : "center",
+                model:_this.model,
+                template : template
+            }).render().el);    
         });
         
         return this;

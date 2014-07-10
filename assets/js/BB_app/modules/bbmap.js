@@ -31,51 +31,6 @@ var bbmap = {
   }
 };
 /////////////////////////////////////////////////
-// bbmap.Views.EditBox = Backbone.View.extend({
-//     initialize : function(e){
-//         _.bindAll(this, 'render','saveEdition');
-//         this.model = new Backbone.Model();
-//         $(this.el).dialog({autoOpen: false});
-//     },
-//     saveEdition : function(e){
-//         e.preventDefault();
-//         this.model.save({
-//             user : bbmap.views.main.user,
-//             title:$(this.el).find("#title").val(),
-//             content:CKEDITOR.instances[this.model.get('id')+'_content'].getData(),
-//             date: getDate(),
-//             date2:new Date().getTime()
-//         });
-//         $(this.el).dialog( "close" );
-//     },
-//     openEditBox : function(id_model, type){
-//         _this = this;
-//         $(this.el).empty();
-//         if(type == "knowledge"){
-//             this.model = bbmap.views.main.knowledges.get(id_model);
-
-//         }else if(type == "concept"){
-//             this.model = bbmap.views.main.concepts.get(id_model);
-//         }
-//         this.render(function(model_id){
-//             $(_this.el).dialog( "open" );
-//             CKEDITOR.replaceAll('ckeditor_bbmap');
-//             CKEDITOR.config.toolbar = [
-//                ['Bold','Italic','Underline','NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','Image','Table','-','Link','Smiley','TextColor','BGColor']
-//             ] ;
-//         });
-        
-//         $("#save").click(this.saveEdition)
-//     },
-//     render : function(callBack){
-//         $(this.el).empty();
-//         $(this.el).append('<input id="title" type="text" value="'+this.model.get("title")+'">');
-//         $(this.el).append('<textarea class="ckeditor_bbmap" id="'+this.model.get('id')+'_content" name="editor" rows="10" cols="80">'+this.model.get('content')+'</textarea>');
-//         $(this.el).append('<br><a href="#" id="save" class="button tiny expand secondary" style="margin-bottom:0px">save</a>');
-//         callBack();
-//     }
-// });
-/////////////////////////////////////////////////
 bbmap.Views.Node = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render','savePosition','editTitle','addEndpoint','addLink','makeTarget');
@@ -85,27 +40,48 @@ bbmap.Views.Node = Backbone.View.extend({
         // Events
         $(this.el).click(this.savePosition);
         this.listenTo(this.model,"change", this.render); 
+        // Se mettre en ecoute sur le deplacement du node pere
+        try{
+            this.father = bbmap.views.main.concepts.get(this.model.get('id_father'));
+            this.holdFather = this.father.clone();
+            this.listenTo(this.father,"change:top change:left", this.flollowFather,this);
+        }catch(err){
+            console.log('no father detected')
+        }
         // Templates
         this.template_bulle = _.template($('#bbmap-bulle-template').html());
     },
     events : {
-        "dblclick .bulle" : "editTitle",
-        "mouseenter .editTitle" : "editTitle",
-        "click .ep4" : "editTitle",
+        "click .editTitle" : "editTitle",
         "click .sup" : "removeModel",
         "click .ep" : "addConceptChild",
         "click .ep2" : "addKnowledgeChild",
     },
+    flollowFather : function(){
+        var hf_left = this.holdFather.get('left');
+        var hf_top = this.holdFather.get('top');
+        var f_left = this.father.get('left');
+        var f_top = this.father.get('top');
+        var n_left = this.model.get('left');
+        var n_top = this.model.get('top');
+        var delta_top = hf_top - f_top;
+        var delta_left = hf_left - f_left;
+        var x = n_left - delta_left;
+        var y = n_top - delta_top;
+        this.setPosition(x,y,0,0,false);
+        this.holdFather = this.father.clone();
+        bbmap.views.main.instance.repaint(this.model.get('id'));
+    },
     applyStyle : function(){
         if(this.model.get('css')){
-            var left = $(this.el).position().left;
-            var top = $(this.el).position().top;
+            var left = this.model.get('left');
+            var top = this.model.get('top');
             var style = 'top:' + top + 'px; left : ' + left + 'px;' + this.model.get('css');
-            console.log(style)
             $(this.el).attr('style',style)
+            bbmap.views.main.instance.repaint(this.model.get('id'));
         }
     },
-    setPosition : function(x, y, sz, h){
+    setPosition : function(x, y, sz, h, broadcast){
         var left = (x - h);
         var top  = (y - h);
         var styles = {
@@ -113,10 +89,10 @@ bbmap.Views.Node = Backbone.View.extend({
             'top':  top  + 'px'
         };
         $(this.el).css( styles );
-        this.model.set({
+        this.model.save({
             top: top,
             left: left
-        }).save();  
+        },{silent:broadcast}); 
     },
     getPosition : function(){
         var position = {};
@@ -133,8 +109,8 @@ bbmap.Views.Node = Backbone.View.extend({
                 left:position.left / bbmap.zoom.get('val')
             }).save();   
         }
-        console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
-        bbmap.views.main.reorganizeTree(this.model.get('id'))
+        //console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
+        //bbmap.views.main.reorganizeTree(this.model.get('id'))
     },
     addConceptChild : function(e){
         e.preventDefault();
@@ -295,6 +271,7 @@ bbmap.Views.Node = Backbone.View.extend({
         // Init
         $(this.el).empty();
         $(this.el).append(this.template_bulle({model:this.model.toJSON()}));
+        this.applyStyle();
         return this;
     }
 });
@@ -326,15 +303,15 @@ bbmap.Views.Main = Backbone.View.extend({
         this.KcontentVisibility = true;
         this.CcontentVisibility = false;
         this.ckOperator         = true;
-        this.positionRef        = 0;//550;
+        this.positionRef        = 550;
         this.nodes_views        = {};
         // Templates
         this.template_actionbar = _.template($('#bbmap-actionbar-template').html());
         ////////////////////////////
         // JsPlumb
-        this.color = "green";
+        this.color = "#555555";
         this.instance = jsPlumb.getInstance({           
-            Connector : [ "Bezier", { curviness:50 } ],
+            Connector : [ "Bezier", { curviness:30 } ],
             DragOptions : { cursor: "pointer", zIndex:2000 },
             PaintStyle : { strokeStyle:this.color, lineWidth:1 },
             EndpointStyle : { radius:5, fillStyle:this.color },
@@ -442,9 +419,9 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Drag sub-Tree
     /////////////////////////////////////////
-    conceptMove : function(model){
-        this.nodes_views[lbl].setPosition(x, y, sz, h);
-    },
+    // conceptMove : function(model){
+    //     this.nodes_views[lbl].setPosition(x, y, sz, h);
+    // },
     /////////////////////////////////////////
     // Zoom system
     /////////////////////////////////////////
@@ -494,9 +471,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.reorganizeTree(id);
     },
     reorganizeTree : function(id){
-        
-
-
         var model = this.concepts.get(id)
         var tree = this.buildTree(model.toJSON())
         // tree = random_tree(3, 2)
@@ -512,22 +486,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.draw(tree);
         this.instance.repaintEverything();
     },
-    // Draw a graph node.
-    node: function(lbl, x, y, sz) {
-        if (!sz) sz = bbmap.node_size()/bbmap.zoom.get('val');
-        var h = sz / 2;
-        var z = bbmap.zoom.get('val');
-        this.nodes_views[lbl].setPosition(x/z, y/z, sz/z, h/z);
-    },
-    draw : function (tree) {
-      var n_children = tree.children.length
-      for (var i = 0; i < n_children; i++) {
-        var child = tree.children[i]
-        //arc(this.x, this.y + 0.5 * node_size + 2, child.x, child.y - 0.5 * node_size)
-        this.draw(child)
-      }
-      this.node(tree.lbl, tree.x, tree.y)
-    },
     buildTree : function(model) {
         var childs = [];
         var childrens = this.concepts.where({id_father : model.id});
@@ -538,6 +496,22 @@ bbmap.Views.Main = Backbone.View.extend({
         }
         var tree = new Tree(model.id, childs);
         return tree;
+    },
+    // Draw a graph node.
+    draw : function (tree) {
+      var n_children = tree.children.length
+      for (var i = 0; i < n_children; i++) {
+        var child = tree.children[i]
+        //arc(this.x, this.y + 0.5 * node_size + 2, child.x, child.y - 0.5 * node_size)
+        this.draw(child)
+      }
+      this.node(tree.lbl, tree.x, tree.y)
+    },
+    node: function(lbl, x, y, sz) {
+        if (!sz) sz = bbmap.node_size()/bbmap.zoom.get('val');
+        var h = sz / 2;
+        var z = bbmap.zoom.get('val');
+        this.nodes_views[lbl].setPosition(x/z, y/z, sz/z, h/z, true);
     },
     /////////////////////////////////////////
     // Hover bulle effect
@@ -570,14 +544,9 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     unselectBulle : function(id){
         var conceptsList = this.concepts.where({id_father : id})
-        $("#"+id).css({border:'0.15em dotted green',color:'green'});
-        // var className = e.target.className.split(' ');
-        // var concepts_list = [];
-        // if(_.indexOf(className, "concept") > -1){
-        //     concepts_list = this.concepts.where({id_father:e.target.id});
-        // }
+        this.nodes_views[id].applyStyle();
         conceptsList.forEach(function(concept){
-            $("#"+concept.get('id')).css({border:'0.15em dotted green',color:'green'});
+            this.nodes_views[concept.get('id')].applyStyle();
             bbmap.views.main.unselectBulle(concept.get('id'));
         });
     },
@@ -821,12 +790,12 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         ///////////////////////
         // Apply style
-        this.concepts.forEach(function(model){
-            nodes_views[model.get('id')].applyStyle();    
-        });
-        this.knowledges.forEach(function(model){
-            nodes_views[model.get('id')].applyStyle();    
-        });
+        // this.concepts.forEach(function(model){
+        //     nodes_views[model.get('id')].applyStyle();    
+        // });
+        // this.knowledges.forEach(function(model){
+        //     nodes_views[model.get('id')].applyStyle();    
+        // });
         ///////////////////////
         // Views addEndPoint process
         this.concepts.forEach(function(model){

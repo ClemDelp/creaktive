@@ -1,13 +1,21 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Timeline template parts -->
 <script type="text/template" id="modelEditor-normal-template">
-    <h3>{{= model.title }}</h3><a href="#" class="tiny button round button edit">Edit</a></legend>
-    {{= model.content }}
+    <center>
+	    <div class="panel">
+	    	<a href="#" class="button" style="{{-model.css}}">{{= model.title }}</a>
+	    	<br>
+	    	{{= model.content }}
+	   	</div>
+	</center>
+	<a href="#" class="edit">Edit</a>
 </script>
 
 <script type="text/template" id="modelEditor-edition-template">
-    <a href="#" class="button tiny round success updateModel">Update!</a>
-    <a href="#" class="button tiny round secondary cancelEdition">Cancel</a>
-    <input type="text" class="title" value="{{- model.title}}"/>
-    <textarea  class="ckeditor"  name="editor" rows="10" cols="80">{{= model.content }}</textarea>
+    <div class="panel">
+	    <a href="#" class="button tiny round success updateModel">Update!</a>
+	    <a href="#" class="button tiny round secondary cancelEdition">Cancel</a>
+	    <input type="text" class="title" value="{{- model.title}}"/>
+	    <textarea  class="ckeditor"  name="editor" rows="10" cols="80">{{= model.content }}</textarea>
+	</div>
 </script>

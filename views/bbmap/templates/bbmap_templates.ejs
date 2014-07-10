@@ -4,15 +4,17 @@
 	<div id="actionbar"></div>
 	
 	<div id="map_container" class="">
-		<div id="map" class="demo chart-demo large-9 medium-9 small-9 columns"></div>
-    <div id="editor" style="display:true;z-index:10000;height:100%;" class="panel large-3 medium-3 small-3 columns">
-        <a href="#" class="closeEditor">close</a>
+		<div class="large-10 medium-10 small-10 columns">
+      <div id="map" class="demo chart-demo"></div>
+    </div>
+    <div id="editor" class="panel large-2 medium-2 small-2 columns">
+        <a href="#" class="closeEditor" style="float:right">close</a>
         <ul class="tabs" data-tab>
-          <li class="tab-title active"><a href="#editModel">e</a></li>
-          <li class="tab-title"><a href="#attachementModel">p</a></li>
-          <li class="tab-title"><a href="#discussionModel">c</a></li>
-          <li class="tab-title"><a href="#activitiesModel">a</a></li>
-          <li class="tab-title"><a href="#css3Model">t</a></li>
+          <li class="tab-title active"><a href="#editModel"><img src="/img/file_edit.png"></a></li>
+          <li class="tab-title"><a href="#attachementModel"><img src="/img/attach.png"></a></li>
+          <li class="tab-title"><a href="#discussionModel"><img src="/img/comment.png"></a></li>
+          <li class="tab-title"><a href="#activitiesModel"><img src="/img/error.png"></a></li>
+          <li class="tab-title"><a href="#css3Model"><img src="/img/badge_css.png"></a></li>
         </ul>
         <div class="tabs-content">
           <div id="editModel" class="content active"></div>
@@ -30,7 +32,6 @@
     <div id="{{-model.id}}" class="ep icon">c</div>
     <div id="{{-model.id}}" class="ep2 icon">k</div>
     <div id="{{-model.id}}" class="ep3 icon">*</div>
-    <div id="{{-model.id}}" class="ep4 icon">e</div>
     <div id="{{-model.id}}" class="sup icon">x</div>
 </script>
 

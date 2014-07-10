@@ -13,6 +13,13 @@
 	padding: 0px;
 }
 
+#editor{
+	overflow:auto;
+	display:none;
+	z-index:10000;
+	height:100%;
+}
+
 .breadcrumbs > *:before {
       content: "+";
       color: #aaaaaa;

@@ -97,7 +97,7 @@ modelEditor.Views.Main = Backbone.View.extend({
         this.render();
         CKEDITOR.replaceAll('ckeditor');
         CKEDITOR.config.toolbar = [
-           ['Bold','Italic','Underline','NumberedList','BulletedList','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','Image','Table','-','Link','Smiley','TextColor','BGColor']
+           ['Bold','Italic','Underline','NumberedList','BulletedList','Image','Link','TextColor']
         ] ;
         // CKEDITOR.config.toolbar = [
         //     { name: 'document', groups: [ 'mode', 'document', 'doctools' ], items: [ 'Print', '-', 'Templates', '-' , 'Maximize' ] },

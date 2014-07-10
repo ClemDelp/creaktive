@@ -1,6 +1,5 @@
 <!-- ******************************** -->
 <link rel="stylesheet" href="/CSS3GENERATOR/colorpicker.css" type="text/css">
-<link rel="stylesheet" href="/CSS3GENERATOR/jquery-ui.css" type="text/css">
 <style id="dynamic-styles" type="text/css">
   .btn {
     background: #3498db;
@@ -27,15 +26,18 @@
 <script type="text/template" id="css3-generator-template">
   
   <div id="settings-wrap">
-        
-    <a class="btn" href="">Click me</a>
+    <center>
+      <div class="panel">
+        <a class="btn button" href="">Your label</a>
+      </div>
+    </center>
     
     <label for="text">text:</label>
-    <input type="text" name="text" value="Click me" id="text" autocomplete="on">
+    <input type="text" name="text" value="Your label" id="text" autocomplete="on">
 
     <input type="checkbox" style="display:none" name="font-family-check" checked="checked" id="font-family-check" data-control="font-family" autocomplete="off">
     <div data-control-group="font-family">
-      <label for="font-family">font-family:</label>
+      <label for="font-family">font family:</label>
       <select id="font-family">
         <option value="Arial">Arial</option>
         <option value="Georgia">Georgia</option>
@@ -45,7 +47,7 @@
 
     <input type="checkbox" style="display:none" name="font-color-check" checked="checked" id="font-color-check" data-control="font-color" autocomplete="off">
     <div data-control-group="font-color">
-      <label for="color">font-color:</label>
+      <label for="color">text color:</label>
       <input class="color" type="text" name="font-color" value="#ffffff" id="color" autocomplete="off">
       <div class="color-view bg" style="background-color: rgb(255, 255, 255);"></div>
     </div>
@@ -139,8 +141,8 @@
 
     <input type="checkbox" style="display:none" name="border-radius-check" checked="checked" id="border-radius-check" data-control="border-radius" autocomplete="off">
     <div data-control-group="border-radius">
-      <label for="border-radius">border-radius:</label>
-      <input class="slider-bound" type="text" name="border-radius" value="28" id="border-radius" max="60" autocomplete="off">
+      <label for="border-radius">shape:</label>
+      <input style="display:none" class="slider-bound" type="text" name="border-radius" value="28" id="border-radius" max="60" autocomplete="off">
       <div id="border-radius-slider" class="slider ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" aria-disabled="false"><a class="ui-slider-handle ui-state-default ui-corner-all" href="http://css3buttongenerator.com/#" style="left: 41.66666666666667%;"></a></div>
     </div>
 
@@ -154,26 +156,26 @@
     </div>
     <div data-control-group="border" class="">
       <div class="form-wrap">
-        <label for="border-style">border-style:</label>
+        <label for="border-style">border style:</label>
         <select id="border-style">
           <option id="solid">solid</option>
           <option id-"dotted"="">dotted</option>
         </select>
       </div>
       <div class="form-wrap">
-        <label for="border-width">border-width:</label>
-        <input class="slider-bound" type="text" name="border-width" value="2" id="border-width" max="20" autocomplete="off">
+        <label for="border-width">border size:</label>
+        <input style="display:none" class="slider-bound" type="text" name="border-width" value="2" id="border-width" max="20" autocomplete="off">
         <div id="border-width-slider" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all" aria-disabled="false"><a class="ui-slider-handle ui-state-default ui-corner-all" href="http://css3buttongenerator.com/#" style="left: 35%;"></a></div>
       </div>
     </div>
     
 
 
-
+    <br>
     <div class="form-wrap">
       <input type="checkbox" style="display:none" name="background-check" checked="checked" id="background-check" data-control="background" autocomplete="off">
       <div data-control-group="background">
-        <label for="background">background:</label>
+        <label for="background">background color:</label>
         <div class="radio-wrap">
           <input type="radio" style="display:none" name="background" value="" id="background-gradient" data-control-display="background-gradient" autocomplete="off">
           <label style="display:none">gradient</label>
@@ -183,36 +185,20 @@
       </div>
     </div>
 
-    <div data-control-group="background">
+    
 
-      <div id="gradient-wrap" data-control-display-group="background-gradient" data-control-display-selector="background" class="" style="display: block;">
-        <div class="form-wrap">
-          <label for="bg-start-gradient">start color:</label>
-          <input class="color" type="text" name="color" value="#3498db" id="bg-start-gradient" autocomplete="off">
-          <div class="color-view bg" style="background-color: rgb(52, 152, 219);"></div>
-        </div>
+      <input class="color" type="text" name="color" value="#3498db" id="background">
+      <span class="color-view bg label" style="display:none;background-color: rgb(52, 152, 219);"></span>
 
-        <div class="form-wrap">
-          <label for="bg-end-gradient">end color:</label>
-          <input class="color" type="text" name="color" value="#2980b9" id="bg-end-gradient" autocomplete="off">
-          <div class="color-view bg" style="background-color: rgb(41, 128, 185);"></div>
-        </div>
-      </div><!-- end #gradient-wrap -->
-
-      <div id="solid-wrap" data-control-display-group="background-solid" data-control-display-selector="background" class="hidden disabled" style="display: none;">
-        <div class="form-wrap">
-          <label for="background">color:</label>
-          <input class="color" type="text" name="color" value="#3498db" id="background" autocomplete="off" disabled="">
-          <div class="color-view bg" style="background-color: rgb(52, 152, 219);"></div>
-        </div>
-      </div>
-
+              
+            
+      
     </div>
 
     <div id="css-display" style="display:none"></div>
 
 </div>
-<a href="#" class="button tiny success round saveTemplate">save this template</a> 
+<a href="#" class="button tiny expand success radius saveTemplate">Save this template</a> 
 
 
 
