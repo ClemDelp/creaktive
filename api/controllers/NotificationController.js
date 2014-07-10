@@ -7,6 +7,22 @@
 
 module.exports = {
 
+  getMore : function(req,res){
+    var limit = req.body.limit;
+    var project_id = req.body.project_id;
+
+    Notification.find()
+    .where({read : req.session.user.id})
+    .sort('comparator DESC')
+    .limit(limit)
+    .done(function(err,notifications){
+      if(err) res.send(err);
+      res.send(notifications)
+
+    });
+
+  },
+
   
   find : function (req,res){
     
@@ -15,18 +31,13 @@ module.exports = {
       project_id : req.session.currentProject.id
     }).done(function(err,notifications){
       if(err) res.send(err);
-      this.notifications = notifications;
-      c0 = _.findWhere(notifications, {position : 0});
-     
+    
         res.send(notifications)
     });
   }else{
         Notification.find({
     }).done(function(err,notifications){
-      if(err) res.send(err);
-      this.notifications = notifications;
-      c0 = _.findWhere(notifications, {position : 0});
-     
+      if(err) res.send(err);  
         res.send(notifications)
     });
   }

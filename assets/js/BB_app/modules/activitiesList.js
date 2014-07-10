@@ -15,9 +15,10 @@ activitiesList.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Variables
         this.model           = json.model;
+        this.activity_size = 10;
         if(this.model.get('type') == 'project'){
           this.models_notifs = global.ProjectsNotificationsDictionary;
-          this.listenTo(global.eventAggregator,"ProjectsNotificationsDictionary",this.actualize,this); 
+          this.listenTo(global.eventAggregator,"ProjectsNotificationsDictionary",this.actualize,this);
           //global.eventAggregator.bind("ProjectsNotificationsDictionary",this.actualize,this);
         }else{
           this.models_notifs = global.ModelsNotificationsDictionary;
@@ -28,11 +29,36 @@ activitiesList.Views.Main = Backbone.View.extend({
         this.listenTo(this.model,"remove",this.removeView,this);
         //this.model.on("remove",this.remove,this);
         // Templates
-        this.template = _.template($('#activitiesList-template').html());     
+        this.template = _.template($('#activitiesList-template').html()); 
+        this.template_activityLog = _.template($('#activityLog-template').html());    
     },
     events : {
       "click .closeAll" : "globalValidation",
-      "click .close" : "simpleValidation"
+      "click .close" : "simpleValidation",
+      "click .more" : "loadMore"
+    },
+    loadMore : function(e){
+      e.preventDefault();
+      _this = this;
+      this.activity_size = this.activity_size + 10;
+      socket.post("/notification/getmore", {project_id : this.model.id, limit:this.activity_size}, function(activities){
+
+        $(_this.el).empty();
+        
+        $(_this.el).append(_this.template({
+          model       : _this.model.toJSON(),
+          news_notifs : _this.news_notifs.toJSON(),
+        }));
+
+        if(_this.model.get('type') == 'project'){
+          $(_this.el).append(_this.template_activityLog({
+            model         : _this.model.toJSON(),
+            notifications : activities
+          }))
+        }
+        
+        return this;
+      })
     },
     globalValidation : function(e){
         e.preventDefault();
@@ -54,6 +80,7 @@ activitiesList.Views.Main = Backbone.View.extend({
       this.remove();
     },
     actualize : function(models_notifs){
+      _this = this;
       if(this.model.get('type') == 'project'){
           this.models_notifs = global.ProjectsNotificationsDictionary;
         }else{
@@ -66,6 +93,7 @@ activitiesList.Views.Main = Backbone.View.extend({
         // Init
         
         this.news_notifs     = this.models_notifs[this.model.get('id')].news;
+        this.activityLog     = this.models_notifs[this.model.get('id')].read;
         //this.read_notifs     = this.models_notifs[this.model.get('id')].read;
         $(this.el).empty();
         _this = this;
@@ -79,6 +107,13 @@ activitiesList.Views.Main = Backbone.View.extend({
           news_notifs : this.news_notifs.toJSON(),
           //read_notifs : this.read_notifs.toJSON()
         }));
+
+        if(this.model.get('type') == 'project'){
+          $(this.el).append(this.template_activityLog({
+            model         : this.model.toJSON(),
+            notifications : this.activityLog.toJSON()
+          }))
+        }
         
         return this;
     }

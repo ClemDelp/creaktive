@@ -19,7 +19,7 @@ global.Functions.getProjectsUsersDictionary = function(projects,permissions){
 	return dictionary;
 }
 
-global.Functions.getNotificationsDictionary = function(user_model,notifications,projects,knowledges,concepts,categories){
+global.Functions.getNotificationsDictionary = function(user_model,notifications,projects,knowledges,concepts,categories,activityLog){
 	var dictionary = {"projects":{},"models":{},"allNews":{},"allRead":{}};
 	/////////////////////////////
 	// CREATION DES KEYS
@@ -62,6 +62,17 @@ global.Functions.getNotificationsDictionary = function(user_model,notifications,
       		dictionary.allRead.add(notif);
       	}
 	});
+
+	/////////////////////////////////////////
+	// RECUPERATION DES NOTIFICATIONS LUES
+	/////////////////////////////////////////
+	if(activityLog){
+			projects.each(function(project){
+		dictionary.projects[project.id].read.add(activityLog[project.id]);	
+	});
+	}
+
+
     return dictionary;
 }
 

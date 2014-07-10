@@ -1,6 +1,11 @@
 <script type="text/template" id="activitiesList-template">
-    New activities</strong>({{- news_notifs.length }})
-    <a href="#" class="button tiny success round closeAll">close all</a>
+   <fieldset>
+    <legend align=left>
+      Recent activities</strong>({{- news_notifs.length }})
+      <a href="#" class="button tiny success round closeAll">close all</a>
+    </legend>
+
+
     <table width="100%">
       <tbody>
       {{_.each(news_notifs,function(notification){ }}
@@ -14,4 +19,28 @@
       {{ }); }}
       </tbody>
     </table>
+  </fieldset>
+</script>
+
+<script type="text/template" id="activityLog-template">
+  <fieldset>
+    <legend align=left>
+      <strong>Activity Log</strong>
+    </legend>
+
+    <table width="100%">
+      <tbody>
+      {{_.each(notifications,function(notification){ }}
+          <tr>
+            <td width="100"><img class="large-4 small-4 medium-4 roundedImage" src="{{- notification.from.img }}"></td>
+            <td><strong>{{- notification.from.name}}</strong></td>
+            <td><small>{{- notification.date}}</small></td>
+            <td>{{- notification.content }}</td>
+          
+          </tr>
+      {{ }); }}
+      </tbody>
+    </table>
+    <a href='#' class="button tiny radius more">more</a>
+  </fieldset>
 </script>

@@ -39,6 +39,7 @@ var global = {
     this.ProjectsNotificationsDictionary = {};
     this.AllNewsNotificationsDictionary = {};
     this.AllReadNotificationsDictionary = {};
+    this.ActivityLog = json.activityLog;
     //////////////////////////////////////////////////////////////////
     // Events
     //////////////////////////////////////////////////////////////////
@@ -60,7 +61,7 @@ var global = {
   prepareNotifications : function(){
     ////////////////////////////
     // Dictionaries 
-    this.NotificationsDictionary = global.Functions.getNotificationsDictionary(global.models.current_user,global.collections.Notifications,global.collections.Projects,global.collections.Knowledges,global.collections.Concepts,global.collections.Poches);
+    this.NotificationsDictionary = global.Functions.getNotificationsDictionary(global.models.current_user,global.collections.Notifications,global.collections.Projects,global.collections.Knowledges,global.collections.Concepts,global.collections.Poches,global.ActivityLog);
     
     this.ModelsNotificationsDictionary = this.NotificationsDictionary.models;
     this.ProjectsNotificationsDictionary = this.NotificationsDictionary.projects;
@@ -74,6 +75,7 @@ var global = {
     this.eventAggregator.trigger("ProjectsNotificationsDictionary",this.ProjectsNotificationsDictionary);
     this.eventAggregator.trigger("AllNewsNotificationsDictionary",this.AllNewsNotificationsDictionary);
     this.eventAggregator.trigger("AllReadNotificationsDictionary",this.AllReadNotificationsDictionary);
+
   }
 };
 //////////////////////////////////////////////
