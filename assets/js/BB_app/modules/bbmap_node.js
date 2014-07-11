@@ -14,7 +14,7 @@ bbmap.Views.Node = Backbone.View.extend({
         try{
             this.father = bbmap.views.main.concepts.get(this.model.get('id_father'));
             this.holdFather = this.father.clone();
-            this.listenTo(this.father,"change:top change:left", this.flollowFather,this);
+            this.listenTo(this.father,"change:top change:left", this.followFather,this);
         }catch(err){
             console.log('no father detected')
         }
@@ -27,7 +27,7 @@ bbmap.Views.Node = Backbone.View.extend({
         "click .ep" : "addConceptChild",
         "click .ep2" : "addKnowledgeChild",
     },
-    flollowFather : function(){
+    followFather : function(){
         var hf_left = this.holdFather.get('left');
         var hf_top = this.holdFather.get('top');
         var f_left = this.father.get('left');
@@ -43,13 +43,16 @@ bbmap.Views.Node = Backbone.View.extend({
         bbmap.views.main.instance.repaint(this.model.get('id'));
     },
     applyStyle : function(){
-        if(this.model.get('css')){
-            var left = this.model.get('left');
-            var top = this.model.get('top');
-            var style = 'top:' + top + 'px; left : ' + left + 'px;' + this.model.get('css');
-            $(this.el).attr('style',style)
-            bbmap.views.main.instance.repaint(this.model.get('id'));
+        if(!this.model.get('css')){    
+            if(this.model.get('type') == "concept")this.model.save({css : bbmap.css_concept_default},{silent:true});
+            else if(this.model.get('type') == "knowledge") this.model.save({css : bbmap.css_knowledge_default},{silent:true});
         }
+        var left = this.model.get('left');
+        var top = this.model.get('top');
+        var style = 'top:' + top + 'px; left : ' + left + 'px;' + this.model.get('css');
+        $(this.el).attr('style',style)
+        bbmap.views.main.instance.repaint(this.model.get('id'));
+
     },
     setPosition : function(x, y, sz, h, broadcast){
         var left = (x - h);
@@ -178,9 +181,9 @@ bbmap.Views.Node = Backbone.View.extend({
                     maxConnections:-1
                 },
                 {
-                    connectorStyle : { strokeStyle:"red", lineWidth:0.5,dashstyle:"2 2" },
+                    connectorStyle : { strokeStyle:"#27AE60", lineWidth:0.5,dashstyle:"2 2" },
                     endpoint:["Dot", { radius:5 }],
-                    paintStyle:{ fillStyle:"red" },
+                    paintStyle:{ fillStyle:"#27AE60" },
                 }
             ));
         }else if(this.model.get('type') == 'knowledge'){
@@ -191,9 +194,9 @@ bbmap.Views.Node = Backbone.View.extend({
                     maxConnections:-1
                 },
                 {
-                    connectorStyle : { strokeStyle:"red", lineWidth:0.5,dashstyle:"2 2" },
+                    connectorStyle : { strokeStyle:"#2980B9", lineWidth:1,dashstyle:"2 2" },
                     endpoint:["Dot", { radius:5 }],
-                    paintStyle:{ fillStyle:"red" },
+                    paintStyle:{ fillStyle:"#2980B9" },
                 }
             ));
         }
@@ -216,7 +219,7 @@ bbmap.Views.Node = Backbone.View.extend({
             console.log(err);
         }
         // Enable drag&drop
-        bbmap.views.main.instance.draggable($(this.el));  
+         
     },
     makeTarget : function(){
         ///////////////////////
@@ -242,6 +245,7 @@ bbmap.Views.Node = Backbone.View.extend({
         $(this.el).empty();
         $(this.el).append(this.template_bulle({model:this.model.toJSON()}));
         this.applyStyle();
+        bbmap.views.main.instance.draggable($(this.el)); 
         return this;
     }
 });

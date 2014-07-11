@@ -52,11 +52,14 @@ comments.Views.Main = Backbone.View.extend({
     },
     render : function() {
         $(this.el).empty();
-        $(this.el).append(this.template({
+        if((this.model.get('type') == "knowledge")||(this.model.get('type') == "concept")){
+            $(this.el).append(this.template({
             user : this.user,
             model : this.model,
-            comments : this.model.get('comments').toJSON()
-        }));
+                comments : this.model.get('comments').toJSON()
+            }));    
+        }
+        
 
         return this;
     }

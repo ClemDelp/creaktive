@@ -8,13 +8,13 @@ global.Functions.getProjectsUsersDictionary = function(projects,permissions){
 	// CREATION DES KEYS
 	/////////////////////////////
 	projects.each(function(project){
-		dictionary[project.get('id')] = 0;
+		dictionary[project.get('id')] = [];
 	});
 	/////////////////////////////
 	// CREATION DES VALUES
 	/////////////////////////////
 	permissions.each(function(permission){
-		dictionary[permission.get('project_id')] = dictionary[permission.get('project_id')] + 1;
+		try{dictionary[permission.get('project_id')].push(permission.get('user_id'));}catch(err){}
 	});
 	return dictionary;
 }
