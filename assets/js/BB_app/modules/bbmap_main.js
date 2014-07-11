@@ -33,14 +33,14 @@ bbmap.Views.Main = Backbone.View.extend({
         this.template_actionbar = _.template($('#bbmap-actionbar-template').html());
         ////////////////////////////
         // JsPlumb
-        this.color = "#555555";
+        this.color = "#27AE60";
         this.instance = jsPlumb.getInstance({           
             Connector : [ "Bezier", { curviness:50 } ],
             DragOptions : { cursor: "pointer", zIndex:2000 },
             PaintStyle : { strokeStyle:this.color, lineWidth:1 },
             EndpointStyle : { radius:5, fillStyle:this.color },
-            HoverPaintStyle : {strokeStyle:"#ec9f2e" },
-            EndpointHoverStyle : {fillStyle:"#ec9f2e" },
+            HoverPaintStyle : {strokeStyle:"#27AE60" },
+            EndpointHoverStyle : {fillStyle:"#27AE60" },
             ConnectionOverlays : [
                 // [ "Arrow", { 
                 //     location:1,
@@ -101,6 +101,7 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         // Templates list
         if(bbmap.views.templatesList)bbmap.views.templatesList.remove();
+        if(!this.project.get('templates')) this.project.save({templates : bbmap.default_templates},{silent:true});
         bbmap.views.templatesList = new templatesList.Views.Main({
             templates : this.project.get('templates'),
             model : model

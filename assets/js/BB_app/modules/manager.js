@@ -71,10 +71,12 @@ manager.Views.Projects = Backbone.View.extend({
         $(this.el).empty();
         _this = this;
         this.projects_render.each(function(project){
+            userNbr = 1;
+            if(manager.views.main.users_rec_dic[project.get('id')]) userNbr = manager.views.main.users_rec_dic[project.get('id')].length
             // Append the template
             $(_this.el).append(_this.template_project({
                 notifNbr : global.ProjectsNotificationsDictionary[project.get('id')].news.length,
-                userNbr  : manager.views.main.users_rec_dic[project.get('id')],
+                userNbr  : userNbr,
                 project  : project.toJSON(),
             }));
         });
@@ -116,7 +118,18 @@ manager.Views.ProjectDetails = Backbone.View.extend({
                 model : this.project_render,
                 labels : this.labels
             }).render().el);
-
+            
+            if(manager.views.main.users_rec_dic[this.project_render.get('id')]){
+                var users_id = manager.views.main.users_rec_dic[this.project_render.get('id')]
+                var users_list = [];
+                users_id.forEach(function(id){
+                    users_list.push(global.collections.Users.get(id));
+                })
+                $(this.el).append(new usersList.Views.Main({
+                    users : users_list
+                }).render().el);
+            }
+            
             $(_this.el).append(new modelEditor.Views.Main({
                 user            : this.user,
                 model           : this.project_render,
