@@ -23,6 +23,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.links              = json.links;
         this.eventAggregator    = json.eventAggregator;
         
+        this.mode               = "ck";
         this.KcontentVisibility = true;
         this.CcontentVisibility = false;
         this.ckOperator         = true;
@@ -57,7 +58,6 @@ bbmap.Views.Main = Backbone.View.extend({
         ////////////////////////////
         // Events
         this.listenTo(bbmap.zoom,'change',this.updateZoomDisplay,this);
-        this.listenTo(this.concepts,'change:top',this.moveSubTree,this);
 
         global.eventAggregator.on('concept:create',this.addConceptToView,this);
         global.eventAggregator.on('concept:remove',this.removeModelToView,this);
@@ -126,7 +126,6 @@ bbmap.Views.Main = Backbone.View.extend({
         bbmap.views.activitiesList = new activitiesList.Views.Main({
             model           : model
         });
-        
         // Render & Append
         this.editModel_el.html(bbmap.views.modelEditor.render().el);
         this.editModel_el.append(bbmap.views.templatesList.render().el);
@@ -139,12 +138,6 @@ bbmap.Views.Main = Backbone.View.extend({
         e.preventDefault();
         this.editor_el.hide('slow');
     },
-    /////////////////////////////////////////
-    // Drag sub-Tree
-    /////////////////////////////////////////
-    // conceptMove : function(model){
-    //     this.nodes_views[lbl].setPosition(x, y, sz, h);
-    // },
     /////////////////////////////////////////
     // Zoom system
     /////////////////////////////////////////
@@ -488,13 +481,15 @@ bbmap.Views.Main = Backbone.View.extend({
         this.bar_el.find("#zoom_val").html(bbmap.zoom.get('val'))
         ///////////////////////
         // Concepts views
-        this.concepts.each(function(concept){
-            nodes_views[concept.get('id')] = new bbmap.Views.Node({
-                className : "window concept bulle",
-                id : concept.get('id'),
-                model : concept,
+        if(this.mode == "ck"){
+            this.concepts.each(function(concept){
+                nodes_views[concept.get('id')] = new bbmap.Views.Node({
+                    className : "window concept bulle",
+                    id : concept.get('id'),
+                    model : concept,
+                });
             });
-        });
+        }
         // knowledges views
         this.knowledges.each(function(knowledge){
             nodes_views[knowledge.get('id')] = new bbmap.Views.Node({
@@ -503,22 +498,31 @@ bbmap.Views.Main = Backbone.View.extend({
                 model : knowledge,
             });
         });
+        // Poches views
+        if(this.mode == "pk"){
+            this.poches.each(function(poche){
+                nodes_views[poche.get('id')] = new bbmap.Views.Node({
+                    className : "window poche bulle",
+                    id : poche.get('id'),
+                    model : poche,
+                });
+            });
+        }
         ///////////////////////
         // Views render process
-        this.concepts.forEach(function(model){
-            _this.map_el.append(nodes_views[model.get('id')].render().el);    
-        });
+        if(this.mode == "ck"){
+            this.concepts.forEach(function(model){
+                _this.map_el.append(nodes_views[model.get('id')].render().el);    
+            });
+        }
         this.knowledges.forEach(function(model){
             _this.map_el.append(nodes_views[model.get('id')].render().el);    
         });
-        ///////////////////////
-        // Apply style
-        // this.concepts.forEach(function(model){
-        //     nodes_views[model.get('id')].applyStyle();    
-        // });
-        // this.knowledges.forEach(function(model){
-        //     nodes_views[model.get('id')].applyStyle();    
-        // });
+        if(this.mode == "pk"){
+            this.poches.forEach(function(model){
+                _this.map_el.append(nodes_views[model.get('id')].render().el);    
+            });
+        }
         ///////////////////////
         // Views addEndPoint process
         this.concepts.forEach(function(model){

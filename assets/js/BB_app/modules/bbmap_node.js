@@ -14,7 +14,7 @@ bbmap.Views.Node = Backbone.View.extend({
         try{
             this.father = bbmap.views.main.concepts.get(this.model.get('id_father'));
             this.holdFather = this.father.clone();
-            this.listenTo(this.father,"change:top change:left", this.flollowFather,this);
+            this.listenTo(this.father,"change:top change:left", this.followFather,this);
         }catch(err){
             console.log('no father detected')
         }
@@ -27,7 +27,7 @@ bbmap.Views.Node = Backbone.View.extend({
         "click .ep" : "addConceptChild",
         "click .ep2" : "addKnowledgeChild",
     },
-    flollowFather : function(){
+    followFather : function(){
         var hf_left = this.holdFather.get('left');
         var hf_top = this.holdFather.get('top');
         var f_left = this.father.get('left');
@@ -216,7 +216,7 @@ bbmap.Views.Node = Backbone.View.extend({
             console.log(err);
         }
         // Enable drag&drop
-        bbmap.views.main.instance.draggable($(this.el));  
+         
     },
     makeTarget : function(){
         ///////////////////////
@@ -242,6 +242,7 @@ bbmap.Views.Node = Backbone.View.extend({
         $(this.el).empty();
         $(this.el).append(this.template_bulle({model:this.model.toJSON()}));
         this.applyStyle();
+        bbmap.views.main.instance.draggable($(this.el)); 
         return this;
     }
 });
