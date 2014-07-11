@@ -577,7 +577,7 @@ bbmap.Views.Main = Backbone.View.extend({
         CSS3GENERATOR.initialize_controls();
         CSS3GENERATOR.update_styles();
         $(document).foundation();
-
+        $( "#dropC" ).draggable();
         return this;
     }
 });
