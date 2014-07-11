@@ -230,6 +230,7 @@ manager.Views.ProjectDetails = Backbone.View.extend({
                     users_list.push(global.collections.Users.get(id));
                 })
                 $(this.el).append(new usersList.Views.Main({
+                    project : _this.project_render,
                     users : users_list
                 }).render().el);
             }

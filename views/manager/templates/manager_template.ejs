@@ -2,78 +2,84 @@
 
 
 <!--////////////////////////////////////////////////////////////////
-/*Manager templates*/-->
-<script type="text/template" id="manager-search-template">
-	<div class="row">
-		<div class="large-12 columns">
-	      	<form data-abide class="row collapse">
-		        <div class="name-field small-10 columns">
-		          <input type="text" id="project_title" class="search" placeholder="new project title" required pattern="[a-zA-Z]+">
-		        </div>
-		        <div class="small-2 columns">
-		          <a class="button newProject success postfix" href="#">new</a>
-			    </div>
-	      	</form>
-	    </div>
-	</div>
-</script>
+	/*Manager templates*/-->
+	<script type="text/template" id="manager-search-template">
+		<div class="row">
+			<div class="large-12 columns">
+				<form data-abide class="row collapse">
+					<div class="name-field small-10 columns">
+						<input type="text" id="project_title" class="search" placeholder="new project title" required pattern="[a-zA-Z]+">
+					</div>
+					<div class="small-2 columns">
+						<a class="button newProject success postfix" href="#">new</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</script>
 
-<script type="text/template" id="manager-header-template">
-	<div class="large-10 medium-10 small-10 columns">
-		<h2>{{-project.title}}</h2> 
-	</div>
-	<div class="large-2 medium-2 small-2 columns">
-		<a class="button success" href="/bbmap?projectId={{- project.id}}">Open</a>
-	</div>
-	<hr>
+	<script type="text/template" id="manager-header-template">
+		<fieldset>
+			<center><h2>{{-project.title}}</h2></center> 
 
-	{{ if(project.image){ }}
+
+			<a class="button success tiny expand" href="/bbmap?projectId={{- project.id}}">Open project</a>
+			</fieldset>
+
+
+		{{ if(project.image){ }}
 		<img src={{- project.image}} />
-	{{ }; }}
-</script>
+		{{ }; }}
 
-<script type="text/template" id="manager-normal-template">
-	<a href="#" class="edit">Edit description</a>
-    <div class="panel">
-    	{{= model.content }}
-   	</div>
+	</script>
 
-	
-</script>
+	<script type="text/template" id="manager-normal-template">
 
-<script type="text/template" id="manager-edition-template">
-    <div class="panel">
-	    <a href="#" class="button tiny round success updateModel">Update!</a>
-	    <a href="#" class="button tiny round secondary cancelEdition">Cancel</a>
-	    <input type="text" class="title" value="{{- model.title}}"/>
-	    <textarea  class="ckeditor"  name="editor" rows="10" cols="80">{{= model.content }}</textarea>
-	</div>
-</script>
+		<div>
+			<fieldset>
+				<legend align=left>
+					Description</strong>
+					<a href="#" class="edit">edit</a>
+				</legend>
+				{{= model.content }}
+			</fieldset>
+		</div>	
 
-<script type="text/template" id="manager-project-template">
-    <div class="openProjectModal panel">
-	
-<center>
+	</script>
+
+	<script type="text/template" id="manager-edition-template">
+		<div class="panel">
+			<a href="#" class="button tiny round success updateModel">Update!</a>
+			<a href="#" class="button tiny round secondary cancelEdition">Cancel</a>
+			<input type="text" class="title" value="{{- model.title}}"/>
+			<textarea  class="ckeditor"  name="editor" rows="10" cols="80">{{= model.content }}</textarea>
+		</div>
+	</script>
+
+	<script type="text/template" id="manager-project-template">
+		<div class="openProjectModal panel">
+
+			<center>
 				<a href="#" class="openProjectModal manager button radius secondary" data-model-id="{{-project.id}}">
 					<h4 data-model-id="{{-project.id}}">{{-project.title }}
-					{{if(notifNbr > 0){ }}
-		                <span class="top-bar-unread">{{-notifNbr}}</span>
-		            {{ } }}
-		    		</h4>
-	    		</a>
-<br>
-	        	<em>Created by {{-project.author.name}} at {{-project.date}}</em></center>
-	  		        
-    </div>
-    <br>
+						{{if(notifNbr > 0){ }}
+						<span class="top-bar-unread">{{-notifNbr}}</span>
+						{{ } }}
+					</h4>
+				</a>
+				<br>
+				<em>Created by {{-project.author.name}} at {{-project.date}}</em></center>
 
-</script>
+			</div>
+			<br>
+
+		</script>
 
 
-<script type="text/template" id="manager-footer-template">
-	<a href="#" data-id-project="{{- project.id }}" class="button alert tiny removeProject">Delete project</a>
+		<script type="text/template" id="manager-footer-template">
+			<a href="#" data-id-project="{{- project.id }}" class="button alert tiny removeProject">Delete project</a>
 
-</script>
+		</script>
 
 <!-- 
 <center>

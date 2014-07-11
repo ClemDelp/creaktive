@@ -42,7 +42,10 @@
 
   objectUpdated : function(req,res, object, to, cb){
 
-  	var action ="";
+  	
+    var content ="";
+
+
 
     if(req.body.action.length == 0) {
       return
@@ -52,19 +55,19 @@
       return;
     } 
 
-  	if(_.indexOf(req.body.action, "title") > -1) action = "title";
-  	if(_.indexOf(req.body.action, "color") > -1) action = "state";
-  	if(_.indexOf(req.body.action, "attachment") > -1) action = "attachment";
-    if(_.indexOf(req.body.action, "content") > -1) action = "content";
-  	if(_.indexOf(req.body.action, "comments") > -1) action = "comments";
+  	if(_.indexOf(req.body.action, "title") > -1) content = object + " title updated: " + req.body.params.title;
+  	if(_.indexOf(req.body.action, "color") > -1) content = object + " :"+req.params.body.title + " template updated";
+  	if(_.indexOf(req.body.action, "attachment") > -1) content = "New document attached to : "+object + ": " + req.body.params.title
+    if(_.indexOf(req.body.action, "content") > -1) content = object + ": "+req.body.params.title + " content updated"
+  	if(_.indexOf(req.body.action, "comments") > -1) if(req.body.params.comments[0]) if(req.body.params.comments[0].content != "")content = "Added a comment: " + req.body.params.comments[0].content
 
 
   	Notification.create({
   		id : guid(),
-  		type : "update" + object+action,
+  		type : "update" + object,
       object : object,
       //content : "Project : " + req.session.currentProject.title  + " - " + object + " " + action + " updated",
-  		content : object + " " + action + " updated",
+  		content : content,
   		to : to,
   		date : getDate(),
   		read : [req.session.user.id],

@@ -1,6 +1,6 @@
 <script type="text/template" id="usersList-template">
 	<FIELDSET>
-		<LEGEND align=top> Members ({{-users.length}}): </LEGEND>
+		<LEGEND align=top> Members ({{-users.length}})<a href="/userManager?projectId={{- project.id}}"> manage</a></LEGEND>
 		{{ _.each(users, function(user){ }}
 			<div class="large-1 medium-1 small-1 columns" style="float:left">
 		    	<img  title="{{- user.name }}" src="{{- user.img }}"/>

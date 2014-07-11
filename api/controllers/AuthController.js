@@ -50,7 +50,7 @@ var AuthController = {
 				if(err) console.log(err)
 				sails.config.email.sendPasswordRecovery(user.email, url,function(err, msg){
 			        if(err) console.log(err)
-			          console.log(msg)
+
 			      res.redirect("/resetconfirmation")
 			      });
 			});
@@ -74,7 +74,6 @@ var AuthController = {
 			if(err) console.log(err)
 
 			if(req.session.pendingKey == user.recoveryLink){
-				console.log(req.body.password)
 				user.pw = req.body.password;
 				user.hashPassword(user, function(err, user){
 					if(err) console.log(err)
@@ -112,7 +111,6 @@ var AuthController = {
 			if(err) console.log(err)
 	      	sails.config.email.sendNewUserMail(user, function(err, msg){
 		        if(err) console.log(err)
-	          	console.log(msg)
 	      	});
 
 	      	res.redirect("/confirmation");
@@ -132,7 +130,6 @@ var AuthController = {
 	},
 
 	processRegistration : function(req,res){
-		console.log(req.body);
 		if(req.body.password !== req.body.confirmPassword) res.send("passwords must match")
 		User.findOne(req.session.pendingUser.id).done(function(err, user){
 			delete user.pw;
@@ -173,7 +170,6 @@ var AuthController = {
 					res.send(err);
 					return;
 				}
-				console.log(req.user)
  				req.session.user = req.user;
 				res.redirect('/');
 				return;

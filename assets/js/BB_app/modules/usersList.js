@@ -20,6 +20,7 @@ usersList.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         ////////////////////////////
         this.users = new Backbone.Collection(json.users);
+        this.project = json.project
         // Templates
         this.template = _.template($('#usersList-template').html());
     },
@@ -28,7 +29,7 @@ usersList.Views.Main = Backbone.View.extend({
         // init
         var _this = this;
         $(this.el).empty();
-        $(this.el).append(this.template({users : this.users.toJSON()}));
+        $(this.el).append(this.template({users : this.users.toJSON(), project : this.project.toJSON()}));
         return this;
     }
 });

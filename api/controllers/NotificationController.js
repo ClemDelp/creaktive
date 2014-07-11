@@ -12,6 +12,7 @@ module.exports = {
     var project_id = req.body.project_id;
 
     Notification.find()
+    .where({project_id : project_id})
     .where({read : req.session.user.id})
     .sort('comparator DESC')
     .limit(limit)
@@ -65,7 +66,6 @@ module.exports = {
           id: req.body.params.id
         }, req.body.params).done(function(err,c){
           if(err) res.send(err);
-          console.log(c)
           res.send(c[0]);
       });
       }else{

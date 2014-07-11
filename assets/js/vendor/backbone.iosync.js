@@ -89,7 +89,7 @@ Backbone.sync = function (method, model, options) {
   var type = methodMap[method];
   var action = actionMap[method];
 
-  console.log(model)
+
   var json = {
     url : '/' + namespace + '/' + type,
     data : {

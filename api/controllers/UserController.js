@@ -85,7 +85,7 @@
      
       sails.config.email.sendRegistrationMail(user.email, url,function(err, msg){
         if(err) console.log(err)
-          console.log(msg)
+
       });
 
 
