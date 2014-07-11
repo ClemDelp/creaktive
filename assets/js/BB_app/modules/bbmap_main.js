@@ -30,8 +30,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.positionRef        = 550;
         this.nodes_views        = {};
 
-        this.dropC              = false;
-        this.dropK              = false;
         // Templates
         this.template_actionbar = _.template($('#bbmap-actionbar-template').html());
         ////////////////////////////
@@ -79,8 +77,8 @@ bbmap.Views.Main = Backbone.View.extend({
 
     },
     events : {
-        "mousedown .dropC" : "setUpDropC",
-        //"mousemove #map" : "newBulleUnlinked",
+        "mouseup .dropC" : "newConceptUnlinked",
+        "mouseup .dropK" : "newKnowledgeUnlinked",
         "click .addUnlinkedC" : "createUnlinkedConcept",
         "click .addUnlinkedK" : "createUnlinkedKnowledge",
         "click .ckOperator" : "setCKOperator",
@@ -96,11 +94,19 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Drop new data on map
     /////////////////////////////////////////
-    setUpDropC : function(e){
-        this.dropC = true;
+    newConceptUnlinked : function(e){
+        var pos = $('#dropC').offset();
+        var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');;
+        var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');;
+        this.createUnlinkedConcept(left,top);
+        this.renderActionBar();
     },
-    newBulleUnlinked : function(e){
-        alert('up')
+    newKnowledgeUnlinked : function(e){
+        var pos = $('#dropK').offset();
+        var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');;
+        var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');;
+        this.createUnlinkedKnowledge(left,top);
+        this.renderActionBar();
     },
     /////////////////////////////////////////
     // Slinding editor bar
@@ -318,13 +324,12 @@ bbmap.Views.Main = Backbone.View.extend({
         }
         this.instance.repaintEverything();
     },
-    createUnlinkedKnowledge : function(e){
-        e.preventDefault();
+    createUnlinkedKnowledge : function(left,top){
         new_knowledge = new global.Models.Knowledge({
             id : guid(),
             type : "knowledge",
-            top : this.positionRef,
-            left: this.positionRef,
+            top : top,
+            left: left,
             project: this.project.get('id'),
             title: "new knowledge",
             user: this.user
@@ -361,14 +366,13 @@ bbmap.Views.Main = Backbone.View.extend({
 
         this.nodes_views[k.get('id')] = new_view;
     },
-    createUnlinkedConcept : function(e){
-        e.preventDefault();
+    createUnlinkedConcept : function(left,top){
         new_concept = new global.Models.ConceptModel({
             id : guid(),
             type : "concept",
             id_father: "none",
-            top : this.positionRef,
-            left: this.positionRef,
+            top : top,
+            left: left,
             project: this.project.get('id'),
             title: "new concept",
             user: this.user
@@ -482,18 +486,22 @@ bbmap.Views.Main = Backbone.View.extend({
             }
         });     
     },
+    renderActionBar : function(){
+        this.bar_el.empty();
+        this.bar_el.append(this.template_actionbar());
+        this.bar_el.find("#zoom_val").html(bbmap.zoom.get('val'));
+        $( "#dropC" ).draggable();
+        $( "#dropK" ).draggable();
+    },
     render : function(){        
         ///////////////////////
         // init
         nodes_views = {};
         _this = this;
-        // el
-        this.bar_el.empty();
         this.map_el.empty();
         ///////////////////////
         // Action bar
-        this.bar_el.append(this.template_actionbar());
-        this.bar_el.find("#zoom_val").html(bbmap.zoom.get('val'))
+        this.renderActionBar();
         ///////////////////////
         // Concepts views
         if(this.mode == "ck"){
@@ -576,8 +584,7 @@ bbmap.Views.Main = Backbone.View.extend({
         CSS3GENERATOR.attach_handlers();
         CSS3GENERATOR.initialize_controls();
         CSS3GENERATOR.update_styles();
-        $(document).foundation();
-        $( "#dropC" ).draggable();
+
         return this;
     }
 });
