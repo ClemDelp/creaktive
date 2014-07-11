@@ -236,8 +236,7 @@ bbmap.Views.Node = Backbone.View.extend({
                 scope:"cTok",
                 anchor:"Left"             
             });
-        }
-        
+        }  
     },
     render : function(){
         //style

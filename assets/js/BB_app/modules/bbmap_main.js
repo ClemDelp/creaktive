@@ -29,9 +29,11 @@ bbmap.Views.Main = Backbone.View.extend({
         this.ckOperator         = true;
         this.positionRef        = 550;
         this.nodes_views        = {};
-
+        this.dialog             = "";
+        this.lastModel          = new Backbone.Model();
         // Templates
         this.template_actionbar = _.template($('#bbmap-actionbar-template').html());
+        this.template_joyride = _.template($('#bbmap-joyride-template').html());
         ////////////////////////////
         // JsPlumb
         this.color = "#27AE60";
@@ -89,7 +91,8 @@ bbmap.Views.Main = Backbone.View.extend({
         "mouseenter .window.concept" : "showIcon", 
         "click .ep3" : "structureTree",
         "mouseleave .window" : "hideIcon", 
-        "click .closeEditor" : "hideEditor"
+        "click .closeEditor" : "hideEditor",
+        "click .ok_joyride" : "changeTitleLastModel"
     },
     /////////////////////////////////////////
     // Drop new data on map
@@ -98,15 +101,34 @@ bbmap.Views.Main = Backbone.View.extend({
         var pos = $('#dropC').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');;
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');;
-        this.createUnlinkedConcept(left,top);
-        this.renderActionBar();
+        this.openMessagBox(left,top,"c");
     },
     newKnowledgeUnlinked : function(e){
         var pos = $('#dropK').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');;
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');;
-        this.createUnlinkedKnowledge(left,top);
-        this.renderActionBar();
+        this.openMessagBox(left,top,"k");
+    },
+    openMessagBox : function(left,top,type){
+        if(type == "c") this.lastModel  = bbmap.views.main.createUnlinkedConcept(left,top);
+        if(type == "k") this.lastModel  = bbmap.views.main.createUnlinkedKnowledge(left,top);
+
+        $("#id_lalala").attr('data-id',this.lastModel.get('id')+'_joyride')
+        
+    
+        $(document).foundation('joyride', 'start');
+
+        bbmap.views.main.renderActionBar();
+    },
+    updateLastModelTitle : function(){
+        alert($('#ck_object_name').val())
+        bbmap.views.main.lastModel.save({title:$('#ck_object_name').val()});
+        bbmap.views.main.dialog.dialog('close')
+    },
+    changeTitleLastModel : function(e){
+        e.preventDefault();
+        alert('lelele')
+        alert($("#joyride_val").val());
     },
     /////////////////////////////////////////
     // Slinding editor bar
@@ -347,6 +369,8 @@ bbmap.Views.Main = Backbone.View.extend({
         new_view.addEndpoint();
         new_view.addLink();
         new_view.makeTarget();
+
+        return new_knowledge;
     },
     addKnowledgeToView : function(k){
         this.knowledges.add(k);
@@ -386,7 +410,7 @@ bbmap.Views.Main = Backbone.View.extend({
         });
 
         this.addConceptToView(new_concept);
-
+        return new_concept;
     },
     addConceptToView : function(c){
         this.concepts.add(c);
@@ -502,6 +526,7 @@ bbmap.Views.Main = Backbone.View.extend({
         ///////////////////////
         // Action bar
         this.renderActionBar();
+        $(this.el).append(this.template_joyride());
         ///////////////////////
         // Concepts views
         if(this.mode == "ck"){
