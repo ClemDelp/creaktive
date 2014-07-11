@@ -29,6 +29,9 @@ bbmap.Views.Main = Backbone.View.extend({
         this.ckOperator         = true;
         this.positionRef        = 550;
         this.nodes_views        = {};
+
+        this.dropC              = false;
+        this.dropK              = false;
         // Templates
         this.template_actionbar = _.template($('#bbmap-actionbar-template').html());
         ////////////////////////////
@@ -76,6 +79,8 @@ bbmap.Views.Main = Backbone.View.extend({
 
     },
     events : {
+        "mousedown .dropC" : "setUpDropC",
+        //"mousemove #map" : "newBulleUnlinked",
         "click .addUnlinkedC" : "createUnlinkedConcept",
         "click .addUnlinkedK" : "createUnlinkedKnowledge",
         "click .ckOperator" : "setCKOperator",
@@ -87,6 +92,15 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .ep3" : "structureTree",
         "mouseleave .window" : "hideIcon", 
         "click .closeEditor" : "hideEditor"
+    },
+    /////////////////////////////////////////
+    // Drop new data on map
+    /////////////////////////////////////////
+    setUpDropC : function(e){
+        this.dropC = true;
+    },
+    newBulleUnlinked : function(e){
+        alert('up')
     },
     /////////////////////////////////////////
     // Slinding editor bar
