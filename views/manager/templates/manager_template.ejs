@@ -1,10 +1,5 @@
 <div id="manager-container" class="row panel"></div>
 
-<script type="text/template" id="manager-title-template">
-	
-
-
-</script>
 
 <!--////////////////////////////////////////////////////////////////
 /*Manager templates*/-->
@@ -23,34 +18,61 @@
 	</div>
 </script>
 
-<script type="text/template" id="manager-project-details-template">
-	
+<script type="text/template" id="manager-header-template">
+	<div class="large-10 medium-10 small-10 columns">
+		<h2>{{-project.title}}</h2> 
+	</div>
+	<div class="large-2 medium-2 small-2 columns">
+		<a class="button success" href="/bbmap?projectId={{- project.id}}">Open</a>
+	</div>
+	<hr>
 
+	{{ if(project.image){ }}
+		<img src={{- project.image}} />
+	{{ }; }}
+</script>
+
+<script type="text/template" id="manager-normal-template">
+	<a href="#" class="edit">Edit description</a>
+    <div class="panel">
+    	{{= model.content }}
+   	</div>
+
+	
+</script>
+
+<script type="text/template" id="manager-edition-template">
+    <div class="panel">
+	    <a href="#" class="button tiny round success updateModel">Update!</a>
+	    <a href="#" class="button tiny round secondary cancelEdition">Cancel</a>
+	    <input type="text" class="title" value="{{- model.title}}"/>
+	    <textarea  class="ckeditor"  name="editor" rows="10" cols="80">{{= model.content }}</textarea>
+	</div>
 </script>
 
 <script type="text/template" id="manager-project-template">
-    <div class="item">
-	    <ul class="pricing-table">
-		  	<li class="price">
-		  		<a href="#" class="openProjectModal manager button radius secondary" data-model-id="{{-project.id}}">
-		  			<h3 data-model-id="{{-project.id}}">{{-project.title }}
+    <div class="openProjectModal panel">
+	
+<center>
+				<a href="#" class="openProjectModal manager button radius secondary" data-model-id="{{-project.id}}">
+					<h4 data-model-id="{{-project.id}}">{{-project.title }}
 					{{if(notifNbr > 0){ }}
-	                    <span class="top-bar-unread">{{-notifNbr}}</span>
-	                {{ } }}
-	                </h3>
-		  		</a>
-		  	</li>
-		  	<li class="description">
-		  		Created by {{-project.author.name}} at {{-project.date}}
-		  	</li>
-		  	<li class="description">
-		  		<strong style="color:green">{{-userNbr}}</strong> users on this project <a href="/userManager?projectId={{- project.id}}" class="button tiny round secondary">manage users</a>
-		  	</li>
-			<li class="cta-button">
-				<a class="button success expand" href="/ckviewer?projectId={{- project.id}}">Open</a>
-			</li>
-		</ul>
+		                <span class="top-bar-unread">{{-notifNbr}}</span>
+		            {{ } }}
+		    		</h4>
+	    		</a>
+<br>
+	        	<em>Created by {{-project.author.name}} at {{-project.date}}</em></center>
+	  		        
     </div>
+    <br>
+
+</script>
+
+
+<script type="text/template" id="manager-footer-template">
+	<a href="#" data-id-project="{{- project.id }}" class="button alert tiny removeProject">Delete project</a>
+
 </script>
 
 <!-- 

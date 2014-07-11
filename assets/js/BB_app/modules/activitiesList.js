@@ -102,17 +102,23 @@ activitiesList.Views.Main = Backbone.View.extend({
         // this.notifications.each(function(notification){
         //     if(notification.get('to').id == _this.model.get('id')){notif_to_render.add(notification)}
         // });
-        $(this.el).append(this.template({
-          model       : this.model.toJSON(),
-          news_notifs : this.news_notifs.toJSON(),
-          //read_notifs : this.read_notifs.toJSON()
-        }));
+        if(this.news_notifs.length != 0){
+          $(this.el).append(this.template({
+            model       : this.model.toJSON(),
+            news_notifs : this.news_notifs.toJSON(),
+            //read_notifs : this.read_notifs.toJSON()
+          }));
+        }
+
 
         if(this.model.get('type') == 'project'){
-          $(this.el).append(this.template_activityLog({
+          if(this.activityLog.length != 0){
+                      $(this.el).append(this.template_activityLog({
             model         : this.model.toJSON(),
             notifications : this.activityLog.toJSON()
           }))
+          }
+
         }
         
         return this;
