@@ -45,10 +45,12 @@ activitiesList.Views.Main = Backbone.View.extend({
 
         $(_this.el).empty();
         
-        $(_this.el).append(_this.template({
-          model       : _this.model.toJSON(),
-          news_notifs : _this.news_notifs.toJSON(),
-        }));
+        if(_this.news_notifs.length != 0){
+          $(_this.el).append(_this.template({
+            model       : _this.model.toJSON(),
+            news_notifs : _this.news_notifs.toJSON(),
+          }));
+        }
 
         if(_this.model.get('type') == 'project'){
           $(_this.el).append(_this.template_activityLog({

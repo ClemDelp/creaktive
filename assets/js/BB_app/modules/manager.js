@@ -218,15 +218,11 @@ manager.Views.ProjectDetails = Backbone.View.extend({
         _this = this;
 
         if(this.project_render) {
-<<<<<<< HEAD
           
             //HEADER
             $(_this.el).append(this.template_header({project:this.project_render.toJSON()}));           
 
-            //CONTENT EDITOR
-            $(_this.el).append(new manager.Views.ModelEditor({
-
-            //USER LIST    
+            //USERS LIST
             if(manager.views.main.users_rec_dic[this.project_render.get('id')]){
                 var users_id = manager.views.main.users_rec_dic[this.project_render.get('id')]
                 var users_list = [];
@@ -237,6 +233,11 @@ manager.Views.ProjectDetails = Backbone.View.extend({
                     users : users_list
                 }).render().el);
             }
+                        //CONTENT EDITOR
+            $(_this.el).append(new manager.Views.ModelEditor({
+                user            : this.user,
+                model           : this.project_render,
+            }).render().el);
             //ACTIVITIES
             $(_this.el).append(new activitiesList.Views.Main({
                 model           : this.project_render,
