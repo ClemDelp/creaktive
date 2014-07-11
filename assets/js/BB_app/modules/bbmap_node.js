@@ -81,6 +81,7 @@ bbmap.Views.Node = Backbone.View.extend({
                 top:position.top / bbmap.zoom.get('val'),
                 left:position.left / bbmap.zoom.get('val')
             }).save();   
+            console.log(this.model.get('top'),this.model.get('left'))
         }
         //console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
         //bbmap.views.main.reorganizeTree(this.model.get('id'))
