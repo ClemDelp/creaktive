@@ -1,4 +1,17 @@
 /////////////////////////////////////////////////
+// Joyride
+/////////////////////////////////////////////////
+bbmap.Views.Joyride = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this,'render');
+        this.template_joyride = _.template($('#bbmap-joyride-template').html());
+    },
+    render : function(){
+        $(this.el).append(this.template_joyride())
+        return this;
+    }
+});
+/////////////////////////////////////////////////
 // MAIN
 /////////////////////////////////////////////////
 bbmap.Views.Main = Backbone.View.extend({
@@ -33,7 +46,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.lastModel          = new Backbone.Model();
         // Templates
         this.template_actionbar = _.template($('#bbmap-actionbar-template').html());
-        this.template_joyride = _.template($('#bbmap-joyride-template').html());
+        
         ////////////////////////////
         // JsPlumb
         this.color = "#27AE60";
@@ -60,6 +73,9 @@ bbmap.Views.Main = Backbone.View.extend({
         //bbmap.views.editBox = new bbmap.Views.EditBox({el : "#editBox"});
         ////////////////////////////
         // Events
+        $('#joyride').off();
+        $('.joyride-list').off();
+
         this.listenTo(bbmap.zoom,'change',this.updateZoomDisplay,this);
 
         global.eventAggregator.on('concept:create',this.addConceptToView,this);
@@ -92,7 +108,7 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .ep3" : "structureTree",
         "mouseleave .window" : "hideIcon", 
         "click .closeEditor" : "hideEditor",
-        "click .ok_joyride" : "changeTitleLastModel"
+        "click #okjoyride" : "changeTitleLastModel"
     },
     /////////////////////////////////////////
     // Drop new data on map
@@ -120,13 +136,12 @@ bbmap.Views.Main = Backbone.View.extend({
 
         bbmap.views.main.renderActionBar();
     },
-    updateLastModelTitle : function(){
-        alert($('#ck_object_name').val())
-        bbmap.views.main.lastModel.save({title:$('#ck_object_name').val()});
-        bbmap.views.main.dialog.dialog('close')
+    updateLastModelTitle : function(title){
+        alert(title)
+        bbmap.views.main.lastModel.save({title:title});
     },
     changeTitleLastModel : function(e){
-        e.preventDefault();
+        //e.preventDefault();
         alert('lelele')
         alert($("#joyride_val").val());
     },
@@ -526,7 +541,7 @@ bbmap.Views.Main = Backbone.View.extend({
         ///////////////////////
         // Action bar
         this.renderActionBar();
-        $(this.el).append(this.template_joyride());
+        $(this.el).append(new bbmap.Views.Joyride().render().el);
         ///////////////////////
         // Concepts views
         if(this.mode == "ck"){

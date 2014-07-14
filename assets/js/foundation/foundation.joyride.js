@@ -45,7 +45,7 @@
         timer   : '<div class="joyride-timer-indicator-wrap"><span class="joyride-timer-indicator"></span></div>',
         tip     : '<div class="joyride-tip-guide"><span class="joyride-nub"></span></div>',
         wrapper : '<div class="joyride-content-wrapper"></div>',
-        button  : '<a href="#" style="display:none" class="small button joyride-next-tip"></a>',
+        button  : '<a href="#" class="small button joyride-next-tip"></a>',
         modal   : '<div class="joyride-modal-bg"></div>',
         expose  : '<div class="joyride-expose-wrapper"></div>',
         expose_cover: '<div class="joyride-expose-cover"></div>'
@@ -68,7 +68,9 @@
         .off('.joyride')
         .on('click.fndtn.joyride', '.joyride-next-tip, .joyride-modal-bg', function (e) {
           e.preventDefault();
-
+          console.log(e.currentTarget.parentElement)
+          console.log(e)
+          alert($('#joyride_val').val())
           if (this.settings.$li.next().length < 1) {
             this.end();
           } else if (this.settings.timer > 0) {
