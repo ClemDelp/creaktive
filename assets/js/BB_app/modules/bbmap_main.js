@@ -115,35 +115,28 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     newConceptUnlinked : function(e){
         var pos = $('#dropC').offset();
-        var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');;
-        var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');;
-        this.openMessagBox(left,top,"c");
+        var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
+        var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
+        this.createUnlinkedConcept(left,top);
+        this.renderActionBar();
     },
     newKnowledgeUnlinked : function(e){
         var pos = $('#dropK').offset();
-        var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');;
-        var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');;
-        this.openMessagBox(left,top,"k");
+        var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
+        var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
+        this.createUnlinkedKnowledge(left,top);
+        this.renderActionBar();
     },
-    openMessagBox : function(left,top,type){
-        if(type == "c") this.lastModel  = bbmap.views.main.createUnlinkedConcept(left,top);
-        if(type == "k") this.lastModel  = bbmap.views.main.createUnlinkedKnowledge(left,top);
-
-        $("#id_lalala").attr('data-id',this.lastModel.get('id')+'_joyride')
-        
-    
+    startJoyride : function(){
+        $("#joyride_id").attr('data-id',this.lastModel.get('id')+'_joyride')
         $(document).foundation('joyride', 'start');
-
-        bbmap.views.main.renderActionBar();
     },
     updateLastModelTitle : function(title){
-        alert(title)
-        bbmap.views.main.lastModel.save({title:title});
-    },
-    changeTitleLastModel : function(e){
-        //e.preventDefault();
-        alert('lelele')
-        alert($("#joyride_val").val());
+        if(title == ""){
+            this.nodes_views[this.lastModel.get('id')].removeNode();
+        }else{
+            this.lastModel.save({title:title});
+        }
     },
     /////////////////////////////////////////
     // Slinding editor bar
@@ -373,37 +366,18 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         new_knowledge.save();
 
-        new_view = new bbmap.Views.Node({
-            className : "window knowledge",
-            id : new_knowledge.get('id'),
-            model : new_knowledge,
-        });
+        // new_view = new bbmap.Views.Node({
+        //     className : "window knowledge",
+        //     id : new_knowledge.get('id'),
+        //     model : new_knowledge,
+        // });
 
-        this.map_el.append(new_view.render().el);
-        
-        new_view.addEndpoint();
-        new_view.addLink();
-        new_view.makeTarget();
-
-        return new_knowledge;
-    },
-    addKnowledgeToView : function(k){
-        this.knowledges.add(k);
-        
-        // On crée la vue
-        new_view = new bbmap.Views.Node({
-            className : "window knowledge",
-            id : k.get('id'),
-            model : k,
-        });
-        // On l'ajoute à la map
-        this.map_el.append(new_view.render().el);
-        // Puis on ajoute les elements de la bulle
-        new_view.addEndpoint();
-        new_view.addLink();
-        new_view.makeTarget();
-
-        this.nodes_views[k.get('id')] = new_view;
+        // this.map_el.append(new_view.render().el);
+        this.knowledges.add(new_knowledge);
+        this.addModelToView(new_knowledge,"knowledge");
+        // new_view.addEndpoint();
+        // new_view.addLink();
+        // new_view.makeTarget();
     },
     createUnlinkedConcept : function(left,top){
         new_concept = new global.Models.ConceptModel({
@@ -417,31 +391,66 @@ bbmap.Views.Main = Backbone.View.extend({
             user: this.user
         });
         new_concept.save();
-
-        new_view = new bbmap.Views.Node({
-            className : "window concept",
-            id : new_concept.get('id'),
-            model : new_concept,
-        });
-
-        this.addConceptToView(new_concept);
-        return new_concept;
+        // new_view = new bbmap.Views.Node({
+        //     className : "window concept",
+        //     id : new_concept.get('id'),
+        //     model : new_concept,
+        // });
+        this.concepts.add(new_concept);
+        this.addModelToView(new_concept,"concept");
     },
-    addConceptToView : function(c){
-        this.concepts.add(c);
-        new_view = new bbmap.Views.Node({
-            className : "window concept",
-            id : c.get('id'),
-            model : c,
-        });
+    // addKnowledgeToView : function(k){
+    //     this.lastModel = k;
+    //     this.knowledges.add(k);
+    //     this.lastModel = k;
+    //     // On crée la vue
+    //     new_view = new bbmap.Views.Node({
+    //         className : "window knowledge",
+    //         id : k.get('id'),
+    //         model : k,
+    //     });
+    //     // On l'ajoute à la map
+    //     this.map_el.append(new_view.render().el);
+    //     // Puis on ajoute les elements de la bulle
+    //     new_view.addEndpoint();
+    //     new_view.addLink();
+    //     new_view.makeTarget();
 
-        this.map_el.append(new_view.render().el);
+    //     this.nodes_views[k.get('id')] = new_view;
+    //     this.startJoyride();
+    // },
+    // addConceptToView : function(c){
+    //     this.lastModel = c;
+    //     this.concepts.add(c);
+    //     this.lastModel = c;
+    //     new_view = new bbmap.Views.Node({
+    //         className : "window concept",
+    //         id : c.get('id'),
+    //         model : c,
+    //     });
+
+    //     this.map_el.append(new_view.render().el);
         
+    //     new_view.addEndpoint();
+    //     new_view.addLink();
+    //     new_view.makeTarget();
+
+    //     this.nodes_views[c.get('id')] = new_view;
+    //     this.startJoyride();
+    // },
+    addModelToView : function(model,type){
+        this.lastModel = model;
+        new_view = new bbmap.Views.Node({
+            className : "window "+type,
+            id : model.get('id'),
+            model : model,
+        });
+        this.map_el.append(new_view.render().el);
         new_view.addEndpoint();
         new_view.addLink();
         new_view.makeTarget();
-
-        this.nodes_views[c.get('id')] = new_view;
+        this.nodes_views[model.get('id')] = new_view;
+        this.startJoyride();
     },
     removeModelToView : function(model){
         model_view = this.nodes_views[model.get('id')]

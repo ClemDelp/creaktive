@@ -100,7 +100,7 @@ bbmap.Views.Node = Backbone.View.extend({
         });
         new_concept.save();
 
-        bbmap.views.main.addConceptToView(new_concept);
+        bbmap.views.main.addModelToView(new_concept,"concept");
     },
     addKnowledgeChild : function(e){
         e.preventDefault();
@@ -128,28 +128,29 @@ bbmap.Views.Node = Backbone.View.extend({
         // On ajoute le link à la collection
         bbmap.views.main.links.add(new_cklink);
 
-        bbmap.views.main.addKnowledgeToView(new_knowledge);
+        bbmap.views.main.addModelToView(new_knowledge,"knowledge");
     },
     removeModel : function(e){
         e.preventDefault();
-        model = this.model;
-        if(confirm("this "+model.get('type')+" will be remove, would you continue?")){
-            this.endpoints.forEach(function(ep){
-                bbmap.views.main.instance.deleteEndpoint(ep);
-            })
-            bbmap.views.main.instance.detachAllConnections($(this.el));
-            // put all the child node parent_id attributes to none
-            if(model.get('type') == 'concept'){
-                childrens = bbmap.views.main.concepts.where({id_father : model.get('id')})
-                childrens.forEach(function(child){
-                    child.set({id_father : "none"}).save();
-                });
-            } 
-            model.destroy();
-            this.remove();
-            // $(this.el).hide('slow');
-            
+        if(confirm("this "+this.model.get('type')+" will be remove, would you continue?")){
+            this.removeNode();
         }
+    },
+    removeNode : function(){
+        model = this.model;
+        this.endpoints.forEach(function(ep){
+            bbmap.views.main.instance.deleteEndpoint(ep);
+        })
+        bbmap.views.main.instance.detachAllConnections($(this.el));
+        // put all the child node parent_id attributes to none
+        if(model.get('type') == 'concept'){
+            childrens = bbmap.views.main.concepts.where({id_father : model.get('id')})
+            childrens.forEach(function(child){
+                child.set({id_father : "none"}).save();
+            });
+        } 
+        model.destroy();
+        this.remove();
     },
     editTitle : function(e){
         e.preventDefault();
