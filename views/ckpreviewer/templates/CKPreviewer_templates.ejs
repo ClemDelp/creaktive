@@ -66,14 +66,15 @@
     <ul class="small-block-grid-2">
       {{ _.each(images, function(image) { }}
         <li id="image_container">
-          {{- image.updatedAt.substr(0,10)}}
+          {{- image.date}}
           <a id="deleteimage" data-image-id="{{- image.src}}" data-screenshot-id="{{- image.id}}" style="float:right">&#215;</a>
-          <img class="th" id="image" data-image-id="{{- image.src}}" src="/S3/getPrivateUrl?amz_id={{- image.src}}">
+          <img class="th" id="image" data-image-id="{{- image.src}}" data-screenshot-id="{{- image.id}}" src="/S3/getPrivateUrl?amz_id={{- image.src}}">
         </li>
       {{ }); }}  
     </ul>
     </div>
     <div class="content" id="panel2-2">
+    <a href="#" id="ImportAllknowledges"  class="button  secondary "  style="float:left">Import all</a><hr>
       {{ _.each(knowledges, function(knowledge) { }}
           <a href="#" class="button knowledge tiny radius   secondary CKBulle" data-knowledge-id="{{-knowledge.id}}" data-knowledge-content="{{-knowledge.content}}" data-knowledge-title="{{-knowledge.title}}" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}">
             <strong data-knowledge-id="{{-knowledge.id}}" data-knowledge-content="{{-knowledge.content}}" data-knowledge-title="{{-knowledge.title}}">{{- knowledge.title }}</strong>
@@ -81,6 +82,7 @@
       {{ }); }}  
     </div>
     <div class="content" id="panel2-3">
+    <a href="#" id="ImportAllconcepts"  class="button  secondary "  style="float:left">Import all</a><hr>
       {{ _.each(concepts, function(concepte) { }}
           <a href="#" class="button concept tiny radius   secondary CKBulle" data-concepte-id="{{-concepte.id}}" data-concepte-content="{{-concepte.content}}" data-concepte-title="{{-concepte.title}}">
             <strong data-concepte-id="{{-concepte.id}}" data-concepte-content="{{-concepte.content}}" data-concepte-title="{{-concepte.title}}">{{- concepte.title }}</strong>
@@ -88,6 +90,7 @@
       {{ }); }} 
     </div>
     <div class="content" id="panel2-4">
+    <a href="#" id="ImportAllpoches"  class="button  secondary "  style="float:left">Import all</a><hr>
       {{ _.each(poches, function(poche) { }}
           <a href="#" class="button poche tiny radius   secondary CKBulle" data-poche-id="{{-poche.id}}" data-poche-cotent="{{-poche.content}}" data-poche-title="{{-poche.title}}">
             <strong data-poche-id="{{-poche.id}}" >{{- poche.title }}</strong>
@@ -100,30 +103,21 @@
 
 
 <!-- //////////////////////////////////////////////////////// 
-<script type="text/template" id="CKPreviewer_slides_template" >
-  <ul id="slides" class="small-block-grid-1">
-    {{ _.each(thumbnails, function(thumbnail) { }}
-      <li>
-        <img class="th" id="slide" src="{{- thumbnail}}">
-      </li>
-    {{ }); }}  
-  </ul>
-</script>-->
+
 
 
 <!-- //////////////////////////////////////////////////////// -->
 <script type="text/template" id="CKPreviewer_editer_template" >
-    <div class="row" >
+    <div >
         <textarea  class="ckeditor"  name="ckeditor" >
         
         </textarea> 
         <hr>
+        <a href="#" class="button tiny round  exportDocx"style="float:right">Export</a>
         <a href="#" class="button tiny round  createpresentation"style="float:right">Update</a>
         <a href="#" class="button tiny round  clearpresentation"style="float:right">Clear</a>   
         <a href="#" class="button tiny round  resetpresentation"style="float:right">Reset</a>  
     </div>
-    <div style="position: absolute; opacity: 0.0;">
-      <div id="tempImageThumbnail"></div>
-    </div>
+
 </script>
 

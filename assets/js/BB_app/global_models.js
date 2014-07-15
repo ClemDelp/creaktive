@@ -247,7 +247,8 @@ global.Models.Screenshot = Backbone.Model.extend({
     defaults : {
         id : "",
         src : "",
-        project_id : ""
+        project_id : "",
+        date : ""
     },
     initialize : function Poche() {
         this.urlRoot = "screenshot";

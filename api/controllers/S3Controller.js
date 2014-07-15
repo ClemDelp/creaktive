@@ -37,8 +37,11 @@ var fs = require('fs');
  		var path = req.query.amz_id;
 		
 		var private_url = cf.getPrivateUrl(hostname, path, expires );
-		res.redirect(private_url);
+		if(req.body.geturl) res.send({url : private_url});
+        else res.redirect(private_url);
 	},
+
+
 
 
  	upload_sign : function(req,res){

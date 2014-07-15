@@ -2,8 +2,7 @@
 <script src="/js/vendor/backbone.iosync.js"></script>
 <script src="/js/vendor/backbone.iobind.js"></script>
 <!-- ******************************** -->
-<!-- Gridalicious -->
-<script src="/js/vendor/jquery.grid-a-licious.js"></script>
+
 <!-- ******************************** -->
 <!-- my-mind -->
 <link rel="stylesheet" href="styles/map/font.css" />
@@ -17,9 +16,11 @@
 <!-- Zoom js -->
 <!-- <script src="/js/vendor/zoom.js"></script> 
 <script src="/js/vendor/jquery.zoomooz.js"></script> -->
-<script src="/js/vendor/html2canvas.js"></script>
-<script src="/js/vendor/jquery.sortable.js"></script>
+
 <script src="js/vendor/jquery.Jcrop.min.js"></script>
+
+
+<script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
 <!-- ******************************** -->
 <!-- Templates to load -->
 <%- partial('../app/templates/topbar_templates') %>
@@ -37,8 +38,6 @@
 <script src="js/ckeditor/ckeditor.js"></script>
 <script src="js/ckeditor/config.js"></script>
 <script>
-  //var zoomflag=false;
-  //var slideflag=false;
   ///////////////////////////////////////////////////
   $(document).ready(function () {
     ////////////////////////////////////////
@@ -55,25 +54,12 @@
       json.knowledges = <%- knowledges %>;
       json.poches = <%- poches %>;
       json.concepts = <%- concepts %>;
-      // json.links = <%- links %>;
       json.notifications = <%- notifications %>;
       json.permissions = <%- permissions %>;
       json.screenshots = <%- screenshots %>;
       json.slides = <%- slides %>;
       json.presentations = <%- presentations %>;
 
-      // _.each(json.knowledges, function(k){
-      //   k.comments = new global.Collections.Comments(k.comments);
-      //   k.members = new global.Collections.UsersCollection(k.members);
-      // })
-      // _.each(json.concepts, function(c){
-      //   c.comments = new global.Collections.Comments(c.comments);
-      //   c.members = new global.Collections.UsersCollection(c.members);
-      // })
-      // _.each(json.poches, function(p){
-      //   p.comments = new global.Collections.Comments(p.comments);
-      //   p.members = new global.Collections.UsersCollection(p.members);
-      // })
       global.init(json, function(){
         /*Modules*/
         topbar.init();

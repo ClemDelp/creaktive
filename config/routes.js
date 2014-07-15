@@ -76,6 +76,12 @@ module.exports.routes = {
   'post /editprofile' : "UserController.editprofile",
   "post /changepassword" : "UserController.changepassword",
 
+  "get /getPrivateUrl" : {
+    controller : "S3Controller",
+    action :"getPrivateUrl",
+    cors : true
+  }
+
 
   /*
   // But what if you want your home page to display

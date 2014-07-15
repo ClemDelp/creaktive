@@ -466,15 +466,10 @@ bbmap.Views.Main = Backbone.View.extend({
                         }
                     }
                 }
-                             
-
-
                 var screenshot;
                 screenshot = canvas2.toDataURL( "image/png" ).replace(/data:image\/png;base64,/,'');
                 var uintArray = Base64Binary.decode(screenshot);;
                 _this.uploadFile(uintArray);
-                      
-
             }
         });
     },
@@ -493,6 +488,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 new_image = new global.Models.Screenshot({
                     id : guid(),
                     src : amz_id,
+                    date : getDate(),
                     project_id : _this.project.get('id')
                 });
                 new_image.save();
