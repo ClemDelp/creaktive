@@ -190,6 +190,12 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
     },
     exportDocx : function(e){
         _this = this;
+                if(this.current_presentation){
+            var data = CKEDITOR.instances.ckeditor.getData();
+            this.current_presentation.set({'data':CKEDITOR.instances.ckeditor.getData()}).save();
+        }else{
+            alert("Please create a presentation");
+        }  
        var data = CKEDITOR.instances.ckeditor.getData();
        
         var arr = new Array();
@@ -223,10 +229,9 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
             callback : function(){
 
                 $.post(
-                    '/file/convert',
+                    '/file/export2pdf',
                     {data : data}, 
                     function (url) {
-                        console.log(url)
                         $.download("/file/get", {path : url});
                         
                     }
@@ -235,29 +240,14 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         });
                }else{
                 $.post(
-                    '/file/convert',
+                    '/file/export2pdf',
                     {data : data}, 
                     function (data) {
-
+                        $.download("/file/get", {path : url});
+                        
                     }
                 );
                }
-
-        
-        //Parcourt toutes les images dans le document
-        // if(arr.length > 1){
-        //     for (var i = 1; i < arr.length; i++) {
-        //         var ind = arr[i].indexOf('" ');
-        //         var src = arr[i].substring(0,ind);
-        //         //Convertit en 
-        //         _this.convertImgToBase64(src, function(base64Img,url){
-        //             data = data.replace(url,base64Img);
-        //         });
-
-        //     };
-        // }
-
-
 
     },
 
@@ -313,7 +303,7 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         });
     },
     renderImg : function(src){
-        CKEDITOR.instances.ckeditor.insertHtml('<br><img src="/S3/getPrivateUrl?amz_id='+src+'">');  
+        CKEDITOR.instances.ckeditor.insertHtml('<br><img src="/S3/getPrivateUrl?amz_id='+src+'" style="max-width: 100px" >');  
     },
     render : function(){
         $(this.el).empty();        
@@ -444,6 +434,7 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
             CKEDITOR.replace('ckeditor',{
                 height:"100%",
             });
+
             CKEDITOR.instances.ckeditor.setData(this.current_presentation.get('data'));
         }else{
             $("#drop0").html("Presentation");
