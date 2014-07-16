@@ -4,6 +4,14 @@ function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+no
 
 
 module.exports.backup = {
+
+    saveProjectImage : function(req,res){
+
+    },
+
+
+
+
     cron : function(req,res){
         if(_.contains(req.session.allowedProjects, req.query.projectId)){
             Project.findOne(req.query.projectId).done(function(err, project){
