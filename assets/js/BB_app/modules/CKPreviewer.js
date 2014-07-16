@@ -150,9 +150,8 @@ CKPreviewer.Views.Modal = Backbone.View.extend({
            if($(":radio[name=imagesize]")[i].checked==true)
             {
               size=i;
-           }
-           
-       }
+           } 
+        }
 
 
         this.eventAggregator.trigger("renderImg",this.src);
