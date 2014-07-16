@@ -19,12 +19,23 @@
 module.exports = {
     
   
-
-
-  /**
-   * Overrides for the settings in `config/controllers.js`
-   * (specific to BBmapController)
+   /**
+   * true : upload a new image for the project
+   * false : do not upload image
    */
+   image : function(req,res){
+   		Project.findOne(req.session.currentProject.id).done(function(err,project){
+   			var last_update = new Date(project.updatedAt);
+   			var now = new Date();
+   			var diff = now-last_update;
+   			console.log("diff", diff)
+   			if(diff > 86400000){
+   				res.send(true)
+   			}
+   			res.send(false)
+   		})
+
+	},
   
 
   bbmapview : function(req,res){

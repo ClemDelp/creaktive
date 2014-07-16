@@ -25,11 +25,11 @@
 
 			<a class="button success tiny expand" href="/bbmap?projectId={{- project.id}}">Open project</a>
 			
-			</fieldset>
+		</fieldset>
 
 
 		{{ if(project.image){ }}
-		<img src={{- project.image}} />
+		<img src="/S3/getPrivateUrl?amz_id={{- project.image}}" />
 		{{ }; }}
 
 	</script>

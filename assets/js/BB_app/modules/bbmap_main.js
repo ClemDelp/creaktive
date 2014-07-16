@@ -115,8 +115,7 @@ bbmap.Views.Main = Backbone.View.extend({
     // Screenshot
     /////////////////////////////////////////
 
-    screenshot : function(e){
-        console.log("SCREEN")
+    screenshot : function(flag){
         _this = this;
         var zoomscale = bbmap.zoom.get('val');
         var project_id = this.project.get('id');
@@ -221,12 +220,11 @@ bbmap.Views.Main = Backbone.View.extend({
                 //console.log(canvas2.toDataURL( "image/png" ));
                 screenshot = canvas2.toDataURL( "image/png" ).replace(/data:image\/png;base64,/,'');
                 var uintArray = Base64Binary.decode(screenshot);;
-                _this.uploadFile(uintArray);
-                alert("Screenshot saved!");
+                _this.uploadFile(uintArray, flag);
             }
         });    
     },
-     uploadFile : function(file){
+     uploadFile : function(file,flag){
         _this = this;
         var s3upload = new S3Upload({
             file : file,
@@ -236,15 +234,21 @@ bbmap.Views.Main = Backbone.View.extend({
             },
             onFinishS3Put: function(amz_id, file) {
                 console.log("File uploaded ", amz_id);
-                
-                new_image = new global.Models.Screenshot({
-                    id : guid(),
-                    src : amz_id,
-                    date : getDate(),
-                    project_id : _this.project.get('id')
-                });
-                new_image.save();
-
+                //Si c'est un screenshot servant d'image pour le projet
+                if(flag){
+                    _this.project.save({
+                        image : amz_id
+                    })
+                }
+                // Si c'est un screenshot
+                else{
+                    global.Models.Screenshot.create({
+                        id : guid(),
+                        src : amz_id,
+                        date : getDate(),
+                        project_id : _this.project.get('id')
+                    });
+                }             
             },
             onError: function(status) {
                 console.log(status)
@@ -777,6 +781,12 @@ bbmap.Views.Main = Backbone.View.extend({
         CSS3GENERATOR.initialize_controls();
         CSS3GENERATOR.update_styles();
 
+
+        $.get('/BBmap/image', function(hasChanged){
+            if (hasChanged == true){
+                _this.screenshot(true);
+            }
+        });
         return this;
     }
 });
