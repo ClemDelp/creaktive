@@ -1,4 +1,17 @@
 /////////////////////////////////////////////////
+// Joyride
+/////////////////////////////////////////////////
+bbmap.Views.Joyride = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this,'render');
+        this.template_joyride = _.template($('#bbmap-joyride-template').html());
+    },
+    render : function(){
+        $(this.el).append(this.template_joyride())
+        return this;
+    }
+});
+/////////////////////////////////////////////////
 // MAIN
 /////////////////////////////////////////////////
 bbmap.Views.Main = Backbone.View.extend({
@@ -29,8 +42,11 @@ bbmap.Views.Main = Backbone.View.extend({
         this.ckOperator         = true;
         this.positionRef        = 550;
         this.nodes_views        = {};
+        this.dialog             = "";
+        this.lastModel          = new Backbone.Model();
         // Templates
         this.template_actionbar = _.template($('#bbmap-actionbar-template').html());
+        
         ////////////////////////////
         // JsPlumb
         this.color = "#27AE60";
@@ -57,6 +73,9 @@ bbmap.Views.Main = Backbone.View.extend({
         //bbmap.views.editBox = new bbmap.Views.EditBox({el : "#editBox"});
         ////////////////////////////
         // Events
+        $('#joyride').off();
+        $('.joyride-list').off();
+
         this.listenTo(bbmap.zoom,'change',this.updateZoomDisplay,this);
 
         global.eventAggregator.on('concept:create',this.addConceptToView,this);
@@ -76,6 +95,8 @@ bbmap.Views.Main = Backbone.View.extend({
 
     },
     events : {
+        "mouseup .dropC" : "newConceptUnlinked",
+        "mouseup .dropK" : "newKnowledgeUnlinked",
         "click .addUnlinkedC" : "createUnlinkedConcept",
         "click .addUnlinkedK" : "createUnlinkedKnowledge",
         "click .ckOperator" : "setCKOperator",
@@ -87,6 +108,7 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .ep3" : "structureTree",
         "mouseleave .window" : "hideIcon", 
         "click .closeEditor" : "hideEditor",
+        "click #okjoyride" : "changeTitleLastModel",
         "click .screenshot" : "screenshot"
     },
     /////////////////////////////////////////
@@ -189,6 +211,37 @@ bbmap.Views.Main = Backbone.View.extend({
                 _this.uploadFile(uintArray);
             }
         });
+
+        
+    },
+    /////////////////////////////////////////
+    // Drop new data on map
+    /////////////////////////////////////////
+    newConceptUnlinked : function(e){
+        var pos = $('#dropC').offset();
+        var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
+        var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
+        this.createUnlinkedConcept(left,top);
+        this.renderActionBar();
+    },
+    newKnowledgeUnlinked : function(e){
+        var pos = $('#dropK').offset();
+        var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
+        var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
+        this.createUnlinkedKnowledge(left,top);
+        this.renderActionBar();
+    },
+    startJoyride : function(){
+        $("#joyride_id").attr('data-id',this.lastModel.get('id')+'_joyride')
+        $(document).foundation('joyride', 'start');
+    },
+    updateLastModelTitle : function(title){
+        if(title == ""){
+            this.nodes_views[this.lastModel.get('id')].removeNode();
+        }else{
+            this.lastModel.save({title:title});
+        }
+
     },
     /////////////////////////////////////////
     // Slinding editor bar
@@ -406,87 +459,103 @@ bbmap.Views.Main = Backbone.View.extend({
         }
         this.instance.repaintEverything();
     },
-    createUnlinkedKnowledge : function(e){
-        e.preventDefault();
+    createUnlinkedKnowledge : function(left,top){
         new_knowledge = new global.Models.Knowledge({
             id : guid(),
             type : "knowledge",
-            top : this.positionRef,
-            left: this.positionRef,
+            top : top,
+            left: left,
             project: this.project.get('id'),
             title: "new knowledge",
             user: this.user
         });
         new_knowledge.save();
 
-        new_view = new bbmap.Views.Node({
-            className : "window knowledge",
-            id : new_knowledge.get('id'),
-            model : new_knowledge,
-        });
+        // new_view = new bbmap.Views.Node({
+        //     className : "window knowledge",
+        //     id : new_knowledge.get('id'),
+        //     model : new_knowledge,
+        // });
 
-        this.map_el.append(new_view.render().el);
-        
-        new_view.addEndpoint();
-        new_view.addLink();
-        new_view.makeTarget();
+        // this.map_el.append(new_view.render().el);
+        this.knowledges.add(new_knowledge);
+        this.addModelToView(new_knowledge,"knowledge");
+        // new_view.addEndpoint();
+        // new_view.addLink();
+        // new_view.makeTarget();
     },
-    addKnowledgeToView : function(k){
-        this.knowledges.add(k);
-        
-        // On crée la vue
-        new_view = new bbmap.Views.Node({
-            className : "window knowledge",
-            id : k.get('id'),
-            model : k,
-        });
-        // On l'ajoute à la map
-        this.map_el.append(new_view.render().el);
-        // Puis on ajoute les elements de la bulle
-        new_view.addEndpoint();
-        new_view.addLink();
-        new_view.makeTarget();
-
-        this.nodes_views[k.get('id')] = new_view;
-    },
-    createUnlinkedConcept : function(e){
-        e.preventDefault();
+    createUnlinkedConcept : function(left,top){
         new_concept = new global.Models.ConceptModel({
             id : guid(),
             type : "concept",
             id_father: "none",
-            top : this.positionRef,
-            left: this.positionRef,
+            top : top,
+            left: left,
             project: this.project.get('id'),
             title: "new concept",
             user: this.user
         });
         new_concept.save();
-
-        new_view = new bbmap.Views.Node({
-            className : "window concept",
-            id : new_concept.get('id'),
-            model : new_concept,
-        });
-
-        this.addConceptToView(new_concept);
-
+        // new_view = new bbmap.Views.Node({
+        //     className : "window concept",
+        //     id : new_concept.get('id'),
+        //     model : new_concept,
+        // });
+        this.concepts.add(new_concept);
+        this.addModelToView(new_concept,"concept");
     },
-    addConceptToView : function(c){
-        this.concepts.add(c);
-        new_view = new bbmap.Views.Node({
-            className : "window concept",
-            id : c.get('id'),
-            model : c,
-        });
+    // addKnowledgeToView : function(k){
+    //     this.lastModel = k;
+    //     this.knowledges.add(k);
+    //     this.lastModel = k;
+    //     // On crée la vue
+    //     new_view = new bbmap.Views.Node({
+    //         className : "window knowledge",
+    //         id : k.get('id'),
+    //         model : k,
+    //     });
+    //     // On l'ajoute à la map
+    //     this.map_el.append(new_view.render().el);
+    //     // Puis on ajoute les elements de la bulle
+    //     new_view.addEndpoint();
+    //     new_view.addLink();
+    //     new_view.makeTarget();
 
-        this.map_el.append(new_view.render().el);
+    //     this.nodes_views[k.get('id')] = new_view;
+    //     this.startJoyride();
+    // },
+    // addConceptToView : function(c){
+    //     this.lastModel = c;
+    //     this.concepts.add(c);
+    //     this.lastModel = c;
+    //     new_view = new bbmap.Views.Node({
+    //         className : "window concept",
+    //         id : c.get('id'),
+    //         model : c,
+    //     });
+
+    //     this.map_el.append(new_view.render().el);
         
+    //     new_view.addEndpoint();
+    //     new_view.addLink();
+    //     new_view.makeTarget();
+
+    //     this.nodes_views[c.get('id')] = new_view;
+    //     this.startJoyride();
+    // },
+    addModelToView : function(model,type){
+        this.lastModel = model;
+        new_view = new bbmap.Views.Node({
+            className : "window "+type,
+            id : model.get('id'),
+            model : model,
+        });
+        this.map_el.append(new_view.render().el);
         new_view.addEndpoint();
         new_view.addLink();
         new_view.makeTarget();
-
-        this.nodes_views[c.get('id')] = new_view;
+        this.nodes_views[model.get('id')] = new_view;
+        this.startJoyride();
     },
     removeModelToView : function(model){
         model_view = this.nodes_views[model.get('id')]
@@ -570,18 +639,23 @@ bbmap.Views.Main = Backbone.View.extend({
             }
         });     
     },
+    renderActionBar : function(){
+        this.bar_el.empty();
+        this.bar_el.append(this.template_actionbar());
+        this.bar_el.find("#zoom_val").html(bbmap.zoom.get('val'));
+        $( "#dropC" ).draggable();
+        $( "#dropK" ).draggable();
+    },
     render : function(){        
         ///////////////////////
         // init
         nodes_views = {};
         _this = this;
-        // el
-        this.bar_el.empty();
         this.map_el.empty();
         ///////////////////////
         // Action bar
-        this.bar_el.append(this.template_actionbar());
-        this.bar_el.find("#zoom_val").html(bbmap.zoom.get('val'))
+        this.renderActionBar();
+        $(this.el).append(new bbmap.Views.Joyride().render().el);
         ///////////////////////
         // Concepts views
         if(this.mode == "ck"){
@@ -664,7 +738,6 @@ bbmap.Views.Main = Backbone.View.extend({
         CSS3GENERATOR.attach_handlers();
         CSS3GENERATOR.initialize_controls();
         CSS3GENERATOR.update_styles();
-        $(document).foundation();
 
         return this;
     }

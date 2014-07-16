@@ -84,6 +84,103 @@ manager.Views.Projects = Backbone.View.extend({
         return this;
     }
 });
+manager.Views.ModelEditor = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        // Variables
+        this.user = json.user;
+        this.model = json.model;
+        this.mode = "normal";
+        this.template_model_normal = _.template($('#manager-normal-template').html());
+        this.template_model_edition = _.template($('#manager-edition-template').html());
+        // Events
+        //this.model.bind('change',this.render);
+    },
+    events : {
+        "click .edit"  : "editMode",
+        "click .updateModel"  : "updateModel",
+        "click .cancelEdition"  : "cancelEdition",
+        "click .updateLabel" : "updateLabel",
+    },
+    cancelEdition : function(e){
+        e.preventDefault();
+        this.mode = "normal";
+        this.render();
+    },
+    updateModel : function(e){
+        e.preventDefault();
+        _this = this;
+        //////////////////////////////////////
+        // Si cest une category et que le titre change on doit updater tous tags qui référence les K
+        if(this.model.get('type') === "category"){
+            if(this.model.get('title') != $(this.el).find(".title").val()){
+                if (confirm("The title of the category has changed, would you want to change all references in the relevant knowledge?")) {
+                    // change knowledge reference
+                    global.collections.Knowledges.each(function(knowledge){
+                        new_tags_array = []
+                        knowledge.get('tags').forEach(function(tag){
+                            if(_this.model.get('title') == tag){
+                                new_tags_array.unshift($(_this.el).find(".title").val());
+                            }else{
+                                new_tags_array.unshift(tag);
+                            }
+                        });
+                        knowledge.set({
+                            tags : new_tags_array,
+                            date : getDate(),
+                            user : _this.user
+                        }).save();
+                    });
+                    // Set the category title
+                    this.model.set({
+                        title : $(this.el).find(".title").val(),
+                        date: getDate()
+                    });
+                    global.eventAggregator.trigger('updateCategory',this.model.get('id'),this.model.get('title'))
+                }
+            }
+            this.model.set({
+                user : this.user,
+                description:CKEDITOR.instances.editor.getData(),
+                content:CKEDITOR.instances.editor.getData(),
+                date: getDate(),
+                date2:new Date().getTime()
+            }).save(); 
+        //////////////////////////////////////
+        }else{
+            this.model.save({
+                user : this.user,
+                title:$(this.el).find(".title").val(),
+                content:CKEDITOR.instances.editor.getData(),
+                date: getDate(),
+                date2:new Date().getTime()
+            });       
+        }
+        this.mode = "normal";
+        global.eventAggregator.trigger("updateMap")
+        this.render();
+    },
+    editMode : function(e){
+        e.preventDefault();
+        this.mode = "edition";
+        this.render();
+        CKEDITOR.replaceAll('ckeditor');
+        CKEDITOR.config.toolbar = [
+           ['Bold','Italic','Underline','NumberedList','BulletedList','Image','Link','TextColor']
+        ] ;
+    },
+    render : function(){
+        $(this.el).html('');
+        // content
+        if(this.mode == "normal"){
+            $(this.el).append(this.template_model_normal({model : this.model.toJSON()}));
+        } else if(this.mode == "edition"){
+            $(this.el).append(this.template_model_edition({model : this.model.toJSON()}));    
+        }
+        
+        return this;
+    }
+});
 manager.Views.ProjectDetails = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
@@ -91,7 +188,7 @@ manager.Views.ProjectDetails = Backbone.View.extend({
         this.user               = json.user;
         this.permissions        = json.permissions;
         this.projects           = json.projects;
-        this.project_render     = null;
+        this.project_render     = json.projects.first();;
         this.knowledges         = json.knowledges;
         this.concepts           = json.concepts;
         this.links              = json.links;
@@ -101,10 +198,19 @@ manager.Views.ProjectDetails = Backbone.View.extend({
         this.labels             = new Backbone.Collection();
         // Events
         this.eventAggregator.on('show_project_details', this.showDetails,this);
-        // Templates             
+
+        //Events
+        this.listenTo(this.project_render,"change",this.render,this); 
+        // Templates  
+        this.template_header = _.template($('#manager-header-template').html());    
+        this.template_footer = _.template($('#manager-footer-template').html());        
     },
     showDetails : function(project){
+        //Set the project to render
         this.project_render = this.projects.get(project)
+        
+
+        
         this.render();
     },
     render : function(){
@@ -112,13 +218,11 @@ manager.Views.ProjectDetails = Backbone.View.extend({
         _this = this;
 
         if(this.project_render) {
-            // $(_this.el).append(_this.template_projectDetails);
+          
+            //HEADER
+            $(_this.el).append(this.template_header({project:this.project_render.toJSON()}));           
 
-            $(this.el).append(new CKLayout.Views.Header({
-                model : this.project_render,
-                labels : this.labels
-            }).render().el);
-            
+            //USERS LIST
             if(manager.views.main.users_rec_dic[this.project_render.get('id')]){
                 var users_id = manager.views.main.users_rec_dic[this.project_render.get('id')]
                 var users_list = [];
@@ -126,18 +230,22 @@ manager.Views.ProjectDetails = Backbone.View.extend({
                     users_list.push(global.collections.Users.get(id));
                 })
                 $(this.el).append(new usersList.Views.Main({
+                    project : _this.project_render,
                     users : users_list
                 }).render().el);
             }
-            
-            $(_this.el).append(new modelEditor.Views.Main({
+                        //CONTENT EDITOR
+            $(_this.el).append(new manager.Views.ModelEditor({
                 user            : this.user,
                 model           : this.project_render,
             }).render().el);
-
+            //ACTIVITIES
             $(_this.el).append(new activitiesList.Views.Main({
                 model           : this.project_render,
             }).render().el);
+
+            //FOOTER
+            $(_this.el).append(this.template_footer({project:this.project_render.toJSON()}));
         }
 
         return this;
@@ -176,7 +284,7 @@ manager.Views.Main = Backbone.View.extend({
     events : {
         "keyup .search" : "search",
         "click .newProject" : "newProject",
-        "click .remove" : "remove",
+        "click .removeProject" : "removeProject",
     },
     newProject : function(e){
         e.preventDefault();
@@ -237,7 +345,7 @@ manager.Views.Main = Backbone.View.extend({
         // Projects
         $(this.el).append(new manager.Views.Projects({
             id              : "categories_grid",
-            className       : "expand gridalicious large-3 columns",
+            className       : "expand gridalicious large-4 small-4 medium-4 columns",
             user            : this.user,
             permissions     : this.permissions,
             projects        : this.projects,
@@ -251,7 +359,7 @@ manager.Views.Main = Backbone.View.extend({
 
         $(this.el).append(new manager.Views.ProjectDetails({
             id              : "project_details",
-            className       : "large-9 columns",
+            className       : "large-8 medium-8 small-8 columns",
             permissions     : this.permissions,
             projects        : this.projects,
             knowledges      : this.knowledges,

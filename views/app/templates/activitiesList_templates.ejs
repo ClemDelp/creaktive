@@ -2,7 +2,7 @@
    <fieldset>
     <legend align=left>
       Recent activities</strong>({{- news_notifs.length }})
-      <a href="#" class="button tiny success round closeAll">close all</a>
+      <a href="#">close all</a>
     </legend>
 
 
@@ -14,7 +14,7 @@
             <td><strong>{{- notification.from.name}}</strong></td>
             <td><small>{{- notification.date}}</small></td>
             <td>{{- notification.content }}</td>
-            <td><a href="#" class="close" data-id-notification='{{-notification.id}}' style="color:green">close</a></td>
+            <td><a href="#" class="close" data-id-notification='{{-notification.id}}' style="color:red">X</a></td>
           </tr>
       {{ }); }}
       </tbody>

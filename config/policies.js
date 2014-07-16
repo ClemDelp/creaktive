@@ -75,7 +75,7 @@
   },
 
   "bbmap" : {
-    "*" : "authenticated"
+    "*" : ["authenticated", "allowedProjects","forceHTTPs"],
   },
 
 

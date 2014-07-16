@@ -1,3 +1,4 @@
+
 <!-- ******************************** -->
 <!-- Container -->
 <div id="bbmap_container" style="overflow:auto">
@@ -27,20 +28,34 @@
 	</div>
 </div>
 <!-- ******************************** -->
+<script type="text/template" id="bbmap-joyride-template">
+  <ol class="joyride-list" data-joyride>
+    <li id="joyride_id" data-id="joyride" data-text="Ok" data-options="tip_location: top">
+      <br>
+      <input id="joyride_val" type="text" placeholder="name...">
+    </li>
+  </ol>
+</script>
+
 <script type="text/template" id="bbmap-bulle-template">
+    <span id="{{-model.id}}_joyride"></span>
     <span id="{{-model.id}}" class="editTitle">{{-model.title}}</span>
     <div id="{{-model.id}}" class="ep icon">c</div>
     <div id="{{-model.id}}" class="ep2 icon">k</div>
     <div id="{{-model.id}}" class="ep3 icon">*</div>
     <div id="{{-model.id}}" class="sup icon">x</div>
+    
 </script>
 
 <script type="text/template" id="bbmap-actionbar-template">
 
-  <div class="">
+  <div class="row">
+
 	  <center>
-      <a href="#" class="tiny round button secondary addUnlinkedC">Add C</a>
-      <a href="#" class="tiny round button secondary addUnlinkedK">Add K</a>
+      <strong><small style="color:#27AE60">Drag a new concept : </small></strong>
+      <img id="dropC" style="width:5%;z-index:1" class="dropC" title="click and drap to create a new concept" src="/img/drop_c.png">
+      <strong><small style="color:#2980B9">Drag a new knowledge : </small></strong>
+      <img id="dropK" style="width:5%;z-index:1" class="dropK" title="click and drap to create a new knwledge" src="/img/drop_k.png">
       <a href="#" class="tiny round button secondary ckOperator">Display CK operator</a>
 
       <a href="#" class="tiny round button secondary reset">Reset</a>
@@ -52,3 +67,5 @@
   </div>
 
 </script>
+
+

@@ -68,7 +68,8 @@
         .off('.joyride')
         .on('click.fndtn.joyride', '.joyride-next-tip, .joyride-modal-bg', function (e) {
           e.preventDefault();
-
+          var value = $(e.target.parentElement).find('#joyride_val').val();
+          bbmap.views.main.updateLastModelTitle(value)
           if (this.settings.$li.next().length < 1) {
             this.end();
           } else if (this.settings.timer > 0) {
