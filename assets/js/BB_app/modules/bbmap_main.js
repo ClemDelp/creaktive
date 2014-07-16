@@ -115,9 +115,10 @@ bbmap.Views.Main = Backbone.View.extend({
     // Screenshot
     /////////////////////////////////////////
 
-        screenshot : function(e){
+    screenshot : function(e){
+        console.log("SCREEN")
         _this = this;
-        var zoomscale = this.zoom.get('val');
+        var zoomscale = bbmap.zoom.get('val');
         var project_id = this.project.get('id');
         var moveLeft = (-$("#map")[0].offsetLeft)*(1-1.0/zoomscale);
         var moveTop = (-$("#map")[0].offsetTop)*(1-1.0/zoomscale);
@@ -136,8 +137,8 @@ bbmap.Views.Main = Backbone.View.extend({
             onrendered: function(canvas) {
                 $("#map").offset({left:originLeft});
                 $("#map").offset({top:originTop});              
-                _this.zoom.set({val : zoomscale});
-                _this.setZoom(zoomscale); 
+                bbmap.zoom.set({val : zoomscale});
+                //_this.setZoom(zoomscale); 
 
                 var canvas0 = document.createElement("canvas");
                 var context = canvas0.getContext("2d");
