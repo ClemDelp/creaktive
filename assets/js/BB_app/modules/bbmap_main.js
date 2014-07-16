@@ -215,6 +215,32 @@ bbmap.Views.Main = Backbone.View.extend({
 
         
     },
+     uploadFile : function(file){
+        _this = this;
+        var s3upload = new S3Upload({
+            file : file,
+            s3_sign_put_url: '/S3/upload_sign',
+            onProgress: function(percent, message) {
+                console.log(percent, " ***** ", message);
+            },
+            onFinishS3Put: function(amz_id, file) {
+                console.log("File uploaded ", amz_id);
+                
+                new_image = new global.Models.Screenshot({
+                    id : guid(),
+                    src : amz_id,
+                    date : getDate(),
+                    project_id : _this.project.get('id')
+                });
+                new_image.save();
+
+            },
+            onError: function(status) {
+                console.log(status)
+            }
+        });
+
+    },
     /////////////////////////////////////////
     // Drop new data on map
     /////////////////////////////////////////
