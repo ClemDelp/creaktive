@@ -124,21 +124,33 @@ bbmap.Views.Main = Backbone.View.extend({
         var moveTop = (-$("#map")[0].offsetTop)*(1-1.0/zoomscale);
         var originLeft = $("#map")[0].offsetLeft;
         var originTop = $("#map")[0].offsetTop;
-        this.resetZoom(e);
+        var tmpscale = zoomscale;
+        if(tmpscale>1){
+            while(bbmap.zoom.get('val')>1){
+                _this.zoomin();
+            }
+        }else{
+            while(bbmap.zoom.get('val')<1){
+                _this.zoomout();
+            }
+        }
         $("#map").offset({left:originLeft+moveLeft});
-        $("#map").offset({top:originTop+moveTop});
+        $("#map").offset({top:originTop+moveTop+$("#map_container")[0].offsetTop});
         html2canvas($("#map.demo"), {
-            // logging: true,
-            // profile: true,
-            // useCORS: true,
-            // allowTaint: true,
             width: $("#map")[0].offsetWidth,
             height: $("#map")[0].offsetHeight,
             onrendered: function(canvas) {
                 $("#map").offset({left:originLeft});
-                $("#map").offset({top:originTop});              
-                bbmap.zoom.set({val : zoomscale});
-                //_this.setZoom(zoomscale); 
+                $("#map").offset({top:originTop+$("#map_container")[0].offsetTop});              
+                if(tmpscale>1){
+                    while(bbmap.zoom.get('val')<tmpscale){
+                        _this.zoomout();
+                    }
+                }else{
+                    while(bbmap.zoom.get('val')>tmpscale){
+                        _this.zoomin();
+                    }
+                }
 
                 var canvas0 = document.createElement("canvas");
                 var context = canvas0.getContext("2d");
@@ -179,10 +191,9 @@ bbmap.Views.Main = Backbone.View.extend({
 
                 context = canvas.getContext("2d");                
                 context.drawImage(canvas0,0,0);
-                //context.scale(zoomscale,zoomscale);
-                console.log(canvas.toDataURL("image/png"));
+                //console.log(canvas.toDataURL("image/png"));
                 var x1 = -parseFloat($("#map")[0].offsetLeft)/zoomscale;
-                var y1 = -parseFloat($("#map")[0].offsetTop-$("#map_container")[0].offsetTop)/zoomscale;
+                var y1 = -parseFloat($("#map")[0].offsetTop )/zoomscale;
                 var x2 = x1+$("#map_container")[0].offsetWidth/zoomscale;
                 var y2 = y1+$("#map_container")[0].offsetHeight/zoomscale;
                 var canvas2 = document.createElement("canvas");
@@ -207,13 +218,13 @@ bbmap.Views.Main = Backbone.View.extend({
                     }
                 }
                 var screenshot;
+                //console.log(canvas2.toDataURL( "image/png" ));
                 screenshot = canvas2.toDataURL( "image/png" ).replace(/data:image\/png;base64,/,'');
                 var uintArray = Base64Binary.decode(screenshot);;
                 _this.uploadFile(uintArray);
+                alert("Screenshot saved!");
             }
-        });
-
-        
+        });    
     },
      uploadFile : function(file){
         _this = this;
