@@ -32,7 +32,9 @@ module.exports = {
    			if(diff > 3600000){
    				res.send(true)
    			}
-   			res.send(false)
+   			else{
+   				res.send(false)
+   			}
    		})
 
 	},
