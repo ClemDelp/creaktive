@@ -12,7 +12,13 @@
     <center><h3></h3></center><hr>
     <image src="/S3/getPrivateUrl?amz_id={{- src}}"  id="cropbox"/><hr>
     
-    <a href="#" id="addimage" class="button tiny  " style="float:right">Add</a>
+    <form >
+      <button type="submit" id="addimage" style="float:right">Add</button>
+      <label>Choose Image Size</label>
+      <input type="radio" name="imagesize" value="Small"  id="smallimage" checked=true><label for="smallimage">Small</label>
+      <input type="radio" name="imagesize" value="Medium" id="mediumimage"><label for="mediumimage">Medium</label>
+      <input type="radio" name="imagesize" value="Large" id="largeimage"><label for="largeimage">Large</label>
+    </form>
 
     <a class="close-reveal-modal">&#215;</a>
 </script>
@@ -37,16 +43,19 @@
     </div>
     <div class="small-2 large-2 medium-2 columns">
       <div class="row collapse custom_row">
-        <div class="small-10 columns">
+        <div class="small-8 columns">
           <input class="presentation_title" type="text" placeholder="new presentation..."/>
         </div>
         <div class="small-2 columns">
-          <a href="#" id="add1" class="button success postfix">+</a>
+          <a href="#" id="add1" class="button success postfix">+</a>         
+        </div>
+        <div class="small-2 columns">          
+          <a href="#" id="delete"  class="button postfix"  >-</a>
         </div>
       </div>
     </div>
     <div class="small-4 large-4 medium-4 columns">
-    <a href="#" id="delete"  class="button tiny secondary "  style="float:left">Delete</a><br>
+    <br>
     </div>
   </div>
   <div class="row"></div>
@@ -113,7 +122,7 @@
         
         </textarea> 
         <hr>
-        <a href="#" class="button tiny round  exportDocx"style="float:right">Export</a>
+        <a href="#" class="button tiny round  export"style="float:right">Export</a>
         <a href="#" class="button tiny round  createpresentation"style="float:right">Update</a>
         <a href="#" class="button tiny round  clearpresentation"style="float:right">Clear</a>   
         <a href="#" class="button tiny round  resetpresentation"style="float:right">Reset</a>  

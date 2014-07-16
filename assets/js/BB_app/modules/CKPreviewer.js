@@ -144,6 +144,17 @@ CKPreviewer.Views.Modal = Backbone.View.extend({
     },
     add : function(e){
         e.preventDefault();
+        var size;
+        for(var i=0;i<$(":radio[name=imagesize]").length;i++)
+        {
+           if($(":radio[name=imagesize]")[i].checked==true)
+            {
+              size=i;
+           }
+           
+       }
+
+
         this.eventAggregator.trigger("renderImg",this.src);
         $('#CKPreviewerModal').foundation('reveal', 'close');
     },
@@ -186,9 +197,9 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         "click .createpresentation" : "createpresentation",
         "click .clearpresentation" : "clearpresentation",
         "click .resetpresentation" : "resetpresentation",
-        "click .exportDocx" : "exportDocx",
+        "click .export" : "export",
     },
-    exportDocx : function(e){
+    export : function(e){
         _this = this;
                 if(this.current_presentation){
             var data = CKEDITOR.instances.ckeditor.getData();
