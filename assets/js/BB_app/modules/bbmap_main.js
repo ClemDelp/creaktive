@@ -86,7 +86,109 @@ bbmap.Views.Main = Backbone.View.extend({
         "mouseenter .window.concept" : "showIcon", 
         "click .ep3" : "structureTree",
         "mouseleave .window" : "hideIcon", 
-        "click .closeEditor" : "hideEditor"
+        "click .closeEditor" : "hideEditor",
+        "click .screenshot" : "screenshot"
+    },
+    /////////////////////////////////////////
+    // Screenshot
+    /////////////////////////////////////////
+
+        screenshot : function(e){
+        _this = this;
+        var zoomscale = this.zoom.get('val');
+        var project_id = this.project.get('id');
+        var moveLeft = (-$("#map")[0].offsetLeft)*(1-1.0/zoomscale);
+        var moveTop = (-$("#map")[0].offsetTop)*(1-1.0/zoomscale);
+        var originLeft = $("#map")[0].offsetLeft;
+        var originTop = $("#map")[0].offsetTop;
+        this.resetZoom(e);
+        $("#map").offset({left:originLeft+moveLeft});
+        $("#map").offset({top:originTop+moveTop});
+        html2canvas($("#map.demo"), {
+            // logging: true,
+            // profile: true,
+            // useCORS: true,
+            // allowTaint: true,
+            width: $("#map")[0].offsetWidth,
+            height: $("#map")[0].offsetHeight,
+            onrendered: function(canvas) {
+                $("#map").offset({left:originLeft});
+                $("#map").offset({top:originTop});              
+                _this.zoom.set({val : zoomscale});
+                _this.setZoom(zoomscale); 
+
+                var canvas0 = document.createElement("canvas");
+                var context = canvas0.getContext("2d");
+                canvas0.width = $("#map")[0].offsetWidth;
+                canvas0.height = $("#map")[0].offsetHeight;
+
+                var svgArray = $("#map>svg");
+                for (var i = 0; i < svgArray.length; i++) {
+                    var top = parseFloat(svgArray[i].style.top);
+                    var left = parseFloat(svgArray[i].style.left);
+                    var height = svgArray[i].getAttribute("height");
+                    var width = svgArray[i].getAttribute("width");
+                    var canvas1 = document.createElement("canvas");
+                    canvas1.width = width;
+                    canvas1.height = height;
+                    var svgTagHtml = svgArray[i].innerHTML;
+                    canvg(canvas1,svgTagHtml);
+
+                    context.drawImage(canvas1,left,top);
+                };
+
+                var divArray = $("._jsPlumb_endpoint");
+                var pointArray = $("._jsPlumb_endpoint>svg");
+                console.log(divArray.length);
+                for (var i = 0; i < divArray.length; i++) {
+                    var top = parseFloat(divArray[i].style.top);
+                    var left = parseFloat(divArray[i].style.left);
+                    var height = parseFloat(divArray[i].style.height);
+                    var width = parseFloat(divArray[i].style.width);
+                    var canvas1 = document.createElement("canvas");
+                    canvas1.width = width;
+                    canvas1.height = height;
+                    var svgTagHtml = pointArray[i].innerHTML;
+                    canvg(canvas1,svgTagHtml);
+
+                    context.drawImage(canvas1,left,top);
+                };
+
+                context = canvas.getContext("2d");                
+                context.drawImage(canvas0,0,0);
+                //context.scale(zoomscale,zoomscale);
+                console.log(canvas.toDataURL("image/png"));
+                var x1 = -parseFloat($("#map")[0].offsetLeft)/zoomscale;
+                var y1 = -parseFloat($("#map")[0].offsetTop-$("#map_container")[0].offsetTop)/zoomscale;
+                var x2 = x1+$("#map_container")[0].offsetWidth/zoomscale;
+                var y2 = y1+$("#map_container")[0].offsetHeight/zoomscale;
+                var canvas2 = document.createElement("canvas");
+                canvas2.width = (x2-x1);
+                canvas2.height = (y2-y1);
+                var context2 = canvas2.getContext("2d");  
+                if((x1<0)&&(y1<0)){
+                var imgData=context.getImageData(0,0,x2,y2);
+                context2.putImageData(imgData,-x1,-y1);
+                }else{
+                    if(x1<0){
+                        var imgData=context.getImageData(0,y1,x2,y2);
+                        context2.putImageData(imgData,-x1,0);
+                    }else{
+                        if(y1<0){
+                            var imgData=context.getImageData(x1,0,x2,y2);
+                            context2.putImageData(imgData,0,-y1);
+                        }else{
+                            var imgData=context.getImageData(x1,y1,x2,y2);
+                            context2.putImageData(imgData,0,0);
+                        }
+                    }
+                }
+                var screenshot;
+                screenshot = canvas2.toDataURL( "image/png" ).replace(/data:image\/png;base64,/,'');
+                var uintArray = Base64Binary.decode(screenshot);;
+                _this.uploadFile(uintArray);
+            }
+        });
     },
     /////////////////////////////////////////
     // Slinding editor bar

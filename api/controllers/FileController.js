@@ -14,6 +14,7 @@
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
+var html5pdf = require("html5-to-pdf");
 var UPLOAD_PATH = 'upload';
 
 
@@ -50,10 +51,40 @@ function cleanName(name){
   return name.replace(/[ùûü]/g,"u").replace(/[îï]/g,"i").replace(/[àâä]/g,"a").replace(/[ôö]/g,"o").replace(/[éèêë]/g,"e").replace(/ç/g,"c").replace(/ /g,"");
 }
 
+
+
+
+
 module.exports = {
 
+
+  convert : function(req,res){
+
+
+      var html =req.body.data;
+      // var images = req.body.images
+
+      // $ = cheerio.load(html)
+      // $('img').each(function(i,elem){
+        
+      //   console.log(elem)
+      // });
+      id = guid(),
+      fileName = id+".pdf";
+      dirPath = UPLOAD_PATH + '/' + id;
+      filePath = dirPath + '/' + fileName;
+      outputPath = filePath;
+      html5pdf().from.string(html).to(outputPath, function () {
+        res.send(outputPath)
+      })
+  },
+
+
   get: function (req, res) {
-  	res.download(req.query.path);
+  	res.download(req.body.path);
+     rimraf('upload/', function(err) {
+       if (err) { console.log( err); }
+     })
   },
 
   destroy : function (req,res){

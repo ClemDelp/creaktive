@@ -15,6 +15,8 @@
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
 
+
+
 module.exports = {
     
   
@@ -54,6 +56,10 @@ module.exports = {
     return res.json({
       hello: 'world'
     });
+  },
+
+  exportToDoc : function(req,res){
+
   },
 
   ckpreviewerview : function(req,res){
