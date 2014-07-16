@@ -3,15 +3,16 @@
 <script type="text/template" id="title-template">
     <div class="expand panel title">
         <center>
-            <a style="float:left;margin-top:20px" href="/conceptsmap?projectId={{- project.id}}" class="{{if(page == 'concept'){ }}success {{ } }}button secondary tiny title"><<<< Edit Concept</a>
+
             <a href="#" data-dropdown="drop" class="button secondary small title dropdown"><h3>{{-project.title }}</h3></a>
             <ul id="drop" data-dropdown-content class="f-dropdown">
               <li><a href="/">Manager</a></li>
-              <li><a href="/ckviewer?projectId={{- project.id}}">CK - Classic</a></li>
               <li><a href="/bbmap?projectId={{- project.id}}">CK - Draft</a></li>
-              <li><a href="/ckpreviewer?projectId={{- project.id}}">CK-Presentation</a></li>
+
+              <li><a href="/ckviewer?projectId={{- project.id}}">CK - Classic</a></li>
+              <li><a href="/categories?projectId={{- project.id}}">Edit Knowledge</a></li>
+
             </ul>
-            <a style="float:right;margin-top:20px" href="/categories?projectId={{- project.id}}" class="{{if(page == 'category'){ }}success {{ } }}button secondary tiny title">Edit Knowledge >>>></a>
         </center>
 
     </div>
