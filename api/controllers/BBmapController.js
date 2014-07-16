@@ -29,7 +29,7 @@ module.exports = {
    			var now = new Date();
    			var diff = now-last_update;
    			console.log("diff", diff)
-   			if(diff > 86400000){
+   			if(diff > 3600000){
    				res.send(true)
    			}
    			res.send(false)
