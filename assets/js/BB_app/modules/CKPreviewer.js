@@ -50,6 +50,7 @@ CKPreviewer.Views.Modal = Backbone.View.extend({
         "click #resizeimage" : "resize",
         "click #newimage" : "new",
     },
+    //upload new image
     uploadFile : function(file,mode){
         _this = this;
         var s3upload = new S3Upload({
@@ -80,8 +81,8 @@ CKPreviewer.Views.Modal = Backbone.View.extend({
                 console.log(status)
             }
         });
-
     },
+    //modify image
     cutImage : function(mode){
         _this = this;
         if (this.x2==this.x1){
@@ -95,9 +96,7 @@ CKPreviewer.Views.Modal = Backbone.View.extend({
                 canvas.height = image0.height;
                 var context = canvas.getContext("2d");
                 context.drawImage(image0,0,0);
-
-                var imgData=context.getImageData(_this.x1*image0.width,_this.y1*image0.height,(_this.x2-_this.x1)*image0.width,(_this.y2-_this.y1)*image0.height);
-    
+                var imgData=context.getImageData(_this.x1*image0.width,_this.y1*image0.height,(_this.x2-_this.x1)*image0.width,(_this.y2-_this.y1)*image0.height);   
                 var canvas1 = document.createElement("canvas");
                 canvas1.width = (_this.x2-_this.x1)*image0.width;
                 canvas1.height = (_this.y2-_this.y1)*image0.height;
@@ -107,10 +106,8 @@ CKPreviewer.Views.Modal = Backbone.View.extend({
                 var uintArray = Base64Binary.decode(imgdata);
                 _this.uploadFile(uintArray,mode);
             };
-
             var src = "/getPrivateUrl?amz_id="+this.src;
             image0.src = src;
-
         }
     },
     resize : function(e){
@@ -123,6 +120,7 @@ CKPreviewer.Views.Modal = Backbone.View.extend({
         this.cutImage(1);
         $('#CKPreviewerModal').foundation('reveal', 'close');
     },    
+    //initialize jcrop
     select : function(e){
         e.preventDefault();
         _this=this;
@@ -133,7 +131,6 @@ CKPreviewer.Views.Modal = Backbone.View.extend({
             _this.y1 = c.y/$("#cropbox").height();
             _this.y2 = c.y2/$("#cropbox").height();
         };
-
         $(function(){
             $('#cropbox').Jcrop({
                 trackDocument: true,
@@ -142,6 +139,7 @@ CKPreviewer.Views.Modal = Backbone.View.extend({
             });
         });
     },
+    //add image with different size
     add : function(e){
         e.preventDefault();
         var size;
@@ -152,9 +150,9 @@ CKPreviewer.Views.Modal = Backbone.View.extend({
               size=i;
            } 
         }
+        console.log(size);
 
-
-        this.eventAggregator.trigger("renderImg",this.src);
+        this.eventAggregator.trigger("renderImg",this.src,size);
         $('#CKPreviewerModal').foundation('reveal', 'close');
     },
     openModal : function(src,screenshot_id){
@@ -170,7 +168,6 @@ CKPreviewer.Views.Modal = Backbone.View.extend({
         $(this.el).append(this.template_content({
             src : this.src
         }));
-
         // Render it in our div
         if(callback) callback();
     }
@@ -198,6 +195,7 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         "click .resetpresentation" : "resetpresentation",
         "click .export" : "export",
     },
+    //export as a pdf
     export : function(e){
         _this = this;
                 if(this.current_presentation){
@@ -207,10 +205,8 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
             alert("Please create a presentation");
         }  
        var data = CKEDITOR.instances.ckeditor.getData();
-       
         var arr = new Array();
         arr = data.split('src="');
-        
         var asyncLoop = function(o){
             var i=0,
                 length = o.length;
@@ -220,47 +216,41 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
                 if(i==length){o.callback(); return;}
                 o.functionToLoop(loop, i);
             } 
-            loop();//init
+            loop();
         }
-
+        //have more than 1 image
         if(arr.length > 1 ){
-                   asyncLoop({
-            length : arr.length,
-            functionToLoop : function(loop, i){
-                var ind = arr[i].indexOf('" ');
-                var src = arr[i].substring(0,ind);
-                //Convertit en 
-                _this.convertImgToBase64(src, function(base64Img,url){
-                    data = data.replace(url,base64Img);
-                    loop();
-                });
-                
-            },
-            callback : function(){
-
-                $.post(
-                    '/file/export2pdf',
-                    {data : data}, 
-                    function (url) {
-                        $.download("/file/get", {path : url});
-                        
-                    }
-                );
-            }    
-        });
-               }else{
-                $.post(
-                    '/file/export2pdf',
-                    {data : data}, 
-                    function (data) {
-                        $.download("/file/get", {path : url});
-                        
-                    }
-                );
-               }
-
+            asyncLoop({
+                length : arr.length,
+                functionToLoop : function(loop, i){
+                    var ind = arr[i].indexOf('" ');
+                    var src = arr[i].substring(0,ind);
+                    //Convertit en 
+                    _this.convertImgToBase64(src, function(base64Img,url){
+                        data = data.replace(url,base64Img);
+                        loop();
+                    });
+                },
+                callback : function(){
+                    $.post(
+                        '/file/export2pdf',
+                        {data : data}, 
+                        function (url) {
+                            $.download("/file/get", {path : url});
+                        }
+                    );
+                }
+            });
+        }else{ //have no image
+            $.post(
+                '/file/export2pdf',
+                {data : data}, 
+                function (data) {
+                    $.download("/file/get", {path : url});    
+                }
+            );
+        }
     },
-
     convertImgToBase64 : function(url, callback, outputFormat){
         var canvas = document.createElement('CANVAS'),
         ctx = canvas.getContext('2d'),
@@ -277,6 +267,7 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         };
         img.src = url;
     },
+    //change content of presentation
     resetpresentation : function(e){
         e.preventDefault();
         CKEDITOR.instances.ckeditor.setData();
@@ -312,8 +303,19 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
             });
         });
     },
-    renderImg : function(src){
-        CKEDITOR.instances.ckeditor.insertHtml('<br><img src="/S3/getPrivateUrl?amz_id='+src+'" style="max-width: 100px" >');  
+    renderImg : function(src,size){
+        var wid=$("#textzoon")[0].offsetWidth;
+        switch(size){
+            case 0:
+                CKEDITOR.instances.ckeditor.insertHtml('<br><img src="/S3/getPrivateUrl?amz_id='+src+'" style="width:'+wid*0.4+'px" >');
+                break;
+            case 1:
+                CKEDITOR.instances.ckeditor.insertHtml('<br><img src="/S3/getPrivateUrl?amz_id='+src+'" style="width:'+wid*0.7+'px" >');
+                break;
+            case 2:
+                CKEDITOR.instances.ckeditor.insertHtml('<br><img src="/S3/getPrivateUrl?amz_id='+src+'" style="width:'+wid*0.95+'px" >');
+                break;
+        }
     },
     render : function(){
         $(this.el).empty();        
@@ -343,6 +345,7 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         "click #ImportAllconcepts" : "addAllconcepts",
         "click #ImportAllpoches" : "addAllpoches",
     },
+    //add content
     addAllknowledges : function(e){
         _this = this;
         e.preventDefault();
@@ -426,6 +429,7 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
         "click #presentation" : "changecurrent",
         "click #delete" : "deletecurrent",
     },
+    //delete current presentation
     deletecurrent : function(e){
         e.preventDefault();
         this.current_presentation.destroy();
@@ -444,7 +448,6 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
             CKEDITOR.replace('ckeditor',{
                 height:"100%",
             });
-
             CKEDITOR.instances.ckeditor.setData(this.current_presentation.get('data'));
         }else{
             $("#drop0").html("Presentation");
@@ -456,6 +459,7 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
         }
 
     },
+    //change current presentation
     changecurrent : function(e){
         e.preventDefault();
         var sid = e.target.getAttribute("presentation_id");
@@ -467,6 +471,7 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
         });
         CKEDITOR.instances.ckeditor.setData(this.current_presentation.get('data'));
     },
+    //create a new presentation
     add : function(){
         if($(".presentation_title").val()){
             var project_id = this.project.get('id');
@@ -500,15 +505,12 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
      },
     render : function(){
         $(this.el).append(this.template({
+            presentations : this.presentations.toJSON(),
         }));
 
         return this;
     }
 });
-
-/////////////////////////////////////////
-// SLIDES
-/////////////////////////////////////////
 
 
 /////////////////////////////////////////
@@ -526,7 +528,6 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         this.knowledges = json.knowledges;
         this.poches = json.poches;
         this.project = json.project;
-        //this.slides = json.slides;
         this.presentations = json.presentations;
         this.presentationNum = this.presentations.toJSON().length;
         this.current_presentation = null;
@@ -559,7 +560,7 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         });
         $(this.el).append(CKPreviewer.views.actions_view.render().el);
 
-        //image
+        //Left part
         if(CKPreviewer.views.images_view){CKPreviewer.views.images_view.remove();}
         CKPreviewer.views.images_view = new CKPreviewer.Views.Images({
             className        : "large-4 medium-4 small-4 columns",
@@ -571,7 +572,7 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         });
         $(this.el).append(CKPreviewer.views.images_view.render().el);
 
-        // Middle part
+        // Right part
         if(CKPreviewer.views.middle_part_view){CKPreviewer.views.middle_part_view.remove();}
         CKPreviewer.views.middle_part_view = new CKPreviewer.Views.MiddlePart({
             className        : "panel large-8 medium-8 small-8 columns",
@@ -581,19 +582,18 @@ CKPreviewer.Views.Main = Backbone.View.extend({
             knowledges : this.knowledges,
         });
         $(this.el).append(CKPreviewer.views.middle_part_view.render().el);
+        //CKEDITOR
         CKEDITOR.replace('ckeditor',{
             height:"100%",
         });
         if(this.current_presentation){
             CKEDITOR.instances.ckeditor.setData(this.current_presentation.get('data'));
         }
-        
-        _.each(this.presentations.toJSON(), function(presentation) {
-            document.getElementById("drop1").innerHTML += '<li>' + '<a id="presentation" href="#" presentation_id="' + presentation.id + '">' + presentation.title + '</a>' + '</li>';
-        });
-        if(this.current_presentation){
+        //Drop-down title
+        if(this.current_presentation){console.log("good");
             $("#drop0").html(this.current_presentation.get('title'));
         }
+
         $(document).foundation();
     }
 });
