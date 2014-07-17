@@ -9,7 +9,8 @@ bbmap.Views.Node = Backbone.View.extend({
         this.endpoints = []; 
         // Events
         $(this.el).click(this.savePosition);
-        this.listenTo(this.model,"change", this.render); 
+        this.listenTo(this.model,"change:title", this.render); 
+        this.listenTo(this.model,"change:css", this.render); 
         // Se mettre en ecoute sur le deplacement du node pere
         // try{
         //     this.father = bbmap.views.main.concepts.get(this.model.get('id_father'));
@@ -27,20 +28,62 @@ bbmap.Views.Node = Backbone.View.extend({
         "click .ep" : "addConceptChild",
         "click .ep2" : "addKnowledgeChild",
     },
-    followFather : function(){
-        var hf_left = this.holdFather.get('left');
-        var hf_top = this.holdFather.get('top');
-        var f_left = this.father.get('left');
-        var f_top = this.father.get('top');
-        var n_left = this.model.get('left');
-        var n_top = this.model.get('top');
-        var delta_top = hf_top - f_top;
-        var delta_left = hf_left - f_left;
-        var x = n_left - delta_left;
-        var y = n_top - delta_top;
-        this.setPosition(x,y,0,0,false);
-        this.holdFather = this.father.clone();
-        bbmap.views.main.instance.repaint(this.model.get('id'));
+    addFollowFather : function(){
+        //     var hf_left = this.holdFather.get('left');
+        //     var hf_top = this.holdFather.get('top');
+        //     var f_left = this.father.get('left');
+        //     var f_top = this.father.get('top');
+        //     var n_left = this.model.get('left');
+        //     var n_top = this.model.get('top');
+        //     var delta_top = hf_top - f_top;
+        //     var delta_left = hf_left - f_left;
+        //     var x = n_left - delta_left;
+        //     var y = n_top - delta_top;
+        //     this.setPosition(x,y,0,0,false);
+        //     this.holdFather = this.father.clone();
+        //     bbmap.views.main.instance.repaint(this.model.get('id'));
+        try{
+
+            var _this = this;
+            var father_el = bbmap.views.main.nodes_views[this.model.get('id_father')].el;
+            var father = bbmap.views.main.concepts.get(this.model.get('id_father')).clone();
+            var holdFather = father.clone();
+            var i = 0;
+            $(father_el).watch('top left', function(){
+                //alert('follow')
+                if(i%5 == true){
+                    var f_left = this.style.left.replace('px','');
+                    var f_top = this.style.top.replace('px','');
+                    //console.log("father position : ",f_left,f_top)
+
+                    var h_left = holdFather.get('left');
+                    var h_top = holdFather.get('top');
+                    //console.log("hold position : ",h_left,h_top)
+
+                    var n_left = _this.model.get('left');
+                    var n_top = _this.model.get('top');
+
+                    var delta_top = h_top - f_top;
+                    var delta_left = h_left - f_left;
+                    //console.log("delta left: ",delta_left)
+
+                    var x = (n_left - delta_left);
+                    var y = (n_top - delta_top);
+
+                    //console.log("delta : ",delta_top,delta_left)
+                    if((Math.abs(delta_left) > 1)||(Math.abs(delta_top) > 1)){
+                        //console.log("move at left:",x," - top:",y)
+                        bbmap.views.main.nodes_views[_this.model.get('id')].setPosition(x,y,0,0,true);
+                        bbmap.views.main.instance.repaint(_this.model.get('id'));
+                        father.set({left:f_left,top:f_top},{silent:true});
+                    }
+                    holdFather = father.clone();
+                }
+                i = i +1;
+            });
+        }catch(err){
+            console.log("this node have no father!")
+        }
     },
     applyStyle : function(){
         if(!this.model.get('css')){    
@@ -241,12 +284,12 @@ bbmap.Views.Node = Backbone.View.extend({
     },
     render : function(){
         //style
-        $(this.el).attr( "style","top: "+this.model.get('top')+"px;left:"+this.model.get('left')+"px");
+        //$(this.el).attr( "style","top: "+this.model.get('top')+"px;left:"+this.model.get('left')+"px");
         // Init
         $(this.el).empty();
         $(this.el).append(this.template_bulle({model:this.model.toJSON()}));
         this.applyStyle();
-        bbmap.views.main.instance.draggable($(this.el)); 
+        
         return this;
     }
 });
