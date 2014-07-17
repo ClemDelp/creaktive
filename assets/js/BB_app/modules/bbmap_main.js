@@ -26,7 +26,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.nodes_views        = {};
         // Parameters
         this.mode               = "visu";
-        this.filter             = "c";
+        this.filter             = "ck";
         this.KcontentVisibility = true;
         this.CcontentVisibility = false;
         this.ckOperator         = true;
@@ -522,7 +522,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.concepts.add(new_concept);
         this.addModelToView(new_concept,"concept");
     },
-
     addModelToView : function(model,type){
         this.lastModel = model;
         new_view = new bbmap.Views.Node({
@@ -535,6 +534,7 @@ bbmap.Views.Main = Backbone.View.extend({
         new_view.addLink();
         new_view.makeTarget();
         new_view.addFollowFather();
+        this.instance.draggable($(new_view.el));
         this.nodes_views[model.get('id')] = new_view;
         this.startJoyride();
     },
@@ -648,20 +648,20 @@ bbmap.Views.Main = Backbone.View.extend({
         this.concepts.forEach(function(model){
             bbmap.views.main.nodes_views[model.get('id')].addEndpoint();    
         });
-        // Make its target
-        this.concepts.forEach(function(model){
-            bbmap.views.main.nodes_views[model.get('id')].makeTarget();    
-        });
         // Add links
         this.concepts.forEach(function(model){
             bbmap.views.main.nodes_views[model.get('id')].addLink();    
         });
-        // Set concept following his father
-        this.concepts.forEach(function(model){
-            bbmap.views.main.nodes_views[model.get('id')].addFollowFather();
-        });
-        // Draggable
         if(this.mode == "edit"){
+            // Make its target
+            this.concepts.forEach(function(model){
+                bbmap.views.main.nodes_views[model.get('id')].makeTarget();    
+            });
+            // Set concept following his father
+            this.concepts.forEach(function(model){
+                bbmap.views.main.nodes_views[model.get('id')].addFollowFather();
+            });
+            // Draggable
             this.concepts.forEach(function(model){
                 bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el));
             });
@@ -685,10 +685,16 @@ bbmap.Views.Main = Backbone.View.extend({
         this.knowledges.forEach(function(model){
             bbmap.views.main.nodes_views[model.get('id')].addEndpoint();    
         });
-        // Make its target
-        this.knowledges.forEach(function(model){
-            bbmap.views.main.nodes_views[model.get('id')].makeTarget();    
-        });
+        if(this.mode == "edit"){
+            // Make its target
+            this.knowledges.forEach(function(model){
+                bbmap.views.main.nodes_views[model.get('id')].makeTarget();    
+            });
+            // Draggable
+            this.knowledges.forEach(function(model){
+                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el));
+            });
+        }
     },
     renderPochesBulle : function(){
         var _this = this;
@@ -704,6 +710,12 @@ bbmap.Views.Main = Backbone.View.extend({
         this.poches.forEach(function(model){
             _this.map_el.append(bbmap.views.main.nodes_views[model.get('id')].render().el);    
         });
+        // Draggable
+        if(this.mode == "edit"){
+            this.poches.forEach(function(model){
+                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el));
+            });
+        }
     },
     renderCKLinks : function(){
         this.knowledges.forEach(function(model){

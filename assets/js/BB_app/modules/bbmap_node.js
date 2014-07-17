@@ -226,7 +226,7 @@ bbmap.Views.Node = Backbone.View.extend({
                     maxConnections:-1
                 },
                 {
-                    connectorStyle : { strokeStyle:"#27AE60", lineWidth:0.5,dashstyle:"2 2" },
+                    connectorStyle : { strokeStyle:"#27AE60", lineWidth:1,dashstyle:"2 2" },
                     endpoint:["Dot", { radius:5 }],
                     paintStyle:{ fillStyle:"#27AE60" },
                 }
@@ -262,9 +262,7 @@ bbmap.Views.Node = Backbone.View.extend({
             }
         }catch(err){
             console.log(err);
-        }
-        // Enable drag&drop
-         
+        }         
     },
     makeTarget : function(){
         ///////////////////////
