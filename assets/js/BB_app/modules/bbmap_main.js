@@ -783,7 +783,7 @@ bbmap.Views.Main = Backbone.View.extend({
 
 
         $.get('/BBmap/image', function(hasChanged){
-            if (hasChanged == true){
+            if (_this.project.image=="" || hasChanged == true){
                 _this.screenshot(true);
             }
         });

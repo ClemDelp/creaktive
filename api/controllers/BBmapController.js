@@ -28,7 +28,6 @@ module.exports = {
    			var last_update = new Date(project.updatedAt);
    			var now = new Date();
    			var diff = now-last_update;
-   			console.log("diff", diff)
    			if(diff > 3600000){
    				res.send(true)
    			}

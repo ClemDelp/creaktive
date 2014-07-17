@@ -294,7 +294,8 @@ manager.Views.Main = Backbone.View.extend({
             author : this.user,
             title: $("#project_title").val(),
             date: getDate(),
-            date2:new Date().getTime()
+            date2:new Date().getTime(),
+            image:""
             //description : $("#project_description").val(),
             //kLabels : [{color : "#27AE60", label:"Validated"},  {color : "#F39C12", label:"Processing"}, {color : "#C0392B", label:"Missing"}],
             //cLabels : [{color : "#27AE60", label:"Known"}, {color : "#F39C12", label:"Reachable"}, {color : "#C0392B", label:"Alternative"}]
