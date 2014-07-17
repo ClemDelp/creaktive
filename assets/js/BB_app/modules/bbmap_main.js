@@ -692,7 +692,7 @@ bbmap.Views.Main = Backbone.View.extend({
         ///////////////////////
         // init
         nodes_views = {};
-        _this = this;
+        var _this = this;
         this.map_el.empty();
         ///////////////////////
         // Action bar
@@ -769,8 +769,58 @@ bbmap.Views.Main = Backbone.View.extend({
         ///////////////////////
         // Initialize jsPlumb events
         this.jsPlumbEventsInit();
-        $( "#map" ).draggable();
+        ///////////////////////
+        // Set a watch on each concept children
+        this.concepts.forEach(function(model){
+            try{
+                
+                var father = _this.concepts.get(model.get('id_father')).clone();
+                var holdFather = father.clone();
+                var i = 0;
+                $(this.nodes_views[model.get('id_father')].el).watch('top left', function(){
+                    if(i%5 == true){
+                        var f_left = this.style.left.replace('px','');
+                        var f_top = this.style.top.replace('px','');
+                        console.log("father position : ",f_left,f_top)
 
+                        var h_left = holdFather.get('left');
+                        var h_top = holdFather.get('top');
+                        console.log("hold position : ",h_left,h_top)
+
+                        //var father_position = $(this).position();
+                        //var f_left = father.get('left');//father_position.left / bbmap.zoom.get('val');//
+                        //var f_top = father.get('top');//father_position.top / bbmap.zoom.get('val');//
+                        // 
+
+                        var n_left = model.get('left');
+                        var n_top = model.get('top');
+
+                        var delta_top = h_top - f_top;
+                        var delta_left = h_left - f_left;
+                        console.log("delta left: ",delta_left)
+
+                        var x = (n_left - delta_left);
+                        var y = (n_top - delta_top);
+
+                        //console.log("delta : ",delta_top,delta_left)
+                        if((Math.abs(delta_left) > 1)||(Math.abs(delta_top) > 1)){
+                            //console.log("move at left:",x," - top:",y)
+                            _this.nodes_views[model.get('id')].setPosition(x,y,0,0,true);
+                            _this.instance.repaint(model.get('id'));
+                            father.set({left:f_left,top:f_top},{silent:true});
+                        }
+                        
+                        holdFather = father.clone();
+                    }
+                    i = i +1;
+                    
+                });
+            }catch(err){
+                console.log(err)
+            }
+        });
+        ///////////////////////
+        $( "#map" ).draggable();
         this.nodes_views = nodes_views;
         // css3 generator
         if(bbmap.views.css3)bbmap.views.css3.remove();

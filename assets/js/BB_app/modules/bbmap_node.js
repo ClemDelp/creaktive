@@ -11,13 +11,13 @@ bbmap.Views.Node = Backbone.View.extend({
         $(this.el).click(this.savePosition);
         this.listenTo(this.model,"change", this.render); 
         // Se mettre en ecoute sur le deplacement du node pere
-        try{
-            this.father = bbmap.views.main.concepts.get(this.model.get('id_father'));
-            this.holdFather = this.father.clone();
-            this.listenTo(this.father,"change:top change:left", this.followFather,this);
-        }catch(err){
-            console.log('no father detected')
-        }
+        // try{
+        //     this.father = bbmap.views.main.concepts.get(this.model.get('id_father'));
+        //     this.holdFather = this.father.clone();
+        //     this.listenTo(this.father,"change:top change:left", this.followFather,this);
+        // }catch(err){
+        //     console.log('no father detected')
+        // }
         // Templates
         this.template_bulle = _.template($('#bbmap-bulle-template').html());
     },
@@ -99,7 +99,7 @@ bbmap.Views.Node = Backbone.View.extend({
             user: bbmap.views.main.user
         });
         new_concept.save();
-
+        bbmap.views.main.concepts.add(new_concept);
         bbmap.views.main.addModelToView(new_concept,"concept");
     },
     addKnowledgeChild : function(e){
@@ -116,6 +116,7 @@ bbmap.Views.Node = Backbone.View.extend({
             user: bbmap.views.main.user
         });
         new_knowledge.save();
+        bbmap.views.main.knowledges.add(new_knowledge);
         // On crée le link entre C et K
         new_cklink = new global.Models.CKLink({
             id :guid(),
@@ -127,7 +128,6 @@ bbmap.Views.Node = Backbone.View.extend({
         new_cklink.save();
         // On ajoute le link à la collection
         bbmap.views.main.links.add(new_cklink);
-
         bbmap.views.main.addModelToView(new_knowledge,"knowledge");
     },
     removeModel : function(e){
