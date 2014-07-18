@@ -29,7 +29,7 @@
 </div>
 <!-- ******************************** -->
 <script type="text/template" id="bbmap-joyride-template">
-  <ol class="joyride-list" data-joyride>
+  <ol class="joyride-list" style="z-index:9999999" data-joyride>
     <li id="joyride_id" data-id="joyride" data-text="Ok" data-options="tip_location: top">
       <br>
       <input id="joyride_val" type="text" placeholder="name...">
@@ -48,24 +48,47 @@
 </script>
 
 <script type="text/template" id="bbmap-actionbar-template">
-
-  <div class="row">
-
+  <div>
 	  <center>
-      <strong><small style="color:#27AE60">Drag a new concept : </small></strong>
-      <img id="dropC" style="width:5%;z-index:1" class="dropC" title="click and drap to create a new concept" src="/img/drop_c.png">
-      <strong><small style="color:#2980B9">Drag a new knowledge : </small></strong>
-      <img id="dropK" style="width:5%;z-index:1" class="dropK" title="click and drap to create a new knwledge" src="/img/drop_k.png">
-      <a href="#" class="tiny round button secondary ckOperator">Display CK operator</a>
+      mode : 
+      <select id="modeSelection" class="large-2 medium-2 small-2">
+        <option value="visu" {{ if(mode == "visu"){ }}selected{{ } }}>Visualisation</option>
+        <option value="edit" {{ if(mode == "edit"){ }}selected{{ } }}>Edition</option>
+      </select>
+      filter : 
+      <select id="filterSelection" class="large-2 medium-2 small-2">
+        <option value="c" {{ if(filter == "c"){ }}selected{{ } }}>concepts</option>
+        <option value="k" {{ if(filter == "k"){ }}selected{{ } }}>knowledges</option>
+        <option value="ck" {{ if(filter == "ck"){ }}selected{{ } }}>concepts & knowledges</option>
 
+      </select>
+      
+      {{ if(mode == "edit"){ }}
+        {{ if((filter == "c")||(filter == "ck")||(filter == "ckp")){ }}
+          <strong><small style="color:#27AE60">Drag a new concept : </small></strong>
+          <img id="dropC" style="width:5%;z-index:999999" class="dropC" title="click and drap to create a new concept" src="/img/drop_c.png">
+        {{ } }}
+        {{ if((filter == "k")||(filter == "ck")||(filter == "ckp")){ }}
+          <strong><small style="color:#2980B9">Drag a new knowledge : </small></strong>
+          <img id="dropK" style="width:5%;z-index:999999" class="dropK" title="click and drap to create a new knwledge" src="/img/drop_k.png">
+        {{ } }}
+        {{ if((filter == "p")||(filter == "kp")||(filter == "ckp")){ }}
+          <strong><small style="color:#2980B9">Drag a new knowledge : </small></strong>
+          <img id="dropK" style="width:5%;z-index:999999" class="dropK" title="click and drap to create a new knwledge" src="/img/drop_k.png">
+        {{ } }}
+      {{ } }}
+      
+      {{ if((filter == "ck")){ }}
+        <a href="#" class="tiny round button secondary ckOperator">Display CK operator</a>
+      {{ } }}
       <a href="#" class="tiny round button secondary reset">Reset</a>
+      <a href="#" class="tiny button round secondary screenshot">Screenshot</a>
       <a href="#" class="tiny round button secondary zoomout">+</a>
       <span id="zoom_val"></span>
       <a href="#" class="tiny round button secondary zoomin">-</a>
-      <a href="#" class="tiny button secondary screenshot">Screenshot</a>
+      
     </center>
   </div>
-
 </script>
 
 
