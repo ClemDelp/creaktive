@@ -58,9 +58,6 @@ module.exports = {
     });
   },
 
-  exportToDoc : function(req,res){
-
-  },
 
   ckpreviewerview : function(req,res){
     sails.config.bootstrapdata.bootstrapdata(req,res);

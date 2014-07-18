@@ -33,7 +33,6 @@ var global = {
     this.collections.Backups = new this.Collections.Backups(json.backups);
     this.collections.Notifications = new this.Collections.NotificationsCollection(json.notifications);
     this.collections.Screenshots = new this.Collections.Screenshots(json.screenshots);
-    this.collections.Slides = new this.Collections.Slides(json.slides);
     this.collections.Presentations = new this.Collections.Presentations(json.presentations);
 
     // Dictionaries    

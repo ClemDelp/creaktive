@@ -224,14 +224,14 @@ global.Collections.Screenshots = Backbone.Collection.extend({
     }
 }); 
 /***************************************/
-global.Collections.Slides = Backbone.Collection.extend({
-    model : global.Models.Slide,
-    initialize : function() {
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    }
-}); 
+// global.Collections.Slides = Backbone.Collection.extend({
+//     model : global.Models.Slide,
+//     initialize : function() {
+//         this.bind("error", function(model, error){
+//             console.log( error );
+//         });
+//     }
+// }); 
 /***************************************/
 global.Collections.Presentations = Backbone.Collection.extend({
     model : global.Models.Presentation,
