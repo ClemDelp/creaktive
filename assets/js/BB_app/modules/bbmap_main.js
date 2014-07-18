@@ -1,17 +1,4 @@
 /////////////////////////////////////////////////
-// Joyride
-/////////////////////////////////////////////////
-bbmap.Views.Joyride = Backbone.View.extend({
-    initialize : function(json){
-        _.bindAll(this,'render');
-        this.template_joyride = _.template($('#bbmap-joyride-template').html());
-    },
-    render : function(){
-        $(this.el).append(this.template_joyride())
-        return this;
-    }
-});
-/////////////////////////////////////////////////
 // MAIN
 /////////////////////////////////////////////////
 bbmap.Views.Main = Backbone.View.extend({
@@ -27,7 +14,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.discussionModel_el = $(this.el).find('#discussionModel');
         this.activitiesModel_el = $(this.el).find('#activitiesModel');
         this.css3Model_el = $(this.el).find('#css3Model');
-        // Variables
+        // Objects
         this.knowledges         = json.knowledges;
         this.concepts           = json.concepts;
         this.user               = json.user;
@@ -35,21 +22,21 @@ bbmap.Views.Main = Backbone.View.extend({
         this.poches             = json.poches;
         this.links              = json.links;
         this.eventAggregator    = json.eventAggregator;
-        
-        this.mode               = "ck";
+        this.lastModel          = new Backbone.Model();
+        this.nodes_views        = {};
+        // Parameters
+        this.mode               = "visu";
+        this.filter             = "ck";
         this.KcontentVisibility = true;
         this.CcontentVisibility = false;
         this.ckOperator         = true;
         this.positionRef        = 550;
-        this.nodes_views        = {};
-        this.dialog             = "";
-        this.lastModel          = new Backbone.Model();
+        this.color              = "#27AE60";
         // Templates
         this.template_actionbar = _.template($('#bbmap-actionbar-template').html());
-        
+        this.template_joyride = _.template($('#bbmap-joyride-template').html());
         ////////////////////////////
         // JsPlumb
-        this.color = "#27AE60";
         this.instance = jsPlumb.getInstance({           
             Connector : [ "Bezier", { curviness:50 } ],
             DragOptions : { cursor: "pointer", zIndex:2000 },
@@ -69,32 +56,24 @@ bbmap.Views.Main = Backbone.View.extend({
             Container:"map"
         });  
         ////////////////////////////
-        // Boite d'édition
-        //bbmap.views.editBox = new bbmap.Views.EditBox({el : "#editBox"});
-        ////////////////////////////
         // Events
-        $('#joyride').off();
-        $('.joyride-list').off();
-
         this.listenTo(bbmap.zoom,'change',this.updateZoomDisplay,this);
-
         global.eventAggregator.on('concept:create',this.addConceptToView,this);
         global.eventAggregator.on('concept:remove',this.removeModelToView,this);
         global.eventAggregator.on('concept:update',this.modelUpdate,this);
-
         global.eventAggregator.on('knowledge:create',this.addKnowledgeToView,this);
         global.eventAggregator.on('knowledge:remove',this.removeModelToView,this);
         global.eventAggregator.on('knowledge:update',this.modelUpdate,this);
-
         this.map_el.mousewheel(function(event) {
             event.preventDefault();
             console.log(event.deltaY);
             if(event.deltaY == -1)bbmap.views.main.zoomin()
             else bbmap.views.main.zoomout()
         });
-
     },
     events : {
+        "change #modeSelection" : "setMode",
+        "change #filterSelection" : "setFilter",
         "mouseup .dropC" : "newConceptUnlinked",
         "mouseup .dropK" : "newKnowledgeUnlinked",
         "click .addUnlinkedC" : "createUnlinkedConcept",
@@ -112,9 +91,22 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .screenshot" : "screenshot"
     },
     /////////////////////////////////////////
+    // Modes & Filters
+    /////////////////////////////////////////
+    setMode : function(e){
+        e.preventDefault();
+        this.mode = $(e.target).val();
+        if(this.mode == "visu") this.editor_el.hide('slow');
+        this.render();
+    },
+    setFilter : function(e){
+        e.preventDefault();
+        this.filter = $(e.target).val();
+        this.render();
+    },
+    /////////////////////////////////////////
     // Screenshot
     /////////////////////////////////////////
-
     screenshot : function(flag){
         _this = this;
         var zoomscale = bbmap.zoom.get('val');
@@ -224,7 +216,7 @@ bbmap.Views.Main = Backbone.View.extend({
             }
         });    
     },
-     uploadFile : function(file,flag){
+    uploadFile : function(file,flag){
         _this = this;
         var s3upload = new S3Upload({
             file : file,
@@ -283,54 +275,55 @@ bbmap.Views.Main = Backbone.View.extend({
         }else{
             this.lastModel.save({title:title});
         }
-
     },
     /////////////////////////////////////////
-    // Slinding editor bar
+    // Sliding editor bar
     /////////////////////////////////////////
     updateEditor : function(model){
-        this.editor_el.show('slow');
-        // Model editor module
-        if(bbmap.views.modelEditor)bbmap.views.modelEditor.remove();
-        bbmap.views.modelEditor = new modelEditor.Views.Main({
-            user            : this.user,
-            model           : model
-        });
-        // Templates list
-        if(bbmap.views.templatesList)bbmap.views.templatesList.remove();
-        if(!this.project.get('templates')) this.project.save({templates : bbmap.default_templates},{silent:true});
-        bbmap.views.templatesList = new templatesList.Views.Main({
-            templates : this.project.get('templates'),
-            model : model
-        });
-        // IMG List module
-        if(bbmap.views.imagesList)bbmap.views.imagesList.remove();
-        bbmap.views.imagesList = new imagesList.Views.Main({
-            model           : model
-        });
-        // Attachment module
-        if(bbmap.views.attachment)bbmap.views.attachment.remove();
-        bbmap.views.attachment = new attachment.Views.Main({
-            model           : model
-        });
-        // Comments module
-        if(bbmap.views.comments)bbmap.views.comments.remove();
-        bbmap.views.comments = new comments.Views.Main({
-            model           : model,
-            user            : this.user
-        });
-        // notification module
-        if(bbmap.views.activitiesList)bbmap.views.activitiesList.remove();
-        bbmap.views.activitiesList = new activitiesList.Views.Main({
-            model           : model
-        });
-        // Render & Append
-        this.editModel_el.html(bbmap.views.modelEditor.render().el);
-        this.editModel_el.append(bbmap.views.templatesList.render().el);
-        this.attachementModel_el.html(bbmap.views.imagesList.render().el);
-        this.attachementModel_el.append(bbmap.views.attachment.render().el);
-        this.discussionModel_el.append(bbmap.views.comments.render().el);
-        this.activitiesModel_el.html(bbmap.views.activitiesList.render().el);
+        if(this.mode == "edit"){
+            this.editor_el.show('slow');
+            // Model editor module
+            if(bbmap.views.modelEditor)bbmap.views.modelEditor.remove();
+            bbmap.views.modelEditor = new modelEditor.Views.Main({
+                user            : this.user,
+                model           : model
+            });
+            // Templates list
+            if(bbmap.views.templatesList)bbmap.views.templatesList.remove();
+            if(!this.project.get('templates')) this.project.save({templates : bbmap.default_templates},{silent:true});
+            bbmap.views.templatesList = new templatesList.Views.Main({
+                templates : this.project.get('templates'),
+                model : model
+            });
+            // IMG List module
+            if(bbmap.views.imagesList)bbmap.views.imagesList.remove();
+            bbmap.views.imagesList = new imagesList.Views.Main({
+                model           : model
+            });
+            // Attachment module
+            if(bbmap.views.attachment)bbmap.views.attachment.remove();
+            bbmap.views.attachment = new attachment.Views.Main({
+                model           : model
+            });
+            // Comments module
+            if(bbmap.views.comments)bbmap.views.comments.remove();
+            bbmap.views.comments = new comments.Views.Main({
+                model           : model,
+                user            : this.user
+            });
+            // notification module
+            if(bbmap.views.activitiesList)bbmap.views.activitiesList.remove();
+            bbmap.views.activitiesList = new activitiesList.Views.Main({
+                model           : model
+            });
+            // Render & Append
+            this.editModel_el.html(bbmap.views.modelEditor.render().el);
+            this.editModel_el.append(bbmap.views.templatesList.render().el);
+            this.attachementModel_el.html(bbmap.views.imagesList.render().el);
+            this.attachementModel_el.append(bbmap.views.attachment.render().el);
+            this.discussionModel_el.append(bbmap.views.comments.render().el);
+            this.activitiesModel_el.html(bbmap.views.activitiesList.render().el);
+        }
     },
     hideEditor : function(e){
         e.preventDefault();
@@ -433,19 +426,18 @@ bbmap.Views.Main = Backbone.View.extend({
     showIcon : function(e){
         e.preventDefault();
         var id = e.target.id;
-        $("#"+id+" .icon").show();
+        if(this.mode == "edit") $("#"+id+" .icon").show();
         this.selectBulle(id)
     },
     showIcon2 : function(e){
         e.preventDefault();
         var id = e.target.id;
-        $("#"+id+" .sup").show();
-        
+        if(this.mode == "edit") $("#"+id+" .sup").show();
     },
     hideIcon : function(e){
         e.preventDefault();
         var id = e.target.id;
-        this.$(".icon").hide();
+        if(this.mode == "edit") this.$(".icon").hide();
         this.unselectBulle(id);
     },
     selectBulle : function(id){
@@ -458,9 +450,9 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     unselectBulle : function(id){
         var conceptsList = this.concepts.where({id_father : id})
-        this.nodes_views[id].applyStyle();
+        bbmap.views.main.nodes_views[id].applyStyle();
         conceptsList.forEach(function(concept){
-            this.nodes_views[concept.get('id')].applyStyle();
+            bbmap.views.main.nodes_views[concept.get('id')].applyStyle();
             bbmap.views.main.unselectBulle(concept.get('id'));
         });
     },
@@ -512,19 +504,8 @@ bbmap.Views.Main = Backbone.View.extend({
             user: this.user
         });
         new_knowledge.save();
-
-        // new_view = new bbmap.Views.Node({
-        //     className : "window knowledge",
-        //     id : new_knowledge.get('id'),
-        //     model : new_knowledge,
-        // });
-
-        // this.map_el.append(new_view.render().el);
         this.knowledges.add(new_knowledge);
         this.addModelToView(new_knowledge,"knowledge");
-        // new_view.addEndpoint();
-        // new_view.addLink();
-        // new_view.makeTarget();
     },
     createUnlinkedConcept : function(left,top){
         new_concept = new global.Models.ConceptModel({
@@ -538,53 +519,9 @@ bbmap.Views.Main = Backbone.View.extend({
             user: this.user
         });
         new_concept.save();
-        // new_view = new bbmap.Views.Node({
-        //     className : "window concept",
-        //     id : new_concept.get('id'),
-        //     model : new_concept,
-        // });
         this.concepts.add(new_concept);
         this.addModelToView(new_concept,"concept");
     },
-    // addKnowledgeToView : function(k){
-    //     this.lastModel = k;
-    //     this.knowledges.add(k);
-    //     this.lastModel = k;
-    //     // On crée la vue
-    //     new_view = new bbmap.Views.Node({
-    //         className : "window knowledge",
-    //         id : k.get('id'),
-    //         model : k,
-    //     });
-    //     // On l'ajoute à la map
-    //     this.map_el.append(new_view.render().el);
-    //     // Puis on ajoute les elements de la bulle
-    //     new_view.addEndpoint();
-    //     new_view.addLink();
-    //     new_view.makeTarget();
-
-    //     this.nodes_views[k.get('id')] = new_view;
-    //     this.startJoyride();
-    // },
-    // addConceptToView : function(c){
-    //     this.lastModel = c;
-    //     this.concepts.add(c);
-    //     this.lastModel = c;
-    //     new_view = new bbmap.Views.Node({
-    //         className : "window concept",
-    //         id : c.get('id'),
-    //         model : c,
-    //     });
-
-    //     this.map_el.append(new_view.render().el);
-        
-    //     new_view.addEndpoint();
-    //     new_view.addLink();
-    //     new_view.makeTarget();
-
-    //     this.nodes_views[c.get('id')] = new_view;
-    //     this.startJoyride();
-    // },
     addModelToView : function(model,type){
         this.lastModel = model;
         new_view = new bbmap.Views.Node({
@@ -596,6 +533,8 @@ bbmap.Views.Main = Backbone.View.extend({
         new_view.addEndpoint();
         new_view.addLink();
         new_view.makeTarget();
+        new_view.addFollowFather();
+        this.instance.draggable($(new_view.el));
         this.nodes_views[model.get('id')] = new_view;
         this.startJoyride();
     },
@@ -683,95 +622,149 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     renderActionBar : function(){
         this.bar_el.empty();
-        this.bar_el.append(this.template_actionbar());
+        this.bar_el.append(this.template_actionbar({
+            filter  : this.filter,
+            mode    : this.mode
+        }));
         this.bar_el.find("#zoom_val").html(bbmap.zoom.get('val'));
         $( "#dropC" ).draggable();
         $( "#dropK" ).draggable();
     },
-    render : function(){        
-        ///////////////////////
-        // init
-        nodes_views = {};
-        _this = this;
-        this.map_el.empty();
-        ///////////////////////
-        // Action bar
-        this.renderActionBar();
-        $(this.el).append(new bbmap.Views.Joyride().render().el);
-        ///////////////////////
-        // Concepts views
-        if(this.mode == "ck"){
-            this.concepts.each(function(concept){
-                nodes_views[concept.get('id')] = new bbmap.Views.Node({
-                    className : "window concept bulle",
-                    id : concept.get('id'),
-                    model : concept,
-                });
+    renderConceptsBulle : function(){
+        var _this = this;
+        // Views
+        this.concepts.each(function(concept){
+            bbmap.views.main.nodes_views[concept.get('id')] = new bbmap.Views.Node({
+                className : "window concept bulle",
+                id : concept.get('id'),
+                model : concept,
+            });
+        });
+        // Render
+        this.concepts.forEach(function(model){
+            _this.map_el.append(bbmap.views.main.nodes_views[model.get('id')].render().el);    
+        });
+        // EndPoint
+        this.concepts.forEach(function(model){
+            bbmap.views.main.nodes_views[model.get('id')].addEndpoint();    
+        });
+        // Add links
+        this.concepts.forEach(function(model){
+            bbmap.views.main.nodes_views[model.get('id')].addLink();    
+        });
+        if(this.mode == "edit"){
+            // Make its target
+            this.concepts.forEach(function(model){
+                bbmap.views.main.nodes_views[model.get('id')].makeTarget();    
+            });
+            // Set concept following his father
+            this.concepts.forEach(function(model){
+                bbmap.views.main.nodes_views[model.get('id')].addFollowFather();
+            });
+            // Draggable
+            this.concepts.forEach(function(model){
+                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el));
             });
         }
-        // knowledges views
+    },
+    renderKnowledgesBulle : function(){
+        var _this = this;
+        // Views
         this.knowledges.each(function(knowledge){
-            nodes_views[knowledge.get('id')] = new bbmap.Views.Node({
+            bbmap.views.main.nodes_views[knowledge.get('id')] = new bbmap.Views.Node({
                 className : "window knowledge bulle",
                 id : knowledge.get('id'),
                 model : knowledge,
             });
         });
-        // Poches views
-        if(this.mode == "pk"){
-            this.poches.each(function(poche){
-                nodes_views[poche.get('id')] = new bbmap.Views.Node({
-                    className : "window poche bulle",
-                    id : poche.get('id'),
-                    model : poche,
-                });
-            });
-        }
-        ///////////////////////
-        // Views render process
-        if(this.mode == "ck"){
-            this.concepts.forEach(function(model){
-                _this.map_el.append(nodes_views[model.get('id')].render().el);    
-            });
-        }
+        // Render
         this.knowledges.forEach(function(model){
-            _this.map_el.append(nodes_views[model.get('id')].render().el);    
+            _this.map_el.append(bbmap.views.main.nodes_views[model.get('id')].render().el);    
         });
-        if(this.mode == "pk"){
+        // EndPoint
+        this.knowledges.forEach(function(model){
+            bbmap.views.main.nodes_views[model.get('id')].addEndpoint();    
+        });
+        if(this.mode == "edit"){
+            // Make its target
+            this.knowledges.forEach(function(model){
+                bbmap.views.main.nodes_views[model.get('id')].makeTarget();    
+            });
+            // Draggable
+            this.knowledges.forEach(function(model){
+                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el));
+            });
+        }
+    },
+    renderPochesBulle : function(){
+        var _this = this;
+        // Views
+        this.poches.each(function(poche){
+            bbmap.views.main.nodes_views[poche.get('id')] = new bbmap.Views.Node({
+                className : "window poche bulle",
+                id : poche.get('id'),
+                model : poche,
+            });
+        });
+        // Render
+        this.poches.forEach(function(model){
+            _this.map_el.append(bbmap.views.main.nodes_views[model.get('id')].render().el);    
+        });
+        // Draggable
+        if(this.mode == "edit"){
             this.poches.forEach(function(model){
-                _this.map_el.append(nodes_views[model.get('id')].render().el);    
+                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el));
             });
         }
-        ///////////////////////
-        // Views addEndPoint process
-        this.concepts.forEach(function(model){
-            nodes_views[model.get('id')].addEndpoint();    
-        });
+    },
+    renderCKLinks : function(){
         this.knowledges.forEach(function(model){
-            nodes_views[model.get('id')].addEndpoint();    
+            bbmap.views.main.nodes_views[model.get('id')].addLink();    
         });
+    },
+    renderPKLinks : function(){
+
+    },
+    render : function(){        
         ///////////////////////
-        // Views addEndLink process
-        this.concepts.forEach(function(model){
-            nodes_views[model.get('id')].addLink();    
-        });
-        this.knowledges.forEach(function(model){
-            nodes_views[model.get('id')].addLink();    
-        });
+        // init
+        var _this = this;
+        this.map_el.empty();
         ///////////////////////
-        // Views addEndLink process
-        this.concepts.forEach(function(model){
-            nodes_views[model.get('id')].makeTarget();    
-        });
-        this.knowledges.forEach(function(model){
-            nodes_views[model.get('id')].makeTarget();    
-        });
+        // Action bar
+        this.renderActionBar();
+        $(this.el).append(this.template_joyride());
+        ///////////////////////
+        // Modes
+        if(this.filter == "c"){
+            this.renderConceptsBulle();
+        }
+        if(this.filter == "k"){
+            this.renderKnowledgesBulle();
+        }
+        if(this.filter == "p"){
+            this.renderPochesBulle();
+        }
+        if(this.filter == "ck"){
+            this.renderConceptsBulle();
+            this.renderKnowledgesBulle();
+            this.renderCKLinks();
+        }
+        if(this.filter == "kp"){
+            this.renderKnowledgesBulle();
+            this.renderPochesBulle();   
+        }
+        if(this.filter == "ckp"){
+            this.renderConceptsBulle();
+            this.renderKnowledgesBulle();
+            this.renderPochesBulle();
+            this.renderCKLinks();
+        }
         ///////////////////////
         // Initialize jsPlumb events
         this.jsPlumbEventsInit();
+        ///////////////////////
         $( "#map" ).draggable();
-
-        this.nodes_views = nodes_views;
         // css3 generator
         if(bbmap.views.css3)bbmap.views.css3.remove();
         bbmap.views.css3 = new CSS3GENERATOR.Views.Main();
