@@ -93,7 +93,6 @@ module.exports.bootstrapdata = {
                   Link.find({project:project.id}).done(function(err,links){
                     Permission.find().done(function(err, permissions){
                       Screenshot.find({project_id:project.id}).done(function(err, screenshots){
-                        //Slide.find({project_id:project.id}).done(function(err, slides){
                           Presentation.find({project_id:project.id}).done(function(err, presentations){
                             res.view({
                               currentUser : JSON.stringify(req.session.user),
@@ -110,12 +109,10 @@ module.exports.bootstrapdata = {
                               permissions : JSON.stringify(permissions),
                               backups : JSON.stringify(backups_truncated),
                               screenshots : JSON.stringify(screenshots),
-                              //slides : JSON.stringify(slides),
                               presentations : JSON.stringify(presentations),
 
                             });
                           });
-                        //});
                       });
                     });
                   });

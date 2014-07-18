@@ -14,7 +14,6 @@ var CKPreviewer = {
         project           : global.models.currentProject,
         user : global.models.current_user,
         screenshots : global.collections.Screenshots,
-        //slides : global.collections.Slides,
         presentations : global.collections.Presentations,
         knowledges : global.collections.Knowledges,
         concepts : global.collections.Concepts,
@@ -198,7 +197,7 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
     //export as a pdf
     export : function(e){
         _this = this;
-                if(this.current_presentation){
+        if(this.current_presentation){
             var data = CKEDITOR.instances.ckeditor.getData();
             this.current_presentation.set({'data':CKEDITOR.instances.ckeditor.getData()}).save();
         }else{
@@ -285,7 +284,7 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         e.preventDefault();       
         if(this.current_presentation){
             var data = CKEDITOR.instances.ckeditor.getData();
-            console.log(this.current_presentation);
+            //console.log(this.current_presentation);
             this.current_presentation.set({'data':CKEDITOR.instances.ckeditor.getData()}).save();
         }else{
             alert("Please create a presentation");
@@ -295,7 +294,7 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         var title = conceptTitle;
         var content = conceptContent;
         //console.log(content.replace(/<p>/g,'<p style="text-indent: 2em">'));
-        CKEDITOR.instances.ckeditor.insertHtml('<br><h2><strong>'+title+':'+'</strong></h2>'+content.replace(/<p>/g,'<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'));
+        CKEDITOR.instances.ckeditor.insertHtml('<br><h2 style="color:red"><strong><span class="marker">'+title+':'+'</span></strong></h2>'+content.replace(/<p>/g,'<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'));
     },
     addP : function(poche){
         CKEDITOR.instances.ckeditor.insertHtml('<br><h2><strong>'+poche.get('title')+':'+'</strong></h2>'+poche.get('content'));
@@ -586,12 +585,6 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
         "click #add1" : "add",
         "click #presentation" : "changecurrent",
         "click #delete" : "deletecurrent",
-        "click #slideshow" : "slideshow"
-    },
-    slideshow : function(e){
-        e.preventDefault();
-        console.log("good");
-        window.open("/slide?content={{- CKEDITOR.instances.ckeditor.getData()}}");
     },
     //delete current presentation
     deletecurrent : function(e){
@@ -611,14 +604,14 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
             $("#drop0").html(this.current_presentation.get('title'));
             CKPreviewer.views.middle_part_view.render();
             CKEDITOR.replace('ckeditor',{
-                height:"100%",
+                height:600,
             });
             CKEDITOR.instances.ckeditor.setData(this.current_presentation.get('data'));
         }else{
             $("#drop0").html("Presentation");
             CKPreviewer.views.middle_part_view.render();
             CKEDITOR.replace('ckeditor',{
-                height:"100%",
+                height:600,
             });
             CKEDITOR.instances.ckeditor.setData();
         }
@@ -629,12 +622,12 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
         e.preventDefault();
         var sid = e.target.getAttribute("presentation_id");
         this.current_presentation = this.presentations.get(sid);
-        console.log(this.current_presentation);
+        //console.log(this.current_presentation);
         CKPreviewer.views.middle_part_view.current_presentation=this.current_presentation;
         $("#drop0").html(this.current_presentation.get('title'));
         CKPreviewer.views.middle_part_view.render();
         CKEDITOR.replace('ckeditor',{
-            height:"100%",
+            height:600,
         });
         CKEDITOR.instances.ckeditor.setData(this.current_presentation.get('data'));
     },
@@ -665,7 +658,7 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
             this.presentations.add(this.current_presentation);
             CKPreviewer.views.middle_part_view.render();
             CKEDITOR.replace('ckeditor',{
-                height:"100%",
+                height:600,
             });
             CKEDITOR.instances.ckeditor.setData(this.current_presentation.get("data"));
         }
@@ -749,15 +742,12 @@ CKPreviewer.Views.Main = Backbone.View.extend({
             knowledges : this.knowledges,
         });
         $(this.el).append(CKPreviewer.views.middle_part_view.render().el);
-        //CKEDITOR
+        //CKEDITOR title and content
         CKEDITOR.replace('ckeditor',{
-            height:"100%",
+            height:600,
         });
         if(this.current_presentation){
             CKEDITOR.instances.ckeditor.setData(this.current_presentation.get('data'));
-        }
-        //Drop-down title
-        if(this.current_presentation){
             $("#drop0").html(this.current_presentation.get('title'));
         }
 
