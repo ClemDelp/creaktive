@@ -173,6 +173,9 @@ bbmap.Views.Node = Backbone.View.extend({
         bbmap.views.main.links.add(new_cklink);
         bbmap.views.main.addModelToView(new_knowledge,"knowledge");
     },
+    /////////////////////////////////////////
+    // Remove function
+    /////////////////////////////////////////
     removeModel : function(e){
         e.preventDefault();
         if(confirm("this "+this.model.get('type')+" will be remove, would you continue?")){
@@ -180,11 +183,8 @@ bbmap.Views.Node = Backbone.View.extend({
         }
     },
     removeNode : function(){
-        model = this.model;
-        this.endpoints.forEach(function(ep){
-            bbmap.views.main.instance.deleteEndpoint(ep);
-        })
-        bbmap.views.main.instance.detachAllConnections($(this.el));
+        var model = this.model;
+        
         // put all the child node parent_id attributes to none
         if(model.get('type') == 'concept'){
             childrens = bbmap.views.main.concepts.where({id_father : model.get('id')})
@@ -193,8 +193,18 @@ bbmap.Views.Node = Backbone.View.extend({
             });
         } 
         model.destroy();
+        this.removeView();
+    },
+    removeView : function(){
+        this.endpoints.forEach(function(ep){
+            bbmap.views.main.instance.deleteEndpoint(ep);
+        });
+        bbmap.views.main.instance.detachAllConnections($(this.el));
         this.remove();
     },
+    /////////////////////////////////////////
+    // 
+    /////////////////////////////////////////
     editTitle : function(e){
         e.preventDefault();
         bbmap.views.main.updateEditor(this.model);

@@ -50,17 +50,17 @@
 <script type="text/template" id="bbmap-actionbar-template">
   <div>
 	  <center>
+      mode : 
       <select id="modeSelection" class="large-2 medium-2 small-2">
         <option value="visu" {{ if(mode == "visu"){ }}selected{{ } }}>Visualisation</option>
         <option value="edit" {{ if(mode == "edit"){ }}selected{{ } }}>Edition</option>
       </select>
+      filter : 
       <select id="filterSelection" class="large-2 medium-2 small-2">
         <option value="c" {{ if(filter == "c"){ }}selected{{ } }}>concepts</option>
         <option value="k" {{ if(filter == "k"){ }}selected{{ } }}>knowledges</option>
-        <option value="p" {{ if(filter == "p"){ }}selected{{ } }}>categories</option>
         <option value="ck" {{ if(filter == "ck"){ }}selected{{ } }}>concepts & knowledges</option>
-        <option value="kp" {{ if(filter == "kp"){ }}selected{{ } }}>knowledges & categories</option>
-        <option value="ckp" {{ if(filter == "ckp"){ }}selected{{ } }}>All</option>
+
       </select>
       
       {{ if(mode == "edit"){ }}

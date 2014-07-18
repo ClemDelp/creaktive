@@ -54,7 +54,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 [ "Label", { label:"x", id:"label", cssClass:"aLabel" }]
             ],
             Container:"map"
-        });  
+        });
         ////////////////////////////
         // Events
         this.listenTo(bbmap.zoom,'change',this.updateZoomDisplay,this);
@@ -89,6 +89,21 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .closeEditor" : "hideEditor",
         "click #okjoyride" : "changeTitleLastModel",
         "click .screenshot" : "screenshot"
+    },
+    /////////////////////////////////////////
+    // Overlays sur les connections
+    /////////////////////////////////////////
+    hideOverLays : function(){
+        var connections = bbmap.views.main.instance.getAllConnections()
+        connections.forEach(function(connection){
+            connection.hideOverlays();
+        }) 
+    },
+    showOverLays : function(){
+        var connections = bbmap.views.main.instance.getAllConnections()
+        connections.forEach(function(connection){
+            connection.showOverlays();
+        }) 
     },
     /////////////////////////////////////////
     // Modes & Filters
@@ -633,7 +648,7 @@ bbmap.Views.Main = Backbone.View.extend({
     renderConceptsBulle : function(){
         var _this = this;
         // Views
-        this.concepts.each(function(concept){
+        this.concepts.each(function(concept){ 
             bbmap.views.main.nodes_views[concept.get('id')] = new bbmap.Views.Node({
                 className : "window concept bulle",
                 id : concept.get('id'),
@@ -728,6 +743,8 @@ bbmap.Views.Main = Backbone.View.extend({
     render : function(){        
         ///////////////////////
         // init
+        this.nodes_views = {};
+        this.instance.reset();
         var _this = this;
         this.map_el.empty();
         ///////////////////////
@@ -739,27 +756,30 @@ bbmap.Views.Main = Backbone.View.extend({
         if(this.filter == "c"){
             this.renderConceptsBulle();
         }
-        if(this.filter == "k"){
+        else if(this.filter == "k"){
             this.renderKnowledgesBulle();
         }
-        if(this.filter == "p"){
+        else if(this.filter == "p"){
             this.renderPochesBulle();
         }
-        if(this.filter == "ck"){
+        else if(this.filter == "ck"){
             this.renderConceptsBulle();
             this.renderKnowledgesBulle();
             this.renderCKLinks();
         }
-        if(this.filter == "kp"){
+        else if(this.filter == "kp"){
             this.renderKnowledgesBulle();
             this.renderPochesBulle();   
         }
-        if(this.filter == "ckp"){
+        else if(this.filter == "ckp"){
             this.renderConceptsBulle();
             this.renderKnowledgesBulle();
             this.renderPochesBulle();
             this.renderCKLinks();
         }
+        ///////////////////////
+        if(this.mode == "edit") this.showOverLays();
+        else this.hideOverLays();
         ///////////////////////
         // Initialize jsPlumb events
         this.jsPlumbEventsInit();
