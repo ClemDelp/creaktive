@@ -197,7 +197,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 **/
                 context = canvas.getContext("2d");                
                 context.drawImage(canvas0,0,0);                
-                console.log(canvas.toDataURL("image/png"));
+                //console.log(canvas.toDataURL("image/png"));
                 /**
                 Centre le canvas sur la zone dessinée et couper le reste
                 **/
@@ -227,13 +227,18 @@ bbmap.Views.Main = Backbone.View.extend({
                     }
                 }
                 var screenshot;
-                //console.log(canvas2.toDataURL( "image/png" ));
+                console.log(canvas2.toDataURL( "image/png" ));
                 screenshot = canvas2.toDataURL( "image/png" ).replace(/data:image\/png;base64,/,'');   //save screenshot
-                var uintArray = Base64Binary.decode(screenshot);;
+                var uintArray = Base64Binary.decode(screenshot);
                 _this.uploadFile(uintArray, flag);
             }
         });    
     },
+    /*
+    * Transfer a file to s3 
+    * @file : file to transfer
+    * @flag - boolean : if true, the screenshot will be a project image
+    */ 
     uploadFile : function(file,flag){
         _this = this;
         var s3upload = new S3Upload({
@@ -245,19 +250,20 @@ bbmap.Views.Main = Backbone.View.extend({
             onFinishS3Put: function(amz_id, file) {
                 console.log("File uploaded ", amz_id);
                 //Si c'est un screenshot servant d'image pour le projet
-                if(flag){
+                if(flag==true){
                     _this.project.save({
                         image : amz_id
                     })
                 }
                 // Si c'est un screenshot
-                else{
-                    global.Models.Screenshot.create({
+                else{console.log("good");
+                    var s = new global.Models.Screenshot({
                         id : guid(),
                         src : amz_id,
                         date : getDate(),
                         project_id : _this.project.get('id')
                     });
+                    s.save();
                 }             
             },
             onError: function(status) {
