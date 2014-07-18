@@ -124,14 +124,17 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     screenshot : function(flag){
         _this = this;
-        var zoomscale = bbmap.zoom.get('val');
+        /**
+        Repositionne la screenshot sur tout le graphe
+        **/
+        var zoomscale = bbmap.zoom.get('val');  //before take screenshot should change to the origin size
         var project_id = this.project.get('id');
-        var moveLeft = (-$("#map")[0].offsetLeft)*(1-1.0/zoomscale);
+        var moveLeft = (-$("#map")[0].offsetLeft)*(1-1.0/zoomscale);  //if zoomscale>1 we should move it to right else move to left
         var moveTop = (-$("#map")[0].offsetTop)*(1-1.0/zoomscale);
         var originLeft = $("#map")[0].offsetLeft;
         var originTop = $("#map")[0].offsetTop;
         var tmpscale = zoomscale;
-        if(tmpscale>1){
+        if(tmpscale>1){                           //resize
             while(bbmap.zoom.get('val')>1){
                 _this.zoomin();
             }
@@ -140,13 +143,17 @@ bbmap.Views.Main = Backbone.View.extend({
                 _this.zoomout();
             }
         }
-        $("#map").offset({left:originLeft+moveLeft});
+        $("#map").offset({left:originLeft+moveLeft});   //change position
         $("#map").offset({top:originTop+moveTop+$("#map_container")[0].offsetTop});
+        
         html2canvas($("#map.demo"), {
-            width: $("#map")[0].offsetWidth,
+            width: $("#map")[0].offsetWidth,      //screenshot has the same size with #map
             height: $("#map")[0].offsetHeight,
-            onrendered: function(canvas) {
-                $("#map").offset({left:originLeft});
+            onrendered: function(canvas) {       //html2canvas can only find nodes not svgs
+                /**
+                Remet la vue à l'état initial
+                **/
+                $("#map").offset({left:originLeft});       //once finished return back to present state
                 $("#map").offset({top:originTop+$("#map_container")[0].offsetTop});              
                 if(tmpscale>1){
                     while(bbmap.zoom.get('val')<tmpscale){
@@ -158,12 +165,17 @@ bbmap.Views.Main = Backbone.View.extend({
                     }
                 }
 
-                var canvas0 = document.createElement("canvas");
+                /**
+                Ajoute les lignes et les points qui sont au format SVG
+                * canvas : les bulles
+                * canvas0 : tous les points et les lignes
+                **/
+                var canvas0 = document.createElement("canvas");  //another canvas we will draw all the things left together to reproduce #map
                 var context = canvas0.getContext("2d");
                 canvas0.width = $("#map")[0].offsetWidth;
                 canvas0.height = $("#map")[0].offsetHeight;
 
-                var svgArray = $("#map>svg");
+                var svgArray = $("#map>svg");                   // first we draw all the lines
                 for (var i = 0; i < svgArray.length; i++) {
                     var top = parseFloat(svgArray[i].style.top);
                     var left = parseFloat(svgArray[i].style.left);
@@ -173,14 +185,14 @@ bbmap.Views.Main = Backbone.View.extend({
                     canvas1.width = width;
                     canvas1.height = height;
                     var svgTagHtml = svgArray[i].innerHTML;
-                    canvg(canvas1,svgTagHtml);
+                    canvg(canvas1,svgTagHtml);                  //canvg is a library which can parse svg to canvas
 
                     context.drawImage(canvas1,left,top);
                 };
 
-                var divArray = $("._jsPlumb_endpoint");
-                var pointArray = $("._jsPlumb_endpoint>svg");
-                console.log(divArray.length);
+                var pointArray = $("._jsPlumb_endpoint>svg");   //than we are ganna draw all the points to canvas0
+                var divArray = $("._jsPlumb_endpoint");         //cause the we can't get the position of points directly, we look at his parent div
+                //console.log(divArray.length);
                 for (var i = 0; i < divArray.length; i++) {
                     var top = parseFloat(divArray[i].style.top);
                     var left = parseFloat(divArray[i].style.left);
@@ -195,10 +207,16 @@ bbmap.Views.Main = Backbone.View.extend({
                     context.drawImage(canvas1,left,top);
                 };
 
+                /**
+                merger canvas and canvas0
+                **/
                 context = canvas.getContext("2d");                
-                context.drawImage(canvas0,0,0);
+                context.drawImage(canvas0,0,0);                
                 //console.log(canvas.toDataURL("image/png"));
-                var x1 = -parseFloat($("#map")[0].offsetLeft)/zoomscale;
+                /**
+                Centre le canvas sur la zone dessinée et couper le reste
+                **/
+                var x1 = -parseFloat($("#map")[0].offsetLeft)/zoomscale;   // here we r ganna take the right part of canvas
                 var y1 = -parseFloat($("#map")[0].offsetTop )/zoomscale;
                 var x2 = x1+$("#map_container")[0].offsetWidth/zoomscale;
                 var y2 = y1+$("#map_container")[0].offsetHeight/zoomscale;
@@ -206,9 +224,9 @@ bbmap.Views.Main = Backbone.View.extend({
                 canvas2.width = (x2-x1);
                 canvas2.height = (y2-y1);
                 var context2 = canvas2.getContext("2d");  
-                if((x1<0)&&(y1<0)){
-                var imgData=context.getImageData(0,0,x2,y2);
-                context2.putImageData(imgData,-x1,-y1);
+                if((x1<0)&&(y1<0)){                                       //get data of canvas and put them to a new one(canvas2) according to the different situations of position between screen and #map
+                    var imgData=context.getImageData(0,0,x2,y2);  
+                    context2.putImageData(imgData,-x1,-y1);
                 }else{
                     if(x1<0){
                         var imgData=context.getImageData(0,y1,x2,y2);
@@ -224,13 +242,18 @@ bbmap.Views.Main = Backbone.View.extend({
                     }
                 }
                 var screenshot;
-                //console.log(canvas2.toDataURL( "image/png" ));
-                screenshot = canvas2.toDataURL( "image/png" ).replace(/data:image\/png;base64,/,'');
-                var uintArray = Base64Binary.decode(screenshot);;
+                console.log(canvas2.toDataURL( "image/png" ));
+                screenshot = canvas2.toDataURL( "image/png" ).replace(/data:image\/png;base64,/,'');   //save screenshot
+                var uintArray = Base64Binary.decode(screenshot);
                 _this.uploadFile(uintArray, flag);
             }
         });    
     },
+    /*
+    * Transfer a file to s3 
+    * @file : file to transfer
+    * @flag - boolean : if true, the screenshot will be a project image
+    */ 
     uploadFile : function(file,flag){
         _this = this;
         var s3upload = new S3Upload({
@@ -242,19 +265,20 @@ bbmap.Views.Main = Backbone.View.extend({
             onFinishS3Put: function(amz_id, file) {
                 console.log("File uploaded ", amz_id);
                 //Si c'est un screenshot servant d'image pour le projet
-                if(flag){
+                if(flag==true){
                     _this.project.save({
                         image : amz_id
                     })
                 }
                 // Si c'est un screenshot
-                else{
-                    global.Models.Screenshot.create({
+                else{console.log("good");
+                    var s = new global.Models.Screenshot({
                         id : guid(),
                         src : amz_id,
                         date : getDate(),
                         project_id : _this.project.get('id')
                     });
+                    s.save();
                 }             
             },
             onError: function(status) {

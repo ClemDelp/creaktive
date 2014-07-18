@@ -258,21 +258,21 @@ global.Models.Screenshot = Backbone.Model.extend({
     }
 });
 /***************************************/
-global.Models.Slide = Backbone.Model.extend({
-    defaults : {
-        id : "",
-        content : "",
-        src : "",
-        project_id : "",
-        presentation_id : ""
-    },
-    initialize : function Poche() {
-        this.urlRoot = "slide";
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    }
-});
+// global.Models.Slide = Backbone.Model.extend({
+//     defaults : {
+//         id : "",
+//         content : "",
+//         src : "",
+//         project_id : "",
+//         presentation_id : ""
+//     },
+//     initialize : function Poche() {
+//         this.urlRoot = "slide";
+//         this.bind("error", function(model, error){
+//             console.log( error );
+//         });
+//     }
+// });
 /***************************************/
 global.Models.Presentation = Backbone.Model.extend({
     defaults : {

@@ -50,6 +50,7 @@
       </div>
     </div>
     <div class="small-3 large-3 medium-3 columns">
+      <a href="#" id="slideshow"  class="button  secondary tiny"  >Slideshow</a>
     <br>
     </div>
   </div>
@@ -65,7 +66,7 @@
     <li class="tab-title"><a href="#panel2-2">K</a></li>
     <li class="tab-title"><a href="#panel2-3">C</a></li>
     <li class="tab-title"><a href="#panel2-4">P</a></li>
-  </ul>trutu
+  </ul>
   <div class="tabs-content">
     <div class="content active" id="panel2-1">
     <ul class="small-block-grid-2">
@@ -79,32 +80,87 @@
     </ul>
     </div>
     <div class="content" id="panel2-2">
-    <a href="#" id="ImportAllknowledges"  class="button  secondary "  style="float:left">Import all</a><hr>
-      {{ _.each(knowledges, function(knowledge) { }}
-          <a href="#" class="button knowledge tiny radius   secondary CKBulle" data-knowledge-id="{{-knowledge.id}}" data-knowledge-content="{{-knowledge.content}}" data-knowledge-title="{{-knowledge.title}}" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}">
-            <strong data-knowledge-id="{{-knowledge.id}}" data-knowledge-content="{{-knowledge.content}}" data-knowledge-title="{{-knowledge.title}}">{{- knowledge.title }}</strong>
-          </a>
-      {{ }); }}  
+      <div class="row ">
+        <div class="small-4 large-4 medium-4 columns">
+          <a href="#" id="ImportAllknowledges"  class="button  secondary tiny"  style="float:left">Import all</a>
+        </div>
+        <div class="small-8 large-8 medium-8 columns">
+            <div class="row collapse custom_row">
+                <div class="small-10 columns">
+                  <input id="knowledge_title" type="text" class="searchK" placeholder="find your knowledge..."/>
+                </div>
+                <div class="small-2 columns">
+                  <a href="#" class="button postfix ">Search</a>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div id="ks"></div>
     </div>
+
     <div class="content" id="panel2-3">
-    <a href="#" id="ImportAllconcepts"  class="button  secondary "  style="float:left">Import all</a><hr>
-      {{ _.each(concepts, function(concepte) { }}
-          <a href="#" class="button concept tiny radius   secondary CKBulle" data-concepte-id="{{-concepte.id}}" data-concepte-content="{{-concepte.content}}" data-concepte-title="{{-concepte.title}}">
-            <strong data-concepte-id="{{-concepte.id}}" data-concepte-content="{{-concepte.content}}" data-concepte-title="{{-concepte.title}}">{{- concepte.title }}</strong>
-          </a>
-      {{ }); }} 
+      <div class="row ">
+        <div class="small-4 large-4 medium-4 columns">
+          <a href="#" id="ImportAllconcepts"  class="button  secondary tiny"  style="float:left">Import all</a>
+        </div>
+        <div class="small-8 large-8 medium-8 columns">
+            <div class="row collapse custom_row">
+                <div class="small-10 columns">
+                  <input id="concept_title" type="text" class="searchC" placeholder="find your concept..."/>
+                </div>
+                <div class="small-2 columns">
+                  <a href="#" class="button postfix ">Search</a>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div id="cs"></div>
     </div>
+
     <div class="content" id="panel2-4">
-    <a href="#" id="ImportAllpoches"  class="button  secondary "  style="float:left">Import all</a><hr>
-      {{ _.each(poches, function(poche) { }}
-          <a href="#" class="button poche tiny radius   secondary CKBulle" data-poche-id="{{-poche.id}}" data-poche-cotent="{{-poche.content}}" data-poche-title="{{-poche.title}}">
-            <strong data-poche-id="{{-poche.id}}" >{{- poche.title }}</strong>
-          </a>
-      {{ }); }} 
-    </div>
+      <div class="row ">
+        <div class="small-4 large-4 medium-4 columns">
+          <a href="#" id="ImportAllpoches"  class="button  secondary tiny"  style="float:left">Import all</a>
+        </div>
+        <div class="small-8 large-8 medium-8 columns">
+            <div class="row collapse custom_row">
+                <div class="small-10 columns">
+                  <input id="poche_title" type="text" class="searchP" placeholder="find your category..."/>
+                </div>
+                <div class="small-2 columns">
+                  <a href="#" class="button postfix ">Search</a>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div>
+    <div id="ps"></div>
   </div>
 </script>
-
+<!-- //////////////////////////////////////////////////////// -->
+<script type="text/template" id="CKPreviewer_ks_template" >
+  {{ _.each(knowledges, function(knowledge) { }}
+    <a href="#" class="button knowledge tiny" style="{{-knowledge.css}}" data-knowledge-id="{{-knowledge.id}}" data-knowledge-content="{{-knowledge.content}}" data-knowledge-title="{{-knowledge.title}}" style="border-color:{{-knowledge.color}};color:{{-knowledge.color}}">
+      <strong data-knowledge-id="{{-knowledge.id}}" data-knowledge-content="{{-knowledge.content}}" data-knowledge-title="{{-knowledge.title}}">{{- knowledge.title }}</strong>
+    </a>
+  {{ }); }}  
+</script>
+<!-- //////////////////////////////////////////////////////// -->
+<script type="text/template" id="CKPreviewer_cs_template" >
+  {{ _.each(concepts, function(concepte) { }}
+    <a href="#" class="button concept tiny" style="{{-concepte.css}}" data-concepte-id="{{-concepte.id}}" data-concepte-content="{{-concepte.content}}" data-concepte-title="{{-concepte.title}}">
+      <strong data-concepte-id="{{-concepte.id}}" data-concepte-content="{{-concepte.content}}" data-concepte-title="{{-concepte.title}}">{{- concepte.title }}</strong>
+    </a>
+  {{ }); }} 
+</script>
+<!-- //////////////////////////////////////////////////////// -->
+<script type="text/template" id="CKPreviewer_ps_template" >
+  {{ _.each(poches, function(poche) { }}
+    <a href="#" class="button poche tiny" style="{{-poche.css}}" data-poche-id="{{-poche.id}}" data-poche-cotent="{{-poche.content}}" data-poche-title="{{-poche.title}}">
+      <strong data-poche-id="{{-poche.id}}" >{{- poche.title }}</strong>
+    </a>
+  {{ }); }} 
+</script>
 
 <!-- //////////////////////////////////////////////////////// -->
 <!-- Right part -->
