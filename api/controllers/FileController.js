@@ -58,7 +58,7 @@ function cleanName(name){
 module.exports = {
 
 
-  convert : function(req,res){
+  export2pdf : function(req,res){
 
 
       var html =req.body.data;
@@ -70,7 +70,7 @@ module.exports = {
       //   console.log(elem)
       // });
       id = guid(),
-      fileName = id+".pdf";
+      fileName = "export.pdf";
       dirPath = UPLOAD_PATH + '/' + id;
       filePath = dirPath + '/' + fileName;
       outputPath = filePath;
