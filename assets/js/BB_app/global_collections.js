@@ -178,7 +178,6 @@ global.Collections.UserGroup = Backbone.Collection.extend({
         //console.log('Comments Collection Constructor');
     }
 });
-   
 /***************************************/
 global.Collections.CKLinks = Backbone.Collection.extend({
     model : global.Models.CKLink,
@@ -189,8 +188,7 @@ global.Collections.CKLinks = Backbone.Collection.extend({
     initialize : function() {
         //console.log('Comments Collection Constructor');
     }
-}); 
-  
+});
 /***************************************/
 global.Collections.PermissionsCollection = Backbone.Collection.extend({
     model : global.Models.PermissionModel,

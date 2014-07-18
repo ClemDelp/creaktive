@@ -170,7 +170,7 @@ bbmap.Views.Node = Backbone.View.extend({
         });
         new_cklink.save();
         // On ajoute le link à la collection
-        bbmap.views.main.links.add(new_cklink);
+        bbmap.views.main.cklinks.add(new_cklink);
         bbmap.views.main.addModelToView(new_knowledge,"knowledge");
     },
     /////////////////////////////////////////
@@ -237,25 +237,42 @@ bbmap.Views.Node = Backbone.View.extend({
                 },
                 {
                     connectorStyle : { strokeStyle:"#27AE60", lineWidth:1,dashstyle:"2 2" },
-                    endpoint:["Dot", { radius:5 }],
+                    endpoint:["Dot", { radius:10 }],
                     paintStyle:{ fillStyle:"#27AE60" },
                 }
             ));
         }else if(this.model.get('type') == 'knowledge'){
+            // this.endpoints.unshift(bbmap.views.main.instance.addEndpoint(
+            //     $(this.el), {
+            //         uuid:this.model.get('id') + "-left",
+            //         anchor:"Left",
+            //         maxConnections:-1
+            //     }
+            // ));
+            // this.endpoints.unshift(bbmap.views.main.instance.addEndpoint(
+            //     $(this.el), 
+            //     {
+            //         uuid:this.model.get('id') + "-right",
+            //         anchor:"Right",
+            //         maxConnections:-1
+            //     }
+            // ));
+        }else if(this.model.get('type') == 'category'){
             this.endpoints.unshift(bbmap.views.main.instance.addEndpoint(
                 $(this.el), {
                     uuid:this.model.get('id') + "-left",
-                    anchor:"Left",
+                    anchor:"Continuous",
+                    isSource:true,
+                    scope:"cTok",
                     maxConnections:-1
                 },
                 {
                     connectorStyle : { strokeStyle:"#2980B9", lineWidth:1,dashstyle:"2 2" },
-                    endpoint:["Dot", { radius:5 }],
+                    endpoint:["Dot", { radius:10 }],
                     paintStyle:{ fillStyle:"#2980B9" },
                 }
             ));
         }
-        
     },
     addLink : function(){
         // Add Link
@@ -265,9 +282,14 @@ bbmap.Views.Node = Backbone.View.extend({
                 bbmap.views.main.instance.connect({uuids:[this.model.get('id_father')+"-bottom", this.model.get('id')+"-top" ]}); 
             }else if((this.model.get('type') == 'knowledge') && (bbmap.views.main.ckOperator == true)){
                 // Get all CKLink 
-                k_links = bbmap.views.main.links.where({knowledge : this.model.get('id')});
+                k_links = bbmap.views.main.cklinks.where({knowledge : this.model.get('id')});
                 k_links.forEach(function(link){
-                    bbmap.views.main.instance.connect({uuids:[link.get('concept')+"-right", _this.model.get('id')+"-left" ]});     
+                    bbmap.views.main.instance.connect({
+                        source:bbmap.views.main.nodes_views[link.get('concept')].el,
+                        anchor:"Continuous",
+                        target:bbmap.views.main.nodes_views[_this.model.get('id')].el,
+                        detachable:false
+                    });     
                 });         
             }
         }catch(err){
@@ -280,15 +302,17 @@ bbmap.Views.Node = Backbone.View.extend({
         if(this.model.get('type') == "concept"){
             bbmap.views.main.instance.makeTarget(this.model.get('id'), {
                 dropOptions:{ hoverClass:"dragHover" },
-                anchor:"Top"             
+                anchor:"Continuous"             
             });
         }else if(this.model.get('type') == "knowledge"){
-            bbmap.views.main.instance.makeTarget(this.model.get('id'), {
-                dropOptions:{ hoverClass:"dragHover" },
-                scope:"cTok",
-                anchor:"Left"             
-            });
-        }  
+            bbmap.views.main.instance.makeTarget(this.model.get('id'), 
+                {
+                    dropOptions:{ hoverClass:"dragHover" },
+                    scope:"cTok",
+                    anchor:"Continuous" 
+                }
+            );
+        }
     },
     render : function(){
         //style

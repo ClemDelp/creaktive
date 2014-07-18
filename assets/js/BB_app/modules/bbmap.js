@@ -56,7 +56,7 @@ var bbmap = {
       user            : global.models.current_user,
       knowledges      : global.collections.Knowledges,
       poches          : global.collections.Poches,
-      links           : global.collections.Links,
+      cklinks           : global.collections.Links,
       eventAggregator : global.eventAggregator
 
     });

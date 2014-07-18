@@ -20,13 +20,14 @@ bbmap.Views.Main = Backbone.View.extend({
         this.user               = json.user;
         this.project            = json.project;
         this.poches             = json.poches;
-        this.links              = json.links;
+        this.cklinks            = json.cklinks;
+        this.kplinks            = json.kplinks;
         this.eventAggregator    = json.eventAggregator;
         this.lastModel          = new Backbone.Model();
         this.nodes_views        = {};
         // Parameters
-        this.mode               = "visu";
-        this.filter             = "ck";
+        this.mode               = "edit";
+        this.filter             = "ckp";
         this.KcontentVisibility = true;
         this.CcontentVisibility = false;
         this.ckOperator         = true;
@@ -41,7 +42,7 @@ bbmap.Views.Main = Backbone.View.extend({
             Connector : [ "Bezier", { curviness:50 } ],
             DragOptions : { cursor: "pointer", zIndex:2000 },
             PaintStyle : { strokeStyle:this.color, lineWidth:1 },
-            EndpointStyle : { radius:5, fillStyle:this.color },
+            EndpointStyle : { radius:1, fillStyle:this.color },
             HoverPaintStyle : {strokeStyle:"#27AE60" },
             EndpointHoverStyle : {fillStyle:"#27AE60" },
             ConnectionOverlays : [
@@ -76,8 +77,9 @@ bbmap.Views.Main = Backbone.View.extend({
         "change #filterSelection" : "setFilter",
         "mouseup .dropC" : "newConceptUnlinked",
         "mouseup .dropK" : "newKnowledgeUnlinked",
-        "click .addUnlinkedC" : "createUnlinkedConcept",
-        "click .addUnlinkedK" : "createUnlinkedKnowledge",
+        "mouseup .dropP" : "newPocheUnlinked",
+        // "click .addUnlinkedC" : "createUnlinkedConcept",
+        // "click .addUnlinkedK" : "createUnlinkedKnowledge",
         "click .ckOperator" : "setCKOperator",
         "click .zoomin" : "zoomin",
         "click .zoomout" : "zoomout",
@@ -278,6 +280,13 @@ bbmap.Views.Main = Backbone.View.extend({
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
         this.createUnlinkedKnowledge(left,top);
+        this.renderActionBar();
+    },
+    newPocheUnlinked : function(e){
+        var pos = $('#dropP').offset();
+        var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
+        var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
+        this.createUnlinkedPoche(left,top);
         this.renderActionBar();
     },
     startJoyride : function(){
@@ -509,7 +518,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.instance.repaintEverything();
     },
     createUnlinkedKnowledge : function(left,top){
-        new_knowledge = new global.Models.Knowledge({
+        var model = new global.Models.Knowledge({
             id : guid(),
             type : "knowledge",
             top : top,
@@ -518,9 +527,23 @@ bbmap.Views.Main = Backbone.View.extend({
             title: "new knowledge",
             user: this.user
         });
-        new_knowledge.save();
-        this.knowledges.add(new_knowledge);
-        this.addModelToView(new_knowledge,"knowledge");
+        model.save();
+        this.knowledges.add(model);
+        this.addModelToView(model,"knowledge");
+    },
+    createUnlinkedPoche : function(left,top){
+        var model = new global.Models.Poche({
+            id : guid(),
+            type : "category",
+            top : top,
+            left: left,
+            project: this.project.get('id'),
+            title: "new category",
+            user: this.user
+        });
+        model.save();
+        this.poches.add(model);
+        this.addModelToView(model,"category");
     },
     createUnlinkedConcept : function(left,top){
         new_concept = new global.Models.ConceptModel({
@@ -537,6 +560,9 @@ bbmap.Views.Main = Backbone.View.extend({
         this.concepts.add(new_concept);
         this.addModelToView(new_concept,"concept");
     },
+    /////////////////////////////////////////
+    // Add & remove model to view
+    /////////////////////////////////////////
     addModelToView : function(model,type){
         this.lastModel = model;
         new_view = new bbmap.Views.Node({
@@ -581,12 +607,22 @@ bbmap.Views.Main = Backbone.View.extend({
         ///////////////////////
         // Remove link process        
         this.instance.bind("beforeDetach", function(conn) {
+            console.log("connection",conn)
             var resp = confirm("Delete connection?");
             if(conn.scope == "cTok"){
                 if(resp == true){
                     // k_target = _this.knowledges.get(conn.targetId);
                     // k_target.set({id_fathers : _.without(k_target.get('id_fathers'), conn.sourceId)}).save(); 
-                    links_to_remove = _this.links.where({concept : conn.sourceId, knowledge : conn.targetId});
+                    links_to_remove = _this.cklinks.where({concept : conn.sourceId, knowledge : conn.targetId});
+                    links_to_remove.forEach(function(link){
+                        link.destroy();
+                    });
+                } 
+            }else if(conn.scope == "kTop"){
+                if(resp == true){
+                    // k_target = _this.knowledges.get(conn.targetId);
+                    // k_target.set({id_fathers : _.without(k_target.get('id_fathers'), conn.sourceId)}).save(); 
+                    links_to_remove = _this.kplinks.where({poche : conn.sourceId, knowledge : conn.targetId});
                     links_to_remove.forEach(function(link){
                         link.destroy();
                     });
@@ -627,7 +663,7 @@ bbmap.Views.Main = Backbone.View.extend({
                         knowledge : info.targetId
                     });
                     new_cklink.save();
-                    _this.links.add(new_cklink);
+                    _this.cklinks.add(new_cklink);
 
                 }else{
                     bbmap.views.main.concepts.get(info.targetId).set({id_father : info.sourceId}).save();
@@ -644,6 +680,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.bar_el.find("#zoom_val").html(bbmap.zoom.get('val'));
         $( "#dropC" ).draggable();
         $( "#dropK" ).draggable();
+        $( "#dropP" ).draggable();
     },
     renderConceptsBulle : function(){
         var _this = this;
@@ -725,8 +762,16 @@ bbmap.Views.Main = Backbone.View.extend({
         this.poches.forEach(function(model){
             _this.map_el.append(bbmap.views.main.nodes_views[model.get('id')].render().el);    
         });
-        // Draggable
+        // EndPoint
+        this.poches.forEach(function(model){
+            bbmap.views.main.nodes_views[model.get('id')].addEndpoint();    
+        });
         if(this.mode == "edit"){
+            // Make its target
+            this.poches.forEach(function(model){
+                bbmap.views.main.nodes_views[model.get('id')].makeTarget();    
+            });
+            // Draggable
             this.poches.forEach(function(model){
                 bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el));
             });

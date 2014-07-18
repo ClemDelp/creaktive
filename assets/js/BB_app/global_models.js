@@ -241,6 +241,21 @@ global.Models.CKLink = Backbone.Model.extend({
         //console.log('Concept Constructor');
     }
 });
+/***************************************/
+global.Models.KPLink = Backbone.Model.extend({
+    model: this,
+    defaults : {
+        id :'',
+        user : "",
+        date : getDate(),
+        concept : "",
+        knowledge : ""
+    },
+    initialize : function Comment() {
+        this.urlRoot = "kplink";
+        //console.log('Concept Constructor');
+    }
+});
 
 /***************************************/
 global.Models.Screenshot = Backbone.Model.extend({

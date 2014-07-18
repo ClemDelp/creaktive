@@ -84,6 +84,11 @@
     "*" : ["authenticated", "canWrite"]
   },
 
+  "KPLinkController" : {
+    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated", "canWrite"]
+  },
+
   "ProjectController" : {
     "*" : "authenticated",
     "destroy" : ["authenticated", "canRemoveProject" ],
