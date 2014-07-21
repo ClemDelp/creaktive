@@ -768,7 +768,7 @@ bbmap.Views.Main = Backbone.View.extend({
         ///////////////////////
         // init
         this.nodes_views = {};
-        //this.instance.reset();
+        this.instance.deleteEveryEndpoint();
         var _this = this;
         this.map_el.empty();
         ///////////////////////
