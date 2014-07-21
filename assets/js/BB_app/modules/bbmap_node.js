@@ -17,7 +17,7 @@ bbmap.Views.Node = Backbone.View.extend({
         //     this.holdFather = this.father.clone();
         //     this.listenTo(this.father,"change:top change:left", this.followFather,this);
         // }catch(err){
-        //     console.log('no father detected')
+        //     //console.log('no father detected')
         // }
         // Templates
         this.template_bulle = _.template($('#bbmap-bulle-template').html());
@@ -54,25 +54,25 @@ bbmap.Views.Node = Backbone.View.extend({
                 if(i%5 == true){
                     var f_left = this.style.left.replace('px','');
                     var f_top = this.style.top.replace('px','');
-                    //console.log("father position : ",f_left,f_top)
+                    ////console.log("father position : ",f_left,f_top)
 
                     var h_left = holdFather.get('left');
                     var h_top = holdFather.get('top');
-                    //console.log("hold position : ",h_left,h_top)
+                    ////console.log("hold position : ",h_left,h_top)
 
                     var n_left = _this.model.get('left');
                     var n_top = _this.model.get('top');
 
                     var delta_top = h_top - f_top;
                     var delta_left = h_left - f_left;
-                    //console.log("delta left: ",delta_left)
+                    ////console.log("delta left: ",delta_left)
 
                     var x = (n_left - delta_left);
                     var y = (n_top - delta_top);
 
-                    //console.log("delta : ",delta_top,delta_left)
+                    ////console.log("delta : ",delta_top,delta_left)
                     if((Math.abs(delta_left) > 1)||(Math.abs(delta_top) > 1)){
-                        //console.log("move at left:",x," - top:",y)
+                        ////console.log("move at left:",x," - top:",y)
                         bbmap.views.main.nodes_views[_this.model.get('id')].setPosition(x,y,0,0,true);
                         bbmap.views.main.instance.repaint(_this.model.get('id'));
                         father.set({left:f_left,top:f_top},{silent:true});
@@ -82,7 +82,7 @@ bbmap.Views.Node = Backbone.View.extend({
                 i = i +1;
             });
         }catch(err){
-            console.log("this node have no father!")
+            //console.log("this node have no father!")
         }
     },
     applyStyle : function(){
@@ -124,9 +124,9 @@ bbmap.Views.Node = Backbone.View.extend({
                 top:position.top / bbmap.zoom.get('val'),
                 left:position.left / bbmap.zoom.get('val')
             }).save();   
-            console.log(this.model.get('top'),this.model.get('left'))
+            //console.log(this.model.get('top'),this.model.get('left'))
         }
-        //console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
+        ////console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
         //bbmap.views.main.reorganizeTree(this.model.get('id'))
     },
     addConceptChild : function(e){
@@ -271,7 +271,7 @@ bbmap.Views.Node = Backbone.View.extend({
                 });         
             }
         }catch(err){
-            console.log(err);
+            //console.log(err);
         }         
     },
     makeTarget : function(){

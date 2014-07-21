@@ -21,7 +21,6 @@
   },
 
   objectCreated : function(req,res, object, to, cb){
-  	console.log("create " + req.body.action)
     if(req.body.action.length == 0)return;
     Notification.create({
   		id : guid(),
@@ -46,8 +45,6 @@
 
   	
     var content ="";
-
-    console.log("update "+req.body.action)
 
     if(req.body.action.length == 0 || _.indexOf(req.body.action, "css") > -1) {
       return

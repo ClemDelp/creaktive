@@ -66,7 +66,7 @@ bbmap.Views.Main = Backbone.View.extend({
         global.eventAggregator.on('knowledge:update',this.modelUpdate,this);
         this.map_el.mousewheel(function(event) {
             event.preventDefault();
-            console.log(event.deltaY);
+            //console.log(event.deltaY);
             if(event.deltaY == -1)bbmap.views.main.zoomin()
             else bbmap.views.main.zoomout()
         });
@@ -192,7 +192,7 @@ bbmap.Views.Main = Backbone.View.extend({
 
                 var pointArray = $("._jsPlumb_endpoint>svg");   //than we are ganna draw all the points to canvas0
                 var divArray = $("._jsPlumb_endpoint");         //cause the we can't get the position of points directly, we look at his parent div
-                //console.log(divArray.length);
+                ////console.log(divArray.length);
                 for (var i = 0; i < divArray.length; i++) {
                     var top = parseFloat(divArray[i].style.top);
                     var left = parseFloat(divArray[i].style.left);
@@ -212,7 +212,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 **/
                 context = canvas.getContext("2d");                
                 context.drawImage(canvas0,0,0);                
-                //console.log(canvas.toDataURL("image/png"));
+                ////console.log(canvas.toDataURL("image/png"));
                 /**
                 Centre le canvas sur la zone dessinée et couper le reste
                 **/
@@ -242,7 +242,7 @@ bbmap.Views.Main = Backbone.View.extend({
                     }
                 }
                 var screenshot;
-                console.log(canvas2.toDataURL( "image/png" ));
+                //console.log(canvas2.toDataURL( "image/png" ));
                 screenshot = canvas2.toDataURL( "image/png" ).replace(/data:image\/png;base64,/,'');   //save screenshot
                 var uintArray = Base64Binary.decode(screenshot);
                 _this.uploadFile(uintArray, flag);
@@ -260,10 +260,10 @@ bbmap.Views.Main = Backbone.View.extend({
             file : file,
             s3_sign_put_url: '/S3/upload_sign',
             onProgress: function(percent, message) {
-                console.log(percent, " ***** ", message);
+                //console.log(percent, " ***** ", message);
             },
             onFinishS3Put: function(amz_id, file) {
-                console.log("File uploaded ", amz_id);
+                //console.log("File uploaded ", amz_id);
                 //Si c'est un screenshot servant d'image pour le projet
                 if(flag==true){
                     _this.project.save({
@@ -271,7 +271,7 @@ bbmap.Views.Main = Backbone.View.extend({
                     })
                 }
                 // Si c'est un screenshot
-                else{console.log("good");
+                else{//console.log("good");
                     var s = new global.Models.Screenshot({
                         id : guid(),
                         src : amz_id,
@@ -282,7 +282,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 }             
             },
             onError: function(status) {
-                console.log(status)
+                //console.log(status)
             }
         });
 
@@ -639,9 +639,9 @@ bbmap.Views.Main = Backbone.View.extend({
         this.instance.bind("connection", function(info, originalEvent) {
             if(originalEvent){
                 if(info.connection.scope == "cTok"){
-                    console.log("source: ",info.sourceId," - target: ",info.targetId)
+                    //console.log("source: ",info.sourceId," - target: ",info.targetId)
                     k_target = bbmap.views.main.knowledges.get(info.targetId);
-                    console.log('k_target: ',k_target)
+                    //console.log('k_target: ',k_target)
                     // CKLink
                     new_cklink = new global.Models.CKLink({
                         id :guid(),
@@ -768,7 +768,7 @@ bbmap.Views.Main = Backbone.View.extend({
         ///////////////////////
         // init
         this.nodes_views = {};
-        this.instance.reset();
+        //this.instance.reset();
         var _this = this;
         this.map_el.empty();
         ///////////////////////
