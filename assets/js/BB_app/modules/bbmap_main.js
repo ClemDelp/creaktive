@@ -607,31 +607,24 @@ bbmap.Views.Main = Backbone.View.extend({
         ///////////////////////
         // Remove link process        
         this.instance.bind("beforeDetach", function(conn) {
-            console.log("connection",conn)
             var resp = confirm("Delete connection?");
-            if(conn.scope == "cTok"){
-                if(resp == true){
-                    // k_target = _this.knowledges.get(conn.targetId);
-                    // k_target.set({id_fathers : _.without(k_target.get('id_fathers'), conn.sourceId)}).save(); 
-                    links_to_remove = _this.cklinks.where({concept : conn.sourceId, knowledge : conn.targetId});
-                    links_to_remove.forEach(function(link){
-                        link.destroy();
-                    });
-                } 
-            }else if(conn.scope == "kTop"){
-                if(resp == true){
-                    // k_target = _this.knowledges.get(conn.targetId);
-                    // k_target.set({id_fathers : _.without(k_target.get('id_fathers'), conn.sourceId)}).save(); 
-                    links_to_remove = _this.kplinks.where({poche : conn.sourceId, knowledge : conn.targetId});
-                    links_to_remove.forEach(function(link){
-                        link.destroy();
-                    });
-                } 
-            }else{
-                if(resp == true){
-                    _this.concepts.get(conn.targetId).set({id_father : "none"}).save();      
-                } 
-            }
+            var source_type = ""; 
+            var target_type = "";
+            console.log("connnnection",conn)
+            // if(conn.scope == "cTok"){
+            //     if(resp == true){
+            //         // k_target = _this.knowledges.get(conn.targetId);
+            //         // k_target.set({id_fathers : _.without(k_target.get('id_fathers'), conn.sourceId)}).save(); 
+            //         links_to_remove = _this.cklinks.where({concept : conn.sourceId, knowledge : conn.targetId});
+            //         links_to_remove.forEach(function(link){
+            //             link.destroy();
+            //         });
+            //     } 
+            // }else{
+            //     if(resp == true){
+            //         _this.concepts.get(conn.targetId).set({id_father : "none"}).save();      
+            //     } 
+            // }
             
             return resp;
         });

@@ -232,7 +232,7 @@ bbmap.Views.Node = Backbone.View.extend({
                     uuid:this.model.get('id') + "-right",
                     anchor:"Right",
                     isSource:true,
-                    scope:"cTok",
+                    //scope:"cTok",
                     maxConnections:-1
                 },
                 {
@@ -263,7 +263,7 @@ bbmap.Views.Node = Backbone.View.extend({
                     uuid:this.model.get('id') + "-left",
                     anchor:"Continuous",
                     isSource:true,
-                    scope:"cTok",
+                    //scope:"cTok",
                     maxConnections:-1
                 },
                 {
@@ -299,20 +299,20 @@ bbmap.Views.Node = Backbone.View.extend({
     makeTarget : function(){
         ///////////////////////
         // initialise as connection target.
-        if(this.model.get('type') == "concept"){
+        // if(this.model.get('type') == "concept"){
             bbmap.views.main.instance.makeTarget(this.model.get('id'), {
                 dropOptions:{ hoverClass:"dragHover" },
                 anchor:"Continuous"             
             });
-        }else if(this.model.get('type') == "knowledge"){
-            bbmap.views.main.instance.makeTarget(this.model.get('id'), 
-                {
-                    dropOptions:{ hoverClass:"dragHover" },
-                    scope:"cTok",
-                    anchor:"Continuous" 
-                }
-            );
-        }
+        // }else if(this.model.get('type') == "knowledge"){
+        //     bbmap.views.main.instance.makeTarget(this.model.get('id'), 
+        //         {
+        //             dropOptions:{ hoverClass:"dragHover" },
+        //             scope:"cTok",
+        //             anchor:"Continuous" 
+        //         }
+        //     );
+        // }
     },
     render : function(){
         //style
