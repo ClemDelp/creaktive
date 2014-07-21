@@ -246,6 +246,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 screenshot = canvas2.toDataURL( "image/png" ).replace(/data:image\/png;base64,/,'');   //save screenshot
                 var uintArray = Base64Binary.decode(screenshot);
                 _this.uploadFile(uintArray, flag);
+                alert("Sreenshot saved");
             }
         });    
     },
