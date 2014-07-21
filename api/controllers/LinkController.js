@@ -40,7 +40,7 @@
     l.project = req.session.currentProject.id
     Link.create(l).done(function(err, link){
       if(err) res.send(err);
-      Notification.objectCreated(req,res,"Link", link.id, function(notification){
+      Notification.objectCreated(req,res,"Link", link, function(notification){
         res.send(notification);
       });
       res.send(link);
@@ -57,7 +57,7 @@
           id: req.body.params.id
         }, req.body.params).done(function(err,c){
           if(err) res.send(err);
-          Notification.objectUpdated(req,res,"Link", c[0].id, function(notification){
+          Notification.objectUpdated(req,res,"Link", c[0], function(notification){
             res.send(notification);
           });
 
@@ -69,7 +69,7 @@
         l.project = req.session.currentProject.id
         Link.create(l).done(function(err,c){
           if(err) res.send(err)
-           Notification.objectCreated(req,res,"Link", c.id, function(notification){
+           Notification.objectCreated(req,res,"Link", c, function(notification){
             res.send(notification);
           });
          res.send(c);
