@@ -43,9 +43,6 @@ create : function (req,res){
   b.project = req.session.currentProject.id
   Backup.create(b).done(function(err, backup){
     if(err) res.send(err);
-    Notification.objectCreated(req,res,"Backup", backup.id, function(notification){
-      res.send(notification);
-    });
     res.send(backup);
 
   });
@@ -60,10 +57,6 @@ update : function(req, res){
     if(backup){
      Backup.update({id: req.body.params.id}, req.body.params).done(function(err,b){
       if(err) res.send(err);
-      Notification.objectUpdated(req,res,"Backup", b[0], function(notification){
-        res.send(notification);
-      });
-
       res.send(b[0]);   
 
 

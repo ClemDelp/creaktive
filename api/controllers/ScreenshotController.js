@@ -49,7 +49,7 @@ module.exports = {
   s.project = req.session.currentProject.id
   Screenshot.create(s).done(function(err, screnshot){
     if(err) res.send(err);
-    Notification.objectCreated(req,res,"Screenshot", screenshot.id, function(notification){
+    Notification.objectCreated(req,res,"Screenshot", screenshot, function(notification){
       res.send(notification);
     });
     res.send(screenshot);
