@@ -123,8 +123,9 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Downdloadimage
     /////////////////////////////////////////
-    downloadimage : function(flag){
+    downloadimage : function(e){
         _this = this;
+        //var aLink = e.target; 
         /**
         Repositionne la screenshot sur tout le graphe
         **/
@@ -243,11 +244,20 @@ bbmap.Views.Main = Backbone.View.extend({
                     }
                 }
                 var screenshot;
-                screenshot = canvas2.toDataURL( "image/png" ).replace("image/png", "image/octet-stream");
-                console.log(screenshot);
+                screenshot = canvas2.toDataURL( "image/png" );
+                //screenshot = canvas2.toDataURL( "image/png" ).replace("image/png", "image/octet-stream");
                 //window.open(screenshot);
                 //document.location.href = screenshot;
-                window.location.href = screenshot;
+                //window.location.href = screenshot;
+                // console.log(screenshot);
+
+
+                var aLink = document.createElement('a');
+                var evt = document.createEvent("HTMLEvents");
+                evt.initEvent("click", false, false);
+                aLink.download = "screenshot";
+                aLink.href = screenshot;
+                aLink.dispatchEvent(evt);
             }
         });    
     },
