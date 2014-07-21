@@ -29,30 +29,53 @@ attachment.Views.Main = Backbone.View.extend({
         "change #uploadFile" : "uploadFile"
     },
     uploadFile : function(e){
-        e.preventDefault();
-        _this = this;
-        var s3upload = new S3Upload({
-            file_dom_selector: 'uploadFile',
-            s3_sign_put_url: '/S3/upload_sign',
-            onProgress: function(percent, message) {
-                $('#status').html('Upload progress: ' + percent + '% ' + message);
+
+
+        $.ajax({
+            url: '/s3/upload',  //Server script to process data
+            type: 'POST',
+            xhr: function() {  // Custom XMLHttpRequest
+                var myXhr = $.ajaxSettings.xhr();
+                if(myXhr.upload){ // Check if upload property exists
+                    //myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+                }
+                return myXhr;
             },
-            onFinishS3Put: function(amz_id, file) {
-                _this.model.get('attachment').unshift({
-                    id : guid(),
-                    name : file.name,
-                    path : file.name,
-                    url : amz_id
-                });
-                _this.model.save();
-                _this.render();
-            },
-            onError: function(status) {
-                console.log(status)
-                $('#status').html('Upload error: ' + status);
-            }
+            //Ajax events
+            // beforeSend: beforeSendHandler,
+            // success: completeHandler,
+            // error: errorHandler,
+            // Form data
+            data: document.getElementById("uploadFile"),
+            //Options to tell jQuery not to process data or worry about content-type.
+            cache: false,
+            contentType: false,
+            processData: false
         });
-        this.render();
+        // e.preventDefault();
+        // _this = this;
+        // var s3upload = new S3Upload({
+        //     file_dom_selector: 'uploadFile',
+        //     s3_sign_put_url: '/S3/upload_sign',
+        //     onProgress: function(percent, message) {
+        //         $('#status').html('Upload progress: ' + percent + '% ' + message);
+        //     },
+        //     onFinishS3Put: function(amz_id, file) {
+        //         _this.model.get('attachment').unshift({
+        //             id : guid(),
+        //             name : file.name,
+        //             path : file.name,
+        //             url : amz_id
+        //         });
+        //         _this.model.save();
+        //         _this.render();
+        //     },
+        //     onError: function(status) {
+        //         console.log(status)
+        //         $('#status').html('Upload error: ' + status);
+        //     }
+        // });
+        // this.render();
 },
 removeFile : function(e){
     console.log(e.target.getAttribute('data-file-id'))
