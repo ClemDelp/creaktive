@@ -34,11 +34,11 @@
 </script>
 <!-- Action -->
 <script type="text/template" id="CKPreviewer_action_template" >
-  <div class="expand" style="height :700px">
+  <div class="row" style="height:700px;margin:50px">
       {{ _.each(presentations, function(presentation) { }}
-          <a id="presentation" href="#" presentation_id="{{- presentation.id}}"  class="large button secondary radious">{{- presentation.title}} </a>
+          <a id="presentation" href="#" presentation_id="{{- presentation.id}}" style="height:100px;margin:20px" class="large button  radious ">{{- presentation.title}}</a>
       {{ }); }}  
-      <a href="#" class="large button secondary radious dropdown" data-dropdown="newp">+</a>
+      <a href="#" class="large button secondary radious dropdown" style="width:130px;height:100px;margin:20px" data-dropdown="newp">+</a>
       <ul id="newp" data-dropdown-content class="f-dropdown">
         <div class="row collapse custom_row">
           <div class="small-9 columns">

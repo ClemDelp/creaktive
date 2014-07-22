@@ -245,19 +245,17 @@ bbmap.Views.Main = Backbone.View.extend({
                 }
                 var screenshot;
                 screenshot = canvas2.toDataURL( "image/png" );
-                //screenshot = canvas2.toDataURL( "image/png" ).replace("image/png", "image/octet-stream");
-                //window.open(screenshot);
-                //document.location.href = screenshot;
-                //window.location.href = screenshot;
-                // console.log(screenshot);
-
 
                 var aLink = document.createElement('a');
-                var evt = document.createEvent("HTMLEvents");
-                evt.initEvent("click", false, false);
+                // var evt = document.createEvent("HTMLEvents");
+                // evt.initEvent("click", false, false);
                 aLink.download = "screenshot";
                 aLink.href = screenshot;
-                aLink.dispatchEvent(evt);
+                //aLink.dispatchEvent(evt);
+                document.body.appendChild(aLink);
+                //console.log(aLink);
+                aLink.click();
+                document.body.removeChild(aLink);
             }
         });    
     },

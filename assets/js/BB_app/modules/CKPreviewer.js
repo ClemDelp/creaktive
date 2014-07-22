@@ -405,6 +405,7 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
                 current_presentation : this.current_presentation
             });
         $(this.el).append(CKPreviewer.views.actions_view.render().el);
+
         }else{   
             $(this.el).append(this.template({
                 cp : this.current_presentation.toJSON(),
@@ -449,16 +450,31 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         e.preventDefault();
         imagesrc = e.target.getAttribute("data-image-id");
         imagedate = e.target.getAttribute("data-image-date");
-        console.log(imagesrc,imagedate);
 
-        var aLink = document.createElement('a');
-        var evt = document.createEvent("HTMLEvents");
-        evt.initEvent("click", false, false);
-        //aLink.download = imagedate;
-        aLink.setAttribute('download', imagedate);
-        aLink.href = "/S3/getPrivateUrl?amz_id="+imagesrc;
-        aLink.dispatchEvent(evt);
-        //aLink.click();
+        var canvas = document.createElement('CANVAS'),
+        ctx = canvas.getContext('2d'),
+        img = new Image;
+        img.crossOrigin = 'Anonymous';
+        img.onload = function(){
+            var dataURL;
+            canvas.height = img.height;
+            canvas.width = img.width;
+            ctx.drawImage(img, 0, 0);
+            dataURL = canvas.toDataURL("image/png");
+            canvas = null; 
+
+            // var evt = document.createEvent("HTMLEvents");
+            // evt.initEvent("click", false, false);
+            var aLink = document.createElement('a');
+            aLink.href = dataURL;
+            aLink.setAttribute('download', imagedate);
+            //aLink.dispatchEvent(evt);
+            document.body.appendChild(aLink);
+            //console.log(aLink.download);
+            aLink.click();
+            document.body.removeChild(aLink);
+            };
+            img.src = "/S3/getPrivateUrl?amz_id="+imagesrc;
     },
     smallimage : function(e){
         e.preventDefault();
