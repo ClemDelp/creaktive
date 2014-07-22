@@ -25,7 +25,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.lastModel          = new Backbone.Model();
         this.nodes_views        = {};
         // Parameters
-        this.mode               = "visu";
+        this.mode               = json.mode;
         this.filter             = "ck";
         this.KcontentVisibility = true;
         this.CcontentVisibility = false;
