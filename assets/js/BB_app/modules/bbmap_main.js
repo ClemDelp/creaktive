@@ -905,8 +905,12 @@ bbmap.Views.Main = Backbone.View.extend({
                 view.removeView();
             });
         }
-        this.instance.cleanupListeners()
-        this.instance.deleteEveryEndpoint();
+        //this.instance.cleanupListeners()
+        //this.instance.deleteEveryEndpoint();
+        this.instance.unbind('connection');
+        this.instance.unbind('click');
+        this.instance.unbind('beforeDetach');
+        this.instance.unbind('beforeDrop')
 
         var _this = this;
         this.map_el.empty();
