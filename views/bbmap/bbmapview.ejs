@@ -1,6 +1,9 @@
 <!-- Javascript libs -->
 
 <script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
+<script type="text/javascript" src="js/vendor/jquery.iframe-transport.js"></script>
+
+
 <script src="/js/ckeditor/ckeditor.js"></script>
 <script src="/js/jquery.mousewheel.min.js"></script>
 <!-- ******************************** -->
@@ -20,6 +23,8 @@
 <!-- ******************************** -->
 <!-- CKEditor -->
 <script src="/js/ckeditor/ckeditor.js"></script>
+
+
 
 <!-- ******************************** -->
 <!-- Modules to load -->
@@ -61,11 +66,6 @@
   ///////////////////////////////////////////////////
   $(document).ready(function () {
 
-    
-
-
-
-    console.log( "CreaKtive DOM loaded!" );
     ////////////////////////////////////////
     Backbone.Model.prototype.toJSON = function() {
       return JSON.parse(JSON.stringify(this.attributes));
@@ -110,6 +110,8 @@
   });
 
 </script>
+
+
 
 
 <!-- JS -->

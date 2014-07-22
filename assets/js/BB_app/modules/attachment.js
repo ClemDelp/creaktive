@@ -26,32 +26,53 @@ attachment.Views.Main = Backbone.View.extend({
     events : {
         "click .openFile" : "openFile",
         "click .removeFile" : "removeFile",
-        "change #uploadFile" : "uploadFile"
+        "change #uploadfile" : "uploadFile"
     },
     uploadFile : function(e){
 
+e.stopPropagation(); // Stop stuff happening
+    e.preventDefault(); // Totally stop stuff happening
 
-        $.ajax({
-            url: '/s3/upload',  //Server script to process data
-            type: 'POST',
-            xhr: function() {  // Custom XMLHttpRequest
-                var myXhr = $.ajaxSettings.xhr();
-                if(myXhr.upload){ // Check if upload property exists
-                    //myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
-                }
-                return myXhr;
-            },
-            //Ajax events
-            // beforeSend: beforeSendHandler,
-            // success: completeHandler,
-            // error: errorHandler,
-            // Form data
-            data: document.getElementById("uploadFile"),
-            //Options to tell jQuery not to process data or worry about content-type.
-            cache: false,
-            contentType: false,
-            processData: false
-        });
+    files = e.target.files;
+ 
+    // START A LOADING SPINNER HERE
+ 
+    // Create a formdata object and add the files
+    var data = new FormData();
+    $.each(files, function(key, value)
+    {
+        data.append(key, value);
+    });
+    
+    $.ajax({
+        url: 's3/upload',
+        type: 'POST',
+        data: data,
+        cache: false,
+        dataType: 'json',
+        processData: false, // Don't process the files
+        contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+        success: function(data, textStatus, jqXHR)
+        {
+            if(typeof data.error === 'undefined')
+            {
+                // Success so call function to process the form
+                submitForm(e, data);
+            }
+            else
+            {
+                // Handle errors here
+                console.log('ERRORS: ' + data.error);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown)
+        {
+            // Handle errors here
+            console.log('ERRORS: ' + textStatus);
+            // STOP LOADING SPINNER
+        }
+    });
+
         // e.preventDefault();
         // _this = this;
         // var s3upload = new S3Upload({
