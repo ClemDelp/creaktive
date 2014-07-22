@@ -266,6 +266,7 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
     },
     returnAction : function(e){
         this.mode = 0;
+        CKEDITOR.remove(CKEDITOR.instances.ckeditor);
         this.render();
     },
     export : function(e){
