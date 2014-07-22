@@ -58,7 +58,7 @@ var bbmap = {
       poches          : global.collections.Poches,
       links           : global.collections.Links,
       eventAggregator : global.eventAggregator,
-      mode            : "visu"
+      mode            : "edit"
 
     });
     this.views.main.render();

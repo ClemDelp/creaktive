@@ -14,7 +14,7 @@ bbmap.Views.Node = Backbone.View.extend({
         // Se mettre en ecoute sur le deplacement du node pere
         try{
             this.father = bbmap.views.main.concepts.get(this.model.get('id_father'));
-            this.holdFather = this.father.clone();
+            this.oldFather = this.father.clone();
             this.listenTo(this.father,"change:top change:left", this.followFather,this);
         }catch(err){
             //console.log('no father detected')
@@ -29,8 +29,9 @@ bbmap.Views.Node = Backbone.View.extend({
         "click .ep2" : "addKnowledgeChild",
     },
     followFather : function(){
-        var hf_left = this.holdFather.get('left');
-        var hf_top = this.holdFather.get('top');
+
+        var hf_left = this.oldFather.get('left');
+        var hf_top = this.oldFather.get('top');
         var f_left = this.father.get('left');
         var f_top = this.father.get('top');
         var n_left = this.model.get('left');
@@ -40,8 +41,10 @@ bbmap.Views.Node = Backbone.View.extend({
         var x = n_left - delta_left;
         var y = n_top - delta_top;
         this.setPosition(x,y,0,0,false);
-        this.holdFather = this.father.clone();
+        delete this.oldFather;
+        this.oldFather = this.father.clone();
         bbmap.views.main.instance.repaint(this.model.get('id'));
+        
     },
     // addFollowFather : function(){
         
@@ -50,7 +53,7 @@ bbmap.Views.Node = Backbone.View.extend({
     //         var _this = this;
     //         var father_el = bbmap.views.main.nodes_views[this.model.get('id_father')].el;
     //         var father = bbmap.views.main.concepts.get(this.model.get('id_father')).clone();
-    //         var holdFather = father.clone();
+    //         var oldFather = father.clone();
     //         var i = 0;
     //         $(father_el).watch('top left', function(){
     //             //alert('follow')
@@ -59,8 +62,8 @@ bbmap.Views.Node = Backbone.View.extend({
     //                 var f_top = this.style.top.replace('px','');
     //                 ////console.log("father position : ",f_left,f_top)
 
-    //                 var h_left = holdFather.get('left');
-    //                 var h_top = holdFather.get('top');
+    //                 var h_left = oldFather.get('left');
+    //                 var h_top = oldFather.get('top');
     //                 ////console.log("hold position : ",h_left,h_top)
 
     //                 var n_left = _this.model.get('left');
@@ -80,7 +83,7 @@ bbmap.Views.Node = Backbone.View.extend({
     //                     bbmap.views.main.instance.repaint(_this.model.get('id'));
     //                     father.set({left:f_left,top:f_top},{silent:true});
     //                 }
-    //                 holdFather = father.clone();
+    //                 oldFather = father.clone();
     //             }
     //             i = i +1;
     //         });
@@ -111,7 +114,7 @@ bbmap.Views.Node = Backbone.View.extend({
         this.model.save({
             top: top,
             left: left
-        },{silent:broadcast}); 
+        }); 
     },
     getPosition : function(){
         var position = {};
@@ -123,10 +126,10 @@ bbmap.Views.Node = Backbone.View.extend({
         var position = this.getPosition();
         if((position.top != 0)&&($(this.el).position().left != 0)){
             // Si la view n'a pas été supprimée on save
-            this.model.set({
+            this.model.save({
                 top:position.top / bbmap.zoom.get('val'),
                 left:position.left / bbmap.zoom.get('val')
-            }).save();   
+            });   
             //console.log(this.model.get('top'),this.model.get('left'))
         }
         ////console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))

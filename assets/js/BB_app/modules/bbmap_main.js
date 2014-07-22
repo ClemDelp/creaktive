@@ -244,7 +244,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 }
                 var screenshot;
                 screenshot = canvas2.toDataURL( "image/png" ).replace("image/png", "image/octet-stream");
-                console.log(screenshot);
+ 
                 //window.open(screenshot);
                 //document.location.href = screenshot;
                 window.location.href = screenshot;
@@ -900,7 +900,11 @@ bbmap.Views.Main = Backbone.View.extend({
     render : function(){        
         ///////////////////////
         // init
-        this.nodes_views = {};
+        if(this.nodes_views){
+            _.each(this.nodes_views,function(view){
+                view.removeView();
+            });
+        }
         this.instance.deleteEveryEndpoint();
         var _this = this;
         this.map_el.empty();
