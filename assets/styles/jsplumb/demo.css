@@ -1,33 +1,29 @@
-
-
-
 #actionbar .panel {
-margin-bottom:0px;
-padding-bottom: 0px;
+	margin-bottom:0px;
+	padding-bottom: 0px;
 }
 
 #map_container .tabs dd > a, .tabs .tab-title > a {
-display: block;
-background: #efefef;
-color: #222222;
-padding: 0.5rem 0.5rem;
-font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
-font-size: 1rem;
+	display: block;
+	background: #efefef;
+	color: #222222;
+	padding: 0.5rem 0.5rem;
+	font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+	font-size: 1rem;
 }
 
 #map{
-		border : 0px;
-
+	border : 0px;
 }
 
 #map_container{
-	height:800px;overflow:hidden;
+	height:44em;overflow:hidden;
 	/*background-image: url("/img/pattern.png");*/
 }
 
 body{
 	/*background-color: white;*/
-	background-color:#efefef;
+	/*background-color:#efefef;*/
 }
 .demo {
   	top: -500px;
@@ -52,6 +48,13 @@ body{
 	line-height:1em;	
 	z-index:4;
 	font-weight:bold;
+}
+
+.chart-demo .window.poche { 
+	border:0.15em dotted red; 	
+	/*width:20em;*/
+	max-width: 15em;
+	min-width: 5em;
 }
 
 .chart-demo .window.knowledge { 

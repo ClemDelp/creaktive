@@ -21,15 +21,12 @@ bbmap.Views.Main = Backbone.View.extend({
         this.project            = json.project;
         this.poches             = json.poches;
         this.cklinks            = json.cklinks;
-        this.kplinks            = json.kplinks;
         this.eventAggregator    = json.eventAggregator;
         this.lastModel          = new Backbone.Model();
         this.nodes_views        = {};
         // Parameters
         this.mode               = "edit";
         this.filter             = "ckp";
-        this.KcontentVisibility = true;
-        this.CcontentVisibility = false;
         this.ckOperator         = true;
         this.positionRef        = 550;
         this.color              = "#27AE60";
@@ -369,6 +366,18 @@ bbmap.Views.Main = Backbone.View.extend({
         this.setZoom(bbmap.zoom.get('val'));
     },
     setZoom : function(zoom) {
+        // scale = Math.round(zoom*10)/10;
+
+        // $('#map').attr({
+        //     style:
+        //         'zoom: '+scale+';'+
+        //         '-webkit-transform: scale('+scale+');'+
+        //         '-moz-transform: scale('+scale+');'+
+        //         '-o-transform: scale('+scale+');'+
+        //         '-ms-transform: scale('+scale+');'+
+        //         'transform: scale('+scale+');'
+        // });
+
       transformOrigin = [ 0.5, 0.5 ];
       el = this.map_el[0];
       var p = [ "webkit", "moz", "ms", "o" ],
@@ -572,9 +581,9 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         this.map_el.append(new_view.render().el);
         new_view.addEndpoint();
-        new_view.addLink();
+        //new_view.addLink();
         new_view.makeTarget();
-        new_view.addFollowFather();
+        //new_view.addFollowFather();
         this.instance.draggable($(new_view.el));
         this.nodes_views[model.get('id')] = new_view;
         this.startJoyride();
@@ -594,75 +603,82 @@ bbmap.Views.Main = Backbone.View.extend({
         } 
         model_view.remove();
     },
+    // makeEveryNodeTargetable : function(windows){
+    //     this.instance.makeTarget(windows, {
+    //         dropOptions:{ hoverClass:"dragHover" },
+    //         anchor:"Continuous"             
+    //     });
+    // },
     /////////////////////////////////////////
     // jsPlumb
     /////////////////////////////////////////
     jsPlumbEventsInit : function(){
         ///////////////////////
         // init
-        _this = this;
-        instance = _this.instance;
-        //this.instance.unbind();
-        //var windows = jsPlumb.getSelector(".chart-demo .window");
+        // var windows = jsPlumb.getSelector(".window");
+        // this.makeEveryNodeTargetable(windows);
+        //this.makeEveryConnectorSource(windows);
         ///////////////////////
-        // Remove link process        
+        // Remove link process
         this.instance.bind("beforeDetach", function(conn) {
             var resp = confirm("Delete connection?");
-            var source_type = ""; 
-            var target_type = "";
-            console.log("connnnection",conn)
-            // if(conn.scope == "cTok"){
-            //     if(resp == true){
-            //         // k_target = _this.knowledges.get(conn.targetId);
-            //         // k_target.set({id_fathers : _.without(k_target.get('id_fathers'), conn.sourceId)}).save(); 
-            //         links_to_remove = _this.cklinks.where({concept : conn.sourceId, knowledge : conn.targetId});
-            //         links_to_remove.forEach(function(link){
-            //             link.destroy();
-            //         });
-            //     } 
-            // }else{
-            //     if(resp == true){
-            //         _this.concepts.get(conn.targetId).set({id_father : "none"}).save();      
-            //     } 
-            // }
-            
+            if(resp == true){
+                var links_to_remove = bbmap.views.main.cklinks.where({source : conn.sourceId, target : conn.targetId});
+                links_to_remove.forEach(function(link){
+                    link.destroy();
+                });
+                var links_to_remove = bbmap.views.main.cklinks.where({source : conn.targetId, target : conn.sourceId});
+                links_to_remove.forEach(function(link){
+                    link.destroy();
+                });
+                // If model is a concept
+                try{
+                    console.log('tutu')
+                    //bbmap.views.main.concepts.get(conn.targetId).save({id_father : "none"});      
+                }catch(err){
+                    console.log('this model is not a concept');
+                }
+            }
             return resp;
         });
         this.instance.bind("click", function(conn) {
-            instance.detach(conn);
+            bbmap.views.main.instance.detach(conn);
         });
         ///////////////////////
         // New link process
         this.instance.bind("beforeDrop", function(conn) {
-            if(_this.concepts.get(conn.targetId).get('id_father') != "none"){
-                alert("This concept already has a parent, please remove the old relationship before assign a new parent");
-                return false;
-            }else{
+            //var conn_type = global.Functions.getConnectionType(conn.sourceId,conn.targetId);
+            // if((conn_type == "concept-concept")&&(_this.concepts.get(conn.targetId).get('id_father') != "none")){
+            //     alert("This concept already has a parent, please remove the old relationship before assign a new parent");
+            //     return false;
+            // }else{
                 return true;
-            }   
+            // }   
         });
         this.instance.bind("connection", function(info, originalEvent) {
             if(originalEvent){
-                if(info.connection.scope == "cTok"){
-                    console.log("source: ",info.sourceId," - target: ",info.targetId)
-                    k_target = bbmap.views.main.knowledges.get(info.targetId);
-                    console.log('k_target: ',k_target)
-                    // CKLink
-                    new_cklink = new global.Models.CKLink({
-                        id :guid(),
-                        user : _this.user,
-                        date : getDate(),
-                        concept : info.sourceId,
-                        knowledge : info.targetId
-                    });
-                    new_cklink.save();
-                    _this.cklinks.add(new_cklink);
-
-                }else{
+                var conn_type = global.Functions.getConnectionType(info.sourceId,info.targetId);
+                console.log("source: ",info.sourceId," - target: ",info.targetId, " - type: ", conn_type);
+                // CKLink
+                new_cklink = new global.Models.CKLink({
+                    id :guid(),
+                    user : _this.user,
+                    date : getDate(),
+                    source : info.sourceId,
+                    target : info.targetId,
+                    type : conn_type
+                });
+                new_cklink.save();
+                bbmap.views.main.cklinks.add(new_cklink);
+                // If model == concept
+                try{
                     bbmap.views.main.concepts.get(info.targetId).set({id_father : info.sourceId}).save();
-                }    
+                    //bbmap.views.main.nodes_views[info.targetId].addFollowFather();   
+                }catch(err){
+                    console.log("this model is not a model...")
+                }
             }
-        });     
+        });
     },
     renderActionBar : function(){
         this.bar_el.empty();
@@ -682,7 +698,7 @@ bbmap.Views.Main = Backbone.View.extend({
             bbmap.views.main.nodes_views[concept.get('id')] = new bbmap.Views.Node({
                 className : "window concept bulle",
                 id : concept.get('id'),
-                model : concept,
+                model : concept
             });
         });
         // Render
@@ -693,19 +709,15 @@ bbmap.Views.Main = Backbone.View.extend({
         this.concepts.forEach(function(model){
             bbmap.views.main.nodes_views[model.get('id')].addEndpoint();    
         });
-        // Add links
-        this.concepts.forEach(function(model){
-            bbmap.views.main.nodes_views[model.get('id')].addLink();    
-        });
         if(this.mode == "edit"){
-            // Make its target
+            // Make as a target
             this.concepts.forEach(function(model){
-                bbmap.views.main.nodes_views[model.get('id')].makeTarget();    
+                bbmap.views.main.nodes_views[model.get('id')].makeTarget();
             });
             // Set concept following his father
-            this.concepts.forEach(function(model){
-                bbmap.views.main.nodes_views[model.get('id')].addFollowFather();
-            });
+            // this.concepts.forEach(function(model){
+            //     bbmap.views.main.nodes_views[model.get('id')].addFollowFather();
+            // });
             // Draggable
             this.concepts.forEach(function(model){
                 bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el));
@@ -726,14 +738,14 @@ bbmap.Views.Main = Backbone.View.extend({
         this.knowledges.forEach(function(model){
             _this.map_el.append(bbmap.views.main.nodes_views[model.get('id')].render().el);    
         });
-        // EndPoint
-        this.knowledges.forEach(function(model){
-            bbmap.views.main.nodes_views[model.get('id')].addEndpoint();    
-        });
         if(this.mode == "edit"){
-            // Make its target
+            // Make as a target
             this.knowledges.forEach(function(model){
-                bbmap.views.main.nodes_views[model.get('id')].makeTarget();    
+                bbmap.views.main.nodes_views[model.get('id')].makeTarget();
+            });
+            // EndPoint
+            this.knowledges.forEach(function(model){
+                bbmap.views.main.nodes_views[model.get('id')].addEndpoint();    
             });
             // Draggable
             this.knowledges.forEach(function(model){
@@ -755,14 +767,14 @@ bbmap.Views.Main = Backbone.View.extend({
         this.poches.forEach(function(model){
             _this.map_el.append(bbmap.views.main.nodes_views[model.get('id')].render().el);    
         });
-        // EndPoint
-        this.poches.forEach(function(model){
-            bbmap.views.main.nodes_views[model.get('id')].addEndpoint();    
-        });
         if(this.mode == "edit"){
-            // Make its target
+            // Make as a target
+            this.knowledges.forEach(function(model){
+                bbmap.views.main.nodes_views[model.get('id')].makeTarget();
+            });
+            // EndPoint
             this.poches.forEach(function(model){
-                bbmap.views.main.nodes_views[model.get('id')].makeTarget();    
+                bbmap.views.main.nodes_views[model.get('id')].addEndpoint();    
             });
             // Draggable
             this.poches.forEach(function(model){
@@ -770,19 +782,53 @@ bbmap.Views.Main = Backbone.View.extend({
             });
         }
     },
-    renderCKLinks : function(){
+    renderLinks : function(){
+        // concepts
+        this.concepts.forEach(function(model){
+            bbmap.views.main.nodes_views[model.get('id')].addLink();    
+        });
+        // Knowledges
         this.knowledges.forEach(function(model){
             bbmap.views.main.nodes_views[model.get('id')].addLink();    
         });
+        // Poches
+        this.poches.forEach(function(model){
+            bbmap.views.main.nodes_views[model.get('id')].addLink();    
+        });
+        
     },
-    renderPKLinks : function(){
+    // renderCKLinks : function(){
+    //     this.knowledges.forEach(function(model){
+    //         bbmap.views.main.nodes_views[model.get('id')].addLink();    
+    //     });
 
-    },
+
+    //     // try{
+    //     //     bbmap.views.main.instance.connect({uuids:[this.model.get('id_father')+"-bottom", this.model.get('id')+"-top" ]}); 
+            
+    //     //         // Get all CKLink 
+    //     //         k_links = bbmap.views.main.cklinks.where({knowledge : this.model.get('id')});
+    //     //         k_links.forEach(function(link){
+    //     //             bbmap.views.main.instance.connect({
+    //     //                 source:bbmap.views.main.nodes_views[link.get('concept')].el,
+    //     //                 anchor:"Continuous",
+    //     //                 target:bbmap.views.main.nodes_views[_this.model.get('id')].el,
+    //     //                 detachable:false
+    //     //             });     
+    //     //         });         
+            
+    //     // }catch(err){
+    //     //     console.log(err);
+    //     // }    
+    // },
     render : function(){        
         ///////////////////////
         // init
         this.nodes_views = {};
-        this.instance.reset();
+        this.instance.deleteEveryEndpoint();
+        // this.resetZoom();
+        // this.instance.reset();
+        this.instance.detachEveryConnection();
         var _this = this;
         this.map_el.empty();
         ///////////////////////
@@ -803,7 +849,7 @@ bbmap.Views.Main = Backbone.View.extend({
         else if(this.filter == "ck"){
             this.renderConceptsBulle();
             this.renderKnowledgesBulle();
-            this.renderCKLinks();
+            // this.renderCKLinks();
         }
         else if(this.filter == "kp"){
             this.renderKnowledgesBulle();
@@ -813,8 +859,10 @@ bbmap.Views.Main = Backbone.View.extend({
             this.renderConceptsBulle();
             this.renderKnowledgesBulle();
             this.renderPochesBulle();
-            this.renderCKLinks();
+            // this.renderCKLinks();
         }
+        ///////////////////////
+        this.renderLinks();
         ///////////////////////
         if(this.mode == "edit") this.showOverLays();
         else this.hideOverLays();

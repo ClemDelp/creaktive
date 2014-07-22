@@ -1,7 +1,41 @@
 function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
 function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
 function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
-
+///////////////////////////////////////////////////////////////////////////////////////
+// True / False
+///////////////////////////////////////////////////////////////////////////////////////
+global.Functions.getConcept = function(id){
+  console.log('get concept')
+  return global.collections.Concepts.get(id);
+}
+global.Functions.getKnowledge = function(id){
+  console.log('get know')
+  return global.collections.Knowledges.get(id);
+}
+global.Functions.getPoche = function(id){
+  console.log('get poche')
+  return global.collections.Poches.get(id);
+}
+global.Functions.getTypeById = function(id){
+  var type = "";
+  if(global.Functions.getConcept(id) != undefined) type = global.Functions.getConcept(id).get('type');
+  else if(global.Functions.getKnowledge(id) != undefined) type = global.Functions.getKnowledge(id).get('type');
+  else if(global.Functions.getPoche(id) != undefined) type = global.Functions.getPoche(id).get('type');
+  return type;
+}
+global.Functions.getConnectionType = function(sourceId,targetId){
+    var source_type = global.Functions.getTypeById(sourceId);
+    var target_type = global.Functions.getTypeById(targetId);
+    return conn_type = source_type+"-"+target_type;
+},
+global.Functions.setLinkType = function(model){
+  var type = global.Functions.getConnectionType(model.get('source'),model.get('target'))
+  model.save({type : type});
+  return model;
+}
+///////////////////////////////////////////////////////////////////////////////////////
+// Dictionnary
+///////////////////////////////////////////////////////////////////////////////////////
 global.Functions.getProjectsUsersDictionary = function(projects,permissions){
 	var dictionary = {};
 	/////////////////////////////

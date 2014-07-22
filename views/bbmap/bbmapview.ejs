@@ -45,7 +45,6 @@
 <%- partial('../app/templates/topbar_templates') %>
 <%- partial('../app/templates/title_templates') %>
 <%- partial('templates/bbmap_templates') %>
-<%- partial('../app/templates/title_templates') %>
 
 <script type="text/javascript" src="js/BB_app/modules/title.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/modelEditor.js"></script>
@@ -57,7 +56,6 @@
 <script type="text/javascript" src="js/BB_app/modules/templatesList.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/nodesMapping.js"></script>
 <script src="js/BB_app/modules/topbar.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/title.js"></script>
 
 <script type="text/javascript" src="js/BB_app/modules/bbmap.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/bbmap_node.js"></script>
@@ -107,9 +105,7 @@
 
       global.init(json, function(){
         // Modules
-        //title.init(json.project,"bbmap");
         topbar.init();
-        title.init(json.project,"bbmap");
         bbmap.init();
         /*activat of "hashchange events's monitoring"*/
         Backbone.history.start();  
