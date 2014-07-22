@@ -705,7 +705,7 @@ bbmap.Views.Main = Backbone.View.extend({
         new_view.addEndpoint();
         new_view.addLink();
         new_view.makeTarget();
-        new_view.addFollowFather();
+        //new_view.addFollowFather();
         this.instance.draggable($(new_view.el));
         this.nodes_views[model.get('id')] = new_view;
         this.startJoyride();
@@ -830,9 +830,9 @@ bbmap.Views.Main = Backbone.View.extend({
                 bbmap.views.main.nodes_views[model.get('id')].makeTarget();    
             });
             // Set concept following his father
-            this.concepts.forEach(function(model){
-                bbmap.views.main.nodes_views[model.get('id')].addFollowFather();
-            });
+            // this.concepts.forEach(function(model){
+            //     bbmap.views.main.nodes_views[model.get('id')].addFollowFather();
+            // });
             // Draggable
             this.concepts.forEach(function(model){
                 bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el));
