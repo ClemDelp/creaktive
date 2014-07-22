@@ -12,13 +12,17 @@ bbmap.Views.Node = Backbone.View.extend({
         this.listenTo(this.model,"change:title", this.render); 
         this.listenTo(this.model,"change:css", this.render); 
         // Se mettre en ecoute sur le deplacement du node pere
+        this.oldFather = new Backbone.Model();
         try{
             this.father = bbmap.views.main.concepts.get(this.model.get('id_father'));
             this.oldFather = this.father.clone();
             this.listenTo(this.father,"change:top change:left", this.followFather,this);
+            this.listenTo(global.eventAggregator,this.father.get('id'),this.setOldFather,this);
         }catch(err){
             //console.log('no father detected')
         }
+        // Events
+
         // Templates
         this.template_bulle = _.template($('#bbmap-bulle-template').html());
     },
@@ -28,8 +32,11 @@ bbmap.Views.Node = Backbone.View.extend({
         "click .ep" : "addConceptChild",
         "click .ep2" : "addKnowledgeChild",
     },
+    setOldFather : function(model){
+        //alert("set old father")
+        this.oldFather = model.clone();
+    },
     followFather : function(){
-
         var hf_left = this.oldFather.get('left');
         var hf_top = this.oldFather.get('top');
         var f_left = this.father.get('left');
@@ -41,7 +48,6 @@ bbmap.Views.Node = Backbone.View.extend({
         var x = n_left - delta_left;
         var y = n_top - delta_top;
         this.setPosition(x,y,0,0,false);
-        delete this.oldFather;
         this.oldFather = this.father.clone();
         bbmap.views.main.instance.repaint(this.model.get('id'));
         
@@ -114,7 +120,8 @@ bbmap.Views.Node = Backbone.View.extend({
         this.model.save({
             top: top,
             left: left
-        }); 
+        },{silent:broadcast});
+        global.eventAggregator.trigger(this.model.get('id'),this.model)
     },
     getPosition : function(){
         var position = {};
@@ -202,10 +209,11 @@ bbmap.Views.Node = Backbone.View.extend({
         this.removeView();
     },
     removeView : function(){
-        this.endpoints.forEach(function(ep){
-            bbmap.views.main.instance.deleteEndpoint(ep);
-        });
-        bbmap.views.main.instance.detachAllConnections($(this.el));
+        bbmap.views.main.instance.deleteEveryEndpoint(this.el);
+        // this.endpoints.forEach(function(ep){
+        //     bbmap.views.main.instance.deleteEndpoint(ep);
+        // });
+        // bbmap.views.main.instance.detachAllConnections($(this.el));
         this.remove();
     },
     /////////////////////////////////////////

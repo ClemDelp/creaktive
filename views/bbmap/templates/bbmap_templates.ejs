@@ -62,7 +62,17 @@
         <option value="ck" {{ if(filter == "ck"){ }}selected{{ } }}>Concepts & Knowledge</option>
 
       </select>
+           
+      {{ if((filter == "ck")){ }}
+        <a href="#" class="tiny round button secondary ckOperator">Display CK operator</a>
+      {{ } }}
+      <a href="#" class="tiny round button secondary reset">Reset view</a>
+      <a href="#" class="tiny button round secondary downloadimage">Download Image</a>
+      <a href="#" class="tiny round button secondary zoomout">+</a>
+      <span id="zoom_val"></span>
+      <a href="#" class="tiny round button secondary zoomin">-</a>
       
+      <br>
       {{ if(mode == "edit"){ }}
         {{ if((filter == "c")||(filter == "ck")||(filter == "ckp")){ }}
           <strong><small style="color:#27AE60">Drag a new concept : </small></strong>
@@ -77,16 +87,7 @@
           <img id="dropK" style="width:5%;z-index:999999" class="dropK" title="click and drop to create a new knowledge" src="/img/drop_k.png">
         {{ } }}
       {{ } }}
-      
-      {{ if((filter == "ck")){ }}
-        <a href="#" class="tiny round button secondary ckOperator">Display CK operator</a>
-      {{ } }}
-      <a href="#" class="tiny round button secondary reset">Reset view</a>
-      <a href="#" class="tiny button round secondary downloadimage">Download Image</a>
-      <a href="#" class="tiny round button secondary zoomout">+</a>
-      <span id="zoom_val"></span>
-      <a href="#" class="tiny round button secondary zoomin">-</a>
-      
+
     </center>
   </div>
 </script>
