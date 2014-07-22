@@ -196,10 +196,77 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
     events : {
         "click #add1" : "add",
         "click #presentation" : "changecurrent",
-        "click #delete" : "deletecurrent",
+    },
+    //change current presentation
+    changecurrent : function(e){
+        e.preventDefault();
+        var sid = e.target.getAttribute("presentation_id");
+        this.current_presentation = this.presentations.get(sid);
+        //console.log(this.current_presentation);
+        CKPreviewer.views.middle_part_view.current_presentation=this.current_presentation;
+        CKPreviewer.views.middle_part_view.mode=1;
+        CKPreviewer.views.middle_part_view.render();
+        CKEDITOR.replace('ckeditor',{
+            height:700,
+        });
+        CKEDITOR.instances.ckeditor.setData(this.current_presentation.get('data'));
+        var cp = this.current_presentation;
+        CKEDITOR.instances.ckeditor.on( 'change', function(e) {
+            var data = CKEDITOR.instances.ckeditor.getData();
+            //console.log(this.current_presentation);
+            cp.set({'data':CKEDITOR.instances.ckeditor.getData()}).save();    
+        });
+    },
+    //create a new presentation
+    add : function(){
+        if($(".presentation_title").val()){
+            var project_id = this.project.get('id');
+            new_presentation = new global.Models.Presentation({
+                id : guid(),
+                title : $(".presentation_title").val(),
+                data : "",
+                project_id : project_id,
+            });
+            new_presentation.save();
+            alert("Presentation created");
+            this.current_presentation = new_presentation;
+            this.presentations.add(this.current_presentation);
+            this.render();
+        }
+     },
+    render : function(){
+        $(this.el).empty();
+        $(this.el).append(this.template({
+            presentations : this.presentations.toJSON(),
+        }));
+
+        return this;
+    }
+});
+/////////////////////////////////////////
+CKPreviewer.Views.MiddlePart = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        this.template = _.template($("#CKPreviewer_editer_template").html());
+        this.project = json.project;
+        this.presentations = json.presentations;
+        this.knowledges = json.knowledges;
+        this.eventAggregator  = json.eventAggregator;
+        this.current_presentation = json.current_presentation;
+        this.eventAggregator.on("renderImg", this.renderImg, this);
+        this.eventAggregator.on("addCK", this.addCK, this);
+        this.eventAggregator.on("addP", this.addP, this);
+        this.mode = 0;
+    },
+    events : {
         "click .delete" : "deletepresentation",
         "click .clearpresentation" : "clearpresentation",
         "click .export" : "export",
+        "click .return" : "returnAction"
+    },
+    returnAction : function(e){
+        this.mode = 0;
+        this.render();
     },
     export : function(e){
         _this = this;
@@ -209,7 +276,7 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
         }else{
             alert("Please create a presentation");
         }  
-       var data = CKEDITOR.instances.ckeditor.getData();
+        var data = CKEDITOR.instances.ckeditor.getData();
         var arr = new Array();
         arr = data.split('src="');
         var asyncLoop = function(o){
@@ -292,121 +359,9 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
             this.current_presentation = null;
         }
         CKPreviewer.views.middle_part_view.current_presentation=this.current_presentation;
-        if(this.current_presentation){
-            $("#drop0").html(this.current_presentation.get('title'));
-            CKPreviewer.views.middle_part_view.render();
-            CKEDITOR.replace('ckeditor',{
-                height:600,
-            });
-            CKEDITOR.instances.ckeditor.setData(this.current_presentation.get('data'));
-            var cp = this.current_presentation;
-            CKEDITOR.instances.ckeditor.on( 'change', function(e) {
-                var data = CKEDITOR.instances.ckeditor.getData();
-                //console.log(this.current_presentation);
-                cp.set({'data':CKEDITOR.instances.ckeditor.getData()}).save();    
-            });
-        }else{
-            $("#drop0").html("Presentation");
-            CKPreviewer.views.middle_part_view.render();
-            CKEDITOR.replace('ckeditor',{
-                height:600,
-            });
-            CKEDITOR.instances.ckeditor.setData();
-            var cp = this.current_presentation;
-            CKEDITOR.instances.ckeditor.on( 'change', function(e) {
-                var data = CKEDITOR.instances.ckeditor.getData();
-                //console.log(this.current_presentation);
-                cp.set({'data':CKEDITOR.instances.ckeditor.getData()}).save();    
-            });
-        }
-        this.render();
+        this.returnAction();
     },
-    //change current presentation
-    changecurrent : function(e){
-        e.preventDefault();
-        var sid = e.target.getAttribute("presentation_id");
-        this.current_presentation = this.presentations.get(sid);
-        //console.log(this.current_presentation);
-        CKPreviewer.views.middle_part_view.current_presentation=this.current_presentation;
-        $("#drop0").html(this.current_presentation.get('title'));
-        CKPreviewer.views.middle_part_view.render();
-        CKEDITOR.replace('ckeditor',{
-            height:600,
-        });
-        CKEDITOR.instances.ckeditor.setData(this.current_presentation.get('data'));
-        var cp = this.current_presentation;
-        CKEDITOR.instances.ckeditor.on( 'change', function(e) {
-            var data = CKEDITOR.instances.ckeditor.getData();
-            //console.log(this.current_presentation);
-            cp.set({'data':CKEDITOR.instances.ckeditor.getData()}).save();    
-        });
-    },
-    //create a new presentation
-    add : function(){
-        if($(".presentation_title").val()){
-            var project_id = this.project.get('id');
-            if(this.current_presentation){
-                new_presentation = new global.Models.Presentation({
-                    id : guid(),
-                    title : $(".presentation_title").val(),
-                    data : "",
-                    project_id : project_id,
-                });
-            }else{
-                new_presentation = new global.Models.Presentation({
-                    id : guid(),
-                    title : $(".presentation_title").val(),
-                    data : CKEDITOR.instances.ckeditor.getData(),
-                    project_id : project_id,
-                });     
-            }
-            new_presentation.save();
-            alert("Presentation created");
-            this.current_presentation = new_presentation;
-            this.presentations.add(this.current_presentation);
-            this.render();
-            CKPreviewer.views.middle_part_view.render();
-            CKEDITOR.replace('ckeditor',{
-                height:600,
-            });
-            CKEDITOR.instances.ckeditor.setData(this.current_presentation.get("data"));
-            var cp = this.current_presentation;
-            CKEDITOR.instances.ckeditor.on( 'change', function(e) {
-                var data = CKEDITOR.instances.ckeditor.getData();
-                //console.log(this.current_presentation);
-                cp.set({'data':CKEDITOR.instances.ckeditor.getData()}).save();    
-            });
-        }
-     },
-    render : function(){
-        $(this.el).append(this.template({
-            presentations : this.presentations.toJSON(),
-            cp : this.current_presentation.toJSON(),
-        }));
 
-        return this;
-    }
-});
-/////////////////////////////////////////
-CKPreviewer.Views.MiddlePart = Backbone.View.extend({
-    initialize : function(json){
-        _.bindAll(this, 'render');
-        this.template = _.template($("#CKPreviewer_editer_template").html());
-        this.project = json.project;
-        this.presentations = json.presentations;
-        this.knowledges = json.knowledges;
-        this.eventAggregator  = json.eventAggregator;
-        this.current_presentation = json.current_presentation;
-        this.eventAggregator.on("renderImg", this.renderImg, this);
-        this.eventAggregator.on("addCK", this.addCK, this);
-        this.eventAggregator.on("addP", this.addP, this);
-    },
-    events : {
-        "click .createpresentation" : "updatepresentation",
-        "click .clearpresentation" : "clearpresentation",
-        "click .resetpresentation" : "resetpresentation",
-        "click .export" : "export",
-    },
     addCK : function(conceptTitle,conceptContent){
         var title = conceptTitle;
         var content = conceptContent;
@@ -440,16 +395,21 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         }
     },
     render : function(){
-        $(this.el).empty();        
-        if(CKPreviewer.views.actions_view){CKPreviewer.views.actions_view.remove();}
-        CKPreviewer.views.actions_view = new CKPreviewer.Views.Actions({
-            eventAggregator  : this.eventAggregator,
-            project : this.project,
-            presentations : this.presentations,
-            current_presentation : this.current_presentation
-        });
+        $(this.el).empty();    
+        if(this.mode==0){
+            if(CKPreviewer.views.actions_view){CKPreviewer.views.actions_view.remove();}
+            CKPreviewer.views.actions_view = new CKPreviewer.Views.Actions({
+                eventAggregator  : this.eventAggregator,
+                project : this.project,
+                presentations : this.presentations,
+                current_presentation : this.current_presentation
+            });
         $(this.el).append(CKPreviewer.views.actions_view.render().el);
-        $(this.el).append(this.template());
+        }else{   
+            $(this.el).append(this.template({
+                cp : this.current_presentation.toJSON(),
+            }));
+        }
         return this;
     }
 });
@@ -498,21 +458,28 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         aLink.setAttribute('download', imagedate);
         aLink.href = "/S3/getPrivateUrl?amz_id="+imagesrc;
         aLink.dispatchEvent(evt);
+        //aLink.click();
     },
     smallimage : function(e){
         e.preventDefault();
-        src = e.target.getAttribute("data-image-id");
-        this.eventAggregator.trigger("renderImg",src,0);
+        if(CKEDITOR.instances.ckeditor){
+            src = e.target.getAttribute("data-image-id");
+            this.eventAggregator.trigger("renderImg",src,0);
+        }
     },
     mediumimage : function(e){
         e.preventDefault();
-        src = e.target.getAttribute("data-image-id");
-        this.eventAggregator.trigger("renderImg",src,1);
+        if(CKEDITOR.instances.ckeditor){
+            src = e.target.getAttribute("data-image-id");
+            this.eventAggregator.trigger("renderImg",src,1);
+        }
     },
     largeimage : function(e){
         e.preventDefault();
-        src = e.target.getAttribute("data-image-id");
-        this.eventAggregator.trigger("renderImg",src,2);
+        if(CKEDITOR.instances.ckeditor){
+            src = e.target.getAttribute("data-image-id");
+            this.eventAggregator.trigger("renderImg",src,2);
+        }
     },
     searchK: function(e){
         var research = e.target.value;
@@ -552,29 +519,35 @@ CKPreviewer.Views.Images = Backbone.View.extend({
     },
     //add content
     addAllknowledges : function(e){
-        _this = this;
         e.preventDefault();
-        _.each(this.knowledges.toJSON(), function(knowledge) {
-            title = knowledge.title;
-            content = knowledge.content;
-            _this.eventAggregator.trigger("addCK",title,content);
-        });
+        if(CKEDITOR.instances.ckeditor){
+            _this = this;
+            _.each(this.knowledges.toJSON(), function(knowledge) {
+                title = knowledge.title;
+                content = knowledge.content;
+                _this.eventAggregator.trigger("addCK",title,content);
+            });
+        }
     },
     addAllconcepts : function(e){
-        _this = this;
         e.preventDefault();
-        _.each(this.concepts.toJSON(), function(concept) {
-            title = concept.title;
-            content = concept.content;
-            _this.eventAggregator.trigger("addCK",title,content);
-        });
+        if(CKEDITOR.instances.ckeditor){
+            _this = this;
+            _.each(this.concepts.toJSON(), function(concept) {
+                title = concept.title;
+                content = concept.content;
+                _this.eventAggregator.trigger("addCK",title,content);
+            });
+        }
     },
     addAllpoches : function(e){
-        _this = this;
         e.preventDefault();
-        this.poches.each(function(poche) {
-            _this.eventAggregator.trigger("addP",poche);
-        });
+        if(CKEDITOR.instances.ckeditor){
+            _this = this;
+            this.poches.each(function(poche) {
+             _this.eventAggregator.trigger("addP",poche);
+            });
+        }
     },
     delImg : function(e){
         e.preventDefault();
@@ -591,20 +564,26 @@ CKPreviewer.Views.Images = Backbone.View.extend({
     },
     addConcept : function(e){
         e.preventDefault();
-        title = e.target.getAttribute("data-concepte-title");
-        content = e.target.getAttribute("data-concepte-content");
-        this.eventAggregator.trigger("addCK",title,content);
+        if(CKEDITOR.instances.ckeditor){
+            title = e.target.getAttribute("data-concepte-title");
+            content = e.target.getAttribute("data-concepte-content");
+            this.eventAggregator.trigger("addCK",title,content);
+        }
     },
     addKnowledge : function(e){
         e.preventDefault();
-        title = e.target.getAttribute("data-knowledge-title");
-        content = e.target.getAttribute("data-knowledge-content");
-        this.eventAggregator.trigger("addCK",title,content);
+        if(CKEDITOR.instances.ckeditor){
+            title = e.target.getAttribute("data-knowledge-title");
+            content = e.target.getAttribute("data-knowledge-content");
+            this.eventAggregator.trigger("addCK",title,content);
+        }
     },
     addPoche : function(e){
         e.preventDefault();
-        poche = this.poches.get(e.target.getAttribute("data-poche-id"));
-        this.eventAggregator.trigger("addP",poche);
+        if(CKEDITOR.instances.ckeditor){
+            poche = this.poches.get(e.target.getAttribute("data-poche-id"));
+            this.eventAggregator.trigger("addP",poche);
+        }
     },
     render_ks : function(){
         this.ks_el = $(this.el).find('#ks');
@@ -640,9 +619,6 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         $(this.el).html('');
         $(this.el).append(this.template({
             images : this.screenshots.toJSON().reverse(),
-            // knowledges : this.ks_to_render.toJSON(),
-            // concepts : this.cs_to_render.toJSON(),
-            // poches : this.ps_to_render.toJSON(),
         }));
 
         this.ks_el = $(this.el).find('#ks');
@@ -766,8 +742,6 @@ CKPreviewer.Views.Main = Backbone.View.extend({
 
     render : function(){
         $(this.el).empty();
-        // Action
-
 
         //Left part
         if(CKPreviewer.views.images_view){CKPreviewer.views.images_view.remove();}
@@ -792,19 +766,6 @@ CKPreviewer.Views.Main = Backbone.View.extend({
             presentations : this.presentations,
         });
         $(this.el).append(CKPreviewer.views.middle_part_view.render().el);
-        //CKEDITOR title and content
-        CKEDITOR.replace('ckeditor',{
-            height:600,
-        });
-        if(this.current_presentation){
-            CKEDITOR.instances.ckeditor.setData(this.current_presentation.get('data'));
-            var cp = this.current_presentation;
-            CKEDITOR.instances.ckeditor.on( 'change', function(e) {
-                var data = CKEDITOR.instances.ckeditor.getData();
-                //console.log(this.current_presentation);
-                cp.set({'data':CKEDITOR.instances.ckeditor.getData()}).save();    
-            });
-        }
 
 
         $(document).foundation();
