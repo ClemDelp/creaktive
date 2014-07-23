@@ -15,6 +15,8 @@
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
 
+
+
 module.exports = {
     
   
@@ -55,6 +57,7 @@ module.exports = {
       hello: 'world'
     });
   },
+
 
   ckpreviewerview : function(req,res){
     sails.config.bootstrapdata.bootstrapdata(req,res);

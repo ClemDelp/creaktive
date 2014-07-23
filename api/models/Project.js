@@ -23,6 +23,26 @@ autoPK : false,
 
   beforeDestroy : function (values, cb){
     project_id = values.where.id
+
+    Presentation.find({
+      project_id : project_id
+    }).done(function(err, pres){
+      _.each(pres, function(p){
+        p.destroy(function(err){
+          if(err) console.log(err)
+        })
+      })
+    })
+
+    Screenshot.find({
+      project_id : project_id
+    }).done(function(err, scrs){
+      _.each(scrs, function(s){
+        s.destroy(function(err){
+          if(err) console.log(err)
+        })
+      })
+    })
     
     Permission.find({
       project_id : project_id
@@ -86,7 +106,17 @@ autoPK : false,
 
   	}).done(function(err, c0){
   		if(err) console.log(err);
-  		cb();
+      console.log(values.id);
+      console.log(values.title);
+      Presentation.create({
+        id : guid(),
+        title : values.title,
+        data : "",
+        project_id : values.id,
+      }).done(function(err){
+        if(err) console.log(err);
+        cb();
+      });
   	});
   }
 

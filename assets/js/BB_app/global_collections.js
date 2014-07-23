@@ -214,3 +214,22 @@ global.Collections.ProjectsCollection = Backbone.Collection.extend({
     }
 });  
 
+/***************************************/
+global.Collections.Screenshots = Backbone.Collection.extend({
+    model : global.Models.Screenshot,
+    initialize : function() {
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+}); 
+
+/***************************************/
+global.Collections.Presentations = Backbone.Collection.extend({
+    model : global.Models.Presentation,
+    initialize : function() {
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+}); 

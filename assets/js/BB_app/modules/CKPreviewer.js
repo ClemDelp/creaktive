@@ -1,4 +1,3 @@
-////////////////////////////////////////////////
 var CKPreviewer = {
   // Classes
   Collections: {},
@@ -10,32 +9,154 @@ var CKPreviewer = {
   views: {},
   init: function () {
     this.views.Main = new this.Views.Main({
-        links : global.collections.Links,
+        a_notifications   : global.collections.all_notifs,
+        eventAggregator : global.eventAggregator,
+        project           : global.models.currentProject,
+        user : global.models.current_user,
+        screenshots : global.collections.Screenshots,
+        presentations : global.collections.Presentations,
         knowledges : global.collections.Knowledges,
         concepts : global.collections.Concepts,
-        eventAggregator : global.eventAggregator,
         poches : global.collections.Poches,
-        user : global.models.current_user,
     });   
     this.views.Main.render();
   }
 };
+
 ////////////////////////////////////////////////////////////
 // VIEWS
-CKPreviewer.Views.Modal = Backbone.View.extend({
+CKPreviewer.Views.Modal = Backbone.View.extend({            //model to render the image
     el:"#CKPreviewerModal",
     initialize:function(json){
         _.bindAll(this, 'render', 'openModal');
         // Variables
+        this.x1 = 0;
+        this.x2 = 0;
+        this.y1 = 0;
+        this.y2 = 0;
         this.model = new Backbone.Model();
         this.eventAggregator = json.eventAggregator;
+        this.screenshots = json.screenshots;
+        this.project = json.project;
         // Templates
         this.template_content = _.template($('#CKPreviewer_modalContent_templates').html());
         // Events
         this.eventAggregator.on("openModal", this.openModal, this);
     },
-    openModal : function(model){
-        this.model = model;
+    events : {
+        "click #selectzoon" : "select",
+        "click #addimage" : "add",
+        "click #resizeimage" : "resize",
+        "click #newimage" : "new",
+    },
+    //upload new image
+    uploadFile : function(file,mode){
+        _this = this;
+        var s3upload = new S3Upload({
+            file : file,
+            s3_sign_put_url: '/S3/upload_sign',
+            onProgress: function(percent, message) {
+                console.log(percent, " ***** ", message);
+            },
+            onFinishS3Put: function(amz_id, file) {
+                console.log("File uploaded ", amz_id);
+                if(mode==1){
+                    new_image = new global.Models.Screenshot({
+                        id : guid(),
+                        src : amz_id,
+                        date : getDate(),
+                        project_id : _this.project.get('id')
+                    });
+                    new_image.save();
+                    _this.screenshots.add(new_image);
+                }else{
+                    _this.screenshots.remove(_this.current_screenshot);
+                    _this.current_screenshot.set({'src':amz_id,'date':getDate()}).save();
+                    _this.screenshots.add(_this.current_screenshot);
+                }
+                CKPreviewer.views.images_view.render();
+            },
+            onError: function(status) {
+                console.log(status)
+            }
+        });
+    },
+    //modify image
+    cutImage : function(mode){
+        _this = this;
+        if (this.x2==this.x1){
+            alert("Please choose an area");
+        }else{
+            var image0 = new Image();
+            image0.crossOrigin = "Anonymous";
+            image0.onload=function(){
+                var canvas = document.createElement("canvas");
+                canvas.width = image0.width;
+                canvas.height = image0.height;
+                var context = canvas.getContext("2d");
+                context.drawImage(image0,0,0);
+                var imgData=context.getImageData(_this.x1*image0.width,_this.y1*image0.height,(_this.x2-_this.x1)*image0.width,(_this.y2-_this.y1)*image0.height);   
+                var canvas1 = document.createElement("canvas");
+                canvas1.width = (_this.x2-_this.x1)*image0.width;
+                canvas1.height = (_this.y2-_this.y1)*image0.height;
+                var context1 = canvas1.getContext("2d");
+                context1.putImageData(imgData,0,0);
+                var imgdata = canvas1.toDataURL("image/png").replace(/data:image\/png;base64,/,'');
+                var uintArray = Base64Binary.decode(imgdata);
+                _this.uploadFile(uintArray,mode);
+            };
+            var src = "/getPrivateUrl?amz_id="+this.src;
+            image0.src = src;
+        }
+    },
+    resize : function(e){
+        e.preventDefault();
+        this.cutImage(0);
+        $('#CKPreviewerModal').foundation('reveal', 'close');
+    },
+    new : function(e){
+        e.preventDefault();
+        this.cutImage(1);
+        $('#CKPreviewerModal').foundation('reveal', 'close');
+    },    
+    //initialize jcrop
+    select : function(e){
+        e.preventDefault();
+        _this=this;
+        function showCoords(c)
+        {
+            _this.x1 = c.x/$("#cropbox").width();
+            _this.x2 = c.x2/$("#cropbox").width();
+            _this.y1 = c.y/$("#cropbox").height();
+            _this.y2 = c.y2/$("#cropbox").height();
+        };
+        $(function(){
+            $('#cropbox').Jcrop({
+                trackDocument: true,
+                onChange : showCoords,
+                onSelect : showCoords
+            });
+        });
+    },
+    //add image with different size
+    add : function(e){
+        e.preventDefault();
+        var size;
+        for(var i=0;i<$(":radio[name=imagesize]").length;i++)
+        {
+           if($(":radio[name=imagesize]")[i].checked==true)
+            {
+              size=i;
+           } 
+        }
+        console.log(size);
+
+        this.eventAggregator.trigger("renderImg",this.src,size);
+        $('#CKPreviewerModal').foundation('reveal', 'close');
+    },
+    openModal : function(src,screenshot_id){
+        this.src = src;
+        this.current_screenshot = this.screenshots.get(screenshot_id);
         this.render(function(){
             $('#CKPreviewerModal').foundation('reveal', 'open'); 
             $(document).foundation();
@@ -44,462 +165,513 @@ CKPreviewer.Views.Modal = Backbone.View.extend({
     render:function(callback){
         $(this.el).html(''); 
         $(this.el).append(this.template_content({
-            knowledge : this.model.toJSON()
+            src : this.src
         }));
         // Render it in our div
         if(callback) callback();
     }
 });
 /***************************************/
-CKPreviewer.Views.Category = Backbone.View.extend({
-    initialize : function(json){
-        _.bindAll(this, 'render');
-        // Variable
-        this.user               = json.user;
-        this.knowledges         = json.knowledges;
-        this.poches             = json.poches;
-        this.poche              = json.poche;
-        this.eventAggregator    = json.eventAggregator;
-        // Templates
-        this.template_list = _.template($('#CKPreviewer_knowledgesmap_template').html());
-    },
-    render:function(){
-        $(this.el).html('');
-        _this = this;
-        // Category template
-        $(this.el).html(this.template_list({
-            knowledges : this.knowledges.toJSON(), 
-            category : this.poche.toJSON(),
-            categories : this.poches.toJSON()
-        }));
-        return this;
-    }
-});
-/***************************************/
-CKPreviewer.Views.Categories = Backbone.View.extend({
-    initialize : function(json){
-        _.bindAll(this, 'render');
-        // Variable
-        this.knowledges         = json.knowledges;
-        this.poches             = json.poches;
-        this.user               = json.user;
-        this.eventAggregator    = json.eventAggregator;
-    },
 
-    render:function(){
-        $(this.el).html('');
-        //init
-        knowledges = this.knowledges;
-        user = this.user;
-        poches = this.poches;
-        el = this.el;
-        eventAggregator_ = this.eventAggregator;
-        // For each poches
-        this.poches.each(function(poche){
-            list_of_knowledges = new Backbone.Collection();
-            this.knowledges.each(function(knowledge){
-                knowledge.get('tags').forEach(function(tag){
-                    if(poche.get('title') == tag){list_of_knowledges.add(knowledge);}
-                });
-            });
-            if(list_of_knowledges.length){
-            list_view = new CKPreviewer.Views.Category({
-                knowledges      : list_of_knowledges,
-                poche           : poche,
-                poches          : poches,
-                user            : user,
-                eventAggregator : eventAggregator_
-            });
-            $(this.el).append(list_view.render().el);}
-        });
-        notcategorized_view = new CKPreviewer.Views.NotCategorized({
-            knowledges:this.knowledges,
-            eventAggregator:this.eventAggregator
-        });
-        $(this.el).append(notcategorized_view.render().el);
-
-        return this;
-    }
-});
 /***************************************/
-CKPreviewer.Views.NotCategorized = Backbone.View.extend({
-    initialize : function(json) {
-        _.bindAll(this, 'render');
-        // Variables
-        this.knowledges = json.knowledges;
-        this.knowledges_render = this.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        // Templates
-        this.template = _.template($('#CKPreviewer-notcategorized-template').html());
-    },
 
-    render : function(){
-        // Init
-        $(this.el).html('');
-        el_notcategorized_part=this.el;
-        template = this.template;
-        knowledges = this.knowledges;
-        // For each poche
-         this.knowledges_render.each(function(knowledge_){
-             if(knowledge_.get('tags').length == 0){
-                 $(el_notcategorized_part).append(template({
-                     knowledge : knowledge_.toJSON(),
-                 }));
-             }
-         });
-        return this;
-    }
-});
-/***************************************/
-CKPreviewer.Views.KnowledgesMap = Backbone.View.extend({
-    initialize : function(json) {
-        _.bindAll(this, 'render');
-        this.links = json.links;
-        this.knowledges = json.knowledges;
-        this.knowledges_to_render = json.knowledges;
-        this.eventAggregator = json.eventAggregator;
-        this.poches = json.poches;
-        this.user = json.user;
-        // Templates
-        this.eventAggregator.on("selectK",this.filterKnowledge,this);
-    },
-    events : {
-        "dblclick .openModal" : "openModal",
-        "click #allknowledges" : "allKnowledges",
-    },
-    filterKnowledge : function(concept_id){
-        _this = this;
-        var links= _.filter(this.links.toJSON(), function(model){
-             return model.concept==concept_id;
-        });
-        var klinks = new Backbone.Collection;
-        _.each(links, function(model){
-            k1 = _this.knowledges.get(model.knowledge);
-            klinks.add(k1);
-        });
-        this.knowledges_to_render=klinks;
-        this.render();
-    },
-    allKnowledges : function(){
-        this.knowledges_to_render = this.knowledges;
-        this.render();
-    },
-    openModal : function(e){
-        e.preventDefault();
-        knowledge = this.knowledges.get(e.target.getAttribute("data-knowledge-id"));
-        if(!knowledge){knowledge = this.poches.get(e.target.getAttribute("data-category-id"));}
-        this.eventAggregator.trigger("openModal",knowledge);
-    },
-    render : function(){
-        $(this.el).html('');
-        $(this.el).append(_.template($("#CKPreviewer-Khead-template").html()));
-        lists_view = new CKPreviewer.Views.Categories({
-            id              : "categories_grid",
-            className       : "row custom_row gridalicious",
-            knowledges      : this.knowledges_to_render,
-            poches          : this.poches,
-            user            : this.user,
-            eventAggregator : this.eventAggregator
-        });
-        $(this.el).append(lists_view.render().el);
-        $("#categories_grid").gridalicious({
-             gutter: 20,
-             width: 130
-           });
-        return this;
-    }
-});
 /////////////////////////////////////////
-CKPreviewer.Views.ConceptsMap = Backbone.View.extend({
+CKPreviewer.Views.MiddlePart = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
-        this.eventAggregator = json.eventAggregator;
-        this.concepts = json.concepts;
-        // Templates
-        this.template = _.template($("#CKPreviewer_conceptsmap_template").html()); 
+        this.template = _.template($("#CKPreviewer_editer_template").html());
+        this.project = json.project;
+        this.knowledges = json.knowledges;
+        this.eventAggregator  = json.eventAggregator;
+        this.current_presentation = json.current_presentation;
+        this.eventAggregator.on("renderImg", this.renderImg, this);
+        this.eventAggregator.on("addCK", this.addCK, this);
+        this.eventAggregator.on("addP", this.addP, this);
     },
     events : {
-        "dblclick .text" : "openModal",
-        "click .text" : "select",
+        "click .createpresentation" : "updatepresentation",
+        "click .clearpresentation" : "clearpresentation",
+        "click .resetpresentation" : "resetpresentation",
+        "click .export" : "export",
     },
-    select : function(e){
-        e.preventDefault();
-        this.eventAggregator.trigger("selectK",e.target.getAttribute("id_c"));
+    //export as a pdf
+    export : function(e){
+        _this = this;
+        if(this.current_presentation){
+            var data = CKEDITOR.instances.ckeditor.getData();
+            this.current_presentation.set({'data':CKEDITOR.instances.ckeditor.getData()}).save();
+        }else{
+            alert("Please create a presentation");
+        }  
+       var data = CKEDITOR.instances.ckeditor.getData();
+        var arr = new Array();
+        arr = data.split('src="');
+        var asyncLoop = function(o){
+            var i=0,
+                length = o.length;
+            
+            var loop = function(){
+                i++;
+                if(i==length){o.callback(); return;}
+                o.functionToLoop(loop, i);
+            } 
+            loop();
+        }
+        //have more than 1 image
+        if(arr.length > 1 ){
+            asyncLoop({
+                length : arr.length,
+                functionToLoop : function(loop, i){
+                    var ind = arr[i].indexOf('" ');
+                    var src = arr[i].substring(0,ind);
+                    //Convertit en 
+                    _this.convertImgToBase64(src, function(base64Img,url){
+                        data = data.replace(url,base64Img);
+                        loop();
+                    });
+                },
+                callback : function(){
+                    $.post(
+                        '/file/export2pdf',
+                        {data : data}, 
+                        function (url) {
+                            $.download("/file/get", {path : url});
+                        }
+                    );
+                }
+            });
+        }else{ //have no image
+            $.post(
+                '/file/export2pdf',
+                {data : data}, 
+                function (data) {
+                    $.download("/file/get", {path : url});    
+                }
+            );
+        }
     },
-    openModal : function(e){
+    convertImgToBase64 : function(url, callback, outputFormat){
+        var canvas = document.createElement('CANVAS'),
+        ctx = canvas.getContext('2d'),
+        img = new Image;
+        img.crossOrigin = 'Anonymous';
+        img.onload = function(){
+            var dataURL;
+            canvas.height = img.height;
+            canvas.width = img.width;
+            ctx.drawImage(img, 0, 0);
+            dataURL = canvas.toDataURL(outputFormat);
+            callback.call(this, dataURL,url);
+            canvas = null; 
+        };
+        img.src = url;
+    },
+    //change content of presentation
+    resetpresentation : function(e){
         e.preventDefault();
-        concept = this.concepts.get(e.target.getAttribute("id_c"));
-        this.eventAggregator.trigger("openModal",concept);
+        if(this.current_presentation){
+            var date = this.current_presentation.get('data')
+            //console.log(date);
+            CKEDITOR.instances.ckeditor.setData(date);
+            //console.log(CKEDITOR.instances.ckeditor.getData());
+        }
+    },
+    clearpresentation : function(e){
+        e.preventDefault();
+        CKEDITOR.instances.ckeditor.setData();
+    },
+    updatepresentation : function(e){
+        e.preventDefault();       
+        if(this.current_presentation){
+            var data = CKEDITOR.instances.ckeditor.getData();
+            //console.log(this.current_presentation);
+            this.current_presentation.set({'data':CKEDITOR.instances.ckeditor.getData()}).save();
+        }else{
+            alert("Please create a presentation");
+        }       
+    },
+    addCK : function(conceptTitle,conceptContent){
+        var title = conceptTitle;
+        var content = conceptContent;
+        //console.log(content.replace(/<p>/g,'<p style="text-indent: 2em">'));
+        CKEDITOR.instances.ckeditor.insertHtml('<br><h2 style="color:red"><strong><span class="marker">'+title+':'+'</span></strong></h2>'+content.replace(/<p>/g,'<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'));
+    },
+    addP : function(poche){
+        CKEDITOR.instances.ckeditor.insertHtml('<br><h2><strong>'+poche.get('title')+':'+'</strong></h2>'+poche.get('content'));
+        var i=1;
+        this.knowledges.each(function(knowledge){
+            knowledge.get('tags').forEach(function(tag){
+                if(poche.get('title') == tag){
+                    CKEDITOR.instances.ckeditor.insertHtml('<br><h3><strong>&nbsp&nbsp&nbsp&nbsp'+i+'.'+knowledge.get('title')+':'+'</strong></h3>'+knowledge.get('content').replace(/<p>/g,'<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'));
+                    i+=1;
+                }
+            });
+        });
+    },
+    renderImg : function(src,size){
+        var wid=$("#textzoon")[0].offsetWidth;
+        switch(size){
+            case 0:
+                CKEDITOR.instances.ckeditor.insertHtml('<br><img src="/S3/getPrivateUrl?amz_id='+src+'" style="width:'+wid*0.4+'px" >');
+                break;
+            case 1:
+                CKEDITOR.instances.ckeditor.insertHtml('<br><img src="/S3/getPrivateUrl?amz_id='+src+'" style="width:'+wid*0.7+'px" >');
+                break;
+            case 2:
+                CKEDITOR.instances.ckeditor.insertHtml('<br><img src="/S3/getPrivateUrl?amz_id='+src+'" style="width:'+wid*0.95+'px" >');
+                break;
+        }
     },
     render : function(){
+        $(this.el).empty();        
         $(this.el).append(this.template());
         return this;
     }
 });
 /////////////////////////////////////////
-CKPreviewer.Views.MiddlePart = Backbone.View.extend({
+CKPreviewer.Views.Images = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
+        this.eventAggregator = json.eventAggregator;
+        this.screenshots = json.screenshots;
         this.knowledges = json.knowledges;
         this.concepts = json.concepts;
-        this.links = json.links;
-        this.eventAggregator = json.eventAggregator;  
         this.poches = json.poches;
-        this.user = json.user;
+        this.ks_to_render = this.knowledges;
+        this.cs_to_render = this.concepts;
+        this.ps_to_render = this.poches;
+        // Templates
+        this.template = _.template($("#CKPreviewer_images_template").html()); 
+    },
+    events : {
+        "click #image" : "addImg",
+        "click #deleteimage" : "delImg",
+        "click .concept" : "addConcept",
+        "click .knowledge" : "addKnowledge",
+        "click .poche" : "addPoche",
+        "click #ImportAllknowledges" : "addAllknowledges",
+        "click #ImportAllconcepts" : "addAllconcepts",
+        "click #ImportAllpoches" : "addAllpoches",
+        "keyup .searchK" : "searchK",
+        "keyup .searchC" : "searchC",
+        "keyup .searchP" : "searchP",
+    },
+    searchK: function(e){
+        var research = e.target.value;
+        var research_size = research.length;
+        var matched = new Backbone.Collection();
+        this.knowledges.each(function(k){
+            if(research.toLowerCase() == k.get('title').substr(0,research_size).toLowerCase()){
+                matched.add(k);
+            }
+        });
+        this.ks_to_render = matched;
+        this.render_ks();
+    },
+    searchC: function(e){
+        var research = e.target.value;
+        var research_size = research.length;
+        var matched = new Backbone.Collection();
+        this.concepts.each(function(k){
+            if(research.toLowerCase() == k.get('title').substr(0,research_size).toLowerCase()){
+                matched.add(k);
+            }
+        });
+        this.cs_to_render = matched;
+        this.render_cs();
+    },
+    searchP: function(e){
+        var research = e.target.value;
+        var research_size = research.length;
+        var matched = new Backbone.Collection();
+        this.poches.each(function(k){
+            if(research.toLowerCase() == k.get('title').substr(0,research_size).toLowerCase()){
+                matched.add(k);
+            }
+        });
+        this.ps_to_render = matched;
+        this.render_ps();
+    },
+    //add content
+    addAllknowledges : function(e){
+        _this = this;
+        e.preventDefault();
+        _.each(this.knowledges.toJSON(), function(knowledge) {
+            title = knowledge.title;
+            content = knowledge.content;
+            _this.eventAggregator.trigger("addCK",title,content);
+        });
+    },
+    addAllconcepts : function(e){
+        _this = this;
+        e.preventDefault();
+        _.each(this.concepts.toJSON(), function(concept) {
+            title = concept.title;
+            content = concept.content;
+            _this.eventAggregator.trigger("addCK",title,content);
+        });
+    },
+    addAllpoches : function(e){
+        _this = this;
+        e.preventDefault();
+        this.poches.each(function(poche) {
+            _this.eventAggregator.trigger("addP",poche);
+        });
+    },
+    delImg : function(e){
+        e.preventDefault();
+        var imagesrc = e.target.getAttribute("data-image-id");
+        var screenshot_id = e.target.getAttribute("data-screenshot-id");
+        this.screenshots.get(screenshot_id).destroy();
+        CKPreviewer.views.images_view.render();
+    },
+    addImg : function(e){
+        e.preventDefault();
+        var imagesrc = e.target.getAttribute("data-image-id");
+        var screenshot_id = e.target.getAttribute("data-screenshot-id");
+        this.eventAggregator.trigger("openModal",imagesrc,screenshot_id);
+    },
+    addConcept : function(e){
+        e.preventDefault();
+        title = e.target.getAttribute("data-concepte-title");
+        content = e.target.getAttribute("data-concepte-content");
+        this.eventAggregator.trigger("addCK",title,content);
+    },
+    addKnowledge : function(e){
+        e.preventDefault();
+        title = e.target.getAttribute("data-knowledge-title");
+        content = e.target.getAttribute("data-knowledge-content");
+        this.eventAggregator.trigger("addCK",title,content);
+    },
+    addPoche : function(e){
+        e.preventDefault();
+        poche = this.poches.get(e.target.getAttribute("data-poche-id"));
+        this.eventAggregator.trigger("addP",poche);
+    },
+    render_ks : function(){
+        this.ks_el = $(this.el).find('#ks');
+        this.ks_el.empty();
+        if(CKPreviewer.views.ks_view){CKPreviewer.views.ks_view.remove();}
+        CKPreviewer.views.ks_view = new CKPreviewer.Views.Ks({
+            id                  : "ks_view",
+            knowledges          : this.ks_to_render,
+        });
+        $(this.ks_el).append(CKPreviewer.views.ks_view.render().el);
+    },
+    render_cs : function(){
+        this.cs_el = $(this.el).find('#cs');
+        this.cs_el.empty();
+        if(CKPreviewer.views.cs_view){CKPreviewer.views.cs_view.remove();}
+        CKPreviewer.views.cs_view = new CKPreviewer.Views.Cs({
+            id                  : "ks_view",
+            concepts          : this.cs_to_render,
+        });
+        $(this.cs_el).append(CKPreviewer.views.cs_view.render().el);
+    },
+    render_ps : function(){
+        this.ps_el = $(this.el).find('#ps');
+        this.ps_el.empty();
+        if(CKPreviewer.views.ps_view){CKPreviewer.views.ps_view.remove();}
+        CKPreviewer.views.ps_view = new CKPreviewer.Views.Ps({
+            id                  : "ks_view",
+            poches          : this.ps_to_render,
+        });
+        $(this.ps_el).append(CKPreviewer.views.ps_view.render().el);
     },
     render : function(){
-        // Concepts map
-        if(CKPreviewer.views.conceptsmap){CKPreviewer.views.conceptsmap.remove();}
-        CKPreviewer.views.conceptsmap = new CKPreviewer.Views.ConceptsMap({
-            className        : "large-7 medium-7 small-7 columns",
-            id               : "conceptes",
-            eventAggregator  : this.eventAggregator,
-            concepts         : this.concepts
-        });
-        $(this.el).append(CKPreviewer.views.conceptsmap.render().el);
+        $(this.el).html('');
+        $(this.el).append(this.template({
+            images : this.screenshots.toJSON().reverse(),
+            // knowledges : this.ks_to_render.toJSON(),
+            // concepts : this.cs_to_render.toJSON(),
+            // poches : this.ps_to_render.toJSON(),
+        }));
 
-        // Knowledge map
-        if(CKPreviewer.views.knowledgesmap){CKPreviewer.views.knowledgesmap.remove();}
-        CKPreviewer.views.knowledgesmap = new CKPreviewer.Views.KnowledgesMap({
-            className        : "large-5 medium-5 small-5 columns",
-            links            : this.links,
-            knowledges       : this.knowledges,
-            eventAggregator  : this.eventAggregator,
-            poches           : this.poches,
-            user             : this.user
+        this.ks_el = $(this.el).find('#ks');
+        this.ks_el.empty();
+        CKPreviewer.views.ks_view = new CKPreviewer.Views.Ks({
+            id                  : "ks_view",
+            knowledges          : this.ks_to_render,
         });
-        $(this.el).append(CKPreviewer.views.knowledgesmap.render().el);
+        $(this.ks_el).append(CKPreviewer.views.ks_view.render().el);
+
+        this.cs_el = $(this.el).find('#cs');
+        this.cs_el.empty();
+        CKPreviewer.views.cs_view = new CKPreviewer.Views.Cs({
+            id                  : "cs_view",
+            concepts          : this.cs_to_render,
+        });
+        $(this.cs_el).append(CKPreviewer.views.cs_view.render().el);
+
+        this.ps_el = $(this.el).find('#ps');
+        this.ps_el.empty();
+        CKPreviewer.views.ps_view = new CKPreviewer.Views.Ps({
+            id                  : "ps_view",
+            poches          : this.ps_to_render,
+        });
+        $(this.ps_el).append(CKPreviewer.views.ps_view.render().el);
 
         return this;
     }
 });
+/////////////////////////////////////////
+CKPreviewer.Views.Ks = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        this.eventAggregator = json.eventAggregator;
+        this.knowledges = json.knowledges;
+        // Templates
+        this.template = _.template($("#CKPreviewer_ks_template").html()); 
+    },
+    events : {
+    },
+    render : function(){
+        $(this.el).html(this.template({
+            knowledges : this.knowledges.toJSON(),
+        }));
+        return this;
+    }
+});
+/////////////////////////////////////////
+CKPreviewer.Views.Cs = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        this.eventAggregator = json.eventAggregator;
+        this.concepts = json.concepts;
+        // Templates
+        this.template = _.template($("#CKPreviewer_cs_template").html()); 
+    },
+    events : {
+    },
+    render : function(){
+        $(this.el).html(this.template({
+            concepts : this.concepts.toJSON(),
+        }));
+        return this;
+    }
+});
+/////////////////////////////////////////
+CKPreviewer.Views.Ps = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        this.eventAggregator = json.eventAggregator;
+        this.poches = json.poches;
+        // Templates
+        this.template = _.template($("#CKPreviewer_ps_template").html()); 
+    },
+    events : {
+    },
+    render : function(){
+        $(this.el).html(this.template({
+            poches : this.poches.toJSON(),
+        }));
+        return this;
+    }
+});
+
 /////////////////////////////////////////
 CKPreviewer.Views.Actions = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
         this.eventAggregator = json.eventAggregator;
-        this.slideorder= 0;
+        this.presentationNum = json.presentationNum;
+        this.project = json.project;
+        this.presentations = json.presentations;
+        this.current_presentation = json.current_presentation;
         // Templates
         this.template = _.template($("#CKPreviewer_action_template").html()); 
     },
     events : {
-        "click #select" : "zoom",
-        "click #slide" : "addslide",
+        "click #add1" : "add",
+        "click #presentation" : "changecurrent",
+        "click #delete" : "deletecurrent",
     },
-    zoom : function(){
-      if((!zoomflag)&&(!slideflag)){
-
-        $("#select").addClass('disabled');
-        zoomflag=true;
-        var startX = 0, startY = 0;
-        var flag = false;
-        var rectLeft = "0px", rectTop = "0px", rectHeight = "0px", rectWidth = "0px";
-        var rect = document.getElementById("rect");
-        rect.style.visibility = 'hidden';
-        rect.style.width = 0;
-        rect.style.height = 0;
-        rect.style.zIndex = 1000;
-
-        document.onmousedown = function(e){
-          if(zoomflag){
-            e.preventDefault();
-            flag = true;
-            try{
-                var evt = window.event || e;
-                var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-                var scrollLeft = document.body.scrollLeft || document.documentElement.scrollLeft;
-                startX = evt.clientX + scrollLeft;
-                startY = evt.clientY + scrollTop;
-
-                rect.style.left = startX + "px";
-                rect.style.top = startY + "px";
-                rect.style.width = 0;
-                rect.style.height = 0;
-                rect.style.visibility = 'visible';
-            }catch(e){
-                //alert(e);
-                }
-        }}
-
-        document.onmouseup = function(){
-            try{
-              rect.style.visibility = 'hidden';
-              zoom.to({
-                x: parseInt(rect.style.left),
-                y: parseInt(rect.style.top),
-                width: parseInt(rect.style.width),
-                height: parseInt(rect.style.height)
-              });
-            }catch(e){
-              //alert(e);
-            }
-            flag = false;
-        }
-
-        document.onmousemove = function(e){
-            if(zoomflag&&flag){
-                try{
-                  var evt = window.event || e;
-                  var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-                  var scrollLeft = document.body.scrollLeft || document.documentElement.scrollLeft;
-                  rectLeft = (startX - evt.clientX - scrollLeft > 0 ? evt.clientX + scrollLeft : startX) + "px";
-                  rectTop = (startY - evt.clientY - scrollTop > 0 ? evt.clientY + scrollTop : startY) + "px";
-                  rectHeight = Math.abs(startY - evt.clientY - scrollTop) + "px";
-                  rectWidth = Math.abs(startX - evt.clientX - scrollLeft) + "px";
-                  rect.style.left = rectLeft;
-                  rect.style.top = rectTop;
-                  rect.style.width = rectWidth;
-                  rect.style.height = rectHeight;
-                }catch(e){
-                //alert(e);
-                } 
-            }
-        }
-        }
-        else{
-          $("#select").removeClass('disabled');
-          zoomflag=false;
-        }
-    },
-    addslide : function(){
-      if((!zoomflag)&&(!slideflag)){
-        $("#slide").addClass('disabled');
-        slideflag=true;
-        var addone=true;
-        var startX = 0, startY = 0;
-        var flag = false;
-        var rectLeft = "0px", rectTop = "0px", rectHeight = "0px", rectWidth = "0px";
-        var rect = document.createElement("DIV");
-        rect.style.visibility = 'hidden';
-        rect.id="slide"+this.slideorder;
-        rect.className="zoomTarget";
-        rect.style.position='absolute';
-        rect.style.filter='Alpha(Opacity=50)';
-        rect.style.opacity=0.50;
-        rect.style.background= '#00BFFF';
-        rect.style.width = 0;
-        rect.style.height = 0;
-        rect.style.zIndex = 1000;
-        //$(".zoomContainer")[0].appendChild(rect);
-        document.body.appendChild(rect);
-        this.slideorder+=1;
-        _this = this;
-
-        document.onmousedown = function(e){
-          if(slideflag){  
-            e.preventDefault();
-            flag = true;
-            try{
-                var evt = window.event || e;
-                var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-                var scrollLeft = document.body.scrollLeft || document.documentElement.scrollLeft;
-                startX = evt.clientX + scrollLeft;
-                startY = evt.clientY + scrollTop;
-
-                rect.style.left = startX + "px";
-                rect.style.top = startY + "px";
-                rect.style.width = 0;
-                rect.style.height = 0;
-                rect.style.visibility = 'visible';
-            }catch(e){
-                //alert(e);
-            }
-        }}
-
-        document.onmouseup = function(){
-          if(slideflag&&flag){
-            try{
-                rect.style.visibility = 'hidden';
-                $("#slide").removeClass('disabled');
-                 
-                slideflag=false;
-                zoom.to({
-                    x: parseInt(rect.style.left),
-                    y: parseInt(rect.style.top),
-                    width: parseInt(rect.style.width),
-                    height: parseInt(rect.style.height)
-                });
-            }catch(e){
-              //alert(e);
-            }
-            if(addone){_this.eventAggregator.trigger("addslide"); }  
-            addone=false;  
-            flag = false;
-          }
-        }
-
-        document.onmousemove = function(e){
-            if(slideflag&&flag){
-                try{
-                  var evt = window.event || e;
-                  var scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-                  var scrollLeft = document.body.scrollLeft || document.documentElement.scrollLeft;
-                  rectLeft = (startX - evt.clientX - scrollLeft > 0 ? evt.clientX + scrollLeft : startX) + "px";
-                  rectTop = (startY - evt.clientY - scrollTop > 0 ? evt.clientY + scrollTop : startY) + "px";
-                  rectHeight = Math.abs(startY - evt.clientY - scrollTop) + "px";
-                  rectWidth = Math.abs(startX - evt.clientX - scrollLeft) + "px";
-                  rect.style.left = rectLeft;
-                  rect.style.top = rectTop;
-                  rect.style.width = rectWidth;
-                  rect.style.height = rectHeight;
-                }catch(e){
-                //alert(e);
-                } 
-            }
-        }
-        }
-    },
-    render : function(){
-        $(this.el).append(this.template());
-        return this;
-    }
-});
-
-/////////////////////////////////////////
-// SLIDES
-/////////////////////////////////////////
-CKPreviewer.Views.Slides = Backbone.View.extend({
-    initialize : function(json){
-        _.bindAll(this, 'render');
-        list_of_slides = new Backbone.Collection();
-        this.eventAggregator = json.eventAggregator;
-        this.eventAggregator.on("addslide", this.addslide, this);
-        this.slideorder = 0;
-        this.selectedSlide = 0;
-        // Templates
-        this.template = _.template($('#CKPreviewer_slides_template').html());
-    },
-    events : {      
-        "click #slide" : "checkslide", 
-    },
-    addslide : function(){
-        slide1 = new Backbone.Model({slideorder : this.slideorder});
-        this.slideorder+=1;
-        list_of_slides.add(slide1);
-        this.render();
-    },
-    checkslide : function(e){
-        var i = e.target.getAttribute("slideorder");
-        var item = document.getElementById("slide"+i);
-        if(item.style.visibility == 'visible'){
-            item.style.visibility='hidden';
-            this.selectedSlide=0;
+    //delete current presentation
+    deletecurrent : function(e){
+        e.preventDefault();
+        this.current_presentation.destroy();
+        document.getElementById("drop1").innerHTML ="";
+        _.each(this.presentations.toJSON(), function(presentation) {
+            document.getElementById("drop1").innerHTML += '<li>' + '<a id="presentation" href="#" presentation_id="' + presentation.id + '">' + presentation.title + '</a>' + '</li>';
+        });
+        if(this.presentations.first()){
+            this.current_presentation = this.presentations.first();
         }else{
-            item.style.visibility = 'visible';
-            this.selectedSlide = i;
-        };
+            this.current_presentation = null;
+        }
+        CKPreviewer.views.middle_part_view.current_presentation=this.current_presentation;
+        if(this.current_presentation){
+            $("#drop0").html(this.current_presentation.get('title'));
+            CKPreviewer.views.middle_part_view.render();
+            CKEDITOR.replace('ckeditor',{
+                height:600,
+            });
+            CKEDITOR.instances.ckeditor.setData(this.current_presentation.get('data'));
+        }else{
+            $("#drop0").html("Presentation");
+            CKPreviewer.views.middle_part_view.render();
+            CKEDITOR.replace('ckeditor',{
+                height:600,
+            });
+            CKEDITOR.instances.ckeditor.setData();
+        }
+
     },
+    //change current presentation
+    changecurrent : function(e){
+        e.preventDefault();
+        var sid = e.target.getAttribute("presentation_id");
+        this.current_presentation = this.presentations.get(sid);
+        //console.log(this.current_presentation);
+        CKPreviewer.views.middle_part_view.current_presentation=this.current_presentation;
+        $("#drop0").html(this.current_presentation.get('title'));
+        CKPreviewer.views.middle_part_view.render();
+        CKEDITOR.replace('ckeditor',{
+            height:600,
+        });
+        CKEDITOR.instances.ckeditor.setData(this.current_presentation.get('data'));
+    },
+    //create a new presentation
+    add : function(){
+        if($(".presentation_title").val()){
+            var project_id = this.project.get('id');
+            if(this.current_presentation){
+                new_presentation = new global.Models.Presentation({
+                    id : guid(),
+                    title : $(".presentation_title").val(),
+                    data : "",
+                    project_id : project_id,
+                });
+            }else{
+                new_presentation = new global.Models.Presentation({
+                    id : guid(),
+                    title : $(".presentation_title").val(),
+                    data : CKEDITOR.instances.ckeditor.getData(),
+                    project_id : project_id,
+                });     
+            }
+            new_presentation.save();
+            alert("presentation created");
+            document.getElementById("drop1").innerHTML += '<li>' + '<a id="presentation" href="#" presentation_id="' + new_presentation.toJSON().id + '">' + new_presentation.toJSON().title + '</a>' + '</li>';
+            $("#drop0").html(new_presentation.toJSON().title);
+            this.current_presentation = new_presentation;
+            this.presentations.add(this.current_presentation);
+            CKPreviewer.views.middle_part_view.render();
+            CKEDITOR.replace('ckeditor',{
+                height:600,
+            });
+            CKEDITOR.instances.ckeditor.setData(this.current_presentation.get("data"));
+        }
+     },
     render : function(){
-        $(this.el).html(''); 
         $(this.el).append(this.template({
-            slides : list_of_slides.toJSON()
+            presentations : this.presentations.toJSON(),
         }));
-        $('.sortable').sortable();
-        $(".zoomTarget").zoomTarget();
-        $(".zoomButton").zoomButton();
+
         return this;
     }
 });
+
 
 /////////////////////////////////////////
 // MAIN
@@ -508,102 +680,78 @@ CKPreviewer.Views.Main = Backbone.View.extend({
     el:"#CKPreviewer_container",
     initialize : function(json) {
         _.bindAll(this, 'render');
-        this.links = json.links;
+        this.all_notifications  = json.a_notifications;
+        this.eventAggregator = json.eventAggregator;
+        this.screenshots = json.screenshots;
+        this.user = json.user;
         this.concepts = json.concepts;
         this.knowledges = json.knowledges;
-        this.eventAggregator = json.eventAggregator;
         this.poches = json.poches;
-        this.user = json.user;
-        this.mode = "normal";
-        this.width = 0;
+        this.project = json.project;
+        this.presentations = json.presentations;
+        this.presentationNum = this.presentations.toJSON().length;
+        this.current_presentation = null;
+        if(this.presentations.first()){
+            this.current_presentation = this.presentations.first();
+        }
         // Modals
         if(CKPreviewer.views.modal){CKPreviewer.views.modal.remove();}
         CKPreviewer.views.modal = new CKPreviewer.Views.Modal({
-            eventAggregator : this.eventAggregator
+            eventAggregator : this.eventAggregator,
+            screenshots : this.screenshots,
+            project : this.project,
         });
+        
     },
     events : {
-        "click .fullScreen" : "fullScreen",
+
     },
-    fullScreen : function(e){
-        e.preventDefault();
-        if(this.mode == "normal"){
-            this.mode = "fullScreen";
-        }else{
-            this.mode = "normal";
-        }
-        
-        this.render();
-    },
+
     render : function(){
         $(this.el).empty();
-        if(this.mode == "fullScreen"){
-            if(CKPreviewer.views.middle_part_view){CKPreviewer.views.middle_part_view.remove();}
-            CKPreviewer.views.middle_part_view = new CKPreviewer.Views.MiddlePart({
-                className        : "panel large-12 medium-12 small-12 columns",
-                knowledges : this.knowledges,
-                concepts : this.concepts,
-                links : this.links,
-                eventAggregator  : this.eventAggregator,
-                poches : this.poches,
-                user : this.user
-            });
-            $(this.el).append(CKPreviewer.views.middle_part_view.render().el);
-        }else{
         // Action
         if(CKPreviewer.views.actions_view){CKPreviewer.views.actions_view.remove();}
         CKPreviewer.views.actions_view = new CKPreviewer.Views.Actions({
-            className        : "large-1 medium-1 small-1 columns",
-            eventAggregator  : this.eventAggregator
+            eventAggregator  : this.eventAggregator,
+            presentationNum : this.presentationNum,
+            project : this.project,
+            presentations : this.presentations,
+            current_presentation : this.current_presentation
         });
         $(this.el).append(CKPreviewer.views.actions_view.render().el);
 
-        // Middle part
-        if(CKPreviewer.views.middle_part_view){CKPreviewer.views.middle_part_view.remove();}
-        CKPreviewer.views.middle_part_view = new CKPreviewer.Views.MiddlePart({
-            className        : "panel large-10 medium-10 small-10 columns",
+        //Left part
+        if(CKPreviewer.views.images_view){CKPreviewer.views.images_view.remove();}
+        CKPreviewer.views.images_view = new CKPreviewer.Views.Images({
+            className        : "large-4 medium-4 small-4 columns",
+            eventAggregator  : this.eventAggregator,
+            screenshots : this.screenshots,
             knowledges : this.knowledges,
             concepts : this.concepts,
-            links : this.links,
+            poches : this.poches
+        });
+        $(this.el).append(CKPreviewer.views.images_view.render().el);
+
+        // Right part
+        if(CKPreviewer.views.middle_part_view){CKPreviewer.views.middle_part_view.remove();}
+        CKPreviewer.views.middle_part_view = new CKPreviewer.Views.MiddlePart({
+            className        : "panel large-8 medium-8 small-8 columns",
             eventAggregator  : this.eventAggregator,
-            poches : this.poches,
-            user : this.user
+            project : this.project,
+            current_presentation : this.current_presentation,
+            knowledges : this.knowledges,
         });
         $(this.el).append(CKPreviewer.views.middle_part_view.render().el);
-
-        // Slides
-        if(CKPreviewer.views.slides_view){CKPreviewer.views.slides_view.remove();}
-        CKPreviewer.views.slides_view = new CKPreviewer.Views.Slides({
-            className        : "large-1 medium-1 small-1 columns",
-            eventAggregator  : this.eventAggregator
+        //CKEDITOR title and content
+        CKEDITOR.replace('ckeditor',{
+            height:600,
         });
-        $(this.el).append(CKPreviewer.views.slides_view.render().el);
+        if(this.current_presentation){
+            CKEDITOR.instances.ckeditor.setData(this.current_presentation.get('data'));
+            $("#drop0").html(this.current_presentation.get('title'));
         }
 
-        // Get Map and generate it
-        MM.App.init(this.eventAggregator);
-        socket.get("/concept/generateTree", function(data) {
-            MM.App.setMap(MM.Map.fromJSON(data.tree));
-            this.width= MM.App.width;
-            var frame=document.getElementById("main").offsetWidth;
-            var s=Math.floor(10*(frame/this.width)*(frame/this.width))-10;
-            MM.App.adjustFontSize1(s);
-            if(parseInt($("#map.current")[0].style.left)<0){
-                $("#map.current")[0].style.left="5%";
-            };
-        });
-        
-         $("#categories_grid").gridalicious({
-             gutter: 20,
-             width: 130
-           });
-
         $(document).foundation();
-        $(document).ready(function () {
-            document.getElementById("conceptes").style.overflow="hidden";
-            $(".zoomTarget").zoomTarget();
-            $(".zoomButton").zoomButton();
-        });
     }
 });
 /***************************************/

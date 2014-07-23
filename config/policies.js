@@ -144,7 +144,17 @@
     "*" : ["authenticated", "canWrite"]
   },
 
+  "ScreenshotController" : {
+    "*" : ["authenticated"]
+  },
 
+  "PresentationController" : {
+    "*" : ["authenticated"]
+  },
+
+  "SlideController" : {
+    "*" : ["authenticated"]
+  },
   /*
   // Here's an example of adding some policies to a controller
   RabbitController: {

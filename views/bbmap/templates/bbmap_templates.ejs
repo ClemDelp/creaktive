@@ -1,3 +1,4 @@
+
 <!-- ******************************** -->
 <!-- Container -->
 <div id="bbmap_container" style="overflow:auto">
@@ -27,25 +28,68 @@
 	</div>
 </div>
 <!-- ******************************** -->
+<script type="text/template" id="bbmap-joyride-template">
+  <ol class="joyride-list" style="z-index:9999999" data-joyride>
+    <li id="joyride_id" data-id="joyride" data-text="Ok" data-options="tip_location: top">
+      <br>
+      <input id="joyride_val" type="text" placeholder="name...">
+    </li>
+  </ol>
+</script>
+
 <script type="text/template" id="bbmap-bulle-template">
+    <span id="{{-model.id}}_joyride"></span>
     <span id="{{-model.id}}" class="editTitle">{{-model.title}}</span>
     <div id="{{-model.id}}" class="ep icon">c</div>
     <div id="{{-model.id}}" class="ep2 icon">k</div>
     <div id="{{-model.id}}" class="ep3 icon">*</div>
     <div id="{{-model.id}}" class="sup icon">x</div>
+    
 </script>
 
 <script type="text/template" id="bbmap-actionbar-template">
-  <div class="">
+  <div>
 	  <center>
-      <a href="#" class="tiny round button secondary addUnlinkedC">Add C</a>
-      <a href="#" class="tiny round button secondary addUnlinkedK">Add K</a>
-      <a href="#" class="tiny round button secondary ckOperator">Display CK operator</a>
+      mode : 
+      <select id="modeSelection" class="large-2 medium-2 small-2">
+        <option value="visu" {{ if(mode == "visu"){ }}selected{{ } }}>Visualization</option>
+        <option value="edit" {{ if(mode == "edit"){ }}selected{{ } }}>Edition</option>
+      </select>
+      filter : 
+      <select id="filterSelection" class="large-2 medium-2 small-2">
+        <option value="c" {{ if(filter == "c"){ }}selected{{ } }}>Concepts</option>
+        <option value="k" {{ if(filter == "k"){ }}selected{{ } }}>Knowledge</option>
+        <option value="ck" {{ if(filter == "ck"){ }}selected{{ } }}>Concepts & Knowledge</option>
 
-      <a href="#" class="tiny round button secondary reset">Reset</a>
+      </select>
+           
+      {{ if((filter == "ck")){ }}
+        <a href="#" class="tiny round button secondary ckOperator">Display CK operator</a>
+      {{ } }}
+      <a href="#" class="tiny round button secondary reset">Reset view</a>
+      <a href="#" class="tiny button round secondary downloadimage">Download Image</a>
       <a href="#" class="tiny round button secondary zoomout">+</a>
       <span id="zoom_val"></span>
       <a href="#" class="tiny round button secondary zoomin">-</a>
+      
+      <br>
+      {{ if(mode == "edit"){ }}
+        {{ if((filter == "c")||(filter == "ck")||(filter == "ckp")){ }}
+          <strong><small style="color:#27AE60">Drag a new concept : </small></strong>
+          <img id="dropC" style="width:5%;z-index:999999" class="dropC" title="click and drop to create a new concept" src="/img/drop_c.png">
+        {{ } }}
+        {{ if((filter == "k")||(filter == "ck")||(filter == "ckp")){ }}
+          <strong><small style="color:#2980B9">Drag a new knowledge : </small></strong>
+          <img id="dropK" style="width:5%;z-index:999999" class="dropK" title="click and drop to create a new knowledge" src="/img/drop_k.png">
+        {{ } }}
+        {{ if((filter == "p")||(filter == "kp")||(filter == "ckp")){ }}
+          <strong><small style="color:#2980B9">Drag a new knowledge : </small></strong>
+          <img id="dropK" style="width:5%;z-index:999999" class="dropK" title="click and drop to create a new knowledge" src="/img/drop_k.png">
+        {{ } }}
+      {{ } }}
+
     </center>
   </div>
 </script>
+
+

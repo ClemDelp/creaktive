@@ -12,8 +12,8 @@
 
     },
 
-    getUrl : function(req,res){
 
+    getUrl : function(req,res){
         sails.config.s3.getFile(req.body.fileName, function(err, url){
             if(err) res.send({err :err});
             res.send(url)

@@ -53,6 +53,7 @@ module.exports.routes = {
   '/conceptsMap': "ConceptController.conceptview",
   '/ckpreviewer': "CkpreviewerController.ckpreviewerview",
 
+
   'get /login' : 'AuthController.login',
   'post /login' : 'AuthController.process',
   'get /logout' : 'AuthController.logout',
@@ -75,6 +76,12 @@ module.exports.routes = {
   'get /editprofile' : "UserController.editprofileview",
   'post /editprofile' : "UserController.editprofile",
   "post /changepassword" : "UserController.changepassword",
+
+  "get /getPrivateUrl" : {
+    controller : "S3Controller",
+    action :"getPrivateUrl",
+    cors : true
+  }
 
 
   /*
