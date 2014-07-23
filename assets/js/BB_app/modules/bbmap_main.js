@@ -25,7 +25,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.lastModel          = new Backbone.Model();
         this.nodes_views        = {};
         // Parameters
-        this.mode               = "visu";
+        this.mode               = json.mode;
         this.filter             = "ck";
         this.KcontentVisibility = true;
         this.CcontentVisibility = false;
@@ -66,7 +66,7 @@ bbmap.Views.Main = Backbone.View.extend({
         global.eventAggregator.on('knowledge:update',this.modelUpdate,this);
         this.map_el.mousewheel(function(event) {
             event.preventDefault();
-            console.log(event.deltaY);
+            //console.log(event.deltaY);
             if(event.deltaY == -1)bbmap.views.main.zoomin()
             else bbmap.views.main.zoomout()
         });
@@ -244,6 +244,7 @@ bbmap.Views.Main = Backbone.View.extend({
                     }
                 }
                 var screenshot;
+
                 screenshot = canvas2.toDataURL( "image/png" );
 
                 var aLink = document.createElement('a');
@@ -256,6 +257,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 //console.log(aLink);
                 aLink.click();
                 document.body.removeChild(aLink);
+
             }
         });    
     },
@@ -332,7 +334,7 @@ bbmap.Views.Main = Backbone.View.extend({
 
                 var pointArray = $("._jsPlumb_endpoint>svg");   //than we are ganna draw all the points to canvas0
                 var divArray = $("._jsPlumb_endpoint");         //cause the we can't get the position of points directly, we look at his parent div
-                //console.log(divArray.length);
+                ////console.log(divArray.length);
                 for (var i = 0; i < divArray.length; i++) {
                     var top = parseFloat(divArray[i].style.top);
                     var left = parseFloat(divArray[i].style.left);
@@ -352,7 +354,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 **/
                 context = canvas.getContext("2d");                
                 context.drawImage(canvas0,0,0);                
-                //console.log(canvas.toDataURL("image/png"));
+                ////console.log(canvas.toDataURL("image/png"));
                 /**
                 Centre le canvas sur la zone dessinée et couper le reste
                 **/
@@ -382,11 +384,10 @@ bbmap.Views.Main = Backbone.View.extend({
                     }
                 }
                 var screenshot;
-                console.log(canvas2.toDataURL( "image/png" ));
+                //console.log(canvas2.toDataURL( "image/png" ));
                 screenshot = canvas2.toDataURL( "image/png" ).replace(/data:image\/png;base64,/,'');   //save screenshot
                 var uintArray = Base64Binary.decode(screenshot);
                 _this.uploadFile(uintArray, flag);
-                alert("Sreenshot saved");
             }
         });    
     },
@@ -401,10 +402,10 @@ bbmap.Views.Main = Backbone.View.extend({
             file : file,
             s3_sign_put_url: '/S3/upload_sign',
             onProgress: function(percent, message) {
-                console.log(percent, " ***** ", message);
+                //console.log(percent, " ***** ", message);
             },
             onFinishS3Put: function(amz_id, file) {
-                console.log("File uploaded ", amz_id);
+                //console.log("File uploaded ", amz_id);
                 //Si c'est un screenshot servant d'image pour le projet
                 if(flag==true){
                     _this.project.save({
@@ -412,7 +413,7 @@ bbmap.Views.Main = Backbone.View.extend({
                     })
                 }
                 // Si c'est un screenshot
-                else{console.log("good");
+                else{
                     var s = new global.Models.Screenshot({
                         id : guid(),
                         src : amz_id,
@@ -420,10 +421,11 @@ bbmap.Views.Main = Backbone.View.extend({
                         project_id : _this.project.get('id')
                     });
                     s.save();
+                    alert("Screenshot sent to CK - Deliver")
                 }             
             },
             onError: function(status) {
-                console.log(status)
+                //console.log(status)
             }
         });
 
@@ -713,7 +715,7 @@ bbmap.Views.Main = Backbone.View.extend({
         new_view.addEndpoint();
         new_view.addLink();
         new_view.makeTarget();
-        new_view.addFollowFather();
+        //new_view.addFollowFather();
         this.instance.draggable($(new_view.el));
         this.nodes_views[model.get('id')] = new_view;
         this.startJoyride();
@@ -780,9 +782,9 @@ bbmap.Views.Main = Backbone.View.extend({
         this.instance.bind("connection", function(info, originalEvent) {
             if(originalEvent){
                 if(info.connection.scope == "cTok"){
-                    console.log("source: ",info.sourceId," - target: ",info.targetId)
+                    //console.log("source: ",info.sourceId," - target: ",info.targetId)
                     k_target = bbmap.views.main.knowledges.get(info.targetId);
-                    console.log('k_target: ',k_target)
+                    //console.log('k_target: ',k_target)
                     // CKLink
                     new_cklink = new global.Models.CKLink({
                         id :guid(),
@@ -838,9 +840,9 @@ bbmap.Views.Main = Backbone.View.extend({
                 bbmap.views.main.nodes_views[model.get('id')].makeTarget();    
             });
             // Set concept following his father
-            this.concepts.forEach(function(model){
-                bbmap.views.main.nodes_views[model.get('id')].addFollowFather();
-            });
+            // this.concepts.forEach(function(model){
+            //     bbmap.views.main.nodes_views[model.get('id')].addFollowFather();
+            // });
             // Draggable
             this.concepts.forEach(function(model){
                 bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el));
@@ -908,8 +910,18 @@ bbmap.Views.Main = Backbone.View.extend({
     render : function(){        
         ///////////////////////
         // init
-        this.nodes_views = {};
-        this.instance.reset();
+        if(this.nodes_views){
+            _.each(this.nodes_views,function(view){
+                view.removeView();
+            });
+        }
+        //this.instance.cleanupListeners()
+        //this.instance.deleteEveryEndpoint();
+        this.instance.unbind('connection');
+        this.instance.unbind('click');
+        this.instance.unbind('beforeDetach');
+        this.instance.unbind('beforeDrop')
+
         var _this = this;
         this.map_el.empty();
         ///////////////////////

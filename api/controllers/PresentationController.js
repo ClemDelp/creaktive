@@ -47,7 +47,7 @@ module.exports = {
   s.project = req.session.currentProject.id
   Presentation.create(s).done(function(err, presentation){
     if(err) res.send(err);
-    Notification.objectCreated(req,res,"Presentation", presentation.id, function(notification){
+    Notification.objectCreated(req,res,"Presentation", presentation, function(notification){
       res.send(notification);
     });
     res.send(presentation);

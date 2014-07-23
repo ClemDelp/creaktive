@@ -26,33 +26,77 @@ attachment.Views.Main = Backbone.View.extend({
     events : {
         "click .openFile" : "openFile",
         "click .removeFile" : "removeFile",
-        "change #uploadFile" : "uploadFile"
+        "change #uploadfile" : "uploadFile"
     },
     uploadFile : function(e){
-        e.preventDefault();
-        _this = this;
-        var s3upload = new S3Upload({
-            file_dom_selector: 'uploadFile',
-            s3_sign_put_url: '/S3/upload_sign',
-            onProgress: function(percent, message) {
-                $('#status').html('Upload progress: ' + percent + '% ' + message);
-            },
-            onFinishS3Put: function(amz_id, file) {
-                _this.model.get('attachment').unshift({
-                    id : guid(),
-                    name : file.name,
-                    path : file.name,
-                    url : amz_id
-                });
-                _this.model.save();
-                _this.render();
-            },
-            onError: function(status) {
-                console.log(status)
-                $('#status').html('Upload error: ' + status);
+
+e.stopPropagation(); // Stop stuff happening
+    e.preventDefault(); // Totally stop stuff happening
+
+    files = e.target.files;
+ 
+    // START A LOADING SPINNER HERE
+ 
+    // Create a formdata object and add the files
+    var data = new FormData();
+    $.each(files, function(key, value)
+    {
+        data.append(key, value);
+    });
+    
+    $.ajax({
+        url: 's3/upload',
+        type: 'POST',
+        data: data,
+        cache: false,
+        dataType: 'json',
+        processData: false, // Don't process the files
+        contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+        success: function(data, textStatus, jqXHR)
+        {
+            if(typeof data.error === 'undefined')
+            {
+                // Success so call function to process the form
+                submitForm(e, data);
             }
-        });
-        this.render();
+            else
+            {
+                // Handle errors here
+                console.log('ERRORS: ' + data.error);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown)
+        {
+            // Handle errors here
+            console.log('ERRORS: ' + textStatus);
+            // STOP LOADING SPINNER
+        }
+    });
+
+        // e.preventDefault();
+        // _this = this;
+        // var s3upload = new S3Upload({
+        //     file_dom_selector: 'uploadFile',
+        //     s3_sign_put_url: '/S3/upload_sign',
+        //     onProgress: function(percent, message) {
+        //         $('#status').html('Upload progress: ' + percent + '% ' + message);
+        //     },
+        //     onFinishS3Put: function(amz_id, file) {
+        //         _this.model.get('attachment').unshift({
+        //             id : guid(),
+        //             name : file.name,
+        //             path : file.name,
+        //             url : amz_id
+        //         });
+        //         _this.model.save();
+        //         _this.render();
+        //     },
+        //     onError: function(status) {
+        //         console.log(status)
+        //         $('#status').html('Upload error: ' + status);
+        //     }
+        // });
+        // this.render();
 },
 removeFile : function(e){
     console.log(e.target.getAttribute('data-file-id'))

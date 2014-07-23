@@ -2,6 +2,7 @@ function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).sub
 function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
 function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
 
+
 global.Functions.getProjectsUsersDictionary = function(projects,permissions){
 	var dictionary = {};
 	/////////////////////////////
@@ -53,27 +54,27 @@ global.Functions.getNotificationsDictionary = function(user_model,notifications,
 	/////////////////////////////
 	notifications.each(function(notif){
 		if((_.indexOf(notif.get('read'), user_model.get('id')) == -1)){
-        	dictionary.models[notif.get('to').id].news.add(notif);
-        	dictionary.projects[notif.get('project_id')].news.add(notif);
-        	dictionary.allNews.add(notif);
-      	}else{
-      		dictionary.models[notif.get('to').id].read.add(notif);		
-      		dictionary.projects[notif.get('project_id')].read.add(notif);		
-      		dictionary.allRead.add(notif);
-      	}
-	});
+     dictionary.models[notif.get('to').id].news.add(notif);
+     dictionary.projects[notif.get('project_id')].news.add(notif);
+     dictionary.allNews.add(notif);
+   }else{
+    dictionary.models[notif.get('to').id].read.add(notif);		
+    dictionary.projects[notif.get('project_id')].read.add(notif);		
+    dictionary.allRead.add(notif);
+  }
+});
 
 	/////////////////////////////////////////
 	// RECUPERATION DES NOTIFICATIONS LUES
 	/////////////////////////////////////////
 	if(activityLog){
-			projects.each(function(project){
-		dictionary.projects[project.id].read.add(activityLog[project.id]);	
-	});
-	}
+   projects.each(function(project){
+    dictionary.projects[project.id].read.add(activityLog[project.id]);	
+  });
+ }
 
 
-    return dictionary;
+ return dictionary;
 }
 
 global.Functions.whatChangeInModel = function(origin_m,new_m){
@@ -99,22 +100,22 @@ global.Functions.whatChangedInModel = function(model){
 global.Functions.format_ckobject_collection = function(collection){
 	collection.each(function(model){
 		global.Functions.format_ckobject_model(model);        
-    });
-    return collection;
+  });
+  return collection;
 }
 
 global.Functions.format_ckobject_model = function(model){
 	model.set({comments : new global.Collections.Comments(model.get('comments'))});
-    model.set({members : new global.Collections.UsersCollection(model.get('members'))});
-    return model;
+  model.set({members : new global.Collections.UsersCollection(model.get('members'))});
+  return model;
 }
 
 global.Functions.cloneCollection = function(collection){
 	var ks_cloned = new Backbone.Collection();
-    collection.each(function(model) {
-      ks_cloned.add(new Backbone.Model(model.toJSON()));
-    });
-    return ks_cloned;
+  collection.each(function(model) {
+    ks_cloned.add(new Backbone.Model(model.toJSON()));
+  });
+  return ks_cloned;
 }
 
 
@@ -204,8 +205,8 @@ Tree.prototype.extent = function() {
         rightmost[j] = offset + ext[j][1]
       else
         rightmost.push(offset + ext[j][1])
-    this.children[i].offset = offset
-  }
+      this.children[i].offset = offset
+    }
   rightmost = null  // Gc, come get it.
 
   // Center leaves between non-leaf siblings with a tiny state machine.
@@ -231,7 +232,7 @@ Tree.prototype.extent = function() {
     } else {
       if (!this.children[i].is_leaf()) state = 1
     }
-  }
+}
 
   // Adjust to center the root on its children
   for (i = 0; i < n_children; i++)
@@ -245,14 +246,14 @@ Tree.prototype.extent = function() {
   i = 0
   for (i = 0; lft <= rgt; i++) {
     while (lft <= rgt && i >= child_extents[lft].length) ++lft
-    while (lft <= rgt && i >= child_extents[rgt].length) --rgt
-    if (lft > rgt) break
-    var x0 = child_extents[lft][i][0] + this.children[lft].offset
-    var x1 = child_extents[rgt][i][1] + this.children[rgt].offset
-    rtn.push([x0, x1])
-  }
-  return rtn
-}
+      while (lft <= rgt && i >= child_extents[rgt].length) --rgt
+        if (lft > rgt) break
+          var x0 = child_extents[lft][i][0] + this.children[lft].offset
+        var x1 = child_extents[rgt][i][1] + this.children[rgt].offset
+        rtn.push([x0, x1])
+      }
+      return rtn
+    }
 
 // Return what the bounding box for the tree would be if it were drawn at (0,0).
 // To place it at the upper left corner of a div, draw at (-bb[0], -bb[1])
@@ -277,7 +278,7 @@ var node_label = 0
 function random_tree(depth, min_children) {
   var n_children = depth <= 1 || Math.random() < 0.5 ? 0 : Math.round(Math.random() * 4)
   if (min_children) n_children = max(n_children, min_children)
-  var children = []
+    var children = []
   for (var i = 0; i < n_children; i++)
     children.push(random_tree(depth - 1, min_children - 1))
   return new Tree('' + node_label++, children)

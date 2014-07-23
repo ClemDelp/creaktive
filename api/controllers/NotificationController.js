@@ -51,9 +51,7 @@ module.exports = {
 
     Notification.create(c).done(function(err, concept){
       if(err) res.send(err);
-      Notification.objectCreated(req,res,"Notification", c.id, function(notification){
-          res.send(notification);
-      });
+
       res.send(concept);
     });
   },
