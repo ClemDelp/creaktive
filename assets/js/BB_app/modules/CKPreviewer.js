@@ -61,39 +61,39 @@ CKPreviewer.Views.Modal = Backbone.View.extend({            //model to render th
 
     },
     //upload new image
-    uploadFile : function(file,mode){
-        _this = this;
-        var s3upload = new S3Upload({
-            file : file,
-            s3_sign_put_url: '/S3/upload_sign',
-            onProgress: function(percent, message) {
-                console.log(percent, " ***** ", message);
-            },
-            onFinishS3Put: function(amz_id, file) {
-                console.log("File uploaded ", amz_id);
-                if(mode==1){
-                    new_image = new global.Models.Screenshot({
-                        id : guid(),
-                        src : amz_id,
-                        date : getDate(),
-                        project_id : _this.project.get('id')
-                    });
-                    new_image.save();
-                    _this.screenshots.add(new_image);
-                }else{
-                    if(mode==2){
-                        _this.screenshots.remove(_this.current_screenshot);
-                        _this.current_screenshot.set({'src':amz_id,'date':getDate()}).save();
-                        _this.screenshots.add(_this.current_screenshot);
-                    }
-                }
-                CKPreviewer.views.images_view.render();
-            },
-            onError: function(status) {
-                console.log(status)
-            }
-        });
-    },
+    // uploadFile : function(file,mode){
+    //     _this = this;
+    //     var s3upload = new S3Upload({
+    //         file : file,
+    //         s3_sign_put_url: '/S3/upload_sign',
+    //         onProgress: function(percent, message) {
+    //             console.log(percent, " ***** ", message);
+    //         },
+    //         onFinishS3Put: function(amz_id, file) {
+    //             console.log("File uploaded ", amz_id);
+    //             if(mode==1){
+    //                 new_image = new global.Models.Screenshot({
+    //                     id : guid(),
+    //                     src : amz_id,
+    //                     date : getDate(),
+    //                     project_id : _this.project.get('id')
+    //                 });
+    //                 new_image.save();
+    //                 _this.screenshots.add(new_image);
+    //             }else{
+    //                 if(mode==2){
+    //                     _this.screenshots.remove(_this.current_screenshot);
+    //                     _this.current_screenshot.set({'src':amz_id,'date':getDate()}).save();
+    //                     _this.screenshots.add(_this.current_screenshot);
+    //                 }
+    //             }
+    //             CKPreviewer.views.images_view.render();
+    //         },
+    //         onError: function(status) {
+    //             console.log(status)
+    //         }
+    //     });
+    // },
     //modify image
     cutImage : function(mode){
         _this = this;
@@ -114,12 +114,44 @@ CKPreviewer.Views.Modal = Backbone.View.extend({            //model to render th
                 canvas1.height = (_this.y2-_this.y1)*image0.height;
                 var context1 = canvas1.getContext("2d");
                 context1.putImageData(imgData,0,0);
-                var imgdata = canvas1.toDataURL("image/png").replace(/data:image\/png;base64,/,'');
-                var uintArray = Base64Binary.decode(imgdata);
-                _this.uploadFile(uintArray,mode);
+                var imgdata = canvas1.toDataURL("image/png");
+                // var imgdata = canvas1.toDataURL("image/png").replace(/data:image\/png;base64,/,'');
+                // var uintArray = Base64Binary.decode(imgdata);
+                // _this.uploadFile(uintArray,mode);
+                if(mode==1){
+                    global.Functions.uploadScreenshot(imgdata, function(data){
+                        console.log(data);
+                        var s = new global.Models.Screenshot({
+                            id : guid(),
+                            src : data,
+                            date : getDate(),
+                            project_id : _this.project.get('id')
+                        });
+                        s.save();
+                        alert("New image created");
+                    });
+                }else{
+                    if(mode==2){
+                        $.post(
+                            's3/deleteFile',
+                            {fileName : _this.amz_id}, 
+                            function (data) {
+                                console.log(data);
+                            }
+                        );
+                        global.Functions.uploadScreenshot(imgdata, function(data){
+                            console.log(data);
+                            _this.screenshots.remove(_this.current_screenshot);
+                            _this.current_screenshot.set({'src':data,'date':getDate()}).save();
+                            _this.screenshots.add(_this.current_screenshot);
+                            alert("This image is resized");
+                        });
+                    }
+                }
+                CKPreviewer.views.images_view.render();
+
             };
-            var src = "/getPrivateUrl?amz_id="+this.src;
-            image0.src = src;
+            image0.src = this.src;
         }
     },
     resize : function(e){
@@ -165,6 +197,7 @@ CKPreviewer.Views.Modal = Backbone.View.extend({            //model to render th
         this.src = src;
         this.actionflag = 0;
         this.current_screenshot = this.screenshots.get(screenshot_id);
+        this.amz_id = this.current_screenshot.get("src");
         this.render(function(){
             $('#CKPreviewerModal').foundation('reveal', 'open'); 
             $(document).foundation();
@@ -385,13 +418,13 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         var wid=$("#textzoon")[0].offsetWidth;
         switch(size){
             case 0:
-                CKEDITOR.instances.ckeditor.insertHtml('<br><img src="/S3/getPrivateUrl?amz_id='+src+'" style="width:'+wid*0.4+'px" >');
+                CKEDITOR.instances.ckeditor.insertHtml('<br><img src="'+src+'" style="width:'+wid*0.4+'px" >');
                 break;
             case 1:
-                CKEDITOR.instances.ckeditor.insertHtml('<br><img src="/S3/getPrivateUrl?amz_id='+src+'" style="width:'+wid*0.7+'px" >');
+                CKEDITOR.instances.ckeditor.insertHtml('<br><img src="'+src+'" style="width:'+wid*0.7+'px" >');
                 break;
             case 2:
-                CKEDITOR.instances.ckeditor.insertHtml('<br><img src="/S3/getPrivateUrl?amz_id='+src+'" style="width:'+wid*0.95+'px" >');
+                CKEDITOR.instances.ckeditor.insertHtml('<br><img src="'+src+'" style="width:'+wid*0.95+'px" >');
                 break;
         }
     },
@@ -429,6 +462,7 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         this.ps_to_render = this.poches;
         // Templates
         this.template = _.template($("#CKPreviewer_images_template").html()); 
+        this.template_image = _.template($("#CKPreviewer_image_template").html()); 
     },
     events : {
         "click #deleteimage" : "delImg",
@@ -452,30 +486,14 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         imagesrc = e.target.getAttribute("data-image-id");
         imagedate = e.target.getAttribute("data-image-date");
 
-        var canvas = document.createElement('CANVAS'),
-        ctx = canvas.getContext('2d'),
-        img = new Image;
-        img.crossOrigin = 'Anonymous';
-        img.onload = function(){
-            var dataURL;
-            canvas.height = img.height;
-            canvas.width = img.width;
-            ctx.drawImage(img, 0, 0);
-            dataURL = canvas.toDataURL("image/png");
-            canvas = null; 
-
-            // var evt = document.createEvent("HTMLEvents");
-            // evt.initEvent("click", false, false);
-            var aLink = document.createElement('a');
-            aLink.href = dataURL;
-            aLink.setAttribute('download', imagedate);
-            //aLink.dispatchEvent(evt);
-            document.body.appendChild(aLink);
-            //console.log(aLink.download);
-            aLink.click();
-            document.body.removeChild(aLink);
-            };
-            img.src = "/S3/getPrivateUrl?amz_id="+imagesrc;
+        var aLink = document.createElement('a');
+        aLink.href = imagesrc;
+        aLink.setAttribute('download', imagedate);
+        //aLink.dispatchEvent(evt);
+        document.body.appendChild(aLink);
+        //console.log(aLink.download);
+        aLink.click();
+        document.body.removeChild(aLink);
     },
     smallimage : function(e){
         e.preventDefault();
@@ -568,9 +586,17 @@ CKPreviewer.Views.Images = Backbone.View.extend({
     },
     delImg : function(e){
         e.preventDefault();
-        var imagesrc = e.target.getAttribute("data-image-id");
+        var image_id = e.target.getAttribute("data-image-id");
         var screenshot_id = e.target.getAttribute("data-screenshot-id");
+        console.log(screenshot_id,this.screenshots.get(screenshot_id));
         this.screenshots.get(screenshot_id).destroy();
+        $.post(
+            's3/deleteFile',
+            {fileName : image_id}, 
+            function (data) {
+                console.log(data);
+            }
+        );
         CKPreviewer.views.images_view.render();
     },
     editImg : function(e){
@@ -633,9 +659,10 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         $(this.ps_el).append(CKPreviewer.views.ps_view.render().el);
     },
     render : function(){
+        _this = this;
         $(this.el).html('');
         $(this.el).append(this.template({
-            images : this.screenshots.toJSON().reverse(),
+            //images : this.screenshots.toJSON().reverse(),
         }));
 
         this.ks_el = $(this.el).find('#ks');
@@ -662,6 +689,17 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         });
         $(this.ps_el).append(CKPreviewer.views.ps_view.render().el);
 
+        this.screenshots.each(function(image,n){
+            console.log(image)
+            $.get('/s3/getUrl?amz_id='+image.get("src"), function(url){
+                image.url = url;
+                console.log(url)
+                $("#imageList").append(_this.template_image({
+                    image : image,
+                    n : n
+                }))
+            })
+        })
         return this;
     }
 });

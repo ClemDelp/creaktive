@@ -1,4 +1,4 @@
-/***************************************/
+/**************************************/
 var imagesList = {
   // Classes
   Collections: {},
@@ -20,10 +20,12 @@ imagesList.Views.Main = Backbone.View.extend({
         this.attachments = this.model.get('attachment');
         this.knowledges = json.knowledges;
         // Templates
-        this.template_diapo = _.template($('#imagesList-diapo-template').html());     
+        this.template_diapo = _.template($('#imagesList-diapo-template').html());  
+        this.template_image = _.template($("#imagesList_image_template").html());    
     },
     events : {},
     render : function(){
+        _this=this;
         // Init
         $(this.el).html('');
         // filter attachment get only images
@@ -33,9 +35,21 @@ imagesList.Views.Main = Backbone.View.extend({
         })
         // get the diapo
         $(this.el).append(this.template_diapo({images:images}));
+        // images.forEach(function(image){
+        //     //console.log(image);
+        //     $.get('/s3/getUrl?amz_id='+image.url, function(imagedate){
+        //         image.imagedate = imagedate;
+        //         //console.log(image,$("#imageList")[0]);
+        //         $("#imageList").append(_this.template_image({
+        //             image : image,
+        //         }))
+        //     })
+        // })
+
+
+
         $(document).foundation();
         
         return this;
     }
 });
-/***************************************/

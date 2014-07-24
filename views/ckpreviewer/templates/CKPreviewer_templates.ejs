@@ -7,7 +7,7 @@
     <a href="#" id="resizeimage" class="button tiny  " style="float:left">ResizeImage</a>
     <a href="#" id="newimage" class="button tiny  success" style="float:left">CreateNewImage</a>
     <center><h3></h3></center><hr>
-    <image src="/S3/getPrivateUrl?amz_id={{- src}}"  id="cropbox"/><hr>
+    <image src="{{- src}}"  id="cropbox"/><hr>
     <a href="#" id="confirm" class="button tiny  " style="float:right">OK</a>
     <a class="close-reveal-modal">&#215;</a>
 </script>
@@ -52,6 +52,25 @@
   </div>
 </script>
 
+<script type="text/template" id="CKPreviewer_image_template" >
+
+        <li id="image_container">
+          <span class="label radius  secondary">{{- image.get("date")}}</span>
+          <span class="label radius  downloadimage" data-image-id="{{- image.url}}" data-image-date="{{- image.get('date')}}">download</span>
+          <span class="label radius alert editimage" data-image-id="{{- image.url}}" data-screenshot-id="{{- image.get('id')}}">edit</span>
+          <a id="deleteimage" data-image-id="{{- image.get('src')}}" data-screenshot-id="{{- image.get('id')}}" style="float:right">&#215;</a>
+          <img class="th dropdown" id="image" data-dropdown="imagedrop{{- n}}"  src="{{- image.url}}" style="width: 300px;height: 150px">
+        </li>
+        <ul id="imagedrop{{- n}}" data-dropdown-content class="f-dropdown">
+          <li>
+            <a class="smallimage" data-image-id="{{- image.url}}"  href="#" >Small</a>
+            <a class="mediumimage" data-image-id="{{- image.url}}"  href="#" >Medium</a>
+            <a class="largeimage" data-image-id="{{- image.url}}"  href="#" >Large</a>
+          </li>
+        </ul>
+
+</script>
+
 
 <!-- //////////////////////////////////////////////////////// -->
 <!-- Left part -->
@@ -64,23 +83,8 @@
   </ul>
   <div class="tabs-content">
     <div class="content active" id="panel2-1">
-    <ul class="small-block-grid-2">
-      {{ _.each(images, function(image,n) { }}
-        <li id="image_container">
-          <span class="label radius  secondary">{{- image.date}}</span>
-          <span class="label radius  downloadimage" data-image-id="{{- image.src}}" data-image-date="{{- image.date}}">download</span>
-          <span class="label radius alert editimage" data-image-id="{{- image.src}}" data-screenshot-id="{{- image.id}}">edit</span>
-          <a id="deleteimage" data-image-id="{{- image.src}}" data-screenshot-id="{{- image.id}}" style="float:right">&#215;</a>
-          <img class="th dropdown" id="image" data-dropdown="imagedrop{{- n}}"  src="/S3/getPrivateUrl?amz_id={{- image.src}}" style="width: 300px;height: 150px">
-        </li>
-        <ul id="imagedrop{{- n}}" data-dropdown-content class="f-dropdown">
-          <li>
-            <a class="smallimage" data-image-id="{{- image.src}}"  href="#" >Small</a>
-            <a class="mediumimage" data-image-id="{{- image.src}}"  href="#" >Medium</a>
-            <a class="largeimage" data-image-id="{{- image.src}}"  href="#" >Large</a>
-          </li>
-        </ul>
-      {{ }); }}  
+    <ul class="small-block-grid-2" id="imageList">
+      
     </ul>
 
     </div>

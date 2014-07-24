@@ -2,6 +2,39 @@ function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).sub
 function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
 function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
 
+global.Functions.uploadScreenshot = function(file,cb){   
+
+    $.post('s3/uploadScreenshot', {screenshot : file}, function(data){
+      cb(data);
+    })
+
+}
+
+
+global.Functions.uploadFile = function(e,cb){   
+
+    var files = e.target.files;
+    //console.log(files);
+    var data = new FormData();
+    $.each(files, function(key, value)
+    {
+        data.append(key, value);
+    });
+    $.ajax({
+        url: 's3/upload',
+        type: 'POST',
+        data: data,
+        cache: false,
+        dataType: 'json',
+        processData: false, // Don't process the files
+        contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+    }).success(function(data) {
+        cb(data.amz_id, files[0].name);
+  }).error(function(jqXHR, textStatus, errorThrown){
+      alert("Upload error, please try again later")
+  });
+
+}
 
 global.Functions.getProjectsUsersDictionary = function(projects,permissions){
 	var dictionary = {};

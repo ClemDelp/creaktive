@@ -6,19 +6,19 @@
  *
  */
 
-module.exports = {
+ module.exports = {
 
-	autoPK : false,
+ 	autoPK : false,
 
 
-  attributes: {
+ 	attributes: {
 
-  	
   	/* e.g.
   	nickname: 'string'
   	*/
 
-    
-  	},
+  },
+
+
 
 };

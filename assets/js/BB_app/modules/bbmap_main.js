@@ -385,51 +385,25 @@ bbmap.Views.Main = Backbone.View.extend({
                 }
                 var screenshot;
                 //console.log(canvas2.toDataURL( "image/png" ));
-                screenshot = canvas2.toDataURL( "image/png" ).replace(/data:image\/png;base64,/,'');   //save screenshot
-                var uintArray = Base64Binary.decode(screenshot);
-                _this.uploadFile(uintArray, flag);
+                screenshot = canvas2.toDataURL( "image/png" );   //save screenshot
+                // var uintArray = Base64Binary.decode(screenshot).toString();
+                // console.log(uintArray);
+                global.Functions.uploadScreenshot(screenshot, function(data){
+                    console.log(data);
+                    var s = new global.Models.Screenshot({
+                        id : guid(),
+                        src : data,
+                        date : getDate(),
+                        project_id : _this.project.get('id')
+                     });
+                s.save();
+                alert("Screenshot sent to CK - Deliver")
+                });
+
             }
         });    
     },
-    /*
-    * Transfer a file to s3 
-    * @file : file to transfer
-    * @flag - boolean : if true, the screenshot will be a project image
-    */ 
-    uploadFile : function(file,flag){
-        _this = this;
-        var s3upload = new S3Upload({
-            file : file,
-            s3_sign_put_url: '/S3/upload_sign',
-            onProgress: function(percent, message) {
-                //console.log(percent, " ***** ", message);
-            },
-            onFinishS3Put: function(amz_id, file) {
-                //console.log("File uploaded ", amz_id);
-                //Si c'est un screenshot servant d'image pour le projet
-                if(flag==true){
-                    _this.project.save({
-                        image : amz_id
-                    })
-                }
-                // Si c'est un screenshot
-                else{
-                    var s = new global.Models.Screenshot({
-                        id : guid(),
-                        src : amz_id,
-                        date : getDate(),
-                        project_id : _this.project.get('id')
-                    });
-                    s.save();
-                    alert("Screenshot sent to CK - Deliver")
-                }             
-            },
-            onError: function(status) {
-                //console.log(status)
-            }
-        });
-
-    },
+ 
     /////////////////////////////////////////
     // Drop new data on map
     /////////////////////////////////////////
@@ -972,11 +946,11 @@ bbmap.Views.Main = Backbone.View.extend({
         CSS3GENERATOR.update_styles();
 
 
-        $.get('/BBmap/image', function(hasChanged){
-            if (_this.project.image=="" || hasChanged == true){
-                _this.screenshot(true);
-            }
-        });
+        // $.get('/BBmap/image', function(hasChanged){
+        //     if (_this.project.image=="" || hasChanged == true){
+        //         _this.screenshot(true);
+        //     }
+        // });
         return this;
     }
 });

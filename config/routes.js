@@ -77,11 +77,12 @@ module.exports.routes = {
   'post /editprofile' : "UserController.editprofile",
   "post /changepassword" : "UserController.changepassword",
 
-  "get /getPrivateUrl" : {
+  "get /s3/getUrl" : {
     controller : "S3Controller",
-    action :"getPrivateUrl",
+    action :"getUrl",
     cors : true
   }
+
 
 
   /*

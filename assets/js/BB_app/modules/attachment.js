@@ -21,7 +21,8 @@ attachment.Views.Main = Backbone.View.extend({
         // Variables
         this.model = json.model;
         // Templates
-        this.template = _.template($('#attachment-list-template').html());
+        this.template = _.template($('#attachment-list-template').html()); 
+        this.template_image = _.template($('#attachment_image_template').html()); 
     },
     events : {
         "click .openFile" : "openFile",
@@ -29,75 +30,19 @@ attachment.Views.Main = Backbone.View.extend({
         "change #uploadfile" : "uploadFile"
     },
     uploadFile : function(e){
-
-e.stopPropagation(); // Stop stuff happening
-    e.preventDefault(); // Totally stop stuff happening
-
-    files = e.target.files;
- 
-    // START A LOADING SPINNER HERE
- 
-    // Create a formdata object and add the files
-    var data = new FormData();
-    $.each(files, function(key, value)
-    {
-        data.append(key, value);
-    });
-    
-    $.ajax({
-        url: 's3/upload',
-        type: 'POST',
-        data: data,
-        cache: false,
-        dataType: 'json',
-        processData: false, // Don't process the files
-        contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-        success: function(data, textStatus, jqXHR)
-        {
-            if(typeof data.error === 'undefined')
-            {
-                // Success so call function to process the form
-                submitForm(e, data);
-            }
-            else
-            {
-                // Handle errors here
-                console.log('ERRORS: ' + data.error);
-            }
-        },
-        error: function(jqXHR, textStatus, errorThrown)
-        {
-            // Handle errors here
-            console.log('ERRORS: ' + textStatus);
-            // STOP LOADING SPINNER
-        }
-    });
-
-        // e.preventDefault();
-        // _this = this;
-        // var s3upload = new S3Upload({
-        //     file_dom_selector: 'uploadFile',
-        //     s3_sign_put_url: '/S3/upload_sign',
-        //     onProgress: function(percent, message) {
-        //         $('#status').html('Upload progress: ' + percent + '% ' + message);
-        //     },
-        //     onFinishS3Put: function(amz_id, file) {
-        //         _this.model.get('attachment').unshift({
-        //             id : guid(),
-        //             name : file.name,
-        //             path : file.name,
-        //             url : amz_id
-        //         });
-        //         _this.model.save();
-        //         _this.render();
-        //     },
-        //     onError: function(status) {
-        //         console.log(status)
-        //         $('#status').html('Upload error: ' + status);
-        //     }
-        // });
-        // this.render();
-},
+        e.stopPropagation(); // Stop stuff happening
+        e.preventDefault(); // Totally stop stuff happening
+        global.Functions.uploadFile(e, function(amz_id, fileName){
+            _this.model.get('attachment').unshift({
+                    id : guid(),
+                    name : fileName,
+                    path : fileName,
+                    url : amz_id
+                });
+                _this.model.save();
+                _this.render();
+        })  
+    },
 removeFile : function(e){
     console.log(e.target.getAttribute('data-file-id'))
     var i = {};
@@ -115,10 +60,27 @@ openFile : function(e){
     $.download('file/get',{path : e.target.getAttribute('data-file-path')} );
 },
 render : function() {
+    _this=this;
+  
     $(this.el).html("");
     $(this.el).append(this.template({
         model : this.model.toJSON()
     }));
+
+    this.model.get('attachment').forEach(function(image){
+        console.log(image)
+        $.get('/s3/getUrl?amz_id='+image.url, function(imagedate){
+            image.imagedate = imagedate;
+            console.log($("#imageList"),image);
+            console.log(_this.template,_this.template_image);
+            $("#imageList").append(_this.template_image({
+              file : image,
+            }))
+        })
+    })
+
+
+
     return this;
 }
 });

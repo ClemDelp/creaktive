@@ -24,19 +24,28 @@ module.exports.s3 = {
 			region: 'eu-west-1'
 		});
 		var s3 = new AWS.S3();
+		var body = {};
+		if(file.path)  body = fs.createReadStream(file.path);
+		else{
 
-		var bodyStream = fs.createReadStream(file.path);
+			//Convertit en image et enregistre sur le serveur cf. FileController
+			body = new Buffer(file.replace(/^data:image\/\w+;base64,/, ""),'base64')
+
+			
+
+		} 
 		var data = {
 			Bucket : S3_BUCKET,
 			Key: guid().replace(/-/g,""), 
-			Body: bodyStream,
+			Body: body,
 			ACL: "private",
 		};
 
   		s3.putObject(data, function(err, file) {
 		    if (err) cb(err)
-		    console.log("File ", data.Key)
-		    cb(null,file)    		      
+		    console.log("File pushed on s3", data.Key)
+		    cb(null,data.Key) 
+		    //On supprime le fichier   		      
 	    });
 	},
 
@@ -58,6 +67,7 @@ module.exports.s3 = {
 	},
 
 	getFile : function(file, cb){
+		console.log(file)
 				AWS.config.update({
 			accessKeyId : "AKIAIK5NKF7MSBBB4EGQ",
 			secretAccessKey : "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",
@@ -67,12 +77,12 @@ module.exports.s3 = {
 		var params = {
 			Bucket: S3_BUCKET, // required
 			Key: file, // required
-			Expires: 60
+			Expires: 900
 		}
 
 		s3.getSignedUrl('getObject', params, function (err, url) {
 		  			if (err) cb(err); // an error occurred
-			console.log(url)
+
 			cb(null,url);           // successful response
 		});
 	}
