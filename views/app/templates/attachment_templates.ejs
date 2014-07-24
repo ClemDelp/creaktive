@@ -1,7 +1,7 @@
 <script type="text/template" id="attachment-list-template">
 	<fieldset>
         <legend align=left>Attachments ({{- model.attachment.length }})</legend>
-		<ul id="imageList">
+		<ul id="attachmentList">
 		</ul>
 		<input id="uploadfile" type="file"/>
 		<span id="status" class="label round">Please select a file</span>
@@ -10,6 +10,6 @@
 
 
 <script type="text/template" id="attachment_image_template" >
-	<li><a href="{{- file.imagedate}}"  target="_blank" class="" data-file-path="{{- file.path}}" title="open">{{- file.name.substring(0,50) }}...</a>
+	<li><a href="{{- file.url}}"  target="_blank" class="" data-file-path="{{- file.path }}" title="open">{{- file.name.substring(0,50) }}...</a>
 	<a style="color:red" class="removeFile" data-file-id="{{- file.id}}" title="remove">x</a></li>
 </script>

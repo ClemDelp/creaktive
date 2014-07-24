@@ -22,7 +22,6 @@ global.Models.CKObject = Backbone.Model.extend({
         comments: [],
         date : "",
         date2: "",
-        attachment: "",
         color: "#C0392B",
         members:[],
         attachment:[],
@@ -267,6 +266,21 @@ global.Models.Presentation = Backbone.Model.extend({
     },
     initialize : function Poche() {
         this.urlRoot = "presentation";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+/***************************************/
+global.Models.Attachment = Backbone.Model.extend({
+    defaults : {
+        id : "",
+        name : "",
+        path : "",
+        url : "",
+    },
+    initialize : function Poche() {
+        this.urlRoot = "attachment";
         this.bind("error", function(model, error){
             console.log( error );
         });

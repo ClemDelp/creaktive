@@ -436,6 +436,7 @@ bbmap.Views.Main = Backbone.View.extend({
     // Sliding editor bar
     /////////////////////////////////////////
     updateEditor : function(model){
+
         if(this.mode == "edit"){
             this.editor_el.show('slow');
             // Model editor module
@@ -454,12 +455,14 @@ bbmap.Views.Main = Backbone.View.extend({
             // IMG List module
             if(bbmap.views.imagesList)bbmap.views.imagesList.remove();
             bbmap.views.imagesList = new imagesList.Views.Main({
-                model           : model
+                model           : model,
+                eventAggregator : this.eventAggregator
             });
             // Attachment module
             if(bbmap.views.attachment)bbmap.views.attachment.remove();
             bbmap.views.attachment = new attachment.Views.Main({
-                model           : model
+                model           : model,
+                eventAggregator : this.eventAggregator
             });
             // Comments module
             if(bbmap.views.comments)bbmap.views.comments.remove();

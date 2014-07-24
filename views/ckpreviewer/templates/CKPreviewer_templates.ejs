@@ -59,7 +59,7 @@
           <span class="label radius  downloadimage" data-image-id="{{- image.url}}" data-image-date="{{- image.get('date')}}">download</span>
           <span class="label radius alert editimage" data-image-id="{{- image.url}}" data-screenshot-id="{{- image.get('id')}}">edit</span>
           <a id="deleteimage" data-image-id="{{- image.get('src')}}" data-screenshot-id="{{- image.get('id')}}" style="float:right">&#215;</a>
-          <img class="th dropdown" id="image" data-dropdown="imagedrop{{- n}}"  src="{{- image.url}}" style="width: 300px;height: 150px">
+          <img class="th dropdown" crossorigin="*" id="image" data-dropdown="imagedrop{{- n}}"  src="{{- image.url}}" style="width: 300px;height: 150px">
         </li>
         <ul id="imagedrop{{- n}}" data-dropdown-content class="f-dropdown">
           <li>

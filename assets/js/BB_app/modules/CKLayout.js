@@ -127,6 +127,7 @@ CKLayout.Views.Main = Backbone.View.extend({
         // Variables
         this.activities_el      = json.activities_el;
         this.model              = json.model;
+        this.eventAggregator    = json.eventAggregator;
         this.user               = global.models.current_user;
         this.labels             = new Backbone.Collection();
         // Label
@@ -233,12 +234,10 @@ CKLayout.Views.Main = Backbone.View.extend({
         }).render().el);
         // IMG List module
         $(this.el).append(new imagesList.Views.Main({
-            
             model           : this.model,
         }).render().el);
         // Attachment module
         $(this.el).append(new attachment.Views.Main({
-            
             model           : this.model,
         }).render().el);
         // Comments module
