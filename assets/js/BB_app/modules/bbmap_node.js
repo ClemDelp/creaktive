@@ -209,11 +209,11 @@ bbmap.Views.Node = Backbone.View.extend({
         this.removeView();
     },
     removeView : function(){
-        bbmap.views.main.instance.deleteEveryEndpoint(this.el);
-        // this.endpoints.forEach(function(ep){
-        //     bbmap.views.main.instance.deleteEndpoint(ep);
-        // });
-        // bbmap.views.main.instance.detachAllConnections($(this.el));
+        //bbmap.views.main.instance.deleteEndpoint(this.el);
+        this.endpoints.forEach(function(ep){
+            bbmap.views.main.instance.deleteEndpoint(ep);
+        });
+        bbmap.views.main.instance.detachAllConnections($(this.el));
         this.remove();
     },
     /////////////////////////////////////////
