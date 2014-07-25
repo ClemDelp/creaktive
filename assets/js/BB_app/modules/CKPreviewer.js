@@ -60,43 +60,11 @@ CKPreviewer.Views.Modal = Backbone.View.extend({            //model to render th
         }
 
     },
-    //upload new image
-    // uploadFile : function(file,mode){
-    //     _this = this;
-    //     var s3upload = new S3Upload({
-    //         file : file,
-    //         s3_sign_put_url: '/S3/upload_sign',
-    //         onProgress: function(percent, message) {
-    //             console.log(percent, " ***** ", message);
-    //         },
-    //         onFinishS3Put: function(amz_id, file) {
-    //             console.log("File uploaded ", amz_id);
-    //             if(mode==1){
-    //                 new_image = new global.Models.Screenshot({
-    //                     id : guid(),
-    //                     src : amz_id,
-    //                     date : getDate(),
-    //                     project_id : _this.project.get('id')
-    //                 });
-    //                 new_image.save();
-    //                 _this.screenshots.add(new_image);
-    //             }else{
-    //                 if(mode==2){
-    //                     _this.screenshots.remove(_this.current_screenshot);
-    //                     _this.current_screenshot.set({'src':amz_id,'date':getDate()}).save();
-    //                     _this.screenshots.add(_this.current_screenshot);
-    //                 }
-    //             }
-    //             CKPreviewer.views.images_view.render();
-    //         },
-    //         onError: function(status) {
-    //             console.log(status)
-    //         }
-    //     });
-    // },
+
     //modify image
     cutImage : function(mode){
-        _this = this;
+        _this0 = this;
+
         if (this.x2==this.x1){
             alert("Please choose an area");
         }else{
@@ -108,48 +76,45 @@ CKPreviewer.Views.Modal = Backbone.View.extend({            //model to render th
                 canvas.height = image0.height;
                 var context = canvas.getContext("2d");
                 context.drawImage(image0,0,0);
-                var imgData=context.getImageData(_this.x1*image0.width,_this.y1*image0.height,(_this.x2-_this.x1)*image0.width,(_this.y2-_this.y1)*image0.height);   
+                var imgData=context.getImageData(_this0.x1*image0.width,_this0.y1*image0.height,(_this0.x2-_this0.x1)*image0.width,(_this0.y2-_this0.y1)*image0.height);   
                 var canvas1 = document.createElement("canvas");
-                canvas1.width = (_this.x2-_this.x1)*image0.width;
-                canvas1.height = (_this.y2-_this.y1)*image0.height;
+                canvas1.width = (_this0.x2-_this0.x1)*image0.width;
+                canvas1.height = (_this0.y2-_this0.y1)*image0.height;
                 var context1 = canvas1.getContext("2d");
                 context1.putImageData(imgData,0,0);
                 var imgdata = canvas1.toDataURL("image/png");
-                // var imgdata = canvas1.toDataURL("image/png").replace(/data:image\/png;base64,/,'');
-                // var uintArray = Base64Binary.decode(imgdata);
-                // _this.uploadFile(uintArray,mode);
+
                 if(mode==1){
                     global.Functions.uploadScreenshot(imgdata, function(data){
-                        console.log(data);
                         var s = new global.Models.Screenshot({
                             id : guid(),
                             src : data,
                             date : getDate(),
-                            project_id : _this.project.get('id')
+                            project_id : _this0.project.get('id')
                         });
                         s.save();
+                        CKPreviewer.views.images_view.screenshots.add(s);
+                        CKPreviewer.views.images_view.render();
                         alert("New image created");
                     });
                 }else{
                     if(mode==2){
                         $.post(
                             's3/deleteFile',
-                            {fileName : _this.amz_id}, 
+                            {fileName : _this0.amz_id}, 
                             function (data) {
-                                console.log(data);
+                                //console.log(data);
                             }
                         );
                         global.Functions.uploadScreenshot(imgdata, function(data){
-                            console.log(data);
-                            _this.screenshots.remove(_this.current_screenshot);
-                            _this.current_screenshot.set({'src':data,'date':getDate()}).save();
-                            _this.screenshots.add(_this.current_screenshot);
+                            _this0.screenshots.remove(_this0.current_screenshot);
+                            _this0.current_screenshot.set({'src':data,'date':getDate()}).save();
+                            _this0.screenshots.add(_this0.current_screenshot).save();
+                            CKPreviewer.views.images_view.render();
                             alert("This image is resized");
                         });
                     }
                 }
-                CKPreviewer.views.images_view.render();
-
             };
             image0.src = this.src;
         }
@@ -588,13 +553,12 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         e.preventDefault();
         var image_id = e.target.getAttribute("data-image-id");
         var screenshot_id = e.target.getAttribute("data-screenshot-id");
-        console.log(screenshot_id,this.screenshots.get(screenshot_id));
         this.screenshots.get(screenshot_id).destroy();
         $.post(
             's3/deleteFile',
             {fileName : image_id}, 
             function (data) {
-                console.log(data);
+                //console.log(data);
             }
         );
         CKPreviewer.views.images_view.render();
@@ -688,16 +652,22 @@ CKPreviewer.Views.Images = Backbone.View.extend({
             poches          : this.ps_to_render,
         });
         $(this.ps_el).append(CKPreviewer.views.ps_view.render().el);
+        
 
-        this.screenshots.each(function(image,n){
-            console.log(image)
+        var screenshots_reverse = new global.Collections.Screenshots();
+        for (var i = this.screenshots.length - 1; i >= 0; i--) {
+            screenshots_reverse.add(this.screenshots.at(i));
+        };
+        screenshots_reverse.each(function(image,n){
+            //console.log(image)
             $.get('/s3/getUrl?amz_id='+image.get("src"), function(url){
                 image.url = url;
-                console.log(url)
+                //console.log(url)
                 $("#imageList").append(_this.template_image({
                     image : image,
                     n : n
                 }))
+                delete image.url;
             })
         })
         return this;
