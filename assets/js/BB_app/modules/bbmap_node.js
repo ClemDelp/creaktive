@@ -52,55 +52,11 @@ bbmap.Views.Node = Backbone.View.extend({
         bbmap.views.main.instance.repaint(this.model.get('id'));
         
     },
-    // addFollowFather : function(){
-        
-    //     try{
-
-    //         var _this = this;
-    //         var father_el = bbmap.views.main.nodes_views[this.model.get('id_father')].el;
-    //         var father = bbmap.views.main.concepts.get(this.model.get('id_father')).clone();
-    //         var oldFather = father.clone();
-    //         var i = 0;
-    //         $(father_el).watch('top left', function(){
-    //             //alert('follow')
-    //             if(i%5 == true){
-    //                 var f_left = this.style.left.replace('px','');
-    //                 var f_top = this.style.top.replace('px','');
-    //                 ////console.log("father position : ",f_left,f_top)
-
-    //                 var h_left = oldFather.get('left');
-    //                 var h_top = oldFather.get('top');
-    //                 ////console.log("hold position : ",h_left,h_top)
-
-    //                 var n_left = _this.model.get('left');
-    //                 var n_top = _this.model.get('top');
-
-    //                 var delta_top = h_top - f_top;
-    //                 var delta_left = h_left - f_left;
-    //                 ////console.log("delta left: ",delta_left)
-
-    //                 var x = (n_left - delta_left);
-    //                 var y = (n_top - delta_top);
-
-    //                 ////console.log("delta : ",delta_top,delta_left)
-    //                 if((Math.abs(delta_left) > 1)||(Math.abs(delta_top) > 1)){
-    //                     ////console.log("move at left:",x," - top:",y)
-    //                     bbmap.views.main.nodes_views[_this.model.get('id')].setPosition(x,y,0,0,true);
-    //                     bbmap.views.main.instance.repaint(_this.model.get('id'));
-    //                     father.set({left:f_left,top:f_top},{silent:true});
-    //                 }
-    //                 oldFather = father.clone();
-    //             }
-    //             i = i +1;
-    //         });
-    //     }catch(err){
-    //         //console.log("this node have no father!")
-    //     }
-    // },
     applyStyle : function(){
         if(!this.model.get('css')){    
             if(this.model.get('type') == "concept")this.model.save({css : bbmap.css_concept_default},{silent:true});
             else if(this.model.get('type') == "knowledge") this.model.save({css : bbmap.css_knowledge_default},{silent:true});
+            else if(this.model.get('type') == "category") this.model.save({css : bbmap.css_poche_default},{silent:true});
         }
         var left = this.model.get('left');
         var top = this.model.get('top');
@@ -246,7 +202,7 @@ bbmap.Views.Node = Backbone.View.extend({
                     uuid:this.model.get('id') + "-right",
                     anchor:"Right",
                     isSource:true,
-                    scope:"cTok",
+                    scope:"cklink",
                     maxConnections:-1
                 },
                 {
@@ -255,7 +211,7 @@ bbmap.Views.Node = Backbone.View.extend({
                     paintStyle:{ fillStyle:"#27AE60" },
                 }
             ));
-        }else if(this.model.get('type') == 'knowledge'){
+        }else{
             this.endpoints.unshift(bbmap.views.main.instance.addEndpoint(
                 $(this.el), {
                     uuid:this.model.get('id') + "-left",
@@ -296,11 +252,11 @@ bbmap.Views.Node = Backbone.View.extend({
                 dropOptions:{ hoverClass:"dragHover" },
                 anchor:"Top"             
             });
-        }else if(this.model.get('type') == "knowledge"){
+        }else{
             bbmap.views.main.instance.makeTarget(this.model.get('id'), {
                 dropOptions:{ hoverClass:"dragHover" },
-                scope:"cTok",
-                anchor:"Left"             
+                scope:"cklink",
+                anchor:"AutoDefault"             
             });
         }  
     },

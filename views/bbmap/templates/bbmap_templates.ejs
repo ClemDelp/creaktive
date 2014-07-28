@@ -58,8 +58,11 @@
       filter : 
       <select id="filterSelection" class="large-2 medium-2 small-2">
         <option value="c" {{ if(filter == "c"){ }}selected{{ } }}>Concepts</option>
-        <option value="k" {{ if(filter == "k"){ }}selected{{ } }}>Knowledge</option>
+        <option value="k" {{ if(filter == "k"){ }}selected{{ } }}>Knowledges</option>
+        <option value="p" {{ if(filter == "p"){ }}selected{{ } }}>Categories</option>
         <option value="ck" {{ if(filter == "ck"){ }}selected{{ } }}>Concepts & Knowledge</option>
+        <option value="kp" {{ if(filter == "kp"){ }}selected{{ } }}>Knowledges & Categories</option>
+        <option value="ckp" {{ if(filter == "ckp"){ }}selected{{ } }}>All</option>
 
       </select>
            
@@ -83,8 +86,8 @@
           <img id="dropK" style="width:5%;z-index:999999" class="dropK" title="click and drop to create a new knowledge" src="/img/drop_k.png">
         {{ } }}
         {{ if((filter == "p")||(filter == "kp")||(filter == "ckp")){ }}
-          <strong><small style="color:#2980B9">Drag a new knowledge : </small></strong>
-          <img id="dropK" style="width:5%;z-index:999999" class="dropK" title="click and drop to create a new knowledge" src="/img/drop_k.png">
+          <strong><small style="color:orange">Drag a new category : </small></strong>
+          <img id="dropP" style="width:5%;z-index:999999" class="dropP" title="click and drop to create a new category" src="/img/drop_k.png">
         {{ } }}
       {{ } }}
 

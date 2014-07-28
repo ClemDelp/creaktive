@@ -1,0 +1,1 @@
+{ "options" : { "create" : "file" }, "indexes" : [ { "v" : 1, "key" : { "_id" : 1 }, "ns" : "creaktive.file", "name" : "_id_" }, { "v" : 1, "key" : { "id" : 1 }, "unique" : true, "ns" : "creaktive.file", "name" : "id_1", "sparse" : true } ] }

@@ -1,0 +1,1 @@
+{ "options" : { "create" : "permission" }, "indexes" : [ { "v" : 1, "key" : { "_id" : 1 }, "ns" : "creaktive.permission", "name" : "_id_" } ] }
