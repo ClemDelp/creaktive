@@ -390,7 +390,7 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         var title = conceptTitle;
         var content = conceptContent;
         //console.log(content.replace(/<p>/g,'<p style="text-indent: 2em">'));
-        CKEDITOR.instances.ckeditor.insertHtml('<br><h2 style="color:red"><strong><span class="marker">'+title+':'+'</span></strong></h2>'+content.replace(/<p>/g,'<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'));
+        CKEDITOR.instances.ckeditor.insertHtml('<br><h2 style="color:red"><strong>'+title+':'+'</strong></h2>'+content.replace(/<p>/g,'<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'));
     },
     addP : function(poche){
         CKEDITOR.instances.ckeditor.insertHtml('<br><h2><strong>'+poche.get('title')+':'+'</strong></h2>'+poche.get('content'));
