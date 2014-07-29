@@ -193,7 +193,7 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
     },
     events : {
         "click #add1" : "add",
-        "click #presentation" : "changecurrent",
+        "click .presentation" : "changecurrent",
     },
     //change current presentation
     changecurrent : function(e){
@@ -211,7 +211,6 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
         var cp = this.current_presentation;
         CKEDITOR.instances.ckeditor.on( 'change', function(e) {
             var data = CKEDITOR.instances.ckeditor.getData();
-            //console.log(this.current_presentation);
             cp.set({'data':CKEDITOR.instances.ckeditor.getData()}).save();    
         });
     },
@@ -230,6 +229,19 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
             this.current_presentation = new_presentation;
             this.presentations.add(this.current_presentation);
             this.render();
+            $("#categories_grid").gridalicious({
+                gutter: 20,
+                width: 260,
+            });
+            this.presentations.each(function(presentation){
+            var contents = $.parseHTML(presentation.get("data"));
+            if(contents){
+                for (var i = 0; i < 10; i++) {
+                    $("#content"+presentation.get("id")).append(contents[i]);
+                };
+                $("#content"+presentation.get("id")).css({"text-align":"left","overflow":"hidden"});
+            }
+        });
         }
      },
     render : function(){
@@ -266,6 +278,19 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         this.mode = 0;
         CKEDITOR.remove(CKEDITOR.instances.ckeditor);
         this.render();
+        $("#categories_grid").gridalicious({
+            gutter: 20,
+            width: 260
+        });
+        this.presentations.each(function(presentation){
+            var contents = $.parseHTML(presentation.get("data"));
+            if(contents){
+                for (var i = 0; i < 10; i++) {
+                    $("#content"+presentation.get("id")).append(contents[i]);
+                };
+                $("#content"+presentation.get("id")).css({"text-align":"left","overflow":"hidden"});
+            }
+        });
     },
     export : function(e){
         _this = this;
@@ -791,7 +816,21 @@ CKPreviewer.Views.Main = Backbone.View.extend({
             presentations : this.presentations,
         });
         $(this.el).append(CKPreviewer.views.middle_part_view.render().el);
-
+        $("#categories_grid").gridalicious({
+            gutter: 20,
+            width: 260,
+            //height: 300
+        });
+        this.presentations.each(function(presentation){
+            var contents = $.parseHTML(presentation.get("data"));
+            if(contents){
+                for (var i = 0; i < 10; i++) {
+                    $("#content"+presentation.get("id")).append(contents[i]);
+                };
+            }
+            $("#content"+presentation.get("id")).css({"text-align":"left","overflow":"hidden"});
+        });
+        
 
         $(document).foundation();
 

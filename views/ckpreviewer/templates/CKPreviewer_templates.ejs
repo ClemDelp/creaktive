@@ -16,12 +16,14 @@
 <!-- Right part -->
 <script type="text/template" id="CKPreviewer_editer_template" >
   <div class="row">
+    <a href="#" class="return"style="position:absolute;right:10px;top:10px;font-size:30px;">&#215</a>
     <div class="small-8 large-8 medium-8 columns">
       <center><h1>{{- cp.title}}</h1></center>
     </div>
     <div class="small-4 large-4 medium-4 columns">
+
       <ul class="button-group">
-        <a href="#" class="button tiny secondary  return"style="float:right">Return</a>
+        
         <a href="#" class="button tiny secondary  delete"style="float:right">Delete</a>
         <a href="#" class="button tiny secondary  export"style="float:right">Export</a>
         <a href="#" class="button tiny secondary  clearpresentation"style="float:right">Clear</a>
@@ -34,26 +36,45 @@
 </script>
 <!-- Action -->
 <script type="text/template" id="CKPreviewer_action_template" >
-  <div class="row" style="height:700px;margin:50px">
-      {{ _.each(presentations, function(presentation) { }}
-          <a id="presentation" href="#" presentation_id="{{- presentation.id}}" style="height:100px;margin:20px" class="large button  radious ">{{- presentation.title}}</a>
-      {{ }); }}  
-      <a href="#" class="large button secondary radious dropdown" style="width:130px;height:100px;margin:20px" data-dropdown="newp">+</a>
-      <ul id="newp" data-dropdown-content class="f-dropdown">
-        <div class="row collapse custom_row">
-          <div class="small-9 columns">
-            <input class="presentation_title" type="text" placeholder="new presentation..."/>
-          </div>
-          <div class="small-3 columns">
-            <a href="#" id="add1" class="button success postfix ">+</a>
-          </div>
+  <div  id="categories_grid">
+    {{ _.each(presentations, function(presentation) { }}
+        <div class="item">    
+          <ul class="pricing-table">
+              <li class="price"class="title">
+                  <a href="#"  presentation_id="{{- presentation.id}}" class="button tiny  radius expand presentation">
+                      <strong presentation_id="{{- presentation.id}}" >{{- presentation.title}}</strong>
+                  </a>
+              </li>
+              <li class="bullet-item">
+                <div class="row collapse custom_row" id="content{{- presentation.id}}" sytle="text-align:left;overflow:hidden"> 
+                </div>
+              </li>
+          </ul>
         </div>
-      </ul>
+    {{ }); }}  
+    <div class="item">    
+        <ul class="pricing-table">
+            <li class="price"class="title">
+                <a href="#" class="button tiny success radius expand">
+                    <strong >Create a new presentation</strong>
+                </a>
+            </li>
+            <li class="bullet-item">
+              <div class="row collapse custom_row">
+                <div class="small-9 columns">
+                  <input class="presentation_title" type="text" placeholder="input a name"/>
+                </div>
+                <div class="small-3 columns">
+                  <a href="#" id="add1" class="button success postfix ">+</a>
+                </div>
+              </div>
+            </li>
+        </ul>
+    </div>
   </div>
 </script>
 
 <script type="text/template" id="CKPreviewer_image_template" >
-
         <li id="image_container">
           <span class="label radius  secondary">{{- image.get("date")}}</span>
           <span class="label radius  downloadimage" data-image-id="{{- image.url}}" data-image-date="{{- image.get('date')}}">download</span>
