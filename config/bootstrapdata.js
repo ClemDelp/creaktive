@@ -85,13 +85,30 @@ module.exports.bootstrapdata = {
           });
         });
         ///////////////////////////////////////////////////
-        User.find().done(function(err,users){
+        // Users just those who are permission on project
+        var project_users = [];
+        var permissions = [];
+        Permission.find({project_id:project.id}).done(function(err, ps){
+          permissions = ps;
+          User.find().done(function(err,us){
+            us.forEach(function(u){
+              ps.forEach(function(perm){
+                if(perm.user_id == u.id){
+                  project_users.push(u);
+                }  
+              })
+               
+            })
+          });
+        });
+        ///////////////////////////////////////////////////
+        
           Knowledge.find({project:project.id}).done(function(err,knowledges){
             Poche.find({project:project.id}).done(function(err,poches){
               Project.find().done(function(err,projects){
                 Concept.find({project:project.id}).done(function(err,concepts){
                   Link.find({project:project.id}).done(function(err,links){
-                    Permission.find().done(function(err, permissions){
+                    User.find().done(function(err,users){
                       Screenshot.find({project_id:project.id}).done(function(err, screenshots){
                           Presentation.find({project_id:project.id}).done(function(err, presentations){
                             res.view({
@@ -99,6 +116,7 @@ module.exports.bootstrapdata = {
                               projectTitle : req.session.currentProject.title,
                               projectId : req.session.currentProject.id,
                               currentProject : JSON.stringify(req.session.currentProject),
+                              project_users : JSON.stringify(project_users),
                               users : JSON.stringify(users),
                               knowledges : JSON.stringify(knowledges),
                               poches : JSON.stringify(poches),
@@ -118,7 +136,7 @@ module.exports.bootstrapdata = {
                   });
                 });
               });
-            });
+            // });
           });
         });
       });

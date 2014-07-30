@@ -50,7 +50,6 @@
       json.activityLog = <%- activityLog %>;
       json.permissions = <%- permissions %>;
       
-
       _.each(json.knowledges, function(k){
         k.comments = new global.Collections.Comments(k.comments);
         k.members = new global.Collections.UsersCollection(k.members);

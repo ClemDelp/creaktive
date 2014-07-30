@@ -15,7 +15,7 @@ var bbmap = {
   vertical_gap : function(){ return 80*this.zoom.get('val');},
   css_knowledge_default : "-webkit-border-radius: 0;-moz-border-radius: 0;border-radius: 0px;font-family: Arial;color: #ffffff;background: #3498DB;padding: 10px 20px 10px 20px;border: solid #2980B9 2px;text-decoration: none;",
   css_concept_default : "-webkit-border-radius: 28; -moz-border-radius: 28; border-radius: 28px; font-family: Arial; color: #ffffff; background: #2ECC71; padding: 10px 20px 10px 20px; border: solid #27AE60 3px; text-decoration: none; ",
-  css_poche_default : "-webkit-border-radius: 11;-moz-border-radius: 11;border-radius: 11px;font-family: Arial;color: #ffffff;background: #95A5A6;padding: 10px 20px 10px 20px;border: solid #7F8C8D 2px;text-decoration: none;",
+  css_poche_default : "-webkit-border-radius: 10;-moz-border-radius: 10;border-radius: 10px;font-family: Arial;color: #ffffff;background: #E67E22;padding: 10px 20px 10px 20px;border: solid #D35400 2px;text-decoration: none;",
   default_templates : [
     {
       css: "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #ffffff;background: #2ECC71;padding: 10px 20px 10px 20px;border: solid #27AE60 2px;text-decoration: none;",
@@ -48,9 +48,9 @@ var bbmap = {
       title: "Missing"
     },
     {
-      css: "-webkit-border-radius: 11;-moz-border-radius: 11;border-radius: 11px;font-family: Arial;color: #ffffff;background: #95A5A6;padding: 10px 20px 10px 20px;border: solid #7F8C8D 2px;text-decoration: none;",
-      id: "c7a4241e-3908-de1a-6dc0-13ad8e27b343",
-      title: "Poche"
+      css: "-webkit-border-radius: 10;-moz-border-radius: 10;border-radius: 10px;font-family: Arial;color: #ffffff;background: #E67E22;padding: 10px 20px 10px 20px;border: solid #D35400 2px;text-decoration: none;",
+      id: "c323e1a7-07af-b13a-3f1e-6dc822610c5d",
+      title: "Category"
     }
   ],
   // Constructor

@@ -142,7 +142,10 @@ global.Models.User = Backbone.Model.extend({
         email : "",
         img : "",
         color : "",
-        tags: []
+        tags: [],
+        top : "",
+        left : "",
+        url : ""
     },
     initialize : function User() {
         //console.log('User Constructor');

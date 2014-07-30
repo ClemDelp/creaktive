@@ -5,9 +5,6 @@
 	<div id="actionbar"></div>
 	
 	<div id="map_container" class="">
-		<div class="large-10 medium-10 small-10 columns">
-      <div id="map" class="demo chart-demo"></div>
-    </div>
     <div id="editor" class="panel large-2 medium-2 small-2 columns">
         <a href="#" class="closeEditor" style="float:right">close</a>
         <ul class="tabs" data-tab>
@@ -24,6 +21,9 @@
           <div id="activitiesModel" class="content"></div>
           <div id="css3Model" class="content"></div>
         </div>
+    </div>
+    <div class="large-10 medium-10 small-10 columns">
+      <div id="map" class="demo chart-demo"></div>
     </div>
 	</div>
 </div>
@@ -75,19 +75,15 @@
       <span id="zoom_val"></span>
       <a href="#" class="tiny round button secondary zoomin">-</a>
       
-      <br>
       {{ if(mode == "edit"){ }}
         {{ if((filter == "c")||(filter == "ck")||(filter == "ckp")){ }}
-          <strong><small style="color:#27AE60">Drag a new concept : </small></strong>
-          <img id="dropC" style="width:5%;z-index:999999" class="dropC" title="click and drop to create a new concept" src="/img/drop_c.png">
-        {{ } }}
-        {{ if((filter == "k")||(filter == "ck")||(filter == "ckp")){ }}
-          <strong><small style="color:#2980B9">Drag a new knowledge : </small></strong>
-          <img id="dropK" style="width:5%;z-index:999999" class="dropK" title="click and drop to create a new knowledge" src="/img/drop_k.png">
+          <img id="dropC" style="width:7%;z-index:999999" class="dropC" title="click and drop to create a new concept" src="/img/c.png">
         {{ } }}
         {{ if((filter == "p")||(filter == "kp")||(filter == "ckp")){ }}
-          <strong><small style="color:orange">Drag a new category : </small></strong>
-          <img id="dropP" style="width:5%;z-index:999999" class="dropP" title="click and drop to create a new category" src="/img/drop_k.png">
+          <img id="dropP" style="width:7%;z-index:999999" class="dropP" title="click and drop to create a new category" src="/img/p.png">
+        {{ } }}
+        {{ if((filter == "k")||(filter == "ck")||(filter == "ckp")||(filter == "kp")){ }}
+          <img id="dropK" style="width:7%;z-index:999999" class="dropK" title="click and drop to create a new knowledge" src="/img/k.png">
         {{ } }}
       {{ } }}
 

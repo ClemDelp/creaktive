@@ -46,6 +46,7 @@
 <%- partial('../app/templates/title_templates') %>
 <%- partial('templates/bbmap_templates') %>
 <%- partial('../app/templates/title_templates') %>
+<%- partial('../app/templates/together_templates') %>
 
 <script type="text/javascript" src="js/BB_app/modules/title.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/modelEditor.js"></script>
@@ -62,6 +63,7 @@
 <script type="text/javascript" src="js/BB_app/modules/bbmap.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/bbmap_node.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/bbmap_main.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/together.js"></script>
 
 
 
@@ -70,11 +72,6 @@
 <script>
   ///////////////////////////////////////////////////
   $(document).ready(function () {
-
-    
-
-
-
     console.log( "CreaKtive DOM loaded!" );
     ////////////////////////////////////////
     Backbone.Model.prototype.toJSON = function() {
@@ -84,7 +81,7 @@
     rt(io, function(){
       var json = {};
       json.project = <%- currentProject %>;
-      json.users = <%- users %>;
+      json.users = <%- project_users %>;
       json.user = <%- currentUser %>;
       json.knowledges = <%- knowledges %>;
       json.projects = <%- projects %>;
@@ -111,6 +108,7 @@
         topbar.init();
         title.init(json.project,"bbmap");
         bbmap.init("edit","ckp");
+        together.init();
         /*activat of "hashchange events's monitoring"*/
         Backbone.history.start();  
         $(document).foundation();

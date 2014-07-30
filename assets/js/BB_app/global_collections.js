@@ -63,6 +63,30 @@ global.Collections.Knowledges = Backbone.Collection.extend({
     }
 });
 /***************************************/
+global.Collections.UsersCollection = Backbone.Collection.extend({
+    model : global.Models.User,
+    initialize : function() {
+        //console.log('Users collection Constructor');
+        this.url = "user";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+        _.bindAll(this, 'serverCreate','serverUpdate','serverRemove');
+        this.ioBind('create', this.serverCreate, this);
+        this.ioBind('update', this.serverUpdate, this);
+        this.ioBind('remove2', this.serverRemove, this);
+    },
+    serverCreate : function(model){
+        console.log("user created")
+    },
+    serverUpdate : function(model){
+        console.log("user updated")  
+    },
+    serverRemove : function(model){
+        console.log("user removed")
+    }
+});
+/***************************************/
 global.Collections.ConceptsCollection = Backbone.Collection.extend({
     model : global.Models.ConceptModel,
     url : "concept",
@@ -144,18 +168,6 @@ global.Collections.Comments = Backbone.Collection.extend({
         //console.log('Comments Collection Constructor');
     }
 }); 
-/***************************************/
-global.Collections.UsersCollection = Backbone.Collection.extend({
-    model : global.Models.User,
-    initialize : function() {
-        //console.log('Users collection Constructor');
-        this.url = "user";
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    },
-});
-
 /***************************************/
 global.Collections.GroupsCollection = Backbone.Collection.extend({
     model : global.Models.GroupModel,

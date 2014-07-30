@@ -21,10 +21,9 @@ font-size: 1rem;
 }
 
 #map_container{
-	height:800px;overflow:hidden;
+	height:650px;overflow:hidden;
 	/*background-image: url("/img/pattern.png");*/
 }
-
 body{
 	/*background-color: white;*/
 	background-color:#efefef;

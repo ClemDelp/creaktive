@@ -80,6 +80,7 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .zoomin" : "zoomin",
         "click .zoomout" : "zoomout",
         "click .reset" : "resetInterface",
+        "mouseenter .window.poche" : "showIcon2", 
         "mouseenter .window.knowledge" : "showIcon2", 
         "mouseenter .window.concept" : "showIcon", 
         "click .ep3" : "structureTree",
@@ -728,11 +729,10 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         this.map_el.append(new_view.render().el);
         new_view.addEndpoint();
-        new_view.addLink();
         new_view.makeTarget();
-        //new_view.addFollowFather();
         this.instance.draggable($(new_view.el));
         this.nodes_views[model.get('id')] = new_view;
+        new_view.addLink();
         this.startJoyride();
     },
     removeModelToView : function(model){
@@ -755,32 +755,30 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     jsPlumbEventsInit : function(){
         ///////////////////////
-        // init
-        _this = this;
-        instance = _this.instance;
-        //this.instance.unbind();
-        //var windows = jsPlumb.getSelector(".chart-demo .window");
-        ///////////////////////
         // Remove link process        
         this.instance.bind("beforeDetach", function(conn) {
             var resp = confirm("Delete connection?");
             if(conn.scope == "cklink"){
                 if(resp == true){
-                    var links_to_remove = _this.links.where({source : conn.sourceId, target : conn.targetId});
+                    var links_to_remove = bbmap.views.main.links.where({source : conn.sourceId, target : conn.targetId});
+                    links_to_remove.forEach(function(link){
+                        link.destroy();
+                    });
+                    var links_to_remove = bbmap.views.main.links.where({source : conn.targetId, target : conn.sourceId});
                     links_to_remove.forEach(function(link){
                         link.destroy();
                     });
                 } 
             }else{
                 if(resp == true){
-                    _this.concepts.get(conn.targetId).set({id_father : "none"}).save();      
+                    bbmap.views.main.concepts.get(conn.targetId).set({id_father : "none"}).save();      
                 } 
             }
             
             return resp;
         });
         this.instance.bind("click", function(conn) {
-            instance.detach(conn);
+            bbmap.views.main.instance.detach(conn);
         });
         ///////////////////////
         // New link process
@@ -796,23 +794,17 @@ bbmap.Views.Main = Backbone.View.extend({
         this.instance.bind("connection", function(info, originalEvent) {
             if(originalEvent){
                 if(info.connection.scope == "cklink"){
-                    console.log("cklink")
-                    //console.log("source: ",info.sourceId," - target: ",info.targetId)
-                    //k_target = bbmap.views.main.knowledges.get(info.targetId);
-                    //console.log('k_target: ',k_target)
-                    // CKLink
-                    new_cklink = new global.Models.CKLink({
+                    var new_cklink = new global.Models.CKLink({
                         id :guid(),
-                        user : _this.user,
+                        user : bbmap.views.main.user,
                         date : getDate(),
                         source : info.sourceId,
                         target : info.targetId
                     });
                     new_cklink.save();
-                    _this.links.add(new_cklink);
+                    bbmap.views.main.links.add(new_cklink);
 
                 }else{
-                    console.log("concept to concept link")
                     bbmap.views.main.concepts.get(info.targetId).set({id_father : info.sourceId}).save();
                 }    
             }
@@ -925,18 +917,18 @@ bbmap.Views.Main = Backbone.View.extend({
         }
     },
     renderCKLinks : function(){
-        try{
-            bbmap.views.main.links.each(function(l){
+        bbmap.views.main.links.each(function(l){
+            try{
                 bbmap.views.main.instance.connect({
                     source:bbmap.views.main.nodes_views[l.get('source')].el, 
                     target:bbmap.views.main.nodes_views[l.get('target')].el, 
                     anchor:"AutoDefault",
                     scope : "cklink"
                 });
-            })
-        }catch(err){
-            console.log("Missing element to etablish graphical connection...")
-        }
+            }catch(err){
+                console.log("Missing element to etablish graphical connection...")
+            }
+        });
     },
     render : function(){        
         ///////////////////////
@@ -945,14 +937,12 @@ bbmap.Views.Main = Backbone.View.extend({
             _.each(this.nodes_views,function(view){
                 view.removeView();
             });
+            this.nodes_views = {};
         }
-        //this.instance.cleanupListeners()
-        //this.instance.deleteEveryEndpoint();
         this.instance.unbind('connection');
         this.instance.unbind('click');
         this.instance.unbind('beforeDetach');
         this.instance.unbind('beforeDrop')
-
         var _this = this;
         this.map_el.empty();
         ///////////////////////
