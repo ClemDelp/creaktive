@@ -45,7 +45,7 @@ global.Functions.getNotificationsDictionary = function(user_model,notifications,
 	});
 	//
 	notifications.each(function(notif){
-		dictionary.models[notif.get('to').id] = {"news" : new Backbone.Collection(),"read" : new Backbone.Collection()};
+		dictionary.models[notif.get('to')] = {"news" : new Backbone.Collection(),"read" : new Backbone.Collection()};
 		dictionary.projects[notif.get('project_id')] = {"news" : new Backbone.Collection(),"read" : new Backbone.Collection()};
 	});
 	/////////////////////////////
@@ -53,11 +53,11 @@ global.Functions.getNotificationsDictionary = function(user_model,notifications,
 	/////////////////////////////
 	notifications.each(function(notif){
 		if((_.indexOf(notif.get('read'), user_model.get('id')) == -1)){
-        	dictionary.models[notif.get('to').id].news.add(notif);
+        	dictionary.models[notif.get('to')].news.add(notif);
         	dictionary.projects[notif.get('project_id')].news.add(notif);
         	dictionary.allNews.add(notif);
       	}else{
-      		dictionary.models[notif.get('to').id].read.add(notif);		
+      		dictionary.models[notif.get('to')].read.add(notif);		
       		dictionary.projects[notif.get('project_id')].read.add(notif);		
       		dictionary.allRead.add(notif);
       	}
