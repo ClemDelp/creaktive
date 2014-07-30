@@ -14,6 +14,7 @@
     <script type='text/javascript' src='js/vendor/jquery-1.10.2.js'></script>
     <script src="js/vendor/underscore.js"></script>
     <script src="js/vendor/pace.min.js"></script>
+    <script src="js/ifvisible.js"></script>
     <script>
       _.templateSettings = {
         escape: /\{\{\-(.+?)\}\}/g,
@@ -75,10 +76,10 @@
           socket.on('poche:create', function socketConnected(x) {console.log("xxxxxxxx-poche:create",x)});
           socket.on('poche:update', function socketConnected(x) {console.log("xxxxxxxx-poche:update",x)});
           socket.on('poche:remove2', function socketConnected(x) {console.log("xxxxxxxx-poche:remove",x)});
-          // // User
-          // socket.on('user:create', function socketConnected(x) {console.log("xxxxxxxx-user:create",x)});
-          // socket.on('user:update', function socketConnected(x) {console.log("xxxxxxxx-user:update",x)});
-          // socket.on('user:remove2', function socketConnected(x) {console.log("xxxxxxxx-user:remove",x)});
+          // User
+          socket.on('user:create', function socketConnected(x) {console.log("xxxxxxxx-user:create",x)});
+          socket.on('user:update', function socketConnected(x) {console.log("xxxxxxxx-user:update",x)});
+          socket.on('user:remove2', function socketConnected(x) {console.log("xxxxxxxx-user:remove",x)});
           
           console.log(
             'Socket is now connected and globally accessible as `socket`.\n' + 

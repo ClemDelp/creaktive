@@ -30,15 +30,14 @@
   },
 
   
-  update : function(req,res){
-  	User.findOne(req.body.params.id).done(function(err, user){
+  update : function(req,res){  	
+    User.findOne(req.body.params.id).done(function(err, user){
   		if(err) res.send({err:err});
   		if(user){
   			User.update({id: req.body.params.id}, req.body.params).done(function(err,u){
   				if(err) res.send({err:err})
-          console.log("moooooooooooooodel user",u)
-          //req.socket.broadcast.to(req.session.currentProject.id).emit("user:update", u[0]);
-          res.send(u);
+          req.socket.broadcast.to(req.session.currentProject.id).emit("user:update", u[0]);
+          res.send(u[0]);
         });
   		}else{
   			User.create(req.body.params).done(function(err,p){
@@ -46,8 +45,8 @@
           p.confirmed = true;
           p.save(function(err, u){
             if(err) res.send({err:err})
-            //req.socket.broadcast.to(req.session.currentProject.id).emit("user:create", u[0]); 
-            res.send(u);
+            req.socket.broadcast.to(req.session.currentProject.id).emit("user:create", u[0]); 
+            res.send(u[0]);
           })
         })
   		}

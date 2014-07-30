@@ -145,6 +145,7 @@ global.Models.User = Backbone.Model.extend({
         tags: [],
         top : "",
         left : "",
+        status : "",
         url : ""
     },
     initialize : function User() {

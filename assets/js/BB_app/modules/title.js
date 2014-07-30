@@ -37,9 +37,17 @@ title.Views.Main = Backbone.View.extend({
         
     },
     render : function(){
-        $(this.el).html(this.template({project: this.project,page : this.page}));
-        $(document).foundation();
-        return this;
+      $(this.el).empty();
+      $(this.el).append(new together.Views.Main({
+        project         : global.models.currentProject,
+        user            : global.models.current_user,
+        users           : global.collections.Users
+      }).render().el)
+
+      $(this.el).append(this.template({project: this.project,page : this.page}));
+      
+      $(document).foundation();
+      return this;
     }
 });
 /////////////////////////////////////////

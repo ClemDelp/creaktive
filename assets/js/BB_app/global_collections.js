@@ -79,8 +79,10 @@ global.Collections.UsersCollection = Backbone.Collection.extend({
     serverCreate : function(model){
         console.log("user created")
     },
-    serverUpdate : function(model){
-        console.log("user updated")  
+    serverUpdate : function(modelServer){
+        var model = global.collections.Users.get(modelServer.id);
+        model.set({top:modelServer.top,left:modelServer.left});
+        console.log(model.get('status'))
     },
     serverRemove : function(model){
         console.log("user removed")

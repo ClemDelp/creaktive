@@ -2,9 +2,7 @@
 <div id="togetherjs-dock" class="togetherjs-dock-right"></div>
 <!-- ******************************** -->
 <script type="text/template" id="together-user-template">    
-  <center>
-  <div class="large-10 medium-10 small-10">
-    <img  title="{{- user.name }}" src="{{- user.img }}"/>
-  </div>
-  </center>
+  <span id="avatar{{- user.id }}" style="display:none;margin:10px;position:abosulte;float:right;width:2%">
+    <img  title="{{- user.name }} is connected" src="{{- user.img }}"/>
+  </span>
 </script>
