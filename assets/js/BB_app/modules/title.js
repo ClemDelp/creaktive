@@ -38,10 +38,11 @@ title.Views.Main = Backbone.View.extend({
     },
     render : function(){
       $(this.el).empty();
+
       $(this.el).append(new together.Views.Main({
         project         : global.models.currentProject,
         user            : global.models.current_user,
-        users           : global.collections.Users
+        users           : global.collections.Project_users
       }).render().el)
 
       $(this.el).append(this.template({project: this.project,page : this.page}));

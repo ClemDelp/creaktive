@@ -25,6 +25,7 @@ var global = {
     // Collection
     this.collections.Knowledges = new this.Collections.Knowledges(json.knowledges);
     this.collections.Poches = new this.Collections.Poches(json.poches);
+    this.collections.Project_users = new this.Collections.UsersCollection(json.project_users);
     this.collections.Users = new this.Collections.UsersCollection(json.users);
     this.collections.Permissions = new this.Collections.PermissionsCollection(json.permissions);
     this.collections.Projects = new this.Collections.ProjectsCollection(json.projects);

@@ -146,7 +146,7 @@ global.Models.User = Backbone.Model.extend({
         top : "",
         left : "",
         status : "",
-        url : ""
+        location : ""
     },
     initialize : function User() {
         //console.log('User Constructor');

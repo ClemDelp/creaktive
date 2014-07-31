@@ -9,7 +9,7 @@ var together = {
   models: {},
   views: {},
   // Parameters
-  
+   
   // Constructor
   init: function (mode, filter) {
     this.views.main = new this.Views.Main({
@@ -30,25 +30,33 @@ together.Views.User = Backbone.View.extend({
       this.user = json.user;
       // Events
       this.listenTo(this.user,"change:top change:left", this.updateCursor,this);
-      this.listenTo(this.user,"change:online", this.updateStatus,this);
+      this.listenTo(this.user,"change:location", this.updateLocation,this);
       // Templates
       this.template_user = _.template($('#together-user-template').html());
     },
     events : {},
-    updateCursor : function(){
-      $("#avatar"+this.user.get('id')).show('slow');
-      $("#cursor"+this.user.get('id')).show('slow');
-      var styles = {
-          'left': this.user.get('left') +'px',
-          'top':  this.user.get('top')  + 'px',
-          'z-index' : '9999999999'
-      };
-      $("#cursor"+this.user.get('id')).css( styles );
+    updateLocation : function(){
+      if(this.user.get('location') != together.views.main.pathname){
+        $("#avatar"+this.user.get('id')).hide('slow');
+        $("#cursor"+this.user.get('id')).hide('slow');
+      }
     },
-    updateStatus : function(){
-      alert('close');
-      $("#avatar"+this.user.get('id')).hide('slow');
-      $("#cursor"+this.user.get('id')).hide('slow');
+    updateCursor : function(){
+      console.log(this.user.get('location'))
+      if(this.user.get('location') == together.views.main.pathname){
+        // Si l'utilisateur est sur la mm page
+        $("#avatar"+this.user.get('id')).show('slow');
+        if(together.views.main.cursor_mode == true){
+          // Si la page est /bbmap
+          $("#cursor"+this.user.get('id')).show('slow');
+          var styles = {
+              'left': this.user.get('left') +'px',
+              'top':  this.user.get('top')  + 'px',
+              'z-index' : '9999999999'
+          };
+          $("#cursor"+this.user.get('id')).css( styles );
+        }
+      }
     },
     render : function(){
         $(this.el).empty();
@@ -61,11 +69,17 @@ together.Views.User = Backbone.View.extend({
 together.Views.Main = Backbone.View.extend({
     initialize : function(json){
       _.bindAll(this, 'render');
+      together.views.main = this;
       // Variables
       this.project         = json.currentProject;
       this.user            = json.user;
       this.users           = json.users;
       this.eventAggregator = json.eventAggregator;
+      this.cursor_mode     = false;
+      this.pathname        = window.location.pathname;
+      // Conditions
+      this.user.save({location : this.pathname});
+      if(this.pathname == "/bbmap") this.cursor_mode = true;
       // Events
       var rec = 0;
       $( "body" ).mousemove(function( event ){
@@ -79,13 +93,6 @@ together.Views.Main = Backbone.View.extend({
         }
         rec = rec + 1;
       });
-      // this.user.set({status : "online"}).save();
-      // ifvisible.setIdleDuration(10);
-      // ifvisible.idle(function(){
-      //   // This code will work when page goes into idle status
-      //   console.log('you are offline')
-      //   together.views.main.user.set({status : "offline"}).save();
-      // });
       // Templates
 
     },

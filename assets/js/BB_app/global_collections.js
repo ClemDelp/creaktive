@@ -80,9 +80,12 @@ global.Collections.UsersCollection = Backbone.Collection.extend({
         console.log("user created")
     },
     serverUpdate : function(modelServer){
-        var model = global.collections.Users.get(modelServer.id);
-        model.set({top:modelServer.top,left:modelServer.left});
-        console.log(model.get('status'))
+        var model = global.collections.Project_users.get(modelServer.id);
+        if(model) model.set({
+            top:modelServer.top,
+            left:modelServer.left,
+            location:modelServer.location
+        });
     },
     serverRemove : function(model){
         console.log("user removed")

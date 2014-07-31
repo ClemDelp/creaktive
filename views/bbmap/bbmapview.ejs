@@ -81,7 +81,7 @@
     rt(io, function(){
       var json = {};
       json.project = <%- currentProject %>;
-      json.users = <%- project_users %>;
+      json.project_users = <%- project_users %>;
       json.user = <%- currentUser %>;
       json.knowledges = <%- knowledges %>;
       json.projects = <%- projects %>;
@@ -108,7 +108,6 @@
         topbar.init();
         title.init(json.project,"bbmap");
         bbmap.init("edit","ckp");
-        together.init();
         /*activat of "hashchange events's monitoring"*/
         Backbone.history.start();  
         $(document).foundation();

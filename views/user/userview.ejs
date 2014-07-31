@@ -11,6 +11,9 @@
 <%- partial('../app/templates/topbar_templates') %>
 <%- partial('../app/templates/title_templates') %>
 <%- partial('templates/user_templates') %>
+    <%- partial('../app/templates/together_templates') %>
+
+<script type="text/javascript" src="js/BB_app/modules/together.js"></script>
 <!-- Modules situés dans assets/js/BB_app -->
 <script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/title.js"></script>
@@ -27,6 +30,7 @@
     rt(io, function(){
       var json = {};
       json.project = <%- currentProject %>;
+      json.project_users = <%- project_users %>;
       json.users = <%- users %>;
       json.user = <%- currentUser %>;
       json.knowledges = <%- knowledges %>;
