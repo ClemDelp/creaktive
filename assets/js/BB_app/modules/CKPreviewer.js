@@ -159,7 +159,7 @@ CKPreviewer.Views.Modal = Backbone.View.extend({            //model to render th
     },    
     openModal : function(src,screenshot_id){
         _this = this;
-        this.src = src;
+        this.src = '/s3/getUrl?amz_id='+src;
         this.actionflag = 0;
         this.current_screenshot = this.screenshots.get(screenshot_id);
         this.amz_id = this.current_screenshot.get("src");
@@ -320,7 +320,7 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
                 length : arr.length,
                 functionToLoop : function(loop, i){
                     var ind = arr[i].indexOf('" ');
-                    var src = arr[i].substring(0,ind);
+                    var src = arr[i].substring(0,ind);console.log(arr[i]);
                     //Convertit en 
                     _this.convertImgToBase64(src, function(base64Img,url){
                         data = data.replace(url,base64Img);
@@ -361,7 +361,8 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
             callback.call(this, dataURL,url);
             canvas = null; 
         };
-        img.src = url;
+        console.log(url.replace(/&amp;/g,'&'));
+        img.src = url.replace(/&amp;/g,'&');
     },
     clearpresentation : function(e){
         e.preventDefault();
@@ -406,15 +407,16 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
     },
     renderImg : function(src,size){
         var wid=$("#textzoon")[0].offsetWidth;
+        //console.log('/s3/getUrl?amz_id='+src);
         switch(size){
             case 0:
-                CKEDITOR.instances.ckeditor.insertHtml('<br><img src="'+src+'" style="width:'+wid*0.4+'px" >');
+                CKEDITOR.instances.ckeditor.insertHtml('<br><img origin="*" src="/s3/getUrl?amz_id='+src+'" style="width:'+wid*0.4+'px" >');
                 break;
             case 1:
-                CKEDITOR.instances.ckeditor.insertHtml('<br><img src="'+src+'" style="width:'+wid*0.7+'px" >');
+                CKEDITOR.instances.ckeditor.insertHtml('<br><img origin="*" src="/s3/getUrl?amz_id='+src+'" style="width:'+wid*0.7+'px" >');
                 break;
             case 2:
-                CKEDITOR.instances.ckeditor.insertHtml('<br><img src="'+src+'" style="width:'+wid*0.95+'px" >');
+                CKEDITOR.instances.ckeditor.insertHtml('<br><img origin="*" src="/s3/getUrl?amz_id='+src+'" style="width:'+wid*0.95+'px" >');
                 break;
         }
     },
@@ -489,6 +491,7 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         e.preventDefault();
         if(CKEDITOR.instances.ckeditor){
             src = e.target.getAttribute("data-image-id");
+            //console.log(src);
             this.eventAggregator.trigger("renderImg",src,0);
         }
     },
@@ -590,9 +593,9 @@ CKPreviewer.Views.Images = Backbone.View.extend({
     },
     editImg : function(e){
         e.preventDefault();
-        var imagesrc = e.target.getAttribute("data-image-id");
+        var image_id = e.target.getAttribute("data-image-id");
         var screenshot_id = e.target.getAttribute("data-screenshot-id");
-        this.eventAggregator.trigger("openModal",imagesrc,screenshot_id);
+        this.eventAggregator.trigger("openModal",image_id,screenshot_id);
     },
     addConcept : function(e){
         e.preventDefault();
@@ -651,7 +654,7 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         _this = this;
         $(this.el).html('');
         $(this.el).append(this.template({
-            //images : this.screenshots.toJSON().reverse(),
+            images : this.screenshots.toJSON().reverse(),
         }));
 
         this.ks_el = $(this.el).find('#ks');
@@ -679,22 +682,23 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         $(this.ps_el).append(CKPreviewer.views.ps_view.render().el);
         
 
-        var screenshots_reverse = new global.Collections.Screenshots();
-        for (var i = this.screenshots.length - 1; i >= 0; i--) {
-            screenshots_reverse.add(this.screenshots.at(i));
-        };
-        screenshots_reverse.each(function(image,n){
-            //console.log(image)
-            $.get('/s3/getUrl?amz_id='+image.get("src"), function(url){
-                image.url = url;
-                //console.log(url)
-                $("#imageList").append(_this.template_image({
-                    image : image,
-                    n : n
-                }))
-                delete image.url;
-            })
-        })
+        // var screenshots_reverse = new global.Collections.Screenshots();
+        // for (var i = this.screenshots.length - 1; i >= 0; i--) {
+        //     screenshots_reverse.add(this.screenshots.at(i));
+        // };
+        // screenshots_reverse.each(function(image,n){
+        //     //console.log(image)
+        //     $.get('/s3/getUrl?amz_id='+image.get("src"), function(url){
+        //         image.url = url;
+        //         //console.log(url)
+        //         $("#imageList").append(_this.template_image({
+        //             image : image,
+        //             n : n
+        //         }));
+        //         //console.log(image.url);
+        //         delete image.url;
+        //     })
+        // })
         return this;
     }
 });
@@ -774,6 +778,11 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         this.presentations = json.presentations;
         this.presentationNum = this.presentations.toJSON().length;
         this.current_presentation = null;
+        this.isopen = false;
+
+        this.left_el = $(this.el).find('#leftpart');
+        this.main_el = $(this.el).find('#mainpart');
+
         if(this.presentations.first()){
             this.current_presentation = this.presentations.first();
         }
@@ -787,35 +796,53 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         
     },
     events : {
-
+        "click #showLeft" : "showLeft"
     },
-
+    showLeft : function(e){
+        e.preventDefault();
+        //console.log($("#showLeft"),$("#cbp-spmenu-s1"));
+        var menuLeft = document.getElementById( 'cbp-spmenu-s1' );
+        var buttonLeft = document.getElementById( 'showLeft' );
+        classie.toggle( buttonLeft, 'active' );
+        classie.toggle( menuLeft, 'cbp-spmenu-open' );
+        if(this.isopen==false){
+            $("#showLeft").animate({left:"600px"});
+            $("#cbp-openimage")[0].src="/img/arrow-left.png";
+            this.isopen=true;
+        }else{
+            $("#showLeft").animate({left:"0px"});
+            $("#cbp-openimage")[0].src="/img/arrow-right.png";
+            this.isopen=false;
+        }
+        console.log();
+    },
     render : function(){
-        $(this.el).empty();
+        //$(this.el).empty();
 
         //Left part
         if(CKPreviewer.views.images_view){CKPreviewer.views.images_view.remove();}
         CKPreviewer.views.images_view = new CKPreviewer.Views.Images({
-            className        : "large-4 medium-4 small-4 columns",
+            //className        : "large-4 medium-4 small-4 columns",
             eventAggregator  : this.eventAggregator,
             screenshots : this.screenshots,
             knowledges : this.knowledges,
             concepts : this.concepts,
             poches : this.poches
         });
-        $(this.el).append(CKPreviewer.views.images_view.render().el);
+        $(this.left_el).append(CKPreviewer.views.images_view.render().el);
 
         // Right part
         if(CKPreviewer.views.middle_part_view){CKPreviewer.views.middle_part_view.remove();}
         CKPreviewer.views.middle_part_view = new CKPreviewer.Views.MiddlePart({
-            className        : "panel large-8 medium-8 small-8 columns",
+            //className        : "large-8 medium-8 small-8 columns",
             eventAggregator  : this.eventAggregator,
             project : this.project,
             current_presentation : this.current_presentation,
             knowledges : this.knowledges,
             presentations : this.presentations,
         });
-        $(this.el).append(CKPreviewer.views.middle_part_view.render().el);
+        $(this.main_el).append(CKPreviewer.views.middle_part_view.render().el);
+
         $("#categories_grid").gridalicious({
             gutter: 20,
             width: 260,
@@ -832,8 +859,15 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         });
         
 
-        $(document).foundation();
+        //$(document).foundation();
+        $(document).foundation({
+        });
 
+            // $(function() {
+            //     $( '#dl-menu' ).dlmenu();
+            // });
+
+            //new gnMenu( document.getElementById( 'gn-menu' ) );
         
     }
 });

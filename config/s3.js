@@ -77,7 +77,6 @@ module.exports.s3 = {
 		var params = {
 			Bucket: S3_BUCKET, // required
 			Key: file, // required
-			Expires: 900
 		}
 
 		s3.getSignedUrl('getObject', params, function (err, url) {
