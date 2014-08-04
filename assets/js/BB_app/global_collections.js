@@ -14,17 +14,27 @@ global.Collections.Poches = Backbone.Collection.extend({
         this.ioBind('update', this.serverUpdate, this);
         this.ioBind('remove2', this.serverRemove, this);
     },
-    serverCreate : function(category){
-        this.add(new global.Models.Poche(category));
+    serverCreate : function(model){
+        global.eventAggregator.trigger("model:create",new global.Models.Poche(model),"server");
     },
     serverUpdate : function(model){
-        model = new global.Models.Knowledge(model);
-        model = global.Functions.format_ckobject_model(model);
-        global.eventAggregator.trigger(model.get('id'),model);
+        global.eventAggregator.trigger(model.id,model);
     },
-    serverRemove : function(category){
-        this.remove(category.id);
+    serverRemove : function(model){
+        //this.remove(knowledge.id);
+        global.eventAggregator.trigger("model:remove",new global.Models.Poche(model),"server");
     }
+    // serverCreate : function(category){
+    //     this.add(new global.Models.Poche(category));
+    // },
+    // serverUpdate : function(model){
+    //     model = new global.Models.Knowledge(model);
+    //     model = global.Functions.format_ckobject_model(model);
+    //     global.eventAggregator.trigger(model.get('id'),model);
+    // },
+    // serverRemove : function(category){
+    //     this.remove(category.id);
+    // }
 });
 /////////////////////////////////////////////////////////////////////
 /*Timela Collections*/
@@ -46,21 +56,55 @@ global.Collections.Knowledges = Backbone.Collection.extend({
         this.ioBind('remove2', this.serverRemove, this);
     },
     serverCreate : function(model){
-        //this.add(new_knowledge);
-        global.eventAggregator.trigger("knowledge:create",new Backbone.Model(model));
+        global.eventAggregator.trigger("model:create",new global.Models.Knowledge(model),"server");
     },
     serverUpdate : function(model){
-        model = new global.Models.Knowledge(model);
-        model = global.Functions.format_ckobject_model(model);
-        global.eventAggregator.trigger(model.get('id'),model);
-
-        global.eventAggregator.trigger("knowledge:update",model);
+        global.eventAggregator.trigger(model.id,model);
+    },
+    serverRemove : function(model){
+        global.eventAggregator.trigger("model:remove",new global.Models.Knowledge(model),"server");
+    }
+});
+/***************************************/
+global.Collections.ConceptsCollection = Backbone.Collection.extend({
+    model : global.Models.ConceptModel,
+    url : "concept",
+    comparator: function(m){
+        return -m.get('date2');
+    },
+    initialize : function() {
+        //console.log('Comments Collection Constructor');
+        _.bindAll(this, 'serverCreate');
+        this.ioBind('create', this.serverCreate, this);
+        this.ioBind('update', this.serverUpdate, this);
+        this.ioBind('remove2', this.serverRemove, this);
+    },
+    serverCreate : function(model){
+        global.eventAggregator.trigger("model:create",new global.Models.ConceptModel(model),"server");
+    },
+    serverUpdate : function(model){
+        global.eventAggregator.trigger(model.id,model);
     },
     serverRemove : function(model){
         //this.remove(knowledge.id);
-        global.eventAggregator.trigger("knowledge:remove",new Backbone.Model(model));
-
+        global.eventAggregator.trigger("model:remove",new global.Models.ConceptModel(model),"server");
     }
+    // serverCreate : function(model){
+    //     //this.add(model);
+    //     global.eventAggregator.trigger("concept:create",new Backbone.Model(model));
+    // },
+    // serverUpdate : function(model){
+    //     model = new global.Models.Knowledge(model);
+    //     model = global.Functions.format_ckobject_model(model);
+    //     global.eventAggregator.trigger(model.get('id'),model);
+        
+    //     global.eventAggregator.trigger("concept:update",model);
+    // },
+    // serverRemove : function(model){
+    //     //this.remove(new Backbone.Model(model));
+    //     global.eventAggregator.trigger("concept:remove",new Backbone.Model(model));
+
+    // }
 });
 /***************************************/
 global.Collections.UsersCollection = Backbone.Collection.extend({
@@ -89,37 +133,6 @@ global.Collections.UsersCollection = Backbone.Collection.extend({
     },
     serverRemove : function(model){
         console.log("user removed")
-    }
-});
-/***************************************/
-global.Collections.ConceptsCollection = Backbone.Collection.extend({
-    model : global.Models.ConceptModel,
-    url : "concept",
-    comparator: function(m){
-        return -m.get('date2');
-    },
-    initialize : function() {
-        //console.log('Comments Collection Constructor');
-        _.bindAll(this, 'serverCreate');
-        this.ioBind('create', this.serverCreate, this);
-        this.ioBind('update', this.serverUpdate, this);
-        this.ioBind('remove2', this.serverRemove, this);
-    },
-    serverCreate : function(model){
-        //this.add(model);
-        global.eventAggregator.trigger("concept:create",new Backbone.Model(model));
-    },
-    serverUpdate : function(model){
-        model = new global.Models.Knowledge(model);
-        model = global.Functions.format_ckobject_model(model);
-        global.eventAggregator.trigger(model.get('id'),model);
-        
-        global.eventAggregator.trigger("concept:update",model);
-    },
-    serverRemove : function(model){
-        //this.remove(new Backbone.Model(model));
-        global.eventAggregator.trigger("concept:remove",new Backbone.Model(model));
-
     }
 });
 /***************************************/

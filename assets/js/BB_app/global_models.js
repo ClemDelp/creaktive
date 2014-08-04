@@ -10,34 +10,6 @@ global.Models.File = Backbone.Model.extend({
 
 });
 /***************************************/
-global.Models.CKObject = Backbone.Model.extend({
-    defaults : {
-        id:"",
-        author : "",
-        user: "",
-        type : "",
-        title : "",
-        content : "",
-        tags : [],
-        comments: [],
-        date : "",
-        date2: "",
-        attachment: "",
-        color: "#C0392B",
-        members:[],
-        attachment:[],
-        id_father: "",
-        top : "",
-        left:"",
-        project:""
-    },
-    parse : function(serverObj){
-        serverObj.comments = new global.Collections.Comments(serverObj.comments);
-        serverObj.members = new global.Collections.UsersCollection(serverObj.members);
-        return serverObj;
-    },
-});
-/***************************************/
 global.Models.Backup = Backbone.Model.extend({
     defaults : {
         id : "",
@@ -69,6 +41,37 @@ global.Models.Filter = Backbone.Model.extend({
         });
     }
 });
+/***************************************/
+/***************************************/
+global.Models.CKObject = Backbone.Model.extend({
+    defaults : {
+        id:"",
+        author : "",
+        user: "",
+        type : "",
+        title : "",
+        content : "",
+        tags : [],
+        comments: [],
+        date : "",
+        date2: "",
+        attachment: "",
+        color: "#C0392B",
+        members:[],
+        attachment:[],
+        id_father: "",
+        top : "",
+        left:"",
+        project:"",
+        css : ""
+    },
+    parse : function(serverObj){
+        serverObj.comments = new global.Collections.Comments(serverObj.comments);
+        serverObj.members = new global.Collections.UsersCollection(serverObj.members);
+        return serverObj;
+    },
+});
+
 /***************************************/
 global.Models.Knowledge = global.Models.CKObject.extend({
     initialize : function Post() {
@@ -117,6 +120,7 @@ global.Models.ProjectModel = global.Models.CKObject.extend({
         });
     },
 });
+/***************************************/
 /***************************************/
 global.Models.Comment = Backbone.Model.extend({
     model: this,

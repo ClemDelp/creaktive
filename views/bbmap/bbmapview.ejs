@@ -33,6 +33,8 @@
 
 <!-- ******************************** -->
 <!-- Modules to load -->
+<%- partial('../app/templates/together_templates') %>
+
 <%- partial('../app/templates/activitiesList_templates') %>
 <%- partial('../app/templates/imagesList_templates') %>
 <%- partial('../app/templates/modelEditor_templates') %>
@@ -42,13 +44,10 @@
 <%- partial('../app/templates/templatesList_templates') %>
 
 <%- partial('../app/templates/nodesMapping_templates') %>
-<%- partial('../app/templates/topbar_templates') %>
 <%- partial('../app/templates/title_templates') %>
 <%- partial('templates/bbmap_templates') %>
 <%- partial('../app/templates/title_templates') %>
-<%- partial('../app/templates/together_templates') %>
 
-<script type="text/javascript" src="js/BB_app/modules/title.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/modelEditor.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/comments.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/attachment.js"></script>
@@ -57,8 +56,6 @@
 <script type="text/javascript" src="js/BB_app/modules/css3.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/templatesList.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/nodesMapping.js"></script>
-<script src="js/BB_app/modules/topbar.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/title.js"></script>
 
 <script type="text/javascript" src="js/BB_app/modules/bbmap.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/bbmap_node.js"></script>
@@ -105,9 +102,8 @@
       global.init(json, function(){
         // Modules
         //title.init(json.project,"bbmap");
-        topbar.init();
-        title.init(json.project,"bbmap");
         bbmap.init("edit","ckp");
+        together.init();
         /*activat of "hashchange events's monitoring"*/
         Backbone.history.start();  
         $(document).foundation();

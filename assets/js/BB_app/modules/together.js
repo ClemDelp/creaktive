@@ -11,17 +11,67 @@ var together = {
   // Parameters
    
   // Constructor
+
   init: function (mode, filter) {
     this.views.main = new this.Views.Main({
       el              : "#togetherjs-dock",
       project         : global.models.currentProject,
       user            : global.models.current_user,
-      users           : global.collections.Users,
+      users           : global.collections.Project_users,
       eventAggregator : global.eventAggregator
     });
     this.views.main.render();
   }
 };
+/////////////////////////////////////////////////
+together.Views.Main = Backbone.View.extend({
+    initialize : function(json){
+      _.bindAll(this, 'render');
+      together.views.main = this;
+      // Variables
+      this.project         = json.currentProject;
+      this.user            = json.user;
+      this.users           = json.users;
+      this.eventAggregator = json.eventAggregator;
+      this.cursor_mode     = false;
+      this.cursor_system   = "on";
+      this.pathname        = window.location.pathname;
+      // Conditions
+      this.user.save({location : this.pathname});
+      
+      if(this.cursor_system == "on"){
+        if(this.pathname == "/bbmap") this.cursor_mode = true;
+        var rec = 0;
+        $( "body" ).mousemove(function( event ){
+          if(rec%10 == 0){
+            var clientX = event.clientX;
+            var clientY = event.clientY ;
+            together.views.main.user.save({
+              top:  clientY,
+              left: clientX
+            });
+          }
+          rec = rec + 1;
+        });
+      } 
+      
+      // Events
+
+      // Templates
+
+    },
+    events : {},
+    render : function(){
+      // Init
+      var _this = this;
+      $(this.el).empty();
+      this.users.each(function(user){
+        $(_this.el).append(new together.Views.User({user : user}).render().el);
+      });
+
+      return this;
+    }
+});
 /////////////////////////////////////////////////
 together.Views.User = Backbone.View.extend({
     initialize : function(json){
@@ -60,51 +110,9 @@ together.Views.User = Backbone.View.extend({
     },
     render : function(){
         $(this.el).empty();
-        $("body").append("<span id='cursor"+this.user.get('id')+"' style='display:none;position:absolute;'>"+this.user.get('name')+"</span>")
+        $("body").append("<span id='cursor"+this.user.get('id')+"'' style='display:none;position:absolute;'><div class='cursor'></div>"+this.user.get('name')+"</span>")
         $(this.el).append(this.template_user({user : this.user.toJSON()}))
         return this;
     }
 });
 /////////////////////////////////////////////////
-together.Views.Main = Backbone.View.extend({
-    initialize : function(json){
-      _.bindAll(this, 'render');
-      together.views.main = this;
-      // Variables
-      this.project         = json.currentProject;
-      this.user            = json.user;
-      this.users           = json.users;
-      this.eventAggregator = json.eventAggregator;
-      this.cursor_mode     = false;
-      this.pathname        = window.location.pathname;
-      // Conditions
-      this.user.save({location : this.pathname});
-      if(this.pathname == "/bbmap") this.cursor_mode = true;
-      // Events
-      var rec = 0;
-      $( "body" ).mousemove(function( event ){
-        if(rec%10 == 0){
-          var clientX = event.clientX;
-          var clientY = event.clientY ;
-          together.views.main.user.save({
-            top:  clientY,
-            left: clientX
-          });
-        }
-        rec = rec + 1;
-      });
-      // Templates
-
-    },
-    events : {},
-    render : function(){
-      // Init
-      var _this = this;
-      $(this.el).empty();
-      this.users.each(function(user){
-        $(_this.el).append(new together.Views.User({user : user}).render().el);
-      });
-
-      return this;
-    }
-});

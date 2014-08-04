@@ -7,11 +7,9 @@
 <!-- CKEditor -->
 <script src="/js/ckeditor/ckeditor.js"></script>
 <!-- Modules to load -->
-<%- partial('../app/templates/topbar_templates') %>
 <%- partial('../app/templates/welcome_templates') %>
 <%- partial('templates/manager_template') %>
 <script src="js/BB_app/modules/manager.js"></script>
-<script src="js/BB_app/modules/topbar.js"></script>
 <script src="js/BB_app/modules/welcome.js"></script>
 
 <!-- CKLayout -->
@@ -66,7 +64,6 @@
 
       global.init(json, function(){
         // Modules
-        topbar.init();
         welcome.init();     
         manager.init(); 
         /*activat of "hashchange events's monitoring"*/

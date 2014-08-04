@@ -48,7 +48,53 @@
     <script src="js/BB_app/global_models.js"></script>
     <script src="js/BB_app/global_collections.js"></script>
 
-    <%- body %>
+
+   
+  
+
+
+
+    <div class="off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+        <nav class="tab-bar">
+          <section class="left-small">
+            <a class="left-off-canvas-toggle menu-icon" href="#"><span></span></a>
+          </section>
+
+          <section class="middle tab-bar-section">
+            <h1 class="title">CreaKtive</h1>
+          </section>
+
+        </nav>
+
+        <aside class="left-off-canvas-menu">
+          <ul class="off-canvas-list">
+            <li><label>Actions</label></li>
+            <li><a href="/">Manager</a></li>
+            <li><a href="/editprofile">Profile</a></li>
+            <li><a class="active" id="logout" href="/logout">Logout</a></li>
+            <li><label>Links</label></li>
+            <li><a href="/contact">Support</a></li>
+            <li><a href="http://creaktive.fr/documentation/">Documentation</a></li>
+            <li><a href="http://creaktive.fr/">Terms of service</a></li>
+            <li><a href="http://creaktive.fr/">Privacy Policy</a></li>
+            <li><a href="http://creaktive.fr/contact/">FAQ</a></li>
+            <li><label>Copyright © 2014 CreaKtive, Inc.</label></li>
+          </ul>
+        </aside>
+
+       
+
+        <section class="main-section">
+          <%- body %>
+        </section>
+
+      <a class="exit-off-canvas"></a>
+
+      </div>
+    </div>
+
+    
   
 
     <script>
@@ -104,23 +150,7 @@
     </script>
 
 
-    <footer class="row">
-      <hr>
-      <div class="large-12 columns">
-      <div class="row">
-      <div class="large-5 columns">
-      <p>Copyright © 2014 CreaKtive, Inc.</p>
-      </div>
-      <div class="large-7 columns">
-      <ul class="inline-list right">
-      <li><a href="http://creaktive.fr/">Terms of service</a></li>
-      <li><a href="http://creaktive.fr/">Privacy Policy</a></li>
-      <li><a href="http://creaktive.fr/contact/">FAQ</a></li>
-      </ul>
-      </div>
-      </div>
-      </div>
-      </footer>
+    
 
 <script>
 // Include the UserVoice JavaScript SDK (only needed once on a page)

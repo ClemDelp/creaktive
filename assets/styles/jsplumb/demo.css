@@ -1,4 +1,10 @@
-
+.cursor{
+	border-radius: 50%;
+	width: 20px;
+	height: 20px; 
+	background-color: red;
+	opacity: 0.5;
+}
 
 
 #actionbar .panel {
@@ -21,7 +27,7 @@ font-size: 1rem;
 }
 
 #map_container{
-	height:650px;overflow:hidden;
+	height:1000px;overflow:hidden;
 	/*background-image: url("/img/pattern.png");*/
 }
 body{

@@ -90,7 +90,7 @@ autoPK : false,
 
     Concept.create({
   		id : guid(),
-  		title : "c0",
+  		title : "c0 : "+values.title,
       content :"",
   		date : getDate(),
   		position : 0,

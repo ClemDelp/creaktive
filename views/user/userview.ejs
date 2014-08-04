@@ -8,15 +8,11 @@
 <!-- CKEditor -->
 <script src="/js/ckeditor/ckeditor.js"></script>
 <!-- Templates to load -->
-<%- partial('../app/templates/topbar_templates') %>
-<%- partial('../app/templates/title_templates') %>
 <%- partial('templates/user_templates') %>
     <%- partial('../app/templates/together_templates') %>
 
 <script type="text/javascript" src="js/BB_app/modules/together.js"></script>
 <!-- Modules situés dans assets/js/BB_app -->
-<script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/title.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/user.js"></script>
 <script>
   ///////////////////////////////////////////////////
@@ -52,9 +48,8 @@
 
       global.init(json, function(){
         /*Modules*/
-        topbar.init();
-        title.init(json.project,"members");
         user.init(json.project);
+        together.init();
         /*activat of "hashchange events's monitoring"*/
         Backbone.history.start();  
       });

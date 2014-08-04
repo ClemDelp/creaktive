@@ -10,13 +10,14 @@ bbmap.Views.Node = Backbone.View.extend({
         $(this.el).click(this.savePosition);
         this.listenTo(this.model,"change:title", this.render); 
         this.listenTo(this.model,"change:css", this.render); 
+        this.listenTo(global.eventAggregator,this.model.get('id'), this.actualize,this); 
         // Se mettre en ecoute sur le deplacement du node pere
         this.oldFather = new Backbone.Model();
         try{
             this.father = bbmap.views.main.concepts.get(this.model.get('id_father'));
             this.oldFather = this.father.clone();
             this.listenTo(this.father,"change:top change:left", this.followFather,this);
-            this.listenTo(global.eventAggregator,this.father.get('id'),this.setOldFather,this);
+            this.listenTo(global.eventAggregator,this.father.get('id')+"_father",this.setOldFather,this);
         }catch(err){
             //console.log('no father detected')
         }
@@ -31,7 +32,17 @@ bbmap.Views.Node = Backbone.View.extend({
         "click .ep" : "addConceptChild",
         "click .ep2" : "addKnowledgeChild",
     },
+    actualize : function(model){
+        this.model.set({
+            top: model.top,
+            left: model.left,
+            title: model.title,
+            css: model.css
+        });
+        this.applyStyle();
+    },
     setOldFather : function(model){
+        alert('old father of '+this.model.get('title'))
         this.oldFather = model.clone();
     },
     followFather : function(){
@@ -63,19 +74,23 @@ bbmap.Views.Node = Backbone.View.extend({
         bbmap.views.main.instance.repaint(this.model.get('id'));
 
     },
-    setPosition : function(x, y, sz, h, broadcast){
-        var left = (x - h);
-        var top  = (y - h);
+    cssPosition : function(top,left){
         var styles = {
             'left': left +'px',
             'top':  top  + 'px'
         };
         $(this.el).css( styles );
+    },
+    setPosition : function(x, y, sz, h, broadcast){
+        var left = (x - h);
+        var top  = (y - h);
+        this.cssPosition(top,left);
         this.model.save({
             top: top,
             left: left
         },{silent:broadcast});
-        global.eventAggregator.trigger(this.model.get('id'),this.model)
+        // Set old father !!! 
+        global.eventAggregator.trigger(this.model.get('id')+"_father",this.model)
     },
     getPosition : function(){
         var position = {};
@@ -110,7 +125,7 @@ bbmap.Views.Node = Backbone.View.extend({
         });
         new_concept.save();
         bbmap.views.main.concepts.add(new_concept);
-        bbmap.views.main.addModelToView(new_concept,"concept");
+        bbmap.views.main.addModelToView(new_concept);
     },
     addKnowledgeChild : function(e){
         e.preventDefault();
@@ -138,7 +153,7 @@ bbmap.Views.Node = Backbone.View.extend({
         new_cklink.save();
         bbmap.views.main.links.add(new_cklink);
         // On ajoute le model à la view
-        bbmap.views.main.addModelToView(new_knowledge,"knowledge");
+        bbmap.views.main.addModelToView(new_knowledge);
     },
     /////////////////////////////////////////
     // Remove function

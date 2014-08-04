@@ -57,12 +57,9 @@ bbmap.Views.Main = Backbone.View.extend({
         ////////////////////////////
         // Events
         this.listenTo(bbmap.zoom,'change',this.updateZoomDisplay,this);
-        global.eventAggregator.on('concept:create',this.addConceptToView,this);
-        global.eventAggregator.on('concept:remove',this.removeModelToView,this);
-        global.eventAggregator.on('concept:update',this.modelUpdate,this);
-        global.eventAggregator.on('knowledge:create',this.addKnowledgeToView,this);
-        global.eventAggregator.on('knowledge:remove',this.removeModelToView,this);
-        global.eventAggregator.on('knowledge:update',this.modelUpdate,this);
+        global.eventAggregator.on('model:create',this.addModelToView,this);
+        global.eventAggregator.on('model:remove',this.removeModelToView,this);
+        //global.eventAggregator.on('knowledge:update',this.modelUpdate,this);
         this.map_el.mousewheel(function(event) {
             event.preventDefault();
             //console.log(event.deltaY);
@@ -657,20 +654,20 @@ bbmap.Views.Main = Backbone.View.extend({
         if(this.ckOperator == true){this.ckOperator = false}else{this.ckOperator = true;}
         this.render();
     },
-    modelUpdate : function(model){
-        var attributesUpdated = [];
-        if(model.get('type') == "concept") attributesUpdated = global.Functions.whatChangeInModel(this.concepts.get(model.get('id')),model);
-        if(model.get('type') == "knowledge") attributesUpdated = global.Functions.whatChangeInModel(this.knowledges.get(model.get('id')),model);
+    // modelUpdate : function(model){
+    //     var attributesUpdated = [];
+    //     if(model.get('type') == "concept") attributesUpdated = global.Functions.whatChangeInModel(this.concepts.get(model.get('id')),model);
+    //     if(model.get('type') == "knowledge") attributesUpdated = global.Functions.whatChangeInModel(this.knowledges.get(model.get('id')),model);
 
-        if((_.indexOf(attributesUpdated,"left") != -1)||(_.indexOf(attributesUpdated,"top") != -1)){
-            // Si c'est la position qui a changée
-            $(this.nodes_views[model.get('id')].el).attr( "style","top: "+model.get('top')+"px;left:"+model.get('left')+"px");
-        }else if(_.indexOf(attributesUpdated,"title") != -1){
-            // Si cest le title
-            alert("title updated")
-        }
-        this.instance.repaintEverything();
-    },
+    //     if((_.indexOf(attributesUpdated,"left") != -1)||(_.indexOf(attributesUpdated,"top") != -1)){
+    //         // Si c'est la position qui a changée
+    //         $(this.nodes_views[model.get('id')].el).attr( "style","top: "+model.get('top')+"px;left:"+model.get('left')+"px");
+    //     }else if(_.indexOf(attributesUpdated,"title") != -1){
+    //         // Si cest le title
+    //         alert("title updated")
+    //     }
+    //     this.instance.repaintEverything();
+    // },
     /////////////////////////////////////////
     // Create unlinked model
     /////////////////////////////////////////
@@ -686,7 +683,7 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         new_knowledge.save();
         this.knowledges.add(new_knowledge);
-        this.addModelToView(new_knowledge,"knowledge");
+        this.addModelToView(new_knowledge);
     },
     createUnlinkedPoche : function(left,top){
         var model = new global.Models.Poche({
@@ -700,7 +697,7 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         model.save();
         this.knowledges.add(model);
-        this.addModelToView(model,"poche");
+        this.addModelToView(model);
     },
     createUnlinkedConcept : function(left,top){
         new_concept = new global.Models.ConceptModel({
@@ -715,12 +712,15 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         new_concept.save();
         this.concepts.add(new_concept);
-        this.addModelToView(new_concept,"concept");
+        this.addModelToView(new_concept);
     },
     /////////////////////////////////////////
     // Add remove model to views and bdd
     /////////////////////////////////////////
-    addModelToView : function(model,type){
+    addModelToView : function(model,from){
+        var origin = "client";
+        if(from) origin = from;
+        var type = model.get('type');
         this.lastModel = model;
         new_view = new bbmap.Views.Node({
             className : "window "+type,
@@ -733,22 +733,12 @@ bbmap.Views.Main = Backbone.View.extend({
         this.instance.draggable($(new_view.el));
         this.nodes_views[model.get('id')] = new_view;
         new_view.addLink();
-        this.startJoyride();
+        if(origin == "client") this.startJoyride();
     },
-    removeModelToView : function(model){
-        model_view = this.nodes_views[model.get('id')]
-        model_view.endpoints.forEach(function(ep){
-            bbmap.views.main.instance.deleteEndpoint(ep);
-        })
-        bbmap.views.main.instance.detachAllConnections($(model_view.el));
-        // put all the child node parent_id attributes to none
-        if(model.get('type') == 'concept'){
-            childrens = bbmap.views.main.concepts.where({id_father : model.get('id')})
-            childrens.forEach(function(child){
-                child.set({id_father : "none"}).save();
-            });
-        } 
-        model_view.remove();
+    removeModelToView : function(model,from){
+        var origin = "client";
+        if(from) origin = from;
+        this.nodes_views[model.get('id')].removeView();
     },
     /////////////////////////////////////////
     // jsPlumb
