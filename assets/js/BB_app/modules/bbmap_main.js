@@ -803,6 +803,7 @@ bbmap.Views.Main = Backbone.View.extend({
     renderActionBar : function(){
         this.bar_el.empty();
         this.bar_el.append(this.template_actionbar({
+            title : global.models.currentProject.get('title'),
             filter  : this.filter,
             mode    : this.mode
         }));
@@ -989,6 +990,9 @@ bbmap.Views.Main = Backbone.View.extend({
                 _this.screenshot(true);
             }
         });
+
+        $("#map_container").height(bbmap.window_height);
+
         return this;
     }
 });

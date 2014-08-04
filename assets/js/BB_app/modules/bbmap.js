@@ -9,6 +9,7 @@ var bbmap = {
   models: {},
   views: {},
   // Parameters
+  window_height : $(window).height() - 150,
   zoom : new Backbone.Model({val : 1}),
   node_size : function(){ return 18*this.zoom.get('val'); },
   horizontal_gap : function(){ return 200*this.zoom.get('val'); },

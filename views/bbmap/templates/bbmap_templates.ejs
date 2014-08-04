@@ -2,7 +2,8 @@
 <!-- ******************************** -->
 <!-- Container -->
 <div id="bbmap_container" style="overflow:auto">
-	<div id="actionbar"></div>
+	<br>
+  <div id="actionbar"></div>
 	
 	<div id="map_container" class="">
     <div id="editor" class="panel large-2 medium-2 small-2 columns">
@@ -51,12 +52,12 @@
   <div>
 	  <center>
       mode : 
-      <select id="modeSelection" class="large-2 medium-2 small-2">
+      <select id="modeSelection" class="large-1 medium-1 small-1">
         <option value="visu" {{ if(mode == "visu"){ }}selected{{ } }}>Visualization</option>
         <option value="edit" {{ if(mode == "edit"){ }}selected{{ } }}>Edition</option>
       </select>
       filter : 
-      <select id="filterSelection" class="large-2 medium-2 small-2">
+      <select id="filterSelection" class="large-1 medium-1 small-1">
         <option value="c" {{ if(filter == "c"){ }}selected{{ } }}>Concepts</option>
         <option value="k" {{ if(filter == "k"){ }}selected{{ } }}>Knowledges</option>
         <option value="p" {{ if(filter == "p"){ }}selected{{ } }}>Categories</option>
