@@ -18,7 +18,7 @@ global.Collections.Poches = Backbone.Collection.extend({
         global.eventAggregator.trigger("model:create",new global.Models.Poche(model),"server");
     },
     serverUpdate : function(model){
-        global.eventAggregator.trigger(model.id,model);
+        global.eventAggregator.trigger(model.id+"_server",model);
     },
     serverRemove : function(model){
         //this.remove(knowledge.id);
@@ -59,7 +59,7 @@ global.Collections.Knowledges = Backbone.Collection.extend({
         global.eventAggregator.trigger("model:create",new global.Models.Knowledge(model),"server");
     },
     serverUpdate : function(model){
-        global.eventAggregator.trigger(model.id,model);
+        global.eventAggregator.trigger(model.id+"_server",model);
     },
     serverRemove : function(model){
         global.eventAggregator.trigger("model:remove",new global.Models.Knowledge(model),"server");
@@ -83,7 +83,7 @@ global.Collections.ConceptsCollection = Backbone.Collection.extend({
         global.eventAggregator.trigger("model:create",new global.Models.ConceptModel(model),"server");
     },
     serverUpdate : function(model){
-        global.eventAggregator.trigger(model.id,model);
+        global.eventAggregator.trigger(model.id+"_server",model);
     },
     serverRemove : function(model){
         //this.remove(knowledge.id);

@@ -10,14 +10,15 @@ bbmap.Views.Node = Backbone.View.extend({
         $(this.el).click(this.savePosition);
         this.listenTo(this.model,"change:title", this.render); 
         this.listenTo(this.model,"change:css", this.render); 
-        this.listenTo(global.eventAggregator,this.model.get('id'), this.actualize,this); 
+        this.listenTo(global.eventAggregator,this.model.get('id')+"_server", this.actualize,this); 
         // Se mettre en ecoute sur le deplacement du node pere
-        this.oldFather = new Backbone.Model();
+        // this.oldFather = new Backbone.Model();
         try{
             this.father = bbmap.views.main.concepts.get(this.model.get('id_father'));
-            this.oldFather = this.father.clone();
-            this.listenTo(this.father,"change:top change:left", this.followFather,this);
-            this.listenTo(global.eventAggregator,this.father.get('id')+"_father",this.setOldFather,this);
+            // this.oldFather = this.father.clone();
+            // this.listenTo(this.father,"change:top change:left", this.followFather,this);
+            // On se met en ecoute sur le pere
+            this.listenTo(global.eventAggregator,this.father.get('id')+"_followme",this.followFather,this);
         }catch(err){
             //console.log('no father detected')
         }
@@ -41,15 +42,13 @@ bbmap.Views.Node = Backbone.View.extend({
         });
         this.applyStyle();
     },
-    setOldFather : function(model){
-        alert('old father of '+this.model.get('title'))
-        this.oldFather = model.clone();
-    },
-    followFather : function(){
-        var hf_left = this.oldFather.get('left');
-        var hf_top = this.oldFather.get('top');
-        var f_left = this.father.get('left');
-        var f_top = this.father.get('top');
+    followFather : function(oldFather,father){
+        //alert(this.model.get('title')+' - follow its father');
+        console.log(this.model.get('title'),' - follow its father');
+        var hf_left = oldFather.get('left');
+        var hf_top = oldFather.get('top');
+        var f_left = father.get('left');
+        var f_top = father.get('top');
         var n_left = this.model.get('left');
         var n_top = this.model.get('top');
         var delta_top = hf_top - f_top;
@@ -81,7 +80,11 @@ bbmap.Views.Node = Backbone.View.extend({
         };
         $(this.el).css( styles );
     },
-    setPosition : function(x, y, sz, h, broadcast){
+    setPosition : function(x, y, sz, h, broadcast, from){
+        var origin = "normal";
+        if(from) origin = from;
+        //alert(this.model.get('title')+" set position its position")
+        var before_change = this.model.clone();
         var left = (x - h);
         var top  = (y - h);
         this.cssPosition(top,left);
@@ -89,8 +92,9 @@ bbmap.Views.Node = Backbone.View.extend({
             top: top,
             left: left
         },{silent:broadcast});
+        var after_change = this.model.clone();
         // Set old father !!! 
-        global.eventAggregator.trigger(this.model.get('id')+"_father",this.model)
+        if(origin == "normal")global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
     },
     getPosition : function(){
         var position = {};
@@ -102,14 +106,18 @@ bbmap.Views.Node = Backbone.View.extend({
         var position = this.getPosition();
         if((position.top != 0)&&($(this.el).position().left != 0)){
             // Si la view n'a pas été supprimée on save
+            var before_change = this.model.clone();
             this.model.save({
                 top:position.top / bbmap.zoom.get('val'),
                 left:position.left / bbmap.zoom.get('val')
             });   
+            var after_change = this.model.clone();
+            global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
             //console.log(this.model.get('top'),this.model.get('left'))
         }
         ////console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
         //bbmap.views.main.reorganizeTree(this.model.get('id'))
+        
     },
     addConceptChild : function(e){
         e.preventDefault();

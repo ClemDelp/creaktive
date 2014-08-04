@@ -593,7 +593,7 @@ bbmap.Views.Main = Backbone.View.extend({
         if (!sz) sz = bbmap.node_size()/bbmap.zoom.get('val');
         var h = sz / 2;
         var z = bbmap.zoom.get('val');
-        this.nodes_views[lbl].setPosition(x/z, y/z, sz/z, h/z, true);
+        this.nodes_views[lbl].setPosition(x/z, y/z, sz/z, h/z, true, "srtucture_function_origin");
     },
     /////////////////////////////////////////
     // Hover bulle effect
