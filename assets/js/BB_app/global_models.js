@@ -282,3 +282,18 @@ global.Models.Presentation = Backbone.Model.extend({
         });
     }
 });
+/***************************************/
+global.Models.Attachment = Backbone.Model.extend({
+    defaults : {
+        id : "",
+        name : "",
+        path : "",
+        url : "",
+    },
+    initialize : function Poche() {
+        this.urlRoot = "attachment";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});

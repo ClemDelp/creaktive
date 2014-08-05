@@ -123,8 +123,9 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Downdloadimage
     /////////////////////////////////////////
-    downloadimage : function(flag){
+    downloadimage : function(e){
         _this = this;
+        //var aLink = e.target; 
         /**
         Repositionne la screenshot sur tout le graphe
         **/
@@ -243,11 +244,20 @@ bbmap.Views.Main = Backbone.View.extend({
                     }
                 }
                 var screenshot;
-                screenshot = canvas2.toDataURL( "image/png" ).replace("image/png", "image/octet-stream");
- 
-                //window.open(screenshot);
-                //document.location.href = screenshot;
-                window.location.href = screenshot;
+
+                screenshot = canvas2.toDataURL( "image/png" );
+
+                var aLink = document.createElement('a');
+                // var evt = document.createEvent("HTMLEvents");
+                // evt.initEvent("click", false, false);
+                aLink.download = "screenshot";
+                aLink.href = screenshot;
+                //aLink.dispatchEvent(evt);
+                document.body.appendChild(aLink);
+                //console.log(aLink);
+                aLink.click();
+                document.body.removeChild(aLink);
+
             }
         });    
     },
@@ -375,51 +385,25 @@ bbmap.Views.Main = Backbone.View.extend({
                 }
                 var screenshot;
                 //console.log(canvas2.toDataURL( "image/png" ));
-                screenshot = canvas2.toDataURL( "image/png" ).replace(/data:image\/png;base64,/,'');   //save screenshot
-                var uintArray = Base64Binary.decode(screenshot);
-                _this.uploadFile(uintArray, flag);
+                screenshot = canvas2.toDataURL( "image/png" );   //save screenshot
+                // var uintArray = Base64Binary.decode(screenshot).toString();
+                // console.log(uintArray);
+                global.Functions.uploadScreenshot(screenshot, function(data){
+                    console.log(data);
+                    var s = new global.Models.Screenshot({
+                        id : guid(),
+                        src : data,
+                        date : getDate(),
+                        project_id : _this.project.get('id')
+                     });
+                s.save();
+                alert("Screenshot sent to CK - Deliver")
+                });
+
             }
         });    
     },
-    /*
-    * Transfer a file to s3 
-    * @file : file to transfer
-    * @flag - boolean : if true, the screenshot will be a project image
-    */ 
-    uploadFile : function(file,flag){
-        _this = this;
-        var s3upload = new S3Upload({
-            file : file,
-            s3_sign_put_url: '/S3/upload_sign',
-            onProgress: function(percent, message) {
-                //console.log(percent, " ***** ", message);
-            },
-            onFinishS3Put: function(amz_id, file) {
-                //console.log("File uploaded ", amz_id);
-                //Si c'est un screenshot servant d'image pour le projet
-                if(flag==true){
-                    _this.project.save({
-                        image : amz_id
-                    })
-                }
-                // Si c'est un screenshot
-                else{
-                    var s = new global.Models.Screenshot({
-                        id : guid(),
-                        src : amz_id,
-                        date : getDate(),
-                        project_id : _this.project.get('id')
-                    });
-                    s.save();
-                    alert("Screenshot sent to CK - Deliver")
-                }             
-            },
-            onError: function(status) {
-                //console.log(status)
-            }
-        });
-
-    },
+ 
     /////////////////////////////////////////
     // Drop new data on map
     /////////////////////////////////////////
@@ -459,6 +443,7 @@ bbmap.Views.Main = Backbone.View.extend({
     // Sliding editor bar
     /////////////////////////////////////////
     updateEditor : function(model){
+
         if(this.mode == "edit"){
             this.editor_el.show('slow');
             // Model editor module
@@ -477,12 +462,14 @@ bbmap.Views.Main = Backbone.View.extend({
             // IMG List module
             if(bbmap.views.imagesList)bbmap.views.imagesList.remove();
             bbmap.views.imagesList = new imagesList.Views.Main({
-                model           : model
+                model           : model,
+                eventAggregator : this.eventAggregator
             });
             // Attachment module
             if(bbmap.views.attachment)bbmap.views.attachment.remove();
             bbmap.views.attachment = new attachment.Views.Main({
-                model           : model
+                model           : model,
+                eventAggregator : this.eventAggregator
             });
             // Comments module
             if(bbmap.views.comments)bbmap.views.comments.remove();

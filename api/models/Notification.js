@@ -21,6 +21,7 @@
   },
 
   objectCreated : function(req,res, object, to, cb){
+
     if(req.body.action.length == 0)return;
     Notification.create({
   		id : guid(),

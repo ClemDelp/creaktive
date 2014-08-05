@@ -249,3 +249,13 @@ global.Collections.Presentations = Backbone.Collection.extend({
         });
     }
 }); 
+
+/***************************************/
+global.Collections.Attachments = Backbone.Collection.extend({
+    model : global.Models.Attachment,
+    initialize : function() {
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+}); 

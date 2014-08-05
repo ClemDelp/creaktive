@@ -20,49 +20,44 @@ attachment.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Variables
         this.model = json.model;
+        this.eventAggregator = json.eventAggregator;
+
         // Templates
-        this.template = _.template($('#attachment-list-template').html());
+        this.template = _.template($('#attachment-list-template').html()); 
+        this.template_image = _.template($('#attachment_image_template').html()); 
     },
     events : {
         "click .openFile" : "openFile",
         "click .removeFile" : "removeFile",
-        "change #uploadFile" : "uploadFile"
+        "change #uploadfile" : "uploadFile"
     },
     uploadFile : function(e){
-        e.preventDefault();
-        _this = this;
-        var s3upload = new S3Upload({
-            file_dom_selector: 'uploadFile',
-            s3_sign_put_url: '/S3/upload_sign',
-            onProgress: function(percent, message) {
-                $('#status').html('Upload progress: ' + percent + '% ' + message);
-            },
-            onFinishS3Put: function(amz_id, file) {
-                _this.model.get('attachment').unshift({
+      e.preventDefault();
+      e.stopPropagation();
+        _this=this;
+        e.stopPropagation(); // Stop stuff happening
+        e.preventDefault(); // Totally stop stuff happening
+        global.Functions.uploadFile(e, function(amz_id, fileName){
+            var newattachment = {
                     id : guid(),
-                    name : file.name,
-                    path : file.name,
+                    name : fileName,
+                    path : fileName,
                     url : amz_id
-                });
+                };
+
+            _this.model.get('attachment').unshift(newattachment);
+            _this.eventAggregator.trigger('fileuploaded');
                 _this.model.save();
                 _this.render();
-            },
-            onError: function(status) {
-                console.log(status)
-                $('#status').html('Upload error: ' + status);
-            }
-        });
-        this.render();
-},
+        })  
+    },
 removeFile : function(e){
-    console.log(e.target.getAttribute('data-file-id'))
-    var i = {};
-    _.each(this.model.get('attachment'), function(f){
-        if(f.id === e.target.getAttribute('data-file-id')) i = f
+    this.model.save({
+      attachment : _.without(this.model.get('attachment'), _.findWhere(this.model.get('attachment'), {id : e.target.getAttribute('data-file-id')} ))
     })
-    console.log(_.without(this.model.get('attachment'), i))
-    this.model.set({attachment : _.without(this.model.get('attachment'), i)})
-    this.model.save();
+    this.eventAggregator.trigger('fileuploaded');
+
+
     //socket.post("/file/destroy", {file : i});
     this.render();
 },
@@ -70,11 +65,30 @@ openFile : function(e){
     console.log(e.target.getAttribute('data-file-path'));
     $.download('file/get',{path : e.target.getAttribute('data-file-path')} );
 },
-render : function() {
+render : function() { 
+    _this1=this;
+
     $(this.el).html("");
     $(this.el).append(this.template({
         model : this.model.toJSON()
     }));
+
+    this.model.get('attachment').forEach(function(file){
+
+        $.get('/s3/getUrl?amz_id='+file.url, function(url){
+            file.url = url
+            //console.log(filedate);
+            //console.log(_this.template,_this.template_image);
+            $("#attachmentList").append(_this1.template_image({
+              file : file,
+            }))
+            delete file.url;
+            //console.log(file);
+        })
+    })
+
+
+
     return this;
 }
 });
