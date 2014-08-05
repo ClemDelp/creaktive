@@ -5,7 +5,7 @@
 }
 
 .cbp-openbutton{
-	top: 11%;
+	top: 90%;
 	left: 0px;
 	z-index: 1000;
 	position: fixed;
@@ -38,9 +38,9 @@
 /* Orientation-dependent styles for the content of the menu */
 
 .cbp-spmenu-vertical {
-	width: 600px;
+	width: 30%;
 	height: 80%;
-	top: 11%;
+	top: 15%;
 	z-index: 1000;
 	overflow: auto;
 }
@@ -74,7 +74,7 @@
 /* Vertical menu that slides from the left or right */
 
 .cbp-spmenu-left {
-	left: -600px;
+	left: -30%;
 }
 
 .cbp-spmenu-right {

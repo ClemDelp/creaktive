@@ -479,7 +479,7 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         imagedate = e.target.getAttribute("data-image-date");
 
         var aLink = document.createElement('a');
-        aLink.href = imagesrc;
+        aLink.href = '/s3/getUrl?amz_id='+imagesrc;
         aLink.setAttribute('download', imagedate);
         //aLink.dispatchEvent(evt);
         document.body.appendChild(aLink);
@@ -806,7 +806,7 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         classie.toggle( buttonLeft, 'active' );
         classie.toggle( menuLeft, 'cbp-spmenu-open' );
         if(this.isopen==false){
-            $("#showLeft").animate({left:"600px"});
+            $("#showLeft").animate({left:"30%"});
             $("#cbp-openimage")[0].src="/img/arrow-left.png";
             this.isopen=true;
         }else{

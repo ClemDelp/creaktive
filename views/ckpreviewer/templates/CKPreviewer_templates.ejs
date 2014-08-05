@@ -44,23 +44,8 @@
 </script>
 <!-- Action -->
 <script type="text/template" id="CKPreviewer_action_template" >
-  <div  id="categories_grid">
-    {{ _.each(presentations, function(presentation) { }}
-        <div class="item">    
-          <ul class="pricing-table">
-              <li class="price"class="title">
-                  <a href="#"  presentation_id="{{- presentation.id}}" class="button tiny  radius expand presentation">
-                      <strong presentation_id="{{- presentation.id}}" >{{- presentation.title}}</strong>
-                  </a>
-              </li>
-              <li class="bullet-item">
-                <div class="row collapse custom_row" id="content{{- presentation.id}}" sytle="text-align:left;overflow:hidden"> 
-                </div>
-              </li>
-          </ul>
-        </div>
-    {{ }); }}  
-    <div class="item">    
+    <div  id="categories_grid">
+      <div class="item">    
         <ul class="pricing-table">
             <li class="price"class="title">
                 <a href="#" class="button tiny success radius expand">
@@ -78,8 +63,24 @@
               </div>
             </li>
         </ul>
-    </div>
-  </div>
+      </div>
+    
+    {{ _.each(presentations, function(presentation) { }}
+        <div class="item">    
+          <ul class="pricing-table">
+              <li class="price"class="title">
+                  <a href="#"  presentation_id="{{- presentation.id}}" class="button tiny  radius expand presentation">
+                      <strong presentation_id="{{- presentation.id}}" >{{- presentation.title}}</strong>
+                  </a>
+              </li>
+              <li class="bullet-item">
+                <div class="row collapse custom_row" id="content{{- presentation.id}}" sytle="text-align:left;overflow:hidden"> 
+                </div>
+              </li>
+          </ul>
+        </div>
+    {{ }); }}  
+</div>
 </script>
 
 <script type="text/template" id="CKPreviewer_image_template" >
