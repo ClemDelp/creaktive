@@ -33,10 +33,7 @@
     <link rel="stylesheet" type="text/css" href="styles/overlay_css_timela.css" /> 
 
   </head>
-
   <body>
-
-
 
     <script src="/js/vendor/backbone.iosync.js"></script>
     <script src="/js/vendor/backbone.iobind.js"></script>
@@ -48,13 +45,7 @@
     <script src="js/BB_app/global_models.js"></script>
     <script src="js/BB_app/global_collections.js"></script>
 
-
-   
-  
-
-
-
-    <div class="off-canvas-wrap" data-offcanvas>
+    <div id="creaktive_window" class="off-canvas-wrap" data-offcanvas>
       <div class="inner-wrap">
         <nav class="tab-bar">
           <section class="left-small">
@@ -82,9 +73,7 @@
             <li><a href="http://creaktive.fr/contact/">FAQ</a></li>
             <li><label>Copyright © 2014 CreaKtive, Inc.</label></li>
           </ul>
-        </aside>
-
-       
+        </aside> 
 
         <section class="main-section">
           <%- body %>
@@ -95,10 +84,11 @@
       </div>
     </div>
 
-    
-  
-
     <script>
+      $(document).ready(function () {
+        $('#creaktive_window').height($(window).height());
+        // alert("text")
+      });
       /////////////////////////////////////////////////////////////////////////////////////////////
       // Realtime connection
       /////////////////////////////////////////////////////////////////////////////////////////////

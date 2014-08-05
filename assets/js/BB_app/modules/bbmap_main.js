@@ -999,7 +999,7 @@ bbmap.Views.Main = Backbone.View.extend({
             }
         });
 
-        $("#map_container").height(bbmap.window_height);
+        // $("#map_container").height(bbmap.window_height);
 
         return this;
     }
