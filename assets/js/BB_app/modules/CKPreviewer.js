@@ -796,22 +796,24 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         
     },
     events : {
-        "click #showLeft" : "showLeft"
+        "click #showMenu" : "showMenu"
     },
-    showLeft : function(e){
+    showMenu : function(e){
         e.preventDefault();
         //console.log($("#showLeft"),$("#cbp-spmenu-s1"));
-        var menuLeft = document.getElementById( 'cbp-spmenu-s1' );
-        var buttonLeft = document.getElementById( 'showLeft' );
-        classie.toggle( buttonLeft, 'active' );
-        classie.toggle( menuLeft, 'cbp-spmenu-open' );
+        var menu = document.getElementById( 'cbp-spmenu-s1' );
+        var button = document.getElementById( 'showMenu' );
+        //var body = document.body;
+        classie.toggle( button, 'active' );
+        //classie.toggle( body, 'cbp-spmenu-push-toright' );
+        classie.toggle( menu, 'cbp-spmenu-open' );
         if(this.isopen==false){
-            $("#showLeft").animate({left:"30%"});
-            $("#cbp-openimage")[0].src="/img/arrow-left.png";
+            $("#showMenu").animate({right:"20%"});
+            $("#cbp-openimage")[0].src="/img/arrow-right.png";
             this.isopen=true;
         }else{
-            $("#showLeft").animate({left:"0px"});
-            $("#cbp-openimage")[0].src="/img/arrow-right.png";
+            $("#showMenu").animate({right:"0px"});
+            $("#cbp-openimage")[0].src="/img/arrow-left.png";
             this.isopen=false;
         }
         console.log();
@@ -859,15 +861,10 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         });
         
 
-        //$(document).foundation();
-        $(document).foundation({
-        });
+        $(document).foundation();
 
-            // $(function() {
-            //     $( '#dl-menu' ).dlmenu();
-            // });
 
-            //new gnMenu( document.getElementById( 'gn-menu' ) );
+        $('#CKPreviewer_container').height($(window).height()-50);
         
     }
 });
