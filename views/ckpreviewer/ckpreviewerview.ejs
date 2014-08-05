@@ -28,17 +28,13 @@
 <script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
 <!-- ******************************** -->
 <!-- Templates to load -->
-<%- partial('../app/templates/topbar_templates') %>
-<%- partial('../app/templates/title_templates') %>
 <%- partial('templates/CKPreviewer_templates') %>
 
+<%- partial('../app/templates/together_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/together.js"></script>
 
 
 <!-- Modules situés dans assets/js/BB_app -->
-
-
-<script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/title.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/CKPreviewer.js"></script>
 <script src="js/ckeditor/ckeditor.js"></script>
 <script src="js/ckeditor/config.js"></script>
@@ -67,8 +63,7 @@
 
       global.init(json, function(){
         /*Modules*/
-        topbar.init();
-        title.init(json.project,"ckpreviewer");
+        $("#title_page").html("CKDeliver");
         CKPreviewer.init();
         ////////////////////////////////////////
         /*activat of "hashchange events's monitoring"*/
