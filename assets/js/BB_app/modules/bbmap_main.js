@@ -26,6 +26,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.nodes_views        = {};
         this.mode               = json.mode;
         this.filter             = json.filter;
+        this.isopen = false;
         // Parameters
         
         this.ckOperator         = true;
@@ -86,10 +87,11 @@ bbmap.Views.Main = Backbone.View.extend({
         "mouseenter .window.concept" : "showIcon", 
         "click .ep3" : "structureTree",
         "mouseleave .window" : "hideIcon", 
-        "click .closeEditor" : "hideEditor",
+        //"click .closeEditor" : "hideEditor",
         "click #okjoyride" : "changeTitleLastModel",
         "click .screenshot" : "screenshot",
         "click .downloadimage" : "downloadimage",
+        "click #showLeft" : "showLeft"
     },
     /////////////////////////////////////////
     // Overlays sur les connections
@@ -123,7 +125,7 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Downdloadimage
     /////////////////////////////////////////
-    downloadimage : function(e){
+    downloadimage : function(e){alert('ffff')
         _this = this;
         //var aLink = e.target; 
         /**
@@ -397,7 +399,6 @@ bbmap.Views.Main = Backbone.View.extend({
                         project_id : _this.project.get('id')
                      });
                 s.save();
-                alert("Screenshot sent to CK - Deliver")
                 });
 
             }
@@ -442,10 +443,27 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Sliding editor bar
     /////////////////////////////////////////
+    showLeft : function(e){
+        e.preventDefault();
+        var menuLeft = document.getElementById( 'cbp-spmenu-s1' );
+        var buttonLeft = document.getElementById( 'showLeft' );
+        classie.toggle( buttonLeft, 'active' );
+        classie.toggle( menuLeft, 'cbp-spmenu-open' );              //ouvrir ou fermer fenetre
+        
+        if(this.isopen==false){                                                          //change et bouger icon de button
+            $("#showLeft").animate({left:"20%"});
+            $("#cbp-openimage")[0].src="/img/arrow-left.png";
+            this.isopen=true;
+        }else{
+            $("#showLeft").animate({left:"0px"});
+            $("#cbp-openimage")[0].src="/img/arrow-right.png";
+            this.isopen=false;
+        }
+        //console.log();
+    },
     updateEditor : function(model){
-
         if(this.mode == "edit"){
-            this.editor_el.show('slow');
+            $('#showLeft').show('slow');
             // Model editor module
             if(bbmap.views.modelEditor)bbmap.views.modelEditor.remove();
             bbmap.views.modelEditor = new modelEditor.Views.Main({
@@ -491,10 +509,10 @@ bbmap.Views.Main = Backbone.View.extend({
             this.activitiesModel_el.html(bbmap.views.activitiesList.render().el);
         }
     },
-    hideEditor : function(e){
-        e.preventDefault();
-        this.editor_el.hide('slow');
-    },
+    // hideEditor : function(e){
+    //     e.preventDefault();
+    //     this.editor_el.hide('slow');
+    // },
     /////////////////////////////////////////
     // Zoom system
     /////////////////////////////////////////

@@ -38,11 +38,11 @@
 /* Orientation-dependent styles for the content of the menu */
 
 .cbp-spmenu-vertical {
-	width: 30%;
-	height: 80%;
-	top: 15%;
+	width: 20%;
+	height: 100%;
+	top: 5%;
 	z-index: 1000;
-	overflow: auto;
+	/*overflow: auto;*/
 }
 
 /*.cbp-spmenu-vertical a {
@@ -74,7 +74,7 @@
 /* Vertical menu that slides from the left or right */
 
 .cbp-spmenu-left {
-	left: -30%;
+	left: -20%;
 }
 
 .cbp-spmenu-right {
