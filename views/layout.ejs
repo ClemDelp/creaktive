@@ -129,6 +129,10 @@
           socket.on('user:create', function socketConnected(x) {console.log("xxxxxxxx-user:create",x)});
           socket.on('user:update', function socketConnected(x) {console.log("xxxxxxxx-user:update",x)});
           socket.on('user:remove2', function socketConnected(x) {console.log("xxxxxxxx-user:remove",x)});
+          // Link
+          socket.on('link:create', function socketConnected(x) {console.log("xxxxxxxx-link:create",x)});
+          socket.on('link:update', function socketConnected(x) {console.log("xxxxxxxx-link:update",x)});
+          socket.on('link:remove2', function socketConnected(x) {console.log("xxxxxxxx-link:remove",x)});
           
           console.log(
             'Socket is now connected and globally accessible as `socket`.\n' + 

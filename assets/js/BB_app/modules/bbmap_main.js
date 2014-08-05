@@ -57,9 +57,13 @@ bbmap.Views.Main = Backbone.View.extend({
         ////////////////////////////
         // Events
         this.listenTo(bbmap.zoom,'change',this.updateZoomDisplay,this);
+        // Real-time : knowledge & poche & concept
         global.eventAggregator.on('model:create',this.addModelToView,this);
         global.eventAggregator.on('model:remove',this.removeModelToView,this);
-        //global.eventAggregator.on('knowledge:update',this.modelUpdate,this);
+        // Real-time : Link
+        global.eventAggregator.on('link:create',this.addLinkToView,this);
+        global.eventAggregator.on('link:remove',this.removeLinkToView,this);
+        // zoom-in & zoom-out avec la moulette
         this.map_el.mousewheel(function(event) {
             event.preventDefault();
             //console.log(event.deltaY);
@@ -647,27 +651,11 @@ bbmap.Views.Main = Backbone.View.extend({
         $(this.map_el).attr( "style","top:-"+this.positionRef+"px;left:-"+this.positionRef+"px");
     },
     /////////////////////////////////////////
-    // Real-time
-    /////////////////////////////////////////
     setCKOperator : function(e){
         e.preventDefault();
         if(this.ckOperator == true){this.ckOperator = false}else{this.ckOperator = true;}
         this.render();
     },
-    // modelUpdate : function(model){
-    //     var attributesUpdated = [];
-    //     if(model.get('type') == "concept") attributesUpdated = global.Functions.whatChangeInModel(this.concepts.get(model.get('id')),model);
-    //     if(model.get('type') == "knowledge") attributesUpdated = global.Functions.whatChangeInModel(this.knowledges.get(model.get('id')),model);
-
-    //     if((_.indexOf(attributesUpdated,"left") != -1)||(_.indexOf(attributesUpdated,"top") != -1)){
-    //         // Si c'est la position qui a changée
-    //         $(this.nodes_views[model.get('id')].el).attr( "style","top: "+model.get('top')+"px;left:"+model.get('left')+"px");
-    //     }else if(_.indexOf(attributesUpdated,"title") != -1){
-    //         // Si cest le title
-    //         alert("title updated")
-    //     }
-    //     this.instance.repaintEverything();
-    // },
     /////////////////////////////////////////
     // Create unlinked model
     /////////////////////////////////////////
@@ -715,7 +703,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.addModelToView(new_concept);
     },
     /////////////////////////////////////////
-    // Add remove model to views and bdd
+    // Add remove model/link to view
     /////////////////////////////////////////
     addModelToView : function(model,from){
         var origin = "client";
@@ -739,6 +727,21 @@ bbmap.Views.Main = Backbone.View.extend({
         var origin = "client";
         if(from) origin = from;
         this.nodes_views[model.get('id')].removeView();
+    },
+    addLinkToView : function(model,from){
+        var origin = "client";
+        if(from) origin = from;
+        bbmap.views.main.instance.connect({
+            source:bbmap.views.main.nodes_views[model.get('source')].el, 
+            target:bbmap.views.main.nodes_views[model.get('target')].el, 
+            anchor:"AutoDefault",
+            scope : "cklink"
+        });
+    },
+    removeLinkToView : function(model,from){
+        var origin = "client";
+        if(from) origin = from;
+        //this.nodes_views[model.get('source')].removeView();    
     },
     /////////////////////////////////////////
     // jsPlumb

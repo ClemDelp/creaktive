@@ -24,17 +24,32 @@ global.Collections.Poches = Backbone.Collection.extend({
         //this.remove(knowledge.id);
         global.eventAggregator.trigger("model:remove",new global.Models.Poche(model),"server");
     }
-    // serverCreate : function(category){
-    //     this.add(new global.Models.Poche(category));
-    // },
-    // serverUpdate : function(model){
-    //     model = new global.Models.Knowledge(model);
-    //     model = global.Functions.format_ckobject_model(model);
-    //     global.eventAggregator.trigger(model.get('id'),model);
-    // },
-    // serverRemove : function(category){
-    //     this.remove(category.id);
-    // }
+});
+/***************************************/
+global.Collections.CKLinks = Backbone.Collection.extend({
+    model : global.Models.CKLink,
+    comparator: function(m){
+        return -m.get('date2');
+    },
+    initialize : function() {
+        this.url = "link";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+        _.bindAll(this, 'serverCreate','serverUpdate','serverRemove');
+        this.ioBind('create', this.serverCreate, this);
+        this.ioBind('update', this.serverUpdate, this);
+        this.ioBind('remove2', this.serverRemove, this);
+    },
+    serverCreate : function(model){
+        global.eventAggregator.trigger("link:create",new global.Models.CKLink(model),"server");
+    },
+    serverUpdate : function(model){
+        //global.eventAggregator.trigger(model.id+"_server",model);
+    },
+    serverRemove : function(model){
+        global.eventAggregator.trigger("link:remove",new global.Models.CKLink(model),"server");
+    }
 });
 /////////////////////////////////////////////////////////////////////
 /*Timela Collections*/
@@ -89,22 +104,6 @@ global.Collections.ConceptsCollection = Backbone.Collection.extend({
         //this.remove(knowledge.id);
         global.eventAggregator.trigger("model:remove",new global.Models.ConceptModel(model),"server");
     }
-    // serverCreate : function(model){
-    //     //this.add(model);
-    //     global.eventAggregator.trigger("concept:create",new Backbone.Model(model));
-    // },
-    // serverUpdate : function(model){
-    //     model = new global.Models.Knowledge(model);
-    //     model = global.Functions.format_ckobject_model(model);
-    //     global.eventAggregator.trigger(model.get('id'),model);
-        
-    //     global.eventAggregator.trigger("concept:update",model);
-    // },
-    // serverRemove : function(model){
-    //     //this.remove(new Backbone.Model(model));
-    //     global.eventAggregator.trigger("concept:remove",new Backbone.Model(model));
-
-    // }
 });
 /***************************************/
 global.Collections.UsersCollection = Backbone.Collection.extend({
@@ -208,19 +207,6 @@ global.Collections.UserGroup = Backbone.Collection.extend({
         //console.log('Comments Collection Constructor');
     }
 });
-   
-/***************************************/
-global.Collections.CKLinks = Backbone.Collection.extend({
-    model : global.Models.CKLink,
-    url : "link",
-    comparator: function(m){
-        return -m.get('date2');
-    },
-    initialize : function() {
-        //console.log('Comments Collection Constructor');
-    }
-}); 
-  
 /***************************************/
 global.Collections.PermissionsCollection = Backbone.Collection.extend({
     model : global.Models.PermissionModel,

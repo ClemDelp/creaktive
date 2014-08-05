@@ -57,6 +57,7 @@
           id: req.body.params.id
         }, req.body.params).done(function(err,c){
           if(err) res.send(err);
+          req.socket.broadcast.to(req.session.currentProject.id).emit("link:update", c[0]);
           Notification.objectUpdated(req,res,"Link", c[0], function(notification){
             res.send(notification);
           });
@@ -69,6 +70,7 @@
         l.project = req.session.currentProject.id
         Link.create(l).done(function(err,c){
           if(err) res.send(err)
+          req.socket.broadcast.to(req.session.currentProject.id).emit("link:create", c);
            Notification.objectCreated(req,res,"Link", c, function(notification){
             res.send(notification);
           });
@@ -82,6 +84,7 @@
       destroy : function(req,res){
     Link.findOne(req.body.params.id).done(function(err,link){
       if(err) console.log(err);
+      req.socket.broadcast.to(req.session.currentProject.id).emit("link:remove2", link);
       link.destroy(function(err){
         if(err) console.log(err)
           res.send({msg:"destroyed"})
