@@ -3,7 +3,7 @@ function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-'
 function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
 
 
-module.exports.backup = {
+module.exports = {
 
 
     cron : function(req,res){

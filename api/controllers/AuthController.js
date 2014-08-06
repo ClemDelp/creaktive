@@ -48,7 +48,7 @@ var AuthController = {
 			user.recoveryLink = key;
 			user.save(function (err, u) {
 				if(err) console.log(err)
-				sails.config.email.sendPasswordRecovery(user.email, url,function(err, msg){
+				EmailService.sendPasswordRecovery(user.email, url,function(err, msg){
 			        if(err) console.log(err)
 
 			      res.redirect("/resetconfirmation")
@@ -109,7 +109,7 @@ var AuthController = {
 			img : req.body.img
 		}).done(function(err, user){
 			if(err) return res.redirect("/newuser");
-	      	sails.config.email.sendNewUserMail(user, function(err, msg){
+	      	EmailService.sendNewUserMail(user, function(err, msg){
 		        if(err) console.log(err)
 	      	});
 

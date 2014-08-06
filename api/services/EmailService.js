@@ -1,7 +1,7 @@
 
 var nodemailer = require("nodemailer");
 
-module.exports.email = {
+module.exports = {
 
 	smtpGmail : nodemailer.createTransport("SMTP", {
         host: "smtp.gmail.com", // hostname

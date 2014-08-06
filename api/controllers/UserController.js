@@ -84,7 +84,7 @@
         url = u + "/register?id=" + user.id;
       }
      
-      sails.config.email.sendRegistrationMail(user.email, url,function(err, msg){
+      EmailService.sendRegistrationMail(user.email, url,function(err, msg){
         if(err) console.log(err)
 
       });
@@ -141,12 +141,12 @@
   },
 
   editprofileview : function(req,res){
-    sails.config.bootstrapdata.bootstrapmanager(req,res);
+    BootstrapService.bootstrapmanager(req,res);
     //res.view({user : req.session.user});
   },
 
 
   userview : function(req,res){
-    sails.config.bootstrapdata.bootstrapdata(req,res);
+    BootstrapService.bootstrapdata(req,res);
   },
 };
