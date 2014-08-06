@@ -36,11 +36,12 @@
   		if(user){
   			User.update({id: req.body.params.id}, req.body.params).done(function(err,c){
   				if(err) res.send({err:err})
-            res.send(c);
+            req.session.user = c[0];
+            res.send(c[0]);
         });
   		}else{
   			User.create(req.body.params).done(function(err,p){
-  				if(err) res.send({err:err})
+  				if(err) return res.send({err:err})
             p.confirmed = true;
           p.save(function(err, u){
             if(err) res.send({err:err})
@@ -104,24 +105,24 @@
   },
 
   changepassword : function(req,res){
-    user = req.session.user;
-
-    bcrypt.compare(req.body.oldpassword, user.pw, function (err, res) {
-      if (!res) res.send("Invalid password")
+    User.findOne(req.session.user.id).done(function(err, user){
+      bcrypt.compare(req.body.oldpassword, user.pw, function (err, bcrypt_res) {
+      if (!bcrypt_res) res.send("Invalid password")
         if(req.body.password == req.body.confirmPassword){
           user.pw = req.body.password
           user.hashPassword(user, function(err, user){
             user.save(function(err, user){
               req.session.user = user;
               res.redirect("/editprofile") 
-            })
-          })
-
-          
+            });
+          });
         }else{
           res.send("Password must match")
         }
       });
+    });
+
+
 
   },
 

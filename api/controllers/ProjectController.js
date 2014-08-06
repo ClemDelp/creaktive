@@ -55,7 +55,7 @@ module.exports = {
   		if(project){
   			Project.update({id: req.body.params.id}, req.body.params).done(function(err,c){
   				if(err) res.send(err)
-  				res.send(c);
+  				res.send(c[0]);
   			});
   		}else{
   			Project.create(req.body.params).done(function(err,project){

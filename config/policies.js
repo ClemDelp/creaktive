@@ -109,6 +109,7 @@
   },
 
   "UserController" : {
+    '*' : ["authenticated"],
     "inviteUser" : ["authenticated"],
     "userview" : ["authenticated", "allowedProjects","forceHTTPs"],
     "editprofileview" : ["authenticated", "forceHTTPs"],

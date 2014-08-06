@@ -25,10 +25,39 @@ editProfile.Views.Main = Backbone.View.extend({
         ////////////////////////////
         // Variables
         this.user = json.user;
+        //Listeners
+        this.user.on("change", this.render);
         // Templates
         this.template = _.template($('#editProfile-profile-template').html());
     },
-    events : {},
+    events : {
+      "click .changeAvatar" : "changeAvatar",
+      "click .editInfo" : "editInfo",
+      "click .updatePassword" : "updatePassword"
+    },
+    updatePassword : function(e){
+      e.preventDefault();
+      $.post("/user/changepassword", {
+        oldpassword : $('#oldpassword').val(),
+        password : $('#password').val(),
+        confirmPassword : $('#confirmPassword').val()
+      }, function(data){
+        alert('Password updated')
+      });
+    },
+    editInfo : function(e){
+      e.preventDefault();
+      this.user.save({
+        email : $('#email').val(),
+        name : $('#username').val()
+      });
+    },
+    changeAvatar : function(e){
+      e.preventDefault();
+      this.user.save({
+        img : e.target.getAttribute("data-img-src") 
+      });
+    },
     render : function(){
         $(this.el).empty();
         $(this.el).append(this.template({user : this.user.toJSON()}));

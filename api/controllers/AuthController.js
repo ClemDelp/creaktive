@@ -108,7 +108,7 @@ var AuthController = {
 			pw : req.body.password,
 			img : req.body.img
 		}).done(function(err, user){
-			if(err) console.log(err)
+			if(err) return res.redirect("/newuser");
 	      	sails.config.email.sendNewUserMail(user, function(err, msg){
 		        if(err) console.log(err)
 	      	});
