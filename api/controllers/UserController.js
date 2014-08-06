@@ -7,11 +7,6 @@
 
  var bcrypt = require('bcrypt');
 
- function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
- function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
- function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
-
-
  module.exports = {
 
   /* e.g.
@@ -71,7 +66,7 @@
       email : req.body.email,
       pw : "JKHk!lm3682jhqmfljzdofij654654dfsdf6522dfs#mkldqj$",
       confirmed : false,
-      id : guid()
+      id : IdService.guid()
     }).done(function(err, user){
       if(err) res.send({err:err})
         var url = "";
@@ -91,7 +86,7 @@
 
 
       Permission.create({
-        id: guid(),
+        id: IdService.guid(),
         right : "r",
         user_id : user.id,
         project_id : req.session.currentProject.id

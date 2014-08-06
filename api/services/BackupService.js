@@ -1,7 +1,3 @@
-function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
-function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
-function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
-
 
 module.exports = {
 
@@ -37,12 +33,12 @@ module.exports = {
                                             // Si la comparaison est > 1 on a plus d'une journée et que la derniere notif est > au dernier backup...
                                             if((compare >= 1)&&(last_notif>last_backup)){
                                                 Backup.create({
-                                                    id : guid(),
+                                                    id : IdService.guid(),
                                                     knowledges_collection : knowledges,
                                                     concepts_collection : concepts,
                                                     categories_collection : poches,
                                                     cklinks_collection : links,
-                                                    date: getDate(),
+                                                    date: IdService.getDate(),
                                                     date2:new Date().getTime(),
                                                     project_id : project.id
                                                 }).done(function(err,b){
@@ -52,12 +48,12 @@ module.exports = {
                                             }
                                         }else{
                                             Backup.create({
-                                                id : guid(),
+                                                id : IdService.guid(),
                                                 knowledges_collection : knowledges,
                                                 concepts_collection : concepts,
                                                 categories_collection : poches,
                                                 cklinks_collection : links,
-                                                date: getDate(),
+                                                date: IdService.getDate(),
                                                 date2:new Date().getTime(),
                                                 project_id : project.id
                                             }).done(function(err,b){
