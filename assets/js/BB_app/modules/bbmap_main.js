@@ -6,7 +6,8 @@ bbmap.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         ////////////////////////////
         // el
-        this.bar_el = $(this.el).find('#actionbar');
+        this.top_el = $(this.el).find('#top_container');
+        this.bottom_el = $(this.el).find('#bottom_container');
         this.map_el = $(this.el).find('#map');
         this.editor_el = $(this.el).find('#editor');
         this.editModel_el = $(this.el).find('#editModel');
@@ -33,7 +34,8 @@ bbmap.Views.Main = Backbone.View.extend({
         this.positionRef        = 550;
         this.color              = "#27AE60";
         // Templates
-        this.template_actionbar = _.template($('#bbmap-actionbar-template').html());
+        this.template_top = _.template($('#bbmap-top-element-template').html());
+        this.template_bottom = _.template($('#bbmap-bottom-element-template').html());
         this.template_joyride = _.template($('#bbmap-joyride-template').html());
         ////////////////////////////
         // JsPlumb
@@ -547,7 +549,7 @@ bbmap.Views.Main = Backbone.View.extend({
       this.instance.setZoom(zoom);    
     },
     updateZoomDisplay : function(){
-        this.bar_el.find('#zoom_val').html(bbmap.zoom.get('val'))
+        this.top_el.find('#zoom_val').html(bbmap.zoom.get('val'))
     },
     resetZoom : function(){
         bbmap.zoom.set({val : 1});
@@ -809,13 +811,16 @@ bbmap.Views.Main = Backbone.View.extend({
         });     
     },
     renderActionBar : function(){
-        this.bar_el.empty();
-        this.bar_el.append(this.template_actionbar({
-            title : global.models.currentProject.get('title'),
+        this.top_el.empty();
+        this.bottom_el.empty();
+        this.top_el.append(this.template_top({
+            mode    : this.mode
+        }));
+        this.bottom_el.append(this.template_bottom({
             filter  : this.filter,
             mode    : this.mode
         }));
-        this.bar_el.find("#zoom_val").html(bbmap.zoom.get('val'));
+        this.top_el.find("#zoom_val").html(bbmap.zoom.get('val'));
         $( "#dropC" ).draggable();
         $( "#dropK" ).draggable();
         $( "#dropP" ).draggable();
