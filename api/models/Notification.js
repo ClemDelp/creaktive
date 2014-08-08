@@ -6,9 +6,6 @@
  *
  */
 
- function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
- function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
- function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
 
  module.exports = {
 
@@ -23,13 +20,13 @@
   objectCreated : function(req,res, object, to, cb){
     if(req.body.action.length == 0)return;
     Notification.create({
-  		id : guid(),
+  		id : IdService.guid(),
   		type : "create"+object,
       //content : "Project : " + req.session.currentProject.title  + " - New " + object,
   		content : object + " created",
   		to : to,
       object : object,
-  		date : getDate(),
+  		date : IdService.getDate(),
   		read : [req.session.user.id],
   		project_id : req.session.currentProject.id,
   		from : req.session.user,
@@ -62,13 +59,13 @@
 
 
   	Notification.create({
-  		id : guid(),
+  		id : IdService.guid(),
   		type : "update" + object,
       object : object,
       //content : "Project : " + req.session.currentProject.title  + " - " + object + " " + action + " updated",
   		content : content,
   		to : to,
-  		date : getDate(),
+  		date : IdService.getDate(),
   		read : [req.session.user.id],
   		project_id : req.session.currentProject.id,
   		from : req.session.user,

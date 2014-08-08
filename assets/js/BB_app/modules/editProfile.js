@@ -50,6 +50,10 @@ editProfile.Views.Main = Backbone.View.extend({
       this.user.save({
         email : $('#email').val(),
         name : $('#username').val()
+      }, {
+        success : function(){
+          alert("Profile updated");
+        }
       });
     },
     changeAvatar : function(e){

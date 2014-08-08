@@ -7,10 +7,6 @@
 var bcrypt = require('bcrypt');
 var passport = require('passport');
 var xss = require('node-xss').clean;
-function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
-function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
-function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
-
  
 var AuthController = {
 
@@ -23,7 +19,7 @@ var AuthController = {
 		var url = "";
 
 		bcrypt.genSalt(10, function(err, salt) {
-          bcrypt.hash(guid(), salt, function(err, hash) {
+          bcrypt.hash(IdService.guid(), salt, function(err, hash) {
             if (err) {
               console.log(err);
             }else{
@@ -48,7 +44,7 @@ var AuthController = {
 			user.recoveryLink = key;
 			user.save(function (err, u) {
 				if(err) console.log(err)
-				sails.config.email.sendPasswordRecovery(user.email, url,function(err, msg){
+				EmailService.sendPasswordRecovery(user.email, url,function(err, msg){
 			        if(err) console.log(err)
 
 			      res.redirect("/resetconfirmation")
@@ -101,7 +97,7 @@ var AuthController = {
 
 	processRegistrationNew : function(req,res){
 		User.create({
-			id : guid(),
+			id : IdService.guid(),
 			name : req.body.username,
 			email : req.body.email,
 			confirmed : false,
@@ -109,7 +105,7 @@ var AuthController = {
 			img : req.body.img
 		}).done(function(err, user){
 			if(err) return res.redirect("/newuser");
-	      	sails.config.email.sendNewUserMail(user, function(err, msg){
+	      	EmailService.sendNewUserMail(user, function(err, msg){
 		        if(err) console.log(err)
 	      	});
 

@@ -40,7 +40,7 @@ module.exports = {
   
 
   bbmapview : function(req,res){
-    sails.config.bootstrapdata.bootstrapdata(req,res);
+    BootstrapService.bootstrapdata(req,res);
   },
 
   _config: {}  
