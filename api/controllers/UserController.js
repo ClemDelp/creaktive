@@ -65,6 +65,7 @@
 
   inviteUser : function(req,res){
     console.log(req.body)
+    //Create an empty user
     User.create({
       img : "/img/default-user-icon-profile.png",
       name : req.body.email.substring(0,req.body.email.indexOf("@")),
@@ -73,8 +74,9 @@
       confirmed : false,
       id : guid()
     }).done(function(err, user){
-      if(err) res.send({err:err})
-        var url = "";
+      if(err) res.send({err:err});
+      //Send email to the user with the link
+      var url = "";
       if(req.baseUrl == "http://localhost:1337"){
         url = req.baseUrl + "/register?id=" + user.id;
       } 
@@ -83,22 +85,28 @@
         u = u.slice(0, u.lastIndexOf(":"))
         url = u + "/register?id=" + user.id;
       }
-     
       sails.config.email.sendRegistrationMail(user.email, url,function(err, msg){
         if(err) console.log(err)
-
       });
-
-
+      //Create the user
       Permission.create({
         id: guid(),
         right : "r",
         user_id : user.id,
         project_id : req.session.currentProject.id
       }).done(function(err, permission){
-        if(err) res.send({err:err})
-          res.send({user : user, permission : permission})
-      })
+        if(err) res.send({err:err});
+        //Mark all notifications as read
+        Notification.update({
+          project_id : req.session.currentProject.id
+        },{
+          $push : {read : user.id}
+        }).done(function(err, notifications){
+          if(err) res.send(({err:err}))
+        })
+        //Send the user and permission to the server
+        res.send({user : user, permission : permission})
+      });
     })
 
 
