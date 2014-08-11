@@ -13,7 +13,7 @@ module.exports = {
   }
   */
   contactview : function(req,res){
-   	sails.config.bootstrapdata.bootstrapmanager(req,res);
+   	BootstrapService.bootstrapmanager(req,res);
   }
 
 };

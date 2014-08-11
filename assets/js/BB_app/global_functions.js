@@ -79,7 +79,7 @@ global.Functions.getNotificationsDictionary = function(user_model,notifications,
 	});
 	//
 	notifications.each(function(notif){
-		dictionary.models[notif.get('to').id] = {"news" : new Backbone.Collection(),"read" : new Backbone.Collection()};
+		dictionary.models[notif.get('to')] = {"news" : new Backbone.Collection(),"read" : new Backbone.Collection()};
 		dictionary.projects[notif.get('project_id')] = {"news" : new Backbone.Collection(),"read" : new Backbone.Collection()};
 	});
 	/////////////////////////////
@@ -96,6 +96,7 @@ global.Functions.getNotificationsDictionary = function(user_model,notifications,
     dictionary.allRead.add(notif);
   }
 });
+
 
 	/////////////////////////////////////////
 	// RECUPERATION DES NOTIFICATIONS LUES

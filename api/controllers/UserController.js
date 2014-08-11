@@ -7,11 +7,6 @@
 
  var bcrypt = require('bcrypt');
 
- function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
- function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
- function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
-
-
  module.exports = {
 
   /* e.g.
@@ -43,6 +38,7 @@
   			User.create(req.body.params).done(function(err,p){
   				if(err) res.send({err:err})
           p.confirmed = true;
+
           p.save(function(err, u){
             if(err) res.send({err:err})
             req.socket.broadcast.to(req.session.currentProject.id).emit("user:create", u[0]); 
@@ -71,7 +67,7 @@
       email : req.body.email,
       pw : "JKHk!lm3682jhqmfljzdofij654654dfsdf6522dfs#mkldqj$",
       confirmed : false,
-      id : guid()
+      id : IdService.guid()
     }).done(function(err, user){
       if(err) res.send({err:err})
         var url = "";
@@ -84,14 +80,14 @@
         url = u + "/register?id=" + user.id;
       }
      
-      sails.config.email.sendRegistrationMail(user.email, url,function(err, msg){
+      EmailService.sendRegistrationMail(user.email, url,function(err, msg){
         if(err) console.log(err)
 
       });
 
 
       Permission.create({
-        id: guid(),
+        id: IdService.guid(),
         right : "r",
         user_id : user.id,
         project_id : req.session.currentProject.id
@@ -105,24 +101,24 @@
   },
 
   changepassword : function(req,res){
-    user = req.session.user;
-
-    bcrypt.compare(req.body.oldpassword, user.pw, function (err, res) {
-      if (!res) res.send("Invalid password")
+    User.findOne(req.session.user.id).done(function(err, user){
+      bcrypt.compare(req.body.oldpassword, user.pw, function (err, bcrypt_res) {
+      if (!bcrypt_res) res.send("Invalid password")
         if(req.body.password == req.body.confirmPassword){
           user.pw = req.body.password
           user.hashPassword(user, function(err, user){
             user.save(function(err, user){
               req.session.user = user;
               res.redirect("/editprofile") 
-            })
-          })
-
-          
+            });
+          });
         }else{
           res.send("Password must match")
         }
       });
+    });
+
+
 
   },
 
@@ -141,12 +137,12 @@
   },
 
   editprofileview : function(req,res){
-    sails.config.bootstrapdata.bootstrapmanager(req,res);
+    BootstrapService.bootstrapmanager(req,res);
     //res.view({user : req.session.user});
   },
 
 
   userview : function(req,res){
-    sails.config.bootstrapdata.bootstrapdata(req,res);
+    BootstrapService.bootstrapdata(req,res);
   },
 };

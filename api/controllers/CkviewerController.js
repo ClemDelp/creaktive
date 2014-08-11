@@ -58,8 +58,8 @@ module.exports = {
 
   ckviewerview : function(req,res){
     project = req.session.currentProject;    
-    sails.config.backup.cron(req,res);
-    sails.config.bootstrapdata.bootstrapdata(req,res);
+    BackupService.cron(req,res);
+    BootstrapService.bootstrapdata(req,res);
   },
 
 

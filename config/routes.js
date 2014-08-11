@@ -74,8 +74,6 @@ module.exports.routes = {
   'post /newpassword' : "AuthController.processNewPassword",
 
   'get /editprofile' : "UserController.editprofileview",
-  'post /editprofile' : "UserController.editprofile",
-  "post /changepassword" : "UserController.changepassword",
 
   "get /s3/getUrl" : {
     controller : "S3Controller",
