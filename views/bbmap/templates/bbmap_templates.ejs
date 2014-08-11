@@ -1,11 +1,9 @@
 <!-- ******************************** -->
 <!-- Container -->
-<<<<<<< HEAD
 <div id="bbmap_container" style="height:100%;overflow:auto">
-  <div id="top_container"></div>
   <div id="map_container">
-    <a href="#" id="showLeft" style="display:none" class="button tiny cbp-openbutton">
-      <image  src="/img/arrow-right.png"width="32px"  id="cbp-openimage"/>
+    <a href="#" id="showMenu" style="display:none" class="button tiny cbp-openbutton">
+      <image  src="/img/arrow-left.png"width="32px"  id="cbp-openimage"/>
 
     </a>
     <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="cbp-spmenu-s1">
@@ -27,6 +25,7 @@
     </div>
     </nav>
     <div id="map" class="demo chart-demo"></div></div>
+  <div id="top_container"></div>
   <div id="bottom_container"></div>
 </div>
 <!-- ******************************** -->
@@ -86,13 +85,13 @@
       
       {{ if(mode == "edit"){ }}
         {{ if((filter == "c")||(filter == "ck")||(filter == "ckp")){ }}
-          <img id="dropC" style="width:100px;z-index:999999" class="dropC" title="click and drop to create a new concept" src="/img/c.png">
+          <a href="#" id="dropC" style="{{- bbmap.css_concept_default }}" class="dropC" title="click and drop to create a new concept">concept</a>
         {{ } }}
         {{ if((filter == "p")||(filter == "kp")||(filter == "ckp")){ }}
-          <img id="dropP" style="width:100px;z-index:999999" class="dropP" title="click and drop to create a new category" src="/img/p.png">
+          <a href="#" id="dropP" style="{{- bbmap.css_poche_default }}" class="dropP" title="click and drop to create a new category">category</a>
         {{ } }}
         {{ if((filter == "k")||(filter == "ck")||(filter == "ckp")||(filter == "kp")){ }}
-          <img id="dropK" style="width:100px;z-index:999999" class="dropK" title="click and drop to create a new knowledge" src="/img/k.png">
+          <a href="#" id="dropK" style="{{- bbmap.css_knowledge_default }}"  class="dropK" title="click and drop to create a new knowledge">knowledge</a>
         {{ } }}
       {{ } }}
     </center>

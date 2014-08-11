@@ -20,8 +20,7 @@ attachment.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Variables
         this.model = json.model;
-        this.eventAggregator = json.eventAggregator;
-
+        this.eventAggregator = global.eventAggregator;
         // Templates
         this.template = _.template($('#attachment-list-template').html()); 
         this.template_image = _.template($('#attachment_image_template').html()); 

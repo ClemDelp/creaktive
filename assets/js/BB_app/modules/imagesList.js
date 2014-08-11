@@ -17,11 +17,7 @@ imagesList.Views.Main = Backbone.View.extend({
         // Variables
         this.model = json.model;
         this.eventAggregator = json.eventAggregator;
-
-        this.eventAggregator.on('fileuploaded', this.render,this)
-        this.eventAggregator.on('fileuploaded', function(){
-          console.log("EVENT")
-        },this)
+        this.listenTo(this.eventAggregator,'fileuploaded',this.render,this);
         // Templates
         this.template_diapo = _.template($('#imagesList-diapo-template').html());  
         this.template_image = _.template($("#imagesList_image_template").html());    
@@ -30,9 +26,9 @@ imagesList.Views.Main = Backbone.View.extend({
     render : function(){
         _this0=this;
         // Init
-        $(this.el).html('');
+        $(this.el).empty();
         // filter attachment get only images
-        images = [];
+        var images = [];
         this.model.get('attachment').forEach(function(attachment){
             if(attachment.name.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)){images.unshift(attachment)}
         })
