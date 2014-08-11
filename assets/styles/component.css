@@ -6,7 +6,7 @@
 
 .cbp-openbutton{
 	top: 90%;
-	left: 0px;
+	right: 0px;
 	z-index: 1000;
 	position: fixed;
 }
@@ -78,7 +78,7 @@
 }
 
 .cbp-spmenu-right {
-	right: -240px;
+	right: -20%;
 }
 
 .cbp-spmenu-left.cbp-spmenu-open {
@@ -116,7 +116,7 @@
 }
 
 .cbp-spmenu-push-toright {
-	left: 240px;
+	left: 20%;
 }
 
 .cbp-spmenu-push-toleft {

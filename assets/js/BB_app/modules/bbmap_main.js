@@ -93,7 +93,7 @@ bbmap.Views.Main = Backbone.View.extend({
         "click #okjoyride" : "changeTitleLastModel",
         "click .screenshot" : "screenshot",
         "click .downloadimage" : "downloadimage",
-        "click #showLeft" : "showLeft"
+        "click #showMenu" : "showMenu"
     },
     /////////////////////////////////////////
     // Overlays sur les connections
@@ -445,27 +445,29 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Sliding editor bar
     /////////////////////////////////////////
-    showLeft : function(e){
+    showMenu : function(e){
         e.preventDefault();
-        var menuLeft = document.getElementById( 'cbp-spmenu-s1' );
-        var buttonLeft = document.getElementById( 'showLeft' );
-        classie.toggle( buttonLeft, 'active' );
-        classie.toggle( menuLeft, 'cbp-spmenu-open' );              //ouvrir ou fermer fenetre
+        var menu = document.getElementById( 'cbp-spmenu-s1' );
+        var button = document.getElementById( 'showMenu' );
+        //var body = document.getElementById('map_container');
+        classie.toggle( button, 'active' );
+        //classie.toggle( body, 'cbp-spmenu-push-toright' );
+        classie.toggle( menu, 'cbp-spmenu-open' );              //ouvrir ou fermer fenetre
         
         if(this.isopen==false){                                                          //change et bouger icon de button
-            $("#showLeft").animate({left:"20%"});
-            $("#cbp-openimage")[0].src="/img/arrow-left.png";
+            $("#showMenu").animate({right:"20%"});
+            $("#cbp-openimage")[0].src="/img/arrow-right.png";
             this.isopen=true;
         }else{
-            $("#showLeft").animate({left:"0px"});
-            $("#cbp-openimage")[0].src="/img/arrow-right.png";
+            $("#showMenu").animate({right:"0px"});
+            $("#cbp-openimage")[0].src="/img/arrow-left.png";
             this.isopen=false;
         }
         //console.log();
     },
     updateEditor : function(model){
         if(this.mode == "edit"){
-            $('#showLeft').show('slow');
+            $('#showMenu').show('slow');
             // Model editor module
             if(bbmap.views.modelEditor)bbmap.views.modelEditor.remove();
             bbmap.views.modelEditor = new modelEditor.Views.Main({
