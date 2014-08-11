@@ -20,11 +20,10 @@
 
 
     getUrl : function(req,res){
-        console.log(req.query)
         sails.config.s3.getFile(req.query.amz_id, function(err, url){
             if(err) res.send({err :err});
             res.type('png');
-            res.redirect(url)
+            res.redirect(url);
         })
     },
 

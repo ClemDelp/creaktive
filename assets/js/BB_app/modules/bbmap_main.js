@@ -392,10 +392,8 @@ bbmap.Views.Main = Backbone.View.extend({
                     }
                 }
                 var screenshot;
-                //console.log(canvas2.toDataURL( "image/png" ));
                 screenshot = canvas2.toDataURL( "image/png" );   //save screenshot
-                // var uintArray = Base64Binary.decode(screenshot).toString();
-                // console.log(uintArray);
+
                 global.Functions.uploadScreenshot(screenshot, function(data){
                     console.log(data);
                     var s = new global.Models.Screenshot({
@@ -404,7 +402,10 @@ bbmap.Views.Main = Backbone.View.extend({
                         date : getDate(),
                         project_id : _this.project.get('id')
                      });
-                s.save();
+                    s.save();
+                    _this.project.save({
+                        image : data
+                    });
                 });
 
             }
@@ -1010,7 +1011,7 @@ bbmap.Views.Main = Backbone.View.extend({
 
 
         $.get('/BBmap/image', function(hasChanged){
-            if (_this.project.image=="" || hasChanged == true){
+            if (_this.project.image == undefined || _this.project.image=="" || hasChanged == true){
                 _this.screenshot(true);
             }
         });

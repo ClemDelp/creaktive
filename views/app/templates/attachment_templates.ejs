@@ -1,15 +1,16 @@
 <script type="text/template" id="attachment-list-template">
 	<fieldset>
-        <legend align=left>Attachments ({{- model.attachment.length }})</legend>
+        <legend align=left>Attachments ({{- attachments.length }})</legend>
 		<ul id="attachmentList">
+		{{ _.each(attachments, function(attachment){ }}
+			<li>
+				<a href="/s3/getUrl?amz_id={{- attachment.url }}"  target="_blank" class="" data-file-path="{{- attachment.path }}" title="open">{{- attachment.name.substring(0,50) }}...</a>
+				<a style="color:red" class="removeFile" data-file-id="{{- attachment.id}}" title="remove">x</a>
+			</li>
+		{{ }) }}
 		</ul>
 		<input id="uploadfile" type="file"/>
 		<span id="status" class="label round">Please select a file</span>
     </fieldset>	
 </script>
 
-
-<script type="text/template" id="attachment_image_template" >
-	<li><a href="{{- file.url}}"  target="_blank" class="" data-file-path="{{- file.path }}" title="open">{{- file.name.substring(0,50) }}...</a>
-	<a style="color:red" class="removeFile" data-file-id="{{- file.id}}" title="remove">x</a></li>
-</script>

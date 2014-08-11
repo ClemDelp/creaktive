@@ -23,10 +23,8 @@ attachment.Views.Main = Backbone.View.extend({
         this.eventAggregator = global.eventAggregator;
         // Templates
         this.template = _.template($('#attachment-list-template').html()); 
-        this.template_image = _.template($('#attachment_image_template').html()); 
     },
     events : {
-        "click .openFile" : "openFile",
         "click .removeFile" : "removeFile",
         "change #uploadfile" : "uploadFile"
     },
@@ -34,8 +32,6 @@ attachment.Views.Main = Backbone.View.extend({
       e.preventDefault();
       e.stopPropagation();
         _this=this;
-        e.stopPropagation(); // Stop stuff happening
-        e.preventDefault(); // Totally stop stuff happening
         global.Functions.uploadFile(e, function(amz_id, fileName){
             var newattachment = {
                     id : guid(),
@@ -46,10 +42,12 @@ attachment.Views.Main = Backbone.View.extend({
 
             _this.model.get('attachment').unshift(newattachment);
             _this.eventAggregator.trigger('fileuploaded');
-                _this.model.save();
-                _this.render();
+            _this.model.save();
+            _this.render();
         })  
     },
+
+
 removeFile : function(e){
     this.model.save({
       attachment : _.without(this.model.get('attachment'), _.findWhere(this.model.get('attachment'), {id : e.target.getAttribute('data-file-id')} ))
@@ -60,34 +58,13 @@ removeFile : function(e){
     //socket.post("/file/destroy", {file : i});
     this.render();
 },
-openFile : function(e){
-    console.log(e.target.getAttribute('data-file-path'));
-    $.download('file/get',{path : e.target.getAttribute('data-file-path')} );
-},
+
 render : function() { 
     _this1=this;
-
     $(this.el).html("");
     $(this.el).append(this.template({
-        model : this.model.toJSON()
+        attachments : this.model.get('attachment')
     }));
-
-    this.model.get('attachment').forEach(function(file){
-
-        $.get('/s3/getUrl?amz_id='+file.url, function(url){
-            file.url = url
-            //console.log(filedate);
-            //console.log(_this.template,_this.template_image);
-            $("#attachmentList").append(_this1.template_image({
-              file : file,
-            }))
-            delete file.url;
-            //console.log(file);
-        })
-    })
-
-
-
     return this;
 }
 });

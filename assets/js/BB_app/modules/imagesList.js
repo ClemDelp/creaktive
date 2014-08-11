@@ -20,7 +20,7 @@ imagesList.Views.Main = Backbone.View.extend({
         this.listenTo(this.eventAggregator,'fileuploaded',this.render,this);
         // Templates
         this.template_diapo = _.template($('#imagesList-diapo-template').html());  
-        this.template_image = _.template($("#imagesList_image_template").html());    
+
     },
     events : {},
     render : function(){
@@ -35,19 +35,7 @@ imagesList.Views.Main = Backbone.View.extend({
         })
         // get the diapo
         $(this.el).append(this.template_diapo({images:images}));
-        //console.log(images);
-        images.forEach(function(image){
-            $.get('/s3/getUrl?amz_id='+image.url, function(imagedate){
-                image.imagedate = imagedate;
-                //console.log(image);
-                $("#imageList").append(_this0.template_image({
-                    image : image,
-                }))
-                delete image.imagedate;
-            })
-        })
-
-
+        
 
         $(document).foundation();
         
