@@ -24,6 +24,7 @@ imagesList.Views.Main = Backbone.View.extend({
     },
     events : {},
     render : function(){
+        console.log('render')
         _this0=this;
         // Init
         $(this.el).empty();

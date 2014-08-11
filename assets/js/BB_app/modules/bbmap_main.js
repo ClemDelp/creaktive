@@ -95,6 +95,9 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .downloadimage" : "downloadimage",
         "click #showMenu" : "showMenu"
     },
+    openJoyrideMenu : function(){
+        this.startJoyride();
+    },
     /////////////////////////////////////////
     // Overlays sur les connections
     /////////////////////////////////////////
@@ -127,7 +130,7 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Downdloadimage
     /////////////////////////////////////////
-    downloadimage : function(e){alert('ffff')
+    downloadimage : function(e){
         _this = this;
         //var aLink = e.target; 
         /**
@@ -469,41 +472,61 @@ bbmap.Views.Main = Backbone.View.extend({
         if(this.mode == "edit"){
             $('#showMenu').show('slow');
             // Model editor module
-            if(bbmap.views.modelEditor)bbmap.views.modelEditor.remove();
-            bbmap.views.modelEditor = new modelEditor.Views.Main({
-                user            : this.user,
-                model           : model
-            });
+            if(!bbmap.views.modelEditor){
+                bbmap.views.modelEditor = new modelEditor.Views.Main({
+                    user            : this.user,
+                    model           : model
+                });
+            }else{
+                // bbmap.views.modelEditor.remove();
+                bbmap.views.modelEditor.close();
+            }
             // Templates list
-            if(bbmap.views.templatesList)bbmap.views.templatesList.remove();
+            if(!bbmap.views.templatesList){
+                bbmap.views.templatesList = new templatesList.Views.Main({
+                    templates : this.project.get('templates'),
+                    model : model
+                });
+            }else{
+                bbmap.views.templatesList.close();
+            }
+            // check for template
             if(!this.project.get('templates')) this.project.save({templates : bbmap.default_templates},{silent:true});
-            bbmap.views.templatesList = new templatesList.Views.Main({
-                templates : this.project.get('templates'),
-                model : model
-            });
             // IMG List module
-            if(bbmap.views.imagesList)bbmap.views.imagesList.remove();
-            bbmap.views.imagesList = new imagesList.Views.Main({
-                model           : model,
-                eventAggregator : this.eventAggregator
-            });
+            if(!bbmap.views.imagesList){
+                bbmap.views.imagesList = new imagesList.Views.Main({
+                    model           : model,
+                    eventAggregator : this.eventAggregator
+                });
+            }else{
+                bbmap.views.imagesList.close();
+            }
             // Attachment module
-            if(bbmap.views.attachment)bbmap.views.attachment.remove();
-            bbmap.views.attachment = new attachment.Views.Main({
-                model           : model,
-                eventAggregator : this.eventAggregator
-            });
+            if(!bbmap.views.attachment){
+                bbmap.views.attachment = new attachment.Views.Main({
+                    model           : model,
+                    eventAggregator : this.eventAggregator
+                });
+            }else{
+                bbmap.views.attachment.close();
+            }
             // Comments module
-            if(bbmap.views.comments)bbmap.views.comments.remove();
-            bbmap.views.comments = new comments.Views.Main({
-                model           : model,
-                user            : this.user
-            });
+            if(!bbmap.views.comments){
+                bbmap.views.comments = new comments.Views.Main({
+                    model           : model,
+                    user            : this.user
+                });
+            }else{
+                bbmap.views.comments.close();
+            }
             // notification module
-            if(bbmap.views.activitiesList)bbmap.views.activitiesList.remove();
-            bbmap.views.activitiesList = new activitiesList.Views.Main({
-                model           : model
-            });
+            if(!bbmap.views.activitiesList){
+                bbmap.views.activitiesList = new activitiesList.Views.Main({
+                    model           : model
+                });
+            }else{
+                bbmap.views.activitiesList.close();
+            }
             // Render & Append
             this.editModel_el.html(bbmap.views.modelEditor.render().el);
             this.editModel_el.append(bbmap.views.templatesList.render().el);
@@ -685,7 +708,7 @@ bbmap.Views.Main = Backbone.View.extend({
     createUnlinkedPoche : function(left,top){
         var model = new global.Models.Poche({
             id : guid(),
-            type : "category",
+            type : "poche",
             top : top,
             left: left,
             project: this.project.get('id'),
@@ -693,7 +716,7 @@ bbmap.Views.Main = Backbone.View.extend({
             user: this.user
         });
         model.save();
-        this.knowledges.add(model);
+        this.poches.add(model);
         this.addModelToView(model);
     },
     createUnlinkedConcept : function(left,top){

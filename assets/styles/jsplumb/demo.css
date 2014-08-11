@@ -103,10 +103,10 @@ body{
 
 .ep {
 	position:absolute;
-	bottom: 0%;
-	left: 0px;
-	width:1em;
-	height:1em;
+	bottom: -20px;
+	left: -10px;
+	width:auto;
+	height:auto;
 	/*background-color:green;*/
 	color : green;
 	cursor:pointer;
@@ -117,10 +117,10 @@ body{
 }
 .ep2 {
 	position:absolute;
-	bottom: 0%;
-	right: 0px;
-	width:1em;
-	height:1em;
+	bottom: -20px;
+	right: -10px;
+	width:auto;
+	height:auto;
 	/*background-color:red;*/
 	color : red;
 	cursor:pointer;
@@ -132,10 +132,10 @@ body{
 
 .ep3 {
 	position:absolute;
-	bottom: 100%;
-	left: 0px;
-	width:1em;
-	height:1em;
+	top: -20px;
+	left: -10px;
+	width:auto;
+	height:auto;
 	/*background-color:red;*/
 	color : blue;
 	cursor:pointer;
@@ -147,8 +147,8 @@ body{
 
 .sup {
 	position:absolute;
-	bottom: 100%;
-	right:0px;
+	top: -20px;
+	right:-10px;
 	/*right: 5px;*/
 	width:auto;
 	height:auto;

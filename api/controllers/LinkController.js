@@ -35,20 +35,6 @@
 
   },
 
-  create : function (req,res){
-    var l = req.body.params;
-    l.project = req.session.currentProject.id
-    Link.create(l).done(function(err, link){
-      if(err) res.send(err);
-      Notification.objectCreated(req,res,"Link", link, function(notification){
-        res.send(notification);
-      });
-      res.send(link);
-      
-    });
-  },
-
-
   update : function(req, res){
   	Link.findOne(req.body.params.id).done(function(err, concept){
   		if(err) res.send(err);
@@ -61,9 +47,7 @@
           Notification.objectUpdated(req,res,"Link", c[0], function(notification){
             res.send(notification);
           });
-
           res.send(c[0]);   
-          
         });
       }else{
         var l = req.body.params;
