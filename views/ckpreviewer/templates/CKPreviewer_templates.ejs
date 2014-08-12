@@ -1,7 +1,7 @@
 <!-- //////////////////////////////////////////////////////// -->
 <div id="CKPreviewer_container" >
     <a href="#" id="showMenu"  class="button tiny cbp-openbutton"><image  src="/img/arrow-left.png"width="32px"  id="cbp-openimage"/></a>
-    <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="cbp-spmenu-s1">
+    <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="cbp-spmenu-s1" style="overflow: auto;">
       <div id="leftpart" style="padding:15px"></div>
     </nav>
     <!-- main content goes here -->
@@ -9,7 +9,7 @@
 </div>
 <!-- //////////////////////////////////////////////////////// -->
 <!-- Modal -->
-<div id="CKPreviewerModal" class="reveal-modal" data-reveal></div> 
+<div id="CKPreviewerModal" class="reveal-modal" data-reveal style="z-index: 2000;"></div> 
 <script type='text/template' id='CKPreviewer_modalContent_templates'>
     <a href="#" id="resizeimage" class="button tiny  " style="float:left">ResizeImage</a>
     <a href="#" id="newimage" class="button tiny  success" style="float:left">CreateNewImage</a>
@@ -96,16 +96,15 @@
     <div class="content active" id="panel2-1">
     <ul class="small-block-grid-2" id="imageList">
       {{ _.each(images, function(image,n) { }}
-        <li id="image_container">
+        <li id="image_container" class="imgbox">
           <span class="label radius  secondary">{{- image.date}}</span>
           <span class="label radius  downloadimage" data-image-id="{{- image.src}}" data-image-date="{{- image.date}}">download</span>
           <span class="label radius alert editimage" data-image-id="{{- image.src}}" data-screenshot-id="{{- image.id}}">edit</span>
           <a id="deleteimage" data-image-id="{{- image.src}}" data-screenshot-id="{{- image.id}}" style="float:right">&#215;</a>
-          <img class="th dropdown" crossorigin="*" id="image"  src='/s3/getUrl?amz_id={{- image.src}}' data-image-id="{{- image.src}}" style="width: 280px;height: 140px">
+          <img class="th dropdown" crossorigin="*" id="image"  src='/s3/getUrl?amz_id={{- image.src}}' data-image-id="{{- image.src}}" >
         </li>
       {{ }); }}  
     </ul>
-
     </div>
     <div class="content" id="panel2-2">
       <div class="row ">

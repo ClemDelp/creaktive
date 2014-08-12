@@ -10,6 +10,10 @@
 	z-index: 1000;
 	position: fixed;
 }
+
+.imgbox img { 
+	height:100px; 
+} 
 /*.cbp-spmenu h3 {
 	color: #afdefa;
 	font-size: 1.9em;
