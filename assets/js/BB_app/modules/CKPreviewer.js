@@ -454,7 +454,7 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         this.ps_to_render = this.poches;
         // Templates
         this.template = _.template($("#CKPreviewer_images_template").html()); 
-        this.template_image = _.template($("#CKPreviewer_image_template").html()); 
+        //this.template_image = _.template($("#CKPreviewer_image_template").html()); 
     },
     events : {
         "click #deleteimage" : "delImg",
