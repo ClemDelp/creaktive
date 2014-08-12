@@ -88,16 +88,13 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .window.knowledge" : "showIcon2", 
         "mouseenter .window.concept" : "showDependance", 
         "click .window.concept" : "showIcon", 
-        "click .ep3" : "structureTree",
+        "click .structureSubTree" : "structureTree",
         "mouseleave .window" : "hideIcon", 
         //"click .closeEditor" : "hideEditor",
         "click #okjoyride" : "changeTitleLastModel",
         "click .screenshot" : "screenshot",
         "click .downloadimage" : "downloadimage",
         "click #showMenu" : "showMenu"
-    },
-    openJoyrideMenu : function(){
-        this.startJoyride();
     },
     /////////////////////////////////////////
     // Overlays sur les connections
@@ -568,7 +565,7 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     structureTree : function(e){
         e.preventDefault();
-        var id = e.target.id;
+        var id = e.target.id.split('_action')[0];
         this.reorganizeTree(id);
     },
     reorganizeTree : function(id){

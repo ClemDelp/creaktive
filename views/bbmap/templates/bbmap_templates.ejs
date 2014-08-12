@@ -24,7 +24,8 @@
         </div>
     </div>
     </nav>
-    <div id="map" class="demo chart-demo"></div></div>
+    <div id="map" class="demo chart-demo"></div>
+  </div>
   <div id="top_container"></div>
   <div id="bottom_container"></div>
 </div>
@@ -41,16 +42,15 @@
 <script type="text/template" id="bbmap-bulle-template">
     <span id="{{-model.id}}_joyride"></span>
     <span id="{{-model.id}}" class="editTitle">{{-model.title}}</span>
-
     <span id="{{-model.id}}" class="label round secondary ep icon">+c</span>
     <span id="{{-model.id}}" class="label round secondary ep2 icon">+k</span>
-    <span id="{{-model.id}}" class="label round secondary ep3 icon">*</span>
+    <span id="{{-model.id}}" class="label round secondary ep3 icon">e</span>
     <span id="{{-model.id}}" class="label round secondary sup icon">x</span>
 </script>
 
 <script type="text/template" id="bbmap-top-element-template">
   <div id="modeSelection_ui">
-    <select>
+    <select id="modeSelection">
       <option value="visu" {{ if(mode == "visu"){ }}selected{{ } }}>Visualization</option>
       <option value="edit" {{ if(mode == "edit"){ }}selected{{ } }}>Edition</option>
     </select>

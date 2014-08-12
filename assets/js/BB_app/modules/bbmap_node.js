@@ -32,6 +32,13 @@ bbmap.Views.Node = Backbone.View.extend({
         "click .sup" : "removeModel",
         "click .ep" : "addConceptChild",
         "click .ep2" : "addKnowledgeChild",
+        "click .ep3" : "editBulle"
+    },
+    editBulle : function(e){
+        e.preventDefault();
+        var id = e.target.id;
+        bbmap.views.main.lastModel = this.model;
+        bbmap.views.main.startJoyride();
     },
     actualize : function(model){
         this.model.set({
