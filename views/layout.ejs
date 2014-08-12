@@ -33,10 +33,7 @@
     <link rel="stylesheet" type="text/css" href="styles/overlay_css_timela.css" /> 
 
   </head>
-
   <body>
-
-
 
     <script src="/js/vendor/backbone.iosync.js"></script>
     <script src="/js/vendor/backbone.iobind.js"></script>
@@ -48,13 +45,7 @@
     <script src="js/BB_app/global_models.js"></script>
     <script src="js/BB_app/global_collections.js"></script>
 
-
-   
-  
-
-
-
-    <div class="off-canvas-wrap" data-offcanvas>
+    <div id="creaktive_window" class="off-canvas-wrap" data-offcanvas>
       <div class="inner-wrap">
         <nav class="tab-bar">
           <section class="left-small">
@@ -82,9 +73,7 @@
             <li><a href="http://creaktive.fr/contact/">FAQ</a></li>
             <li><label>Copyright © 2014 CreaKtive, Inc.</label></li>
           </ul>
-        </aside>
-
-       
+        </aside> 
 
         <section class="main-section">
           <%- body %>
@@ -95,16 +84,13 @@
       </div>
     </div>
 
-    
-  
-
     <script>
       /////////////////////////////////////////////////////////////////////////////////////////////
       // Realtime connection
       /////////////////////////////////////////////////////////////////////////////////////////////
       function rt (io, callback) {
         // as soon as this file is loaded, connect automatically, 
-        var socket = io.connect("/",{'sync disconnect on unload ': true});
+        var socket = io.connect();
         socket.on('connect', function socketConnected() {
           
           socket.get("/auth/openChannels", function(data){
@@ -192,7 +178,7 @@ UserVoice.push(['identify', {
 }]);
 
 // Add default trigger to the bottom-right corner of the window:
-UserVoice.push(['addTrigger', { mode: 'contact', trigger_position: 'bottom-right' }]);
+UserVoice.push(['addTrigger', { mode: 'contact', trigger_position: 'bottom-left' }]);
 
 // Or, use your own custom trigger:
 //UserVoice.push(['addTrigger', '#id', { mode: 'contact' }]);

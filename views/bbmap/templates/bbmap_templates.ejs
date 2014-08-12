@@ -1,13 +1,10 @@
 <!-- ******************************** -->
 <!-- Container -->
-<div id="bbmap_container" style="overflow:auto">
-	<br>
-  <div id="actionbar"></div>
-	
-	<div id="map_container" class="">
-    
+<div id="bbmap_container" style="height:100%;overflow:auto">
+  <div id="map_container">
     <a href="#" id="showMenu" style="display:none" class="button tiny cbp-openbutton">
       <image  src="/img/arrow-left.png"width="32px"  id="cbp-openimage"/>
+
     </a>
     <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="cbp-spmenu-s1">
       <div id="editor" class="panel expand">
@@ -27,11 +24,10 @@
         </div>
     </div>
     </nav>
-
-    <div class="large-12 medium-12 small-12 columns">
-      <div id="map" class="demo chart-demo"></div>
-    </div>
-	</div>
+    <div id="map" class="demo chart-demo"></div>
+  </div>
+  <div id="top_container"></div>
+  <div id="bottom_container"></div>
 </div>
 <!-- ******************************** -->
 <script type="text/template" id="bbmap-joyride-template">
@@ -46,21 +42,29 @@
 <script type="text/template" id="bbmap-bulle-template">
     <span id="{{-model.id}}_joyride"></span>
     <span id="{{-model.id}}" class="editTitle">{{-model.title}}</span>
-    <div id="{{-model.id}}" class="ep icon">c</div>
-    <div id="{{-model.id}}" class="ep2 icon">k</div>
-    <div id="{{-model.id}}" class="ep3 icon">*</div>
-    <div id="{{-model.id}}" class="sup icon">x</div>
-    
+    <span id="{{-model.id}}" class="label round secondary ep icon">+c</span>
+    <span id="{{-model.id}}" class="label round secondary ep2 icon">+k</span>
+    <span id="{{-model.id}}" class="label round secondary ep3 icon">e</span>
+    <span id="{{-model.id}}" class="label round secondary sup icon">x</span>
 </script>
 
-<script type="text/template" id="bbmap-actionbar-template">
-  <div>
-	  <center>
-      mode : 
-      <select id="modeSelection" class="large-1 medium-1 small-1">
-        <option value="visu" {{ if(mode == "visu"){ }}selected{{ } }}>Visualization</option>
-        <option value="edit" {{ if(mode == "edit"){ }}selected{{ } }}>Edition</option>
-      </select>
+<script type="text/template" id="bbmap-top-element-template">
+  <div id="modeSelection_ui">
+    <select id="modeSelection">
+      <option value="visu" {{ if(mode == "visu"){ }}selected{{ } }}>Visualization</option>
+      <option value="edit" {{ if(mode == "edit"){ }}selected{{ } }}>Edition</option>
+    </select>
+  </div>  
+  <span id="zoom_ui">
+    <a href="#" class="tiny round button secondary zoomout">+</a>
+    <span id="zoom_val"></span>
+    <a href="#" class="tiny round button secondary zoomin">-</a>
+  </span>
+</script>
+
+<script type="text/template" id="bbmap-bottom-element-template">
+  <span id="bbmap_bottom_ui">
+    <center>
       filter : 
       <select id="filterSelection" class="large-1 medium-1 small-1">
         <option value="c" {{ if(filter == "c"){ }}selected{{ } }}>Concepts</option>
@@ -72,30 +76,27 @@
 
       </select>
            
-      {{ if((filter == "ck")){ }}
+      {{ if((filter == "ck")||(filter == "ckp")){ }}
         <a href="#" class="tiny round button secondary ckOperator">Display CK operator</a>
       {{ } }}
       <a href="#" class="tiny round button secondary reset">Reset view</a>
       <a href="#" class="tiny button round secondary downloadimage">Download Image</a>
       <a href="#" class="tiny button round secondary screenshot">Send to CK - </a>
-      <a href="#" class="tiny round button secondary zoomout">+</a>
-      <span id="zoom_val"></span>
-      <a href="#" class="tiny round button secondary zoomin">-</a>
+      
       
       {{ if(mode == "edit"){ }}
         {{ if((filter == "c")||(filter == "ck")||(filter == "ckp")){ }}
-          <img id="dropC" style="width:100px;z-index:999999" class="dropC" title="click and drop to create a new concept" src="/img/c.png">
+          <a href="#" id="dropC" style="{{- bbmap.css_concept_default }}" class="dropC" title="click and drop to create a new concept">concept</a>
         {{ } }}
         {{ if((filter == "p")||(filter == "kp")||(filter == "ckp")){ }}
-          <img id="dropP" style="width:100px;z-index:999999" class="dropP" title="click and drop to create a new category" src="/img/p.png">
+          <a href="#" id="dropP" style="{{- bbmap.css_poche_default }}" class="dropP" title="click and drop to create a new category">category</a>
         {{ } }}
         {{ if((filter == "k")||(filter == "ck")||(filter == "ckp")||(filter == "kp")){ }}
-          <img id="dropK" style="width:100px;z-index:999999" class="dropK" title="click and drop to create a new knowledge" src="/img/k.png">
+          <a href="#" id="dropK" style="{{- bbmap.css_knowledge_default }}"  class="dropK" title="click and drop to create a new knowledge">knowledge</a>
         {{ } }}
       {{ } }}
-
     </center>
-  </div>
+  </span>
 </script>
 
 

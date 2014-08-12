@@ -32,6 +32,13 @@ bbmap.Views.Node = Backbone.View.extend({
         "click .sup" : "removeModel",
         "click .ep" : "addConceptChild",
         "click .ep2" : "addKnowledgeChild",
+        "click .ep3" : "editBulle"
+    },
+    editBulle : function(e){
+        e.preventDefault();
+        var id = e.target.id;
+        bbmap.views.main.lastModel = this.model;
+        bbmap.views.main.startJoyride();
     },
     actualize : function(model){
         this.model.set({
@@ -64,7 +71,7 @@ bbmap.Views.Node = Backbone.View.extend({
         if(!this.model.get('css')){    
             if(this.model.get('type') == "concept")this.model.save({css : bbmap.css_concept_default},{silent:true});
             else if(this.model.get('type') == "knowledge") this.model.save({css : bbmap.css_knowledge_default},{silent:true});
-            else if(this.model.get('type') == "category") this.model.save({css : bbmap.css_poche_default},{silent:true});
+            else if(this.model.get('type') == "poche") this.model.save({css : bbmap.css_poche_default},{silent:true});
         }
         var left = this.model.get('left');
         var top = this.model.get('top');
@@ -200,7 +207,7 @@ bbmap.Views.Node = Backbone.View.extend({
         // });
         bbmap.views.main.instance.removeAllEndpoints($(this.el));
         bbmap.views.main.instance.detachAllConnections($(this.el));
-        this.remove();
+        this.close();
     },
     /////////////////////////////////////////
     // 
@@ -272,7 +279,7 @@ bbmap.Views.Node = Backbone.View.extend({
         try{
             if((this.model.get('type') == "concept")&&(this.model.get('id_father')) && (this.model.get('id_father') != "none")){
                 bbmap.views.main.instance.connect({uuids:[this.model.get('id_father')+"-bottom", this.model.get('id')+"-top" ]}); 
-            }else if((this.model.get('type') == "knowledge")||(this.model.get('type') == "category")){
+            }else if((this.model.get('type') == "knowledge")||(this.model.get('type') == "poche")){
                 var link_byTarget = bbmap.views.main.links.where({target : this.model.get('id')});
                 link_byTarget.forEach(function(link){
                     console.log('liiink',link)

@@ -13,10 +13,10 @@ module.exports = {
 
   attributes: {
   	
-  	/* e.g.
-  	nickname: 'string'
-  	*/
-
+  	email : {
+      type : 'email',
+      required : true,
+    },
     pw: {
       type: 'string',
       required: true
@@ -72,18 +72,30 @@ module.exports = {
   },
 
 beforeCreate: function(user, cb) {
-  console.log("SAVE")
-    bcrypt.genSalt(10, function(err, salt) {
-      bcrypt.hash(user.pw, salt, function(err, hash) {
-        if (err) {
-          console.log(err);
-          cb(err);
-        }else{
-          user.pw = hash;
-          cb(null, user);
-        }
+  User.find({
+    email : user.email
+  }).done(function(err, users){
+    if(err) return cb(err);
+    if(users.length==0){
+      console.log("SAVE")
+      bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(user.pw, salt, function(err, hash) {
+          if (err) {
+            console.log(err);
+            cb(err);
+          }else{
+            user.pw = hash;
+            cb(null, user);
+          }
+        });
       });
-    });
+    }else{
+      cb(new Error("Email already registered"));
+    }
+
+
+  });
+  
   },
 
 

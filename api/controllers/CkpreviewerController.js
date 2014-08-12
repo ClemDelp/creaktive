@@ -60,7 +60,7 @@ module.exports = {
 
 
   ckpreviewerview : function(req,res){
-    sails.config.bootstrapdata.bootstrapdata(req,res);
+    BootstrapService.bootstrapdata(req,res);
   },
 
 

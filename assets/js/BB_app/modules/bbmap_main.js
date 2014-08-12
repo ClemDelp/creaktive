@@ -6,7 +6,8 @@ bbmap.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         ////////////////////////////
         // el
-        this.bar_el = $(this.el).find('#actionbar');
+        this.top_el = $(this.el).find('#top_container');
+        this.bottom_el = $(this.el).find('#bottom_container');
         this.map_el = $(this.el).find('#map');
         this.editor_el = $(this.el).find('#editor');
         this.editModel_el = $(this.el).find('#editModel');
@@ -33,7 +34,8 @@ bbmap.Views.Main = Backbone.View.extend({
         this.positionRef        = 550;
         this.color              = "#27AE60";
         // Templates
-        this.template_actionbar = _.template($('#bbmap-actionbar-template').html());
+        this.template_top = _.template($('#bbmap-top-element-template').html());
+        this.template_bottom = _.template($('#bbmap-bottom-element-template').html());
         this.template_joyride = _.template($('#bbmap-joyride-template').html());
         ////////////////////////////
         // JsPlumb
@@ -82,10 +84,11 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .zoomin" : "zoomin",
         "click .zoomout" : "zoomout",
         "click .reset" : "resetInterface",
-        "mouseenter .window.poche" : "showIcon2", 
-        "mouseenter .window.knowledge" : "showIcon2", 
-        "mouseenter .window.concept" : "showIcon", 
-        "click .ep3" : "structureTree",
+        "click .window.poche" : "showIcon2", 
+        "click .window.knowledge" : "showIcon2", 
+        "mouseenter .window.concept" : "showDependance", 
+        "click .window.concept" : "showIcon", 
+        "click .structureSubTree" : "structureTree",
         "mouseleave .window" : "hideIcon", 
         //"click .closeEditor" : "hideEditor",
         "click #okjoyride" : "changeTitleLastModel",
@@ -125,7 +128,7 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Downdloadimage
     /////////////////////////////////////////
-    downloadimage : function(e){alert('ffff')
+    downloadimage : function(e){
         _this = this;
         //var aLink = e.target; 
         /**
@@ -386,10 +389,8 @@ bbmap.Views.Main = Backbone.View.extend({
                     }
                 }
                 var screenshot;
-                //console.log(canvas2.toDataURL( "image/png" ));
                 screenshot = canvas2.toDataURL( "image/png" );   //save screenshot
-                // var uintArray = Base64Binary.decode(screenshot).toString();
-                // console.log(uintArray);
+
                 global.Functions.uploadScreenshot(screenshot, function(data){
                     console.log(data);
                     var s = new global.Models.Screenshot({
@@ -398,7 +399,10 @@ bbmap.Views.Main = Backbone.View.extend({
                         date : getDate(),
                         project_id : _this.project.get('id')
                      });
-                s.save();
+                    s.save();
+                    _this.project.save({
+                        image : data
+                    });
                 });
 
             }
@@ -467,38 +471,39 @@ bbmap.Views.Main = Backbone.View.extend({
         if(this.mode == "edit"){
             $('#showMenu').show('slow');
             // Model editor module
-            if(bbmap.views.modelEditor)bbmap.views.modelEditor.remove();
+            if(bbmap.views.modelEditor)bbmap.views.modelEditor.close();
             bbmap.views.modelEditor = new modelEditor.Views.Main({
                 user            : this.user,
                 model           : model
             });
             // Templates list
-            if(bbmap.views.templatesList)bbmap.views.templatesList.remove();
-            if(!this.project.get('templates')) this.project.save({templates : bbmap.default_templates},{silent:true});
+            if(bbmap.views.templatesList)bbmap.views.templatesList.close();
             bbmap.views.templatesList = new templatesList.Views.Main({
                 templates : this.project.get('templates'),
                 model : model
             });
+            // check for template
+            if(!this.project.get('templates')) this.project.save({templates : bbmap.default_templates},{silent:true});
             // IMG List module
-            if(bbmap.views.imagesList)bbmap.views.imagesList.remove();
+            if(bbmap.views.imagesList)bbmap.views.imagesList.close();
             bbmap.views.imagesList = new imagesList.Views.Main({
                 model           : model,
                 eventAggregator : this.eventAggregator
             });
             // Attachment module
-            if(bbmap.views.attachment)bbmap.views.attachment.remove();
+            if(bbmap.views.attachment)bbmap.views.attachment.close();
             bbmap.views.attachment = new attachment.Views.Main({
                 model           : model,
                 eventAggregator : this.eventAggregator
             });
             // Comments module
-            if(bbmap.views.comments)bbmap.views.comments.remove();
+            if(bbmap.views.comments)bbmap.views.comments.close();
             bbmap.views.comments = new comments.Views.Main({
                 model           : model,
                 user            : this.user
             });
             // notification module
-            if(bbmap.views.activitiesList)bbmap.views.activitiesList.remove();
+            if(bbmap.views.activitiesList)bbmap.views.activitiesList.close();
             bbmap.views.activitiesList = new activitiesList.Views.Main({
                 model           : model
             });
@@ -549,7 +554,7 @@ bbmap.Views.Main = Backbone.View.extend({
       this.instance.setZoom(zoom);    
     },
     updateZoomDisplay : function(){
-        this.bar_el.find('#zoom_val').html(bbmap.zoom.get('val'))
+        this.top_el.find('#zoom_val').html(bbmap.zoom.get('val'))
     },
     resetZoom : function(){
         bbmap.zoom.set({val : 1});
@@ -560,7 +565,7 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     structureTree : function(e){
         e.preventDefault();
-        var id = e.target.id;
+        var id = e.target.id.split('_action')[0];
         this.reorganizeTree(id);
     },
     reorganizeTree : function(id){
@@ -609,11 +614,15 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Hover bulle effect
     /////////////////////////////////////////
+    showDependance : function(e){
+        e.preventDefault();
+        var id = e.target.id;
+        this.selectBulle(id);
+    },
     showIcon : function(e){
         e.preventDefault();
         var id = e.target.id;
         if(this.mode == "edit") $("#"+id+" .icon").show();
-        this.selectBulle(id)
     },
     showIcon2 : function(e){
         e.preventDefault();
@@ -683,7 +692,7 @@ bbmap.Views.Main = Backbone.View.extend({
     createUnlinkedPoche : function(left,top){
         var model = new global.Models.Poche({
             id : guid(),
-            type : "category",
+            type : "poche",
             top : top,
             left: left,
             project: this.project.get('id'),
@@ -691,7 +700,7 @@ bbmap.Views.Main = Backbone.View.extend({
             user: this.user
         });
         model.save();
-        this.knowledges.add(model);
+        this.poches.add(model);
         this.addModelToView(model);
     },
     createUnlinkedConcept : function(left,top){
@@ -811,13 +820,16 @@ bbmap.Views.Main = Backbone.View.extend({
         });     
     },
     renderActionBar : function(){
-        this.bar_el.empty();
-        this.bar_el.append(this.template_actionbar({
-            title : global.models.currentProject.get('title'),
+        this.top_el.empty();
+        this.bottom_el.empty();
+        this.top_el.append(this.template_top({
+            mode    : this.mode
+        }));
+        this.bottom_el.append(this.template_bottom({
             filter  : this.filter,
             mode    : this.mode
         }));
-        this.bar_el.find("#zoom_val").html(bbmap.zoom.get('val'));
+        this.top_el.find("#zoom_val").html(bbmap.zoom.get('val'));
         $( "#dropC" ).draggable();
         $( "#dropK" ).draggable();
         $( "#dropP" ).draggable();
@@ -996,12 +1008,12 @@ bbmap.Views.Main = Backbone.View.extend({
 
 
         $.get('/BBmap/image', function(hasChanged){
-            if (_this.project.image=="" || hasChanged == true){
+            if (_this.project.image == undefined || _this.project.image=="" || hasChanged == true){
                 _this.screenshot(true);
             }
         });
 
-        $("#map_container").height(bbmap.window_height);
+        // $("#map_container").height(bbmap.window_height);
 
         return this;
     }

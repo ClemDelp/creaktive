@@ -15,7 +15,7 @@ function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+no
 
 
 
-module.exports.s3 = {
+module.exports = {
 
 	pushFile : function(file, cb){
 		AWS.config.update({
