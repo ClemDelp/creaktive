@@ -99,7 +99,7 @@
       json.notifications = <%- notifications %>;
       json.permissions = <%- permissions %>;
       json.backups = <%- backups %>;
-      
+
       _.each(json.knowledges, function(k){
         k.comments = new global.Collections.Comments(k.comments);
         k.members = new global.Collections.UsersCollection(k.members);
@@ -112,7 +112,6 @@
 
       global.init(json, function(){
         // Modules
-        //title.init(json.project,"bbmap");
         bbmap.init("edit","ckp");
         together.init();
         $("#title_page").html(json.project.title);
