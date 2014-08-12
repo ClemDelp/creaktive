@@ -24,19 +24,12 @@
 <script type="text/template" id="CKPreviewer_editer_template" >
 <a href="#" class="return"style="float:right;font-size:30px;">&#215</a>
   <div class="row">
-    
-    <div class="small-8 large-8 medium-8 columns">
       <center><h1>{{- cp.title}}</h1></center>
-    </div>
-    <div class="small-4 large-4 medium-4 columns">
-
-      <ul class="button-group">
-        
+      <ul class="button-group"  style="float:right">
         <a href="#" class="button tiny secondary  delete"style="float:right">Delete</a>
         <a href="#" class="button tiny secondary  export"style="float:right">Export</a>
         <a href="#" class="button tiny secondary  clearpresentation"style="float:right">Clear</a>
       </ul>
-    </div>
   </div>
   <div id="textzoon">
       <textarea  class="ckeditor"  name="ckeditor" ></textarea> 
@@ -108,15 +101,8 @@
           <span class="label radius  downloadimage" data-image-id="{{- image.src}}" data-image-date="{{- image.date}}">download</span>
           <span class="label radius alert editimage" data-image-id="{{- image.src}}" data-screenshot-id="{{- image.id}}">edit</span>
           <a id="deleteimage" data-image-id="{{- image.src}}" data-screenshot-id="{{- image.id}}" style="float:right">&#215;</a>
-          <img class="th dropdown" crossorigin="*" id="image" data-dropdown="imagedrop{{- n}}"  src='/s3/getUrl?amz_id={{- image.src}}' style="width: 280px;height: 140px">
+          <img class="th dropdown" crossorigin="*" id="image"  src='/s3/getUrl?amz_id={{- image.src}}' data-image-id="{{- image.src}}" style="width: 280px;height: 140px">
         </li>
-        <ul id="imagedrop{{- n}}" data-dropdown-content class="f-dropdown">
-          <li>
-            <a class="smallimage" data-image-id="{{- image.src}}"  href="#" >Small</a>
-            <a class="mediumimage" data-image-id="{{- image.src}}"  href="#" >Medium</a>
-            <a class="largeimage" data-image-id="{{- image.src}}"  href="#" >Large</a>
-          </li>
-        </ul>
       {{ }); }}  
     </ul>
 

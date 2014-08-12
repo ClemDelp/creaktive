@@ -407,18 +407,19 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
     },
     renderImg : function(src,size){
         var wid=$("#textzoon")[0].offsetWidth;
+        CKEDITOR.instances.ckeditor.insertHtml('<br><img origin="*" src="/s3/getUrl?amz_id='+src+'" style="width:'+wid*0.7+'px" >');
         //console.log('/s3/getUrl?amz_id='+src);
-        switch(size){
-            case 0:
-                CKEDITOR.instances.ckeditor.insertHtml('<br><img origin="*" src="/s3/getUrl?amz_id='+src+'" style="width:'+wid*0.4+'px" >');
-                break;
-            case 1:
-                CKEDITOR.instances.ckeditor.insertHtml('<br><img origin="*" src="/s3/getUrl?amz_id='+src+'" style="width:'+wid*0.7+'px" >');
-                break;
-            case 2:
-                CKEDITOR.instances.ckeditor.insertHtml('<br><img origin="*" src="/s3/getUrl?amz_id='+src+'" style="width:'+wid*0.95+'px" >');
-                break;
-        }
+        // switch(size){
+        //     case 0:
+        //         CKEDITOR.instances.ckeditor.insertHtml('<br><img origin="*" src="/s3/getUrl?amz_id='+src+'" style="width:'+wid*0.4+'px" >');
+        //         break;
+        //     case 1:
+        //         CKEDITOR.instances.ckeditor.insertHtml('<br><img origin="*" src="/s3/getUrl?amz_id='+src+'" style="width:'+wid*0.7+'px" >');
+        //         break;
+        //     case 2:
+        //         CKEDITOR.instances.ckeditor.insertHtml('<br><img origin="*" src="/s3/getUrl?amz_id='+src+'" style="width:'+wid*0.95+'px" >');
+        //         break;
+        // }
     },
     render : function(){
         $(this.el).empty();    
@@ -454,7 +455,7 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         this.ps_to_render = this.poches;
         // Templates
         this.template = _.template($("#CKPreviewer_images_template").html()); 
-        this.template_image = _.template($("#CKPreviewer_image_template").html()); 
+        //this.template_image = _.template($("#CKPreviewer_image_template").html()); 
     },
     events : {
         "click #deleteimage" : "delImg",
@@ -467,9 +468,10 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         "keyup .searchK" : "searchK",
         "keyup .searchC" : "searchC",
         "keyup .searchP" : "searchP",
-        "click .smallimage" : "smallimage",
-        "click .mediumimage" : "mediumimage",
-        "click .largeimage" : "largeimage",
+        // "click .smallimage" : "smallimage",
+        // "click .mediumimage" : "mediumimage",
+        // "click .largeimage" : "largeimage",
+        "click #image" : "sendImage",
         "click .downloadimage" : "downloadimage",
         "click .editimage" : "editImg"
     },
@@ -487,28 +489,35 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         aLink.click();
         document.body.removeChild(aLink);
     },
-    smallimage : function(e){
+    sendImage : function(e){
         e.preventDefault();
         if(CKEDITOR.instances.ckeditor){
             src = e.target.getAttribute("data-image-id");
-            //console.log(src);
-            this.eventAggregator.trigger("renderImg",src,0);
+            this.eventAggregator.trigger("renderImg",src);
         }
     },
-    mediumimage : function(e){
-        e.preventDefault();
-        if(CKEDITOR.instances.ckeditor){
-            src = e.target.getAttribute("data-image-id");
-            this.eventAggregator.trigger("renderImg",src,1);
-        }
-    },
-    largeimage : function(e){
-        e.preventDefault();
-        if(CKEDITOR.instances.ckeditor){
-            src = e.target.getAttribute("data-image-id");
-            this.eventAggregator.trigger("renderImg",src,2);
-        }
-    },
+    // smallimage : function(e){
+    //     e.preventDefault();
+    //     if(CKEDITOR.instances.ckeditor){
+    //         src = e.target.getAttribute("data-image-id");
+    //         //console.log(src);
+    //         this.eventAggregator.trigger("renderImg",src,0);
+    //     }
+    // },
+    // mediumimage : function(e){
+    //     e.preventDefault();
+    //     if(CKEDITOR.instances.ckeditor){
+    //         src = e.target.getAttribute("data-image-id");
+    //         this.eventAggregator.trigger("renderImg",src,1);
+    //     }
+    // },
+    // largeimage : function(e){
+    //     e.preventDefault();
+    //     if(CKEDITOR.instances.ckeditor){
+    //         src = e.target.getAttribute("data-image-id");
+    //         this.eventAggregator.trigger("renderImg",src,2);
+    //     }
+    // },
     searchK: function(e){
         var research = e.target.value;
         var research_size = research.length;
