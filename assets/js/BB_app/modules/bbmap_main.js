@@ -151,7 +151,7 @@ bbmap.Views.Main = Backbone.View.extend({
             }
         }
         $("#map").offset({left:originLeft+moveLeft});   //change position
-        $("#map").offset({top:originTop+moveTop+$("#map_container")[0].offsetTop});
+        $("#map").offset({top:originTop+moveTop});
         
         html2canvas($("#map.demo"), {
             width: $("#map")[0].offsetWidth,      //screenshot has the same size with #map
@@ -161,7 +161,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 Remet la vue à l'état initial
                 **/
                 $("#map").offset({left:originLeft});       //once finished return back to present state
-                $("#map").offset({top:originTop+$("#map_container")[0].offsetTop});              
+                $("#map").offset({top:originTop});              
                 if(tmpscale>1){
                     while(bbmap.zoom.get('val')<tmpscale){
                         _this.zoomout();
@@ -223,12 +223,15 @@ bbmap.Views.Main = Backbone.View.extend({
                 /**
                 Centre le canvas sur la zone dessinée et couper le reste
                 **/
+
+                var currentWidth = $("#map_container")[0].offsetWidth;
+                var currentHeight = $("#creaktive_window")[0].offsetHeight-$(".tab-bar")[0].offsetHeight-$("#bottom_container")[0].offsetHeight;
                 var x1 = -parseFloat($("#map")[0].offsetLeft)/zoomscale;   // here we r ganna take the right part of canvas
-                var y1 = -parseFloat($("#map")[0].offsetTop )/zoomscale;
-                var x2 = x1+$("#map_container")[0].offsetWidth/zoomscale;
-                var y2 = y1+$("#map_container")[0].offsetHeight/zoomscale;
+                var y1 = (-parseFloat($("#map")[0].offsetTop )+$(".tab-bar")[0].offsetHeight)/zoomscale;
+                var x2 = x1+currentWidth/zoomscale;
+                var y2 = y1+currentHeight/zoomscale; 
                 var canvas2 = document.createElement("canvas");
-                canvas2.width = (x2-x1);
+                canvas2.width = (x2-x1); 
                 canvas2.height = (y2-y1);
                 var context2 = canvas2.getContext("2d");  
                 if((x1<0)&&(y1<0)){                                       //get data of canvas and put them to a new one(canvas2) according to the different situations of position between screen and #map
@@ -253,13 +256,9 @@ bbmap.Views.Main = Backbone.View.extend({
                 screenshot = canvas2.toDataURL( "image/png" );
 
                 var aLink = document.createElement('a');
-                // var evt = document.createEvent("HTMLEvents");
-                // evt.initEvent("click", false, false);
                 aLink.download = "screenshot";
                 aLink.href = screenshot;
-                //aLink.dispatchEvent(evt);
                 document.body.appendChild(aLink);
-                //console.log(aLink);
                 aLink.click();
                 document.body.removeChild(aLink);
 
@@ -291,7 +290,7 @@ bbmap.Views.Main = Backbone.View.extend({
             }
         }
         $("#map").offset({left:originLeft+moveLeft});   //change position
-        $("#map").offset({top:originTop+moveTop+$("#map_container")[0].offsetTop});
+        $("#map").offset({top:originTop+moveTop});
         
         html2canvas($("#map.demo"), {
             width: $("#map")[0].offsetWidth,      //screenshot has the same size with #map
@@ -301,7 +300,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 Remet la vue à l'état initial
                 **/
                 $("#map").offset({left:originLeft});       //once finished return back to present state
-                $("#map").offset({top:originTop+$("#map_container")[0].offsetTop});              
+                $("#map").offset({top:originTop});              
                 if(tmpscale>1){
                     while(bbmap.zoom.get('val')<tmpscale){
                         _this.zoomout();
@@ -363,10 +362,12 @@ bbmap.Views.Main = Backbone.View.extend({
                 /**
                 Centre le canvas sur la zone dessinée et couper le reste
                 **/
+                var currentWidth = $("#map_container")[0].offsetWidth;
+                var currentHeight = $("#creaktive_window")[0].offsetHeight-$(".tab-bar")[0].offsetHeight-$("#bottom_container")[0].offsetHeight;
                 var x1 = -parseFloat($("#map")[0].offsetLeft)/zoomscale;   // here we r ganna take the right part of canvas
-                var y1 = -parseFloat($("#map")[0].offsetTop )/zoomscale;
-                var x2 = x1+$("#map_container")[0].offsetWidth/zoomscale;
-                var y2 = y1+$("#map_container")[0].offsetHeight/zoomscale;
+                var y1 = (-parseFloat($("#map")[0].offsetTop)+$(".tab-bar")[0].offsetHeight)/zoomscale;
+                var x2 = x1+currentWidth/zoomscale;
+                var y2 = y1+currentHeight/zoomscale; 
                 var canvas2 = document.createElement("canvas");
                 canvas2.width = (x2-x1);
                 canvas2.height = (y2-y1);
@@ -392,7 +393,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 screenshot = canvas2.toDataURL( "image/png" );   //save screenshot
 
                 global.Functions.uploadScreenshot(screenshot, function(data){
-                    console.log(data);
+                    //console.log(data);
                     var s = new global.Models.Screenshot({
                         id : guid(),
                         src : data,
