@@ -87,9 +87,11 @@ global.Functions.getNotificationsDictionary = function(user_model,notifications,
 	/////////////////////////////
 	notifications.each(function(notif){
 		if((_.indexOf(notif.get('read'), user_model.get('id')) == -1)){
-     dictionary.models[notif.get('to').id].news.add(notif);
-     dictionary.projects[notif.get('project_id')].news.add(notif);
-     dictionary.allNews.add(notif);
+     try{
+       dictionary.models[notif.get('to').id].news.add(notif);
+       dictionary.projects[notif.get('project_id')].news.add(notif);
+       dictionary.allNews.add(notif);
+    }catch(err){}
    }else{
     dictionary.models[notif.get('to').id].read.add(notif);		
     dictionary.projects[notif.get('project_id')].read.add(notif);		
