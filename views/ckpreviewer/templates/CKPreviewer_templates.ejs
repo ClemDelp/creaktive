@@ -1,11 +1,14 @@
 <!-- //////////////////////////////////////////////////////// -->
 <div id="CKPreviewer_container" >
-    <a href="#" id="showMenu"  class="button tiny cbp-openbutton"><image  src="/img/arrow-left.png"width="32px"  id="cbp-openimage"/></a>
-    <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="cbp-spmenu-s1" style="overflow: auto;">
-      <div id="leftpart" style="padding:15px"></div>
-    </nav>
-    <!-- main content goes here -->
-    <div id="mainpart"></div>
+  <br>
+  <a href="#" id="showMenu"  class="button tiny secondary radius cbp-openbutton">
+    <image  src="/img/icones/Arrow-Left.png"width="32px"  id="cbp-openimage"/>
+  </a>
+  <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="cbp-spmenu-s1" style="overflow: auto;">
+    <div id="leftpart" style="padding:15px"></div>
+  </nav>
+  <!-- main content goes here -->
+  <div id="mainpart"></div>
 </div>
 <!-- //////////////////////////////////////////////////////// -->
 <!-- Modal -->
@@ -13,7 +16,6 @@
 <script type='text/template' id='CKPreviewer_modalContent_templates'>
     <a href="#" id="resizeimage" class="button tiny  " style="float:left">ResizeImage</a>
     <a href="#" id="newimage" class="button tiny  success" style="float:left">CreateNewImage</a>
-    <center><h3></h3></center><hr>
     <image origin="*" src={{- src}}  id="cropbox"/><hr>
     <a href="#" id="confirm" class="button tiny  " style="float:right">OK</a>
     <a class="close-reveal-modal">&#215;</a>
@@ -22,57 +24,51 @@
 <!-- //////////////////////////////////////////////////////// -->
 <!-- Main part -->
 <script type="text/template" id="CKPreviewer_editer_template" >
-<a href="#" class="return"style="float:right;font-size:30px;">&#215</a>
-  <div class="row">
-      <center><h1>{{- cp.title}}</h1></center>
-      <ul class="button-group"  style="float:right">
-        <a href="#" class="button tiny secondary  delete"style="float:right">Delete</a>
-        <a href="#" class="button tiny secondary  export"style="float:right">Export</a>
-        <a href="#" class="button tiny secondary  clearpresentation"style="float:right">Clear</a>
-      </ul>
-  </div>
-  <div id="textzoon">
-      <textarea  class="ckeditor"  name="ckeditor" ></textarea> 
+  <div class="row panel">
+      <div class="row">
+        <div class="small-8 medium-8 large-8 columns">
+          <a href="#" class="return" style="">
+            <image  src="/img/icones/Arrow-Left.png"width="32px"  id="cbp-openimage"/>
+            Back
+          </a>
+          <h2>{{-cp.title}}</h2>
+        </div>
+        <div class="small-4 medium-4 large-4 columns">
+          <a href="#" class="button tiny secondary round export"><img title="export" src="/img/icones/Export-24.png"/></a>
+          <a href="#" class="button tiny secondary round clearpresentation"><img title="clear" src="/img/icones/Clean-24.png"/></a>
+          <a href="#" class="button tiny secondary round delete"><img title="delete" src="/img/icones/Delete.png"/></a>
+        </div>
+      </div>
+      <hr>
+      <div id="textzoon" class="row">
+          <textarea  class="ckeditor"  name="ckeditor" ></textarea> 
+      </div>
   </div>
 </script>
 <!-- Action -->
 <script type="text/template" id="CKPreviewer_action_template" >
-  <br>
-    <div  id="categories_grid">
+  <center><h2>Reports</h2></center>
+  <hr>
+  <div  id="categories_grid">
+    
+    <div style="padding:10px"><div class="row collapse custom_row"></div>
+      <div class="small-10 columns">
+        <input class="presentation_title" type="text" placeholder="New presentation"/>
+      </div>
+      <div class="small-2 columns">
+        <a href="#" id="add1" class="button postfix ">+</a>
+      </div>
+    </div>
+    {{ _.each(presentations, function(presentation) { }}
       <div class="item">    
         <ul class="pricing-table">
-            <li class="price"class="title">
-                <a href="#" class="button tiny success radius expand">
-                    <strong >Create a new presentation</strong>
-                </a>
-            </li>
-            <li class="bullet-item">
-              <div class="row collapse custom_row">
-                <div class="small-9 columns">
-                  <input class="presentation_title" type="text" placeholder="input a name"/>
-                </div>
-                <div class="small-3 columns">
-                  <a href="#" id="add1" class="button success postfix ">+</a>
-                </div>
-              </div>
-            </li>
+          <li class="title" style="background:#F2F2F2;color:#008CBA">{{- presentation.title}}</li>
+          <li class="description" id="content{{- presentation.id}}"></li>
+          <li class="bullet-item">{{- presentation.updatedAt}}</li>
+          <li class="bullet-item">{{- presentation.user_name}}</li>
+          <li class="cta-button"><a presentation_id="{{- presentation.id}}" class="button tiny radius expand presentation" href="#">Open</a></li>
         </ul>
       </div>
-    
-    {{ _.each(presentations, function(presentation) { }}
-        <div class="item">    
-          <ul class="pricing-table">
-              <li class="price"class="title">
-                  <a href="#"  presentation_id="{{- presentation.id}}" class="button tiny  radius expand presentation">
-                      <strong presentation_id="{{- presentation.id}}" >{{- presentation.title}}</strong>
-                  </a>
-              </li>
-              <li class="bullet-item">
-                <div class="row collapse custom_row" id="content{{- presentation.id}}" sytle="text-align:left;overflow:hidden"> 
-                </div>
-              </li>
-          </ul>
-        </div>
     {{ }); }}  
 </div>
 </script>
@@ -87,10 +83,10 @@
 <!-- Left part -->
 <script type="text/template" id="CKPreviewer_images_template" >
   <ul class="tabs" data-tab>
-    <li class="tab-title active"><a href="#panel2-1"><img src="/img/image.png" width="24px"></a></li>
-    <li class="tab-title"><a href="#panel2-2"><img src="/img/knowledge.png"width="24px"></a></li>
-    <li class="tab-title"><a href="#panel2-3"><img src="/img/concept.png"width="24px"></a></li>
-    <li class="tab-title"><a href="#panel2-4"><img src="/img/poche.png"width="24px"></a></li>
+    <li class="tab-title active"><a href="#panel2-3"><img title="concepts" src="/img/icones/Light-Bulb-24.png"/></a></li>
+    <li class="tab-title"><a href="#panel2-2"><img title="knowledges" src="/img/icones/Book-Open-24.png"/></a></li>
+    <li class="tab-title"><a href="#panel2-4"><img title="categories" src="/img/icones/Category-24.png"/></a></li>
+    <li class="tab-title"><a href="#panel2-1"><img title="screenshots" src="/img/icones/Images-24.png"/></a></li>
   </ul>
   <div class="tabs-content">
     <div class="content active" id="panel2-1">
