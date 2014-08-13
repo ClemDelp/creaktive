@@ -402,16 +402,19 @@ bbmap.Views.Main = Backbone.View.extend({
 
                 global.Functions.uploadScreenshot(screenshot, function(data){
                     //console.log(data);
-                    var s = new global.Models.Screenshot({
-                        id : guid(),
-                        src : data,
-                        date : getDate(),
-                        project_id : global.models.currentProject.get('id')
-                     });
-                    s.save();
-                    global.models.currentProject.save({
-                        image : data
-                    });
+                    if(flag==true){
+                        global.models.currentProject.save({
+                            image : data
+                        });
+                    }else{
+                        var s = new global.Models.Screenshot({
+                            id : guid(),
+                            src : data,
+                            date : getDate(),
+                            project_id : global.models.currentProject.get('id')
+                        });
+                        s.save();
+                    }
                 });
 
             }
