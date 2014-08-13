@@ -62,6 +62,7 @@
   },
   
   "CkpreviewerController" : {
+    "ckpreviewerview" :["authenticated", "allowedProjects","forceHTTPs"],
     "*" : "authenticated"
   }, 
 
