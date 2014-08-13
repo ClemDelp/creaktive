@@ -9,6 +9,7 @@
 	right: 0px;
 	z-index: 1000;
 	position: fixed;
+	display:none;
 }
 
 .imgbox img { 

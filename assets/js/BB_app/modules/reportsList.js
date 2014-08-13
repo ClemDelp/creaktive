@@ -29,7 +29,6 @@ reportsList.Views.Main = Backbone.View.extend({
         // init
         var _this = this;
         $(this.el).empty();
-        console.log(this.reports)
         $(this.el).append(this.template({reports : this.reports.toJSON(), project : this.project.toJSON()}));
         return this;
     }
