@@ -274,6 +274,7 @@ global.Models.Presentation = Backbone.Model.extend({
         title : "",
         data : "",
         project_id : "",
+        user_name : "",
     },
     initialize : function Poche() {
         this.urlRoot = "presentation";

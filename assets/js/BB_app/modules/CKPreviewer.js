@@ -188,6 +188,7 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
         this.project = json.project;
         this.presentations = json.presentations;
         this.current_presentation = json.current_presentation;
+        this.user = json.user;
         // Templates
         this.template = _.template($("#CKPreviewer_action_template").html()); 
     },
@@ -218,11 +219,13 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
     add : function(){
         if($(".presentation_title").val()){
             var project_id = this.project.get('id');
+            var name = this.user.get("name");
             new_presentation = new global.Models.Presentation({
                 id : guid(),
                 title : $(".presentation_title").val(),
                 data : "",
                 project_id : project_id,
+                user_name : name,
             });
             new_presentation.save();
             alert("Presentation created");
@@ -263,6 +266,7 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         this.knowledges = json.knowledges;
         this.eventAggregator  = json.eventAggregator;
         this.current_presentation = json.current_presentation;
+        this.user = json.user;
         this.eventAggregator.on("renderImg", this.renderImg, this);
         this.eventAggregator.on("addCK", this.addCK, this);
         this.eventAggregator.on("addP", this.addP, this);
@@ -429,7 +433,8 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
                 eventAggregator  : this.eventAggregator,
                 project : this.project,
                 presentations : this.presentations,
-                current_presentation : this.current_presentation
+                current_presentation : this.current_presentation,
+                user : this.user,
             });
         $(this.el).append(CKPreviewer.views.actions_view.render().el);
 
@@ -792,6 +797,7 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         this.left_el = $(this.el).find('#leftpart');
         this.main_el = $(this.el).find('#mainpart');
 
+        //console.log(this.user.get("name"));
         if(this.presentations.first()){
             this.current_presentation = this.presentations.first();
         }
@@ -851,6 +857,7 @@ CKPreviewer.Views.Main = Backbone.View.extend({
             current_presentation : this.current_presentation,
             knowledges : this.knowledges,
             presentations : this.presentations,
+            user : this.user,
         });
         $(this.main_el).append(CKPreviewer.views.middle_part_view.render().el);
 
