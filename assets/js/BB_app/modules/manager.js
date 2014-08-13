@@ -70,6 +70,7 @@ manager.Views.Projects = Backbone.View.extend({
     render : function(){
         $(this.el).empty();
         _this = this;
+        $(this.el).append("Projects :<hr>")
         this.projects_render.each(function(project){
             userNbr = 1;
             if(manager.views.main.users_rec_dic[project.get('id')]) userNbr = manager.views.main.users_rec_dic[project.get('id')].length
@@ -188,7 +189,8 @@ manager.Views.ProjectDetails = Backbone.View.extend({
         this.user               = json.user;
         this.permissions        = json.permissions;
         this.projects           = json.projects;
-        this.project_render     = json.projects.first();;
+        this.reports            = global.collections.Presentations;
+        this.project_render     = json.projects.first();
         this.knowledges         = json.knowledges;
         this.concepts           = json.concepts;
         this.links              = json.links;
@@ -198,7 +200,6 @@ manager.Views.ProjectDetails = Backbone.View.extend({
         this.labels             = new Backbone.Collection();
         // Events
         this.eventAggregator.on('show_project_details', this.showDetails,this);
-
         //Events
         this.listenTo(this.project_render,"change",this.render,this); 
         // Templates  
@@ -208,19 +209,20 @@ manager.Views.ProjectDetails = Backbone.View.extend({
     showDetails : function(project){
         //Set the project to render
         this.project_render = this.projects.get(project)
-        
-
-        
         this.render();
     },
     render : function(){
         $(this.el).empty();
-        _this = this;
+        var _this = this;
 
         if(this.project_render) {
-          
             //HEADER
             $(_this.el).append(this.template_header({project:this.project_render.toJSON()}));           
+            //CONTENT EDITOR
+            $(_this.el).append(new manager.Views.ModelEditor({
+                user            : this.user,
+                model           : this.project_render,
+            }).render().el);
 
             //USERS LIST
             if(manager.views.main.users_rec_dic[this.project_render.get('id')]){
@@ -234,16 +236,18 @@ manager.Views.ProjectDetails = Backbone.View.extend({
                     users : users_list
                 }).render().el);
             }
-                        //CONTENT EDITOR
-            $(_this.el).append(new manager.Views.ModelEditor({
-                user            : this.user,
-                model           : this.project_render,
+
+            //Reports 
+            $(_this.el).append(new reportsList.Views.Main({
+                project : this.project_render,
+                reports : _this.reports.where({project_id: _this.project_render.get('id')})
             }).render().el);
+
             //ACTIVITIES
             $(_this.el).append(new activitiesList.Views.Main({
                 model           : this.project_render,
             }).render().el);
-
+            
             //FOOTER
             $(_this.el).append(this.template_footer({project:this.project_render.toJSON()}));
         }

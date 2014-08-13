@@ -20,6 +20,10 @@
 <%- partial('../app/templates/attachment_templates') %>
 <%- partial('../app/templates/CKLayout_templates') %>
 <%- partial('../app/templates/usersList_templates') %>
+
+<%- partial('../app/templates/reportsList_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/reportsList.js"></script>
+
 <script type="text/javascript" src="js/BB_app/modules/modelEditor.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/comments.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/attachment.js"></script>
@@ -47,6 +51,7 @@
       json.notifications = <%- notifications %>;
       json.activityLog = <%- activityLog %>;
       json.permissions = <%- permissions %>;
+      json.presentations = <%- presentations %>;
       
       _.each(json.knowledges, function(k){
         k.comments = new global.Collections.Comments(k.comments);

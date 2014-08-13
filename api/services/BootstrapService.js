@@ -29,7 +29,7 @@ module.exports = {
           Project.find({id : req.session.allowedProjects}).done(function(err,projects){
             Concept.find({project : req.session.allowedProjects}).done(function(err,concepts){
               Link.find({project : req.session.allowedProjects}).done(function(err,links){
-                
+                Presentation.find().done(function(err,presentations){
                   Permission.find().done(function(err, permissions){
                     res.view({
                       currentUser : JSON.stringify(req.session.user),
@@ -41,10 +41,10 @@ module.exports = {
                       links : JSON.stringify(links),
                       notifications : JSON.stringify(unread_notifications),
                       activityLog : JSON.stringify(read_notifications),
+                      presentations : JSON.stringify(presentations),
                       permissions : JSON.stringify(permissions)
-
                     });
-                  
+                  });
                 });
               })
             })
