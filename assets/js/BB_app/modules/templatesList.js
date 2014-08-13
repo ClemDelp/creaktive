@@ -21,11 +21,26 @@ templatesList.Views.Template = Backbone.View.extend({
         ////////////////////////////
         this.template = json.template;
         this.model = json.model;
+        this.templates_collection = json.templates_collection;
+        console.log(this.templates_collection)
         // Templates
         this.template_t = _.template($('#templatesList-template').html());
     },
     events : {
-        "click .button" : "applyTemplate"
+        "click .applyTemplate" : "applyTemplate",
+        "click .removeTemplate" : "removeTemplate"
+    },
+    removeTemplate : function(e){
+        e.preventDefault();
+        if(confirm("Delete this label?")){
+            var template_model = this.templates_collection.get(this.template.id);
+            this.templates_collection.remove(template_model);
+            var array = [];
+            this.templates_collection.each(function(model){
+                array.push(model);
+            })
+            global.models.currentProject.save({templates : array});    
+        }
     },
     applyTemplate : function(e){
         e.preventDefault();
@@ -48,7 +63,8 @@ templatesList.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         ////////////////////////////
         this.model = json.model;
-        this.templates = json.templates;
+        // Events
+        this.listenTo(global.models.currentProject,'change:templates',this.render,this);
         // Templates
         this.template_header = _.template($('#templatesList-header-template').html());
     },
@@ -56,12 +72,16 @@ templatesList.Views.Main = Backbone.View.extend({
         ///////////////////////
         // init
         var _this = this;
+        this.templates_collection = new Backbone.Collection(global.models.currentProject.get('templates'))
         $(this.el).empty();
+        // Header
         $(this.el).append(this.template_header())
-        this.templates.forEach(function(template){
+        // Templates
+        global.models.currentProject.get('templates').forEach(function(template){
             $(_this.el).append(new templatesList.Views.Template({
-                tagName : "center",
+                tagName : "span",
                 model:_this.model,
+                templates_collection : _this.templates_collection,
                 template : template
             }).render().el);    
         });

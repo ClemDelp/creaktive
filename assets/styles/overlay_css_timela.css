@@ -17,7 +17,7 @@
 }
 
 #bottom_container{
-	background: white;
+	background: #EFEFEF;
 	z-index: 999;
 	position: fixed;
 	bottom:0;
@@ -61,6 +61,9 @@
 	padding: 0px;
 }
 
+#leftpart{
+	overflow:auto;
+}
 #editor{
 	overflow:auto;
 	/*display:none;*/
