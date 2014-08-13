@@ -206,7 +206,7 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
         CKPreviewer.views.middle_part_view.mode=1;
         CKPreviewer.views.middle_part_view.render();
         CKEDITOR.replace('ckeditor',{
-            height:700,
+            height:500,
         });
         CKEDITOR.instances.ckeditor.setData(this.current_presentation.get('data'));
         var cp = this.current_presentation;
@@ -219,16 +219,14 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
     add : function(){
         if($(".presentation_title").val()){
             var project_id = this.project.get('id');
-            var name = this.user.get("name");
-            new_presentation = new global.Models.Presentation({
+            var new_presentation = new global.Models.Presentation({
                 id : guid(),
                 title : $(".presentation_title").val(),
                 data : "",
                 project_id : project_id,
-                user_name : name,
+                user_name : this.user.get("name")
             });
             new_presentation.save();
-            alert("Presentation created");
             this.current_presentation = new_presentation;
             this.presentations.add(this.current_presentation);
             this.render();
@@ -430,6 +428,8 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         if(this.mode==0){
             if(CKPreviewer.views.actions_view){CKPreviewer.views.actions_view.remove();}
             CKPreviewer.views.actions_view = new CKPreviewer.Views.Actions({
+                tagName : "div",
+                className : "row panel",
                 eventAggregator  : this.eventAggregator,
                 project : this.project,
                 presentations : this.presentations,
@@ -837,7 +837,7 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         //$(this.el).empty();
 
         //Left part
-        if(CKPreviewer.views.images_view){CKPreviewer.views.images_view.remove();}
+        if(CKPreviewer.views.images_view){CKPreviewer.views.images_view.close();}
         CKPreviewer.views.images_view = new CKPreviewer.Views.Images({
             //className        : "large-4 medium-4 small-4 columns",
             eventAggregator  : this.eventAggregator,
@@ -849,7 +849,7 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         $(this.left_el).append(CKPreviewer.views.images_view.render().el);
 
         // Right part
-        if(CKPreviewer.views.middle_part_view){CKPreviewer.views.middle_part_view.remove();}
+        if(CKPreviewer.views.middle_part_view){CKPreviewer.views.middle_part_view.close();}
         CKPreviewer.views.middle_part_view = new CKPreviewer.Views.MiddlePart({
             //className        : "large-8 medium-8 small-8 columns",
             eventAggregator  : this.eventAggregator,
@@ -880,7 +880,7 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         $(document).foundation();
 
 
-        $('#CKPreviewer_container').height($(window).height()-50);
+        //$('#CKPreviewer_container').height($(window).height()-50);
         
     }
 });
