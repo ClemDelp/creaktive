@@ -6,6 +6,15 @@
 #map_container{
 	height:90%;
 }*/
+#CKPreviewer_container .tabs dd > a, .tabs .tab-title > a {
+display: block;
+background: #efefef;
+color: #222222;
+padding: 0.5rem 0.5rem;
+font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+font-size: 1rem;
+}
+
 
 #top_container{
 	/*width:100%;
