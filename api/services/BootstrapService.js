@@ -1,6 +1,6 @@
 module.exports = {
 
-  bootstrapmanager : function(req,res){
+  bootstrapmanager : function(req,res){console.log(req.session);
     req.session.user = req.session.user || {id:"999999999", name : "guest", img:"img/default-user-icon-profile.png"}
     ///////////////////////////////////////////////////
     unread_notifications = [];
@@ -76,6 +76,9 @@ module.exports = {
         
         
         ///////////////////////////////////////////////////
+        var presentationId = "none";
+        if(req.query.presentationId) presentationId = req.query.presentationId;
+        ///////////////////////////////////////////////////
         // Backups
         backups_truncated = [];
         Backup.find({project_id:project.id}).done(function(err, backups){
@@ -128,6 +131,7 @@ module.exports = {
                               backups : JSON.stringify(backups_truncated),
                               screenshots : JSON.stringify(screenshots),
                               presentations : JSON.stringify(presentations),
+                              presentationId : JSON.stringify(presentationId)
 
                             });
                           });

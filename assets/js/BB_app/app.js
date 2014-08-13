@@ -35,6 +35,7 @@ var global = {
     this.collections.Notifications = new this.Collections.NotificationsCollection(json.notifications);
     this.collections.Screenshots = new this.Collections.Screenshots(json.screenshots);
     this.collections.Presentations = new this.Collections.Presentations(json.presentations);
+    this.presentationId = json.presentationId;
 
     // Dictionaries    
     this.ProjectsUsersDictionary = this.Functions.getProjectsUsersDictionary(this.collections.Projects,this.collections.Permissions);// dictionaire pour le nombre d'utilisateur par projet

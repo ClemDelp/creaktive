@@ -18,6 +18,7 @@ var CKPreviewer = {
         knowledges : global.collections.Knowledges,
         concepts : global.collections.Concepts,
         poches : global.collections.Poches,
+        presentationId : global.presentationId,
     });   
     this.views.Main.render();
   }
@@ -189,18 +190,22 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
         this.presentations = json.presentations;
         this.current_presentation = json.current_presentation;
         this.user = json.user;
+        this.eventAggregator.on("rendercurrent", this.rendercurrent,this);
         // Templates
         this.template = _.template($("#CKPreviewer_action_template").html()); 
     },
     events : {
         "click #add1" : "add",
-        "click .presentation" : "changecurrent",
+        "click .presentation" : "select_presentation",
+    },
+    select_presentation : function(e){
+        e.preventDefault();
+        var p_id = e.target.getAttribute("presentation_id");
+        this.rendercurrent(p_id);
     },
     //change current presentation
-    changecurrent : function(e){
-        e.preventDefault();
-        var sid = e.target.getAttribute("presentation_id");
-        this.current_presentation = this.presentations.get(sid);
+    rendercurrent : function(p_id){
+        this.current_presentation = this.presentations.get(p_id);
         //console.log(this.current_presentation);
         CKPreviewer.views.middle_part_view.current_presentation=this.current_presentation;
         CKPreviewer.views.middle_part_view.mode=1;
@@ -267,10 +272,11 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         this.eventAggregator  = json.eventAggregator;
         this.current_presentation = json.current_presentation;
         this.user = json.user;
+        this.presentationId = json.presentationId;
         this.eventAggregator.on("renderImg", this.renderImg, this);
         this.eventAggregator.on("addCK", this.addCK, this);
         this.eventAggregator.on("addP", this.addP, this);
-        this.mode = 0;
+        this.mode = 0;      
     },
     events : {
         "click .delete" : "deletepresentation",
@@ -387,7 +393,7 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         }else{
             this.current_presentation = null;
         }
-        CKPreviewer.views.middle_part_view.current_presentation=this.current_presentation;
+        //CKPreviewer.views.middle_part_view.current_presentation=this.current_presentation;
         this.returnAction();
     },
 
@@ -437,8 +443,7 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
                 user : this.user,
             });
         $(this.el).append(CKPreviewer.views.actions_view.render().el);
-
-        }else{   
+        }else {   
             $(this.el).append(this.template({
                 cp : this.current_presentation.toJSON(),
             }));
@@ -791,6 +796,8 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         this.project = json.project;
         this.presentations = json.presentations;
         this.presentationNum = this.presentations.toJSON().length;
+        this.presentationId = json.presentationId;
+        console.log(this.presentationId);
         this.current_presentation = null;
         this.isopen = false;
 
@@ -858,6 +865,7 @@ CKPreviewer.Views.Main = Backbone.View.extend({
             knowledges : this.knowledges,
             presentations : this.presentations,
             user : this.user,
+            presentationId : this.presentationId,
         });
         $(this.main_el).append(CKPreviewer.views.middle_part_view.render().el);
 
@@ -881,7 +889,8 @@ CKPreviewer.Views.Main = Backbone.View.extend({
 
 
         $('#CKPreviewer_container').height($(window).height()-50);
-        
+        if(this.presentationId != "none")
+        this.eventAggregator.trigger("rendercurrent",this.presentationId);
     }
 });
 /***************************************/
