@@ -18,10 +18,12 @@
 
 <script type="text/template" id="manager-header-template">
 	<fieldset>
-		<center><a class="button secondary tiny expand" href="/bbmap?projectId={{- project.id}}"><h2>{{-project.title}}</h2></a></center> 
-		{{ if(project.image){ }}
-			<img src="/S3/getUrl?amz_id={{- project.image}}" />
-		{{ }; }}
+		<a class="button secondary tiny expand" href="/bbmap?projectId={{- project.id}}">
+			<h2>{{-project.title}}</h2> 
+			{{ if(project.image){ }}
+				<img class="large-12 medium-12 small-2" src="/S3/getUrl?amz_id={{- project.image}}" />
+			{{ }; }}
+		</a>
 	</fieldset>
 </script>
 

@@ -531,10 +531,6 @@ bbmap.Views.Main = Backbone.View.extend({
             this.activitiesModel_el.html(bbmap.views.activitiesList.render().el);
         }
     },
-    // hideEditor : function(e){
-    //     e.preventDefault();
-    //     this.editor_el.hide('slow');
-    // },
     /////////////////////////////////////////
     // Zoom system
     /////////////////////////////////////////
@@ -785,6 +781,12 @@ bbmap.Views.Main = Backbone.View.extend({
     removeLinkToView : function(model,from){
         var origin = "client";
         if(from) origin = from;
+        var source = model.get('source')
+        var target = model.get('target')
+        var connections = this.instance.getAllConnections();
+        connections.forEach(function(conn){
+            if((conn.targetId == target)&&(conn.sourceId == source))conn.setVisible(false)//bbmap.views.main.instance.detach({source:source, target:target, fireEvent:false});
+        })
         //this.nodes_views[model.get('source')].removeView();    
     },
     /////////////////////////////////////////
