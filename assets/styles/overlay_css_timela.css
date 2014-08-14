@@ -6,6 +6,29 @@
 #map_container{
 	height:90%;
 }*/
+#togetherjs-dock.togetherjs-dock-right {
+padding: 0;
+bottom: 70%;
+left: 5px;
+border-radius: 4px;
+height: auto;
+width: 50px;
+}
+
+#togetherjs-dock {
+position: fixed;
+z-index: 9999;
+background-color: #0095dd;
+opacity: 0.5;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+/* border: 1px solid #000; */
+}
+
+#togetherjs-dock:hover {
+opacity: 1;
+}
+
+
 #CKPreviewer_container .tabs dd > a, .tabs .tab-title > a {
 display: block;
 background: #efefef;

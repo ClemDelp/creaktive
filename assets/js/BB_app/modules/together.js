@@ -66,7 +66,9 @@ together.Views.Main = Backbone.View.extend({
       var _this = this;
       $(this.el).empty();
       this.users.each(function(user){
-        $(_this.el).append(new together.Views.User({user : user}).render().el);
+        $(_this.el).append(new together.Views.User({
+          user : user
+        }).render().el);
       });
 
       return this;
