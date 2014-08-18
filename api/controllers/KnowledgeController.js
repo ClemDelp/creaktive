@@ -34,18 +34,6 @@
 
   },
 
-  // create : function (req,res){
-  //   var k = req.body.params;
-  //   k.project = req.session.currentProject.id
-  //   Knowledge.create(k).done(function(err, knowledge){
-  //     if(err) res.send(err);
-  //     Notification.objectCreated(req,res,"Knowledge", knowledge.id, function(notification){
-  //       res.send(notification);
-  //     });
-  //     res.send(knowledge);
-  //   });
-  // },
-
   update : function(req, res){
   	Knowledge.findOne(req.body.params.id).done(function(err, knowledge){
   		if(err) res.send(err);
@@ -75,10 +63,6 @@
           if(err) res.send(err);
           req.socket.broadcast.to(req.session.currentProject.id).emit("knowledge:create", knowledge);
           Notification.objectCreated(req,res,"Knowledge", knowledge, function(notification){
-            // knowledge.notifications.unshift(notification);
-            // knowledge.save(function(err) {
-            //   // value has been saved
-            // });
             res.send(notification);
           });
           res.send(knowledge);
@@ -93,9 +77,12 @@
     Knowledge.findOne(req.body.params.id).done(function(err,k){
       if(err) console.log(err);
       req.socket.broadcast.to(req.session.currentProject.id).emit("knowledge:remove2", k);
+      Notification.objectRemoved(req,res,"Knowledge", k, function(notification){
+        res.send(notification);
+      });
       k.destroy(function(err){
         if(err) console.log(err)
-          res.send({msg:"destroyed"})
+        res.send({msg:"destroyed"})
       })
     });
   },

@@ -33,7 +33,7 @@
       comparator : new Date().getTime()
   	}).done(function(err,n){
   		if(err) console.log(err);
-  		req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+  		req.socket.in(req.session.currentProject.id).emit("notification:create", n);
   		cb(n);
   	})
   },
@@ -62,7 +62,7 @@
       comparator : new Date().getTime()
     }).done(function(err,n){
       if(err) console.log(err);
-      req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+      req.socket.in(req.session.currentProject.id).emit("notification:create", n);
       cb(n);
     });
   },
@@ -84,7 +84,7 @@
       comparator : new Date().getTime()
   	}).done(function(err,n){
   		if(err) console.log(err);
-  		req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+  		req.socket.in(req.session.currentProject.id).emit("notification:create", n);
   		cb(n);
   	});
   },

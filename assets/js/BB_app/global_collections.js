@@ -150,9 +150,10 @@ global.Collections.NotificationsCollection = Backbone.Collection.extend({
         return -m.get('comparator');
     },
     serverCreate : function(model){
-        model = new global.Models.NotificationModel(model);
+        var model = new global.Models.NotificationModel(model);
         model.set({read : _.union(model.get('read'),global.models.current_user.get('id'))});
         model.save();
+        global.collections.Notifications.add(model);
         //this.add(new_notif);
     }
 });

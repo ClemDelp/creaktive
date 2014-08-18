@@ -61,6 +61,8 @@ bbmap.Views.Main = Backbone.View.extend({
         ////////////////////////////
         // Events
         this.listenTo(bbmap.zoom,'change',this.updateZoomDisplay,this);
+        this.listenTo(this.notifications,'add',this.timelineAdd,this);
+        this.listenTo(this.notifications,'remove',this.timelineRemove,this);
         // Real-time : knowledge & poche & concept
         global.eventAggregator.on('model:create',this.addModelToView,this);
         global.eventAggregator.on('model:remove',this.removeModelToView,this);
@@ -123,18 +125,15 @@ bbmap.Views.Main = Backbone.View.extend({
         var model = new Backbone.Model();
         var save = true;
         if(this.mode == "timeline") save = false;
-
-        if(type == "Concept"){
-            model = new global.Models.ConceptModel(notif.get('to'));
-        }else if(type == "Knowledge"){
-            model = new global.Models.Knowledge(notif.get('to'));
-        }else if(type == "Poche"){
-            model = new global.Models.Poche(notif.get('to'));
-        }
-        
+        // Creation du model
+        if(type == "Concept") model = new global.Models.ConceptModel(notif.get('to'));
+        else if(type == "Knowledge") model = new global.Models.Knowledge(notif.get('to'));
+        else if(type == "Poche") model = new global.Models.Poche(notif.get('to'));
+        else if(type == "Poche") model = new global.Models.CKLink(notif.get('to'));
+        // On check si l'element est deja dans le dom
         var dom = $("#"+model.get('id')).length; // check if element is already present in dom or not
         console.log("position: ",this.timeline_pos,"- action: ",action," on ",type,"- present in dom? ",dom);//,"- model: ",model);
-        
+        // Actions
         if((action == "create")&&(dom > 0)){
             console.log("element present - update");
             global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
@@ -143,6 +142,7 @@ bbmap.Views.Main = Backbone.View.extend({
             console.log("element missing - create");
             this.addModelToView(model,"timeline");
             if(save == true) model.save();
+
         }else if((action == "update")&&(dom > 0)){
             console.log("element present - update");
             global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
@@ -151,13 +151,29 @@ bbmap.Views.Main = Backbone.View.extend({
             console.log("element missing - create");
             this.addModelToView(model,"timeline");
             if(save == true) model.save();
+
         }else if((action == "remove")&&(dom > 0)){
             console.log("element present - remove");
             this.removeModelToView(model,"timeline");
             if(save == true) model.save();
+
         }else if((action == "remove")&&(dom == 0)){
             console.log("element missing - nothing");
         }
+    },
+    timelineAdd : function(){
+        this.timeline_pos = this.timeline_pos + 1;
+        // si je suis en precedent (dans le passé) et que j'édit quelque chose il faut supprimer toutes les notifs suivantes car le futur a changé
+        var n = this.timeline_pos;
+        while(n>0){
+            alert(n);
+            this.notifications.shift();
+            n = n - 1;
+        }
+        this.timeline_pos = 0;
+    },
+    timelineRemove : function(){
+        this.timeline_pos = this.timeline_pos - 1;
     },
     /////////////////////////////////////////
     // Overlays sur les connections
