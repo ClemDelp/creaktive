@@ -27,11 +27,13 @@ bbmap.Views.Main = Backbone.View.extend({
         this.nodes_views        = {};
         this.mode               = json.mode;
         this.filter             = json.filter;
+        this.notifications      = json.notifications;
         // Parameters
         this.isopen             = false;
         this.ckOperator         = true;
         this.positionRef        = 550;
         this.color              = "gray";
+        this.timeline_pos       = 0;
         // Templates
         this.template_top = _.template($('#bbmap-top-element-template').html());
         this.template_bottom = _.template($('#bbmap-bottom-element-template').html());
@@ -93,7 +95,69 @@ bbmap.Views.Main = Backbone.View.extend({
         "click #okjoyride" : "changeTitleLastModel",
         "click .screenshot" : "screenshot",
         "click .downloadimage" : "downloadimage",
-        "click #showMenu" : "eventMenu"
+        "click #showMenu" : "eventMenu",
+        "click .prec" : "prec",
+        "click .next" : "next",
+    },
+    /////////////////////////////////////////
+    // Timeline
+    /////////////////////////////////////////
+    prec : function(e){
+        e.preventDefault();
+
+        this.timeline_pos = this.timeline_pos + 1;
+        if(this.timeline_pos >= this.notifications.length) this.timeline_pos = this.notifications.length - 1;
+        else this.timelineTravel();
+    },
+    next : function(e){
+        e.preventDefault();
+
+        this.timeline_pos = this.timeline_pos - 1;
+        if(this.timeline_pos < 0) this.timeline_pos = 0;
+        else this.timelineTravel();
+    },
+    timelineTravel : function(){
+        var notif = this.notifications.toArray()[this.timeline_pos];
+        var action = notif.get('action');
+        var type = notif.get('object');
+        var model = new Backbone.Model();
+        var save = true;
+        if(this.mode == "timeline") save = false;
+
+        if(type == "Concept"){
+            model = new global.Models.ConceptModel(notif.get('to'));
+        }else if(type == "Knowledge"){
+            model = new global.Models.Knowledge(notif.get('to'));
+        }else if(type == "Poche"){
+            model = new global.Models.Poche(notif.get('to'));
+        }
+        
+        var dom = $("#"+model.get('id')).length; // check if element is already present in dom or not
+        console.log("position: ",this.timeline_pos,"- action: ",action," on ",type,"- present in dom? ",dom);//,"- model: ",model);
+        
+        if((action == "create")&&(dom > 0)){
+            console.log("element present - update");
+            global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
+
+        }else if((action == "create")&&(dom == 0)){
+            console.log("element missing - create");
+            this.addModelToView(model,"timeline");
+            if(save == true) model.save();
+        }else if((action == "update")&&(dom > 0)){
+            console.log("element present - update");
+            global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
+
+        }else if((action == "update")&&(dom == 0)){
+            console.log("element missing - create");
+            this.addModelToView(model,"timeline");
+            if(save == true) model.save();
+        }else if((action == "remove")&&(dom > 0)){
+            console.log("element present - remove");
+            this.removeModelToView(model,"timeline");
+            if(save == true) model.save();
+        }else if((action == "remove")&&(dom == 0)){
+            console.log("element missing - nothing");
+        }
     },
     /////////////////////////////////////////
     // Overlays sur les connections
@@ -116,7 +180,7 @@ bbmap.Views.Main = Backbone.View.extend({
     setMode : function(e){
         e.preventDefault();
         this.mode = $(e.target).val();
-        if(this.mode == "visu"){
+        if(this.mode != "edit"){
             $('#cbp-spmenu-s1').hide('slow');
             $('#showMenu').hide('slow');
             if(this.isopen==true){
@@ -124,7 +188,6 @@ bbmap.Views.Main = Backbone.View.extend({
                 classie.toggle( menu, 'cbp-spmenu-open' ); 
                 this.hideMenu();
             }
-
         } 
         this.render();
     },
@@ -420,7 +483,6 @@ bbmap.Views.Main = Backbone.View.extend({
             }
         });    
     },
- 
     /////////////////////////////////////////
     // Drop new data on map
     /////////////////////////////////////////

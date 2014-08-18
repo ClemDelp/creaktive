@@ -169,10 +169,11 @@ global.Models.NotificationModel = Backbone.Model.extend({
     defaults : {
         id:"",
         type:"",
-        object : "",
+        object : "",// concept / knowledge / poche / clink / ...
+        action : "",// create / update / remove
         content : "",//description de la notification: "mise à jour sur le post"
-        to : "",//cible: projet, post, document, ...
-        from : "",//Qui est à l'origine: utilisateur, mise à jour, ...
+        to : "",// model
+        from : "",// Qui est à l'origine: utilisateur, mise à jour, ...
         date : getDate(),
         project_id : "",
         read : ""

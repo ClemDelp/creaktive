@@ -18,15 +18,14 @@
   },
 
   objectCreated : function(req,res, object, to, cb){
-
-    if(req.body.action.length == 0)return;
+    if(req.body.action.length == 0) return;
     Notification.create({
   		id : IdService.guid(),
   		type : "create"+object,
-      //content : "Project : " + req.session.currentProject.title  + " - New " + object,
   		content : object + " created",
   		to : to,
       object : object,
+      action : "create",
   		date : IdService.getDate(),
   		read : [req.session.user.id],
   		project_id : req.session.currentProject.id,
@@ -40,30 +39,42 @@
   },
 
   objectUpdated : function(req,res, object, to, cb){
-
-  	
     var content ="";
 
-    if(req.body.action.length == 0 || _.indexOf(req.body.action, "css") > -1) {
-      return
-    }
-
-    if(_.indexOf(req.body.action, "top") > -1 || _.indexOf(req.body.action, "left") >-1) {
-      return;
-    } 
-
-  	if(_.indexOf(req.body.action, "title") > -1) content = object + " title updated: " + req.body.params.title;
-  	//if(_.indexOf(req.body.action, "css") > -1) content = object + " :"+req.params.body.title + " template updated";
-  	if(_.indexOf(req.body.action, "attachment") > -1) content = "New document attached to : "+object + ": " + req.body.params.title
+    if(req.body.action.length == 0 || _.indexOf(req.body.action, "css") > -1) return;
+    //if(_.indexOf(req.body.action, "top") > -1 || _.indexOf(req.body.action, "left") >-1) return;
+    if(_.indexOf(req.body.action, "title") > -1) content = object + " title updated: " + req.body.params.title;
+    if(_.indexOf(req.body.action, "attachment") > -1) content = "New document attached to : "+object + ": " + req.body.params.title
     if(_.indexOf(req.body.action, "content") > -1) content = object + ": "+req.body.params.title + " content updated"
-  	if(_.indexOf(req.body.action, "comments") > -1) if(req.body.params.comments[0]) if(req.body.params.comments[0].content != "")content = "Added a comment: " + req.body.params.comments[0].content
+    if(_.indexOf(req.body.action, "comments") > -1) if(req.body.params.comments[0]) if(req.body.params.comments[0].content != "")content = "Added a comment: " + req.body.params.comments[0].content
 
+    Notification.create({
+      id : IdService.guid(),
+      type : "update" + object,
+      object : object,
+      action : "update",
+      content : content,
+      to : to,
+      date : IdService.getDate(),
+      read : [req.session.user.id],
+      project_id : req.session.currentProject.id,
+      from : req.session.user,
+      comparator : new Date().getTime()
+    }).done(function(err,n){
+      if(err) console.log(err);
+      req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+      cb(n);
+    });
+  },
+
+  objectRemoved : function(req,res, object, to, cb){
+    var content = "model removed";
 
   	Notification.create({
   		id : IdService.guid(),
-  		type : "update" + object,
+  		type : "remove" + object,
       object : object,
-      //content : "Project : " + req.session.currentProject.title  + " - " + object + " " + action + " updated",
+      action : "remove",
   		content : content,
   		to : to,
   		date : IdService.getDate(),
@@ -75,8 +86,7 @@
   		if(err) console.log(err);
   		req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
   		cb(n);
-  	})
+  	});
   },
-
 
 };

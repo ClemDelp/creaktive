@@ -40,13 +40,14 @@ bbmap.Views.Node = Backbone.View.extend({
         bbmap.views.main.lastModel = this.model;
         bbmap.views.main.startJoyride();
     },
-    actualize : function(model){
+    actualize : function(model,save){
         this.model.set({
             top: model.top,
             left: model.left,
             title: model.title,
             css: model.css
         });
+        if((save)&&(save == true))this.model.save();
         this.applyStyle();
     },
     followFather : function(oldFather,father){

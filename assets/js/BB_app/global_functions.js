@@ -93,9 +93,11 @@ global.Functions.getNotificationsDictionary = function(user_model,notifications,
        dictionary.allNews.add(notif);
     }catch(err){}
    }else{
-    dictionary.models[notif.get('to').id].read.add(notif);		
-    dictionary.projects[notif.get('project_id')].read.add(notif);		
-    dictionary.allRead.add(notif);
+    try{
+      dictionary.models[notif.get('to').id].read.add(notif);		
+      dictionary.projects[notif.get('project_id')].read.add(notif);		
+      dictionary.allRead.add(notif);
+    }catch(err){}
   }
 });
 

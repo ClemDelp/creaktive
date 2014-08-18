@@ -64,17 +64,16 @@ module.exports = {
         ///////////////////////////////////////////////////
         // Notifications
         unread_notifications = [];
+        all_notifications = [];
 
         Notification.find({project_id : project.id}).done(function(err,notifications){
+          all_notifications = notifications;
           notifications.forEach(function(notif){
             if((_.indexOf(notif.read, req.session.user.id) == -1)){
               unread_notifications.unshift(notif);
             }
           });
         });
-
-        
-        
         ///////////////////////////////////////////////////
         var presentationId = "none";
         if(req.query.presentationId) presentationId = req.query.presentationId;
@@ -126,7 +125,7 @@ module.exports = {
                               projects : JSON.stringify(projects),
                               concepts : JSON.stringify(concepts),
                               links : JSON.stringify(links),
-                              notifications : JSON.stringify(unread_notifications),
+                              notifications : JSON.stringify(all_notifications),
                               permissions : JSON.stringify(permissions),
                               backups : JSON.stringify(backups_truncated),
                               screenshots : JSON.stringify(screenshots),

@@ -91,6 +91,9 @@
       if(concept.position == 0) res.send({err : "You can't remove c0"})
       else{
         req.socket.broadcast.to(req.session.currentProject.id).emit("concept:remove2", concept);
+        Notification.objectRemoved(req,res,"Concept", concept, function(notification){
+          res.send(notification);
+        });
         concept.destroy(function(err){
           if(err) res.send(err)
             res.send({msg:"destroyed"})
