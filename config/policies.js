@@ -62,6 +62,7 @@
   },
   
   "CkpreviewerController" : {
+    "ckpreviewerview" :["authenticated", "allowedProjects","forceHTTPs"],
     "*" : "authenticated"
   }, 
 
@@ -109,6 +110,7 @@
   },
 
   "UserController" : {
+    "*" : ["authenticated", "canWrite"],
     "inviteUser" : ["authenticated"],
     "userview" : ["authenticated", "allowedProjects","forceHTTPs"],
     "editprofileview" : ["authenticated", "forceHTTPs"],

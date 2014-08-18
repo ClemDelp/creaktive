@@ -14,6 +14,7 @@
     <script type='text/javascript' src='js/vendor/jquery-1.10.2.js'></script>
     <script src="js/vendor/underscore.js"></script>
     <script src="js/vendor/pace.min.js"></script>
+    <script src="js/ifvisible.js"></script>
     <script>
       _.templateSettings = {
         escape: /\{\{\-(.+?)\}\}/g,
@@ -32,9 +33,8 @@
     <link rel="stylesheet" type="text/css" href="styles/overlay_css_timela.css" /> 
 
   </head>
-
   <body>
-    
+
     <script src="/js/vendor/backbone.iosync.js"></script>
     <script src="/js/vendor/backbone.iobind.js"></script>
     <script type="text/javascript" src="js/vendor/socket.io.js"></script>
@@ -45,8 +45,44 @@
     <script src="js/BB_app/global_models.js"></script>
     <script src="js/BB_app/global_collections.js"></script>
 
-    <%- body %>
-  
+    <div id="creaktive_window" class="off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+        <nav class="tab-bar">
+          <section class="left-small">
+            <a class="left-off-canvas-toggle menu-icon" href="#"><span></span></a>
+          </section>
+          <center id="title_page"></center>
+          <section class="middle tab-bar-section">
+            <h1 class="title">CreaKtive</h1>
+
+          </section>
+
+        </nav>
+
+        <aside class="left-off-canvas-menu">
+          <ul class="off-canvas-list">
+            <li><label>Actions</label></li>
+            <li><a href="/">Manager</a></li>
+            <li><a href="/editprofile">Profile</a></li>
+            <li><a class="active" id="logout" href="/logout">Logout</a></li>
+            <li><label>Links</label></li>
+            <li><a href="/contact">Support</a></li>
+            <li><a href="http://creaktive.fr/documentation/">Documentation</a></li>
+            <li><a href="http://creaktive.fr/">Terms of service</a></li>
+            <li><a href="http://creaktive.fr/">Privacy Policy</a></li>
+            <li><a href="http://creaktive.fr/contact/">FAQ</a></li>
+            <li><label>Copyright © 2014 CreaKtive, Inc.</label></li>
+          </ul>
+        </aside> 
+
+        <section class="main-section">
+          <%- body %>
+        </section>
+
+      <a class="exit-off-canvas"></a>
+
+      </div>
+    </div>
 
     <script>
       /////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,8 +111,15 @@
           socket.on('poche:create', function socketConnected(x) {console.log("xxxxxxxx-poche:create",x)});
           socket.on('poche:update', function socketConnected(x) {console.log("xxxxxxxx-poche:update",x)});
           socket.on('poche:remove2', function socketConnected(x) {console.log("xxxxxxxx-poche:remove",x)});
+          // User
+          socket.on('user:create', function socketConnected(x) {console.log("xxxxxxxx-user:create",x)});
+          socket.on('user:update', function socketConnected(x) {console.log("xxxxxxxx-user:update",x)});
+          socket.on('user:remove2', function socketConnected(x) {console.log("xxxxxxxx-user:remove",x)});
+          // Link
+          socket.on('link:create', function socketConnected(x) {console.log("xxxxxxxx-link:create",x)});
+          socket.on('link:update', function socketConnected(x) {console.log("xxxxxxxx-link:update",x)});
+          socket.on('link:remove2', function socketConnected(x) {console.log("xxxxxxxx-link:remove",x)});
           
-
           console.log(
             'Socket is now connected and globally accessible as `socket`.\n' + 
             'e.g. to send a GET request to Sails, try \n' + 
@@ -98,23 +141,7 @@
     </script>
 
 
-    <footer class="row">
-      <hr>
-      <div class="large-12 columns">
-      <div class="row">
-      <div class="large-5 columns">
-      <p>Copyright © 2014 CreaKtive, Inc.</p>
-      </div>
-      <div class="large-7 columns">
-      <ul class="inline-list right">
-      <li><a href="http://creaktive.fr/">Terms of service</a></li>
-      <li><a href="http://creaktive.fr/">Privacy Policy</a></li>
-      <li><a href="http://creaktive.fr/contact/">FAQ</a></li>
-      </ul>
-      </div>
-      </div>
-      </div>
-      </footer>
+    
 
 <script>
 // Include the UserVoice JavaScript SDK (only needed once on a page)
@@ -151,7 +178,7 @@ UserVoice.push(['identify', {
 }]);
 
 // Add default trigger to the bottom-right corner of the window:
-UserVoice.push(['addTrigger', { mode: 'contact', trigger_position: 'bottom-right' }]);
+UserVoice.push(['addTrigger', { mode: 'contact', trigger_position: 'bottom-left' }]);
 
 // Or, use your own custom trigger:
 //UserVoice.push(['addTrigger', '#id', { mode: 'contact' }]);

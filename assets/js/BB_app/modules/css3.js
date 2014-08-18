@@ -30,6 +30,7 @@ CSS3GENERATOR.Views.Main = Backbone.View.extend({
       var css = css.replace('.btn {','').replace('}','');
       var template = {id:guid(),title:title,css:css};
       this.project.set({'templates':_.union(this.project.get('templates'),[template])}).save();
+      $(this.el).before('<div data-alert class="alert-box tiny info radius">Template created !<a href="#" class="close">&times;</a></div>');
     },
     render : function(){
         $(this.el).empty();

@@ -9,12 +9,14 @@ var bbmap = {
   models: {},
   views: {},
   // Parameters
+  window_height : $(window).height() - 50,
   zoom : new Backbone.Model({val : 1}),
   node_size : function(){ return 18*this.zoom.get('val'); },
   horizontal_gap : function(){ return 200*this.zoom.get('val'); },
   vertical_gap : function(){ return 80*this.zoom.get('val');},
   css_knowledge_default : "-webkit-border-radius: 0;-moz-border-radius: 0;border-radius: 0px;font-family: Arial;color: #ffffff;background: #3498DB;padding: 10px 20px 10px 20px;border: solid #2980B9 2px;text-decoration: none;",
   css_concept_default : "-webkit-border-radius: 28; -moz-border-radius: 28; border-radius: 28px; font-family: Arial; color: #ffffff; background: #2ECC71; padding: 10px 20px 10px 20px; border: solid #27AE60 3px; text-decoration: none; ",
+  css_poche_default : "-webkit-border-radius: 10;-moz-border-radius: 10;border-radius: 10px;font-family: Arial;color: #ffffff;background: #E67E22;padding: 10px 20px 10px 20px;border: solid #D35400 2px;text-decoration: none;",
   default_templates : [
     {
       css: "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #ffffff;background: #2ECC71;padding: 10px 20px 10px 20px;border: solid #27AE60 2px;text-decoration: none;",
@@ -45,10 +47,15 @@ var bbmap = {
       css: "-webkit-border-radius: 0;-moz-border-radius: 0;border-radius: 0px;font-family: Arial;color: #ffffff;background: #E74C3C;padding: 10px 20px 10px 20px;border: solid #C0392B 2px;text-decoration: none;",
       id: "adc43381-7b54-1530-7993-db9b54a0addb",
       title: "Missing"
+    },
+    {
+      css: "-webkit-border-radius: 10;-moz-border-radius: 10;border-radius: 10px;font-family: Arial;color: #ffffff;background: #E67E22;padding: 10px 20px 10px 20px;border: solid #D35400 2px;text-decoration: none;",
+      id: "c323e1a7-07af-b13a-3f1e-6dc822610c5d",
+      title: "Category"
     }
   ],
   // Constructor
-  init: function () {
+  init: function (mode, filter) {
     this.views.main = new this.Views.Main({
       el              : "#bbmap_container",
       concepts        : global.collections.Concepts,
@@ -58,7 +65,9 @@ var bbmap = {
       poches          : global.collections.Poches,
       links           : global.collections.Links,
       eventAggregator : global.eventAggregator,
-      mode            : "visu"
+      notifications   : global.collections.Notifications,
+      mode            : mode,
+      filter          : filter
 
     });
     this.views.main.render();

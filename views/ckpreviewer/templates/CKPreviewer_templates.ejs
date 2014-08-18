@@ -1,79 +1,103 @@
 <!-- //////////////////////////////////////////////////////// -->
-<div id="CKPreviewer_container" ></div>
+<div id="CKPreviewer_container" >
+  <br>
+  <a href="#" id="showMenu"  class="button tiny secondary radius cbp-openbutton">
+    <image  src="/img/icones/Arrow-Left.png"width="32px"  id="cbp-openimage"/>
+  </a>
+  <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="cbp-spmenu-s1" style="overflow: auto;">
+    <div id="leftpart" style="padding:15px"></div>
+  </nav>
+  <!-- main content goes here -->
+  <div id="mainpart"></div>
+</div>
 <!-- //////////////////////////////////////////////////////// -->
 <!-- Modal -->
-<div id="CKPreviewerModal" class="reveal-modal" data-reveal></div> 
+<div id="CKPreviewerModal" class="reveal-modal" data-reveal style="z-index: 2000;"></div> 
 <script type='text/template' id='CKPreviewer_modalContent_templates'>
-    <a href="#" id="selectzoon" class="button tiny  " style="float:left">Select</a>
-    <a href="#" id="newimage" class="button tiny  " style="float:left">New</a>
-    <a href="#" id="resizeimage" class="button tiny  " style="float:left">Resize</a>
-    <center><h3></h3></center><hr>
-    <image src="/S3/getPrivateUrl?amz_id={{- src}}"  id="cropbox"/><hr>
-    <form >
-      <button type="submit" id="addimage" style="float:right">Add</button>
-      <label>Choose Image Size</label>
-      <input type="radio" name="imagesize" value="Small"  id="smallimage" checked=true><label for="smallimage">Small</label>
-      <input type="radio" name="imagesize" value="Medium" id="mediumimage"><label for="mediumimage">Medium</label>
-      <input type="radio" name="imagesize" value="Large" id="largeimage"><label for="largeimage">Large</label>
-    </form>
+    <a href="#" id="resizeimage" class="button tiny  " style="float:left">ResizeImage</a>
+    <a href="#" id="newimage" class="button tiny  success" style="float:left">CreateNewImage</a>
+    <image origin="*" src={{- src}}  id="cropbox"/><hr>
+    <a href="#" id="confirm" class="button tiny  " style="float:right">OK</a>
     <a class="close-reveal-modal">&#215;</a>
 </script>
 
 <!-- //////////////////////////////////////////////////////// -->
-<!-- Action -->
-<script type="text/template" id="CKPreviewer_action_template" >
-  <div class="expand">
-    <div class="small-6 large-6 medium-6 columns">
-      <center>
-        
-      <a href="#" id="drop0" data-dropdown="drop1" class="button tiny secondary dropdown"  style="float:right">Presentation</a><br>
-      <ul id="drop1" data-dropdown-content class="f-dropdown">
-      {{ _.each(presentations, function(presentation) { }}
-        <li>
-          <a id="presentation" href="#" presentation_id="{{- presentation.id}}">{{- presentation.title}} </a>
-        </li>
-      {{ }); }}  
-      </ul>
-      </center>
-    </div>
-    <div class="small-3 large-3 medium-3 columns">
-      <div class="row collapse custom_row">
-        <div class="small-8 columns">
-          <input class="presentation_title" type="text" placeholder="new presentation..."/>
+<!-- Main part -->
+<script type="text/template" id="CKPreviewer_editer_template" >
+  <div class="row panel">
+      <div class="row">
+        <div class="small-8 medium-8 large-8 columns">
+          <a href="#" class="return" style="">
+            <image  src="/img/icones/Arrow-Left.png"width="32px"  id="cbp-openimage"/>
+            Back
+          </a>
+          <h2>{{-cp.title}}</h2>
         </div>
-        <div class="small-2 columns">
-          <a href="#" id="add1" class="button success postfix">+</a>         
-        </div>
-        <div class="small-2 columns">          
-          <a href="#" id="delete"  class="button postfix"  >-</a>
+        <div class="small-4 medium-4 large-4 columns">
+          <a href="#" class="button tiny secondary round export"><img title="export" src="/img/icones/Export-24.png"/></a>
+          <a href="#" class="button tiny secondary round clearpresentation"><img title="clear" src="/img/icones/Clean-24.png"/></a>
+          <a href="#" class="button tiny secondary round delete"><img title="delete" src="/img/icones/Delete.png"/></a>
         </div>
       </div>
-    </div>
-    <div class="small-3 large-3 medium-3 columns">
-    <br>
-    </div>
+      <hr>
+      <div id="textzoon" class="row">
+          <textarea  class="ckeditor"  name="ckeditor" ></textarea> 
+      </div>
   </div>
-  <div class="row"></div>
+</script>
+<!-- Action -->
+<script type="text/template" id="CKPreviewer_action_template" >
+  <center><h2>Reports</h2></center>
+  <hr>
+  <div  id="categories_grid">
+    
+    <div style="padding:10px"><div class="row collapse custom_row"></div>
+      <div class="small-10 columns">
+        <input class="presentation_title" type="text" placeholder="New presentation"/>
+      </div>
+      <div class="small-2 columns">
+        <a href="#" id="add1" class="button postfix ">+</a>
+      </div>
+    </div>
+    {{ _.each(presentations, function(presentation) { }}
+      <div class="item">    
+        <ul class="pricing-table">
+          <li class="title" style="background:#F2F2F2;color:#008CBA">{{- presentation.title}}</li>
+          <li class="description" id="content{{- presentation.id}}"></li>
+          <li class="bullet-item">{{- presentation.updatedAt}}</li>
+          <li class="bullet-item">{{- presentation.user_name}}</li>
+          <li class="cta-button"><a presentation_id="{{- presentation.id}}" class="button tiny radius expand presentation" href="#">Open</a></li>
+        </ul>
+      </div>
+    {{ }); }}  
+</div>
+</script>
+
+<script type="text/template" id="CKPreviewer_image_template" >
+
+
 </script>
 
 
 <!-- //////////////////////////////////////////////////////// -->
 <!-- Left part -->
 <script type="text/template" id="CKPreviewer_images_template" >
-  <ul class="radius tabs tiny" data-tab>
-    <li class="tab-title active"><a href="#panel2-1">I</a></li>
-    <li class="tab-title"><a href="#panel2-2">K</a></li>
-    <li class="tab-title"><a href="#panel2-3">C</a></li>
-    <li class="tab-title"><a href="#panel2-4">P</a></li>
+  <ul class="tabs" data-tab>
+    <li class="tab-title active"><a href="#panel2-3"><img title="concepts" src="/img/icones/Light-Bulb-24.png"/></a></li>
+    <li class="tab-title"><a href="#panel2-2"><img title="knowledges" src="/img/icones/Book-Open-24.png"/></a></li>
+    <li class="tab-title"><a href="#panel2-4"><img title="categories" src="/img/icones/Category-24.png"/></a></li>
+    <li class="tab-title"><a href="#panel2-1"><img title="screenshots" src="/img/icones/Images-24.png"/></a></li>
   </ul>
   <div class="tabs-content">
-    <div class="content active" id="panel2-1">
-    <ul class="small-block-grid-2">
-      {{ _.each(images, function(image) { }}
-        <li id="image_container">
-          {{- image.date}}
+    <div class="content " id="panel2-1">
+    <ul class="small-block-grid-2" id="imageList">
+      {{ _.each(images, function(image,n) { }}
+        <li id="image_container" class="imgbox">
+          <span class="label radius  secondary">{{- image.date}}</span>
+          <span class="label radius  downloadimage" data-image-id="{{- image.src}}" data-image-date="{{- image.date}}">download</span>
+          <span class="label radius alert editimage" data-image-id="{{- image.src}}" data-screenshot-id="{{- image.id}}">edit</span>
           <a id="deleteimage" data-image-id="{{- image.src}}" data-screenshot-id="{{- image.id}}" style="float:right">&#215;</a>
-          <img class="th" id="image" data-image-id="{{- image.src}}" data-screenshot-id="{{- image.id}}" src="/S3/getPrivateUrl?amz_id={{- image.src}}" style="width: 300px;height: 150px">
+          <img class="th dropdown" crossorigin="*" id="image"  src='/s3/getUrl?amz_id={{- image.src}}' data-image-id="{{- image.src}}" >
         </li>
       {{ }); }}  
     </ul>
@@ -81,15 +105,15 @@
     <div class="content" id="panel2-2">
       <div class="row ">
         <div class="small-4 large-4 medium-4 columns">
-          <a href="#" id="ImportAllknowledges"  class="button  secondary tiny"  style="float:left">Import all</a>
+          <a href="#" id="ImportAllknowledges"  class="button  secondary tiny" style="float:left">Import all</a>
         </div>
         <div class="small-8 large-8 medium-8 columns">
             <div class="row collapse custom_row">
                 <div class="small-10 columns">
-                  <input id="knowledge_title" type="text" class="searchK" placeholder="find your knowledge..."/>
+                  <input id="knowledge_title" type="text" class="searchK" placeholder="find knowledge"/>
                 </div>
                 <div class="small-2 columns">
-                  <a href="#" class="button postfix ">Search</a>
+                  <a href="#" class="button postfix secondary"><img src="/img/search-logo.svg"width="16px"></a>
                 </div>
             </div>
         </div>
@@ -97,7 +121,7 @@
       <div id="ks"></div>
     </div>
 
-    <div class="content" id="panel2-3">
+    <div class="content active" id="panel2-3">
       <div class="row ">
         <div class="small-4 large-4 medium-4 columns">
           <a href="#" id="ImportAllconcepts"  class="button  secondary tiny"  style="float:left">Import all</a>
@@ -105,10 +129,10 @@
         <div class="small-8 large-8 medium-8 columns">
             <div class="row collapse custom_row">
                 <div class="small-10 columns">
-                  <input id="concept_title" type="text" class="searchC" placeholder="find your concept..."/>
+                  <input id="concept_title" type="text" class="searchC" placeholder="find concept"/>
                 </div>
                 <div class="small-2 columns">
-                  <a href="#" class="button postfix ">Search</a>
+                  <a href="#" class="button postfix secondary"><img src="/img/search-logo.svg"width="16px"></a>
                 </div>
             </div>
         </div>
@@ -124,10 +148,10 @@
         <div class="small-8 large-8 medium-8 columns">
             <div class="row collapse custom_row">
                 <div class="small-10 columns">
-                  <input id="poche_title" type="text" class="searchP" placeholder="find your category..."/>
+                  <input id="poche_title" type="text" class="searchP" placeholder="find category"/>
                 </div>
                 <div class="small-2 columns">
-                  <a href="#" class="button postfix ">Search</a>
+                  <a href="#" class="button postfix secondary"><img src="/img/search-logo.svg"width="16px"></a>
                 </div>
             </div>
         </div>
@@ -162,14 +186,5 @@
 </script>
 
 <!-- //////////////////////////////////////////////////////// -->
-<!-- Right part -->
-<script type="text/template" id="CKPreviewer_editer_template" >
-    <div id="textzoon">
-        <textarea  class="ckeditor"  name="ckeditor" ></textarea> <hr>
-        <a href="#" class="button tiny round  export"style="float:right">Export</a>
-        <a href="#" class="button tiny round  createpresentation"style="float:right">Update</a>
-        <a href="#" class="button tiny round  clearpresentation"style="float:right">Clear</a>   
-        <a href="#" class="button tiny round  resetpresentation"style="float:right">Reset</a>  
-    </div>
-</script>
+
 

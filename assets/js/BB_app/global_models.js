@@ -10,34 +10,6 @@ global.Models.File = Backbone.Model.extend({
 
 });
 /***************************************/
-global.Models.CKObject = Backbone.Model.extend({
-    defaults : {
-        id:"",
-        author : "",
-        user: "",
-        type : "",
-        title : "",
-        content : "",
-        tags : [],
-        comments: [],
-        date : "",
-        date2: "",
-        attachment: "",
-        color: "#C0392B",
-        members:[],
-        attachment:[],
-        id_father: "",
-        top : "",
-        left:"",
-        project:""
-    },
-    parse : function(serverObj){
-        serverObj.comments = new global.Collections.Comments(serverObj.comments);
-        serverObj.members = new global.Collections.UsersCollection(serverObj.members);
-        return serverObj;
-    },
-});
-/***************************************/
 global.Models.Backup = Backbone.Model.extend({
     defaults : {
         id : "",
@@ -69,6 +41,37 @@ global.Models.Filter = Backbone.Model.extend({
         });
     }
 });
+/***************************************/
+/***************************************/
+global.Models.CKObject = Backbone.Model.extend({
+    defaults : {
+        id:"",
+        author : "",
+        user: "",
+        type : "",
+        title : "",
+        content : "",
+        tags : [],
+        comments: [],
+        date : "",
+        date2: "",
+        attachment: "",
+        color: "#C0392B",
+        members:[],
+        attachment:[],
+        id_father: "",
+        top : "",
+        left:"",
+        project:"",
+        css : ""
+    },
+    parse : function(serverObj){
+        serverObj.comments = new global.Collections.Comments(serverObj.comments);
+        serverObj.members = new global.Collections.UsersCollection(serverObj.members);
+        return serverObj;
+    },
+});
+
 /***************************************/
 global.Models.Knowledge = global.Models.CKObject.extend({
     initialize : function Post() {
@@ -118,6 +121,7 @@ global.Models.ProjectModel = global.Models.CKObject.extend({
     },
 });
 /***************************************/
+/***************************************/
 global.Models.Comment = Backbone.Model.extend({
     model: this,
     defaults : {
@@ -142,7 +146,11 @@ global.Models.User = Backbone.Model.extend({
         email : "",
         img : "",
         color : "",
-        tags: []
+        tags: [],
+        top : "",
+        left : "",
+        status : "",
+        location : ""
     },
     initialize : function User() {
         //console.log('User Constructor');
@@ -161,10 +169,11 @@ global.Models.NotificationModel = Backbone.Model.extend({
     defaults : {
         id:"",
         type:"",
-        object : "",
+        object : "",// concept / knowledge / poche / clink / ...
+        action : "",// create / update / remove
         content : "",//description de la notification: "mise à jour sur le post"
-        to : "",//cible: projet, post, document, ...
-        from : "",//Qui est à l'origine: utilisateur, mise à jour, ...
+        to : "",// model
+        from : "",// Qui est à l'origine: utilisateur, mise à jour, ...
         date : getDate(),
         project_id : "",
         read : ""
@@ -233,7 +242,9 @@ global.Models.CKLink = Backbone.Model.extend({
         user : "",
         date : getDate(),
         concept : "",
-        knowledge : ""
+        knowledge : "",
+        source : "",
+        target : ""
     },
     setText : function(value) {this.set({ text : value }); },
     initialize : function Comment() {
@@ -264,9 +275,25 @@ global.Models.Presentation = Backbone.Model.extend({
         title : "",
         data : "",
         project_id : "",
+        user_name : "",
     },
     initialize : function Poche() {
         this.urlRoot = "presentation";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+/***************************************/
+global.Models.Attachment = Backbone.Model.extend({
+    defaults : {
+        id : "",
+        name : "",
+        path : "",
+        url : "",
+    },
+    initialize : function Poche() {
+        this.urlRoot = "attachment";
         this.bind("error", function(model, error){
             console.log( error );
         });

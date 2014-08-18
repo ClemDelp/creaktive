@@ -2,40 +2,33 @@
 <script src="/js/vendor/backbone.iosync.js"></script>
 <script src="/js/vendor/backbone.iobind.js"></script>
 <!-- ******************************** -->
-
+<!-- Gridalicious -->
+<script src="/js/vendor/jquery.grid-a-licious.js"></script>
 <!-- ******************************** -->
-<!-- my-mind -->
-<link rel="stylesheet" href="styles/map/font.css" />
-<link rel="stylesheet" href="styles/map/style.css" />
-<link rel="stylesheet" href="styles/map/print.css" media="print" />
-<link rel="stylesheet" href="styles/jquery.Jcrop.min.css" type="text/css" />
+<!-- SlidePushMenus -->
+<link rel="stylesheet" type="text/css" href="styles/component.css" />
+<script src="/js/SlidePushMenus/modernizr.custom.js"></script>
+<script src="/js/SlidePushMenus/classie.js"></script>
 <!-- ******************************** -->
 <!-- Base64Binary -->
 <script src="/js/Base64Binary.js"></script>
 <!-- ******************************** -->
-<!-- Zoom js -->
-<!-- <script src="/js/vendor/zoom.js"></script> 
-<script src="/js/vendor/jquery.zoomooz.js"></script> -->
-
+<!-- Jcrop -->
 <script src="js/vendor/jquery.Jcrop.min.js"></script>
-
+<link rel="stylesheet" href="styles/jquery.Jcrop.min.css" type="text/css" />
+<!-- ******************************** -->
 <script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
 <!-- ******************************** -->
 <!-- Templates to load -->
-<%- partial('../app/templates/topbar_templates') %>
-<%- partial('../app/templates/title_templates') %>
 <%- partial('templates/CKPreviewer_templates') %>
 
+<%- partial('../app/templates/together_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/together.js"></script>
 
 
 <!-- Modules situés dans assets/js/BB_app -->
-
-
-<script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/title.js"></script>
 <script type="text/javascript" src="js/BB_app/modules/CKPreviewer.js"></script>
 <script src="js/ckeditor/ckeditor.js"></script>
-<script src="js/ckeditor/config.js"></script>
 <script>
   ///////////////////////////////////////////////////
   $(document).ready(function () {
@@ -56,13 +49,12 @@
       json.notifications = <%- notifications %>;
       json.permissions = <%- permissions %>;
       json.screenshots = <%- screenshots %>;
-
+      json.presentationId = <%- presentationId %>;
       json.presentations = <%- presentations %>;
 
       global.init(json, function(){
         /*Modules*/
-        topbar.init();
-        title.init(json.project,"ckpreviewer");
+        $("#title_page").html("CKDeliver");
         CKPreviewer.init();
         ////////////////////////////////////////
         /*activat of "hashchange events's monitoring"*/
