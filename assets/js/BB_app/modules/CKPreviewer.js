@@ -25,17 +25,18 @@ var CKPreviewer = {
 };
 
 ////////////////////////////////////////////////////////////
-// VIEWS
-CKPreviewer.Views.Modal = Backbone.View.extend({            //model to render the image
+// VIEWS 
+// Image Edit Panel
+CKPreviewer.Views.Modal = Backbone.View.extend({            
     el:"#CKPreviewerModal",
     initialize:function(json){
         _.bindAll(this, 'render', 'openModal');
         // Variables
-        this.x1 = 0;
+        this.x1 = 0;                         // Parametres de Jcrop
         this.x2 = 0;
         this.y1 = 0;
         this.y2 = 0;
-        this.actionflag = 0;
+        this.actionflag = 0;                 // Resize or create new one
         this.model = new Backbone.Model();
         this.eventAggregator = json.eventAggregator;
         this.screenshots = json.screenshots;
@@ -51,6 +52,8 @@ CKPreviewer.Views.Modal = Backbone.View.extend({            //model to render th
         "click #resizeimage" : "resize",
         "click #newimage" : "new",
     },
+
+    //Button of OK
     confirm : function(e){
         e.preventDefault();
         if(this.actionflag==0){
@@ -85,6 +88,7 @@ CKPreviewer.Views.Modal = Backbone.View.extend({            //model to render th
                 context1.putImageData(imgData,0,0);
                 var imgdata = canvas1.toDataURL("image/png");
 
+                // Create new image
                 if(mode==1){
                     global.Functions.uploadScreenshot(imgdata, function(data){
                         var s = new global.Models.Screenshot({
@@ -99,6 +103,8 @@ CKPreviewer.Views.Modal = Backbone.View.extend({            //model to render th
                         alert("New image created");
                     });
                 }else{
+
+                //Resize image
                     if(mode==2){
                         $.post(
                             's3/deleteFile',
@@ -120,6 +126,7 @@ CKPreviewer.Views.Modal = Backbone.View.extend({            //model to render th
             image0.src = this.src;
         }
     },
+    // Save parameters for resize
     resize : function(e){
         e.preventDefault();
         this.actionflag = 2;
@@ -139,6 +146,7 @@ CKPreviewer.Views.Modal = Backbone.View.extend({            //model to render th
             });
         });
     },
+    // Save parameters for new image
     new : function(e){
         e.preventDefault();
         this.actionflag = 1;
@@ -158,6 +166,7 @@ CKPreviewer.Views.Modal = Backbone.View.extend({            //model to render th
             });
         });
     },    
+
     openModal : function(src,screenshot_id){
         _this = this;
         this.src = '/s3/getUrl?amz_id='+src;
@@ -169,6 +178,7 @@ CKPreviewer.Views.Modal = Backbone.View.extend({            //model to render th
             $(document).foundation();
         }); 
     },
+
     render:function(callback){
         $(this.el).html(''); 
         $(this.el).append(this.template_content({
@@ -182,6 +192,8 @@ CKPreviewer.Views.Modal = Backbone.View.extend({            //model to render th
 
 /***************************************/
 /////////////////////////////////////////
+//Page initial, list of all reports
+//////////////////////////////////////////
 CKPreviewer.Views.Actions = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
@@ -198,12 +210,15 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
         "click #add1" : "add",
         "click .presentation" : "select_presentation",
     },
+
     select_presentation : function(e){
         e.preventDefault();
         var p_id = e.target.getAttribute("presentation_id");
         this.rendercurrent(p_id);
     },
-    //change current presentation
+
+    // Change current presentation
+    // Enter page of text editor
     rendercurrent : function(p_id){
         this.current_presentation = this.presentations.get(p_id);
         //console.log(this.current_presentation);
@@ -221,7 +236,8 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
         });
         $('#showMenu').show('slow');
     },
-    //create a new presentation
+
+    //Create a new presentation
     add : function(){
         if($(".presentation_title").val()){
             var project_id = this.project.get('id');
@@ -251,6 +267,7 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
         });
         }
      },
+
     render : function(){
         $(this.el).empty();
         $(this.el).append(this.template({
@@ -260,6 +277,9 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
         return this;
     }
 });
+
+/////////////////////////////////////////
+// Main view
 /////////////////////////////////////////
 CKPreviewer.Views.MiddlePart = Backbone.View.extend({
     initialize : function(json){
@@ -272,7 +292,7 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         this.current_presentation = json.current_presentation;
         this.user = json.user;
         this.presentationId = json.presentationId;
-        this.eventAggregator.on("renderImg", this.renderImg, this);
+        this.eventAggregator.on("renderImg", this.addImg, this);
         this.eventAggregator.on("addCK", this.addCK, this);
         this.eventAggregator.on("addP", this.addP, this);
         this.mode = 0;      
@@ -283,6 +303,8 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         "click .export" : "export",
         "click .return" : "returnAction"
     },
+
+    //Return to list of reports
     returnAction : function(e){
         this.mode = 0;
         CKEDITOR.remove(CKEDITOR.instances.ckeditor);
@@ -312,6 +334,8 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         }
         $('#showMenu').hide('slow');
     },
+
+    // Export a Pdf
     export : function(e){
         _this = this;
         if(this.current_presentation){
@@ -334,14 +358,13 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
             } 
             loop();
         }
-        //have more than 1 image
+        //Have more than 1 image
         if(arr.length > 1 ){
             asyncLoop({
                 length : arr.length,
                 functionToLoop : function(loop, i){
                     var ind = arr[i].indexOf('" ');
-                    var src = arr[i].substring(0,ind);//console.log(arr[i]);
-                    //Convertit en 
+                    var src = arr[i].substring(0,ind);
                     _this.convertImgToBase64(src, function(base64Img,url){
                         data = data.replace(url,base64Img);
                         loop();
@@ -357,7 +380,8 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
                     );
                 }
             });
-        }else{ //have no image
+        }else{ 
+        //Have no image
             $.post(
                 '/file/export2pdf',
                 {data : data}, 
@@ -367,6 +391,8 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
             );
         }
     },
+
+    //Convert to Base64 
     convertImgToBase64 : function(url, callback, outputFormat){
         var canvas = document.createElement('CANVAS');
         var ctx = canvas.getContext('2d');
@@ -384,6 +410,7 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         //console.log(url.replace(/&amp;/g,'&'));
         img.src = url.replace(/&amp;/g,'&');
     },
+
     clearpresentation : function(e){
         e.preventDefault();
         if(confirm("Do you want to clear the board?")){
@@ -407,12 +434,14 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         this.returnAction();
     },
 
+    // Add concepts or knowledges
     addCK : function(conceptTitle,conceptContent){
         var title = conceptTitle;
         var content = conceptContent;
         //console.log(content.replace(/<p>/g,'<p style="text-indent: 2em">'));
         CKEDITOR.instances.ckeditor.insertHtml('<br><h2 style="color:red"><strong>'+title+':'+'</strong></h2>'+content.replace(/<p>/g,'<p>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp'));
     },
+    // Add categories
     addP : function(poche){
         CKEDITOR.instances.ckeditor.insertHtml('<br><h2><strong>'+poche.get('title')+':'+'</strong></h2>'+poche.get('content'));
         var i=1;
@@ -425,7 +454,8 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
             });
         });
     },
-    renderImg : function(src,size){
+    // Add image
+    addImg : function(src,size){
         var wid=$("#textzoon")[0].offsetWidth;
         CKEDITOR.instances.ckeditor.insertHtml('<br><img origin="*" src="/s3/getUrl?amz_id='+src+'" style="width:'+wid*0.7+'px" >');
         //console.log('/s3/getUrl?amz_id='+src);
@@ -441,8 +471,11 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         //         break;
         // }
     },
+
     render : function(){
         $(this.el).empty();    
+
+        // mode=0 Render the list of reports
         if(this.mode==0){
             if(CKPreviewer.views.actions_view){CKPreviewer.views.actions_view.remove();}
             CKPreviewer.views.actions_view = new CKPreviewer.Views.Actions({
@@ -456,6 +489,7 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
             });
         $(this.el).append(CKPreviewer.views.actions_view.render().el);
         }else {   
+        // mode=1 Render text editor
             $(this.el).append(this.template({
                 cp : this.current_presentation.toJSON(),
             }));
@@ -463,6 +497,8 @@ CKPreviewer.Views.MiddlePart = Backbone.View.extend({
         return this;
     }
 });
+/////////////////////////////////////////
+// Panel of C,K,P,I
 /////////////////////////////////////////
 CKPreviewer.Views.Images = Backbone.View.extend({
     initialize : function(json){
@@ -497,6 +533,7 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         "click .downloadimage" : "downloadimage",
         "click .editimage" : "editImg"
     },
+
     downloadimage : function(e){
         e.preventDefault();
         var imagesrc = e.target.getAttribute("data-image-id");
@@ -511,12 +548,34 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         aLink.click();
         document.body.removeChild(aLink);
     },
+    // Add image to text editor
     sendImage : function(e){
         e.preventDefault();
         if(CKEDITOR.instances.ckeditor){
             var src = e.target.getAttribute("data-image-id");
             this.eventAggregator.trigger("renderImg",src);
         }
+    },
+    delImg : function(e){
+        e.preventDefault();
+        var image_id = e.target.getAttribute("data-image-id");
+        var screenshot_id = e.target.getAttribute("data-screenshot-id");
+        this.screenshots.get(screenshot_id).destroy();
+        $.post(
+            's3/deleteFile',
+            {fileName : image_id}, 
+            function (data) {
+                //console.log(data);
+            }
+        );
+        CKPreviewer.views.images_view.render();
+    },
+    // Open image editor
+    editImg : function(e){
+        e.preventDefault();
+        var image_id = e.target.getAttribute("data-image-id");
+        var screenshot_id = e.target.getAttribute("data-screenshot-id");
+        this.eventAggregator.trigger("openModal",image_id,screenshot_id);
     },
     // smallimage : function(e){
     //     e.preventDefault();
@@ -540,6 +599,8 @@ CKPreviewer.Views.Images = Backbone.View.extend({
     //         this.eventAggregator.trigger("renderImg",src,2);
     //     }
     // },
+
+    // Filter bar
     searchK: function(e){
         var research = e.target.value;
         var research_size = research.length;
@@ -576,7 +637,8 @@ CKPreviewer.Views.Images = Backbone.View.extend({
         this.ps_to_render = matched;
         this.render_ps();
     },
-    //add content
+
+    //Add content
     addAllknowledges : function(e){
         e.preventDefault();
         if(CKEDITOR.instances.ckeditor){
@@ -607,26 +669,6 @@ CKPreviewer.Views.Images = Backbone.View.extend({
              _this.eventAggregator.trigger("addP",poche);
             });
         }
-    },
-    delImg : function(e){
-        e.preventDefault();
-        var image_id = e.target.getAttribute("data-image-id");
-        var screenshot_id = e.target.getAttribute("data-screenshot-id");
-        this.screenshots.get(screenshot_id).destroy();
-        $.post(
-            's3/deleteFile',
-            {fileName : image_id}, 
-            function (data) {
-                //console.log(data);
-            }
-        );
-        CKPreviewer.views.images_view.render();
-    },
-    editImg : function(e){
-        e.preventDefault();
-        var image_id = e.target.getAttribute("data-image-id");
-        var screenshot_id = e.target.getAttribute("data-screenshot-id");
-        this.eventAggregator.trigger("openModal",image_id,screenshot_id);
     },
     addConcept : function(e){
         e.preventDefault();
@@ -734,6 +776,8 @@ CKPreviewer.Views.Images = Backbone.View.extend({
     }
 });
 /////////////////////////////////////////
+// Views of templates of C,K,P
+/////////////////////////////////////////
 CKPreviewer.Views.Ks = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
@@ -789,8 +833,6 @@ CKPreviewer.Views.Ps = Backbone.View.extend({
 });
 
 
-
-
 /////////////////////////////////////////
 // MAIN
 /////////////////////////////////////////
@@ -809,11 +851,11 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         this.presentations = json.presentations;
         this.presentationNum = this.presentations.toJSON().length;
         this.presentationId = json.presentationId;
-        //console.log(this.presentationId);
         this.current_presentation = null;
+        // Flag to see whether PushMenu is open
         isopen = false;
 
-        this.left_el = $(this.el).find('#leftpart');
+        this.push_el = $(this.el).find('#pushpart');
         this.main_el = $(this.el).find('#mainpart');
 
         //console.log(this.user.get("name"));
@@ -827,11 +869,12 @@ CKPreviewer.Views.Main = Backbone.View.extend({
             screenshots : this.screenshots,
             project : this.project,
         });
-        
     },
     events : {
         "click #showMenu" : "showMenu"
     },
+
+    //Push menu
     showMenu : function(e){
         e.preventDefault();
         var menu = document.getElementById( 'cbp-spmenu-s1' );
@@ -851,7 +894,7 @@ CKPreviewer.Views.Main = Backbone.View.extend({
     render : function(){
         //$(this.el).empty();
 
-        //Left part
+        //Push part
         if(CKPreviewer.views.images_view){CKPreviewer.views.images_view.close();}
         CKPreviewer.views.images_view = new CKPreviewer.Views.Images({
             //className        : "large-4 medium-4 small-4 columns",
@@ -861,7 +904,7 @@ CKPreviewer.Views.Main = Backbone.View.extend({
             concepts : this.concepts,
             poches : this.poches
         });
-        $(this.left_el).append(CKPreviewer.views.images_view.render().el);
+        $(this.push_el).append(CKPreviewer.views.images_view.render().el);
 
         // Right part
         if(CKPreviewer.views.middle_part_view){CKPreviewer.views.middle_part_view.close();}
@@ -882,6 +925,7 @@ CKPreviewer.Views.Main = Backbone.View.extend({
             width: 260,
             //height: 300
         });
+        // Add some content to the element in the list
         this.presentations.each(function(presentation){
             var contents = $.parseHTML(presentation.get("data"));
             if(contents){
@@ -892,12 +936,11 @@ CKPreviewer.Views.Main = Backbone.View.extend({
             $("#content"+presentation.get("id")).css({"text-align":"left","overflow":"hidden"});
         });
         
-
         $(document).foundation();
 
-
-
         $('#CKPreviewer_container').height($(window).height()-50);
+
+        //Enter the text editor
         if(this.presentationId != "none")
         this.eventAggregator.trigger("rendercurrent",this.presentationId);
     }

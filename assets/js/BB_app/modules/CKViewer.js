@@ -172,7 +172,7 @@ CKViewer.Views.KnowledgesMap = Backbone.View.extend({
         this.eventAggregator.on("resetK",this.allknowledges,this);
     },
     events : {
-        "dblclick .openModal" : "openModal",
+        "click .openModal" : "openModal",
     },
     filterKnowledge : function(concept_id){
         _this = this;
