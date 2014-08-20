@@ -33,19 +33,6 @@
 
   },
 
-  // create : function (req,res){
-  //   var c = req.body.params;
-  //   c.project = req.session.currentProject.id;
-
-  //   Concept.create(c).done(function(err, concept){
-  //     if(err) res.send(err);
-  //     Notification.objectCreated(req,res,"Concept", c.id, function(notification){
-  //         res.send(notification);
-  //     });
-  //     res.send(concept);
-  //   });
-  // },
-
   update : function(req, res){
 
     Concept.findOne(req.body.params.id).done(function(err, concept){

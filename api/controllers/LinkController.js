@@ -61,13 +61,16 @@
     })
   },
 
-      destroy : function(req,res){
+  destroy : function(req,res){
     Link.findOne(req.body.params.id).done(function(err,link){
       if(err) console.log(err);
       req.socket.broadcast.to(req.session.currentProject.id).emit("link:remove2", link);
+      Notification.objectRemoved(req,res,"Link", link, function(notification){
+        res.send(notification);
+      });
       link.destroy(function(err){
         if(err) console.log(err)
-          res.send({msg:"destroyed"})
+        res.send({msg:"destroyed"})
       })
     });
   },

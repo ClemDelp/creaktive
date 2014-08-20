@@ -14,8 +14,6 @@
   */
 
   find : function (req,res){
-
-
     if(req.body.params.projectId){
       Poche.find({
        project : req.session.currentProject.id
@@ -29,22 +27,7 @@
         res.send(poches)
     });
   }
-
 },
-
-// create : function (req,res){
-//   var p = req.body.params;
-//   p.project = req.session.currentProject.id
-//   Poche.create(p).done(function(err, poche){
-//     if(err) res.send(err);
-//     Notification.objectCreated(req,res,"Poche", poche.id, function(notification){
-//       res.send(notification);
-//     });
-//     res.send(poche);
-
-//   });
-// },
-
 
 update : function(req, res){
   Poche.findOne(req.body.params.id).done(function(err, concept){
@@ -80,10 +63,13 @@ destroy : function(req,res){
   Poche.findOne(req.body.params.id).done(function(err,poche){
     if(err) console.log(err);
     req.socket.broadcast.to(req.session.currentProject.id).emit("poche:remove2", poche);
+    Notification.objectRemoved(req,res,"Poche", poche, function(notification){
+      res.send(notification);
+    });    
     poche.destroy(function(err){
       if(err) console.log(err)
-        res.send({msg:"destroyed"})
-    })
+      res.send({msg:"destroyed"})
+    });
   });
 },
 
