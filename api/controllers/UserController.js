@@ -21,7 +21,6 @@
       if(err) res.send({err:err})
       res.send(users)
     });
-
   },
 
   
@@ -88,7 +87,7 @@
 
       Permission.create({
         id: IdService.guid(),
-        right : "r",
+        right : "rw",
         user_id : user.id,
         project_id : req.session.currentProject.id
       }).done(function(err, permission){
