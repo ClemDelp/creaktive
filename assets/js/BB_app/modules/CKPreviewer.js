@@ -100,6 +100,7 @@ CKPreviewer.Views.Modal = Backbone.View.extend({
                         s.save();
                         CKPreviewer.views.images_view.screenshots.add(s);
                         CKPreviewer.views.images_view.render();
+                        $(document).foundation();
                         alert("New image created");
                     });
                 }else{
@@ -118,6 +119,7 @@ CKPreviewer.Views.Modal = Backbone.View.extend({
                             _this0.current_screenshot.set({'src':data,'date':getDate()}).save();
                             _this0.screenshots.add(_this0.current_screenshot).save();
                             CKPreviewer.views.images_view.render();
+                            $(document).foundation();
                             alert("This image is resized");
                         });
                     }
@@ -225,6 +227,7 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
         CKPreviewer.views.middle_part_view.current_presentation=this.current_presentation;
         CKPreviewer.views.middle_part_view.mode=1;
         CKPreviewer.views.middle_part_view.render();
+        $(document).foundation();
         CKEDITOR.replace('ckeditor',{
             height:500,
         });
@@ -252,6 +255,7 @@ CKPreviewer.Views.Actions = Backbone.View.extend({
             this.current_presentation = new_presentation;
             this.presentations.add(this.current_presentation);
             this.render();
+            $(document).foundation();
             $("#categories_grid").gridalicious({
                 gutter: 20,
                 width: 260,
@@ -569,6 +573,7 @@ CKPreviewer.Views.Images = Backbone.View.extend({
             }
         );
         CKPreviewer.views.images_view.render();
+        $(document).foundation();
     },
     // Open image editor
     editImg : function(e){
