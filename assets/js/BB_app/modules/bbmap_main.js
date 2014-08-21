@@ -107,16 +107,25 @@ bbmap.Views.Main = Backbone.View.extend({
     // Timeline gestion
     /////////////////////////////////////////
     backInTimeline : function(e){
-        e.preventDefault();alert('eee')
+        e.preventDefault();
+        console.log("back")
         this.timeline_pos = this.timeline_pos + 1;
         if(this.timeline_pos >= this.notifications.length) this.timeline_pos = this.notifications.length - 1;
-        else this.nextPrevActionController("back","timeline");
+        else{
+            console.log("level : ",this.timeline_pos);    
+            this.nextPrevActionController("back","timeline");
+        }
+        
     },
     advanceInTimeline : function(e){
-        e.preventDefault();alert('zzzz')
+        e.preventDefault();
+        console.log("next")
         this.timeline_pos = this.timeline_pos - 1;
         if(this.timeline_pos < 0) this.timeline_pos = 0;
-        else this.nextPrevActionController("go","timeline");
+        else{
+            console.log("level : ",this.timeline_pos);
+            this.nextPrevActionController("go","timeline");
+        } 
     },
     // timelineTravel : function(){
     //     var notif = this.notifications.toArray()[this.timeline_pos];
@@ -176,34 +185,44 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     backInHistory : function(e){
         e.preventDefault();
-        this.history_pos = this.history_pos + 1;
+        console.log("back")
         if(this.history_pos >= this.localHistory.length) this.history_pos = this.localHistory.length - 1;
-        else this.nextPrevActionController("back","history");
+        else{
+            console.log("level : ",this.history_pos);
+            this.nextPrevActionController("back","history");
+            this.history_pos = this.history_pos + 1;
+        } 
     },
     advanceInHistory : function(e){
         e.prev_actionentDefault();
-        this.history_pos = this.history_pos - 1;
+        console.log("next")
         if(this.history_pos < 0) this.history_pos = 0;
-        else this.nextPrevActionController("go","history");
+        else{
+            this.history_pos = this.history_pos - 1; 
+            console.log("level : ",this.history_pos);
+            this.nextPrevActionController("go","history"); 
+        } 
     },
     /////////////////////////////////////////
     // Action prev/next timeline/history gestion
     /////////////////////////////////////////
     nextPrevActionController : function(sens,from){
-        alert(sens," - ",from)
-        var historic = [];
+        var historic = {};
         if(from == "history") historic = localHistory.toArray()[this.history_pos];
         else if(from == "timeline") historic = this.notifications.toArray()[this.timeline_pos];
-        var action = history.get('action');
-        var type = action.get('object');
+        console.log("historic",historic)
+        var action = historic.get('action');
+        console.log(sens," - ",from," - ",action)
+        var type = historic.get('object');
         var model = new Backbone.Model();
         var save = true;
         if(this.mode == "timeline") save = false;
         // Creation du model
-        if(type == "Concept") model = new global.Models.ConceptModel(history.get('to'));
-        else if(type == "Knowledge") model = new global.Models.Knowledge(history.get('to'));
-        else if(type == "Poche") model = new global.Models.Poche(history.get('to'));
-        else if(type == "Link") model = new global.Models.CKLink(history.get('to'));
+        if(type == "Concept") model = new global.Models.ConceptModel(historic.get('to'));
+        else if(type == "Knowledge") model = new global.Models.Knowledge(historic.get('to'));
+        else if(type == "Poche") model = new global.Models.Poche(historic.get('to'));
+        else if(type == "Link") model = new global.Models.CKLink(historic.get('to'));
+        console.log("model id: ",model.get('id'),model.get('title'))
         // Control sens to chose the right action
         if(sens == "go"){
             if(action == "create"){
@@ -215,7 +234,6 @@ bbmap.Views.Main = Backbone.View.extend({
                 // remove model
                 console.log("action - remove");
                 this.removeModelToView(model,"history");
-                if(save == true) model.save();
             }else if(action == "update"){
                 // update model
                 console.log("action : update");
@@ -226,7 +244,6 @@ bbmap.Views.Main = Backbone.View.extend({
                 // remove model
                 console.log("action - remove");
                 this.removeModelToView(model,"history");
-                if(save == true) model.save();
             }else if(action == "remove"){
                 // create model
                 console.log("action : create")
@@ -908,6 +925,7 @@ bbmap.Views.Main = Backbone.View.extend({
     removeModelToView : function(model,from){
         var origin = "client";
         if(from) origin = from;
+        console.log(this.nodes_views[model.get('id')])
         this.nodes_views[model.get('id')].removeView();
     },
     addLinkToView : function(model,from){
