@@ -316,12 +316,6 @@ manager.Views.Main = Backbone.View.extend({
             project_id = e.target.getAttribute("data-id-project");
             project = this.projects.get(project_id);
             project.destroy();
-
-            _.each(this.concepts.where({project : project_id}), function(concept){
-                _this.concepts.remove(concept);
-                concept.destroy();
-            })
-
         }
     },
 
@@ -344,6 +338,7 @@ manager.Views.Main = Backbone.View.extend({
         });
     },
     render : function() {
+        this.users_rec_dic = global.Functions.getProjectsUsersDictionary(this.projects,this.permissions);
         $(this.el).html('');
         // Search bar
         $(this.el).append(this.template_search());
