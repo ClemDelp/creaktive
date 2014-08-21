@@ -34,6 +34,8 @@ bbmap.Views.Main = Backbone.View.extend({
         this.positionRef        = 550;
         this.color              = "gray";
         this.timeline_pos       = 0;
+        this.history_pos        = 0;
+        this.localHistory       = new global.Collections.LocalHistory();
         // Templates
         this.template_top = _.template($('#bbmap-top-element-template').html());
         this.template_bottom = _.template($('#bbmap-bottom-element-template').html());
@@ -98,82 +100,144 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .screenshot" : "screenshot",
         "click .downloadimage" : "downloadimage",
         "click #showMenu" : "eventMenu",
-        "click .prec" : "prec",
-        "click .next" : "next",
+        "click .prev" : "backInTimeline",
+        "click .next" : "advanceInTimeline",
     },
     /////////////////////////////////////////
-    // Timeline
+    // Timeline gestion
     /////////////////////////////////////////
-    prec : function(e){
-        e.preventDefault();
-
+    backInTimeline : function(e){
+        e.preventDefault();alert('eee')
         this.timeline_pos = this.timeline_pos + 1;
         if(this.timeline_pos >= this.notifications.length) this.timeline_pos = this.notifications.length - 1;
-        else this.timelineTravel();
+        else this.nextPrevActionController("back","timeline");
     },
-    next : function(e){
-        e.preventDefault();
-
+    advanceInTimeline : function(e){
+        e.preventDefault();alert('zzzz')
         this.timeline_pos = this.timeline_pos - 1;
         if(this.timeline_pos < 0) this.timeline_pos = 0;
-        else this.timelineTravel();
+        else this.nextPrevActionController("go","timeline");
     },
-    timelineTravel : function(){
-        var notif = this.notifications.toArray()[this.timeline_pos];
-        var action = notif.get('action');
-        var type = notif.get('object');
+    // timelineTravel : function(){
+    //     var notif = this.notifications.toArray()[this.timeline_pos];
+    //     var action = notif.get('action');
+    //     var type = notif.get('object');
+    //     var model = new Backbone.Model();
+    //     var save = false;
+    //     // Creation du model
+    //     if(type == "Concept") model = new global.Models.ConceptModel(notif.get('to'));
+    //     else if(type == "Knowledge") model = new global.Models.Knowledge(notif.get('to'));
+    //     else if(type == "Poche") model = new global.Models.Poche(notif.get('to'));
+    //     else if(type == "Link") model = new global.Models.CKLink(notif.get('to'));
+    //     // On check si l'element est deja dans le dom
+    //     var dom = $("#"+model.get('id')).length; // check if element is already present in dom or not
+    //     console.log("position: ",this.timeline_pos,"- action: ",action," on ",type,"- present in dom? ",dom);//,"- model: ",model);
+    //     // Actions
+    //     if((action == "create")&&(dom > 0)){
+    //         console.log("element present - update");
+    //         global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
+
+    //     }else if((action == "create")&&(dom == 0)){
+    //         console.log("element missing - create");
+    //         this.addModelToView(model,"timeline");
+    //         if(save == true) model.save();
+
+    //     }else if((action == "update")&&(dom > 0)){
+    //         console.log("element present - update");
+    //         global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
+
+    //     }else if((action == "update")&&(dom == 0)){
+    //         console.log("element missing - create");
+    //         this.addModelToView(model,"timeline");
+    //         if(save == true) model.save();
+
+    //     }else if((action == "remove")&&(dom > 0)){
+    //         console.log("element present - remove");
+    //         this.removeModelToView(model,"timeline");
+    //         if(save == true) model.save();
+
+    //     }else if((action == "remove")&&(dom == 0)){
+    //         console.log("element missing - nothing");
+    //     }
+    // },
+    /////////////////////////////////////////
+    // LocalHistory gestion
+    /////////////////////////////////////////
+    addActionToHistory : function(model,action){
+        var action = new global.Models.Action({
+            id : guid(),
+            object : model.get('type'),// concept / knowledge / poche / clink / ...
+            action : action,// create / update / remove
+            to : model,// model
+            date : getDate(),
+            project_id : ""
+        });
+        this.localHistory.add(action)
+    },
+    backInHistory : function(e){
+        e.preventDefault();
+        this.history_pos = this.history_pos + 1;
+        if(this.history_pos >= this.localHistory.length) this.history_pos = this.localHistory.length - 1;
+        else this.nextPrevActionController("back","history");
+    },
+    advanceInHistory : function(e){
+        e.prev_actionentDefault();
+        this.history_pos = this.history_pos - 1;
+        if(this.history_pos < 0) this.history_pos = 0;
+        else this.nextPrevActionController("go","history");
+    },
+    /////////////////////////////////////////
+    // Action prev/next timeline/history gestion
+    /////////////////////////////////////////
+    nextPrevActionController : function(sens,from){
+        alert(sens," - ",from)
+        var historic = [];
+        if(from == "history") historic = localHistory.toArray()[this.history_pos];
+        else if(from == "timeline") historic = this.notifications.toArray()[this.timeline_pos];
+        var action = history.get('action');
+        var type = action.get('object');
         var model = new Backbone.Model();
         var save = true;
         if(this.mode == "timeline") save = false;
         // Creation du model
-        if(type == "Concept") model = new global.Models.ConceptModel(notif.get('to'));
-        else if(type == "Knowledge") model = new global.Models.Knowledge(notif.get('to'));
-        else if(type == "Poche") model = new global.Models.Poche(notif.get('to'));
-        else if(type == "Poche") model = new global.Models.CKLink(notif.get('to'));
-        // On check si l'element est deja dans le dom
-        var dom = $("#"+model.get('id')).length; // check if element is already present in dom or not
-        console.log("position: ",this.timeline_pos,"- action: ",action," on ",type,"- present in dom? ",dom);//,"- model: ",model);
-        // Actions
-        if((action == "create")&&(dom > 0)){
-            console.log("element present - update");
-            global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
-
-        }else if((action == "create")&&(dom == 0)){
-            console.log("element missing - create");
-            this.addModelToView(model,"timeline");
-            if(save == true) model.save();
-
-        }else if((action == "update")&&(dom > 0)){
-            console.log("element present - update");
-            global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
-
-        }else if((action == "update")&&(dom == 0)){
-            console.log("element missing - create");
-            this.addModelToView(model,"timeline");
-            if(save == true) model.save();
-
-        }else if((action == "remove")&&(dom > 0)){
-            console.log("element present - remove");
-            this.removeModelToView(model,"timeline");
-            if(save == true) model.save();
-
-        }else if((action == "remove")&&(dom == 0)){
-            console.log("element missing - nothing");
+        if(type == "Concept") model = new global.Models.ConceptModel(history.get('to'));
+        else if(type == "Knowledge") model = new global.Models.Knowledge(history.get('to'));
+        else if(type == "Poche") model = new global.Models.Poche(history.get('to'));
+        else if(type == "Link") model = new global.Models.CKLink(history.get('to'));
+        // Control sens to chose the right action
+        if(sens == "go"){
+            if(action == "create"){
+                // create model
+                console.log("action : create")
+                this.addModelToView(model,"history");
+                if(save == true) model.save();
+            }else if(action == "remove"){
+                // remove model
+                console.log("action - remove");
+                this.removeModelToView(model,"history");
+                if(save == true) model.save();
+            }else if(action == "update"){
+                // update model
+                console.log("action : update");
+                global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
+            }
+        }else if(sens == "back"){
+            if(action == "create"){
+                // remove model
+                console.log("action - remove");
+                this.removeModelToView(model,"history");
+                if(save == true) model.save();
+            }else if(action == "remove"){
+                // create model
+                console.log("action : create")
+                this.addModelToView(model,"history");
+                if(save == true) model.save();
+            }else if(action == "update"){
+                // update model
+                console.log("action : update");
+                global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
+            }
         }
-    },
-    timelineAdd : function(){
-        this.timeline_pos = this.timeline_pos + 1;
-        // si je suis en precedent (dans le passé) et que j'édit quelque chose il faut supprimer toutes les notifs suivantes car le futur a changé
-        var n = this.timeline_pos;
-        while(n>0){
-            alert(n);
-            this.notifications.shift();
-            n = n - 1;
-        }
-        this.timeline_pos = 0;
-    },
-    timelineRemove : function(){
-        this.timeline_pos = this.timeline_pos - 1;
     },
     /////////////////////////////////////////
     // Overlays sur les connections

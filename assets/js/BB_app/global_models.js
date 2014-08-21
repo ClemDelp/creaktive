@@ -187,6 +187,22 @@ global.Models.NotificationModel = Backbone.Model.extend({
     }
 });
 /***************************************/
+global.Models.Action = Backbone.Model.extend({
+    defaults : {
+        id:"",
+        object : "",// concept / knowledge / poche / clink / ...
+        action : "",// create / update / remove
+        to : "",// model
+        date : getDate(),
+        project_id : ""
+    },
+    initialize : function Action() {
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+/***************************************/
 global.Models.PermissionModel = Backbone.Model.extend({
     defaults : {
         id : "",

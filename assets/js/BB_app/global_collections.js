@@ -158,6 +158,15 @@ global.Collections.NotificationsCollection = Backbone.Collection.extend({
     }
 });
 /***************************************/
+global.Collections.LocalHistory = Backbone.Collection.extend({
+    model : global.Models.Action,
+    initialize : function() {
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+/***************************************/
 global.Collections.Backups = Backbone.Collection.extend({
     model : global.Models.Backup,
     initialize : function() {
