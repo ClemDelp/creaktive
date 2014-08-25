@@ -111,21 +111,22 @@ bbmap.Views.Node = Backbone.View.extend({
         return position;
     },
     savePosition: function(e){
-        var position = this.getPosition();
-        if((position.top != 0)&&($(this.el).position().left != 0)){
-            // Si la view n'a pas été supprimée on save
-            var before_change = this.model.clone();
-            this.model.save({
-                top:position.top / bbmap.zoom.get('val'),
-                left:position.left / bbmap.zoom.get('val')
-            });   
-            var after_change = this.model.clone();
-            global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
-            //console.log(this.model.get('top'),this.model.get('left'))
+        if(bbmap.views.main.mode == "edit"){
+            var position = this.getPosition();
+            if((position.top != 0)&&($(this.el).position().left != 0)){
+                // Si la view n'a pas été supprimée on save
+                var before_change = this.model.clone();
+                this.model.save({
+                    top:position.top / bbmap.zoom.get('val'),
+                    left:position.left / bbmap.zoom.get('val')
+                });   
+                var after_change = this.model.clone();
+                global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
+                //console.log(this.model.get('top'),this.model.get('left'))
+            }
+            ////console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
+            //bbmap.views.main.reorganizeTree(this.model.get('id'))       
         }
-        ////console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
-        //bbmap.views.main.reorganizeTree(this.model.get('id'))
-        
     },
     addConceptChild : function(e){
         e.preventDefault();

@@ -112,15 +112,22 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Timeline gestion
     /////////////////////////////////////////
+    initTimelineHistoryParameters : function(){
+        this.timeline_pos       = 0;
+        this.history_pos        = 0;
+        this.sens               = "init";
+    },
     timelineSliderChange : function(p){
         var max = this.notifications.length;
         var new_pos = parseInt((p*max)/100);
         if(new_pos == max) new_pos = max -1;
         if(new_pos > this.timeline_pos) this.sens = "go"; 
         else if(new_pos < this.timeline_pos) this.sens = "back";
-        this.timeline_pos = new_pos;
-        console.log('sens : ',this.sens,'- pos : ',this.timeline_pos," - max : ",max,' - new pos : ',new_pos)
-        this.nextPrevActionController(this.sens,"timeline");
+        if(this.timeline_pos != new_pos){
+            this.timeline_pos = new_pos;
+            console.log('sens : ',this.sens,'- pos : ',this.timeline_pos," - max : ",max,' - new pos : ',new_pos)
+            this.nextPrevActionController(this.sens,"timeline");
+        }
     },
     backInTimeline : function(e){
         e.preventDefault();
@@ -189,7 +196,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var action = historic.get('action');
         //console.log(sens," - ",from," - ",action)
         var type = historic.get('object');
-        var save = true;
+        var save = false;
         if(this.mode == "timeline") save = false;
         var model = this.getTimelineHitoryModel(historic,type,sens,action);
         // Control sens to chose the right action
@@ -918,7 +925,7 @@ bbmap.Views.Main = Backbone.View.extend({
     removeModelToView : function(model,from){
         var origin = "client";
         if(from) origin = from;
-        console.log(this.nodes_views[model.get('id')])
+        //console.log(this.nodes_views[model.get('id')])
         this.nodes_views[model.get('id')].removeView();
     },
     addLinkToView : function(model,from){
@@ -1208,8 +1215,9 @@ bbmap.Views.Main = Backbone.View.extend({
                 }
               }
             });
-            $('#timelineSlider').foundation('slider', 'set_value', 100);
+            $('#timelineSlider').foundation('slider', 'set_value', 0);
         }
+        this.initTimelineHistoryParameters();
 
         return this;
     }
