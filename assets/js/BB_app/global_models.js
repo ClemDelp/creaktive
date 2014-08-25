@@ -160,10 +160,6 @@ global.Models.User = Backbone.Model.extend({
         });
     },
 });
-/*-----------------------------------------------------------------*/
-/*Model*/
-/*-----------------------------------------------------------------*/
-
 /***************************************/
 global.Models.NotificationModel = Backbone.Model.extend({
     defaults : {
@@ -172,7 +168,8 @@ global.Models.NotificationModel = Backbone.Model.extend({
         object : "",// concept / knowledge / poche / clink / ...
         action : "",// create / update / remove
         content : "",//description de la notification: "mise à jour sur le post"
-        to : "",// model
+        to : "", // new model version
+        old : "", // old model version
         from : "",// Qui est à l'origine: utilisateur, mise à jour, ...
         date : getDate(),
         project_id : "",
@@ -193,6 +190,7 @@ global.Models.Action = Backbone.Model.extend({
         object : "",// concept / knowledge / poche / clink / ...
         action : "",// create / update / remove
         to : "",// model
+        old : "",
         date : getDate(),
         project_id : ""
     },

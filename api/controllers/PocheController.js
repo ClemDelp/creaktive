@@ -30,13 +30,13 @@
 },
 
 update : function(req, res){
-  Poche.findOne(req.body.params.id).done(function(err, concept){
+  Poche.findOne(req.body.params.id).done(function(err, poche){
     if(err) res.send(err);
-    if(concept){
+    if(poche){
       Poche.update({id: req.body.params.id}, req.body.params).done(function(err,c){
           if(err) res.send(err);
           req.socket.broadcast.to(req.session.currentProject.id).emit("poche:update", c[0]);
-          Notification.objectUpdated(req,res,"Poche", c[0], function(notification){
+          Notification.objectUpdated(req,res,"Poche", c[0], poche, function(notification){
             res.send(notification);
           });
           res.send(c[0]);   

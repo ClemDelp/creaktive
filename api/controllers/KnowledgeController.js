@@ -42,7 +42,7 @@
   			Knowledge.update({id: req.body.params.id}, req.body.params).done(function(err,c){
   				if(err) res.send(err);
           req.socket.broadcast.to(req.session.currentProject.id).emit("knowledge:update", c[0]);
-          Notification.objectUpdated(req,res,"Knowledge", c[0], function(notification){
+          Notification.objectUpdated(req,res,"Knowledge", c[0], knowledge, function(notification){
             res.send(notification);
           });
 

@@ -15,6 +15,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.discussionModel_el = $(this.el).find('#discussionModel');
         this.activitiesModel_el = $(this.el).find('#activitiesModel');
         this.css3Model_el = $(this.el).find('#css3Model');
+        ////////////////////////////////
         // Objects
         this.knowledges         = json.knowledges;
         this.concepts           = json.concepts;
@@ -28,14 +29,19 @@ bbmap.Views.Main = Backbone.View.extend({
         this.mode               = json.mode;
         this.filter             = json.filter;
         this.notifications      = json.notifications;
+        ////////////////////////////////
         // Parameters
         this.isopen             = false;
         this.ckOperator         = true;
         this.positionRef        = 550;
         this.color              = "gray";
+        ////////////////////////////////
+        // Timeline & history parameter
         this.timeline_pos       = 0;
         this.history_pos        = 0;
         this.localHistory       = new global.Collections.LocalHistory();
+        this.sens               = "init";
+        ////////////////////////////////
         // Templates
         this.template_top = _.template($('#bbmap-top-element-template').html());
         this.template_bottom = _.template($('#bbmap-bottom-element-template').html());
@@ -106,69 +112,38 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Timeline gestion
     /////////////////////////////////////////
+    timelineSliderChange : function(p){
+        var max = this.notifications.length;
+        var new_pos = parseInt((p*max)/100);
+        if(new_pos == max) new_pos = max -1;
+        if(new_pos > this.timeline_pos) this.sens = "go"; 
+        else if(new_pos < this.timeline_pos) this.sens = "back";
+        this.timeline_pos = new_pos;
+        console.log('sens : ',this.sens,'- pos : ',this.timeline_pos," - max : ",max,' - new pos : ',new_pos)
+        this.nextPrevActionController(this.sens,"timeline");
+    },
     backInTimeline : function(e){
         e.preventDefault();
         console.log("back")
-        this.timeline_pos = this.timeline_pos + 1;
+        if(this.sens == "back") this.timeline_pos = this.timeline_pos + 1;
         if(this.timeline_pos >= this.notifications.length) this.timeline_pos = this.notifications.length - 1;
         else{
             console.log("level : ",this.timeline_pos);    
             this.nextPrevActionController("back","timeline");
         }
-        
+        if(this.sens != "back")this.sens = "back"; 
     },
     advanceInTimeline : function(e){
         e.preventDefault();
         console.log("next")
-        this.timeline_pos = this.timeline_pos - 1;
+        if(this.sens == "next") this.timeline_pos = this.timeline_pos - 1;
         if(this.timeline_pos < 0) this.timeline_pos = 0;
         else{
             console.log("level : ",this.timeline_pos);
             this.nextPrevActionController("go","timeline");
-        } 
+        }
+        if(this.sens != "next")this.sens = "next";
     },
-    // timelineTravel : function(){
-    //     var notif = this.notifications.toArray()[this.timeline_pos];
-    //     var action = notif.get('action');
-    //     var type = notif.get('object');
-    //     var model = new Backbone.Model();
-    //     var save = false;
-    //     // Creation du model
-    //     if(type == "Concept") model = new global.Models.ConceptModel(notif.get('to'));
-    //     else if(type == "Knowledge") model = new global.Models.Knowledge(notif.get('to'));
-    //     else if(type == "Poche") model = new global.Models.Poche(notif.get('to'));
-    //     else if(type == "Link") model = new global.Models.CKLink(notif.get('to'));
-    //     // On check si l'element est deja dans le dom
-    //     var dom = $("#"+model.get('id')).length; // check if element is already present in dom or not
-    //     console.log("position: ",this.timeline_pos,"- action: ",action," on ",type,"- present in dom? ",dom);//,"- model: ",model);
-    //     // Actions
-    //     if((action == "create")&&(dom > 0)){
-    //         console.log("element present - update");
-    //         global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
-
-    //     }else if((action == "create")&&(dom == 0)){
-    //         console.log("element missing - create");
-    //         this.addModelToView(model,"timeline");
-    //         if(save == true) model.save();
-
-    //     }else if((action == "update")&&(dom > 0)){
-    //         console.log("element present - update");
-    //         global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
-
-    //     }else if((action == "update")&&(dom == 0)){
-    //         console.log("element missing - create");
-    //         this.addModelToView(model,"timeline");
-    //         if(save == true) model.save();
-
-    //     }else if((action == "remove")&&(dom > 0)){
-    //         console.log("element present - remove");
-    //         this.removeModelToView(model,"timeline");
-    //         if(save == true) model.save();
-
-    //     }else if((action == "remove")&&(dom == 0)){
-    //         console.log("element missing - nothing");
-    //     }
-    // },
     /////////////////////////////////////////
     // LocalHistory gestion
     /////////////////////////////////////////
@@ -210,51 +185,69 @@ bbmap.Views.Main = Backbone.View.extend({
         var historic = {};
         if(from == "history") historic = localHistory.toArray()[this.history_pos];
         else if(from == "timeline") historic = this.notifications.toArray()[this.timeline_pos];
-        console.log("historic",historic)
+        //console.log("historic",historic)
         var action = historic.get('action');
-        console.log(sens," - ",from," - ",action)
+        //console.log(sens," - ",from," - ",action)
         var type = historic.get('object');
-        var model = new Backbone.Model();
         var save = true;
         if(this.mode == "timeline") save = false;
-        // Creation du model
-        if(type == "Concept") model = new global.Models.ConceptModel(historic.get('to'));
-        else if(type == "Knowledge") model = new global.Models.Knowledge(historic.get('to'));
-        else if(type == "Poche") model = new global.Models.Poche(historic.get('to'));
-        else if(type == "Link") model = new global.Models.CKLink(historic.get('to'));
-        console.log("model id: ",model.get('id'),model.get('title'))
+        var model = this.getTimelineHitoryModel(historic,type,sens,action);
         // Control sens to chose the right action
         if(sens == "go"){
             if(action == "create"){
                 // create model
-                console.log("action : create")
+                // console.log("action : create")
                 this.addModelToView(model,"history");
                 if(save == true) model.save();
             }else if(action == "remove"){
                 // remove model
-                console.log("action - remove");
+                // console.log("action - remove");
                 this.removeModelToView(model,"history");
             }else if(action == "update"){
                 // update model
-                console.log("action : update");
+                // console.log("action : update");
                 global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
             }
         }else if(sens == "back"){
             if(action == "create"){
                 // remove model
-                console.log("action - remove");
+                // console.log("action - remove");
                 this.removeModelToView(model,"history");
             }else if(action == "remove"){
                 // create model
-                console.log("action : create")
+                // console.log("action : create")
                 this.addModelToView(model,"history");
                 if(save == true) model.save();
             }else if(action == "update"){
                 // update model
-                console.log("action : update");
+                // console.log("action : update");
                 global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
             }
         }
+    },
+    getTimelineHitoryModel : function(historic,type,sens,action){
+        // Creation du model
+        var model = new Backbone.Model();
+        if((action == "update")&&(sens == "go")){
+            if(type == "Concept") model = new global.Models.ConceptModel(historic.get('to'));
+            else if(type == "Knowledge") model = new global.Models.Knowledge(historic.get('to'));
+            else if(type == "Poche") model = new global.Models.Poche(historic.get('to'));
+            else if(type == "Link") model = new global.Models.CKLink(historic.get('to'));
+            console.log("sens : go - get next model - model id: ",model.get('id'),model.get('title'));
+        }else if((action == "update")&&(sens == "back")){
+            if(type == "Concept") model = new global.Models.ConceptModel(historic.get('old'));
+            else if(type == "Knowledge") model = new global.Models.Knowledge(historic.get('old'));
+            else if(type == "Poche") model = new global.Models.Poche(historic.get('old'));
+            else if(type == "Link") model = new global.Models.CKLink(historic.get('old'));
+            console.log("sens : back - get old model - model id: ",model.get('id'),model.get('title'));
+        }else{
+            if(type == "Concept") model = new global.Models.ConceptModel(historic.get('to'));
+            else if(type == "Knowledge") model = new global.Models.Knowledge(historic.get('to'));
+            else if(type == "Poche") model = new global.Models.Poche(historic.get('to'));
+            else if(type == "Link") model = new global.Models.CKLink(historic.get('to'));
+            console.log("model id: ",model.get('id'),model.get('title'));
+        }
+        return model;
     },
     /////////////////////////////////////////
     // Overlays sur les connections
@@ -1206,6 +1199,17 @@ bbmap.Views.Main = Backbone.View.extend({
         });
 
         // $("#map_container").height(bbmap.window_height);
+
+        if(this.mode == "timeline"){
+            $(document).foundation({
+              slider: {
+                on_change: function(){
+                    bbmap.views.main.timelineSliderChange($('#timelineSlider').attr('data-slider'));
+                }
+              }
+            });
+            $('#timelineSlider').foundation('slider', 'set_value', 100);
+        }
 
         return this;
     }

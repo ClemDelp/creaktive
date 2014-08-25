@@ -66,6 +66,19 @@
 
 <script type="text/template" id="bbmap-bottom-element-template">
   <span id="bbmap_bottom_ui">
+    {{ if(mode == "timeline"){ }}
+      <div class="row">
+        <div class="small-10 medium-11 columns">
+          <div class="range-slider" id="timelineSlider" data-slider data-options="start: 0; end: 100;display_selector: #sliderOutput3;">
+            <span class="range-slider-handle" role="slider" tabindex="0"></span>
+            <span class="range-slider-active-segment"></span>
+          </div>
+        </div>
+        <div class="small-2 medium-1 columns">
+          <span id="sliderOutput3"></span>
+        </div>
+      </div>
+    {{ } }}
     <center>
       <img title="zoom-in" src="/img/icones/Filter.png"/> 
       <select id="filterSelection" class="large-1 medium-1 small-1">
@@ -94,16 +107,8 @@
         {{ if((filter == "k")||(filter == "ck")||(filter == "ckp")||(filter == "kp")){ }}
           <a href="#" id="dropK" style="{{- bbmap.css_knowledge_default }}"  class="dropK" title="click and drop to create a new knowledge">+K<img title="zoom-in" src="/img/icones/Drag.png"/></a>
         {{ } }}
-      {{ } }}
-      
+      {{ } }}  
     </center>
-    {{ if(mode == "timeline"){ }}
-      <div class="range-slider" data-slider>
-        <span class="range-slider-handle"></span>
-        <span class="range-slider-active-segment"></span>
-        <input type="hidden">
-      </div>
-    {{ } }}
   </span>
 </script>
 

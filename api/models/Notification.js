@@ -38,7 +38,7 @@
   	})
   },
 
-  objectUpdated : function(req,res, object, to, cb){
+  objectUpdated : function(req,res, object, to, old, cb){
     var content ="";
 
     if(req.body.action.length == 0 || _.indexOf(req.body.action, "css") > -1) return;
@@ -55,6 +55,7 @@
       action : "update",
       content : content,
       to : to,
+      old : old,
       date : IdService.getDate(),
       read : [req.session.user.id],
       project_id : req.session.currentProject.id,
