@@ -67,6 +67,7 @@ var bbmap = {
       eventAggregator : global.eventAggregator,
       notifications   : global.collections.Notifications,
       mode            : mode,
+      init            : true,
       filter          : filter
 
     });

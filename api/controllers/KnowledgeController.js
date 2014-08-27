@@ -15,7 +15,7 @@
 
   find : function (req,res){
 
-    if(req.body.params.projectId){
+    if(req.session.currentProject){
 
       Knowledge.find({
         project : req.session.currentProject.id

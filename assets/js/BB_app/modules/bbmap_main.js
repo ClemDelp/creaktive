@@ -29,6 +29,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.mode               = json.mode;
         this.filter             = json.filter;
         this.notifications      = json.notifications;
+        this.init               = json.init; // if true mean launch for the first time
         ////////////////////////////////
         // Parameters
         this.isopen             = false;
@@ -1135,89 +1136,123 @@ bbmap.Views.Main = Backbone.View.extend({
             });    
         }
     },
-    render : function(){        
+    render : function(){  
+        var _this = this;
+        this.map_el.empty();      
         ///////////////////////
         // init
-        if(this.nodes_views){
-            _.each(this.nodes_views,function(view){
-                view.removeView();
-            });
-            this.nodes_views = {};
-        }
-        this.instance.unbind('connection');
-        this.instance.unbind('click');
-        this.instance.unbind('beforeDetach');
-        this.instance.unbind('beforeDrop')
-        var _this = this;
-        this.map_el.empty();
-        ///////////////////////
-        // Action bar
-        this.renderActionBar();
-        $(this.el).append(this.template_joyride());
-        ///////////////////////
-        // Modes
-        if(this.filter == "c"){
-            this.renderConceptsBulle();
-        }
-        else if(this.filter == "k"){
-            this.renderKnowledgesBulle();
-        }
-        else if(this.filter == "p"){
-            this.renderPochesBulle();
-        }
-        else if(this.filter == "ck"){
-            this.renderConceptsBulle();
-            this.renderKnowledgesBulle();
-            this.renderCKLinks();
-        }
-        else if(this.filter == "kp"){
-            this.renderKnowledgesBulle();
-            this.renderPochesBulle();   
-            this.renderCKLinks();
-        }
-        else if(this.filter == "ckp"){
-            this.renderConceptsBulle();
-            this.renderKnowledgesBulle();
-            this.renderPochesBulle();
-            this.renderCKLinks();
-        }
-        ///////////////////////
-        if(this.mode == "edit") this.showOverLays();
-        else this.hideOverLays();
-        ///////////////////////
-        // Initialize jsPlumb events
-        this.jsPlumbEventsInit();
-        ///////////////////////
-        $( "#map" ).draggable();
-        // css3 generator
-        if(bbmap.views.css3)bbmap.views.css3.remove();
-        bbmap.views.css3 = new CSS3GENERATOR.Views.Main();
-        // CSS3 Button generator
-        this.css3Model_el.html(bbmap.views.css3.render().el);
-        CSS3GENERATOR.attach_handlers();
-        CSS3GENERATOR.initialize_controls();
-        CSS3GENERATOR.update_styles();
-
-
-        $.get('/BBmap/image', function(hasChanged){
-            if (_this.project.image == undefined || _this.project.image=="" || hasChanged == true){
-                _this.screenshot(true);
-            }
-        });
-
-        // $("#map_container").height(bbmap.window_height);
-
-        if(this.mode == "timeline"){
-            $(document).foundation({
-              slider: {
-                on_change: function(){
-                    bbmap.views.main.timelineSliderChange($('#timelineSlider').attr('data-slider'));
+        if((this.init == false)&&(this.sens != "init")){ // Si on change de mode et on a utiliser le prev/next de la timeline ou de l'historic
+            console.log("--Mode ",this.mode," activated")
+            console.log("----start global fetching process...")
+            bbmap.views.main.concepts.fetch({
+                error: function () {},
+                success: function () {console.log("------concept fetched...");},
+                complete: function () {
+                    bbmap.views.main.knowledges.fetch({
+                        error: function () {},
+                        success: function () {console.log("------knowledges fetched...");},
+                        complete: function () {
+                            bbmap.views.main.poches.fetch({
+                                error: function () {},
+                                success: function () {console.log("------poches fetched...");},
+                                complete: function () {
+                                    bbmap.views.main.links.fetch({
+                                        error: function () {},
+                                        success: function () {console.log("------links fetched...");},
+                                        complete: function () {
+                                            console.log('----global fetching process done')
+                                            bbmap.views.main.init = true;
+                                            bbmap.views.main.render();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
                 }
-              }
             });
-            $('#timelineSlider').foundation('slider', 'set_value', 0);
+        }else{
+            // On supprime toutes les vues + les events sur tous les objets
+            if(this.nodes_views){
+                _.each(this.nodes_views,function(view){
+                    view.removeView();
+                });
+                this.nodes_views = {};
+            }
+            this.instance.unbind('connection');
+            this.instance.unbind('click');
+            this.instance.unbind('beforeDetach');
+            this.instance.unbind('beforeDrop')
+            ///////////////////////
+            // Action bar
+            this.renderActionBar();
+            $(this.el).append(this.template_joyride());
+            ///////////////////////
+            // Modes
+            if(this.filter == "c"){
+                this.renderConceptsBulle();
+            }
+            else if(this.filter == "k"){
+                this.renderKnowledgesBulle();
+            }
+            else if(this.filter == "p"){
+                this.renderPochesBulle();
+            }
+            else if(this.filter == "ck"){
+                this.renderConceptsBulle();
+                this.renderKnowledgesBulle();
+                this.renderCKLinks();
+            }
+            else if(this.filter == "kp"){
+                this.renderKnowledgesBulle();
+                this.renderPochesBulle();   
+                this.renderCKLinks();
+            }
+            else if(this.filter == "ckp"){
+                this.renderConceptsBulle();
+                this.renderKnowledgesBulle();
+                this.renderPochesBulle();
+                this.renderCKLinks();
+            }
+            ///////////////////////
+            if(this.mode == "edit") this.showOverLays();
+            else this.hideOverLays();
+            ///////////////////////
+            // Initialize jsPlumb events
+            this.jsPlumbEventsInit();
+            ///////////////////////
+            $( "#map" ).draggable();
+            // css3 generator
+            if(bbmap.views.css3)bbmap.views.css3.remove();
+            bbmap.views.css3 = new CSS3GENERATOR.Views.Main();
+            // CSS3 Button generator
+            this.css3Model_el.html(bbmap.views.css3.render().el);
+            CSS3GENERATOR.attach_handlers();
+            CSS3GENERATOR.initialize_controls();
+            CSS3GENERATOR.update_styles();
+
+
+            $.get('/BBmap/image', function(hasChanged){
+                if (_this.project.image == undefined || _this.project.image=="" || hasChanged == true){
+                    _this.screenshot(true);
+                }
+            });
+
+            // $("#map_container").height(bbmap.window_height);
+
+            if(this.mode == "timeline"){
+                $(document).foundation({
+                  slider: {
+                    on_change: function(){
+                        bbmap.views.main.timelineSliderChange($('#timelineSlider').attr('data-slider'));
+                    }
+                  }
+                });
+                $('#timelineSlider').foundation('slider', 'set_value', 0);
+            }
+            this.initTimelineHistoryParameters();
+            this.init = false;   
         }
-        this.initTimelineHistoryParameters();
 
         return this;
     }

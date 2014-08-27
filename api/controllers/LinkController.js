@@ -14,7 +14,7 @@
   */
 
   find : function (req,res){
-    if(req.body.params.projectId){
+    if(req.session.currentProject){
       Link.find({
       project : req.session.currentProject.id
     }).done(function(err,links){

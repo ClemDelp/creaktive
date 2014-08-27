@@ -10,7 +10,7 @@
 
   find : function (req,res){
     
-    if(req.body.params.projectId){
+    if(req.session.currentProject){
     Concept.find({
       project : req.session.currentProject.id
     }).done(function(err,concepts){
