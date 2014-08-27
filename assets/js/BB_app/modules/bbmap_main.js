@@ -193,44 +193,27 @@ bbmap.Views.Main = Backbone.View.extend({
         var historic = {};
         if(from == "history") historic = localHistory.toArray()[this.history_pos];
         else if(from == "timeline") historic = this.notifications.toArray()[this.timeline_pos];
-        //console.log("historic",historic)
         var action = historic.get('action');
-        //console.log(sens," - ",from," - ",action)
         var type = historic.get('object');
         var save = false;
         if(this.mode == "timeline") save = false;
         var model = this.getTimelineHitoryModel(historic,type,sens,action);
         // Control sens to chose the right action
-        if(sens == "go"){
-            if(action == "create"){
-                // create model
-                // console.log("action : create")
-                this.addModelToView(model,"history");
-                if(save == true) model.save();
-            }else if(action == "remove"){
-                // remove model
-                // console.log("action - remove");
-                this.removeModelToView(model,"history");
-            }else if(action == "update"){
-                // update model
-                // console.log("action : update");
-                global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
-            }
-        }else if(sens == "back"){
-            if(action == "create"){
-                // remove model
-                // console.log("action - remove");
-                this.removeModelToView(model,"history");
-            }else if(action == "remove"){
-                // create model
-                // console.log("action : create")
-                this.addModelToView(model,"history");
-                if(save == true) model.save();
-            }else if(action == "update"){
-                // update model
-                // console.log("action : update");
-                global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
-            }
+        if(((sens == "go")&&(action == "create")&&(type != "Link"))||((sens == "back")&&(action == "remove")&&(type != "Link"))){
+            this.addModelToView(model,"history");
+            if(save == true) model.save();
+        }
+        else if(((sens == "go")&&(action == "create")&&(type == "Link"))||((sens == "back")&&(action == "remove")&&(type == "Link"))){
+            this.addLinkToView(model);
+        }
+        else if(((sens == "go")&&(action == "remove")&&(type != "Link"))||((sens == "back")&&(action == "create")&&(type != "Link"))){
+            this.removeModelToView(model,"history");
+        }
+        else if(((sens == "go")&&(action == "remove")&&(type == "Link"))||((sens == "back")&&(action == "create")&&(type == "Link"))){
+            this.removeLinkToView(model);
+        }
+        else if(action == "update"){
+            global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
         }
     },
     getTimelineHitoryModel : function(historic,type,sens,action){

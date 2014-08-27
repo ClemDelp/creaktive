@@ -41,14 +41,19 @@ bbmap.Views.Node = Backbone.View.extend({
         bbmap.views.main.startJoyride();
     },
     actualize : function(model,save){
+        var old_id_father = this.model.get('id_father');
+        var new_id_father = model.id_father;
         this.model.set({
             top: model.top,
             left: model.left,
             title: model.title,
-            css: model.css
+            css: model.css,
+            id_father : model.id_father
         });
         if((save)&&(save == true))this.model.save();
         this.applyStyle();
+        if((old_id_father != new_id_father)&&(new_id_father == "none")) this.removeLink(old_id_father);
+        else if((old_id_father != new_id_father)&&(new_id_father != "none")) this.addSimpleLink(new_id_father);
     },
     followFather : function(oldFather,father){
         //alert(this.model.get('title')+' - follow its father');
@@ -79,7 +84,6 @@ bbmap.Views.Node = Backbone.View.extend({
         var style = 'top:' + top + 'px; left : ' + left + 'px;' + this.model.get('css');
         $(this.el).attr('style',style)
         bbmap.views.main.instance.repaint(this.model.get('id'));
-
     },
     cssPosition : function(top,left){
         var styles = {
@@ -210,6 +214,21 @@ bbmap.Views.Node = Backbone.View.extend({
         bbmap.views.main.instance.removeAllEndpoints($(this.el));
         bbmap.views.main.instance.detachAllConnections($(this.el));
         this.close();
+    },
+    removeLink : function(father_id){
+        // Remove link in both sens beetween this el and his id_father
+        var model_id = this.model.get('id')
+        var connections = bbmap.views.main.instance.getAllConnections();
+        connections.forEach(function(conn){
+            console.log(model_id,father_id)
+            if((conn.targetId == model_id)&&(conn.sourceId == father_id))conn.setVisible(false); // bbmap.views.main.instance.detach({source:source, target:target, fireEvent:false});
+            if((conn.targetId == father_id)&&(conn.sourceId == model_id))conn.setVisible(false); // bbmap.views.main.instance.detach({source:source, target:target, fireEvent:false});
+        })
+    },
+    addSimpleLink : function(father_id){
+        // Remove link in both sens beetween this el and his id_father
+        var model_id = this.model.get('id')
+        bbmap.views.main.instance.connect({uuids:[father_id+"-bottom", model_id+"-top" ]}); 
     },
     /////////////////////////////////////////
     // 
