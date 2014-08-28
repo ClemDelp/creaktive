@@ -8,11 +8,11 @@
 }*/
 #togetherjs-dock.togetherjs-dock-right {
 padding: 0;
-bottom: 70%;
+bottom: 10%;
 left: 5px;
 border-radius: 4px;
 height: auto;
-width: 50px;
+width: 30px;
 }
 
 #togetherjs-dock {

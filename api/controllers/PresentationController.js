@@ -59,9 +59,9 @@ module.exports = {
       if(presentation){
       Presentation.update({id: req.body.params.id}, req.body.params).done(function(err,s){
         if(err) res.send(err);
-        Notification.objectUpdated(req,res,"Presentation", s[0], function(notification){
-          res.send(notification);
-        });
+        // Notification.objectUpdated(req,res,"Presentation", s[0], function(notification){
+        //   res.send(notification);
+        // });
         res.send(s[0]);   
         });
       ///////////////////////
