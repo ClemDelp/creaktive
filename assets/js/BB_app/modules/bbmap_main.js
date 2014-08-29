@@ -905,7 +905,8 @@ bbmap.Views.Main = Backbone.View.extend({
         this.map_el.append(new_view.render().el);
         new_view.addEndpoint();
         new_view.makeTarget();
-        this.instance.draggable($(new_view.el));
+
+        this.instance.draggable($(new_view.el),{ containment: "#map", scroll: false });
         this.nodes_views[model.get('id')] = new_view;
         new_view.addLink();
         if(origin == "client") this.startJoyride();
@@ -1045,7 +1046,7 @@ bbmap.Views.Main = Backbone.View.extend({
             // });
             // Draggable
             this.concepts.forEach(function(model){
-                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el));
+                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el),{ containment: "#map", scroll: false });
             });
         }
     },
@@ -1074,7 +1075,7 @@ bbmap.Views.Main = Backbone.View.extend({
             });
             // Draggable
             this.knowledges.forEach(function(model){
-                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el));
+                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el),{ containment: "#map", scroll: false });
             });
         }
     },
@@ -1103,7 +1104,7 @@ bbmap.Views.Main = Backbone.View.extend({
             });
             // Draggable
             this.poches.forEach(function(model){
-                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el));
+                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el),{ containment: "#map", scroll: false });
             });
         }
     },
