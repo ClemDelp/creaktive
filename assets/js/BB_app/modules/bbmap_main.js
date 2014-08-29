@@ -938,13 +938,12 @@ bbmap.Views.Main = Backbone.View.extend({
         ///////////////////////
         // New link process
         this.instance.bind("beforeDrop", function(conn) {
-            // if(_this.concepts.get(conn.targetId).get('id_father') != "none"){
-            //     alert("This concept already has a parent, please remove the old relationship before assign a new parent");
-            //     return false;
-            // }else{
-            //     return true;
-            // }
-            return true;   
+            if(conn.targetId == conn.sourceId){
+                alert('impossible to link an object to itself');
+                return false;
+            }else{
+                return true;
+            }
         });
         this.instance.bind("connection", function(info, originalEvent) {
             if(originalEvent){
