@@ -74,10 +74,10 @@ bbmap.Views.Node = Backbone.View.extend({
         
     },
     applyStyle : function(){
-        if(!this.model.get('css')){    
-            if(this.model.get('type') == "concept")this.model.save({css : bbmap.css_concept_default},{silent:true});
-            else if(this.model.get('type') == "knowledge") this.model.save({css : bbmap.css_knowledge_default},{silent:true});
-            else if(this.model.get('type') == "poche") this.model.save({css : bbmap.css_poche_default},{silent:true});
+        if(!this.model.get('css')){
+            if(this.model.get('type') == "concept")this.model.set({css : bbmap.css_concept_default},{silent:true});
+            else if(this.model.get('type') == "knowledge") this.model.set({css : bbmap.css_knowledge_default},{silent:true});
+            else if(this.model.get('type') == "poche") this.model.set({css : bbmap.css_poche_default},{silent:true});
         }
         var left = this.model.get('left');
         var top = this.model.get('top');
@@ -146,6 +146,9 @@ bbmap.Views.Node = Backbone.View.extend({
         });
         new_concept.save();
         bbmap.views.main.concepts.add(new_concept);
+        // On crée le link entre C et K
+        if(this.model.get('type') != "concept") this.newCKLink(new_concept);
+        // On ajoute le model à la view
         bbmap.views.main.addModelToView(new_concept);
     },
     addKnowledgeChild : function(e){
@@ -164,17 +167,20 @@ bbmap.Views.Node = Backbone.View.extend({
         new_knowledge.save();
         bbmap.views.main.knowledges.add(new_knowledge);
         // On crée le link entre C et K
+        this.newCKLink(new_knowledge);
+        // On ajoute le model à la view
+        bbmap.views.main.addModelToView(new_knowledge);
+    },
+    newCKLink : function(target_model){
         var new_cklink = new global.Models.CKLink({
             id :guid(),
             user : bbmap.views.main.user,
             date : getDate(),
             source : this.model.get('id'),
-            target : new_knowledge.get('id')
+            target : target_model.get('id')
         });
         new_cklink.save();
         bbmap.views.main.links.add(new_cklink);
-        // On ajoute le model à la view
-        bbmap.views.main.addModelToView(new_knowledge);
     },
     /////////////////////////////////////////
     // Remove function
@@ -299,11 +305,25 @@ bbmap.Views.Node = Backbone.View.extend({
         _this = this;
         try{
             if((this.model.get('type') == "concept")&&(this.model.get('id_father')) && (this.model.get('id_father') != "none")){
-                bbmap.views.main.instance.connect({uuids:[this.model.get('id_father')+"-bottom", this.model.get('id')+"-top" ]}); 
+                if(bbmap.views.main.concepts.where({id : this.model.get('id_father')}).length == 0){
+                    // si c'est un concept qu'on ajoute à partir d'une connaissance
+                    var link_byTarget = bbmap.views.main.links.where({target : this.model.get('id')});
+                    link_byTarget.forEach(function(link){
+                        bbmap.views.main.instance.connect({
+                            source:bbmap.views.main.nodes_views[link.get('source')].el, 
+                            target:bbmap.views.main.nodes_views[link.get('target')].el, 
+                            anchor:"AutoDefault",
+                            scope : "cklink"
+                        });  
+                    }); 
+                }else{
+                    // Si c'est un concept qu'on ajoute à partir d'un concept
+                    bbmap.views.main.instance.connect({uuids:[this.model.get('id_father')+"-bottom", this.model.get('id')+"-top" ]});     
+                }
             }else if((this.model.get('type') == "knowledge")||(this.model.get('type') == "poche")){
+                // Si cest une connaissance qu'on ajoute à partir d'une poche
                 var link_byTarget = bbmap.views.main.links.where({target : this.model.get('id')});
                 link_byTarget.forEach(function(link){
-                    console.log('liiink',link)
                     bbmap.views.main.instance.connect({
                         source:bbmap.views.main.nodes_views[link.get('source')].el, 
                         target:bbmap.views.main.nodes_views[link.get('target')].el, 
@@ -313,7 +333,7 @@ bbmap.Views.Node = Backbone.View.extend({
                 });     
             }
         }catch(err){
-            //console.log(err);
+            // console.log(err);
         }         
     },
     makeTarget : function(){

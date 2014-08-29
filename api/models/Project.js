@@ -95,8 +95,8 @@ autoPK : false,
       attachment:[],
       type : "concept",
       id_father: "none",
-      top : 550,
-      left: 550
+      top : 750,
+      left: 750
 
 
   	}).done(function(err, c0){

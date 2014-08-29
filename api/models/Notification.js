@@ -17,7 +17,7 @@
   	*/
   },
 
-  objectCreated : function(req,res, object, to, cb){
+  objectCreated : function(req,res, object, to){
     if(req.body.action.length == 0) return;
     Notification.create({
   		id : IdService.guid(),
@@ -34,11 +34,10 @@
   	}).done(function(err,n){
   		if(err) console.log(err);
   		req.socket.in(req.session.currentProject.id).emit("notification:create", n);
-  		cb(n);
   	})
   },
 
-  objectUpdated : function(req,res, object, to, old, cb){
+  objectUpdated : function(req,res, object, to, old){
     var content ="";
 
     if(req.body.action.length == 0 || _.indexOf(req.body.action, "css") > -1) return;
@@ -64,11 +63,10 @@
     }).done(function(err,n){
       if(err) console.log(err);
       req.socket.in(req.session.currentProject.id).emit("notification:create", n);
-      cb(n);
     });
   },
 
-  objectRemoved : function(req,res, object, to, cb){
+  objectRemoved : function(req,res, object, to){
     var content = "model removed";
 
   	Notification.create({
@@ -86,7 +84,6 @@
   	}).done(function(err,n){
   		if(err) console.log(err);
   		req.socket.in(req.session.currentProject.id).emit("notification:create", n);
-  		cb(n);
   	});
   },
 

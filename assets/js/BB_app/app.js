@@ -48,14 +48,14 @@ var global = {
     //////////////////////////////////////////////////////////////////
     // Events
     //////////////////////////////////////////////////////////////////
-    this.collections.Poches.on('add',this.prepareNotifications,this);
+    // this.collections.Poches.on('add',this.prepareNotifications,this);
     this.collections.Projects.on('add',this.prepareNotifications,this);
-    this.collections.Projects.on('remove',this.prepareNotifications,this);
-    this.collections.Knowledges.on('add',this.prepareNotifications,this);
-    this.collections.Concepts.on('add',this.prepareNotifications,this);
-    this.collections.Notifications.on('add',this.prepareNotifications,this);
-    this.collections.Notifications.on('remove',this.prepareNotifications,this);
-    this.collections.Notifications.on('change',this.prepareNotifications,this);
+    // this.collections.Projects.on('remove',this.prepareNotifications,this);
+    // this.collections.Knowledges.on('add',this.prepareNotifications,this);
+    // this.collections.Concepts.on('add',this.prepareNotifications,this);
+    // this.collections.Notifications.on('add',this.prepareNotifications,this);
+    // this.collections.Notifications.on('remove',this.prepareNotifications,this);
+    // this.collections.Notifications.on('change',this.prepareNotifications,this);
     //////////////////////////////////////////////////////////////////
     // Init
     //////////////////////////////////////////////////////////////////

@@ -11,14 +11,12 @@
           <li class="tab-title active"><a href="#editModel"><img title="edit" src="/img/icones/Edit.png"/></a></li>
           <li class="tab-title"><a href="#attachementModel"><img title="attach" src="/img/icones/Attach.png"/></a></li>
           <li class="tab-title"><a href="#discussionModel"><img title="comments" src="/img/icones/Chat.png"/></a></li>
-          <li class="tab-title"><a href="#activitiesModel"><img title="activities" src="/img/icones/Activities.png"/></a></li>
           <li class="tab-title"><a href="#css3Model"><img title="template" src="/img/icones/Shape.png"/></a></li>
         </ul>
         <div class="tabs-content">
           <div id="editModel" class="content active"></div>
           <div id="attachementModel" class="content"></div>
           <div id="discussionModel" class="content"></div>
-          <div id="activitiesModel" class="content"></div>
           <div id="css3Model" class="content"></div>
         </div>
     </div>
@@ -48,56 +46,24 @@
 </script>
 
 <script type="text/template" id="bbmap-top-element-template">
-  <div id="modeSelection_ui">
+  <br>
+  <div class="large-4 medium-4 small-4 columns">
     <select id="modeSelection">
       <option value="visu" {{ if(mode == "visu"){ }}selected{{ } }}>Visualization</option>
       <option value="edit" {{ if(mode == "edit"){ }}selected{{ } }}>Edition</option>
       <option value="timeline" {{ if(mode == "timeline"){ }}selected{{ } }}>Timeline</option>
     </select>
-    <a href="#" class="button tiny secondary round prev"><</a>
-    <a href="#" class="button tiny secondary round next">></a>
-  </div>  
-  <span id="zoom_ui">
-    <a href="#" class="tiny round button secondary zoomout"><img title="zoom-in" src="/img/icones/Add.png"/></a>
-    <span id="zoom_val"></span>
-    <a href="#" class="tiny round button secondary zoomin"><img title="zoom-out" src="/img/icones/Minus.png"/></a>
-  </span>
-</script>
+  </div>
 
-<script type="text/template" id="bbmap-bottom-element-template">
-  <span id="bbmap_bottom_ui">
-    {{ if(mode == "timeline"){ }}
-      <div class="row">
-        <div class="small-10 medium-11 columns">
-          <div class="range-slider" id="timelineSlider" data-slider data-options="start: 0; end: 100;display_selector: #sliderOutput3;">
-            <span class="range-slider-handle" role="slider" tabindex="0"></span>
-            <span class="range-slider-active-segment"></span>
-          </div>
-        </div>
-        <div class="small-2 medium-1 columns">
-          <span id="sliderOutput3"></span>
-        </div>
-      </div>
-    {{ } }}
+  <div class="large-4 medium-4 small-4 columns">
     <center>
-      <img title="zoom-in" src="/img/icones/Filter.png"/> 
-      <select id="filterSelection" class="large-1 medium-1 small-1">
-        <option value="c" {{ if(filter == "c"){ }}selected{{ } }}>Concepts</option>
-        <option value="k" {{ if(filter == "k"){ }}selected{{ } }}>Knowledges</option>
-        <option value="p" {{ if(filter == "p"){ }}selected{{ } }}>Categories</option>
-        <option value="ck" {{ if(filter == "ck"){ }}selected{{ } }}>Concepts & Knowledge</option>
-        <option value="kp" {{ if(filter == "kp"){ }}selected{{ } }}>Knowledges & Categories</option>
-        <option value="ckp" {{ if(filter == "ckp"){ }}selected{{ } }}>All</option>
-      </select>
-           
-      {{ if((filter == "ck")||(filter == "ckp")){ }}
-        <a href="#" class="tiny round button secondary ckOperator"><img title="display CK links" src="/img/icones/Cklink.png"/></a>
-      {{ } }}
-      <a href="#" class="tiny round button secondary reset"><img title="reset" src="/img/icones/Reset.png"/></a>
-      <a href="#" class="tiny button round secondary downloadimage"><img title="download" src="/img/icones/Download.png"/></a>
-      <a href="#" class="tiny button round secondary screenshot"><img title="save" src="/img/icones/Save.png"/></a>
-      
-      {{ if(mode == "edit"){ }}
+      {{ if(mode == "timeline"){ }}
+        <h3>
+          <a href="#" class="button tiny secondary round prev"><</a>
+          <span id="timeline_date"></span>
+          <a href="#" class="button tiny secondary round next">></a>
+        </h3>
+      {{ }else if(mode == "edit"){ }}
         {{ if((filter == "c")||(filter == "ck")||(filter == "ckp")){ }}
           <a href="#" id="dropC" style="{{- bbmap.css_concept_default }}" class="dropC" title="click and drop to create a new concept">+C<img title="zoom-in" src="/img/icones/Drag.png"/></a>
         {{ } }}
@@ -107,7 +73,40 @@
         {{ if((filter == "k")||(filter == "ck")||(filter == "ckp")||(filter == "kp")){ }}
           <a href="#" id="dropK" style="{{- bbmap.css_knowledge_default }}"  class="dropK" title="click and drop to create a new knowledge">+K<img title="zoom-in" src="/img/icones/Drag.png"/></a>
         {{ } }}
-      {{ } }}  
+      {{ } }}
+    </center>
+  </div>
+
+  <div class="large-4 medium-4 small-4 columns">
+    <div style="float:right">
+      <a href="#" class="tiny round button secondary zoomout"><img title="zoom-in" src="/img/icones/Add.png"/></a>
+      <span id="zoom_val"></span>
+      <a href="#" class="tiny round button secondary zoomin"><img title="zoom-out" src="/img/icones/Minus.png"/></a>
+    </div>
+  </div>
+
+</script>
+
+<script type="text/template" id="bbmap-bottom-element-template">
+  <span id="bbmap_bottom_ui">
+    <center>
+      {{ if(mode != "timeline"){ }}
+        <img title="zoom-in" src="/img/icones/Filter.png"/> 
+        <select id="filterSelection" class="large-1 medium-1 small-1">
+          <option value="c" {{ if(filter == "c"){ }}selected{{ } }}>Concepts</option>
+          <option value="k" {{ if(filter == "k"){ }}selected{{ } }}>Knowledges</option>
+          <option value="p" {{ if(filter == "p"){ }}selected{{ } }}>Categories</option>
+          <option value="ck" {{ if(filter == "ck"){ }}selected{{ } }}>Concepts & Knowledge</option>
+          <option value="kp" {{ if(filter == "kp"){ }}selected{{ } }}>Knowledges & Categories</option>
+          <option value="ckp" {{ if(filter == "ckp"){ }}selected{{ } }}>All</option>
+        </select>
+      {{ } }}
+      {{ if((filter == "ck")||(filter == "ckp")){ }}
+        <a href="#" class="tiny round button secondary ckOperator"><img title="display CK links" src="/img/icones/Cklink.png"/></a>
+      {{ } }}
+      <a href="#" class="tiny round button secondary reset"><img title="reset" src="/img/icones/Reset.png"/></a>
+      <a href="#" class="tiny button round secondary downloadimage"><img title="download" src="/img/icones/Download.png"/></a>
+      <a href="#" class="tiny button round secondary screenshot"><img title="save" src="/img/icones/Save.png"/></a>  
     </center>
   </span>
 </script>

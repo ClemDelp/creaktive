@@ -43,9 +43,7 @@
         }, req.body.params).done(function(err,c){
           if(err) res.send(err);
           req.socket.broadcast.to(req.session.currentProject.id).emit("concept:update", c[0]);
-          Notification.objectUpdated(req,res,"Concept", c[0], concept, function(notification){
-            res.send(notification);
-          });
+          Notification.objectUpdated(req,res,"Concept", c[0], concept);
 
           res.send(c[0]);
 
@@ -62,9 +60,7 @@
         Concept.create(concept).done(function(err,c){
           if(err) res.send(err);
           req.socket.broadcast.to(req.session.currentProject.id).emit("concept:create", c);
-          Notification.objectCreated(req,res,"Concept", c, function(notification){
-            res.send(notification);
-          });
+          Notification.objectCreated(req,res,"Concept", c);
           res.send(c);
         });
 
@@ -78,12 +74,10 @@
       if(concept.position == 0) res.send({err : "You can't remove c0"})
       else{
         req.socket.broadcast.to(req.session.currentProject.id).emit("concept:remove2", concept);
-        Notification.objectRemoved(req,res,"Concept", concept, function(notification){
-          res.send(notification);
-        });
+        Notification.objectRemoved(req,res,"Concept", concept);
         concept.destroy(function(err){
           if(err) res.send(err)
-            res.send({msg:"destroyed"})
+          res.send({msg:"destroyed"})
         });
       };
     });

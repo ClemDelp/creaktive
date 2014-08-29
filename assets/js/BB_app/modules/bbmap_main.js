@@ -118,38 +118,18 @@ bbmap.Views.Main = Backbone.View.extend({
         this.history_pos        = 0;
         this.sens               = "init";
     },
-    timelineSliderChange : function(p){
-        var max = this.notifications.length;
-        var new_pos = parseInt((p*max)/100);
-        if(new_pos == max) new_pos = max -1;
-        if(new_pos > this.timeline_pos) this.sens = "go"; 
-        else if(new_pos < this.timeline_pos) this.sens = "back";
-        if(this.timeline_pos != new_pos){
-            this.timeline_pos = new_pos;
-            console.log('sens : ',this.sens,'- pos : ',this.timeline_pos," - max : ",max,' - new pos : ',new_pos)
-            this.nextPrevActionController(this.sens,"timeline");
-        }
-    },
     backInTimeline : function(e){
         e.preventDefault();
-        console.log("back")
         if(this.sens == "back") this.timeline_pos = this.timeline_pos + 1;
         if(this.timeline_pos >= this.notifications.length) this.timeline_pos = this.notifications.length - 1;
-        else{
-            console.log("level : ",this.timeline_pos);    
-            this.nextPrevActionController("back","timeline");
-        }
+        else this.nextPrevActionController("back","timeline");
         if(this.sens != "back")this.sens = "back"; 
     },
     advanceInTimeline : function(e){
         e.preventDefault();
-        console.log("next")
         if(this.sens == "next") this.timeline_pos = this.timeline_pos - 1;
         if(this.timeline_pos < 0) this.timeline_pos = 0;
-        else{
-            console.log("level : ",this.timeline_pos);
-            this.nextPrevActionController("go","timeline");
-        }
+        else this.nextPrevActionController("go","timeline");
         if(this.sens != "next")this.sens = "next";
     },
     /////////////////////////////////////////
@@ -168,7 +148,6 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     backInHistory : function(e){
         e.preventDefault();
-        console.log("back")
         if(this.history_pos >= this.localHistory.length) this.history_pos = this.localHistory.length - 1;
         else{
             console.log("level : ",this.history_pos);
@@ -178,7 +157,6 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     advanceInHistory : function(e){
         e.prev_actionentDefault();
-        console.log("next")
         if(this.history_pos < 0) this.history_pos = 0;
         else{
             this.history_pos = this.history_pos - 1; 
@@ -195,6 +173,7 @@ bbmap.Views.Main = Backbone.View.extend({
         else if(from == "timeline") historic = this.notifications.toArray()[this.timeline_pos];
         var action = historic.get('action');
         var type = historic.get('object');
+        $("#timeline_date").html(historic.get('date'))
         var save = false;
         if(this.mode == "timeline") save = false;
         var model = this.getTimelineHitoryModel(historic,type,sens,action);
@@ -224,19 +203,17 @@ bbmap.Views.Main = Backbone.View.extend({
             else if(type == "Knowledge") model = new global.Models.Knowledge(historic.get('to'));
             else if(type == "Poche") model = new global.Models.Poche(historic.get('to'));
             else if(type == "Link") model = new global.Models.CKLink(historic.get('to'));
-            console.log("sens : go - get next model - model id: ",model.get('id'),model.get('title'));
+            // console.log("sens : go - get next model - model id: ",model.get('id'),model.get('title'));
         }else if((action == "update")&&(sens == "back")){
             if(type == "Concept") model = new global.Models.ConceptModel(historic.get('old'));
             else if(type == "Knowledge") model = new global.Models.Knowledge(historic.get('old'));
             else if(type == "Poche") model = new global.Models.Poche(historic.get('old'));
             else if(type == "Link") model = new global.Models.CKLink(historic.get('old'));
-            console.log("sens : back - get old model - model id: ",model.get('id'),model.get('title'));
         }else{
             if(type == "Concept") model = new global.Models.ConceptModel(historic.get('to'));
             else if(type == "Knowledge") model = new global.Models.Knowledge(historic.get('to'));
             else if(type == "Poche") model = new global.Models.Poche(historic.get('to'));
             else if(type == "Link") model = new global.Models.CKLink(historic.get('to'));
-            console.log("model id: ",model.get('id'),model.get('title'));
         }
         return model;
     },
@@ -635,11 +612,12 @@ bbmap.Views.Main = Backbone.View.extend({
                 model           : model
             });
             // Templates list
-            if(bbmap.views.templatesList)bbmap.views.templatesList.close();
-            bbmap.views.templatesList = new templatesList.Views.Main({
-                templates : this.project.get('templates'),
-                model : model
-            });
+            if(!bbmap.views.templatesList){
+                bbmap.views.templatesList = new templatesList.Views.Main({
+                    templates : this.project.get('templates'),
+                    model : model
+                });    
+            }
             // check for template
             if(!this.project.get('templates')) this.project.save({templates : bbmap.default_templates},{silent:true});
             // IMG List module
@@ -660,18 +638,12 @@ bbmap.Views.Main = Backbone.View.extend({
                 model           : model,
                 user            : this.user
             });
-            // notification module
-            if(bbmap.views.activitiesList)bbmap.views.activitiesList.close();
-            bbmap.views.activitiesList = new activitiesList.Views.Main({
-                model           : model
-            });
             // Render & Append
             this.editModel_el.html(bbmap.views.modelEditor.render().el);
             this.editModel_el.append(bbmap.views.templatesList.render().el);
             this.attachementModel_el.html(bbmap.views.imagesList.render().el);
             this.attachementModel_el.append(bbmap.views.attachment.render().el);
             this.discussionModel_el.append(bbmap.views.comments.render().el);
-            this.activitiesModel_el.html(bbmap.views.activitiesList.render().el);
         }
     },
     /////////////////////////////////////////
@@ -997,6 +969,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.top_el.empty();
         this.bottom_el.empty();
         this.top_el.append(this.template_top({
+            filter  : this.filter,
             mode    : this.mode
         }));
         this.bottom_el.append(this.template_bottom({
@@ -1221,18 +1194,6 @@ bbmap.Views.Main = Backbone.View.extend({
                 }
             });
 
-            // $("#map_container").height(bbmap.window_height);
-
-            if(this.mode == "timeline"){
-                $(document).foundation({
-                  slider: {
-                    on_change: function(){
-                        bbmap.views.main.timelineSliderChange($('#timelineSlider').attr('data-slider'));
-                    }
-                  }
-                });
-                $('#timelineSlider').foundation('slider', 'set_value', 0);
-            }
             this.initTimelineHistoryParameters();
             this.init = false;   
         }

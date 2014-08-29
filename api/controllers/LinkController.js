@@ -40,9 +40,7 @@
         }, req.body.params).done(function(err,c){
           if(err) res.send(err);
           req.socket.broadcast.to(req.session.currentProject.id).emit("link:update", c[0]);
-          Notification.objectUpdated(req,res,"Link", c[0], function(notification){
-            res.send(notification);
-          });
+          Notification.objectUpdated(req,res,"Link", c[0]);
           res.send(c[0]);   
         });
       }else{
@@ -51,11 +49,8 @@
         Link.create(l).done(function(err,c){
           if(err) res.send(err)
           req.socket.broadcast.to(req.session.currentProject.id).emit("link:create", c);
-           Notification.objectCreated(req,res,"Link", c, function(notification){
-            res.send(notification);
-          });
-         res.send(c);
-         
+          Notification.objectCreated(req,res,"Link", c);
+          res.send(c);
        })
       }
     })
@@ -65,9 +60,7 @@
     Link.findOne(req.body.params.id).done(function(err,link){
       if(err) console.log(err);
       req.socket.broadcast.to(req.session.currentProject.id).emit("link:remove2", link);
-      Notification.objectRemoved(req,res,"Link", link, function(notification){
-        res.send(notification);
-      });
+      Notification.objectRemoved(req,res,"Link", link);
       link.destroy(function(err){
         if(err) console.log(err)
         res.send({msg:"destroyed"})

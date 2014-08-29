@@ -22,7 +22,6 @@ templatesList.Views.Template = Backbone.View.extend({
         this.template = json.template;
         this.model = json.model;
         this.templates_collection = json.templates_collection;
-        console.log(this.templates_collection)
         // Templates
         this.template_t = _.template($('#templatesList-template').html());
     },
