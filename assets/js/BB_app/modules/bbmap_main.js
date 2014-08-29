@@ -85,6 +85,11 @@ bbmap.Views.Main = Backbone.View.extend({
             if(event.deltaY == -1)bbmap.views.main.zoomin()
             else bbmap.views.main.zoomout()
         });
+        // Cursor position
+        // $( "body"  ).mousemove(function( event ){alert('ee')
+        //     bbmap.views.main.cursorX = event.clientX;
+        //     bbmap.views.main.cursorY = event.clientY;    
+        // });
     },
     events : {
         "change #modeSelection" : "setMode",
@@ -649,17 +654,44 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Zoom system
     /////////////////////////////////////////
+    targetToCursor : function(event,sens,ref1,ref2){        
+        var deltaLeft = ref1.left - ref2.left; // deplacement en x d'un element de ref
+        var deltaTop  = ref1.top - ref2.top; // deplacement en y d'un element de ref
+        var clientX = event.clientX; // position en x du cursor par rapport au document
+        var clientY = event.clientY; // position en y du cursor par rapport au document
+        var screenH = $(window).height();  // hauteur de la fenetre
+        var screenW = $(window).width(); // largeur de la fenetre
+        var mapPosT = $("#map").offset().top; // position en x de la map
+        var mapPosL = $("#map").offset().left; // position en y de la map
+        var zoom    = bbmap.zoom.get('val'); // zoom actuel
+        var deltaX  = ((screenW/2)-clientX) * 0.1; // valeur en x de la distance cursor centre de l'ecran
+        var deltaY  = ((screenH/2)-clientY) * 0.1; // valeur en y de la distance cursor centre de l'ecran
+        if(sens == "out")$('#map').offset({ top: mapPosT+deltaTop+deltaY, left: mapPosL+deltaLeft+deltaX });
+        if(sens == "in")$('#map').offset({ top: mapPosT+deltaTop-deltaY, left: mapPosL+deltaLeft-deltaX });
+    },
     zoomin : function(e){
-        //e.preventDefault();
         new_zoom = Math.round((bbmap.zoom.get('val') - 0.1)*100)/100;
         bbmap.zoom.set({val : new_zoom});
+        var ref1 = this.getOffsetRef();
         this.setZoom(bbmap.zoom.get('val'));
+        var ref2 = this.getOffsetRef();
+        if(event) this.targetToCursor(event,'in',ref1,ref2);
     },
     zoomout : function(e){
-        //e.preventDefault();
         new_zoom = Math.round((bbmap.zoom.get('val') + 0.1)*100)/100;
         bbmap.zoom.set({val : new_zoom});
+        var ref1 = this.getOffsetRef();
         this.setZoom(bbmap.zoom.get('val'));
+        var ref2 = this.getOffsetRef();
+        if(event) this.targetToCursor(event,'out',ref1,ref2);
+    },
+    getOffsetRef : function(){
+        var ref = {'top':0, 'left':0}
+        for (var k in bbmap.views.main.nodes_views){
+            ref = bbmap.views.main.nodes_views[k].$el.offset();
+            break;
+        }
+        return ref;
     },
     setZoom : function(zoom) {
       transformOrigin = [ 0.5, 0.5 ];
