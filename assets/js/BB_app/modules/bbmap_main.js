@@ -59,12 +59,12 @@ bbmap.Views.Main = Backbone.View.extend({
             HoverPaintStyle : {strokeStyle:"#27AE60" },
             EndpointHoverStyle : {fillStyle:"#27AE60" },
             ConnectionOverlays : [
-                // [ "Arrow", { 
-                //     location:1,
-                //     id:"arrow",
-                //     length:14,
-                //     foldback:0.8
-                // } ],
+                [ "Arrow", { 
+                    location:1,
+                    id:"arrow",
+                    length:14,
+                    foldback:0.8
+                } ],
                 [ "Label", { label:"x", id:"label", cssClass:"aLabel" }]
             ],
             Container:"map"
@@ -233,14 +233,19 @@ bbmap.Views.Main = Backbone.View.extend({
     hideOverLays : function(){
         var connections = bbmap.views.main.instance.getAllConnections()
         connections.forEach(function(connection){
-            connection.hideOverlays();
-        }) 
+            //connection.hideOverlays();
+            var overlay = connection.getOverlay("label");
+            // now you can hide this Overlay:
+            overlay.setVisible(false);
+        });
     },
     showOverLays : function(){
         var connections = bbmap.views.main.instance.getAllConnections()
         connections.forEach(function(connection){
-            connection.showOverlays();
-        }) 
+            //connection.showOverlays();
+            var overlay = connection.getOverlay("label");
+            overlay.setVisible(true);
+        });
     },
     /////////////////////////////////////////
     // Modes & Filters
