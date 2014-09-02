@@ -84,14 +84,17 @@ bbmap.Views.Main = Backbone.View.extend({
         this.map_el.mousewheel(function(event) {
             event.preventDefault();
             //console.log(event.deltaY);
-            if(event.deltaY == -1)bbmap.views.main.zoomin()
-            else bbmap.views.main.zoomout()
-        });
-        // Cursor position
-        $( document ).on( "mousemove", function( event ) {
             bbmap.views.main.cursorX = event.pageX;
             bbmap.views.main.cursorY = event.pageY;
+            if(event.deltaY == -1)bbmap.views.main.zoomin()
+            else bbmap.views.main.zoomout()
+
         });
+        // Cursor position
+        // $( document ).on( "mousemove", function( event ) {
+        //     bbmap.views.main.cursorX = event.pageX;
+        //     bbmap.views.main.cursorY = event.pageY;
+        // });
     },
     events : {
         "change #modeSelection" : "setMode",
@@ -279,11 +282,11 @@ bbmap.Views.Main = Backbone.View.extend({
         var tmpscale = zoomscale;
         if(tmpscale>1){                           //resize
             while(bbmap.zoom.get('val')>1){
-                _this.zoomin();
+                _this.zoomin("downloadimage");
             }
         }else{
             while(bbmap.zoom.get('val')<1){
-                _this.zoomout();
+                _this.zoomout("downloadimage");
             }
         }
         $("#map").offset({left:originLeft+moveLeft});   //change position
@@ -300,11 +303,11 @@ bbmap.Views.Main = Backbone.View.extend({
                 $("#map").offset({top:originTop});              
                 if(tmpscale>1){
                     while(bbmap.zoom.get('val')<tmpscale){
-                        _this.zoomout();
+                        _this.zoomout("downloadimage");
                     }
                 }else{
                     while(bbmap.zoom.get('val')>tmpscale){
-                        _this.zoomin();
+                        _this.zoomin("downloadimage");
                     }
                 }
 
@@ -418,11 +421,11 @@ bbmap.Views.Main = Backbone.View.extend({
         var tmpscale = zoomscale;
         if(tmpscale>1){                           //resize
             while(bbmap.zoom.get('val')>1){
-                _this.zoomin();
+                _this.zoomin("screenshot");
             }
         }else{
             while(bbmap.zoom.get('val')<1){
-                _this.zoomout();
+                _this.zoomout("screenshot");
             }
         }
         $("#map").offset({left:originLeft+moveLeft});   //change position
@@ -439,11 +442,11 @@ bbmap.Views.Main = Backbone.View.extend({
                 $("#map").offset({top:originTop});              
                 if(tmpscale>1){
                     while(bbmap.zoom.get('val')<tmpscale){
-                        _this.zoomout();
+                        _this.zoomout("screenshot");
                     }
                 }else{
                     while(bbmap.zoom.get('val')>tmpscale){
-                        _this.zoomin();
+                        _this.zoomin("screenshot");
                     }
                 }
 
@@ -655,7 +658,7 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Zoom system
     /////////////////////////////////////////
-    targetToCursor : function(sens,ref1,ref2){      
+    targetToCursor : function(sens,ref1,ref2){    
         var deltaLeft = ref1.left - ref2.left; // deplacement en x d'un element de ref
         var deltaTop  = ref1.top - ref2.top; // deplacement en y d'un element de ref
         var clientX = bbmap.views.main.cursorX; // position en x du cursor par rapport au document
@@ -671,21 +674,21 @@ bbmap.Views.Main = Backbone.View.extend({
         if(sens == "out")$('#map').offset({ top: mapPosT+deltaTop+deltaY, left: mapPosL+deltaLeft+deltaX });
         if(sens == "in")$('#map').offset({ top: mapPosT+deltaTop-deltaY, left: mapPosL+deltaLeft-deltaX });
     },
-    zoomin : function(){
+    zoomin : function(from){
         new_zoom = Math.round((bbmap.zoom.get('val') - 0.1)*100)/100;
         bbmap.zoom.set({val : new_zoom});
         var ref1 = this.getOffsetRef();
         this.setZoom(bbmap.zoom.get('val'));
         var ref2 = this.getOffsetRef();
-        this.targetToCursor('in',ref1,ref2);
+        if(!from) this.targetToCursor('in',ref1,ref2);
     },
-    zoomout : function(){
+    zoomout : function(from){
         new_zoom = Math.round((bbmap.zoom.get('val') + 0.1)*100)/100;
         bbmap.zoom.set({val : new_zoom});
         var ref1 = this.getOffsetRef();
         this.setZoom(bbmap.zoom.get('val'));
         var ref2 = this.getOffsetRef();
-        this.targetToCursor('out',ref1,ref2);
+        if(!from) this.targetToCursor('out',ref1,ref2);
     },
     getOffsetRef : function(){
         var ref = {'top':0, 'left':0}
