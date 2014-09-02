@@ -2866,7 +2866,7 @@ _html2canvas.Renderer.Canvas = function(options) {
         // var height2 = Math.max(1, Math.floor(bounds.height));
         // ctx.drawImage(canvas, bounds.left, bounds.top, width2, height2);
 
-        ctx.drawImage(canvas, bounds.left, bounds.top, bounds.width, bounds.height, 0, 0, bounds.width, bounds.height);
+        ctx.drawImage(canvas, 0, 0, bounds.width, bounds.height, -bounds.left, -bounds.top, bounds.width, bounds.height);
         canvas = null;
         return newCanvas;
       }

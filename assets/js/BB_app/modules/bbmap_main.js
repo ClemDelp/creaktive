@@ -59,12 +59,12 @@ bbmap.Views.Main = Backbone.View.extend({
             HoverPaintStyle : {strokeStyle:"#27AE60" },
             EndpointHoverStyle : {fillStyle:"#27AE60" },
             ConnectionOverlays : [
-                [ "Arrow", { 
-                    location:1,
-                    id:"arrow",
-                    length:14,
-                    foldback:0.8
-                } ],
+                // [ "Arrow", { 
+                //     location:1,
+                //     id:"arrow",
+                //     length:10,
+                //     foldback:0.5
+                // } ],
                 [ "Label", { label:"x", id:"label", cssClass:"aLabel" }]
             ],
             Container:"map"
@@ -476,7 +476,6 @@ bbmap.Views.Main = Backbone.View.extend({
                     canvas1.height = height;
                     var svgTagHtml = svgArray[i].innerHTML;
                     canvg(canvas1,svgTagHtml);                  //canvg is a library which can parse svg to canvas
-
                     context.drawImage(canvas1,left,top);
                 };
 
@@ -533,6 +532,7 @@ bbmap.Views.Main = Backbone.View.extend({
                         }
                     }
                 }
+                // Conversoindu canvas en png
                 var screenshot;
                 screenshot = canvas2.toDataURL( "image/png" );   //save screenshot
 
