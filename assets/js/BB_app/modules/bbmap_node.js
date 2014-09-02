@@ -71,7 +71,6 @@ bbmap.Views.Node = Backbone.View.extend({
         this.setPosition(x,y,0,0,false);
         this.oldFather = this.father.clone();
         bbmap.views.main.instance.repaint(this.model.get('id'));
-        
     },
     applyStyle : function(){
         if(!this.model.get('css')){
@@ -145,7 +144,6 @@ bbmap.Views.Node = Backbone.View.extend({
             user: bbmap.views.main.user
         });
         new_concept.save();
-        bbmap.views.main.concepts.add(new_concept);
         // On crée le link entre C et K
         if(this.model.get('type') != "concept") this.newCKLink(new_concept);
         // On ajoute le model à la view
@@ -165,7 +163,6 @@ bbmap.Views.Node = Backbone.View.extend({
             user: bbmap.views.main.user
         });
         new_knowledge.save();
-        bbmap.views.main.knowledges.add(new_knowledge);
         // On crée le link entre C et K
         this.newCKLink(new_knowledge);
         // On ajoute le model à la view

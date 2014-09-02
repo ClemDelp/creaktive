@@ -874,7 +874,7 @@ bbmap.Views.Main = Backbone.View.extend({
             user: this.user
         });
         model.save();
-        this.poches.add(model);
+        
         this.addModelToView(model);
     },
     createUnlinkedConcept : function(left,top){
@@ -889,12 +889,17 @@ bbmap.Views.Main = Backbone.View.extend({
             user: this.user
         });
         new_concept.save();
-        this.concepts.add(new_concept);
+        
         this.addModelToView(new_concept);
     },
     /////////////////////////////////////////
     // Add remove model/link to view
     /////////////////////////////////////////
+    addModelToItsCollection : function(model){
+        if(model.get('type') == "concept") this.concepts.add(model);
+        else if(model.get('type') == "knowledge") this.knowledges.add(model);
+        else if(model.get('type') == "poche") this.poches.add(model);
+    },
     addModelToView : function(model,from){
         var origin = "client";
         if(from) origin = from;
@@ -905,6 +910,8 @@ bbmap.Views.Main = Backbone.View.extend({
             id : model.get('id'),
             model : model,
         });
+        this.addModelToItsCollection(model);
+
         this.map_el.append(new_view.render().el);
         new_view.addEndpoint();
         new_view.makeTarget();

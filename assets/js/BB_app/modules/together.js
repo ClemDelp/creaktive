@@ -94,7 +94,7 @@ together.Views.User = Backbone.View.extend({
       }
     },
     updateCursor : function(){
-      console.log(this.user.get('location'))
+      //console.log(this.user.get('location'))
       if(this.user.get('location') == together.views.main.pathname){
         // Si l'utilisateur est sur la mm page
         $("#avatar"+this.user.get('id')).show('slow');
