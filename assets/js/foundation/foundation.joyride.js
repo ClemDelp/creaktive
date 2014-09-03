@@ -10,7 +10,7 @@
 
     defaults : {
       expose                   : false,     // turn on or off the expose feature
-      modal                    : true,      // Whether to cover page with modal during the tour
+      modal                    : false,      // Whether to cover page with modal during the tour
       tip_location             : 'bottom',  // 'top' or 'bottom' in relation to parent
       nub_position             : 'auto',    // override on a per tooltip bases
       scroll_speed             : 1500,      // Page scrolling speed in milliseconds, 0 = no scroll animation
@@ -63,9 +63,17 @@
 
     events : function () {
       var self = this;
-
+      
       $(this.scope)
         .off('.joyride')
+        .keypress(function(e) {
+          if(e.keyCode == 13){
+            var value = $(e.target.parentElement).find('#joyride_val').val();
+            bbmap.views.main.updateLastModelTitle(value)
+            self.hide();
+            self.show();
+          }
+        })
         .on('click.fndtn.joyride', '.joyride-next-tip, .joyride-modal-bg', function (e) {
           e.preventDefault();
           var value = $(e.target.parentElement).find('#joyride_val').val();
@@ -83,7 +91,6 @@
           }
 
         }.bind(this))
-
         .on('click.fndtn.joyride', '.joyride-close-tip', function (e) {
           e.preventDefault();
           this.end(this.settings.abort_on_close);
@@ -113,6 +120,7 @@
     },
 
     start : function () {
+
       var self = this,
           $this = $('[' + this.attr_name() + ']', this.scope),
           integer_settings = ['timer', 'scrollSpeed', 'startOffset', 'tipAnimationFadeSpeed', 'cookieExpires'],
@@ -159,7 +167,7 @@
           this.show('init');
         }
 
-      }
+      }      
     },
 
     resume : function () {
@@ -222,6 +230,7 @@
 
     show : function (init) {
       var $timer = null;
+      
 
       // are we paused?
       if (this.settings.$li === undefined
@@ -327,6 +336,12 @@
         this.settings.paused = true;
 
       }
+
+      // var inputJoyride = $('.joyride-content-wrapper', $blank).find('#joyride_val');
+      // console.log('focuuuuus on ',inputJoyride)
+      // console.log('focuuuuus on ',$(inputJoyride)
+      // console.log($(this).find('#joyride_val'));
+      // $(this).find('#joyride_val').focus();
 
     },
 

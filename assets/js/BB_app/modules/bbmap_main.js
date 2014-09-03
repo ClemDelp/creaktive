@@ -583,13 +583,14 @@ bbmap.Views.Main = Backbone.View.extend({
     startJoyride : function(){
         $("#joyride_id").attr('data-id',this.lastModel.get('id')+'_joyride')
         $(document).foundation('joyride', 'start');
+
     },
     updateLastModelTitle : function(title){
-        if(title == ""){
-            this.nodes_views[this.lastModel.get('id')].removeNode();
-        }else{
+        // if(title == ""){
+        //     this.nodes_views[this.lastModel.get('id')].removeNode();
+        // }else{
             this.lastModel.save({title:title});
-        }
+        // }
     },
     /////////////////////////////////////////
     // Sliding editor bar
@@ -1015,6 +1016,77 @@ bbmap.Views.Main = Backbone.View.extend({
             }
         });     
     },
+    ////////////////////////////////////////
+    // Drawin aid session
+    ////////////////////////////////////////
+    drawingAid : function(model){
+        var currentView = bbmap.views.main.nodes_views[model.get('id')];
+        var currentViewCentroid = currentView.getCentroid();
+        var views = bbmap.views.main.nodes_views;
+        for (var id in views){
+            if ((id != model.get('id'))&&(views.hasOwnProperty(id))) {
+                var zoom = bbmap.zoom.get('val');
+                var view = views[id];
+                var centroid = view.getCentroid();
+                var width = 0;
+                var height = 0;
+                var left = 0;
+                var top = 0;
+                var x1 = 0;
+                var x2 = 0;
+                var y1 = 0;
+                var y2 = 0;
+                if(Math.floor(centroid.top) == Math.floor(currentViewCentroid.top)){
+                    console.log('horrizontal alignement!')
+                    var width = abs(centroid.left - currentViewCentroid.left);
+                    var height = 10;
+                    if(centroid.left < currentViewCentroid.left){
+                        left = centroid.left;
+                        top = centroid.top;
+                        x2 = currentViewCentroid.left;
+                    }else{
+                        left = currentViewCentroid.left;
+                        top = currentViewCentroid.top;
+                        x2 = centroid.left
+                    }
+                    this.drawSvgLine(model.get('id'),width,height,left,top,x1,x2,y1,y2,zoom);    
+                }
+
+                if(Math.floor(currentViewCentroid.left) == Math.floor(centroid.left)){
+                    console.log("vertical alignement!");
+                    var width = 10;
+                    var height = abs(centroid.top - currentViewCentroid.top);
+                    if(centroid.top < currentViewCentroid.top){
+                        left = centroid.left;
+                        top = centroid.top;
+                        y2 = height;
+                    }else{
+                        left = centroid.left;
+                        top = currentViewCentroid.top;
+                        y2 = height;
+                    }
+                    this.drawSvgLine(model.get('id'),width,height,left,top,x1,x2,y1,y2,zoom);
+                }
+                this.hideSvgLine(model.get('id'),id);
+            }
+        }
+    },
+    drawSvgLine : function(id_source,width,height,left,top,x1,x2,y1,y2,zoom){
+        delta = 10;
+        left = (left + delta )/ zoom;
+        top = (top + delta )/ zoom;
+        // x1 = x1 / zoom;
+        // x2 = x2 / zoom;
+        // y1 = y1 / zoom;
+        // y2 = y2 / zoom;
+
+        console.log("width:",width,"- height:",height,"- left:",left,"- top:",top,"- x1:",x1,"- x2:",x2,"- y1:",y1,"- y2:",y2);               
+        this.map_el.append('<svg class="'+id_source+'_svg" style="position:absolute;left:'+left+'px;top:'+top+'px" width="'+width+'" height="'+height+'" pointer-events="none" position="absolute" version="1.1" xmlns="http://www.w3.org/1999/xhtml" class="_jsPlumb_connector"><line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" style="stroke:black;stroke-width:2px;" /></svg>')
+    },
+    hideSvgLine : function(id_source){
+        $('.'+id_source+"_svg").hide('slow')
+    },
+    ////////////////////////////////////////
     renderActionBar : function(){
         this.top_el.empty();
         this.bottom_el.empty();
@@ -1093,7 +1165,13 @@ bbmap.Views.Main = Backbone.View.extend({
             });
             // Draggable
             this.knowledges.forEach(function(model){
-                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el),{ containment: "#map", scroll: false });
+                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el),{ 
+                    containment: "#map", 
+                    scroll: false,
+                    drag : function(e){
+                        bbmap.views.main.drawingAid(model);
+                    }
+                });
             });
         }
     },
@@ -1246,6 +1324,9 @@ bbmap.Views.Main = Backbone.View.extend({
 
             this.initTimelineHistoryParameters();
             this.init = false;   
+
+            if(this.mode == "edit") $('#map').css('background-image', 'url(/img/pattern.png)');
+            else $('#map').css('background', 'transparent');
         }
 
         return this;

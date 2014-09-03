@@ -42,14 +42,14 @@ font-size: 1rem;
 #top_container{
 	background: #EFEFEF;
 	position: fixed;
-	top:50px;
+	/*//top:50px;*/
 	width:100%;
-	z-index: 999;
+	z-index: 20;
 }
 
 #bottom_container{
 	background: #EFEFEF;
-	z-index: 999;
+	z-index: 20;
 	position: fixed;
 	bottom:0;
 	width:100%;

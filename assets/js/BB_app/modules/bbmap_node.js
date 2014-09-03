@@ -107,12 +107,30 @@ bbmap.Views.Node = Backbone.View.extend({
         // Set old father !!! 
         if(origin == "normal")global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
     },
+    /////////////////////////////////////////////
+    /////////////////////////////////////////////
     getPosition : function(){
         var position = {};
         position.left = $(this.el).position().left
         position.top = $(this.el).position().top
         return position;
     },
+    getDimension : function(){
+        var dimension = {};
+        dimension.width = $(this.el).width();
+        dimension.height = $(this.el).height();
+        return dimension;
+    },
+    getCentroid : function(){
+        var centroid = {};
+        var position = this.getPosition();
+        var dimension = this.getDimension();
+        centroid.left = ((dimension.width / 2) + position.left);
+        centroid.top = ((dimension.height / 2) + position.top);
+        return centroid;
+    },
+    /////////////////////////////////////////////
+    /////////////////////////////////////////////
     savePosition: function(e){
         if(bbmap.views.main.mode == "edit"){
             var position = this.getPosition();

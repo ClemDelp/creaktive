@@ -1,6 +1,7 @@
 <!-- ******************************** -->
 <!-- Container -->
 <div id="bbmap_container" style="height:100%;overflow:auto">
+  <div id="top_container"></div>
   <div id="map_container">
     <a href="#" id="showMenu"  class="button tiny secondary radius cbp-openbutton">
       <image  src="/img/icones/Arrow-Left.png" id="cbp-openimage"/>
@@ -23,7 +24,7 @@
     </nav>
     <div id="map" class="demo chart-demo"></div>
   </div>
-  <div id="top_container"></div>
+  
   <div id="bottom_container"></div>
 </div>
 <!-- ******************************** -->
@@ -31,7 +32,7 @@
   <ol class="joyride-list" style="z-index:9999999" data-joyride>
     <li id="joyride_id" data-id="joyride" data-text="Ok" data-options="tip_location: top">
       <br>
-      <input id="joyride_val" type="text" placeholder="name...">
+      <input id="joyride_val" class="tiny round" type="text" placeholder="name..." autofocus><lable><small>(Press ENTER)</small></label>
     </li>
   </ol>
 </script>

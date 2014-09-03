@@ -2858,7 +2858,7 @@ _html2canvas.Renderer.Canvas = function(options) {
         // bounds.width = Math.max(1, Math.floor(bounds.width));
         // bounds.height = Math.max(1, Math.floor(bounds.height));
 
-        console.log(bounds.left, bounds.top, bounds.width, bounds.height, 0, 0, bounds.width, bounds.height)
+        //console.log(bounds.left, bounds.top, bounds.width, bounds.height, 0, 0, bounds.width, bounds.height)
 
         ctx = newCanvas.getContext("2d");
 
