@@ -30,10 +30,10 @@ bbmap.Views.Main = Backbone.View.extend({
         this.filter             = json.filter;
         this.notifications      = json.notifications;
         this.init               = json.init; // if true mean launch for the first time
+        this.ckOperator         = json.ckOperator;
         ////////////////////////////////
         // Parameters
         this.isopen             = false;
-        this.ckOperator         = true;
         this.positionRef        = 550;
         this.color              = "gray";
         this.cursorX            = 0;
@@ -1169,7 +1169,7 @@ bbmap.Views.Main = Backbone.View.extend({
                     containment: "#map", 
                     scroll: false,
                     drag : function(e){
-                        bbmap.views.main.drawingAid(model);
+                        if(global.drawingAid == true) bbmap.views.main.drawingAid(model);
                     }
                 });
             });

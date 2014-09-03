@@ -8,6 +8,7 @@ var bbmap = {
   collections: {},
   models: {},
   views: {},
+  //////////////////////////
   // Parameters
   window_height : $(window).height() - 50,
   zoom : new Backbone.Model({val : 1}),
@@ -55,7 +56,7 @@ var bbmap = {
     }
   ],
   // Constructor
-  init: function (mode, filter) {
+  init: function () {
     this.views.main = new this.Views.Main({
       el              : "#bbmap_container",
       concepts        : global.collections.Concepts,
@@ -66,9 +67,10 @@ var bbmap = {
       links           : global.collections.Links,
       eventAggregator : global.eventAggregator,
       notifications   : global.collections.Notifications,
-      mode            : mode,
+      mode            : global.mode,
       init            : true,
-      filter          : filter
+      ckOperator      : global.ckOperator,
+      filter          : global.filter,
 
     });
     this.views.main.render();

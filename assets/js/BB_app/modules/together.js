@@ -8,10 +8,10 @@ var together = {
   collections: {},
   models: {},
   views: {},
+  ////////////////////////////
   // Parameters
-   
+  
   // Constructor
-
   init: function (mode, filter) {
     this.views.main = new this.Views.Main({
       el              : "#togetherjs-dock",
@@ -34,12 +34,11 @@ together.Views.Main = Backbone.View.extend({
       this.users           = json.users;
       this.eventAggregator = json.eventAggregator;
       this.cursor_mode     = false;
-      this.cursor_system   = "on";
       this.pathname        = window.location.pathname;
       // Conditions
       this.user.save({location : this.pathname});
       
-      if(this.cursor_system == "on"){
+      if(global.displayCursor == true){
         if(this.pathname == "/bbmap") this.cursor_mode = true;
         var rec = 0;
         $( "body" ).mousemove(function( event ){
@@ -81,7 +80,7 @@ together.Views.User = Backbone.View.extend({
       // Variables
       this.user = json.user;
       // Events
-      this.listenTo(this.user,"change:top change:left", this.updateCursor,this);
+      if(global.displayCursor == true) this.listenTo(this.user,"change:top change:left", this.updateCursor,this);
       this.listenTo(this.user,"change:location", this.updateLocation,this);
       // Templates
       this.template_user = _.template($('#together-user-template').html());
