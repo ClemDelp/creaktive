@@ -40,7 +40,8 @@ font-size: 1rem;
 
 
 #top_container{
-	background: #EFEFEF;
+	/*background: #EFEFEF;*/
+	background: transparent;
 	position: fixed;
 	/*//top:50px;*/
 	width:100%;
@@ -48,7 +49,8 @@ font-size: 1rem;
 }
 
 #bottom_container{
-	background: #EFEFEF;
+	/*background: #EFEFEF;*/
+	background: transparent;
 	z-index: 20;
 	position: fixed;
 	bottom:0;

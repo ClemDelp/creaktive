@@ -115,6 +115,12 @@ bbmap.Views.Node = Backbone.View.extend({
         position.top = $(this.el).position().top
         return position;
     },
+    getOffset : function(){
+        var offset = {};
+        offset.left = $(this.el).offset().left
+        offset.top = $(this.el).offset().top
+        return offset;
+    },
     getDimension : function(){
         var dimension = {};
         dimension.width = $(this.el).width();
