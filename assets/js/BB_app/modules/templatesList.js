@@ -24,6 +24,7 @@ templatesList.Views.Template = Backbone.View.extend({
         this.templates_collection = json.templates_collection;
         // Templates
         this.template_t = _.template($('#templatesList-template').html());
+        // Events
     },
     events : {
         "click .applyTemplate" : "applyTemplate",
@@ -62,6 +63,7 @@ templatesList.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         ////////////////////////////
         this.model = json.model;
+        this.childViews = [];
         // Events
         this.listenTo(global.models.currentProject,'change:templates',this.render,this);
         // Templates
@@ -77,12 +79,14 @@ templatesList.Views.Main = Backbone.View.extend({
         $(this.el).append(this.template_header())
         // Templates
         global.models.currentProject.get('templates').forEach(function(template){
-            $(_this.el).append(new templatesList.Views.Template({
+            var childView = new templatesList.Views.Template({
                 tagName : "span",
                 model:_this.model,
                 templates_collection : _this.templates_collection,
                 template : template
-            }).render().el);    
+            });
+            $(_this.el).append(childView.render().el);
+            _this.childViews.push(childView);    
         });
         
         return this;
