@@ -703,6 +703,7 @@ bbmap.Views.Main = Backbone.View.extend({
         return ref;
     },
     setZoom : function(zoom) {
+        console.log("setZoom:",zoom)
         if((zoom > 0)&&(zoom<5)){
             zoom = Math.round(zoom* 10) / 10;
             bbmap.zoom.set({val : zoom});
@@ -892,22 +893,59 @@ bbmap.Views.Main = Backbone.View.extend({
         // } 
     },
     findRightZoom : function(Data,Screen){
-        var limit = 0;
         var zoom = bbmap.zoom.get('val');
-        var d = Data;
-        var s = Screen;
-        var w = Data.width;
-        var h = Data.height;
-        console.log("data:",w,"screen:",s)
-        if((w-Screen.width > limit)&&(h-Screen.height > limit)){ // data trop large & trop haut
-            console.log("dezoom : data trop large & trop haut");
-        }else if((w-Screen.width < limit)&&(h-Screen.height < limit)){ // data pas assez large & pas assez haut
-            console.log("zoom : data pas assez large & pas assez haut");
-        }else if(w-Screen.width > limit){ // data juste trop large
-            console.log("dezoom : data juste trop large");
-        }else if(h-Screen.height > limit){ // data juste trop haut
-            console.log("dezoom : data juste trop haut");
+        console.log(Data,Screen)
+        if(Data.width>Data.height){
+            console.log("width > height");
+            if(Data.width>Screen.width){
+                console.log('dezoom')
+                while(Data.width>Screen.width){
+                    console.log(Data.width,Screen.width)
+                    zoom = zoom - 0.1;
+                    bbmap.views.main.setZoom(zoom);
+                    Data = bbmap.views.main.getDataCentroid()
+                }
+
+            }else if(Data.width<Screen.width){
+                console.log('zoom')
+                while(Data.width<Screen.width){
+                    console.log(Data.width,Screen.width)
+                    zoom = zoom + 0.1;
+                    bbmap.views.main.setZoom(zoom);
+                    Data = bbmap.views.main.getDataCentroid()
+                }
+            }
+        }else{
+            console.log("width < height");
+            if(Data.height>Screen.height){
+                console.log('dezoom')
+                while(Data.height>Screen.height){
+                    console.log(Data.height,Screen.height)
+                    zoom = zoom - 0.1;
+                    bbmap.views.main.setZoom(zoom);
+                    Data = bbmap.views.main.getDataCentroid()
+                }
+            }else if(Data.height<Screen.height){
+                console.log('zoom')
+                while(Data.height<Screen.height){
+                    console.log(Data.height,Screen.height)
+                    zoom = zoom + 0.1;
+                    bbmap.views.main.setZoom(zoom);
+                    Data = bbmap.views.main.getDataCentroid()
+                }
+            }
         }
+        
+
+        // if((w-Screen.width > limit)&&(h-Screen.height > limit)){ // data trop large & trop haut
+        //     console.log("dezoom : data trop large & trop haut");
+        // }else if((w-Screen.width < limit)&&(h-Screen.height < limit)){ // data pas assez large & pas assez haut
+        //     console.log("zoom : data pas assez large & pas assez haut");
+        // }else if(w-Screen.width > limit){ // data juste trop large
+        //     console.log("dezoom : data juste trop large");
+        // }else if(h-Screen.height > limit){ // data juste trop haut
+        //     console.log("dezoom : data juste trop haut");
+        // }
 
         // if(Data.height-Screen.height < limit){ // si il y a une difference > à 400 pixel
         //     if(((Data.width/Screen.width)<1)||((Data.height/Screen.height)<1)){ // screen > data de plus de 100px : on zoom (zoom augmente)
