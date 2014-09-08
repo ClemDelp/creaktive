@@ -862,11 +862,14 @@ bbmap.Views.Main = Backbone.View.extend({
         this.instance.repaintEverything();
     },
     superposeMapCenterToScreenCenter : function(){
+        var zoom = bbmap.zoom.get('val');
+        var screenCentroid = this.getScreenCentroid();
         var mapCentroid = this.getMapCentroid();
         var mapOffset = $('#map').offset(); // position relative to the document
+        console.log(mapOffset,screenCentroid)
         var screenCentroid = this.getScreenCentroid();
-        var delta_left = mapCentroid.left + mapOffset.left + (screenCentroid.left - mapCentroid.left);
-        var delta_top = mapCentroid.top + mapOffset.top + (screenCentroid.top - mapCentroid.top);
+        var delta_left = - mapOffset.left + (screenCentroid.left - mapCentroid.left*zoom);
+        var delta_top = - mapOffset.top + (screenCentroid.top - mapCentroid.top*zoom);
         $('#map').offset({ top: mapOffset.top + delta_top, left: mapOffset.left + delta_left });
     },
     moveDataCentroidToMapCentroid : function(){

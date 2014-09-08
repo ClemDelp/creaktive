@@ -16,7 +16,7 @@ var global = {
   // Parameters
   displayCursor : false, // to display or not users cursors in real-time : true/false
   drawingAid : false, // active or not drawing aid into bbmap editor : true/false
-  mode : "visu", // define the mode into bbmap by default : visu/edit/timeline
+  mode : "edit", // define the mode into bbmap by default : visu/edit/timeline
   filter : "ckp", // define which data to display in bbmap : c/k/ck/kp/ckp
   ckOperator : true, // diplay or not ckoperator, links between C and K : true/false
   // Constructor
