@@ -852,6 +852,40 @@ bbmap.Views.Main = Backbone.View.extend({
         $(this.map_el).attr( "style","top:-"+this.positionRef+"px;left:-"+this.positionRef+"px");
     },
     /////////////////////////////////////////
+    // Intelligent restructuration :
+    // superpose centroid Map and centroid screen and recenter data
+    /////////////////////////////////////////
+    intelligentRestructuring : function(){
+        this.superposeMapCenterToScreenCenter();
+        this.moveDataCentroidToMapCentroid();
+        this.resetToCentroid();
+        this.instance.repaintEverything();
+    },
+    superposeMapCenterToScreenCenter : function(){
+        var mapCentroid = this.getMapCentroid();
+        var mapOffset = $('#map').offset(); // position relative to the document
+        var screenCentroid = this.getScreenCentroid();
+        var delta_left = mapCentroid.left + mapOffset.left + (screenCentroid.left - mapCentroid.left);
+        var delta_top = mapCentroid.top + mapOffset.top + (screenCentroid.top - mapCentroid.top);
+        $('#map').offset({ top: mapOffset.top + delta_top, left: mapOffset.left + delta_left });
+    },
+    moveDataCentroidToMapCentroid : function(){
+        var zoom = bbmap.zoom.get('val');
+        var dataCentroid = this.getDataCentroid();
+        var mapCentroid = this.getMapCentroid();
+        var delta_left = mapCentroid.left - dataCentroid.left;
+        var delta_top = mapCentroid.top - dataCentroid.top;
+        console.log(delta_left,delta_top)
+        var views = bbmap.views.main.nodes_views;
+        for (var id in views){
+            var view = views[id];
+            var position = view.getPosition();
+            var x = position.left + delta_left;
+            var y = position.top + delta_top;
+            view.setPosition(x/zoom,y/zoom,0,0,true,"restructuration");
+        }
+    },
+    /////////////////////////////////////////
     // Centroid functions
     /////////////////////////////////////////
     resetToCentroid : function(){
@@ -941,6 +975,14 @@ bbmap.Views.Main = Backbone.View.extend({
         dataCentroid.width = leftMax - leftMin;
         dataCentroid.height = topMax - topMin;
         return dataCentroid;
+    },
+    getMapCentroid : function(){
+        var mapCentroid = {};
+        mapCentroid.width = $('#map').width()
+        mapCentroid.height = $('#map').height();
+        mapCentroid.left = mapCentroid.width/2;
+        mapCentroid.top = mapCentroid.height/2;
+        return mapCentroid;
     },
     /////////////////////////////////////////
     setCKOperator : function(e){
@@ -1423,7 +1465,7 @@ bbmap.Views.Main = Backbone.View.extend({
 
         }
 
-        this.resetToCentroid();
+        this.intelligentRestructuring();
 
         return this;
     }

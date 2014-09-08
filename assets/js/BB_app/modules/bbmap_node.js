@@ -57,7 +57,7 @@ bbmap.Views.Node = Backbone.View.extend({
     },
     followFather : function(oldFather,father){
         //alert(this.model.get('title')+' - follow its father');
-        //console.log(this.model.get('title'),' - follow its father');
+        console.log(this.model.get('title'),' - follow its father');
         var hf_left = oldFather.get('left');
         var hf_top = oldFather.get('top');
         var f_left = father.get('left');
