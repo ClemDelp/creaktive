@@ -703,7 +703,7 @@ bbmap.Views.Main = Backbone.View.extend({
         return ref;
     },
     setZoom : function(zoom) {
-        console.log("setZoom:",zoom)
+        //console.log("setZoom:",zoom)
         if((zoom > 0)&&(zoom<5)){
             zoom = Math.round(zoom* 10) / 10;
             bbmap.zoom.set({val : zoom});
@@ -856,6 +856,10 @@ bbmap.Views.Main = Backbone.View.extend({
     // Centroid functions
     /////////////////////////////////////////
     resetToCentroid : function(){
+        this.findRightZoom()
+        this.findRightCentroid();
+    },
+    findRightCentroid : function(){
         var zoom = bbmap.zoom.get('val');
         var dataCentroid = this.getDataCentroid(); // coordonnée du barycentre des données
         var screenCentroid = this.getScreenCentroid(); // coordonnée du barycentre de l'ecran
@@ -865,101 +869,48 @@ bbmap.Views.Main = Backbone.View.extend({
         delta.left = screenCentroid.left - dataCentroid.left;
         // superpose data and screen centroid 
         $('#map').offset({ top: delta.top, left: delta.left });
-        // Manage zoom
-        this.findRightZoom(dataCentroid,screenCentroid)
-        // console.log(screenCentroid.width/dataCentroid.width)
-        // if((screenCentroid.width/dataCentroid.width)< 1){ // width : data > screen 
-        //     var new_zoom = screenCentroid.width/dataCentroid.width;
-        //     console.log("data_w > screen_w",new_zoom)
-        //     this.setZoom(new_zoom);
-        //     this.resetToCentroid();
-        // }else if((screenCentroid.width/dataCentroid.width)> 1.5){ // width : data < screen
-        //     console.log('sup',screenCentroid.width/dataCentroid.width)
-        // }
-        // if(dataCentroid.width < screenCentroid.width){
-        //     var new_zoom = dataCentroid.width/screenCentroid.width;
-        //     console.log("data_w < screen_w",new_zoom)
-        //     if((new_zoom < 0.5)&&(new_zoom > 0.1)){
-        //         this.setZoom(zoom + new_zoom -0.1);
-        //         this.resetToCentroid();    
-        //     }
-            
-        // } 
-        // else if((screenCentroid.height/dataCentroid.height)<1){ // height : data > screen
-        //     var new_zoom = screenCentroid.height/dataCentroid.height;
-        //     console.log("data_h > screen_h",new_zoom)
-        //     this.setZoom(new_zoom-0.2);
-        //     this.resetToCentroid();
-        // } 
     },
     findRightZoom : function(Data,Screen){
+        var Data = this.getDataCentroid(); // coordonnée du barycentre des données
+        var Screen = this.getScreenCentroid(); // coordonnée du barycentre de l'ecran
         var zoom = bbmap.zoom.get('val');
-        console.log(Data,Screen)
+        var k = 1.5;
         if(Data.width>Data.height){
-            console.log("width > height");
+            // width > height
             if(Data.width>Screen.width){
-                console.log('dezoom')
-                while(Data.width>Screen.width){
-                    console.log(Data.width,Screen.width)
+                // dezoom
+                while(k*Data.width>Screen.width){
                     zoom = zoom - 0.1;
                     bbmap.views.main.setZoom(zoom);
                     Data = bbmap.views.main.getDataCentroid()
                 }
 
             }else if(Data.width<Screen.width){
-                console.log('zoom')
-                while(Data.width<Screen.width){
-                    console.log(Data.width,Screen.width)
+                // zoom
+                while(k*Data.width<Screen.width){
                     zoom = zoom + 0.1;
                     bbmap.views.main.setZoom(zoom);
                     Data = bbmap.views.main.getDataCentroid()
                 }
             }
         }else{
-            console.log("width < height");
+            // width < height
             if(Data.height>Screen.height){
-                console.log('dezoom')
-                while(Data.height>Screen.height){
-                    console.log(Data.height,Screen.height)
+                // dezoom
+                while(k*Data.height>Screen.height){
                     zoom = zoom - 0.1;
                     bbmap.views.main.setZoom(zoom);
                     Data = bbmap.views.main.getDataCentroid()
                 }
             }else if(Data.height<Screen.height){
-                console.log('zoom')
-                while(Data.height<Screen.height){
-                    console.log(Data.height,Screen.height)
+                // zoom
+                while(k*Data.height<Screen.height){
                     zoom = zoom + 0.1;
                     bbmap.views.main.setZoom(zoom);
                     Data = bbmap.views.main.getDataCentroid()
                 }
             }
         }
-        
-
-        // if((w-Screen.width > limit)&&(h-Screen.height > limit)){ // data trop large & trop haut
-        //     console.log("dezoom : data trop large & trop haut");
-        // }else if((w-Screen.width < limit)&&(h-Screen.height < limit)){ // data pas assez large & pas assez haut
-        //     console.log("zoom : data pas assez large & pas assez haut");
-        // }else if(w-Screen.width > limit){ // data juste trop large
-        //     console.log("dezoom : data juste trop large");
-        // }else if(h-Screen.height > limit){ // data juste trop haut
-        //     console.log("dezoom : data juste trop haut");
-        // }
-
-        // if(Data.height-Screen.height < limit){ // si il y a une difference > à 400 pixel
-        //     if(((Data.width/Screen.width)<1)||((Data.height/Screen.height)<1)){ // screen > data de plus de 100px : on zoom (zoom augmente)
-        //         console.log("zoom");
-        //         zoom = zoom + 0.1;
-        //     }else if(((Data.width/Screen.width)>1)||((Data.height/Screen.height)>1)){ // screen < data de plus de 100px : on dezoom (zoom diminue)
-        //         console.log("dezoom");
-        //         zoom = zoom - 0.1;
-        //     }
-        //     this.setZoom(zoom);
-        //     this.resetToCentroid();
-        
-        // }
-        //return zoom;
     },
     getScreenCentroid : function(){
         var screenCentroid = {};
@@ -1459,11 +1410,11 @@ bbmap.Views.Main = Backbone.View.extend({
             CSS3GENERATOR.update_styles();
 
 
-            $.get('/BBmap/image', function(hasChanged){
-                if (_this.project.image == undefined || _this.project.image=="" || hasChanged == true){
-                    _this.screenshot(true);
-                }
-            });
+            // $.get('/BBmap/image', function(hasChanged){
+            //     if (_this.project.image == undefined || _this.project.image=="" || hasChanged == true){
+            //         _this.screenshot(true);
+            //     }
+            // });
 
             this.initTimelineHistoryParameters();
             this.init = false;   
