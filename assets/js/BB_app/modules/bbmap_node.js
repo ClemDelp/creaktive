@@ -57,7 +57,7 @@ bbmap.Views.Node = Backbone.View.extend({
     },
     followFather : function(oldFather,father){
         //alert(this.model.get('title')+' - follow its father');
-        console.log(this.model.get('title'),' - follow its father');
+        //console.log(this.model.get('title'),' - follow its father');
         var hf_left = oldFather.get('left');
         var hf_top = oldFather.get('top');
         var f_left = father.get('left');
@@ -250,7 +250,7 @@ bbmap.Views.Node = Backbone.View.extend({
         var model_id = this.model.get('id')
         var connections = bbmap.views.main.instance.getAllConnections();
         connections.forEach(function(conn){
-            console.log(model_id,father_id)
+            //console.log(model_id,father_id)
             if((conn.targetId == model_id)&&(conn.sourceId == father_id))conn.setVisible(false); // bbmap.views.main.instance.detach({source:source, target:target, fireEvent:false});
             if((conn.targetId == father_id)&&(conn.sourceId == model_id))conn.setVisible(false); // bbmap.views.main.instance.detach({source:source, target:target, fireEvent:false});
         })

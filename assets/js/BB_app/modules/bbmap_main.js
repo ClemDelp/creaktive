@@ -160,7 +160,7 @@ bbmap.Views.Main = Backbone.View.extend({
         e.preventDefault();
         if(this.history_pos >= this.localHistory.length) this.history_pos = this.localHistory.length - 1;
         else{
-            console.log("level : ",this.history_pos);
+            // console.log("level : ",this.history_pos);
             this.nextPrevActionController("back","history");
             this.history_pos = this.history_pos + 1;
         } 
@@ -170,7 +170,7 @@ bbmap.Views.Main = Backbone.View.extend({
         if(this.history_pos < 0) this.history_pos = 0;
         else{
             this.history_pos = this.history_pos - 1; 
-            console.log("level : ",this.history_pos);
+            // console.log("level : ",this.history_pos);
             this.nextPrevActionController("go","history"); 
         } 
     },
@@ -866,7 +866,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var screenCentroid = this.getScreenCentroid();
         var mapCentroid = this.getMapCentroid();
         var mapOffset = $('#map').offset(); // position relative to the document
-        console.log(mapOffset,screenCentroid)
+        // console.log(mapOffset,screenCentroid)
         var screenCentroid = this.getScreenCentroid();
         var delta_left = - mapOffset.left + (screenCentroid.left - mapCentroid.left*zoom);
         var delta_top = - mapOffset.top + (screenCentroid.top - mapCentroid.top*zoom);
@@ -878,7 +878,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var mapCentroid = this.getMapCentroid();
         var delta_left = mapCentroid.left - dataCentroid.left;
         var delta_top = mapCentroid.top - dataCentroid.top;
-        console.log(delta_left,delta_top)
+        // console.log(delta_left,delta_top)
         var views = bbmap.views.main.nodes_views;
         for (var id in views){
             var view = views[id];
@@ -1175,7 +1175,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 var y1 = 0;
                 var y2 = 0;
                 if(Math.floor(centroid.top) == Math.floor(currentViewCentroid.top)){
-                    console.log('horrizontal alignement!')
+                    // console.log('horrizontal alignement!')
                     var width = abs(centroid.left - currentViewCentroid.left);
                     var height = 10;
                     if(centroid.left < currentViewCentroid.left){
@@ -1191,7 +1191,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 }
 
                 if(Math.floor(currentViewCentroid.left) == Math.floor(centroid.left)){
-                    console.log("vertical alignement!");
+                    // console.log("vertical alignement!");
                     var width = 10;
                     var height = abs(centroid.top - currentViewCentroid.top);
                     if(centroid.top < currentViewCentroid.top){
@@ -1218,7 +1218,7 @@ bbmap.Views.Main = Backbone.View.extend({
         // y1 = y1 / zoom;
         // y2 = y2 / zoom;
 
-        console.log("width:",width,"- height:",height,"- left:",left,"- top:",top,"- x1:",x1,"- x2:",x2,"- y1:",y1,"- y2:",y2);               
+        // console.log("width:",width,"- height:",height,"- left:",left,"- top:",top,"- x1:",x1,"- x2:",x2,"- y1:",y1,"- y2:",y2);               
         this.map_el.append('<svg class="'+id_source+'_svg" style="position:absolute;left:'+left+'px;top:'+top+'px" width="'+width+'" height="'+height+'" pointer-events="none" position="absolute" version="1.1" xmlns="http://www.w3.org/1999/xhtml" class="_jsPlumb_connector"><line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" style="stroke:black;stroke-width:2px;" /></svg>')
     },
     hideSvgLine : function(id_source){
@@ -1353,7 +1353,7 @@ bbmap.Views.Main = Backbone.View.extend({
                         scope : "cklink"
                     });
                 }catch(err){
-                    console.log("Missing element to etablish graphical connection...")
+                    //console.log("Missing element to etablish graphical connection...")
                 }
             });    
         }
@@ -1364,25 +1364,33 @@ bbmap.Views.Main = Backbone.View.extend({
         ///////////////////////
         // init
         if((this.init == false)&&(this.sens != "init")){ // Si on change de mode et on a utiliser le prev/next de la timeline ou de l'historic
-            console.log("--Mode ",this.mode," activated")
-            console.log("----start global fetching process...")
+            // console.log("--Mode ",this.mode," activated")
+            // console.log("----start global fetching process...")
             bbmap.views.main.concepts.fetch({
                 error: function () {},
-                success: function () {console.log("------concept fetched...");},
+                success: function () {
+                    // console.log("------concept fetched...");
+                },
                 complete: function () {
                     bbmap.views.main.knowledges.fetch({
                         error: function () {},
-                        success: function () {console.log("------knowledges fetched...");},
+                        success: function () {
+                            // console.log("------knowledges fetched...");
+                        },
                         complete: function () {
                             bbmap.views.main.poches.fetch({
                                 error: function () {},
-                                success: function () {console.log("------poches fetched...");},
+                                success: function () {
+                                    // console.log("------poches fetched...");
+                                },
                                 complete: function () {
                                     bbmap.views.main.links.fetch({
                                         error: function () {},
-                                        success: function () {console.log("------links fetched...");},
+                                        success: function () {
+                                            // console.log("------links fetched...");
+                                        },
                                         complete: function () {
-                                            console.log('----global fetching process done')
+                                            // console.log('----global fetching process done')
                                             bbmap.views.main.init = true;
                                             bbmap.views.main.render();
                                         }
@@ -1464,11 +1472,11 @@ bbmap.Views.Main = Backbone.View.extend({
             else $('#map').css('background', 'transparent');
 
 
-            $.get('/BBmap/image', function(hasChanged){
-                if (_this.project.image == undefined || _this.project.image=="" || hasChanged == true){
-                    _this.screenshot(true);
-                }
-            });
+            // $.get('/BBmap/image', function(hasChanged){
+            //     if (_this.project.image == undefined || _this.project.image=="" || hasChanged == true){
+            //         _this.screenshot(true);
+            //     }
+            // });
 
             this.init = false; 
             this.intelligentRestructuring();
