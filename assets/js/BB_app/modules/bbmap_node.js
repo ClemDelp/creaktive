@@ -57,7 +57,7 @@ bbmap.Views.Node = Backbone.View.extend({
     },
     followFather : function(oldFather,father){
         //alert(this.model.get('title')+' - follow its father');
-        console.log(this.model.get('title'),' - follow its father');
+        //console.log(this.model.get('title'),' - follow its father');
         var hf_left = oldFather.get('left');
         var hf_top = oldFather.get('top');
         var f_left = father.get('left');
@@ -229,15 +229,18 @@ bbmap.Views.Node = Backbone.View.extend({
         links_to_remove.forEach(function(link){
             link.destroy();
         });
+        // Remove view
+        this.removeView();
         // Remove model
         model.destroy();
-        this.removeView();
+        
     },
     removeView : function(){
         //bbmap.views.main.instance.deleteEndpoint(this.el);
         // this.endpoints.forEach(function(ep){
         //     try{bbmap.views.main.instance.deleteEndpoint(ep);}catch(err){}
         // });
+        delete bbmap.views.main.nodes_views[this.model.get('id')];
         bbmap.views.main.instance.removeAllEndpoints($(this.el));
         bbmap.views.main.instance.detachAllConnections($(this.el));
         this.close();

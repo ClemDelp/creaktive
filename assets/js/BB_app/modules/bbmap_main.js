@@ -737,7 +737,6 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     structureTree : function(e){
         e.preventDefault();
-        console.log("eee",e)
         var id = e.target.id.split('_action')[0];
         this.reorganizeTree(id);
     },
@@ -856,8 +855,8 @@ bbmap.Views.Main = Backbone.View.extend({
     // Centroid functions
     /////////////////////////////////////////
     resetToCentroid : function(){
-        this.findRightZoom()
-        this.findRightCentroid();
+        if(bbmap.getJsonSize(bbmap.views.main.nodes_views)>10) this.findRightZoom();
+        if(bbmap.getJsonSize(bbmap.views.main.nodes_views)>2) this.findRightCentroid();
     },
     findRightCentroid : function(){
         var zoom = bbmap.zoom.get('val');
@@ -1410,18 +1409,21 @@ bbmap.Views.Main = Backbone.View.extend({
             CSS3GENERATOR.update_styles();
 
 
-            // $.get('/BBmap/image', function(hasChanged){
-            //     if (_this.project.image == undefined || _this.project.image=="" || hasChanged == true){
-            //         _this.screenshot(true);
-            //     }
-            // });
+            $.get('/BBmap/image', function(hasChanged){
+                if (_this.project.image == undefined || _this.project.image=="" || hasChanged == true){
+                    _this.screenshot(true);
+                }
+            });
 
             this.initTimelineHistoryParameters();
             this.init = false;   
 
             if(this.mode == "edit") $('#map').css('background-image', 'url(/img/pattern.png)');
             else $('#map').css('background', 'transparent');
+
         }
+
+        this.resetToCentroid();
 
         return this;
     }
