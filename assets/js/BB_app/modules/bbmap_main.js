@@ -857,7 +857,7 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     intelligentRestructuring : function(){
         this.superposeMapCenterToScreenCenter();
-        this.moveDataCentroidToMapCentroid();
+        //this.moveDataCentroidToMapCentroid();
         this.resetToCentroid();
         this.instance.repaintEverything();
     },
@@ -1453,6 +1453,16 @@ bbmap.Views.Main = Backbone.View.extend({
             CSS3GENERATOR.initialize_controls();
             CSS3GENERATOR.update_styles();
 
+            if((this.init == true)&&(this.sens == "init")){
+                this.moveDataCentroidToMapCentroid();
+            }
+            
+            this.initTimelineHistoryParameters();
+              
+
+            if(this.mode == "edit") $('#map').css('background-image', 'url(/img/pattern.png)');
+            else $('#map').css('background', 'transparent');
+
 
             $.get('/BBmap/image', function(hasChanged){
                 if (_this.project.image == undefined || _this.project.image=="" || hasChanged == true){
@@ -1460,15 +1470,14 @@ bbmap.Views.Main = Backbone.View.extend({
                 }
             });
 
-            this.initTimelineHistoryParameters();
-            this.init = false;   
-
-            if(this.mode == "edit") $('#map').css('background-image', 'url(/img/pattern.png)');
-            else $('#map').css('background', 'transparent');
-
+            this.init = false; 
+            this.intelligentRestructuring();
         }
 
-        this.intelligentRestructuring();
+        
+        
+        
+
 
         return this;
     }
