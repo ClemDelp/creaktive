@@ -14,7 +14,7 @@ var global = {
   views: {},
   functions: {},
   // Parameters
-  displayCursor : false, // to display or not users cursors in real-time : true/false
+  displayCursor : true, // to display or not users cursors in real-time : true/false
   drawingAid : false, // active or not drawing aid into bbmap editor : true/false
   mode : "visu", // define the mode into bbmap by default : visu/edit/timeline
   filter : "ckp", // define which data to display in bbmap : c/k/ck/kp/ckp
