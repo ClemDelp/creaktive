@@ -15,10 +15,30 @@ var bbmap = {
   node_size : function(){ return 18*this.zoom.get('val'); },
   horizontal_gap : function(){ return 200*this.zoom.get('val'); },
   vertical_gap : function(){ return 80*this.zoom.get('val');},
-  css_knowledge_default : "-webkit-border-radius: 0;-moz-border-radius: 0;border-radius: 0px;font-family: Arial;color: #ffffff;background: #3498DB;padding: 10px 20px 10px 20px;border: solid #2980B9 2px;text-decoration: none;",
-  css_concept_default : "-webkit-border-radius: 28; -moz-border-radius: 28; border-radius: 28px; font-family: Arial; color: #ffffff; background: #2ECC71; padding: 10px 20px 10px 20px; border: solid #27AE60 3px; text-decoration: none; ",
-  css_poche_default : "-webkit-border-radius: 10;-moz-border-radius: 10;border-radius: 10px;font-family: Arial;color: #ffffff;background: #E67E22;padding: 10px 20px 10px 20px;border: solid #D35400 2px;text-decoration: none;",
+  css_knowledge_default : "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #2980B9;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #2980B9 2px;text-decoration: none;",
+  css_concept_default : "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #27AE60;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #27AE60 2px;text-decoration: none;",
+  css_poche_default : "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #D35400;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #D35400 2px;text-decoration: none;",
   default_templates : [
+    {
+      css: "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #27AE60;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #27AE60 2px;text-decoration: none;",
+      id: "2e8b35bb-45d5-97b0-5d28-8e73f88c28c3",
+      title: "Concept"
+    },
+    {
+      css: "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #2980B9;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #2980B9 2px;text-decoration: none;",
+      id: "33fc9b1a-0958-1d97-19d2-0ed2e2c593c6",
+      title: "Knowledge"
+    },
+    {
+      css: "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #D35400;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #D35400 2px;text-decoration: none;",
+      id: "92674815-4bc7-fb80-e0a0-c2bf0200f84d",
+      title: "Category"
+    },
+    {
+      css: "font-family: Arial;color: #000000;background: transparent;padding: 10px 20px 10px 20px;text-decoration: none;",
+      id: "2ff4f56d-46ab-7839-704d-09b229c2a336",
+      title: "Transparent"
+    },
     {
       css: "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #ffffff;background: #2ECC71;padding: 10px 20px 10px 20px;border: solid #27AE60 2px;text-decoration: none;",
       id: "c2d0a329-67da-fd18-ab0c-6a1d6faeb084",
@@ -48,11 +68,6 @@ var bbmap = {
       css: "-webkit-border-radius: 0;-moz-border-radius: 0;border-radius: 0px;font-family: Arial;color: #ffffff;background: #E74C3C;padding: 10px 20px 10px 20px;border: solid #C0392B 2px;text-decoration: none;",
       id: "adc43381-7b54-1530-7993-db9b54a0addb",
       title: "Missing"
-    },
-    {
-      css: "-webkit-border-radius: 10;-moz-border-radius: 10;border-radius: 10px;font-family: Arial;color: #ffffff;background: #E67E22;padding: 10px 20px 10px 20px;border: solid #D35400 2px;text-decoration: none;",
-      id: "c323e1a7-07af-b13a-3f1e-6dc822610c5d",
-      title: "Category"
     }
   ],
   // Constructor
@@ -85,3 +100,9 @@ var bbmap = {
     return count;
   }
 };
+
+
+
+
+
+

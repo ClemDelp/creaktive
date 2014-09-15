@@ -664,35 +664,46 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Zoom system
     /////////////////////////////////////////
-    targetToCursor : function(sens,ref1,ref2){    
-        var deltaLeft = ref1.left - ref2.left; // deplacement en x d'un element de ref
-        var deltaTop  = ref1.top - ref2.top; // deplacement en y d'un element de ref
+    getZoomParameters : function(ref1,ref2){
+        var json = {};
+        json.deltaLeft = ref1.left - ref2.left; // deplacement en x d'un element de ref
+        json.deltaTop  = ref1.top - ref2.top; // deplacement en y d'un element de ref
         var clientX = bbmap.views.main.cursorX; // position en x du cursor par rapport au document
         var clientY = bbmap.views.main.cursorY; // position en y du cursor par rapport au document
         var screenH = $(window).height();  // hauteur de la fenetre
         var screenW = $(window).width(); // largeur de la fenetre
-        var mapPosT = $("#map").offset().top; // position en x de la map
-        var mapPosL = $("#map").offset().left; // position en y de la map
+        json.mapPosT = $("#map").offset().top; // position en x de la map
+        json.mapPosL = $("#map").offset().left; // position en y de la map
         var zoom    = bbmap.zoom.get('val'); // zoom actuel
-        var deltaX  = ((screenW/2)-clientX) * 0.1; // valeur en x de la distance cursor centre de l'ecran
-        var deltaY  = ((screenH/2)-clientY) * 0.1; // valeur en y de la distance cursor centre de l'ecran
+        json.deltaX  = ((screenW/2)-clientX) * 0.1; // valeur en x de la distance cursor centre de l'ecran
+        json.deltaY  = ((screenH/2)-clientY) * 0.1; // valeur en y de la distance cursor centre de l'ecran
+        return json;
+    },
+    targetToCursor : function(sens,json){    
         //console.log(deltaLeft,deltaTop,clientX,clientY,screenH,screenW,mapPosT,mapPosL,zoom,deltaX,deltaY,sens)
-        if(sens == "out")$('#map').offset({ top: mapPosT+deltaTop+deltaY, left: mapPosL+deltaLeft+deltaX });
-        if(sens == "in")$('#map').offset({ top: mapPosT+deltaTop-deltaY, left: mapPosL+deltaLeft-deltaX });
+        if(sens == "out")$('#map').offset({ top: json.mapPosT+json.deltaTop+json.deltaY, left: json.mapPosL+json.deltaLeft+json.deltaX });
+        if(sens == "in")$('#map').offset({ top: json.mapPosT+json.deltaTop-json.deltaY, left: json.mapPosL+json.deltaLeft-json.deltaX });
+    },
+    focusZoom : function(json){
+        $('#map').offset({ top: json.mapPosT+json.deltaTop, left: json.mapPosL+json.deltaLeft });
     },
     zoomin : function(from){
         new_zoom = Math.round((bbmap.zoom.get('val') - 0.1)*100)/100;
         var ref1 = this.getOffsetRef();
         this.setZoom(new_zoom);
         var ref2 = this.getOffsetRef();
-        if(!from) this.targetToCursor('in',ref1,ref2);
+        var zoomParameters = this.getZoomParameters(ref1,ref2);
+        if(!from) this.targetToCursor('in',zoomParameters);
+        else this.focusZoom(zoomParameters);
     },
     zoomout : function(from){
         new_zoom = Math.round((bbmap.zoom.get('val') + 0.1)*100)/100;
         var ref1 = this.getOffsetRef();
         this.setZoom(new_zoom);
         var ref2 = this.getOffsetRef();
-        if(!from) this.targetToCursor('out',ref1,ref2);
+        var zoomParameters = this.getZoomParameters(ref1,ref2);
+        if(!from) this.targetToCursor('out',zoomParameters);
+        else this.focusZoom(zoomParameters);
     },
     getOffsetRef : function(){
         var ref = {'top':0, 'left':0}
@@ -703,7 +714,6 @@ bbmap.Views.Main = Backbone.View.extend({
         return ref;
     },
     setZoom : function(zoom) {
-        //console.log("setZoom:",zoom)
         if((zoom > 0)&&(zoom<5)){
             zoom = Math.round(zoom* 10) / 10;
             bbmap.zoom.set({val : zoom});
@@ -892,7 +902,7 @@ bbmap.Views.Main = Backbone.View.extend({
     // Centroid functions
     /////////////////////////////////////////
     resetToCentroid : function(){
-        if(bbmap.getJsonSize(bbmap.views.main.nodes_views)>10) this.findRightZoom();
+        if(bbmap.getJsonSize(bbmap.views.main.nodes_views)>5) this.findRightZoom();
         if(bbmap.getJsonSize(bbmap.views.main.nodes_views)>2) this.findRightCentroid();
     },
     findRightCentroid : function(){
@@ -1116,7 +1126,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 } 
             }else{
                 if(resp == true){
-                    bbmap.views.main.concepts.get(conn.targetId).set({id_father : "none"}).save();      
+                    bbmap.views.main.concepts.get(conn.targetId).set({id_father : "none"}).save();
                 } 
             }
             
@@ -1124,6 +1134,7 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         this.instance.bind("click", function(conn) {
             bbmap.views.main.instance.detach(conn);
+            bbmap.views.main.nodes_views[conn.targetId].unbindFollowFather();
         });
         ///////////////////////
         // New link process
@@ -1150,6 +1161,7 @@ bbmap.Views.Main = Backbone.View.extend({
 
                 }else{
                     bbmap.views.main.concepts.get(info.targetId).set({id_father : info.sourceId}).save();
+                    bbmap.views.main.nodes_views[info.targetId].bindFollowFather();
                 }    
             }
         });     
