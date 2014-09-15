@@ -714,7 +714,6 @@ bbmap.Views.Main = Backbone.View.extend({
         return ref;
     },
     setZoom : function(zoom) {
-        //console.log("setZoom:",zoom)
         if((zoom > 0)&&(zoom<5)){
             zoom = Math.round(zoom* 10) / 10;
             bbmap.zoom.set({val : zoom});
@@ -903,7 +902,7 @@ bbmap.Views.Main = Backbone.View.extend({
     // Centroid functions
     /////////////////////////////////////////
     resetToCentroid : function(){
-        if(bbmap.getJsonSize(bbmap.views.main.nodes_views)>10) this.findRightZoom();
+        if(bbmap.getJsonSize(bbmap.views.main.nodes_views)>5) this.findRightZoom();
         if(bbmap.getJsonSize(bbmap.views.main.nodes_views)>2) this.findRightCentroid();
     },
     findRightCentroid : function(){
@@ -1127,7 +1126,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 } 
             }else{
                 if(resp == true){
-                    bbmap.views.main.concepts.get(conn.targetId).set({id_father : "none"}).save();      
+                    bbmap.views.main.concepts.get(conn.targetId).set({id_father : "none"}).save();
                 } 
             }
             
@@ -1135,6 +1134,7 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         this.instance.bind("click", function(conn) {
             bbmap.views.main.instance.detach(conn);
+            bbmap.views.main.nodes_views[conn.targetId].unbindFollowFather();
         });
         ///////////////////////
         // New link process
@@ -1161,6 +1161,7 @@ bbmap.Views.Main = Backbone.View.extend({
 
                 }else{
                     bbmap.views.main.concepts.get(info.targetId).set({id_father : info.sourceId}).save();
+                    bbmap.views.main.nodes_views[info.targetId].bindFollowFather();
                 }    
             }
         });     
