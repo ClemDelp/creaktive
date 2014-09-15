@@ -232,8 +232,8 @@ path, ._jsPlumb_endpoint { cursor:pointer; }
 }
 
 .window {
-    background-color:white;
-    border:1px solid #346789;
+    /*background-color:white;*/
+    /*border:1px solid #346789;*/
     box-shadow: 2px 2px 19px #e0e0e0;
     -o-box-shadow: 2px 2px 19px #e0e0e0;
     -webkit-box-shadow: 2px 2px 19px #e0e0e0;

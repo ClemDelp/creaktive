@@ -51,7 +51,7 @@ body{
 
 /** ELEMENTS **/
 .chart-demo .window { 
-	border:0.1em dotted #d4e06b; 	
+	/*border:0.1em dotted #d4e06b; 	*/
 	width:auto; 
 	height:auto;
 	
@@ -61,14 +61,14 @@ body{
 }
 
 .chart-demo .window.knowledge { 
-	border:0.15em dotted red; 	
+	/*border:0.15em dotted red; 	*/
 	/*width:20em;*/
 	max-width: 20em;
 	min-width: 5em;
 }
 
 .chart-demo .window.concept { 
-	border:0.15em dotted green;
+	/*border:0.15em dotted green;*/
 	padding: 15px;
 	min-width: 5em;
 	max-width: 10em;
@@ -76,13 +76,18 @@ body{
 
 /** HOVER EFFECTS **/
 .chart-demo .window.knowledge:hover, .chart-demo .window.knowledge._jsPlumb_source_hover, .chart-demo .window.knowledge._jsPlumb_target_hover {
-    border:0.2em solid red;
-    color:red;
+    border:0.2em solid blue;
+    color:blue;
 }
 
 .chart-demo .window.concept:hover, .chart-demo .window.concept._jsPlumb_source_hover, .chart-demo .window.concept._jsPlumb_target_hover {
     border:0.2em solid green;
     color:green;
+}
+
+.chart-demo .window.poche:hover, .chart-demo .window.poche._jsPlumb_source_hover, .chart-demo .window.poche._jsPlumb_target_hover {
+    border:0.2em solid orange;
+    color:orange;
 }
 
 /*.ep {
