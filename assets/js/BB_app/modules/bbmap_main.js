@@ -415,7 +415,9 @@ bbmap.Views.Main = Backbone.View.extend({
     screenshot : function(flag){
         _this = this;
   
-        html2canvas($("#map.demo"), {
+        html2canvas($("#map"), {
+            logging : true,
+            svgRendering : true,
             onrendered : function(canvas){
                 var nodeCanvasContext = canvas.getContext("2d"); 
                 
