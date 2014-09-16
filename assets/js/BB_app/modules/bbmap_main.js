@@ -414,147 +414,36 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     screenshot : function(flag){
         _this = this;
-        /**
-        Repositionne la screenshot sur tout le graphe
-        **/
-        var zoomscale = bbmap.zoom.get('val');  //before take screenshot should change to the origin size
-        var project_id = this.project.get('id');
-        var moveLeft = (-$("#map")[0].offsetLeft)*(1-1.0/zoomscale);  //if zoomscale>1 we should move it to right else move to left
-        var moveTop = (-$("#map")[0].offsetTop)*(1-1.0/zoomscale);
-        var originLeft = $("#map")[0].offsetLeft;
-        var originTop = $("#map")[0].offsetTop;
-        var tmpscale = zoomscale;
-        if(tmpscale>1){                           //resize
-            while(bbmap.zoom.get('val')>1){
-                _this.zoomin("screenshot");
-            }
-        }else{
-            while(bbmap.zoom.get('val')<1){
-                _this.zoomout("screenshot");
-            }
-        }
-        $("#map").offset({left:originLeft+moveLeft});   //change position
-        $("#map").offset({top:originTop+moveTop});
-        
+  
         html2canvas($("#map.demo"), {
-            width: $("#map")[0].offsetWidth,      //screenshot has the same size with #map
-            height: $("#map")[0].offsetHeight,
-            onrendered: function(canvas) {       //html2canvas can only find nodes not svgs
-                /**
-                Remet la vue à l'état initial
-                **/
-                $("#map").offset({left:originLeft});       //once finished return back to present state
-                $("#map").offset({top:originTop});              
-                if(tmpscale>1){
-                    while(bbmap.zoom.get('val')<tmpscale){
-                        _this.zoomout("screenshot");
-                    }
-                }else{
-                    while(bbmap.zoom.get('val')>tmpscale){
-                        _this.zoomin("screenshot");
-                    }
-                }
-
-                /**
-                Ajoute les lignes et les points qui sont au format SVG
-                * canvas : les bulles
-                * canvas0 : tous les points et les lignes
-                **/
-                var canvas0 = document.createElement("canvas");  //another canvas we will draw all the things left together to reproduce #map
-                var context = canvas0.getContext("2d");
-                canvas0.width = $("#map")[0].offsetWidth;
-                canvas0.height = $("#map")[0].offsetHeight;
-
-                var svgArray = $("#map>svg");                   // first we draw all the lines
-                for (var i = 0; i < svgArray.length; i++) {
-                    var top = parseFloat(svgArray[i].style.top);
-                    var left = parseFloat(svgArray[i].style.left);
-                    var height = svgArray[i].getAttribute("height");
-                    var width = svgArray[i].getAttribute("width");
-                    var canvas1 = document.createElement("canvas");
-                    canvas1.width = width;
-                    canvas1.height = height;
-                    var svgTagHtml = svgArray[i].innerHTML;
-                    canvg(canvas1,svgTagHtml);                  //canvg is a library which can parse svg to canvas
-                    context.drawImage(canvas1,left,top);
-                };
-
-                var pointArray = $("._jsPlumb_endpoint>svg");   //than we are ganna draw all the points to canvas0
-                var divArray = $("._jsPlumb_endpoint");         //cause the we can't get the position of points directly, we look at his parent div
-                ////console.log(divArray.length);
-                for (var i = 0; i < divArray.length; i++) {
-                    var top = parseFloat(divArray[i].style.top);
-                    var left = parseFloat(divArray[i].style.left);
-                    var height = parseFloat(divArray[i].style.height);
-                    var width = parseFloat(divArray[i].style.width);
-                    var canvas1 = document.createElement("canvas");
-                    canvas1.width = width;
-                    canvas1.height = height;
-                    var svgTagHtml = pointArray[i].innerHTML;
-                    canvg(canvas1,svgTagHtml);
-
-                    context.drawImage(canvas1,left,top);
-                };
-
-                /**
-                merger canvas and canvas0
-                **/
-                context = canvas.getContext("2d");                
-                context.drawImage(canvas0,0,0);                
-                ////console.log(canvas.toDataURL("image/png"));
-                /**
-                Centre le canvas sur la zone dessinée et couper le reste
-                **/
-                var currentWidth = $("#map_container")[0].offsetWidth;
-                var currentHeight = $("#creaktive_window")[0].offsetHeight-$(".tab-bar")[0].offsetHeight-$("#bottom_container")[0].offsetHeight;
-                var x1 = -parseFloat($("#map")[0].offsetLeft)/zoomscale;   // here we r ganna take the right part of canvas
-                var y1 = (-parseFloat($("#map")[0].offsetTop)+$(".tab-bar")[0].offsetHeight)/zoomscale;
-                var x2 = x1+currentWidth/zoomscale;
-                var y2 = y1+currentHeight/zoomscale; 
-                var canvas2 = document.createElement("canvas");
-                canvas2.width = (x2-x1);
-                canvas2.height = (y2-y1);
-                var context2 = canvas2.getContext("2d");  
-                if((x1<0)&&(y1<0)){                                       //get data of canvas and put them to a new one(canvas2) according to the different situations of position between screen and #map
-                    var imgData=context.getImageData(0,0,x2,y2);  
-                    context2.putImageData(imgData,-x1,-y1);
-                }else{
-                    if(x1<0){
-                        var imgData=context.getImageData(0,y1,x2,y2);
-                        context2.putImageData(imgData,-x1,0);
-                    }else{
-                        if(y1<0){
-                            var imgData=context.getImageData(x1,0,x2,y2);
-                            context2.putImageData(imgData,0,-y1);
-                        }else{
-                            var imgData=context.getImageData(x1,y1,x2,y2);
-                            context2.putImageData(imgData,0,0);
-                        }
-                    }
-                }
-                // Conversoindu canvas en png
-                var screenshot;
-                screenshot = canvas2.toDataURL( "image/png" );   //save screenshot
-
-                global.Functions.uploadScreenshot(screenshot, function(data){
-                    //console.log(data);
-                    if(flag==true){
-                        global.models.currentProject.save({
-                            image : data
-                        });
-                    }else{
-                        var s = new global.Models.Screenshot({
-                            id : guid(),
-                            src : data,
-                            date : getDate(),
-                            project_id : global.models.currentProject.get('id')
-                        });
-                        s.save();
-                    }
-                });
-
+            onrendered : function(canvas){
+                var nodeCanvasContext = canvas.getContext("2d"); 
+                
+                // var svgConnectors = $('#map > svg'); //On récupère toutes les connections entre bulle qui sont du svg
+                
+                // var connectorsCanvas = document.createElement('canvas'); //On créé un canvas
+                // connectorsCanvas.height = $("#map")[0].offsetHeight;
+                // connectorsCanvas.width = $("#map")[0].offsetWidth;
+                // var ctx = connectorsCanvas.getContext('2d');   
+                
+                // //On ajoute tous les connecteurs à ce canvas en les convertissant
+                // _.each(svgConnectors, function(svgConnector){
+                //     var svgConnector = svgConnector.cloneNode(true);
+                //     var top=svgConnector.style.top;
+                //     var left = svgConnector.style.left;
+                 
+                //     var div = document.createElement('div');
+                //     div.appendChild(svgConnector);
+                //     var svgTag = div.innerHTML;
+                //     ctx.drawSvg(svgTag, left, top);
+                // });                
+                
+                // nodeCanvasContext.drawImage(connectorsCanvas,0,0); 
+                
+                var img =  canvas.toDataURL( "image/png;base64;" );              
+                window.open(img,"","width=700,height=700")
             }
-        });    
+        });
     },
     /////////////////////////////////////////
     // Drop new data on map

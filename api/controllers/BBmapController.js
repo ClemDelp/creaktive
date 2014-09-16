@@ -37,6 +37,10 @@ module.exports = {
    		})
 
 	},
+
+  screenshot : function(res,res){
+
+  },
   
 
   bbmapview : function(req,res){

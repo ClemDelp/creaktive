@@ -76,6 +76,7 @@
   },
 
   "bbmap" : {
+    "screenshot" : true,
     "*" : ["authenticated", "allowedProjects","forceHTTPs"],
   },
 
