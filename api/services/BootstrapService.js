@@ -7,12 +7,18 @@ module.exports = {
     read_notifications = [];
     
     Notification.find()
-    .where({read : {'!' :req.session.user.id}})
+    .where({
+      read : {'!' :req.session.user.id},
+      content : {'!' : ""}
+    })
     .done(function(err,unotifications){
       if(err) console.log(err);
       unread_notifications = unotifications;
       Notification.find()
-      .where({read : req.session.user.id})
+      .where({
+        read : req.session.user.id,
+        content : {'!' : ""}
+      })
       .sort('comparator DESC')
       .limit(10)
       .done(function(err,rnotifications){
