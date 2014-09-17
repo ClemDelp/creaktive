@@ -38,8 +38,7 @@ module.exports = {
 
 	},
 
-  screenshot : function(res,res){
-
+  screenshot : function(req,res){
   },
   
 

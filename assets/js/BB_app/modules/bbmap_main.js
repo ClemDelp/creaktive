@@ -414,13 +414,37 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     screenshot : function(flag){
         _this = this;
-  
-        html2canvas($("#map"), {
+
+        var map = document.getElementById("map");
+        var screenSize = map.getBoundingClientRect();
+        // console.log(screenSize) 
+        // var top = - screenSize.top;
+        // var left = - screenSize.left;
+        // $('#map').append("<div id='screen' style='top:"+top+":left:"+left+"'></div>");
+
+        // _.each($(".bulle"), function(bulle){
+        //     console.log(bulle)
+        //     $("#"+bulle.id).appendTo($("#screen"))
+        // })
+
+       
+
+        // var div = document.createElement('div');
+        // div.id = "screen"
+        // div.innerHTML = '<span class="msg">Hello world.</span>'
+        // div.style.left = screenSize.left; 
+        // div.style.top = screenSize.top;
+
+        // var w = window.open();
+        // w.document.write( div.innerHTML );
+        // w.document.close();
+
+        html2canvas($("#map"),{
             logging : true,
             svgRendering : true,
             onrendered : function(canvas){
                 var nodeCanvasContext = canvas.getContext("2d"); 
-                
+                console.log(canvas)
                 // var svgConnectors = $('#map > svg'); //On récupère toutes les connections entre bulle qui sont du svg
                 
                 // var connectorsCanvas = document.createElement('canvas'); //On créé un canvas
