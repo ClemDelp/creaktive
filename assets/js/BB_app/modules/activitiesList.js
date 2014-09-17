@@ -68,6 +68,8 @@ activitiesList.Views.Main = Backbone.View.extend({
         this.models_notifs[this.model.get('id')].news.each(function(notif){
             notif.set({read : _.union(notif.get('read'),global.models.current_user.get('id'))});
             notif.save();
+            _this.models_notifs[_this.model.get('id')].news.remove(notif);
+            _this.models_notifs[_this.model.get('id')].read.add(notif);
         });
         this.render();
     },
@@ -76,6 +78,10 @@ activitiesList.Views.Main = Backbone.View.extend({
         notif = this.models_notifs[this.model.get('id')].news.get(e.target.getAttribute('data-id-notification'));
         notif.set({read : _.union(notif.get('read'),global.models.current_user.get('id'))});
         notif.save();
+        
+        this.models_notifs[this.model.get('id')].news.remove(notif);
+        this.models_notifs[this.model.get('id')].read.add(notif);
+        
         this.render();
     },
     removeView : function(){
