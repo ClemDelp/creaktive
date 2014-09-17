@@ -275,9 +275,7 @@ bbmap.Views.Main = Backbone.View.extend({
     downloadimage : function(e){
         _this = this;
         //var aLink = e.target; 
-        /**
-        Repositionne la screenshot sur tout le graphe
-        **/
+
         var zoomscale = bbmap.zoom.get('val');  //before take screenshot should change to the origin size
         var project_id = this.project.get('id');
         var moveLeft = (-$("#map")[0].offsetLeft)*(1-1.0/zoomscale);  //if zoomscale>1 we should move it to right else move to left
@@ -285,6 +283,8 @@ bbmap.Views.Main = Backbone.View.extend({
         var originLeft = $("#map")[0].offsetLeft;
         var originTop = $("#map")[0].offsetTop;
         var tmpscale = zoomscale;
+        
+        //On met le zoom à 1 sinon c'est le bazar dans les bulles
         if(tmpscale>1){                           //resize
             while(bbmap.zoom.get('val')>1){
                 _this.zoomin("downloadimage");
@@ -298,13 +298,13 @@ bbmap.Views.Main = Backbone.View.extend({
         $("#map").offset({top:originTop+moveTop});
         
         html2canvas($("#map.demo"), {
-            width: $("#map")[0].offsetWidth,      //screenshot has the same size with #map
+            width: $("#map")[0].offsetWidth,      
             height: $("#map")[0].offsetHeight,
-            onrendered: function(canvas) {       //html2canvas can only find nodes not svgs
+            onrendered: function(bulleCanvas) {       //html2canvas can only find nodes not svgs
                 /**
-                Remet la vue à l'état initial
+                On remet le zoom à l'état inital
                 **/
-                $("#map").offset({left:originLeft});       //once finished return back to present state
+                $("#map").offset({left:originLeft});       
                 $("#map").offset({top:originTop});              
                 if(tmpscale>1){
                     while(bbmap.zoom.get('val')<tmpscale){
@@ -319,12 +319,12 @@ bbmap.Views.Main = Backbone.View.extend({
                 /**
                 Ajoute les lignes et les points qui sont au format SVG
                 * canvas : les bulles
-                * canvas0 : tous les points et les lignes
+                * svgCanvas : tous les points et les lignes
                 **/
-                var canvas0 = document.createElement("canvas");  //another canvas we will draw all the things left together to reproduce #map
-                var context = canvas0.getContext("2d");
-                canvas0.width = $("#map")[0].offsetWidth;
-                canvas0.height = $("#map")[0].offsetHeight;
+                var svgCanvas = document.createElement("canvas");  //another canvas we will draw all the things left together to reproduce #map
+                var context = svgCanvas.getContext("2d");
+                svgCanvas.width = $("#map")[0].offsetWidth;
+                svgCanvas.height = $("#map")[0].offsetHeight;
 
                 var svgArray = $("#map>svg");                   // first we draw all the lines
                 for (var i = 0; i < svgArray.length; i++) {
@@ -332,16 +332,16 @@ bbmap.Views.Main = Backbone.View.extend({
                     var left = parseFloat(svgArray[i].style.left);
                     var height = svgArray[i].getAttribute("height");
                     var width = svgArray[i].getAttribute("width");
-                    var canvas1 = document.createElement("canvas");
-                    canvas1.width = width;
-                    canvas1.height = height;
+                    var tmpCanvas = document.createElement("canvas");
+                    tmpCanvas.width = width;
+                    tmpCanvas.height = height;
                     var svgTagHtml = svgArray[i].innerHTML;
-                    canvg(canvas1,svgTagHtml);                  //canvg is a library which can parse svg to canvas
+                    canvg(tmpCanvas,svgTagHtml);                  //canvg is a library which can parse svg to canvas
 
-                    context.drawImage(canvas1,left,top);
+                    context.drawImage(tmpCanvas,left,top);
                 };
 
-                var pointArray = $("._jsPlumb_endpoint>svg");   //than we are ganna draw all the points to canvas0
+                var pointArray = $("._jsPlumb_endpoint>svg");   //than we are ganna draw all the points to svgCanvas
                 var divArray = $("._jsPlumb_endpoint");         //cause the we can't get the position of points directly, we look at his parent div
                 //console.log(divArray.length);
                 for (var i = 0; i < divArray.length; i++) {
@@ -349,20 +349,20 @@ bbmap.Views.Main = Backbone.View.extend({
                     var left = parseFloat(divArray[i].style.left);
                     var height = parseFloat(divArray[i].style.height);
                     var width = parseFloat(divArray[i].style.width);
-                    var canvas1 = document.createElement("canvas");
-                    canvas1.width = width;
-                    canvas1.height = height;
+                    var tmpCanvas = document.createElement("canvas");
+                    tmpCanvas.width = width;
+                    tmpCanvas.height = height;
                     var svgTagHtml = pointArray[i].innerHTML;
-                    canvg(canvas1,svgTagHtml);
+                    canvg(tmpCanvas,svgTagHtml);
 
-                    context.drawImage(canvas1,left,top);
+                    context.drawImage(tmpCanvas,left,top);
                 };
 
                 /**
-                merger canvas and canvas0
+                merger bulleCanvas and svgCanvas
                 **/
-                context = canvas.getContext("2d");                
-                context.drawImage(canvas0,0,0);                
+                context = bulleCanvas.getContext("2d");                
+                context.drawImage(svgCanvas,0,0);                
                 //console.log(canvas.toDataURL("image/png"));
                 /**
                 Centre le canvas sur la zone dessinée et couper le reste
@@ -398,13 +398,13 @@ bbmap.Views.Main = Backbone.View.extend({
                 var screenshot;
 
                 screenshot = canvas2.toDataURL( "image/png" );
-
-                var aLink = document.createElement('a');
-                aLink.download = "screenshot";
-                aLink.href = screenshot;
-                document.body.appendChild(aLink);
-                aLink.click();
-                document.body.removeChild(aLink);
+                console.log(screenshot)
+                // var aLink = document.createElement('a');
+                // aLink.download = "screenshot";
+                // aLink.href = screenshot;
+                // document.body.appendChild(aLink);
+                // aLink.click();
+                // document.body.removeChild(aLink);
 
             }
         });    
@@ -415,59 +415,26 @@ bbmap.Views.Main = Backbone.View.extend({
     screenshot : function(flag){
         _this = this;
 
-        var map = document.getElementById("map");
-        var screenSize = map.getBoundingClientRect();
-        // console.log(screenSize) 
-        // var top = - screenSize.top;
-        // var left = - screenSize.left;
-        // $('#map').append("<div id='screen' style='top:"+top+":left:"+left+"'></div>");
+        var top =  $('#map').offset().top;
+        var left = $('#map').offset().left;
+        $('#bbmap_container').append("<div id='screen' style='height:2000px;width:1000'></div>");
 
-        // _.each($(".bulle"), function(bulle){
-        //     console.log(bulle)
-        //     $("#"+bulle.id).appendTo($("#screen"))
-        // })
+        _.each($("#map.demo").children(), function(bulle){
+            console.log(bulle)
+            var $b = $("#"+bulle.id).clone();
+            $("#screen").append($b);
+            if(_.contains(bulle.classList, "bulle"))$b.offset({top : $("#"+bulle.id).offset().top, left: $("#"+bulle.id).offset().left})
+        })
 
-       
-
-        // var div = document.createElement('div');
-        // div.id = "screen"
-        // div.innerHTML = '<span class="msg">Hello world.</span>'
-        // div.style.left = screenSize.left; 
-        // div.style.top = screenSize.top;
-
-        // var w = window.open();
-        // w.document.write( div.innerHTML );
-        // w.document.close();
-
-        html2canvas($("#map"),{
+        html2canvas($("#screen"),{
             logging : true,
             svgRendering : true,
             onrendered : function(canvas){
                 var nodeCanvasContext = canvas.getContext("2d"); 
                 console.log(canvas)
-                // var svgConnectors = $('#map > svg'); //On récupère toutes les connections entre bulle qui sont du svg
-                
-                // var connectorsCanvas = document.createElement('canvas'); //On créé un canvas
-                // connectorsCanvas.height = $("#map")[0].offsetHeight;
-                // connectorsCanvas.width = $("#map")[0].offsetWidth;
-                // var ctx = connectorsCanvas.getContext('2d');   
-                
-                // //On ajoute tous les connecteurs à ce canvas en les convertissant
-                // _.each(svgConnectors, function(svgConnector){
-                //     var svgConnector = svgConnector.cloneNode(true);
-                //     var top=svgConnector.style.top;
-                //     var left = svgConnector.style.left;
-                 
-                //     var div = document.createElement('div');
-                //     div.appendChild(svgConnector);
-                //     var svgTag = div.innerHTML;
-                //     ctx.drawSvg(svgTag, left, top);
-                // });                
-                
-                // nodeCanvasContext.drawImage(connectorsCanvas,0,0); 
-                
+               
                 var img =  canvas.toDataURL( "image/png;base64;" );              
-                window.open(img,"","width=700,height=700")
+                console.log(img)
             }
         });
     },
