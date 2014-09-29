@@ -120,7 +120,6 @@
     },
 
     start : function () {
-
       var self = this,
           $this = $('[' + this.attr_name() + ']', this.scope),
           integer_settings = ['timer', 'scrollSpeed', 'startOffset', 'tipAnimationFadeSpeed', 'cookieExpires'],
@@ -167,7 +166,13 @@
           this.show('init');
         }
 
-      }      
+      }     
+      //////////////////////////////////
+      var text = bbmap.views.main.lastModel.get('title')
+      var inputJoyride = $('.joyride-content-wrapper').find('#joyride_val');
+      $(inputJoyride[0]).focus();
+      $(inputJoyride[0]).val(text);
+      /////////////////////////////////
     },
 
     resume : function () {
@@ -189,7 +194,6 @@
       $blank.append($(this.settings.template.wrapper));
       $blank.first().attr(this.add_namespace('data-index'), opts.index);
       $('.joyride-content-wrapper', $blank).append(content);
-
       return $blank[0];
     },
 
@@ -337,12 +341,7 @@
 
       }
 
-      // var inputJoyride = $('.joyride-content-wrapper', $blank).find('#joyride_val');
-      // console.log('focuuuuus on ',inputJoyride)
-      // console.log('focuuuuus on ',$(inputJoyride)
-      // console.log($(this).find('#joyride_val'));
-      // $(this).find('#joyride_val').focus();
-
+      
     },
 
     is_phone : function () {
@@ -795,6 +794,8 @@
       while (i--) {
         if (hidden_corners[i]) return false;
       }
+
+      
 
       return true;
     },
