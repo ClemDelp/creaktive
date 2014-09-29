@@ -9,7 +9,6 @@ module.exports = {
     Notification.find()
     .where({
       read : {'!' :req.session.user.id},
-      content : {'!' : ""}
     })
     .done(function(err,unotifications){
       if(err) console.log(err);
@@ -17,7 +16,6 @@ module.exports = {
       Notification.find()
       .where({
         read : req.session.user.id,
-        content : {'!' : ""}
       })
       .sort('comparator DESC')
       .limit(10)

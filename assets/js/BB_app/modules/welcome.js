@@ -43,7 +43,7 @@ welcome.Views.Main = Backbone.View.extend({
         $(this.el).empty();
         $(this.el).append(this.template({
             user        : this.user.toJSON(),
-            notifNbre   : this.allNews_notifs.length
+            notifNbre   : _.filter(this.allNews_notifs.toJSON(), function(n){if(n.content != "")return n }).length,
         }))
         
         return this;

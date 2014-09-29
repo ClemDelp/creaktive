@@ -76,7 +76,7 @@ manager.Views.Projects = Backbone.View.extend({
             if(manager.views.main.users_rec_dic[project.get('id')]) userNbr = manager.views.main.users_rec_dic[project.get('id')].length
             // Append the template
             $(_this.el).append(_this.template_project({
-                notifNbr : global.ProjectsNotificationsDictionary[project.get('id')].news.length,
+                notifNbr :  _.filter(global.ProjectsNotificationsDictionary[project.get('id')].news.toJSON(), function(n){if(n.content != "")return n }).length,
                 userNbr  : userNbr,
                 project  : project.toJSON(),
             }));

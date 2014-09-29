@@ -105,11 +105,6 @@ activitiesList.Views.Main = Backbone.View.extend({
         //this.read_notifs     = this.models_notifs[this.model.get('id')].read;
         $(this.el).empty();
         _this = this;
-        // Poche list
-        // notif_to_render = new Backbone.Collection();
-        // this.notifications.each(function(notification){
-        //     if(notification.get('to').id == _this.model.get('id')){notif_to_render.add(notification)}
-        // });
         if(this.news_notifs.length != 0){
           $(this.el).append(this.template({
             model       : this.model.toJSON(),
