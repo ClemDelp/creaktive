@@ -69,7 +69,10 @@
         .keypress(function(e) {
           if(e.keyCode == 13){
             var value = $(e.target.parentElement).find('#joyride_val').val();
-            bbmap.views.main.updateLastModelTitle(value)
+            if(bbmap.views.main.lastModel.get('title') != value){
+              console.log('eeee')
+              bbmap.views.main.updateLastModelTitle(value)
+            } 
             self.hide();
             self.show();
           }

@@ -54,6 +54,10 @@
       <option value="edit" {{ if(mode == "edit"){ }}selected{{ } }}>Edition</option>
       <option value="timeline" {{ if(mode == "timeline"){ }}selected{{ } }}>Timeline</option>
     </select>
+    {{ if(mode == "edit"){ }}
+      <a href="#" class="button tiny round secondary prevH" title="ctrl-Z"><</a>
+      <a href="#" class="button tiny round secondary nextH" title="ctrl-Y">></a>
+    {{ } }}
   </div>
 
   <div class="large-4 medium-4 small-4 columns">
