@@ -3,7 +3,7 @@
 /////////////////////////////////////////////////
 bbmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render','backInTimeline','advanceInTimeline');
         ////////////////////////////
         // el
         this.top_el = $(this.el).find('#top_container');
@@ -44,6 +44,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.history_pos        = 0;
         this.localHistory       = new global.Collections.LocalHistory();
         this.sens               = "init";
+        this.listener           = new window.keypress.Listener();
         ////////////////////////////////
         // Templates
         this.template_top = _.template($('#bbmap-top-element-template').html());
@@ -91,6 +92,9 @@ bbmap.Views.Main = Backbone.View.extend({
             else bbmap.views.main.zoomout()
 
         });
+
+        this.listener.simple_combo("ctrl z", this.backInTimeline);
+        this.listener.simple_combo("ctrl y", this.advanceInTimeline);
         // Cursor position
         // $( document ).on( "mousemove", function( event ) {
         //     bbmap.views.main.cursorX = event.pageX;
@@ -133,6 +137,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     backInTimeline : function(e){
         e.preventDefault();
+        console.log('backInTimeline')
         if(this.sens == "back") this.timeline_pos = this.timeline_pos + 1;
         if(this.timeline_pos >= this.notifications.length) this.timeline_pos = this.notifications.length - 1;
         else this.nextPrevActionController("back","timeline");
@@ -140,6 +145,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     advanceInTimeline : function(e){
         e.preventDefault();
+        console.log('advanceInTimeline')
         if(this.sens == "next") this.timeline_pos = this.timeline_pos - 1;
         if(this.timeline_pos < 0) this.timeline_pos = 0;
         else this.nextPrevActionController("go","timeline");
@@ -164,7 +170,6 @@ bbmap.Views.Main = Backbone.View.extend({
     //     this.localHistory.unshift(action)
     // },
     updateLocalHistory : function(model,from){
-        console.log('new notification!',model)
         if(model.get('from').id == global.models.current_user.get('id')) this.localHistory.unshift(model)
     },
     backInHistory : function(e){
@@ -173,7 +178,6 @@ bbmap.Views.Main = Backbone.View.extend({
         if(this.history_pos >= this.localHistory.length) this.history_pos = this.localHistory.length - 1;
         else this.nextPrevActionController("back","history");
         if(this.sens != "back")this.sens = "back";
-        console.log(this.history_pos,this.sens) 
     },
     advanceInHistory : function(e){
         e.preventDefault();
@@ -205,9 +209,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var action = historic.get('action');
         var type = historic.get('object');
         var model = this.getTimelineHitoryModel(historic,type,sens,action);
-        console.log("miiiooooodeeellllle:",model)
         // Control sens to chose the right action
-        console.log(action,sens,type)
         if(((sens == "go")&&(action == "create")&&(type != "Link"))||((sens == "back")&&(action == "remove")&&(type != "Link"))){
             this.addModelToView(model,"history");
             if(save == true) model.save();
@@ -229,10 +231,9 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     getTimelineHitoryModel : function(historic,type,sens,action){
         // Creation du model
-        console.log(historic,type,sens,action)
+        // console.log(historic,type,sens,action)
         var type = type.toLowerCase();
         var model = new Backbone.Model();
-        console.log("hiiiistory",historic.get('to'))
         if((action == "update")&&(sens == "go")){
             if(type == "concept"){model = new global.Models.ConceptModel(historic.get('to'));}
             else if(type == "knowledge") model = new global.Models.Knowledge(historic.get('to'));
