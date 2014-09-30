@@ -171,7 +171,6 @@ bbmap.Views.Node = Backbone.View.extend({
                     global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
                     //console.log(this.model.get('top'),this.model.get('left'))
                 }
-                bbmap.views.main.addActionToHistory(this.model.toJSON(),"update",this.model.get('type'),oldModel);
                 ////console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
                 //bbmap.views.main.reorganizeTree(this.model.get('id'))           
             }
@@ -268,8 +267,6 @@ bbmap.Views.Node = Backbone.View.extend({
         bbmap.views.main.instance.removeAllEndpoints($(this.el));
         bbmap.views.main.instance.detachAllConnections($(this.el));
         this.close();
-        if(origin == "client") bbmap.views.main.addActionToHistory(this.model.toJSON(),"remove",this.model.get('type'));
-
     },
     removeLink : function(father_id){
         // Remove link in both sens beetween this el and his id_father

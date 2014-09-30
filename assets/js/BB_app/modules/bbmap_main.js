@@ -72,8 +72,9 @@ bbmap.Views.Main = Backbone.View.extend({
         ////////////////////////////
         // Events
         this.listenTo(bbmap.zoom,'change',this.updateZoomDisplay,this);
-        this.listenTo(this.notifications,'add',this.timelineAdd,this);
-        this.listenTo(this.notifications,'remove',this.timelineRemove,this);
+        // this.listenTo(this.notifications,'add',this.timelineAdd,this);
+        // this.listenTo(this.notifications,'remove',this.timelineRemove,this);
+        this.listenTo(global.eventAggregator,'notification:add',this.updateLocalHistory,this);
         // Real-time : knowledge & poche & concept
         global.eventAggregator.on('model:create',this.addModelToView,this);
         global.eventAggregator.on('model:remove',this.removeModelToView,this);
@@ -147,20 +148,24 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // LocalHistory gestion
     /////////////////////////////////////////
-    addActionToHistory : function(model,action,type,old){
-        var action = new global.Models.Action({
-            id : guid(),
-            object : type,// concept / knowledge / poche / clink / ...
-            action : action,// create / update / remove
-            to : model,// model
-            old : old, // old model version
-            date : getDate(),
-        });
-        ////////////////
-        // on vide l'historic du haut si on ajoute une action alors qu'on a fait precedent
-        this.localHistory = new global.Collections.LocalHistory(_.rest(this.localHistory.toArray(),this.history_pos));
-        ////////////////
-        this.localHistory.unshift(action)
+    // addActionToHistory : function(model,action,type,old){
+    //     var action = new global.Models.Action({
+    //         id : guid(),
+    //         object : type,// concept / knowledge / poche / clink / ...
+    //         action : action,// create / update / remove
+    //         to : model,// model
+    //         old : old, // old model version
+    //         date : getDate(),
+    //     });
+    //     ////////////////
+    //     // on vide l'historic du haut si on ajoute une action alors qu'on a fait precedent
+    //     this.localHistory = new global.Collections.LocalHistory(_.rest(this.localHistory.toArray(),this.history_pos));
+    //     ////////////////
+    //     this.localHistory.unshift(action)
+    // },
+    updateLocalHistory : function(model,from){
+        console.log('new notification!',model)
+        if(model.get('from').id == global.models.current_user.get('id')) this.localHistory.unshift(model)
     },
     backInHistory : function(e){
         e.preventDefault();
@@ -490,9 +495,7 @@ bbmap.Views.Main = Backbone.View.extend({
         // if(title == ""){
         //     this.nodes_views[this.lastModel.get('id')].removeNode();
         // }else{
-            var oldModel = this.lastModel.clone();
             this.lastModel.save({title:title});
-            this.addActionToHistory(this.lastModel.toJSON(),"update",this.lastModel.get('type'),oldModel);
         // }
     },
     /////////////////////////////////////////
@@ -981,7 +984,6 @@ bbmap.Views.Main = Backbone.View.extend({
         new_view.addLink();
         if(origin == "client"){
             this.startJoyride();
-            this.addActionToHistory(model.toJSON(),"create",model.get('type'));
         }
     },
     removeModelToView : function(model,from){
@@ -1027,12 +1029,10 @@ bbmap.Views.Main = Backbone.View.extend({
                     var links_to_remove = bbmap.views.main.links.where({source : conn.sourceId, target : conn.targetId});
                     links_to_remove.forEach(function(link){
                         link.destroy();
-                        bbmap.views.main.addActionToHistory(link.toJSON(),"remove","Link");
                     });
                     var links_to_remove = bbmap.views.main.links.where({source : conn.targetId, target : conn.sourceId});
                     links_to_remove.forEach(function(link){
                         link.destroy();
-                        bbmap.views.main.addActionToHistory(link.toJSON(),"remove","Link");
                     });
                 } 
             }else{
@@ -1069,7 +1069,6 @@ bbmap.Views.Main = Backbone.View.extend({
                     });
                     new_cklink.save();
                     bbmap.views.main.links.add(new_cklink);
-                    bbmap.views.main.addActionToHistory(new_cklink.toJSON(),"create","Link");
 
                 }else{
                     bbmap.views.main.concepts.get(info.targetId).set({id_father : info.sourceId}).save();
