@@ -3,7 +3,7 @@
 /////////////////////////////////////////////////
 bbmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
-        _.bindAll(this, 'render','backInTimeline','advanceInTimeline');
+        _.bindAll(this, 'render','backInTimeline','advanceInTimeline','advanceInHistory','backInHistory');
         ////////////////////////////
         // el
         this.top_el = $(this.el).find('#top_container');
@@ -45,6 +45,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.localHistory       = new global.Collections.LocalHistory();
         this.sens               = "init";
         this.listener           = new window.keypress.Listener();
+        this.flag               = "acceptLastNotif"
         ////////////////////////////////
         // Templates
         this.template_top = _.template($('#bbmap-top-element-template').html());
@@ -93,8 +94,8 @@ bbmap.Views.Main = Backbone.View.extend({
 
         });
 
-        this.listener.simple_combo("ctrl z", this.backInTimeline);
-        this.listener.simple_combo("ctrl y", this.advanceInTimeline);
+        this.listener.simple_combo("ctrl z", this.backInHistory);
+        this.listener.simple_combo("ctrl y", this.advanceInHistory);
         // Cursor position
         // $( document ).on( "mousemove", function( event ) {
         //     bbmap.views.main.cursorX = event.pageX;
@@ -154,26 +155,13 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // LocalHistory gestion
     /////////////////////////////////////////
-    // addActionToHistory : function(model,action,type,old){
-    //     var action = new global.Models.Action({
-    //         id : guid(),
-    //         object : type,// concept / knowledge / poche / clink / ...
-    //         action : action,// create / update / remove
-    //         to : model,// model
-    //         old : old, // old model version
-    //         date : getDate(),
-    //     });
-    //     ////////////////
-    //     // on vide l'historic du haut si on ajoute une action alors qu'on a fait precedent
-    //     this.localHistory = new global.Collections.LocalHistory(_.rest(this.localHistory.toArray(),this.history_pos));
-    //     ////////////////
-    //     this.localHistory.unshift(action)
-    // },
     updateLocalHistory : function(model,from){
-        if(model.get('from').id == global.models.current_user.get('id')) this.localHistory.unshift(model)
+        if((model.get('from').id == global.models.current_user.get('id'))&&(this.flag == "acceptLastNotif")) this.localHistory.unshift(model)
+        this.flag = "acceptLastNotif";
     },
     backInHistory : function(e){
         e.preventDefault();
+        this.flag = "refuseLastNotif";
         if(this.sens == "back") this.history_pos = this.history_pos + 1;
         if(this.history_pos >= this.localHistory.length) this.history_pos = this.localHistory.length - 1;
         else this.nextPrevActionController("back","history");
@@ -181,6 +169,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     advanceInHistory : function(e){
         e.preventDefault();
+        this.flag = "refuseLastNotif";
         if(this.sens == "next") this.history_pos = this.history_pos - 1;
         if(this.history_pos < 0) this.history_pos = 0;
         else this.nextPrevActionController("go","history");
