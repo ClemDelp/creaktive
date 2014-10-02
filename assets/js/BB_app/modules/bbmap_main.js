@@ -155,35 +155,53 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // LocalHistory gestion
     /////////////////////////////////////////
+    displayHistoric : function(){
+        console.log('history pos : ',this.history_pos,' - sens : ',this.sens)
+        this.localHistory.each(function(h){
+            console.log(h)           
+        })
+    },
     updateLocalHistory : function(model,from){
-        if((model.get('from').id == global.models.current_user.get('id'))&&(this.flag == "acceptLastNotif")) this.localHistory.unshift(model)
+        if((model.get('from').id == global.models.current_user.get('id'))&&(this.flag == "acceptLastNotif")){
+            if(this.sens != "init"){
+                // on supprime tout ce qui est en dessous de history_pos (si on est à la psoition 2 on supprime 1 et 0)
+                var new_array = _.rest(this.localHistory.toArray(),this.history_pos);
+                this.localHistory.reset(new_array);
+            }
+            if(this.sens == "back"){ // on supprime la case courrant et on la remplace par la nouvelle action
+                var new_array = _.rest(this.localHistory.toArray());
+                this.localHistory.reset(new_array);
+            }
+            // on se remet à la position 0
+            this.history_pos = 0;
+            this.sens = 'init';
+            // on ajoute l'action
+            this.localHistory.unshift(model);
+        }
         this.flag = "acceptLastNotif";
     },
     backInHistory : function(e){
         e.preventDefault();
         this.flag = "refuseLastNotif";
         if(this.sens == "back") this.history_pos = this.history_pos + 1;
+        else this.sens = "back";
+        console.log(this.history_pos,this.sens,this.flag)
         if(this.history_pos >= this.localHistory.length) this.history_pos = this.localHistory.length - 1;
         else this.nextPrevActionController("back","history");
-        if(this.sens != "back")this.sens = "back";
     },
     advanceInHistory : function(e){
         e.preventDefault();
         this.flag = "refuseLastNotif";
         if(this.sens == "next") this.history_pos = this.history_pos - 1;
+        else this.sens = "next";
+        console.log(this.history_pos,this.sens,this.flag)
+        this.displayHistoric()
         if(this.history_pos < 0) this.history_pos = 0;
         else this.nextPrevActionController("go","history");
-        if(this.sens != "next")this.sens = "next";
-        console.log(this.history_pos,this.sens)
     },
     /////////////////////////////////////////
     // Action prev/next timeline/history gestion
     /////////////////////////////////////////
-    displayHistoric : function(){
-        this.localHistory.each(function(h){
-            console.log(h)           
-        })
-    },
     nextPrevActionController : function(sens,from){
         var historic = {};
         var save = false;
@@ -220,7 +238,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     getTimelineHitoryModel : function(historic,type,sens,action){
         // Creation du model
-        // console.log(historic,type,sens,action)
+        console.log(historic,type,sens,action)
         var type = type.toLowerCase();
         var model = new Backbone.Model();
         if((action == "update")&&(sens == "go")){
@@ -1273,7 +1291,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     render : function(){  
         var _this = this;
-        this.map_el.empty();      
+        this.map_el.empty();
         ///////////////////////
         // init
         if((this.init == false)&&(this.sens != "init")){ // Si on change de mode et on a utiliser le prev/next de la timeline ou de l'historic
