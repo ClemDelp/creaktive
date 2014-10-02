@@ -821,7 +821,7 @@ CKPreviewer.Views.Main = Backbone.View.extend({
         classie.toggle( button, 'active' );
         classie.toggle( menu, 'cbp-spmenu-open' );
         if(isopen==false){
-            $("#showMenu").animate({right:"20%"});
+            $("#showMenu").animate({right:"25%"});
             $("#cbp-openimage")[0].src="/img/icones/Arrow-Right.png";
             isopen=true;
         }else{

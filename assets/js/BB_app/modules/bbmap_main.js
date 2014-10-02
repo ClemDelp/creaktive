@@ -61,12 +61,12 @@ bbmap.Views.Main = Backbone.View.extend({
             HoverPaintStyle : {strokeStyle:"#27AE60" },
             EndpointHoverStyle : {fillStyle:"#27AE60" },
             ConnectionOverlays : [
-                // [ "Arrow", { 
-                //     location:1,
-                //     id:"arrow",
-                //     length:10,
-                //     foldback:0.5
-                // } ],
+                [ "Arrow", { 
+                    location:1,
+                    id:"arrow",
+                    length:10,
+                    foldback:0.5
+                } ],
                 [ "Label", { label:"x", id:"label", cssClass:"aLabel" }]
             ],
             Container:"map"
@@ -526,7 +526,7 @@ bbmap.Views.Main = Backbone.View.extend({
         else this.hideMenu();
     },
     showMenu : function(){
-        $("#showMenu").animate({right:"20%"});
+        $("#showMenu").animate({right:"25%"});
         $("#cbp-openimage")[0].src="/img/icones/Arrow-Right.png";
         this.isopen=true;
     },
