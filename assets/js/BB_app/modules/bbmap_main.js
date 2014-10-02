@@ -127,6 +127,7 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .next" : "advanceInTimeline",
         "click .prevH" : "backInHistory",
         "click .nextH" : "advanceInHistory",
+        "click .structureSubTree" : "structureTree"
     },
     /////////////////////////////////////////
     // Timeline gestion
@@ -663,7 +664,8 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     structureTree : function(e){
         e.preventDefault();
-        var id = e.target.id.split('_action')[0];
+        //var id = e.target.id.split('_action')[0];
+        var id = this.lastModel.get('id');
         this.reorganizeTree(id);
     },
     reorganizeTree : function(id){
@@ -720,11 +722,15 @@ bbmap.Views.Main = Backbone.View.extend({
     showIconConcept : function(e){
         e.preventDefault();
         var id = e.target.id;
+        this.lastModel = this.concepts.get(id);
+        this.$(".icon").hide();
         if(this.mode == "edit") $("#"+id+" .icon").show();
     },
     showIconPoche : function(e){
         e.preventDefault();
         var id = e.target.id;
+        this.lastModel = this.poches.get(id);
+        this.$(".icon").hide();
         if(this.mode == "edit"){
             $("#"+id+" .sup").show();  
             $("#"+id+" .ep3").show();  
@@ -734,6 +740,8 @@ bbmap.Views.Main = Backbone.View.extend({
     showIconKnowledge : function(e){
         e.preventDefault();
         var id = e.target.id;
+        this.lastModel = this.knowledges.get(id);
+        this.$(".icon").hide();
         if(this.mode == "edit"){
             $("#"+id+" .sup").show();  
             $("#"+id+" .ep3").show();  
@@ -743,7 +751,7 @@ bbmap.Views.Main = Backbone.View.extend({
     hideIcon : function(e){
         e.preventDefault();
         var id = e.target.id;
-        if(this.mode == "edit") this.$(".icon").hide();
+        // if(this.mode == "edit") this.$(".icon").hide();
         this.unselectBulle(id);
     },
     selectBulle : function(id){

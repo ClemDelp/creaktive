@@ -113,7 +113,9 @@
         <a href="#" class="tiny round button secondary ckOperator"><img title="display CK links" src="/img/icones/Cklink.png"/></a>
       {{ } }}
       <a href="#" class="tiny round button secondary reset"><img title="reset" src="/img/icones/Reset.png"/></a>
-
+      {{ if(mode == "edit"){ }} 
+        <a href="#" class="tiny round button secondary structureSubTree"><img title="structure sub-tree" src="/img/icones/Tree.png"/></a>
+      {{ } }}
     </center>
   </span>
 </script>
