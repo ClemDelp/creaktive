@@ -79,7 +79,9 @@ module.exports.routes = {
     controller : "S3Controller",
     action :"getUrl",
     cors : true
-  }
+  },
+
+  "/contribute" : "ContributeController.contributeview"
 
 
 
