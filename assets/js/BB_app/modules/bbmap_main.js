@@ -227,9 +227,11 @@ bbmap.Views.Main = Backbone.View.extend({
         }
         else if(((sens == "go")&&(action == "remove")&&(type != "Link"))||((sens == "back")&&(action == "create")&&(type != "Link"))){
             this.removeModelToView(model,"history");
+            if(save == true) model.destroy();
         }
         else if(((sens == "go")&&(action == "remove")&&(type == "Link"))||((sens == "back")&&(action == "create")&&(type == "Link"))){
             this.removeLinkToView(model);
+            if(save == true) model.destroy();
         }
         else if(action == "update"){
             global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
