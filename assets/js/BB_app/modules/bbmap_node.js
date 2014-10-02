@@ -157,20 +157,23 @@ bbmap.Views.Node = Backbone.View.extend({
     /////////////////////////////////////////////
     savePosition: function(e){
         if(bbmap.views.main.mode == "edit"){
+            var oldModel = this.model.clone();
             var position = this.getPosition();
-            if((position.top != 0)&&($(this.el).position().left != 0)){
-                // Si la view n'a pas été supprimée on save
-                var before_change = this.model.clone();
-                this.model.save({
-                    top:position.top / bbmap.zoom.get('val'),
-                    left:position.left / bbmap.zoom.get('val')
-                });   
-                var after_change = this.model.clone();
-                global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
-                //console.log(this.model.get('top'),this.model.get('left'))
+            if((abs(oldModel.get('top')-position.top)>=1)||(abs(oldModel.get('left')-position.left)>=1)){
+                if((position.top != 0)&&($(this.el).position().left != 0)){
+                    // Si la view n'a pas été supprimée on save
+                    var before_change = this.model.clone();
+                    this.model.save({
+                        top:position.top / bbmap.zoom.get('val'),
+                        left:position.left / bbmap.zoom.get('val')
+                    });   
+                    var after_change = this.model.clone();
+                    global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
+                    //console.log(this.model.get('top'),this.model.get('left'))
+                }
+                ////console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
+                //bbmap.views.main.reorganizeTree(this.model.get('id'))           
             }
-            ////console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
-            //bbmap.views.main.reorganizeTree(this.model.get('id'))       
         }
     },
     addConceptChild : function(e){
@@ -253,7 +256,9 @@ bbmap.Views.Node = Backbone.View.extend({
         model.destroy();
         
     },
-    removeView : function(){
+    removeView : function(from){
+        var origin = "client";
+        if(from) origin = from;
         //bbmap.views.main.instance.deleteEndpoint(this.el);
         // this.endpoints.forEach(function(ep){
         //     try{bbmap.views.main.instance.deleteEndpoint(ep);}catch(err){}

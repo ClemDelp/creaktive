@@ -3,7 +3,7 @@
 /////////////////////////////////////////////////
 bbmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render','backInTimeline','advanceInTimeline','advanceInHistory','backInHistory');
         ////////////////////////////
         // el
         this.top_el = $(this.el).find('#top_container');
@@ -44,6 +44,8 @@ bbmap.Views.Main = Backbone.View.extend({
         this.history_pos        = 0;
         this.localHistory       = new global.Collections.LocalHistory();
         this.sens               = "init";
+        this.listener           = new window.keypress.Listener();
+        this.flag               = "acceptLastNotif"
         ////////////////////////////////
         // Templates
         this.template_top = _.template($('#bbmap-top-element-template').html());
@@ -72,8 +74,9 @@ bbmap.Views.Main = Backbone.View.extend({
         ////////////////////////////
         // Events
         this.listenTo(bbmap.zoom,'change',this.updateZoomDisplay,this);
-        this.listenTo(this.notifications,'add',this.timelineAdd,this);
-        this.listenTo(this.notifications,'remove',this.timelineRemove,this);
+        // this.listenTo(this.notifications,'add',this.timelineAdd,this);
+        // this.listenTo(this.notifications,'remove',this.timelineRemove,this);
+        this.listenTo(global.eventAggregator,'notification:add',this.updateLocalHistory,this);
         // Real-time : knowledge & poche & concept
         global.eventAggregator.on('model:create',this.addModelToView,this);
         global.eventAggregator.on('model:remove',this.removeModelToView,this);
@@ -90,6 +93,9 @@ bbmap.Views.Main = Backbone.View.extend({
             else bbmap.views.main.zoomout()
 
         });
+
+        this.listener.simple_combo("ctrl z", this.backInHistory);
+        this.listener.simple_combo("ctrl y", this.advanceInHistory);
         // Cursor position
         // $( document ).on( "mousemove", function( event ) {
         //     bbmap.views.main.cursorX = event.pageX;
@@ -119,6 +125,8 @@ bbmap.Views.Main = Backbone.View.extend({
         "click #showMenu" : "eventMenu",
         "click .prev" : "backInTimeline",
         "click .next" : "advanceInTimeline",
+        "click .prevH" : "backInHistory",
+        "click .nextH" : "advanceInHistory",
     },
     /////////////////////////////////////////
     // Timeline gestion
@@ -130,6 +138,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     backInTimeline : function(e){
         e.preventDefault();
+        console.log('backInTimeline')
         if(this.sens == "back") this.timeline_pos = this.timeline_pos + 1;
         if(this.timeline_pos >= this.notifications.length) this.timeline_pos = this.notifications.length - 1;
         else this.nextPrevActionController("back","timeline");
@@ -137,6 +146,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     advanceInTimeline : function(e){
         e.preventDefault();
+        console.log('advanceInTimeline')
         if(this.sens == "next") this.timeline_pos = this.timeline_pos - 1;
         if(this.timeline_pos < 0) this.timeline_pos = 0;
         else this.nextPrevActionController("go","timeline");
@@ -145,47 +155,48 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // LocalHistory gestion
     /////////////////////////////////////////
-    addActionToHistory : function(model,action){
-        var action = new global.Models.Action({
-            id : guid(),
-            object : model.get('type'),// concept / knowledge / poche / clink / ...
-            action : action,// create / update / remove
-            to : model,// model
-            date : getDate(),
-            project_id : ""
-        });
-        this.localHistory.add(action)
+    updateLocalHistory : function(model,from){
+        if((model.get('from').id == global.models.current_user.get('id'))&&(this.flag == "acceptLastNotif")) this.localHistory.unshift(model)
+        this.flag = "acceptLastNotif";
     },
     backInHistory : function(e){
         e.preventDefault();
+        this.flag = "refuseLastNotif";
+        if(this.sens == "back") this.history_pos = this.history_pos + 1;
         if(this.history_pos >= this.localHistory.length) this.history_pos = this.localHistory.length - 1;
-        else{
-            // console.log("level : ",this.history_pos);
-            this.nextPrevActionController("back","history");
-            this.history_pos = this.history_pos + 1;
-        } 
+        else this.nextPrevActionController("back","history");
+        if(this.sens != "back")this.sens = "back";
     },
     advanceInHistory : function(e){
-        e.prev_actionentDefault();
+        e.preventDefault();
+        this.flag = "refuseLastNotif";
+        if(this.sens == "next") this.history_pos = this.history_pos - 1;
         if(this.history_pos < 0) this.history_pos = 0;
-        else{
-            this.history_pos = this.history_pos - 1; 
-            // console.log("level : ",this.history_pos);
-            this.nextPrevActionController("go","history"); 
-        } 
+        else this.nextPrevActionController("go","history");
+        if(this.sens != "next")this.sens = "next";
+        console.log(this.history_pos,this.sens)
     },
     /////////////////////////////////////////
     // Action prev/next timeline/history gestion
     /////////////////////////////////////////
+    displayHistoric : function(){
+        this.localHistory.each(function(h){
+            console.log(h)           
+        })
+    },
     nextPrevActionController : function(sens,from){
         var historic = {};
-        if(from == "history") historic = localHistory.toArray()[this.history_pos];
-        else if(from == "timeline") historic = this.notifications.toArray()[this.timeline_pos];
+        var save = false;
+        if(from == "history"){
+            historic = this.localHistory.toArray()[this.history_pos];
+            save = true;
+        }
+        else if(from == "timeline"){
+            historic = this.notifications.toArray()[this.timeline_pos];
+            $("#timeline_date").html(historic.get('date'));
+        }
         var action = historic.get('action');
         var type = historic.get('object');
-        $("#timeline_date").html(historic.get('date'))
-        var save = false;
-        if(this.mode == "timeline") save = false;
         var model = this.getTimelineHitoryModel(historic,type,sens,action);
         // Control sens to chose the right action
         if(((sens == "go")&&(action == "create")&&(type != "Link"))||((sens == "back")&&(action == "remove")&&(type != "Link"))){
@@ -194,6 +205,7 @@ bbmap.Views.Main = Backbone.View.extend({
         }
         else if(((sens == "go")&&(action == "create")&&(type == "Link"))||((sens == "back")&&(action == "remove")&&(type == "Link"))){
             this.addLinkToView(model);
+            if(save == true) model.save();
         }
         else if(((sens == "go")&&(action == "remove")&&(type != "Link"))||((sens == "back")&&(action == "create")&&(type != "Link"))){
             this.removeModelToView(model,"history");
@@ -203,27 +215,30 @@ bbmap.Views.Main = Backbone.View.extend({
         }
         else if(action == "update"){
             global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
+            if(save == true) model.save();
         }
     },
     getTimelineHitoryModel : function(historic,type,sens,action){
         // Creation du model
+        // console.log(historic,type,sens,action)
+        var type = type.toLowerCase();
         var model = new Backbone.Model();
         if((action == "update")&&(sens == "go")){
-            if(type == "Concept") model = new global.Models.ConceptModel(historic.get('to'));
-            else if(type == "Knowledge") model = new global.Models.Knowledge(historic.get('to'));
-            else if(type == "Poche") model = new global.Models.Poche(historic.get('to'));
-            else if(type == "Link") model = new global.Models.CKLink(historic.get('to'));
+            if(type == "concept"){model = new global.Models.ConceptModel(historic.get('to'));}
+            else if(type == "knowledge") model = new global.Models.Knowledge(historic.get('to'));
+            else if(type == "poche") model = new global.Models.Poche(historic.get('to'));
+            else if(type == "link") model = new global.Models.CKLink(historic.get('to'));
             // console.log("sens : go - get next model - model id: ",model.get('id'),model.get('title'));
         }else if((action == "update")&&(sens == "back")){
-            if(type == "Concept") model = new global.Models.ConceptModel(historic.get('old'));
-            else if(type == "Knowledge") model = new global.Models.Knowledge(historic.get('old'));
-            else if(type == "Poche") model = new global.Models.Poche(historic.get('old'));
-            else if(type == "Link") model = new global.Models.CKLink(historic.get('old'));
+            if(type == "concept") model = new global.Models.ConceptModel(historic.get('old'));
+            else if(type == "knowledge") model = new global.Models.Knowledge(historic.get('old'));
+            else if(type == "poche") model = new global.Models.Poche(historic.get('old'));
+            //else if(type == "link") model = new global.Models.CKLink(historic.get('old'));
         }else{
-            if(type == "Concept") model = new global.Models.ConceptModel(historic.get('to'));
-            else if(type == "Knowledge") model = new global.Models.Knowledge(historic.get('to'));
-            else if(type == "Poche") model = new global.Models.Poche(historic.get('to'));
-            else if(type == "Link") model = new global.Models.CKLink(historic.get('to'));
+            if(type == "concept") model = new global.Models.ConceptModel(historic.get('to'));
+            else if(type == "knowledge") model = new global.Models.Knowledge(historic.get('to'));
+            else if(type == "poche") model = new global.Models.Poche(historic.get('to'));
+            else if(type == "link") model = new global.Models.CKLink(historic.get('to'));
         }
         return model;
     },
@@ -465,7 +480,6 @@ bbmap.Views.Main = Backbone.View.extend({
     startJoyride : function(){
         $("#joyride_id").attr('data-id',this.lastModel.get('id')+'_joyride')
         $(document).foundation('joyride', 'start');
-
     },
     updateLastModelTitle : function(title){
         // if(title == ""){
@@ -958,7 +972,9 @@ bbmap.Views.Main = Backbone.View.extend({
         this.instance.draggable($(new_view.el),{ containment: "#map", scroll: false });
         this.nodes_views[model.get('id')] = new_view;
         new_view.addLink();
-        if(origin == "client") this.startJoyride();
+        if(origin == "client"){
+            this.startJoyride();
+        }
     },
     removeModelToView : function(model,from){
         var origin = "client";
@@ -969,6 +985,9 @@ bbmap.Views.Main = Backbone.View.extend({
     addLinkToView : function(model,from){
         var origin = "client";
         if(from) origin = from;
+        console.log("model : ",model)
+        console.log("model source : ",model.get('source'))
+        console.log(bbmap.views.main.nodes_views[model.get('source')])
         bbmap.views.main.instance.connect({
             source:bbmap.views.main.nodes_views[model.get('source')].el, 
             target:bbmap.views.main.nodes_views[model.get('target')].el, 
@@ -984,7 +1003,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var connections = this.instance.getAllConnections();
         connections.forEach(function(conn){
             if((conn.targetId == target)&&(conn.sourceId == source))conn.setVisible(false)//bbmap.views.main.instance.detach({source:source, target:target, fireEvent:false});
-        })
+        });
         //this.nodes_views[model.get('source')].removeView();    
     },
     /////////////////////////////////////////
@@ -1299,7 +1318,7 @@ bbmap.Views.Main = Backbone.View.extend({
             // On supprime toutes les vues + les events sur tous les objets
             if(this.nodes_views){
                 _.each(this.nodes_views,function(view){
-                    view.removeView();
+                    view.removeView("init");
                 });
                 this.nodes_views = {};
             }

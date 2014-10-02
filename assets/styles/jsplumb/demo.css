@@ -1,3 +1,7 @@
+.button.drop, .drop{
+	cursor:move;
+}
+
 .cursor{
 	border-radius: 50%;
 	width: 20px;
@@ -54,7 +58,7 @@ body{
 	/*border:0.1em dotted #d4e06b; 	*/
 	width:auto; 
 	height:auto;
-	
+	cursor:move;
 	line-height:1em;	
 	z-index:4;
 	font-weight:bold;

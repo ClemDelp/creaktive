@@ -154,6 +154,7 @@ global.Collections.NotificationsCollection = Backbone.Collection.extend({
         model.set({read : _.union(model.get('read'),global.models.current_user.get('id'))});
         model.save();
         global.collections.Notifications.add(model);
+        global.eventAggregator.trigger("notification:add",model,"server");// for update local history
         //this.add(new_notif);
     }
 });
