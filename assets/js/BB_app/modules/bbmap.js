@@ -8,7 +8,6 @@ var bbmap = {
   collections: {},
   models: {},
   views: {},
-  //////////////////////////
   // Parameters
   window_height : $(window).height() - 50,
   zoom : new Backbone.Model({val : 1}),
@@ -72,6 +71,7 @@ var bbmap = {
   ],
   // Constructor
   init: function () {
+    // main
     this.views.main = new this.Views.Main({
       el              : "#bbmap_container",
       concepts        : global.collections.Concepts,

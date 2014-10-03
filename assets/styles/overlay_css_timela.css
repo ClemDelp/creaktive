@@ -1,3 +1,10 @@
+#menuCreaktiveButton{
+	position : absolute;
+	float:left;
+	margin:20px;
+	z-index: 99999;
+}
+
 /* General styles for all menus */
 /*#actionbar{
 	height:10%;	
@@ -46,6 +53,7 @@ font-size: 1rem;
 	/*//top:50px;*/
 	width:100%;
 	z-index: 20;
+	margin-top: 20px
 }
 
 #bottom_container{

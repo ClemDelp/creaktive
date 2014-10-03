@@ -1,6 +1,6 @@
 <!-- ******************************** -->
 <!-- Container -->
-<div id="bbmap_container" style="height:100%;overflow:auto">
+<div id="bbmap_container" style="height:100%;overflow:hidden">
   <div id="top_container"></div>
   <div id="map_container">
     <a href="#" id="showMenu"  class="button tiny secondary round cbp-openbutton">
@@ -47,17 +47,9 @@
 </script>
 
 <script type="text/template" id="bbmap-top-element-template">
-  <br>
   <div class="large-4 medium-4 small-4 columns">
-    <select id="modeSelection">
-      <option value="visu" {{ if(mode == "visu"){ }}selected{{ } }}>Visualization</option>
-      <option value="edit" {{ if(mode == "edit"){ }}selected{{ } }}>Edition</option>
-      <option value="timeline" {{ if(mode == "timeline"){ }}selected{{ } }}>Timeline</option>
-    </select>
-    {{ if(mode == "edit"){ }}
-      <a href="#" class="button tiny round secondary prevH" title="ctrl-Z"><</a>
-      <a href="#" class="button tiny round secondary nextH" title="ctrl-Y">></a>
-    {{ } }}
+    <br>
+    
   </div>
 
   <div class="large-4 medium-4 small-4 columns">
@@ -90,9 +82,8 @@
 
   <div class="large-4 medium-4 small-4 columns">
     <div style="float:right">
-      <a href="#" class="tiny round button secondary zoomout"><img title="zoom-in" src="/img/icones/Add.png"/></a>
-      <span id="zoom_val"></span>
-      <a href="#" class="tiny round button secondary zoomin"><img title="zoom-out" src="/img/icones/Minus.png"/></a>
+      <a href="#" class="tiny round button secondary zoomin"><img title="zoom-out" src="/img/icones/Zoom-Out-24.png"/></a>
+      <a href="#" class="tiny round button secondary zoomout"><img title="zoom-in" src="/img/icones/Zoom-In-24.png"/></a>
     </div>
   </div>
 
@@ -115,6 +106,8 @@
       <a href="#" class="tiny round button secondary reset"><img title="reset" src="/img/icones/Reset.png"/></a>
       {{ if(mode == "edit"){ }} 
         <a href="#" class="tiny round button secondary structureSubTree"><img title="structure sub-tree" src="/img/icones/Tree.png"/></a>
+        <a href="#" class="button tiny round secondary prevH"><img title="ctrl-Z" src="/img/icones/Arrowhead-Left-32.png"/></a>
+        <a href="#" class="button tiny round secondary nextH"><img title="ctrl-Y" src="/img/icones/Arrowhead-Right-32.png"/></a>
       {{ } }}
     </center>
   </span>

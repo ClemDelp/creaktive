@@ -1,4 +1,17 @@
 /////////////////////////////////////////////////
+// ROUTER
+/////////////////////////////////////////////////
+bbmap.router = Backbone.Router.extend({
+    routes: {
+      "visu": "visu",
+      "edit": "edit",
+      "timeline": "timeline"
+    },
+    visu: function() {bbmap.views.main.setMode("visu");},
+    edit: function() {bbmap.views.main.setMode("edit");},
+    timeline: function() {bbmap.views.main.setMode("timeline");},
+});
+/////////////////////////////////////////////////
 // MAIN
 /////////////////////////////////////////////////
 bbmap.Views.Main = Backbone.View.extend({
@@ -31,6 +44,9 @@ bbmap.Views.Main = Backbone.View.extend({
         this.notifications      = json.notifications;
         this.init               = json.init; // if true mean launch for the first time
         this.ckOperator         = json.ckOperator;
+        ////////////////////////////////
+        // Router
+        this.workspace = new bbmap.router();
         ////////////////////////////////
         // Parameters
         this.isopen             = false;
@@ -286,9 +302,10 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Modes & Filters
     /////////////////////////////////////////
-    setMode : function(e){
-        e.preventDefault();
-        this.mode = $(e.target).val();
+    setMode : function(mode){
+        // e.preventDefault();
+        // this.mode = $(e.target).val();
+        this.mode = mode;
         if(this.mode != "edit"){
             $('#cbp-spmenu-s1').hide('slow');
             $('#showMenu').hide('slow');
@@ -1393,6 +1410,7 @@ bbmap.Views.Main = Backbone.View.extend({
             this.jsPlumbEventsInit();
             ///////////////////////
             $( "#map" ).draggable();
+            //$('#map').pep();
             // css3 generator
             if(bbmap.views.css3)bbmap.views.css3.remove();
             bbmap.views.css3 = new CSS3GENERATOR.Views.Main();
