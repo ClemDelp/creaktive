@@ -530,7 +530,6 @@ bbmap.Views.Main = Backbone.View.extend({
         // }
     },
     setLastModel : function(model,from){
-        alert(model.get('title')+" - from: "+from)
         this.lastModel = model;
     },
     /////////////////////////////////////////
