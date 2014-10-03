@@ -1421,7 +1421,7 @@ bbmap.Views.Main = Backbone.View.extend({
             CSS3GENERATOR.update_styles();
 
             if((this.init == true)&&(this.sens == "init")){
-                this.moveDataCentroidToMapCentroid();
+                //this.moveDataCentroidToMapCentroid();
             }
             
             this.initTimelineHistoryParameters();
