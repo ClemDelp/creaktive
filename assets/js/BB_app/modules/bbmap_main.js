@@ -822,47 +822,31 @@ bbmap.Views.Main = Backbone.View.extend({
     intelligentRestructuring : function(){
         this.superposeMapCenterToScreenCenter();
         //this.moveDataCentroidToMapCentroid();
-        //this.resetToCentroid();
+        this.resetToCentroid();
         this.instance.repaintEverything();
     },
     superposeMapCenterToScreenCenter : function(){
         var zoom = bbmap.zoom.get('val');
-        var screenCentroid = this.getScreenCentroid();
-        var mapCentroid = this.getMapCentroid();
+        var screenCentroid = api.getScreenCentroid();
+        var mapCentroid = api.getMapCentroid($('#map').width(),$('#map').height());
         var mapOffset = $('#map').offset(); // position relative to the document
-        // console.log(mapOffset,screenCentroid)
-        var screenCentroid = this.getScreenCentroid();
+        var screenCentroid = api.getScreenCentroid();
         var delta_left = - mapOffset.left + (screenCentroid.left - mapCentroid.left*zoom);
         var delta_top = - mapOffset.top + (screenCentroid.top - mapCentroid.top*zoom);
         $('#map').offset({ top: mapOffset.top + delta_top, left: mapOffset.left + delta_left });
     },
-    moveDataCentroidToMapCentroid : function(){
-        var zoom = bbmap.zoom.get('val');
-        var dataCentroid = this.getDataCentroid();
-        var mapCentroid = this.getMapCentroid();
-        var delta_left = mapCentroid.left - dataCentroid.left;
-        var delta_top = mapCentroid.top - dataCentroid.top;
-        // console.log(delta_left,delta_top)
-        var views = bbmap.views.main.nodes_views;
-        for (var id in views){
-            var view = views[id];
-            var position = view.getPosition();
-            var x = position.left + delta_left;
-            var y = position.top + delta_top;
-            view.setPosition(x/zoom,y/zoom,0,0,true,"restructuration");
-        }
-    },
+    
     /////////////////////////////////////////
     // Centroid functions
     /////////////////////////////////////////
     resetToCentroid : function(){
-        if(bbmap.getJsonSize(bbmap.views.main.nodes_views)>5) this.findRightZoom();
-        if(bbmap.getJsonSize(bbmap.views.main.nodes_views)>2) this.findRightCentroid();
+        if(api.getJsonSize(bbmap.views.main.nodes_views)>5) this.findRightZoom();
+        if(api.getJsonSize(bbmap.views.main.nodes_views)>2) this.findRightCentroid();
     },
     findRightCentroid : function(){
         var zoom = bbmap.zoom.get('val');
-        var dataCentroid = this.getDataCentroid(); // coordonnée du barycentre des données
-        var screenCentroid = this.getScreenCentroid(); // coordonnée du barycentre de l'ecran
+        var dataCentroid = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()); // coordonnée du barycentre des nodes
+        var screenCentroid = api.getScreenCentroid(); // coordonnée du barycentre de l'ecran
         var delta = {}; // distance in x,y that map have to move to center dataCentroid to screen
         // calcul delta 
         delta.top = screenCentroid.top - dataCentroid.top;
@@ -871,8 +855,8 @@ bbmap.Views.Main = Backbone.View.extend({
         $('#map').offset({ top: delta.top, left: delta.left });
     },
     findRightZoom : function(Data,Screen){
-        var Data = this.getDataCentroid(); // coordonnée du barycentre des données
-        var Screen = this.getScreenCentroid(); // coordonnée du barycentre de l'ecran
+        var Data = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()); // coordonnée du barycentre des données
+        var Screen = api.getScreenCentroid(); // coordonnée du barycentre de l'ecran
         var zoom = bbmap.zoom.get('val');
         var k = 1.5;
         if(Data.width>Data.height){
@@ -882,7 +866,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 while(k*Data.width>Screen.width){
                     zoom = zoom - 0.1;
                     bbmap.views.main.setZoom(zoom);
-                    Data = bbmap.views.main.getDataCentroid()
+                    Data = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews())
                 }
 
             }else if(Data.width<Screen.width){
@@ -890,7 +874,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 while(k*Data.width<Screen.width){
                     zoom = zoom + 0.1;
                     bbmap.views.main.setZoom(zoom);
-                    Data = bbmap.views.main.getDataCentroid()
+                    Data = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews())
                 }
             }
         }else{
@@ -900,56 +884,66 @@ bbmap.Views.Main = Backbone.View.extend({
                 while(k*Data.height>Screen.height){
                     zoom = zoom - 0.1;
                     bbmap.views.main.setZoom(zoom);
-                    Data = bbmap.views.main.getDataCentroid()
+                    Data = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews())
                 }
             }else if(Data.height<Screen.height){
                 // zoom
                 while(k*Data.height<Screen.height){
                     zoom = zoom + 0.1;
                     bbmap.views.main.setZoom(zoom);
-                    Data = bbmap.views.main.getDataCentroid()
+                    Data = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews())
                 }
             }
         }
     },
-    getScreenCentroid : function(){
-        var screenCentroid = {};
-        var windowWidth = $('body').width();
-        var windowHeight = $('body').height();
-        // Screen centroid calcul
-        screenCentroid.top = windowHeight/2;
-        screenCentroid.left = windowWidth/2;
-        screenCentroid.width = windowWidth;
-        screenCentroid.height = windowHeight;
-        return screenCentroid;
-    },
-    getDataCentroid : function(){
-        var topMax = 0;
-        var topMin = 1000000000;
-        var leftMax = 0;
-        var leftMin = 1000000000;
-        var dataCentroid = {};
-        var views = bbmap.views.main.nodes_views;
-        for (var id in views){
-            var position = views[id].getPosition();
-            if(position.top > topMax) topMax = position.top;
-            if(position.top < topMin) topMin = position.top;
-            if(position.left > leftMax) leftMax = position.left;
-            if(position.left < leftMin) leftMin = position.left;
+    moveDataCentroidToMapCentroid : function(){
+        var delta = api.getXYTranslationBtwTwoPoints(api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()),api.getMapCentroid($('#map').width(),$('#map').height()));
+        for (var id in bbmap.views.main.nodes_views){
+            var view = bbmap.views.main.nodes_views[id];
+            var position = view.getPosition();
+            var x = position.left + delta.x;
+            var y = position.top + delta.y;
+            view.setPosition(x/bbmap.zoom.get('val'),y/bbmap.zoom.get('val'),0,0,true,"restructuration");
         }
-        dataCentroid.top = ((topMax-topMin)/2)+topMin;
-        dataCentroid.left = ((leftMax-leftMin)/2)+leftMin;
-        dataCentroid.width = leftMax - leftMin;
-        dataCentroid.height = topMax - topMin;
-        return dataCentroid;
     },
-    getMapCentroid : function(){
-        var mapCentroid = {};
-        mapCentroid.width = $('#map').width()
-        mapCentroid.height = $('#map').height();
-        mapCentroid.left = mapCentroid.width/2;
-        mapCentroid.top = mapCentroid.height/2;
-        return mapCentroid;
+    // getScreenCentroid : function(){
+    //     var screenCentroid = {};
+    //     var windowWidth = $('body').width();
+    //     var windowHeight = $('body').height();
+    //     // Screen centroid calcul
+    //     screenCentroid.top = windowHeight/2;
+    //     screenCentroid.left = windowWidth/2;
+    //     screenCentroid.width = windowWidth;
+    //     screenCentroid.height = windowHeight;
+    //     return screenCentroid;
+    // },
+    // getDataCentroid : function(){
+    //     var topMax = 0;
+    //     var topMin = 1000000000;
+    //     var leftMax = 0;
+    //     var leftMin = 1000000000;
+    //     var dataCentroid = {};
+    //     var views = bbmap.views.main.nodes_views;
+    //     for (var id in views){
+    //         var position = views[id].getPosition();
+    //         if(position.top > topMax) topMax = position.top;
+    //         if(position.top < topMin) topMin = position.top;
+    //         if(position.left > leftMax) leftMax = position.left;
+    //         if(position.left < leftMin) leftMin = position.left;
+    //     }
+    //     dataCentroid.top = ((topMax-topMin)/2)+topMin;
+    //     dataCentroid.left = ((leftMax-leftMin)/2)+leftMin;
+    //     dataCentroid.width = leftMax - leftMin;
+    //     dataCentroid.height = topMax - topMin;
+    //     return dataCentroid;
+    // },
+    getCoordinatesOfNodesViews : function(){
+        var coordinates = [];
+        for (var id in bbmap.views.main.nodes_views){
+            var position = bbmap.views.main.nodes_views[id].getPosition();
+            coordinates.unshift({'top':position.top,'left':position.left});
+        }
+        return coordinates;
     },
     /////////////////////////////////////////
     setCKOperator : function(e){
@@ -1432,14 +1426,13 @@ bbmap.Views.Main = Backbone.View.extend({
             CSS3GENERATOR.attach_handlers();
             CSS3GENERATOR.initialize_controls();
             CSS3GENERATOR.update_styles();
-
+            // move DataCentroid To MapCentroid
             if((this.init == true)&&(this.sens == "init")){
                 this.moveDataCentroidToMapCentroid();
             }
-            
+            //
             this.initTimelineHistoryParameters();
-              
-
+            
             if(this.mode == "edit") $('#map').css('background-image', 'url(/img/pattern.png)');
             else $('#map').css('background', 'transparent');
 
