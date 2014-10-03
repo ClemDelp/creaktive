@@ -16,7 +16,7 @@ bbmap.router = Backbone.Router.extend({
 /////////////////////////////////////////////////
 bbmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
-        _.bindAll(this, 'render','backInTimeline','advanceInTimeline','advanceInHistory','backInHistory','updateLastModelTitle');
+        _.bindAll(this, 'render','backInTimeline','advanceInTimeline','advanceInHistory','backInHistory','updateLastModelTitle','setLastModel');
         ////////////////////////////
         // el
         this.top_el = $(this.el).find('#top_container');
@@ -519,12 +519,19 @@ bbmap.Views.Main = Backbone.View.extend({
         $("#joyride_id").attr('data-id',this.lastModel.get('id')+'_joyride')
         $(document).foundation('joyride', 'start');
     },
+    /////////////////////////////////////////
+    // LastModel actions
+    /////////////////////////////////////////
     updateLastModelTitle : function(title){
         // if(title == ""){
         //     this.nodes_views[this.lastModel.get('id')].removeNode();
         // }else{
             this.lastModel.save({title:title});
         // }
+    },
+    setLastModel : function(model,from){
+        alert(model.get('title')+" - from: "+from)
+        this.lastModel = model;
     },
     /////////////////////////////////////////
     // Sliding editor bar
@@ -739,30 +746,37 @@ bbmap.Views.Main = Backbone.View.extend({
     showIconConcept : function(e){
         e.preventDefault();
         var id = e.target.id;
-        this.lastModel = this.concepts.get(id);
-        this.$(".icon").hide();
-        if(this.mode == "edit") $("#"+id+" .icon").show();
+        if(e.target.getAttribute("data-type") == "title"){
+            this.setLastModel(this.concepts.get(id),'showIconConcept')
+            this.$(".icon").hide();
+            if(this.mode == "edit") $("#"+id+" .icon").show();    
+        }
     },
     showIconPoche : function(e){
         e.preventDefault();
         var id = e.target.id;
-        this.lastModel = this.poches.get(id);
-        this.$(".icon").hide();
-        if(this.mode == "edit"){
-            $("#"+id+" .sup").show();  
-            $("#"+id+" .ep3").show();  
-            $("#"+id+" .ep2").show();  
+        if(e.target.getAttribute("data-type") == "title"){
+            this.setLastModel(this.poches.get(id),'showIconPoche');
+            this.$(".icon").hide();
+            if(this.mode == "edit"){
+                $("#"+id+" .sup").show();  
+                $("#"+id+" .ep3").show();  
+                $("#"+id+" .ep2").show();  
+            }
         }
+        
     },
     showIconKnowledge : function(e){
         e.preventDefault();
         var id = e.target.id;
-        this.lastModel = this.knowledges.get(id);
-        this.$(".icon").hide();
-        if(this.mode == "edit"){
-            $("#"+id+" .sup").show();  
-            $("#"+id+" .ep3").show();  
-            $("#"+id+" .ep").show();  
+        if(e.target.getAttribute("data-type") == "title"){
+            this.setLastModel(this.knowledges.get(id),'showIconKnowledge');
+            this.$(".icon").hide();
+            if(this.mode == "edit"){
+                $("#"+id+" .sup").show();  
+                $("#"+id+" .ep3").show();  
+                $("#"+id+" .ep").show();  
+            }
         }
     },
     hideIcon : function(e){
@@ -1002,7 +1016,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var origin = "client";
         if(from) origin = from;
         var type = model.get('type');
-        this.lastModel = model;
+        this.setLastModel(model,'addModelToView');
         new_view = new bbmap.Views.Node({
             className : "window "+type,
             id : model.get('id'),
@@ -1421,7 +1435,7 @@ bbmap.Views.Main = Backbone.View.extend({
             CSS3GENERATOR.update_styles();
 
             if((this.init == true)&&(this.sens == "init")){
-                //this.moveDataCentroidToMapCentroid();
+                this.moveDataCentroidToMapCentroid();
             }
             
             this.initTimelineHistoryParameters();

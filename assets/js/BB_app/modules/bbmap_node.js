@@ -37,7 +37,7 @@ bbmap.Views.Node = Backbone.View.extend({
     editBulle : function(e){
         e.preventDefault();
         var id = e.target.id;
-        bbmap.views.main.lastModel = this.model;
+        bbmap.views.main.setLastModel(this.model,'editBulle');
         bbmap.views.main.startJoyride();
     },
     actualize : function(model,save){
