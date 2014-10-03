@@ -1409,7 +1409,8 @@ bbmap.Views.Main = Backbone.View.extend({
             // Initialize jsPlumb events
             this.jsPlumbEventsInit();
             ///////////////////////
-            $( "#map" ).draggable();
+            jsPlumb.draggable($('#map'))
+            //this.instance.draggable($( "#map" ));
             //$('#map').pep();
             // css3 generator
             if(bbmap.views.css3)bbmap.views.css3.remove();
