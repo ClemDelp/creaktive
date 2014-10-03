@@ -16,7 +16,7 @@ bbmap.router = Backbone.Router.extend({
 /////////////////////////////////////////////////
 bbmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
-        _.bindAll(this, 'render','backInTimeline','advanceInTimeline','advanceInHistory','backInHistory');
+        _.bindAll(this, 'render','backInTimeline','advanceInTimeline','advanceInHistory','backInHistory','updateLastModelTitle');
         ////////////////////////////
         // el
         this.top_el = $(this.el).find('#top_container');
@@ -135,7 +135,7 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .structureSubTree" : "structureTree",
         "mouseleave .window" : "hideIcon", 
         //"click .closeEditor" : "hideEditor",
-        "click #okjoyride" : "changeTitleLastModel",
+        "click #okjoyride" : "updateLastModelTitle",
         "click .screenshot" : "screenshot",
         "click .downloadimage" : "downloadimage",
         "click #showMenu" : "eventMenu",
@@ -809,7 +809,7 @@ bbmap.Views.Main = Backbone.View.extend({
     intelligentRestructuring : function(){
         this.superposeMapCenterToScreenCenter();
         //this.moveDataCentroidToMapCentroid();
-        this.resetToCentroid();
+        //this.resetToCentroid();
         this.instance.repaintEverything();
     },
     superposeMapCenterToScreenCenter : function(){
@@ -1409,9 +1409,8 @@ bbmap.Views.Main = Backbone.View.extend({
             // Initialize jsPlumb events
             this.jsPlumbEventsInit();
             ///////////////////////
-            jsPlumb.draggable($('#map'))
-            //this.instance.draggable($( "#map" ));
-            //$('#map').pep();
+             jsPlumb.draggable($('#map'))
+            //$('#map').draggable();
             // css3 generator
             if(bbmap.views.css3)bbmap.views.css3.remove();
             bbmap.views.css3 = new CSS3GENERATOR.Views.Main();

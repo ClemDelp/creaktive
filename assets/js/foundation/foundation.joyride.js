@@ -70,7 +70,6 @@
           if(e.keyCode == 13){
             var value = $(e.target.parentElement).find('#joyride_val').val();
             if(bbmap.views.main.lastModel.get('title') != value){
-              console.log('eeee')
               bbmap.views.main.updateLastModelTitle(value)
             } 
             self.hide();
