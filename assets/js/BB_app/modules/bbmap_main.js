@@ -155,7 +155,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     backInTimeline : function(e){
         e.preventDefault();
-        console.log('backInTimeline')
+        // console.log('backInTimeline')
         if(this.sens == "back") this.timeline_pos = this.timeline_pos + 1;
         if(this.timeline_pos >= this.notifications.length) this.timeline_pos = this.notifications.length - 1;
         else this.nextPrevActionController("back","timeline");
@@ -163,7 +163,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     advanceInTimeline : function(e){
         e.preventDefault();
-        console.log('advanceInTimeline')
+        // console.log('advanceInTimeline')
         if(this.sens == "next") this.timeline_pos = this.timeline_pos - 1;
         if(this.timeline_pos < 0) this.timeline_pos = 0;
         else this.nextPrevActionController("go","timeline");
@@ -202,7 +202,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.flag = "refuseLastNotif";
         if(this.sens == "back") this.history_pos = this.history_pos + 1;
         else this.sens = "back";
-        console.log(this.history_pos,this.sens,this.flag)
+        // console.log(this.history_pos,this.sens,this.flag)
         if(this.history_pos >= this.localHistory.length) this.history_pos = this.localHistory.length - 1;
         else this.nextPrevActionController("back","history");
     },
@@ -211,8 +211,8 @@ bbmap.Views.Main = Backbone.View.extend({
         this.flag = "refuseLastNotif";
         if(this.sens == "next") this.history_pos = this.history_pos - 1;
         else this.sens = "next";
-        console.log(this.history_pos,this.sens,this.flag)
-        this.displayHistoric()
+        // console.log(this.history_pos,this.sens,this.flag)
+        // this.displayHistoric()
         if(this.history_pos < 0) this.history_pos = 0;
         else this.nextPrevActionController("go","history");
     },
@@ -257,7 +257,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     getTimelineHitoryModel : function(historic,type,sens,action){
         // Creation du model
-        console.log(historic,type,sens,action)
+        // console.log(historic,type,sens,action)
         var type = type.toLowerCase();
         var model = new Backbone.Model();
         if((action == "update")&&(sens == "go")){
@@ -451,7 +451,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 var screenshot;
 
                 screenshot = canvas2.toDataURL( "image/png" );
-                console.log(screenshot)
+                //console.log(screenshot)
                 // var aLink = document.createElement('a');
                 // aLink.download = "screenshot";
                 // aLink.href = screenshot;
@@ -473,7 +473,7 @@ bbmap.Views.Main = Backbone.View.extend({
         $('#bbmap_container').append("<div id='screen' style='height:2000px;width:1000'></div>");
 
         _.each($("#map.demo").children(), function(bulle){
-            console.log(bulle)
+            //console.log(bulle)
             var $b = $("#"+bulle.id).clone();
             $("#screen").append($b);
             if(_.contains(bulle.classList, "bulle"))$b.offset({top : $("#"+bulle.id).offset().top, left: $("#"+bulle.id).offset().left})
@@ -484,10 +484,10 @@ bbmap.Views.Main = Backbone.View.extend({
             svgRendering : true,
             onrendered : function(canvas){
                 var nodeCanvasContext = canvas.getContext("2d"); 
-                console.log(canvas)
+                // console.log(canvas)
                
                 var img =  canvas.toDataURL( "image/png;base64;" );              
-                console.log(img)
+                // console.log(img)
             }
         });
     },
@@ -1043,9 +1043,9 @@ bbmap.Views.Main = Backbone.View.extend({
     addLinkToView : function(model,from){
         var origin = "client";
         if(from) origin = from;
-        console.log("model : ",model)
-        console.log("model source : ",model.get('source'))
-        console.log(bbmap.views.main.nodes_views[model.get('source')])
+        // console.log("model : ",model)
+        // console.log("model source : ",model.get('source'))
+        // console.log(bbmap.views.main.nodes_views[model.get('source')])
         bbmap.views.main.instance.connect({
             source:bbmap.views.main.nodes_views[model.get('source')].el, 
             target:bbmap.views.main.nodes_views[model.get('target')].el, 
