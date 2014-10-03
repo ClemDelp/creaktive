@@ -37,7 +37,7 @@ bbmap.Views.Node = Backbone.View.extend({
     editBulle : function(e){
         e.preventDefault();
         var id = e.target.id;
-        bbmap.views.main.lastModel = this.model;
+        bbmap.views.main.setLastModel(this.model,'editBulle');
         bbmap.views.main.startJoyride();
     },
     actualize : function(model,save){
@@ -404,9 +404,12 @@ bbmap.Views.Node = Backbone.View.extend({
         //$(this.el).attr( "style","top: "+this.model.get('top')+"px;left:"+this.model.get('left')+"px");
         // Init
         $(this.el).empty();
-        $(this.el).append(this.template_bulle({model:this.model.toJSON()}));
+        $(this.el).append(this.template_bulle({
+            model:this.model.toJSON(),
+            mode : bbmap.views.main.mode
+        }));
         this.applyStyle();
-        
+
         return this;
     }
 });

@@ -1,6 +1,6 @@
 <!-- ******************************** -->
 <!-- Container -->
-<div id="bbmap_container" style="height:100%;overflow:auto">
+<div id="bbmap_container" style="height:100%;overflow:hidden">
   <div id="top_container"></div>
   <div id="map_container">
     <a href="#" id="showMenu"  class="button tiny secondary round cbp-openbutton">
@@ -39,49 +39,41 @@
 
 <script type="text/template" id="bbmap-bulle-template">
     <span id="{{-model.id}}_joyride"></span>
-    <span id="{{-model.id}}" class="editTitle">{{-model.title}}</span>
-    <span id="{{-model.id}}" class="label round secondary ep icon">+c</span>
-    <span id="{{-model.id}}" class="label round secondary ep2 icon">+k</span>
-    <span id="{{-model.id}}" class="label round secondary ep3 icon"><img title="mode" src="/img/icones/Edit.png"/></span>
-    <span id="{{-model.id}}" class="label round secondary sup icon"><img title="mode" src="/img/icones/Delete.png"/></span>
+    <span id="{{-model.id}}" data-type="title" class="editTitle" >{{-model.title}}</span>
+    <span id="{{-model.id}}" data-type="action" class="label round secondary ep icon">+c</span>
+    <span id="{{-model.id}}" data-type="action" class="label round secondary ep2 icon">+k</span>
+    <span id="{{-model.id}}" data-type="action" class="label round secondary ep3 icon"><img data-type="action" id="{{-model.id}}" title="mode" src="/img/icones/Edit.png"/></span>
+    <span id="{{-model.id}}" data-type="action" class="label round secondary sup icon"><img data-type="action" id="{{-model.id}}" title="mode" src="/img/icones/Delete.png"/></span>
 </script>
 
 <script type="text/template" id="bbmap-top-element-template">
-  <br>
   <div class="large-4 medium-4 small-4 columns">
-    <select id="modeSelection">
-      <option value="visu" {{ if(mode == "visu"){ }}selected{{ } }}>Visualization</option>
-      <option value="edit" {{ if(mode == "edit"){ }}selected{{ } }}>Edition</option>
-      <option value="timeline" {{ if(mode == "timeline"){ }}selected{{ } }}>Timeline</option>
-    </select>
-    {{ if(mode == "edit"){ }}
-      <a href="#" class="button tiny round secondary prevH" title="ctrl-Z"><</a>
-      <a href="#" class="button tiny round secondary nextH" title="ctrl-Y">></a>
-    {{ } }}
+    <br>
+    
   </div>
 
   <div class="large-4 medium-4 small-4 columns">
     <center>
       {{ if(mode == "timeline"){ }}
         <h3>
-          <a href="#" class="button tiny secondary round prev"><img title="back" src="/img/icones/Arrowhead-Left-32.png"/></a>
+          <a href="#" class="button tiny secondary round prev"><img title="back" src="/img/icones/Arrowhead-Left-24.png"/></a>
           <span id="timeline_date"></span>
-          <a href="#" class="button tiny secondary round next"><img title="next" src="/img/icones/Arrowhead-Right-32.png"/></a>
+          <a href="#" class="button tiny secondary round next"><img title="next" src="/img/icones/Arrowhead-Right-24.png"/></a>
         </h3>
       {{ }else if(mode == "edit"){ }}
         {{ if((filter == "c")||(filter == "ck")||(filter == "ckp")){ }}
             <a href="#" id="dropC" class="drop dropC button tiny secondary round" title="Drag & Drop Concept to Map">
-              <img class="drop" src="/img/icones/Light-Bulb-32.png"/>
+              <img class="drop" src="/img/icones/Light-Bulb-24.png"/>
             </a>
         {{ } }}
         {{ if((filter == "p")||(filter == "kp")||(filter == "ckp")){ }}
           <a href="#" id="dropP" class="drop dropP button tiny secondary round" title="Drag & Drop Category to Map">
-            <img class="drop" src="/img/icones/Book-Shelf-32.png"/>
+            <img class="drop" src="/img/icones/Book-Shelf-24.png"/>
           </a>
         {{ } }}
         {{ if((filter == "k")||(filter == "ck")||(filter == "ckp")||(filter == "kp")){ }}
           <a href="#" id="dropK" class="drop dropK button tiny round secondary" title="Drag & Drop Knowledge to Map">
-            <img class="drop" src="/img/icones/Book-Open-32.png"/>
+            <img class="drop" src="/img/icones/Book-Open-24.png"/>
           </a>
         {{ } }}
       {{ } }}
@@ -90,9 +82,8 @@
 
   <div class="large-4 medium-4 small-4 columns">
     <div style="float:right">
-      <a href="#" class="tiny round button secondary zoomout"><img title="zoom-in" src="/img/icones/Add.png"/></a>
-      <span id="zoom_val"></span>
-      <a href="#" class="tiny round button secondary zoomin"><img title="zoom-out" src="/img/icones/Minus.png"/></a>
+      <a href="#" class="tiny round button secondary zoomin"><img title="zoom-out" src="/img/icones/Zoom-Out-24.png"/></a>
+      <a href="#" class="tiny round button secondary zoomout"><img title="zoom-in" src="/img/icones/Zoom-In-24.png"/></a>
     </div>
   </div>
 
@@ -102,7 +93,7 @@
   <span id="bbmap_bottom_ui">
     <center>
       {{ if(mode != "timeline"){ }}
-        <img title="zoom-in" src="/img/icones/Filter.png"/> 
+        <img title="zoom-in" src="/img/icones/Filtering-24.png"/> 
         <select id="filterSelection" class="large-1 medium-1 small-1">
           <option value="c" {{ if(filter == "c"){ }}selected{{ } }}>Concepts</option>
           <option value="kp" {{ if(filter == "kp"){ }}selected{{ } }}>Knowledges & Categories</option>
@@ -110,10 +101,14 @@
         </select>
       {{ } }}
       {{ if((filter == "ck")||(filter == "ckp")){ }}
-        <a href="#" class="tiny round button secondary ckOperator"><img title="display CK links" src="/img/icones/Cklink.png"/></a>
+        <a href="#" class="tiny round button secondary ckOperator"><img title="display CK links" src="/img/icones/Data-Share-24.png"/></a>
       {{ } }}
-      <a href="#" class="tiny round button secondary reset"><img title="reset" src="/img/icones/Reset.png"/></a>
-
+      <a href="#" class="tiny round button secondary reset"><img title="reset" src="/img/icones/Fit-To-Size-24.png"/></a>
+      {{ if(mode == "edit"){ }} 
+        <a href="#" class="tiny round button secondary structureSubTree"><img title="structure sub-tree" src="/img/icones/Network-Drives-24.png"/></a>
+        <a href="#" class="button tiny round secondary prevH"><img title="ctrl-Z" src="/img/icones/Arrowhead-Left-24.png"/></a>
+        <a href="#" class="button tiny round secondary nextH"><img title="ctrl-Y" src="/img/icones/Arrowhead-Right-24.png"/></a>
+      {{ } }}
     </center>
   </span>
 </script>

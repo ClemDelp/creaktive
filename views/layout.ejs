@@ -44,7 +44,21 @@
     <script src="js/BB_app/global_models.js"></script>
     <script src="js/BB_app/global_collections.js"></script>
 
-    <div id="creaktive_window" class="off-canvas-wrap" data-offcanvas>
+    <!-- ////////////////////// -->
+    <!-- Menu -->
+    <script src="js/BB_app/modules/menu.js"></script>
+    <script type="text/template" id="menu-template">
+      <button id="menuCreaktiveButton" href="#" data-dropdown="menuCreaktive" aria-controls="menuCreaktive" aria-expanded="false" class="button round secondary tiny dropdown"><img title="Menu" src="/img/icones/Menu-24.png"/></button>
+      <ul id="menuCreaktive" data-dropdown-content class="f-dropdown" aria-hidden="true" tabindex="-1">
+        {{ _.each(links,function(link){ }}
+          <li><a href="{{-link.href}}">{{-link.name}}</a></li>
+        {{ }); }}
+      </ul>
+    </script>
+    <span id="menu_container"></span>
+    <!-- //////////////////// -->
+
+    <!-- <div id="creaktive_window" class="off-canvas-wrap" data-offcanvas>
       <div class="inner-wrap">
         <nav class="tab-bar">
           <section class="left-small">
@@ -74,15 +88,15 @@
           </ul>
         </aside> 
 
-        <section class="main-section">
+        <section class="main-section"> -->
           <%- body %>
-        </section>
+        <!-- </section>
 
       <a class="exit-off-canvas"></a>
 
       </div>
     </div>
-
+ -->
     <script>
       /////////////////////////////////////////////////////////////////////////////////////////////
       // Realtime connection

@@ -1,9 +1,22 @@
 /////////////////////////////////////////////////
+// ROUTER
+/////////////////////////////////////////////////
+bbmap.router = Backbone.Router.extend({
+    routes: {
+      "visu": "visu",
+      "edit": "edit",
+      "timeline": "timeline"
+    },
+    visu: function() {bbmap.views.main.setMode("visu");},
+    edit: function() {bbmap.views.main.setMode("edit");},
+    timeline: function() {bbmap.views.main.setMode("timeline");},
+});
+/////////////////////////////////////////////////
 // MAIN
 /////////////////////////////////////////////////
 bbmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
-        _.bindAll(this, 'render','backInTimeline','advanceInTimeline','advanceInHistory','backInHistory');
+        _.bindAll(this, 'render','backInTimeline','advanceInTimeline','advanceInHistory','backInHistory','updateLastModelTitle','setLastModel');
         ////////////////////////////
         // el
         this.top_el = $(this.el).find('#top_container');
@@ -31,6 +44,9 @@ bbmap.Views.Main = Backbone.View.extend({
         this.notifications      = json.notifications;
         this.init               = json.init; // if true mean launch for the first time
         this.ckOperator         = json.ckOperator;
+        ////////////////////////////////
+        // Router
+        this.workspace = new bbmap.router();
         ////////////////////////////////
         // Parameters
         this.isopen             = false;
@@ -61,12 +77,12 @@ bbmap.Views.Main = Backbone.View.extend({
             HoverPaintStyle : {strokeStyle:"#27AE60" },
             EndpointHoverStyle : {fillStyle:"#27AE60" },
             ConnectionOverlays : [
-                // [ "Arrow", { 
-                //     location:1,
-                //     id:"arrow",
-                //     length:10,
-                //     foldback:0.5
-                // } ],
+                [ "Arrow", { 
+                    location:1,
+                    id:"arrow",
+                    length:10,
+                    foldback:0.5
+                } ],
                 [ "Label", { label:"x", id:"label", cssClass:"aLabel" }]
             ],
             Container:"map"
@@ -119,7 +135,7 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .structureSubTree" : "structureTree",
         "mouseleave .window" : "hideIcon", 
         //"click .closeEditor" : "hideEditor",
-        "click #okjoyride" : "changeTitleLastModel",
+        "click #okjoyride" : "updateLastModelTitle",
         "click .screenshot" : "screenshot",
         "click .downloadimage" : "downloadimage",
         "click #showMenu" : "eventMenu",
@@ -127,6 +143,7 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .next" : "advanceInTimeline",
         "click .prevH" : "backInHistory",
         "click .nextH" : "advanceInHistory",
+        "click .structureSubTree" : "structureTree"
     },
     /////////////////////////////////////////
     // Timeline gestion
@@ -285,9 +302,10 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Modes & Filters
     /////////////////////////////////////////
-    setMode : function(e){
-        e.preventDefault();
-        this.mode = $(e.target).val();
+    setMode : function(mode){
+        // e.preventDefault();
+        // this.mode = $(e.target).val();
+        this.mode = mode;
         if(this.mode != "edit"){
             $('#cbp-spmenu-s1').hide('slow');
             $('#showMenu').hide('slow');
@@ -501,12 +519,19 @@ bbmap.Views.Main = Backbone.View.extend({
         $("#joyride_id").attr('data-id',this.lastModel.get('id')+'_joyride')
         $(document).foundation('joyride', 'start');
     },
+    /////////////////////////////////////////
+    // LastModel actions
+    /////////////////////////////////////////
     updateLastModelTitle : function(title){
         // if(title == ""){
         //     this.nodes_views[this.lastModel.get('id')].removeNode();
         // }else{
             this.lastModel.save({title:title});
         // }
+    },
+    setLastModel : function(model,from){
+        alert(model.get('title')+" - from: "+from)
+        this.lastModel = model;
     },
     /////////////////////////////////////////
     // Sliding editor bar
@@ -525,7 +550,7 @@ bbmap.Views.Main = Backbone.View.extend({
         else this.hideMenu();
     },
     showMenu : function(){
-        $("#showMenu").animate({right:"20%"});
+        $("#showMenu").animate({right:"25%"});
         $("#cbp-openimage")[0].src="/img/icones/Arrow-Right.png";
         this.isopen=true;
     },
@@ -663,7 +688,8 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     structureTree : function(e){
         e.preventDefault();
-        var id = e.target.id.split('_action')[0];
+        //var id = e.target.id.split('_action')[0];
+        var id = this.lastModel.get('id');
         this.reorganizeTree(id);
     },
     reorganizeTree : function(id){
@@ -720,30 +746,43 @@ bbmap.Views.Main = Backbone.View.extend({
     showIconConcept : function(e){
         e.preventDefault();
         var id = e.target.id;
-        if(this.mode == "edit") $("#"+id+" .icon").show();
+        if(e.target.getAttribute("data-type") == "title"){
+            this.setLastModel(this.concepts.get(id),'showIconConcept')
+            this.$(".icon").hide();
+            if(this.mode == "edit") $("#"+id+" .icon").show();    
+        }
     },
     showIconPoche : function(e){
         e.preventDefault();
         var id = e.target.id;
-        if(this.mode == "edit"){
-            $("#"+id+" .sup").show();  
-            $("#"+id+" .ep3").show();  
-            $("#"+id+" .ep2").show();  
+        if(e.target.getAttribute("data-type") == "title"){
+            this.setLastModel(this.poches.get(id),'showIconPoche');
+            this.$(".icon").hide();
+            if(this.mode == "edit"){
+                $("#"+id+" .sup").show();  
+                $("#"+id+" .ep3").show();  
+                $("#"+id+" .ep2").show();  
+            }
         }
+        
     },
     showIconKnowledge : function(e){
         e.preventDefault();
         var id = e.target.id;
-        if(this.mode == "edit"){
-            $("#"+id+" .sup").show();  
-            $("#"+id+" .ep3").show();  
-            $("#"+id+" .ep").show();  
+        if(e.target.getAttribute("data-type") == "title"){
+            this.setLastModel(this.knowledges.get(id),'showIconKnowledge');
+            this.$(".icon").hide();
+            if(this.mode == "edit"){
+                $("#"+id+" .sup").show();  
+                $("#"+id+" .ep3").show();  
+                $("#"+id+" .ep").show();  
+            }
         }
     },
     hideIcon : function(e){
         e.preventDefault();
         var id = e.target.id;
-        if(this.mode == "edit") this.$(".icon").hide();
+        // if(this.mode == "edit") this.$(".icon").hide();
         this.unselectBulle(id);
     },
     selectBulle : function(id){
@@ -784,7 +823,7 @@ bbmap.Views.Main = Backbone.View.extend({
     intelligentRestructuring : function(){
         this.superposeMapCenterToScreenCenter();
         //this.moveDataCentroidToMapCentroid();
-        this.resetToCentroid();
+        //this.resetToCentroid();
         this.instance.repaintEverything();
     },
     superposeMapCenterToScreenCenter : function(){
@@ -977,7 +1016,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var origin = "client";
         if(from) origin = from;
         var type = model.get('type');
-        this.lastModel = model;
+        this.setLastModel(model,'addModelToView');
         new_view = new bbmap.Views.Node({
             className : "window "+type,
             id : model.get('id'),
@@ -1384,7 +1423,8 @@ bbmap.Views.Main = Backbone.View.extend({
             // Initialize jsPlumb events
             this.jsPlumbEventsInit();
             ///////////////////////
-            $( "#map" ).draggable();
+             jsPlumb.draggable($('#map'))
+            //$('#map').draggable();
             // css3 generator
             if(bbmap.views.css3)bbmap.views.css3.remove();
             bbmap.views.css3 = new CSS3GENERATOR.Views.Main();
