@@ -24,11 +24,11 @@ var api = {
     var delta_left = point_2.left - point_1.left;
     var delta_top = point_2.top - point_1.top;
     var delta = {"y":delta_top,"x":delta_left};
-    console.log("All the data have to move : ",delta)
+    // console.log("All the data have to move : ",delta)
     return delta;
   },
   getCentroidPointsCloud : function(points){
-    console.log(points.length)
+    // console.log(points.length)
     // points have to be : [{'top':12,'left':45},{'top':2,'left':845},...]
     // console.log(points)
     var topMax = 0;
