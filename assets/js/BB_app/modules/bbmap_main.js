@@ -3,9 +3,10 @@
 /////////////////////////////////////////////////
 bbmap.router = Backbone.Router.extend({
     routes: {
-      "visu": "visu",
-      "edit": "edit",
-      "timeline": "timeline"
+        ""  : "visu",
+        "visu": "visu",
+        "edit": "edit",
+        "timeline": "timeline"
     },
     visu: function() {bbmap.views.main.setMode("visu");},
     edit: function() {bbmap.views.main.setMode("edit");},
@@ -939,6 +940,7 @@ bbmap.Views.Main = Backbone.View.extend({
     // },
     getCoordinatesOfNodesViews : function(){
         var coordinates = [];
+        console.log("size : ",_.toArray(bbmap.views.main.nodes_views).length)
         for (var id in bbmap.views.main.nodes_views){
             var position = bbmap.views.main.nodes_views[id].getPosition();
             coordinates.unshift({'top':position.top,'left':position.left});
@@ -1323,7 +1325,7 @@ bbmap.Views.Main = Backbone.View.extend({
             });    
         }
     },
-    render : function(){  
+    render : function(){  //alert('render')
         var _this = this;
         this.map_el.empty();
         ///////////////////////

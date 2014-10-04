@@ -88,7 +88,7 @@ var bbmap = {
       filter          : global.filter,
 
     });
-    this.views.main.render();
+    //this.views.main.render();
   },
 };
 

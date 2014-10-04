@@ -15,10 +15,11 @@ var api = {
     var mapCentroid = {};
     mapCentroid.left = map_width/2;
     mapCentroid.top = map_height/2;
-    console.log("Map centroid : ",mapCentroid);
+    // console.log("Map centroid : ",mapCentroid);
     return mapCentroid;
   },
   getXYTranslationBtwTwoPoints : function(point_1,point_2){
+    // console.log("CentroidPointsCloud",point_1,' - getMapCentroid',point_2)
     // point have to be : {'left':12,'top':56}
     var delta_left = point_2.left - point_1.left;
     var delta_top = point_2.top - point_1.top;
@@ -27,7 +28,9 @@ var api = {
     return delta;
   },
   getCentroidPointsCloud : function(points){
+    console.log(points.length)
     // points have to be : [{'top':12,'left':45},{'top':2,'left':845},...]
+    // console.log(points)
     var topMax = 0;
     var topMin = 1000000000;
     var leftMax = 0;
@@ -54,6 +57,7 @@ var api = {
       screenCentroid.left = windowWidth/2;
       screenCentroid.width = windowWidth;
       screenCentroid.height = windowHeight;
+      // console.log("Screen centroid : ",screenCentroid);
       return screenCentroid;
   }
 }
