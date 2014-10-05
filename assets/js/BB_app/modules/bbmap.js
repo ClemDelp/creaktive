@@ -88,17 +88,8 @@ var bbmap = {
       filter          : global.filter,
 
     });
-    this.views.main.render();
+    //this.views.main.render();
   },
-  getJsonSize : function(json){
-    var key, count = 0;
-    for(key in json) {
-      if(json.hasOwnProperty(key)) {
-        count++;
-      }
-    }
-    return count;
-  }
 };
 
 
