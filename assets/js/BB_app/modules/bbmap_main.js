@@ -468,30 +468,9 @@ bbmap.Views.Main = Backbone.View.extend({
     // Screenshot
     /////////////////////////////////////////
     screenshot : function(flag){
-        _this = this;
-
-        var top =  $('#map').offset().top;
-        var left = $('#map').offset().left;
-        $('#bbmap_container').append("<div id='screen' style='height:2000px;width:1000'></div>");
-
-        _.each($("#map.demo").children(), function(bulle){
-            //console.log(bulle)
-            var $b = $("#"+bulle.id).clone();
-            $("#screen").append($b);
-            if(_.contains(bulle.classList, "bulle"))$b.offset({top : $("#"+bulle.id).offset().top, left: $("#"+bulle.id).offset().left})
+        $.get("/bbmap/screenshot", function(data){
+            console.log(data);
         })
-
-        html2canvas($("#screen"),{
-            logging : true,
-            svgRendering : true,
-            onrendered : function(canvas){
-                var nodeCanvasContext = canvas.getContext("2d"); 
-                // console.log(canvas)
-               
-                var img =  canvas.toDataURL( "image/png;base64;" );              
-                // console.log(img)
-            }
-        });
     },
     /////////////////////////////////////////
     // Drop new data on map

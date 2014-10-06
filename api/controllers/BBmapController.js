@@ -14,7 +14,7 @@
  *
  * @docs        :: http://sailsjs.org/#!documentation/controllers
  */
-
+    var Pageres = require('pageres');
 
 module.exports = {
     
@@ -39,6 +39,31 @@ module.exports = {
 	},
 
   screenshot : function(req,res){
+
+
+
+    var url = req.baseUrl + "/bbmap?projectId=276803dd-ccba-298d-1282-1cd8db014a6b#visu";
+    var cookie = {
+      key: "sails.sid",
+      value: req.signedCookies["sails.sid"],
+      domain: "localhost",
+      path:"/"
+    };
+
+   // console.log(cookie)
+
+    var pageres = new Pageres({delay: 5, cookies : [JSON.stringify(cookie)]})
+        .src(url, ['1600x1080'])
+        .dest("img");
+
+    pageres.run(function (err) {
+        if (err) {
+            res.send(err)
+        }
+        res.send("done")
+        console.log('done');
+    });
+
   },
   
 
