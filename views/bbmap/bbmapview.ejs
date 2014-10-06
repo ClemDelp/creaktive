@@ -117,8 +117,13 @@
         together.init();
         $("#title_page").html(json.project.title);
         /*activat of "hashchange events's monitoring"*/
-        Backbone.history.start();
-        $(document).foundation();
+        try{
+          Backbone.history.start();
+          $(document).foundation();
+        }catch(e){
+          alert("Connection Lost, reloading page")
+          window.parent.location.reload();
+        }
       });
     });
 

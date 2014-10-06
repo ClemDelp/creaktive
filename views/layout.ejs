@@ -105,7 +105,13 @@
       function rt (io, callback) {
         // as soon as this file is loaded, connect automatically, 
         var socket = io.connect();
+
+        socket.on("message", function(msg){
+          console.log(msg)
+        });
+        
         socket.on('connect', function socketConnected() {
+
           
           socket.get("/auth/openChannels", function(data){
             console.log(data.msg);
