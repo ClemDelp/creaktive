@@ -40,9 +40,7 @@ module.exports = {
 
   screenshot : function(req,res){
 
-
-
-    var url = req.baseUrl + "/bbmap?projectId=276803dd-ccba-298d-1282-1cd8db014a6b#visu";
+    var url = req.baseUrl + "/bbmap?projectId="+req.session.currentProject.id;
     var cookie = {
       key: "sails.sid",
       value: req.signedCookies["sails.sid"],
@@ -50,18 +48,22 @@ module.exports = {
       path:"/"
     };
 
-   // console.log(cookie)
+   console.log(cookie)
 
-    var pageres = new Pageres({delay: 5, cookies : [JSON.stringify(cookie)]})
-        .src(url, ['1600x1080'])
-        .dest("img");
+    var pageres = new Pageres({
+        delay: 5, 
+        cookies : [JSON.stringify(cookie)],
+        selector : ".bulle",
+        filename : req.session.currentProject.id + ".png"
+      })
+      .src(url, ['1920x1080'])
+      .dest("img");
 
-    pageres.run(function (err) {
+    pageres.run(function (err, items) {
         if (err) {
             res.send(err)
         }
-        res.send("done")
-        console.log('done');
+        res.send(items);
     });
 
   },
