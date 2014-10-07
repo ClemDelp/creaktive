@@ -107,8 +107,12 @@ Backbone.sync = function (method, model, options) {
 
     if(data.err){
       if(options.error) options.error(data.err);
-      alert(data.err);
-      location.reload();
+      if(data.err === "You have read-only permission"){
+        defer.resolve();
+      }else{
+        alert(data.err);
+        location.reload();
+      }
       defer.reject();
     }else{
       if(options.success) options.success(data);

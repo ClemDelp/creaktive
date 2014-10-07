@@ -68,6 +68,7 @@ var global = {
     //////////////////////////////////////////////////////////////////
     this.prepareNotifications();
     console.log("******* Connected as ", this.models.current_user.get("name"), " on ", this.models.currentProject.get("title"));
+    
     menu.init();   
     callback();
   },

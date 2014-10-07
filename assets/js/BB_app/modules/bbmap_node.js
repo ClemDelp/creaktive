@@ -10,7 +10,8 @@ bbmap.Views.Node = Backbone.View.extend({
         $(this.el).click(this.savePosition);
         this.listenTo(this.model,"change:title", this.render); 
         this.listenTo(this.model,"change:css", this.render); 
-        this.listenTo(global.eventAggregator,this.model.get('id')+"_server", this.actualize,this); 
+        this.listenTo(global.eventAggregator,this.model.get('id')+"_server", this.actualize,this);
+        this.listenTo(global.eventAggregator,"attachment_added", this.render,this); 
         // Se mettre en ecoute sur le deplacement du node pere
         // this.oldFather = new Backbone.Model();
         try{
