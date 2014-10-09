@@ -293,13 +293,16 @@ manager.Views.Main = Backbone.View.extend({
     newProject : function(e){
         e.preventDefault();
         console.log(this.user)
+        var id = guid();
         new_project = new global.Models.ProjectModel({
-            id:guid(),
+            id:id,
             author : this.user,
             title: $("#project_title").val(),
             date: getDate(),
             date2:new Date().getTime(),
-            image:""
+            image:"",
+            backup:false,
+            project:id
             //description : $("#project_description").val(),
             //kLabels : [{color : "#27AE60", label:"Validated"},  {color : "#F39C12", label:"Processing"}, {color : "#C0392B", label:"Missing"}],
             //cLabels : [{color : "#27AE60", label:"Known"}, {color : "#F39C12", label:"Reachable"}, {color : "#C0392B", label:"Alternative"}]

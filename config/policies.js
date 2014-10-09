@@ -158,6 +158,10 @@
   "SlideController" : {
     "*" : ["authenticated"]
   },
+
+  "BackupController" : {
+    "*" : ["authenticated", "allowedProjects","forceHTTPs"]
+  }
   /*
   // Here's an example of adding some policies to a controller
   RabbitController: {

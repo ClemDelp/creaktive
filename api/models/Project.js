@@ -17,7 +17,7 @@ autoPK : false,
 
   beforeDestroy : function (values, cb){
     project_id = values.where.id
-
+    console.log(project_id)
     Presentation.find({
       project_id : project_id
     }).done(function(err, pres){
