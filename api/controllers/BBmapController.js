@@ -41,14 +41,15 @@ module.exports = {
   screenshot : function(req,res){
     
     var url = req.baseUrl + "/bbmap?projectId="+req.session.currentProject.id;
-    var domain = req.get('host')//req.get('host').substring(0,req.get('host').indexOf(":"))
+    var domain = req.get('host') == "localhost:1337" ? "localhost" : req.get("host")
     console.log(domain);
-    var cookie = {
-      key: "sails.sid",
-      value: req.signedCookies["sails.sid"],
-      domain: domain,
-      path:"/"
-    };
+    // var cookie = {
+    //   key: "sails.sid",
+    //   value: req.signedCookies["sails.sid"],
+    //   domain: domain,
+    //   path:"/"
+    // };
+    var cookie = "key=sails.sid;value="+req.signedCookies["sails.sid"]+";domain="+domain+";path=/";
     console.log(cookie)
     var pageres = new Pageres({
         delay: 5, 
