@@ -17,7 +17,7 @@ autoPK : false,
 
   beforeDestroy : function (values, cb){
     project_id = values.where.id
-
+    console.log(project_id)
     Presentation.find({
       project_id : project_id
     }).done(function(err, pres){
@@ -80,39 +80,5 @@ autoPK : false,
     cb();
   },
 
-  beforeCreate : function (values, cb){
-
-    Concept.create({
-  		id : IdService.guid(),
-  		title : "c0 : "+values.title,
-
-      content :"",
-  		date : IdService.getDate(),
-  		position : 0,
-  		project : values.id,
-      comments : [],
-      members:[],
-      attachment:[],
-      type : "concept",
-      id_father: "none",
-      top : 750,
-      left: 750
-
-
-  	}).done(function(err, c0){
-  		if(err) console.log(err);
-      console.log(values.id);
-      console.log(values.title);
-      Presentation.create({
-        id : IdService.guid(),
-        title : values.title,
-        data : "",
-        project_id : values.id,
-      }).done(function(err){
-        if(err) console.log(err);
-        cb();
-      });
-  	});
-  }
 
 };

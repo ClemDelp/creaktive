@@ -30,7 +30,7 @@ module.exports = {
     User.find().done(function(err,users){
       Knowledge.find({project : req.session.allowedProjects}).done(function(err,knowledges){
         Poche.find({project : req.session.allowedProjects}).done(function(err,poches){
-          Project.find({id : req.session.allowedProjects}).done(function(err,projects){
+          Project.find({id : req.session.allowedProjects, backup : false}).done(function(err,projects){
             Concept.find({project : req.session.allowedProjects}).done(function(err,concepts){
               Link.find({project : req.session.allowedProjects}).done(function(err,links){
                 Presentation.find().done(function(err,presentations){
@@ -111,7 +111,7 @@ module.exports = {
         
           Knowledge.find({project:project.id}).done(function(err,knowledges){
             Poche.find({project:project.id}).done(function(err,poches){
-              Project.find().done(function(err,projects){
+              Project.find({backup : false}).done(function(err,projects){
                 Concept.find({project:project.id}).done(function(err,concepts){
                   Link.find({project:project.id}).done(function(err,links){
                     User.find().done(function(err,users){

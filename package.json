@@ -7,6 +7,7 @@
   },
   "description": "CreaKtive",
   "dependencies": {
+    "async": "^0.9.0",
     "aws-sdk": "^2.0.14",
     "bcrypt": "~0.7.7",
     "cloudfront": "~0.3.3",

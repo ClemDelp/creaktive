@@ -31,6 +31,7 @@ menu.Views.Main = Backbone.View.extend({
         var bbmap_visu = {href : "/bbmap?projectId="+this.project.get('id')+"#visu", name : "Visualisation"};
         var bbmap_edit = {href : "/bbmap?projectId="+this.project.get('id')+"#edit", name : "Edition"};
         var bbmap_timeline = {href : "/bbmap?projectId="+this.project.get('id')+"#timeline", name : "Timeline"};
+        var backup = {href : "/backup?projectId="+this.project.get('id'), name : "Backup"};
         var rapports_manager = {href : "/ckpreviewer?projectId="+this.project.get('id'), name : "Reports manager"};
         var users_manager = {href : "/userManager?projectId="+this.project.get('id'), name : "Users manager"};
         var manager = {href : "/", name : "Manager"};
@@ -41,12 +42,40 @@ menu.Views.Main = Backbone.View.extend({
         var terms = {href : "http://creaktive.fr/", name : "Terms of service"};
         var policy = {href : "http://creaktive.fr/", name : "Privacy Policy"};
         var faq = {href : "http://creaktive.fr/contact/", name : "FAQ"};
+        
+        //Find user permission
+
         // Build specific menu
-        if(this.pathname == "/") this.links = [profile,logout,support,doc,terms,policy,faq];
-        else if(this.pathname == "/bbmap") this.links = [visu,edit,timeline,manager,rapports_manager,users_manager,profile,logout,support,doc,terms,policy,faq];
-        else if(this.pathname == "/ckpreviewer") this.links = [bbmap_visu,bbmap_edit,bbmap_timeline,manager,users_manager,profile,logout,support,doc,terms,policy,faq];
-        else if(this.pathname == "/userManager") this.links = [bbmap_visu,bbmap_edit,bbmap_timeline,manager,rapports_manager,profile,logout,support,doc,terms,policy,faq];
-        else if(this.pathname == "/editprofile") this.links = [manager,logout,support,doc,terms,policy,faq]; 
+        if(this.pathname == "/"){ 
+            this.links = [profile,logout,support,doc,terms,policy,faq];
+        }
+        else if(this.pathname == "/bbmap") {
+            var permission = global.collections.Permissions.findWhere({user_id : global.models.current_user.get('id'), project_id : this.project.get('id')}).get('right');
+            if(permission === "r") this.links = [manager,profile,logout,support,doc,terms,policy,faq];
+            else this.links = [visu,edit,timeline,backup,manager,rapports_manager,users_manager,profile,logout,support,doc,terms,policy,faq];
+        }
+        else if(this.pathname == "/ckpreviewer") {
+            var permission = global.collections.Permissions.findWhere({user_id : global.models.current_user.get('id'), project_id : this.project.get('id')}).get('right');
+            if(permission === "r") this.links = [bbmap_visu,manager,profile,logout,support,doc,terms,policy,faq];
+            else this.links = [bbmap_visu,bbmap_edit,bbmap_timeline,backup,manager,users_manager,profile,logout,support,doc,terms,policy,faq];
+        }
+        else if(this.pathname == "/userManager") {
+            var permission = global.collections.Permissions.findWhere({user_id : global.models.current_user.get('id'), project_id : this.project.get('id')}).get('right');
+            if(permission === "r") this.links = [bbmap_visu,manager,profile,logout,support,doc,terms,policy,faq];
+            else this.links = [bbmap_visu,bbmap_edit,bbmap_timeline,backup,manager,rapports_manager,profile,logout,support,doc,terms,policy,faq];
+        }
+        else if(this.pathname == "/editprofile") {
+            this.links = [manager,logout,support,doc,terms,policy,faq]; 
+        }
+        else if(this.pathname == "/backup") {
+            var permission = global.collections.Permissions.findWhere({user_id : global.models.current_user.get('id'), project_id : this.project.get('id')}).get('right');
+            if(permission === "r") this.links = [bbmap_visu,manager,profile,logout,support,doc,terms,policy,faq];
+            else this.links = [bbmap_visu,bbmap_edit,bbmap_timeline,manager,rapports_manager,profile,logout,support,doc,terms,policy,faq]; 
+        }
+        
+
+
+
         // Templates
         this.template_menu = _.template($('#menu-template').html());
     },

@@ -38,6 +38,9 @@
 </script>
 
 <script type="text/template" id="bbmap-bulle-template">
+    {{ if(model.attachment.length>0) { }}
+      <img src="img/icones/Attach.png" class="attachments"/>
+    {{ } }}
     <span id="{{-model.id}}_joyride"></span>
     <span id="{{-model.id}}" data-type="title" class="editTitle" >{{-model.title}}</span>
     <span id="{{-model.id}}" data-type="action" class="label round secondary ep icon">+c</span>

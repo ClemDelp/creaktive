@@ -44,6 +44,7 @@ attachment.Views.Main = Backbone.View.extend({
             _this.eventAggregator.trigger('fileuploaded');
             _this.model.save();
             _this.render();
+            _this.eventAggregator.trigger('attachment_added');
         })  
     },
 

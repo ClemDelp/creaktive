@@ -8,7 +8,7 @@ module.exports = function(req, res, next) {
 
 	if(req.session.currentProject) project_id = req.session.currentProject.id;
 	else if (req.query.projectId) project_id = req.query.projectId
-		else if(req.body.params.projectId) project_id = req.body.params.projectId;
+	else if(req.body.params.projectId) project_id = req.body.params.projectId;
 
 	User.findOne(req.session.user.id).done(function(err,u){
 		

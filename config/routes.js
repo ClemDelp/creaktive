@@ -37,8 +37,8 @@ module.exports.routes = {
   '/userManager': "UserController.userview",
 
   '/sparql/query': "SparqlController.query",
-  '/backup': "BackupController.create",
-  '/backup/getData': "BackupController.getData",
+  // '/backup': "BackupController.create",
+  // '/backup/getData': "BackupController.getData",
   '/activities': "NotificationController.notificationview",
   '/contact': "ContactController.contactview",
 
@@ -79,7 +79,9 @@ module.exports.routes = {
     controller : "S3Controller",
     action :"getUrl",
     cors : true
-  }
+  },
+
+  "/backup" : "BackupController.backupview"
 
 
 

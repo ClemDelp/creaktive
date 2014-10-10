@@ -1,0 +1,69 @@
+<div class="row panel" id="backup_container"></div>
+
+<script type="text/template" id="backup-template">
+	<div {{ if(currentNode == node.id) { }} class="panel callout" {{ } }} {{ if(currentNode != node.id) { }} class="panel" {{ } }}  >
+		<h4>
+			{{ if(node.backup == false){ }} <a href="#" class="alert button tiny round">Main Branch</a> {{ } }}
+			{{- node.node_name || node.title }} - <small>{{- (new Date(node.createdAt)).toLocaleString() }}</small>
+		</h4>	
+		{{- node.author.name }}
+		
+
+		<hr>
+		{{-  node.node_description || node.content}}
+		<hr>
+		
+
+		<button data-dropdown="drop" aria-controls="drop" aria-expanded="false" class="tiny">Create branch from here</button>
+		<a href ="#" data-node-id="{{- node.id }}" class="button tiny switch">Switch to this branch</a>
+		<button data-dropdown="drop2" aria-controls="drop2" aria-expanded="false" class="tiny">Create Project from this branch</button>
+		<a href ="#" data-node-id="{{- node.id }}" class="button tiny alert deleteBranch">Delete this branch</a>
+
+
+		<div id="drop" data-dropdown-content class="f-dropdown content" aria-hidden="true" tabindex="-1">
+		  <form>
+		  	<div class="row">
+			  	<div class="large-12 columns">
+			      <label>Node Name
+			        <input id="name{{- node.id}}" type="text" />
+			      </label>
+			    </div>
+			    <div class="large-12 columns">
+			      <label>Node Description
+			        <textarea id="description{{- node.id}}" placeholder=""></textarea>
+			      </label>
+			    </div>
+		    </div>
+
+		    <a href="#" data-node-id="{{- node.id }}" class="button tiny createBranch">Create</a>
+		  </form>
+		  
+		</div>
+
+		<div id="drop2" data-dropdown-content class="f-dropdown content" aria-hidden="true" tabindex="-1">
+		  <form>
+		  	<div class="row">
+			  	<div class="large-12 columns">
+			      <label>Node Name
+			        <input id="projectname{{- node.id}}" type="text" />
+			      </label>
+			    </div>
+			    <div class="large-12 columns">
+			      <label>Node Description
+			        <textarea id="projectdescription{{- node.id}}" placeholder=""></textarea>
+			      </label>
+			    </div>
+		    </div>
+
+		    <a href="#" data-node-id="{{- node.id }}" class="button tiny convert">Create</a>
+		  </form>
+		  
+		</div>
+
+		
+	</div>
+
+</script>
+
+
+
