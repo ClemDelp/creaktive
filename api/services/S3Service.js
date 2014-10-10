@@ -28,7 +28,7 @@ module.exports = {
 
 		var data = {
 			Bucket : S3_BUCKET,
-			Key: file.name || IdService.guid().replace(/-/g,""), 
+			Key: file.filename || IdService.guid().replace(/-/g,""), 
 			Body: body,
 			ACL: "private",
 		};
