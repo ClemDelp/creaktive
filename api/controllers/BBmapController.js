@@ -41,7 +41,7 @@ module.exports = {
   screenshot : function(req,res){
     
     var url = req.baseUrl + "/bbmap?projectId="+req.session.currentProject.id;
-    var domain = req.get('host').substring(0,req.get('host').indexOf(":"))
+    var domain = req.get('host')//req.get('host').substring(0,req.get('host').indexOf(":"))
     console.log(domain);
     var cookie = {
       key: "sails.sid",
