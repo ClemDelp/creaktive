@@ -2,8 +2,13 @@
 
 <script type="text/template" id="backup-template">
 	<div {{ if(currentNode == node.id) { }} class="panel callout" {{ } }} {{ if(currentNode != node.id) { }} class="panel" {{ } }}  >
-		<h4>{{- node.node_name || node.title }} - <small>{{- (new Date(node.createdAt)).toLocaleString() }}</small></h4>
+		<h4>
+			{{ if(node.backup == false){ }} <a href="#" class="alert button tiny round">Main Branch</a> {{ } }}
+			{{- node.node_name || node.title }} - <small>{{- (new Date(node.createdAt)).toLocaleString() }}</small>
+		</h4>	
 		{{- node.author.name }}
+		
+
 		<hr>
 		{{-  node.node_description || node.content}}
 		<hr>
