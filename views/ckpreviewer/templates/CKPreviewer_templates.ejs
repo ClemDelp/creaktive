@@ -91,11 +91,14 @@
       <ul class="small-block-grid-2" id="imageList">
       {{ _.each(images, function(image,n) { }}
         <li id="image_container" class="imgbox">
-          <span class="label radius  secondary">{{- image.date}}</span>
-          <span class="label radius  downloadimage" data-image-id="{{- image.src}}" data-image-date="{{- image.date}}">download</span>
-          <span class="label radius alert editimage" data-image-id="{{- image.src}}" data-screenshot-id="{{- image.id}}">edit</span>
-          <a id="deleteimage" data-image-id="{{- image.src}}" data-screenshot-id="{{- image.id}}" style="float:right">&#215;</a>
-          <img class="th dropdown" crossorigin="*" id="image"  src='/s3/getUrl?amz_id={{- image.src}}' data-image-id="{{- image.src}}" >
+          <div>
+            <span class="label radius  secondary large-4 medium-' small-4 columns">{{- (new Date(image.updatedAt)).toLocaleDateString() }}</span>
+            <span class="label radius  downloadimage large-4 medium-' small-4 columns" data-image-id="{{- image.src}}" data-image-date="{{- image.date}}">download</span>
+            <span class="label radius alert editimage large-4 medium-' small-4 columns" data-image-id="{{- image.src}}" data-screenshot-id="{{- image.id}}">edit</span>
+          
+            <a id="deleteimage" data-image-id="{{- image.src}}" data-screenshot-id="{{- image.id}}" style="float:right">&#215;</a>
+            <img  id="image"  src='/s3/getUrl?amz_id={{- image.src}}' data-image-id="{{- image.src}}" >
+          </div>
         </li>
       {{ }); }}  
       </ul>
