@@ -39,22 +39,27 @@ module.exports = {
 	},
 
   screenshot : function(req,res){
-    
-    var url = req.baseUrl + "/bbmap?projectId="+req.session.currentProject.id;
-    var domain = req.get('host') == "localhost:1337" ? "localhost" : req.get("host")
+    var url = "";
+    var domain =  "";
+    if(req.get('host') == "localhost:1337"){
+      url = req.baseUrl + "/bbmap?projectId="+req.session.currentProject.id;
+      domain = "localhost"
+    }else{
+       url = req.baseUrl.substring(0,req.baseUrl.indexOf("1")-1) + "/bbmap?projectId="+req.session.currentProject.id;
+       domain = req.get("host")
+    }
+
+
     console.log(url);
     console.log(domain);
-    // var cookie = {
-    //   key: "sails.sid",
-    //   value: req.signedCookies["sails.sid"],
-    //   domain: domain,
-    //   path:"/"
-    // };
-    var cookie = "key=sails.sid;value="+req.signedCookies["sails.sid"]+";domain="+domain+";path=/";
+
+    var cookie = "sails.sid="+req.signedCookies["sails.sid"]+";domain="+domain+";path=/";
     console.log(cookie)
+    
+
     var pageres = new Pageres({
         delay: 5, 
-        cookies : [JSON.stringify(cookie)],
+        cookies : [cookie],
         selector : ".bulle",
         filename : req.session.currentProject.id + ".png"
       })
