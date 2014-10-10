@@ -42,6 +42,7 @@ module.exports = {
     
     var url = req.baseUrl + "/bbmap?projectId="+req.session.currentProject.id;
     var domain = req.get('host') == "localhost:1337" ? "localhost" : req.get("host")
+    console.log(url);
     console.log(domain);
     // var cookie = {
     //   key: "sails.sid",
