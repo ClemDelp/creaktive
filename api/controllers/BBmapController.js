@@ -39,15 +39,17 @@ module.exports = {
 	},
 
   screenshot : function(req,res){
-    console.log("taking screenshot")
+    
     var url = req.baseUrl + "/bbmap?projectId="+req.session.currentProject.id;
+    var domain = req.get('host').substring(0,req.get('host').indexOf(":"))
+    console.log(domain);
     var cookie = {
       key: "sails.sid",
       value: req.signedCookies["sails.sid"],
-      domain: "localhost",
+      domain: domain,
       path:"/"
     };
-
+    console.log(cookie)
     var pageres = new Pageres({
         delay: 5, 
         cookies : [JSON.stringify(cookie)],
