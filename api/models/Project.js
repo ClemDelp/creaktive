@@ -56,7 +56,7 @@ autoPK : false,
           if(err) console.log(err)
         })
       })
-    })
+    });
 
     Concept.find({
       project : project_id
@@ -75,6 +75,10 @@ autoPK : false,
         })
       })
 
+    });
+    var img = values.where.id + ".png";
+    S3Service.deleteFile(img, function(err, data){
+      if(err) console.log(err)
     })
 
     cb();

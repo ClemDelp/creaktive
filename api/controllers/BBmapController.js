@@ -39,7 +39,7 @@ module.exports = {
 	},
 
   screenshot : function(req,res){
-
+    console.log("taking screenshot")
     var url = req.baseUrl + "/bbmap?projectId="+req.session.currentProject.id;
     var cookie = {
       key: "sails.sid",
@@ -48,8 +48,6 @@ module.exports = {
       path:"/"
     };
 
-   console.log(cookie)
-
     var pageres = new Pageres({
         delay: 5, 
         cookies : [JSON.stringify(cookie)],
@@ -57,15 +55,40 @@ module.exports = {
         filename : req.session.currentProject.id + ".png"
       })
       .src(url, ['1920x1080'])
-      .dest("img");
+      .dest(".tmp");
 
     pageres.run(function (err, items) {
-        if (err) {
-            res.send(err)
-        }
-        res.send(items);
+        if (err) return console.log(err);
+        async.each(items, function(item, callback){
+          var file = {};
+          file.path = ".tmp/"+item.filename;
+          file.name = item.filename;
+          S3Service.pushFile(file, function(err, file){
+            if(err) return callback(err);
+            // Ajout de l'image au projet
+            Project.update({id : req.session.currentProject.id}, {image : file}, function(err, projects){
+              if(err) return  callback(err);
+            })
+            Screenshot.findOrCreate({
+              src:item.filename
+            },{
+              id : IdService.guid(),
+              src : item.filename,
+              project_id : req.session.currentProject.id,
+              date : IdService.getDate()
+            }).done(function(err,srcs){
+              if(err) console.log(err)
+            })
+            callback();
+          });
+        },function(err){
+          // if any of the file processing produced an error, err would equal that error
+        if( err ) console.log('A file failed to process', err);
+        else console.log('All files have been pushed to S3 successfully');
+        })   
     });
 
+    res.send("Screenshot added");
   },
   
 

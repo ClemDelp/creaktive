@@ -10,9 +10,14 @@
 		
 
 		<hr>
-		{{-  node.node_description || node.content}}
+		<div class="columns">
+	
+			{{ if(node.image){ }}
+				<div class="large-6 medium-6 small-6 columns"><img src="/S3/getUrl?amz_id={{- node.image}}" /></div>
+			{{ }; }}
+			<div class="large-6 medium-6 small-6 columns ">{{-  node.node_description || node.content}}</div>
+		</div>
 		<hr>
-		
 
 		<button data-dropdown="drop" aria-controls="drop" aria-expanded="false" class="tiny">Create branch from here</button>
 		<a href ="#" data-node-id="{{- node.id }}" class="button tiny switch">Switch to this branch</a>

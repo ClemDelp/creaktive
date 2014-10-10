@@ -7,12 +7,6 @@ var AWS_CF_HOSTAME = process.env.AWS_CF_HOSTAME || "d2gsmu1q0g6u6n.cloudfront.ne
 var AWS_CF_KEY_PAIR_ID = process.env.AWS_CF_KEY_PAIR_ID ||"APKAINMRZ47Y6KNXIJQQ";
 var AWS_PRIVATE_KEY = fs.readFileSync("pk-"+AWS_CF_KEY_PAIR_ID+".pem");
 
-//functions
-function s4() {return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);};
-function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();}
-function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
-
-
 
 
 module.exports = {
@@ -27,22 +21,20 @@ module.exports = {
 		var body = {};
 		if(file.path)  body = fs.createReadStream(file.path);
 		else{
-
 			//Convertit en image et enregistre sur le serveur cf. FileController
 			body = new Buffer(file.replace(/^data:image\/\w+;base64,/, ""),'base64')
+			//body = file;
+		}
 
-			
-
-		} 
 		var data = {
 			Bucket : S3_BUCKET,
-			Key: guid().replace(/-/g,""), 
+			Key: file.name || IdService.guid().replace(/-/g,""), 
 			Body: body,
 			ACL: "private",
 		};
 
   		s3.putObject(data, function(err, file) {
-		    if (err) cb(err)
+		    if(err) return cb(err)
 		    console.log("File pushed on s3", data.Key)
 		    cb(null,data.Key) 
 		    //On supprime le fichier   		      
@@ -50,7 +42,7 @@ module.exports = {
 	},
 
 	deleteFile : function(file, cb){
-						AWS.config.update({
+		AWS.config.update({
 			accessKeyId : "AKIAIK5NKF7MSBBB4EGQ",
 			secretAccessKey : "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",
 			region: 'eu-west-1'
