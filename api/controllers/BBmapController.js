@@ -42,10 +42,10 @@ module.exports = {
     var url = "";
     var domain =  "";
     if(req.get('host') == "localhost:1337"){
-      url = req.baseUrl + "/bbmap?projectId="+req.session.currentProject.id;
+      url = req.baseUrl + "/bbmap?projectId="+req.session.currentProject.id+"#visu";
       domain = "localhost"
     }else{
-       url = "https://"+req.get("host")+ "/bbmap?projectId="+req.session.currentProject.id;
+       url = "https://"+req.get("host")+ "/bbmap?projectId="+req.session.currentProject.id+"#visu";
        domain = req.get("host")
     }
 
