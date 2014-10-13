@@ -15,7 +15,7 @@ bbmap.router = Backbone.Router.extend({
         // $.get("/bbmap/screenshot", function(data){
         //     console.log(data);
         // })
-        // bbmap.views.main.setMode("visu");
+        bbmap.views.main.setMode("visu");
     },
     edit: function() {bbmap.views.main.setMode("edit");},
     timeline: function() {bbmap.views.main.setMode("timeline");},
