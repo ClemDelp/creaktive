@@ -96,7 +96,10 @@ module.exports = {
         else console.log('All files have been pushed to S3 successfully');
         })   
     });
-
+    
+    pageres.on('warn', function(err){
+      console.log(err)
+    })
 
     res.send("Screenshot added");
   },
