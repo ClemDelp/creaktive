@@ -12,7 +12,7 @@ bbmap.router = Backbone.Router.extend({
     visu: function() {
         // Dès qu'on charge le mode visu, on prend un screenshot
 
-        socket.get("/bbmap/screenshot", function(data){
+        $.get("/bbmap/screenshot", function(data){
             console.log(data);
         })
         bbmap.views.main.setMode("visu");

@@ -63,7 +63,7 @@ module.exports = {
         selector : ".bulle",
         filename : req.session.currentProject.id + ".png"
       })
-      .src(url, ['1920x1080'])
+      .src(url, ['2560x1440'])
       .dest(".tmp");
 
     pageres.run(function (err, items) {
@@ -75,6 +75,7 @@ module.exports = {
           S3Service.pushFile(file, function(err, file){
             if(err) return callback(err);
             // Ajout de l'image au projet
+            res.sendfile(file);
             Project.update({id : req.session.currentProject.id}, {image : file}, function(err, projects){
               if(err) return  callback(err);
             })
@@ -96,6 +97,10 @@ module.exports = {
         else console.log('All files have been pushed to S3 successfully');
         })   
     });
+
+pageres.on('warn', function(err){
+  console.log(err);
+})
 
     res.send("Screenshot added");
   },
