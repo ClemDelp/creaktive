@@ -60,7 +60,6 @@ module.exports = {
     var pageres = new Pageres({
         delay: 10, 
         cookies : [cookie],
-        selector : ".bulle",
         filename : req.session.currentProject.id + ".png"
       })
       .src(url, ['2560x1440'])
@@ -98,9 +97,6 @@ module.exports = {
         })   
     });
 
-pageres.on('warn', function(err){
-  console.log(err);
-})
 
     res.send("Screenshot added");
   },
