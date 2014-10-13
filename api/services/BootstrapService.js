@@ -1,6 +1,6 @@
 module.exports = {
 
-  bootstrapmanager : function(req,res){console.log(req.session);
+  bootstrapmanager : function(req,res){
     req.session.user = req.session.user || {id:"999999999", name : "guest", img:"img/default-user-icon-profile.png"}
     ///////////////////////////////////////////////////
     unread_notifications = [];
