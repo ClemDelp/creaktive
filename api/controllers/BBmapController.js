@@ -58,7 +58,7 @@ module.exports = {
     
 
     var pageres = new Pageres({
-        delay: 30, 
+        delay: 10, 
         cookies : [cookie],
         selector : ".bulle",
         filename : req.session.currentProject.id + ".png"
