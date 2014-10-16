@@ -51,7 +51,7 @@ module.exports = {
 
 
     console.log(url);
-    console.log(domain);
+
 
     var cookie = "sails.sid="+req.signedCookies["sails.sid"]+";domain="+domain+";path=/";
     console.log(cookie)
@@ -63,13 +63,13 @@ module.exports = {
         filename : req.session.currentProject.id + ".png"
       })
       .src(url, ['2560x1440'])
-      .dest(".tmp");
+      .dest("screenshot");
 
     pageres.run(function (err, items) {
         if (err) return console.log(err);
         async.each(items, function(item, callback){
           var file = {};
-          file.path = ".tmp/"+item.filename;
+          file.path = "screenshot/"+item.filename;
           file.name = item.filename;
           S3Service.pushFile(file, function(err, file){
             if(err) return callback(err);
