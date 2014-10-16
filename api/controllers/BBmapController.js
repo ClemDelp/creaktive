@@ -66,7 +66,7 @@ module.exports = {
       .dest("screenshot");
 
     pageres.run(function (err, items) {
-        if (err) return console.log(err);
+        if (err) return handleError(err);
         async.each(items, function(item, callback){
           var file = {};
           file.path = "screenshot/"+item.filename;
