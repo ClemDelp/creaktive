@@ -42,7 +42,7 @@
       <img src="img/icones/Attach.png" class="attachments"/>
     {{ } }}
     <span id="{{-model.id}}_joyride"></span>
-    <span id="{{-model.id}}" data-type="title" class="editTitle" >{{-model.title}}</span>
+    <span id="{{-model.id}}" data-type="title" class="editTitle">{{-model.title}}</span>
     <span id="{{-model.id}}" data-type="action" class="label round secondary ep icon">+c</span>
     <span id="{{-model.id}}" data-type="action" class="label round secondary ep2 icon">+k</span>
     <span id="{{-model.id}}" data-type="action" class="label round secondary ep3 icon"><img data-type="action" id="{{-model.id}}" title="mode" src="/img/icones/Edit.png"/></span>
@@ -52,11 +52,17 @@
 <script type="text/template" id="bbmap-top-element-template">
   <div class="large-4 medium-4 small-4 columns">
     <br>
-    
   </div>
 
   <div class="large-4 medium-4 small-4 columns">
     <center>
+      {{ if(mode == "visu"){ }}
+        <select id="visu_select_mode" class="large-9 medium-9 small-9">
+          <option value="children">Display all concepts childrens</option>
+          <option value="node">Display all knowledges linked to concept</option>
+          <option value="parent">Display all knowledges linked to branch</option>
+        </select>
+      {{ } }}
       {{ if(mode == "timeline"){ }}
         <h3>
           <a href="#" class="button tiny secondary round prev"><img title="back" src="/img/icones/Arrowhead-Left-24.png"/></a>
@@ -87,7 +93,7 @@
     <div style="float:right">
       <a href="#" class="tiny round button secondary zoomin"><img title="zoom-out" src="/img/icones/Zoom-Out-24.png"/></a>
       <a href="#" class="tiny round button secondary zoomout"><img title="zoom-in" src="/img/icones/Zoom-In-24.png"/></a>
-      <small id="zoom_val"></small>
+      <small style="display:none" id="zoom_val"></small>
     </div>
   </div>
 

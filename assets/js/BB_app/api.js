@@ -59,5 +59,68 @@ var api = {
       screenCentroid.height = windowHeight;
       // console.log("Screen centroid : ",screenCentroid);
       return screenCentroid;
-  }
+  },
+  //////////////////////////////
+  // API BBMAP
+  //////////////////////////////
+  getKnowledgesLinkedToConcept : function(links,knowledges,concept){
+    // links have to be a collection a link model
+    // knowledges have to be a collection a knowledge model
+    // concept have to be a model
+    var knowledgesLinked = [];
+    var ckLinks = api.getCKLinksByModelId(links,concept.get('id'));
+    ckLinks.forEach(function(link){
+      knowledgesLinked = _.union(knowledgesLinked, knowledges.get(link.get('source')))
+      knowledgesLinked = _.union(knowledgesLinked, knowledges.get(link.get('target')))
+    });
+    return knowledgesLinked;
+  },
+  getConceptsLinkedToKnowledge : function(links,concepts,knowledge){
+    // links have to be a collection a link model
+    // concepts have to be a collection a concept model
+    // knowledge have to be a model
+    var conceptsLinked = [];
+    var ckLinks = api.getCKLinksByModelId(links,knowledge.get('id'));
+    ckLinks.forEach(function(link){
+      conceptsLinked = _.union(conceptsLinked, knowledges.get(link.get('source')))
+      conceptsLinked = _.union(conceptsLinked, knowledges.get(link.get('target')))
+    });
+    return conceptsLinked;
+  },
+  getCKLinksByModelId : function(links,id){
+    // links have to be a collection a link model
+    var ckLinks = [];
+    ckLinks = _.union(ckLinks, links.where({source : id}));
+    ckLinks = _.union(ckLinks, links.where({target : id}));
+    return ckLinks;
+  },
+  //////////////////////////////
+  // API Tree manipulation
+  //////////////////////////////
+  getTreeParentNodes : function(currentNode,tree){
+    // tree have to be a collection of node/model with each an id_father attribute reference to a node father
+    // node have to be a model with an id_father attribute reference to a node father
+    var parents = [];
+    
+    if(currentNode.get('id_father')){
+      tree.each(function(node){
+        //console.log("current node ",currentNode.get('id_father')," - node ",node.get('id'))
+        if(currentNode.get('id_father') == node.get('id')){
+          parents.unshift(node);
+          currentNode = node
+          parents = _.union(parents, api.getTreeParentNodes(currentNode,tree))
+        }
+      });
+    }
+    
+    // return all parent nodes from a branch node
+    return parents;
+  },
+  getTreeChildrenNodes : function(node,tree){
+    // tree have to be a collection of node/model with each an id_father attribute reference to a node father
+    // node have to be a model with an id_father attribute reference to a node father
+    var childrens = [];
+    // return all children nodes from a parent node
+    return childrens;
+  },
 }

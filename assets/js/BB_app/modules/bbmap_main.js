@@ -63,6 +63,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.color              = "gray";
         this.cursorX            = 0;
         this.cursorY            = 0;
+        this.visualMode         = "children"; // children/node/parent respectivly display childrens concept/ parents concepts + knowledges associate / knowledges associate to concept
         ////////////////////////////////
         // Timeline & history parameter
         this.timeline_pos       = 0;
@@ -128,7 +129,7 @@ bbmap.Views.Main = Backbone.View.extend({
         // });
     },
     events : {
-        "change #modeSelection" : "setMode",
+        "change #visu_select_mode" : "setVisualMode",
         "change #filterSelection" : "setFilter",
         "mouseup .dropC" : "newConceptUnlinked",
         "mouseup .dropK" : "newKnowledgeUnlinked",
@@ -331,6 +332,11 @@ bbmap.Views.Main = Backbone.View.extend({
         this.filter = $(e.target).val();
         this.render();
     },
+    setVisualMode : function(e){
+        e.preventDefault();
+        this.visualMode = $( "#visu_select_mode option:selected").val();
+        console.log('visual mode set to ',this.visualMode);
+    },
     /////////////////////////////////////////
     // Downdloadimage
     /////////////////////////////////////////
@@ -511,11 +517,11 @@ bbmap.Views.Main = Backbone.View.extend({
     // LastModel actions
     /////////////////////////////////////////
     updateLastModelTitle : function(title){
-        // if(title == ""){
-        //     this.nodes_views[this.lastModel.get('id')].removeNode();
-        // }else{
+        if(title == ""){
+            this.nodes_views[this.lastModel.get('id')].removeNode();
+        }else{
             this.lastModel.save({title:title});
-        // }
+        }
     },
     setLastModel : function(model,from){
         this.lastModel = model;
@@ -725,14 +731,10 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Hover bulle effect
     /////////////////////////////////////////
-    showDependances : function(e){
-        e.preventDefault();
-        var id = e.target.id;
-        this.selectBulle(id);
-    },
     showIconConcept : function(e){
         e.preventDefault();
         var id = e.target.id;
+        if(this.mode == "edit") $("#"+id+" .icon.sup").show();    
         if(e.target.getAttribute("data-type") == "title"){
             this.setLastModel(this.concepts.get(id),'showIconConcept')
             this.$(".icon").hide();
@@ -742,6 +744,7 @@ bbmap.Views.Main = Backbone.View.extend({
     showIconPoche : function(e){
         e.preventDefault();
         var id = e.target.id;
+        if(this.mode == "edit") $("#"+id+" .icon.sup").show();
         if(e.target.getAttribute("data-type") == "title"){
             this.setLastModel(this.poches.get(id),'showIconPoche');
             this.$(".icon").hide();
@@ -751,11 +754,11 @@ bbmap.Views.Main = Backbone.View.extend({
                 $("#"+id+" .ep2").show();  
             }
         }
-        
     },
     showIconKnowledge : function(e){
         e.preventDefault();
         var id = e.target.id;
+        if(this.mode == "edit") $("#"+id+" .icon.sup").show();
         if(e.target.getAttribute("data-type") == "title"){
             this.setLastModel(this.knowledges.get(id),'showIconKnowledge');
             this.$(".icon").hide();
@@ -772,13 +775,48 @@ bbmap.Views.Main = Backbone.View.extend({
         // if(this.mode == "edit") this.$(".icon").hide();
         this.unselectBulle(id);
     },
+    showDependances : function(e){
+        e.preventDefault();
+        var id = e.target.id;
+        this.selectBulle(id); 
+    },
     selectBulle : function(id){
-        var conceptsList = this.concepts.where({id_father : id});
-        $("#"+id).css({border:'0.2em solid green',color:'green'});
-        conceptsList.forEach(function(concept){
-            $("#"+concept.get('id')).css({border:'0.2em solid green',color:'green'});
-            bbmap.views.main.selectBulle(concept.get('id'));
+        var conceptHovered = bbmap.views.main.concepts.get(id);
+        var conceptsToSelect = [conceptHovered];
+        var knowledgesLinkedToConcept = api.getKnowledgesLinkedToConcept(bbmap.views.main.links,bbmap.views.main.knowledges,conceptHovered);
+
+        var knowledgesToSelect = [];
+        var nodesToSelect = [];
+        var ckLinks = [];
+
+        if(this.visualMode == "children"){
+            var conceptsList = this.concepts.where({id_father : id});
+            $("#"+id).css({border:'0.2em solid green',color:'green'});
+            conceptsList.forEach(function(concept){
+                $("#"+concept.get('id')).css({border:'0.2em solid green',color:'green'});
+                bbmap.views.main.selectBulle(concept.get('id'));
+            });
+        }
+        else if(this.visualMode == "parent"){
+            // add concepts nodes
+            //console.log("eee", api.getTreeParentNodes(conceptHovered,bbmap.views.main.concepts))
+            conceptsToSelect = _.union(conceptsToSelect,api.getTreeParentNodes(conceptHovered,bbmap.views.main.concepts));
+            // add knowledges linked
+            conceptsToSelect.forEach(function(concept){
+                knowledgesToSelect = _.union(knowledgesToSelect, api.getKnowledgesLinkedToConcept(bbmap.views.main.links,bbmap.views.main.knowledges,concept));
+            });
+        }
+        else if(this.visualMode == "node"){
+
+        }
+        nodesToSelect =_.compact(_.union(conceptsToSelect,knowledgesToSelect));
+        this.displayNodesSelected(nodesToSelect)
+    },
+    displayNodesSelected : function(nodesToSelect){
+        nodesToSelect.forEach(function(node){
+            console.log(node.get('title'))
         });
+        console.log("=============")
     },
     unselectBulle : function(id){
         var conceptsList = this.concepts.where({id_father : id})
@@ -846,7 +884,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var Data = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()); // coordonnée du barycentre des données
         var Screen = api.getScreenCentroid(); // coordonnée du barycentre de l'ecran
         var zoom = bbmap.zoom.get('val');
-        var k = 1.5;
+        var k = 2; // To manage the offset between screen and nodes
         if(Data.width>Data.height){
             // width > height
             if(Data.width>Screen.width){

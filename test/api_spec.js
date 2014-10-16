@@ -16,7 +16,9 @@ describe('bbmap api test', function(){
         expect(api.getJsonSize(json_1)).toBe(2);
         expect(api.getJsonSize(json_2)).toBe(4);
     });
-
+    //////////////////////////////
+    // API BBMAP
+    //////////////////////////////
     it('getMapCentroid', function(){
         var map_1 = {'width':0,'height':0};
         var map_2 = {'width':50,'height':50};
@@ -37,5 +39,29 @@ describe('bbmap api test', function(){
         var point_5 = {'left':12,'top':56};
 
         expect(api.getXYTranslationBtwTwoPoints(point_1,point_2)).toEqual({"y":3,"x":2});
+    });
+    //////////////////////////////
+    // API BBMAP
+    //////////////////////////////
+    it('getKnowledgesLinkedToConcept', function(){
+
+    });
+
+    it('getConceptsLinkedToKnowledge', function(){
+
+    });
+
+    it('getCKLinksByModelId', function(){
+
+    });
+    //////////////////////////////
+    // API Tree manipulation
+    //////////////////////////////
+    it('getTreeParentNodes', function(){
+
+    });
+   
+    it('getTreeChildrenNodes', function(){
+   
     });
 });
