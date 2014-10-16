@@ -63,13 +63,13 @@ module.exports = {
         filename : req.session.currentProject.id + ".png"
       })
       .src(url, ['2560x1440'])
-      .dest("screenshot");
+      .dest(".tmp");
 
     pageres.run(function (err, items) {
-        if (err) return handleError(err);
+        if (err) return console.log(err);
         async.each(items, function(item, callback){
           var file = {};
-          file.path = "screenshot/"+item.filename;
+          file.path = ".tmp/"+item.filename;
           file.name = item.filename;
           S3Service.pushFile(file, function(err, file){
             if(err) return callback(err);
