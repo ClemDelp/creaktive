@@ -45,7 +45,7 @@ module.exports = {
       url = req.baseUrl + "/bbmap?projectId="+req.session.currentProject.id;
       domain = "localhost"
     }else{
-       url = "http://"+req.get("host")+ "/bbmap?projectId="+req.session.currentProject.id;
+       url = "https://"+req.get("host")+ "/bbmap?projectId="+req.session.currentProject.id;
        domain = req.get("host")
     }
 
