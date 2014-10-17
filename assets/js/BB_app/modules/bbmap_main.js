@@ -184,12 +184,12 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // LocalHistory gestion
     /////////////////////////////////////////
-    displayHistoric : function(){
-        console.log('history pos : ',this.history_pos,' - sens : ',this.sens)
-        this.localHistory.each(function(h){
-            console.log(h)           
-        })
-    },
+    // displayHistoric : function(){
+        // console.log('history pos : ',this.history_pos,' - sens : ',this.sens)
+    //     this.localHistory.each(function(h){
+    //         console.log(h)           
+    //     })
+    // },
     updateLocalHistory : function(model,from){
         if((model.get('from').id == global.models.current_user.get('id'))&&(this.flag == "acceptLastNotif")){
             if(this.sens != "init"){
@@ -802,10 +802,10 @@ bbmap.Views.Main = Backbone.View.extend({
         });
     },
     displayNodesSelected : function(nodesToSelect){
-        nodesToSelect.forEach(function(node){
-            console.log(node.get('title'))
-        });
-        console.log("=============")
+        // nodesToSelect.forEach(function(node){
+        //     console.log(node.get('title'))
+        // });
+        // console.log("=============")
     },
     /////////////////////////////////////////
     // Reset

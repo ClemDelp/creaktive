@@ -41,26 +41,28 @@ activitiesList.Views.Main = Backbone.View.extend({
       e.preventDefault();
       _this = this;
       this.activity_size = this.activity_size + 10;
-      socket.post("/notification/getmore", {project_id : this.model.id, limit:this.activity_size}, function(activities){
+      this.render();
 
-        $(_this.el).empty();
-        
-        if(_this.news_notifs.length != 0){
-          $(_this.el).append(_this.template({
-            model       : _this.model.toJSON(),
-            news_notifs : _this.news_notifs.toJSON(),
-          }));
-        }
+      // socket.post("/notification/getmore", {project_id : this.model.id, limit:this.activity_size}, function(activities){
 
-        if(_this.model.get('type') == 'project'){
-          $(_this.el).append(_this.template_activityLog({
-            model         : _this.model.toJSON(),
-            notifications : activities
-          }))
-        }
+      //   $(_this.el).empty();
         
-        return this;
-      })
+      //   if(_this.news_notifs.length != 0){
+      //     $(_this.el).append(_this.template({
+      //       model       : _this.model.toJSON(),
+      //       news_notifs : _this.news_notifs.toJSON(),
+      //     }));
+      //   }
+
+      //   if(_this.model.get('type') == 'project'){
+      //     $(_this.el).append(_this.template_activityLog({
+      //       model         : _this.model.toJSON(),
+      //       notifications : activities
+      //     }))
+      //   }
+        
+      //   return this;
+      // })
     },
     globalValidation : function(e){
         e.preventDefault();
@@ -101,7 +103,7 @@ activitiesList.Views.Main = Backbone.View.extend({
         // Init
         
         this.news_notifs     = this.models_notifs[this.model.get('id')].news;
-        this.activityLog     = this.models_notifs[this.model.get('id')].read;
+        this.activityLog     = this.models_notifs[this.model.get('id')].read//.slice(0,this.activity_size);
         //this.read_notifs     = this.models_notifs[this.model.get('id')].read;
         $(this.el).empty();
         _this = this;
@@ -116,10 +118,10 @@ activitiesList.Views.Main = Backbone.View.extend({
 
         if(this.model.get('type') == 'project'){
           if(this.activityLog.length != 0){
-                      $(this.el).append(this.template_activityLog({
-            model         : this.model.toJSON(),
-            notifications : this.activityLog.toJSON()
-          }))
+            $(this.el).append(this.template_activityLog({
+              model         : this.model.toJSON(),
+              notifications : this.activityLog.toJSON()
+            }))
           }
 
         }

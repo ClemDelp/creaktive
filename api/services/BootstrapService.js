@@ -18,7 +18,6 @@ module.exports = {
         read : req.session.user.id,
       })
       .sort('comparator DESC')
-      .limit(10)
       .done(function(err,rnotifications){
         if(err) res.send(err);
         read_notifications = _.groupBy(rnotifications, "project_id");

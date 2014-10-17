@@ -13,7 +13,6 @@
     upload : function(req,res){   
        S3Service.pushFile(req.files[0], function(err, data){
             if(err) console.log(err);
-            console.log(typeof data)
             res.send({amz_id : data})
         });
     },

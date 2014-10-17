@@ -74,7 +74,7 @@ module.exports = {
           S3Service.pushFile(file, function(err, file){
             if(err) return callback(err);
             // Ajout de l'image au projet
-            res.sendfile(file);
+            //res.sendfile(file);
             Project.update({id : req.session.currentProject.id}, {image : file}, function(err, projects){
               if(err) return  callback(err);
             })
