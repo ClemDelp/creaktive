@@ -78,8 +78,19 @@ body{
 	max-width: 10em;
 }
 
+.window.selected {
+    border:2px solid red;
+    box-shadow: 2px 2px 19px #444;
+   -o-box-shadow: 2px 2px 19px #444;
+   -webkit-box-shadow: 2px 2px 19px #444;
+   -moz-box-shadow: 2px 2px 19px #fff;
+    opacity:0.9;
+    filter:alpha(opacity=90);
+}
+
 /** HOVER EFFECTS **/
-.chart-demo .window.knowledge:hover, .chart-demo .window.knowledge._jsPlumb_source_hover, .chart-demo .window.knowledge._jsPlumb_target_hover {
+
+/*.chart-demo .window.knowledge:hover, .chart-demo .window.knowledge._jsPlumb_source_hover, .chart-demo .window.knowledge._jsPlumb_target_hover {
     border:0.2em solid blue;
     color:blue;
 }
@@ -92,7 +103,7 @@ body{
 .chart-demo .window.poche:hover, .chart-demo .window.poche._jsPlumb_source_hover, .chart-demo .window.poche._jsPlumb_target_hover {
     border:0.2em solid orange;
     color:orange;
-}
+}*/
 
 /*.ep {
 	float:right;
@@ -208,4 +219,5 @@ body{
 	color:white;
 }
 
-.chart-demo .knowledge.dragHover, .chart-demo .concept.dragHover { border:2px solid orange; }
+/*.chart-demo .knowledge.dragHover, .chart-demo .concept.dragHover { border:2px solid orange; }
+*/
