@@ -58,9 +58,9 @@
     <center>
       {{ if(mode == "visu"){ }}
         <select id="visu_select_mode" class="large-9 medium-9 small-9">
-          <option value="children">Display all concepts childrens</option>
-          <option value="node">Display all knowledges linked to concept</option>
-          <option value="parent">Display all knowledges linked to branch</option>
+          <option value="children">Display all Concepts childrens & Knowledges linked</option>
+          <option value="parent">Display all Concepts parents & knowledges linked</option>
+          <option value="node">Display Concept & knowledges linked</option>
         </select>
       {{ } }}
       {{ if(mode == "timeline"){ }}
@@ -93,6 +93,7 @@
     <div style="float:right">
       <a href="#" class="tiny round button secondary zoomin"><img title="zoom-out" src="/img/icones/Zoom-Out-24.png"/></a>
       <a href="#" class="tiny round button secondary zoomout"><img title="zoom-in" src="/img/icones/Zoom-In-24.png"/></a>
+      <a href="#" class="tiny round button secondary fullscreen"><img title="full-screen" src="/img/icones/Full-Screen-Expand-24.png"/></a>
       <small style="display:none" id="zoom_val"></small>
     </div>
   </div>

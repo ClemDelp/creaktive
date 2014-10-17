@@ -137,6 +137,7 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .ckOperator" : "setCKOperator",
         "click .zoomin" : "zoomin",
         "click .zoomout" : "zoomout",
+        "click .fullscreen" : "putInFullScreen",
         "click .reset" : "resetToCentroid",
         "click .window.poche" : "showIconPoche", 
         "click .window.knowledge" : "showIconKnowledge", 
@@ -638,6 +639,11 @@ bbmap.Views.Main = Backbone.View.extend({
         var zoomParameters = this.getZoomParameters(ref1,ref2);
         if(!from) this.targetToCursor('out',zoomParameters);
         else this.focusZoom(zoomParameters);
+    },
+    putInFullScreen : function(e){
+        e.preventDefault();
+        if (screenfull.enabled) screenfull.request();
+        
     },
     getOffsetRef : function(){
         var ref = {'top':0, 'left':0}
@@ -1452,11 +1458,6 @@ bbmap.Views.Main = Backbone.View.extend({
             this.init = false; 
             this.intelligentRestructuring();
         }
-
-        
-        
-        
-
 
         return this;
     }
