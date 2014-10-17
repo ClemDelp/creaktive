@@ -116,10 +116,18 @@ var api = {
     // return all parent nodes from a branch node
     return parents;
   },
-  getTreeChildrenNodes : function(node,tree){
+  getTreeChildrenNodes : function(currentNode,tree){
     // tree have to be a collection of node/model with each an id_father attribute reference to a node father
     // node have to be a model with an id_father attribute reference to a node father
     var childrens = [];
+    var nodes = [];
+    if(currentNode.get('id_father')){
+      nodes = tree.where({id_father : currentNode.get('id')});
+      childrens = _.union(childrens, nodes)
+      nodes.forEach(function(node){
+        childrens = _.union(childrens, api.getTreeChildrenNodes(node,tree))
+      });
+    }
     // return all children nodes from a parent node
     return childrens;
   },
