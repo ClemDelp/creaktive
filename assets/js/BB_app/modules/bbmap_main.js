@@ -145,7 +145,7 @@ bbmap.Views.Main = Backbone.View.extend({
         "mouseenter .window.concept" : "showDependances", 
         "click .window.concept" : "showIconConcept", 
         "click .structureSubTree" : "structureTree",
-        "mouseleave .window" : "hideIcon", 
+        "mouseleave .window" : "hideDependances", 
         //"click .closeEditor" : "hideEditor",
         "click #okjoyride" : "updateLastModelTitle",
         "click .screenshot" : "screenshot",
@@ -771,11 +771,9 @@ bbmap.Views.Main = Backbone.View.extend({
             }
         }
     },
-    hideIcon : function(e){
+    hideDependances : function(e){
         e.preventDefault();
-        var id = e.target.id;
-        // if(this.mode == "edit") this.$(".icon").hide();
-        this.unselectBulle(id);
+        $('.selected').removeClass('selected');
     },
     showDependances : function(e){
         e.preventDefault();
@@ -784,49 +782,30 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     selectBulle : function(id){
         var conceptHovered = bbmap.views.main.concepts.get(id);
-        var conceptsToSelect = [conceptHovered];
-        var knowledgesLinkedToConcept = api.getKnowledgesLinkedToConcept(bbmap.views.main.links,bbmap.views.main.knowledges,conceptHovered);
-
         var knowledgesToSelect = [];
         var nodesToSelect = [];
         var ckLinks = [];
-
-        if(this.visualMode == "children"){
-            var conceptsList = this.concepts.where({id_father : id});
-            $("#"+id).css({border:'0.2em solid green',color:'green'});
-            conceptsList.forEach(function(concept){
-                $("#"+concept.get('id')).css({border:'0.2em solid green',color:'green'});
-                bbmap.views.main.selectBulle(concept.get('id'));
-            });
-        }
-        else if(this.visualMode == "parent"){
-            // add concepts nodes
-            //console.log("eee", api.getTreeParentNodes(conceptHovered,bbmap.views.main.concepts))
-            conceptsToSelect = _.union(conceptsToSelect,api.getTreeParentNodes(conceptHovered,bbmap.views.main.concepts));
-            // add knowledges linked
-            conceptsToSelect.forEach(function(concept){
-                knowledgesToSelect = _.union(knowledgesToSelect, api.getKnowledgesLinkedToConcept(bbmap.views.main.links,bbmap.views.main.knowledges,concept));
-            });
-        }
-        else if(this.visualMode == "node"){
-
-        }
+        // add concepts nodes
+        var conceptsToSelect = [conceptHovered];
+        if(this.visualMode == "children") conceptsToSelect = _.union(conceptsToSelect,api.getTreeChildrenNodes(conceptHovered,bbmap.views.main.concepts));
+        else if(this.visualMode == "parent") conceptsToSelect = _.union(conceptsToSelect,api.getTreeParentNodes(conceptHovered,bbmap.views.main.concepts));
+        // add knowledges linked
+        var knowledgesLinkedToConcept = api.getKnowledgesLinkedToConcept(bbmap.views.main.links,bbmap.views.main.knowledges,conceptHovered);
+        conceptsToSelect.forEach(function(concept){
+            knowledgesToSelect = _.union(knowledgesToSelect, api.getKnowledgesLinkedToConcept(bbmap.views.main.links,bbmap.views.main.knowledges,concept));
+        });
+        // Compact to remove error
         nodesToSelect =_.compact(_.union(conceptsToSelect,knowledgesToSelect));
-        this.displayNodesSelected(nodesToSelect)
+        // this.displayNodesSelected(nodesToSelect)
+        nodesToSelect.forEach(function(node){
+            $('#'+node.get('id')).addClass('selected');
+        });
     },
     displayNodesSelected : function(nodesToSelect){
         nodesToSelect.forEach(function(node){
             console.log(node.get('title'))
         });
         console.log("=============")
-    },
-    unselectBulle : function(id){
-        var conceptsList = this.concepts.where({id_father : id})
-        bbmap.views.main.nodes_views[id].applyStyle();
-        conceptsList.forEach(function(concept){
-            bbmap.views.main.nodes_views[concept.get('id')].applyStyle();
-            bbmap.views.main.unselectBulle(concept.get('id'));
-        });
     },
     /////////////////////////////////////////
     // Reset
