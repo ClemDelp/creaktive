@@ -21,7 +21,7 @@
     "node-xss": "0.0.1",
     "nodemailer": "~0.6.0",
     "optimist": "0.3.4",
-    "pageres": "*",
+    "pageres": "^1.0.0",
     "passport": "*",
     "passport-local": "*",
     "rimraf": "~2.2.6",

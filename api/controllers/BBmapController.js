@@ -42,16 +42,16 @@ module.exports = {
     var url = "";
     var domain =  "";
     if(req.get('host') == "localhost:1337"){
-      url = req.baseUrl + "/bbmap?projectId="+req.session.currentProject.id+"#visu";
+      url = req.baseUrl + "/bbmap?projectId="+req.session.currentProject.id;
       domain = "localhost"
     }else{
-       url = "https://"+req.get("host")+ "/bbmap?projectId="+req.session.currentProject.id+"#visu";
+       url = "http://"+req.get("host")+ "/bbmap?projectId="+req.session.currentProject.id;
        domain = req.get("host")
     }
 
 
     console.log(url);
-    console.log(domain);
+
 
     var cookie = "sails.sid="+req.signedCookies["sails.sid"]+";domain="+domain+";path=/";
     console.log(cookie)

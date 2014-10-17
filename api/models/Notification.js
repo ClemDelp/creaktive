@@ -18,6 +18,7 @@
   },
 
   objectCreated : function(req,res, object, to){
+    
     if(req.body.action.length == 0) return;
     Notification.create({
   		id : IdService.guid(),
@@ -38,10 +39,11 @@
   },
 
   objectUpdated : function(req,res, object, to, old){
+
     var content ="";
 
-    // if(req.body.action.length == 0) return;
-    if(req.body.action.length == 0 || _.indexOf(req.body.action, "css") > -1) return;
+    if(req.body.action.length == 0) return;
+    if(_.indexOf(req.body.action, "css") > -1) content = object + " template updated: " + req.body.params.title;
     //if(_.indexOf(req.body.action, "top") > -1 || _.indexOf(req.body.action, "left") >-1) return;
     if(_.indexOf(req.body.action, "title") > -1) content = object + " title updated: " + req.body.params.title;
     if(_.indexOf(req.body.action, "attachment") > -1) content = "New document attached to : "+object + ": " + req.body.params.title
