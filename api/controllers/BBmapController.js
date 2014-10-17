@@ -60,7 +60,7 @@ module.exports = {
     var pageres = new Pageres({
         delay: 10, 
         cookies : [cookie],
-        filename : req.session.currentProject.id + ".png"
+        filename : req.session.currentProject.id
       })
       .src(url, ['2560x1440'])
       .dest(".tmp");

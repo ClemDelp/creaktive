@@ -10,11 +10,6 @@ bbmap.router = Backbone.Router.extend({
     },
     init: function() {if(bbmap.views.main.init == true) bbmap.views.main.setMode("visu");},
     visu: function() {
-        // Dès qu'on charge le mode visu, on prend un screenshot
-
-        // $.get("/bbmap/screenshot", function(data){
-        //     console.log(data);
-        // })
         bbmap.views.main.setMode("visu");
     },
     edit: function() {bbmap.views.main.setMode("edit");},
@@ -127,6 +122,13 @@ bbmap.Views.Main = Backbone.View.extend({
         //     bbmap.views.main.cursorX = event.pageX;
         //     bbmap.views.main.cursorY = event.pageY;
         // });
+
+        // Prend un screenshot quand on quitte bbmap
+        window.onbeforeunload = function (e) {
+            $.get("/bbmap/screenshot", function(data){
+                console.log(data);
+            })
+        };
     },
     events : {
         "change #visu_select_mode" : "setVisualMode",
