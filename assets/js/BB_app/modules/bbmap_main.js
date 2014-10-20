@@ -318,18 +318,14 @@ bbmap.Views.Main = Backbone.View.extend({
     // Modes & Filters
     /////////////////////////////////////////
     setMode : function(mode){
-        // e.preventDefault();
-        // this.mode = $(e.target).val();
         this.mode = mode;
-        if(this.mode != "edit"){
-            $('#cbp-spmenu-s1').hide('slow');
-            $('#showMenu').hide('slow');
-            if(this.isopen==true){
-                var menu = document.getElementById( 'cbp-spmenu-s1' );
-                classie.toggle( menu, 'cbp-spmenu-open' ); 
-                this.hideMenu();
-            }
-        } 
+        $('#cbp-spmenu-s1').hide('slow');
+        $('#showMenu').hide('slow');
+        if(this.isopen==true){
+            var menu = document.getElementById( 'cbp-spmenu-s1' );
+            classie.toggle( menu, 'cbp-spmenu-open' ); 
+            this.hideMenu();
+        }
         this.render();
     },
     setFilter : function(e){
@@ -754,28 +750,29 @@ bbmap.Views.Main = Backbone.View.extend({
         // Show the sup menu anyway
         //if(this.mode == "edit") $("#"+id+" .icon.sup").show(); 
         if(e.target.getAttribute("data-type") != "action"){
-            
             // set last model
-            if(this.mode == "edit"){
-                if($(el).hasClass('concept') == true){
-                    this.updateEditor(this.concepts.get(id));
-                    this.setLastModel(this.concepts.get(id));
-                    $("#"+id+" .icon").show();
-                } 
-                else if($(el).hasClass('knowledge') == true){
-                    this.updateEditor(this.knowledges.get(id));
-                    this.setLastModel(this.knowledges.get(id));
+            if($(el).hasClass('concept') == true){
+                this.updateEditor(this.concepts.get(id));
+                this.setLastModel(this.concepts.get(id));
+                if(this.mode == "edit") $("#"+id+" .icon").show();
+            } 
+            else if($(el).hasClass('knowledge') == true){
+                this.updateEditor(this.knowledges.get(id));
+                this.setLastModel(this.knowledges.get(id));
+                if(this.mode == "edit") {
                     $("#"+id+" .sup").show();  
                     $("#"+id+" .ep3").show();  
                     $("#"+id+" .ep").show();
-                } 
-                else if($(el).hasClass('poche') == true){
-                    this.updateEditor(this.poches.get(id));
-                    this.setLastModel(this.poches.get(id));
+                }
+            } 
+            else if($(el).hasClass('poche') == true){
+                this.updateEditor(this.poches.get(id));
+                this.setLastModel(this.poches.get(id));
+                if(this.mode == "edit"){ 
                     $("#"+id+" .sup").show();  
                     $("#"+id+" .ep3").show();
                     $("#"+id+" .ep2").show();
-                } 
+                }
             }
         }
     },
@@ -959,37 +956,6 @@ bbmap.Views.Main = Backbone.View.extend({
             view.setPosition(x/bbmap.zoom.get('val'),y/bbmap.zoom.get('val'),0,0,true,"restructuration");
         }
     },
-    // getScreenCentroid : function(){
-    //     var screenCentroid = {};
-    //     var windowWidth = $('body').width();
-    //     var windowHeight = $('body').height();
-    //     // Screen centroid calcul
-    //     screenCentroid.top = windowHeight/2;
-    //     screenCentroid.left = windowWidth/2;
-    //     screenCentroid.width = windowWidth;
-    //     screenCentroid.height = windowHeight;
-    //     return screenCentroid;
-    // },
-    // getDataCentroid : function(){
-    //     var topMax = 0;
-    //     var topMin = 1000000000;
-    //     var leftMax = 0;
-    //     var leftMin = 1000000000;
-    //     var dataCentroid = {};
-    //     var views = bbmap.views.main.nodes_views;
-    //     for (var id in views){
-    //         var position = views[id].getPosition();
-    //         if(position.top > topMax) topMax = position.top;
-    //         if(position.top < topMin) topMin = position.top;
-    //         if(position.left > leftMax) leftMax = position.left;
-    //         if(position.left < leftMin) leftMin = position.left;
-    //     }
-    //     dataCentroid.top = ((topMax-topMin)/2)+topMin;
-    //     dataCentroid.left = ((leftMax-leftMin)/2)+leftMin;
-    //     dataCentroid.width = leftMax - leftMin;
-    //     dataCentroid.height = topMax - topMin;
-    //     return dataCentroid;
-    // },
     getCoordinatesOfNodesViews : function(){
         var coordinates = [];
         // console.log("size : ",_.toArray(bbmap.views.main.nodes_views).length)

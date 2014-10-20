@@ -3,7 +3,7 @@
 /////////////////////////////////////////////////
 bbmap.Views.Node = Backbone.View.extend({
     initialize : function(json){
-        _.bindAll(this, 'render','savePosition','editTitle','addEndpoint','addLink','makeTarget');
+        _.bindAll(this, 'render','savePosition','addEndpoint','addLink','makeTarget');
         // Variables
         this.model = json.model;
         // Events
@@ -29,7 +29,6 @@ bbmap.Views.Node = Backbone.View.extend({
         this.template_bulle = _.template($('#bbmap-bulle-template').html());
     },
     events : {
-        // "click .editTitle" : "editTitle",
         "click .sup" : "removeModel",
         "click .ep" : "addConceptChild",
         "click .ep2" : "addKnowledgeChild",
@@ -277,21 +276,13 @@ bbmap.Views.Node = Backbone.View.extend({
             //console.log(model_id,father_id)
             if((conn.targetId == model_id)&&(conn.sourceId == father_id))conn.setVisible(false); // bbmap.views.main.instance.detach({source:source, target:target, fireEvent:false});
             if((conn.targetId == father_id)&&(conn.sourceId == model_id))conn.setVisible(false); // bbmap.views.main.instance.detach({source:source, target:target, fireEvent:false});
-        })
+        });
     },
     addSimpleLink : function(father_id){
         // Remove link in both sens beetween this el and his id_father
         var model_id = this.model.get('id')
         bbmap.views.main.instance.connect({uuids:[father_id+"-bottom", model_id+"-top" ]}); 
     },
-    /////////////////////////////////////////
-    // 
-    /////////////////////////////////////////
-    // editTitle : function(e){
-    //     e.preventDefault();
-    //     bbmap.views.main.updateEditor(this.model);
-    //     //bbmap.views.editBox.openEditBox(this.model.get('id'),this.model.get('type'));
-    // },
     addEndpoint : function(){
         // Add endpoints
         var is_source = true;
