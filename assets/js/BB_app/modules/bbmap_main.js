@@ -127,7 +127,7 @@ bbmap.Views.Main = Backbone.View.extend({
         window.onbeforeunload = function (e) {
             $.get("/bbmap/screenshot", function(data){
                 console.log(data);
-            })
+            });
         };
     },
     events : {
@@ -141,12 +141,14 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .zoomout" : "zoomout",
         "click .fullscreen" : "putInFullScreen",
         "click .reset" : "resetToCentroid",
-        "click .window.poche" : "showIconPoche", 
-        "click .window.knowledge" : "showIconKnowledge", 
+        "click .window" : "showIcon", 
+        // "click .window.poche" : "showIcon", 
+        // "click .window.knowledge" : "showIcon",
+        // "click .window.concept" : "showIcon", 
+
         "mouseenter .window.concept" : "showDependances", 
-        "click .window.concept" : "showIconConcept", 
-        "click .structureSubTree" : "structureTree",
         "mouseleave .window" : "hideDependances", 
+        "click .structureSubTree" : "structureTree",
         //"click .closeEditor" : "hideEditor",
         "click #okjoyride" : "updateLastModelTitle",
         "click .screenshot" : "screenshot",
@@ -526,7 +528,7 @@ bbmap.Views.Main = Backbone.View.extend({
             this.lastModel.save({title:title});
         }
     },
-    setLastModel : function(model,from){
+    setLastModel : function(model){
         this.lastModel = model;
     },
     /////////////////////////////////////////
@@ -743,44 +745,78 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Hover bulle effect
     /////////////////////////////////////////
-    showIconConcept : function(e){
-        e.preventDefault();
+    showIcon : function(e){
+        //e.preventDefault();
+        var el = e.currentTarget;
         var id = e.target.id;
-        if(this.mode == "edit") $("#"+id+" .icon.sup").show();    
-        if(e.target.getAttribute("data-type") == "title"){
-            this.setLastModel(this.concepts.get(id),'showIconConcept')
-            this.$(".icon").hide();
-            if(this.mode == "edit") $("#"+id+" .icon").show();    
-        }
-    },
-    showIconPoche : function(e){
-        e.preventDefault();
-        var id = e.target.id;
-        if(this.mode == "edit") $("#"+id+" .icon.sup").show();
-        if(e.target.getAttribute("data-type") == "title"){
-            this.setLastModel(this.poches.get(id),'showIconPoche');
-            this.$(".icon").hide();
+        // close all icones
+        this.$(".icon").hide();
+        // Show the sup menu anyway
+        //if(this.mode == "edit") $("#"+id+" .icon.sup").show(); 
+        if(e.target.getAttribute("data-type") != "action"){
+            
+            // set last model
             if(this.mode == "edit"){
-                $("#"+id+" .sup").show();  
-                $("#"+id+" .ep3").show();  
-                $("#"+id+" .ep2").show();  
+                if($(el).hasClass('concept') == true){
+                    this.updateEditor(this.concepts.get(id));
+                    this.setLastModel(this.concepts.get(id));
+                    $("#"+id+" .icon").show();
+                } 
+                else if($(el).hasClass('knowledge') == true){
+                    this.updateEditor(this.knowledges.get(id));
+                    this.setLastModel(this.knowledges.get(id));
+                    $("#"+id+" .sup").show();  
+                    $("#"+id+" .ep3").show();  
+                    $("#"+id+" .ep").show();
+                } 
+                else if($(el).hasClass('poche') == true){
+                    this.updateEditor(this.poches.get(id));
+                    this.setLastModel(this.poches.get(id));
+                    $("#"+id+" .sup").show();  
+                    $("#"+id+" .ep3").show();
+                    $("#"+id+" .ep2").show();
+                } 
             }
         }
     },
-    showIconKnowledge : function(e){
-        e.preventDefault();
-        var id = e.target.id;
-        if(this.mode == "edit") $("#"+id+" .icon.sup").show();
-        if(e.target.getAttribute("data-type") == "title"){
-            this.setLastModel(this.knowledges.get(id),'showIconKnowledge');
-            this.$(".icon").hide();
-            if(this.mode == "edit"){
-                $("#"+id+" .sup").show();  
-                $("#"+id+" .ep3").show();  
-                $("#"+id+" .ep").show();  
-            }
-        }
-    },
+    // showIconConcept : function(e){
+    //     e.preventDefault();
+    //     var id = e.target.id;
+    //     if(this.mode == "edit") $("#"+id+" .icon.sup").show();    
+    //     if(e.target.getAttribute("data-type") == "title"){
+    //         this.setLastModel(this.concepts.get(id),'showIconConcept')
+    //         this.$(".icon").hide();
+    //         if(this.mode == "edit") $("#"+id+" .icon").show();    
+    //     }
+    // },
+    // showIconPoche : function(e){
+    //     e.preventDefault();
+    //     var id = e.target.id;
+    //     if(this.mode == "edit") $("#"+id+" .icon.sup").show();
+    //     if(e.target.getAttribute("data-type") == "title"){
+    //         this.setLastModel(this.poches.get(id),'showIconPoche');
+    //         this.$(".icon").hide();
+    //         if(this.mode == "edit"){
+    //             $("#"+id+" .sup").show();  
+    //             $("#"+id+" .ep3").show();  
+    //             $("#"+id+" .ep2").show();  
+    //         }
+    //     }
+    // },
+    // showIconKnowledge : function(e){
+    //     e.preventDefault();
+    //     var id = e.target.id;
+    //     if(this.mode == "edit") $("#"+id+" .icon.sup").show();
+    //     if(e.target.getAttribute("data-type") == "title"){
+    //         this.setLastModel(this.knowledges.get(id),'showIconKnowledge');
+    //         this.$(".icon").hide();
+    //         if(this.mode == "edit"){
+    //             $("#"+id+" .sup").show();  
+    //             $("#"+id+" .ep3").show();  
+    //             $("#"+id+" .ep").show();  
+    //         }
+    //     }
+    // },
     hideDependances : function(e){
         e.preventDefault();
         $('.selected').removeClass('selected');

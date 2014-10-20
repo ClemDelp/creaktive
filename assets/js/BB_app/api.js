@@ -1,4 +1,7 @@
 var api = {
+  //////////////////////////////
+  // API UTILITIES
+  //////////////////////////////
   getJsonSize : function(json){
     var key, count = 0;
     for(key in json) {

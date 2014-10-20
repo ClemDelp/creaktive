@@ -86,7 +86,7 @@ templatesList.Views.Main = Backbone.View.extend({
         global.models.currentProject.get('templates').forEach(function(template){
             var childView = new templatesList.Views.Template({
                 tagName : "span",
-                mode : this.mode,
+                mode : _this.mode,
                 model:_this.model,
                 templates_collection : _this.templates_collection,
                 template : template

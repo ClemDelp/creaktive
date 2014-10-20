@@ -29,7 +29,7 @@ bbmap.Views.Node = Backbone.View.extend({
         this.template_bulle = _.template($('#bbmap-bulle-template').html());
     },
     events : {
-        "click .editTitle" : "editTitle",
+        // "click .editTitle" : "editTitle",
         "click .sup" : "removeModel",
         "click .ep" : "addConceptChild",
         "click .ep2" : "addKnowledgeChild",
@@ -287,11 +287,11 @@ bbmap.Views.Node = Backbone.View.extend({
     /////////////////////////////////////////
     // 
     /////////////////////////////////////////
-    editTitle : function(e){
-        e.preventDefault();
-        bbmap.views.main.updateEditor(this.model);
-        //bbmap.views.editBox.openEditBox(this.model.get('id'),this.model.get('type'));
-    },
+    // editTitle : function(e){
+    //     e.preventDefault();
+    //     bbmap.views.main.updateEditor(this.model);
+    //     //bbmap.views.editBox.openEditBox(this.model.get('id'),this.model.get('type'));
+    // },
     addEndpoint : function(){
         // Add endpoints
         var is_source = true;
