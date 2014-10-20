@@ -106,29 +106,10 @@
         // as soon as this file is loaded, connect automatically, 
         var socket = io.connect();
 
-        socket.on("message", function(msg){
-          console.log(msg)
+        socket.on("disconnect", function(msg){
+          alert("Connection with the server lost, please check your internet connection");
         });
 
-        socket.on("reconnect_error", function(msg){
-          console.log("reconnect_error");
-        })
-        socket.on("reconnect_failed", function(msg){
-          console.log("reconnect_failed");
-        })
-        socket.on("reconnect_attempt", function(msg){
-          console.log("reconnect_attempt");
-        })
-        socket.on("reconnecting", function(msg){
-          console.log("reconnecting");
-        })
-        socket.on("disconnect", function(msg){
-          console.log("disconnect");
-        })
-        socket.on("reconnect", function(msg){
-          console.log("reconnect");
-        })
-        
         socket.on('connect', function socketConnected() {
       
           socket.get("/auth/openChannels", function(data){

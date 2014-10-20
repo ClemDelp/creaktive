@@ -16,6 +16,7 @@ module.exports = {
   */
 
   find : function(req,res){
+    console.log("fetching project")
     var node0 = req.body.params.project;
     
     // On fetch les projets qui ne sont que des nodes
@@ -49,6 +50,7 @@ module.exports = {
   },
 
   create : function (req,res){
+    console.log("creating project")
     Project.create(req.body.params).done(function(err, project){
       if(err) res.send(err)
       res.send(project)
@@ -96,6 +98,7 @@ module.exports = {
   },
 
   update : function(req,res){
+    console.log("updating project")
   	Project.findOne(req.body.params.id).done(function(err, project){
   		if(err) res.send(err);
   		if(project){
@@ -148,6 +151,7 @@ module.exports = {
 
   
   destroy : function(req,res){
+    console.log('destroying project')
     var project_id = req.body.params.id
 		Project.findOne(project_id).done(function(err,project){
 		  if(err) console.log(err);
@@ -175,6 +179,7 @@ module.exports = {
   * @node_id : Id du node à charger
   */
   createFromNode : function(req,res){
+    console.log("Creating project from a backup")
     var node_id = req.body.node_id;
     var title = req.body.title;
     var content = req.body.content; 
@@ -189,6 +194,7 @@ module.exports = {
   * @node_id : Id du node à charger
   */
   loadNode : function(req,res){
+    console.log('Loading backup from node')
     var node_id = req.body.node_id;
 
     Project.findOne(req.session.currentProject.id).done(function(err, currentProject){
@@ -205,6 +211,7 @@ module.exports = {
   * @node_id : Id du node à supprimer
   */
   deleteBranch : function(req,res){
+    console.log("deleting backup")
     var node_id = req.body.node_id;
     Project.findOne(node_id).done(function(err, project){
       if(err) return res.send(err);
@@ -222,6 +229,7 @@ module.exports = {
   * @node_description : description de la sauvegarde
   */ 
   createNode : function(req,res){
+    console.log("creating backup");
     var id_father = req.body.id_father;
     var author = req.session.user;
     var node_name = req.body.node_name;

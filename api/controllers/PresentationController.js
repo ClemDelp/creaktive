@@ -18,6 +18,7 @@
 module.exports = {
 
   find : function (req,res){
+    console.log("fetching presentation")
     if(req.body.params.projectId){
       Presentation.find({
        project : req.session.currentProject.id
@@ -39,6 +40,7 @@ module.exports = {
    */
 
   create : function (req,res){
+    console.log("creating presentation")
   var s = req.body.params;
   s.project = req.session.currentProject.id
   Presentation.create(s).done(function(err, presentation){
@@ -52,6 +54,7 @@ module.exports = {
   },
 
   update : function(req, res){
+    console.log('updating presentation')
     Presentation.findOne(req.body.params.id).done(function(err, presentation){
       if(err) res.send(err);
       ///////////////////////
@@ -84,6 +87,7 @@ module.exports = {
   },
 
   destroy : function(req,res){
+    console.log("destroying presentation")
     Presentation.findOne(req.body.params.id).done(function(err,presentation){
       if(err) console.log(err);
       presentation.destroy(function(err){

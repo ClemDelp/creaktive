@@ -17,28 +17,9 @@
     var Pageres = require('pageres');
 
 module.exports = {
-    
-  
-   /**
-   * true : upload a new image for the project
-   * false : do not upload image
-   */
-   image : function(req,res){
-   		Project.findOne(req.session.currentProject.id).done(function(err,project){
-   			var last_update = new Date(project.updatedAt);
-   			var now = new Date();
-   			var diff = now-last_update;
-   			if(diff > 3600000){
-   				res.send(true)
-   			}
-   			else{
-   				res.send(false)
-   			}
-   		})
-
-	},
 
   screenshot : function(req,res){
+    console.log("Processing take screenshot")
     var url = "";
     var domain =  "";
     if(req.get('host') == "localhost:1337"){
@@ -49,14 +30,8 @@ module.exports = {
        domain = req.get("host")
     }
 
-
-    console.log(url);
-
-
     var cookie = "sails.sid="+req.signedCookies["sails.sid"]+";domain="+domain+";path=/";
-    console.log(cookie)
-    
-
+ 
     var pageres = new Pageres({
         delay: 10, 
         cookies : [cookie],
@@ -106,6 +81,7 @@ module.exports = {
   
 
   bbmapview : function(req,res){
+    console.log("Loading bbmap view")
     BootstrapService.bootstrapdata(req,res);
   },
 

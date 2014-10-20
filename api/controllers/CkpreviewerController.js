@@ -19,47 +19,9 @@
 
 module.exports = {
     
-  
-  /**
-   * Action blueprints:
-   *    `/ckpreviewer/create`
-   */
-   create: function (req, res) {
-    
-    // Send a JSON response
-    return res.json({
-      hello: 'world'
-    });
-  },
-
-
-  /**
-   * Action blueprints:
-   *    `/ckpreviewer/destroy`
-   */
-   destroy: function (req, res) {
-    
-    // Send a JSON response
-    return res.json({
-      hello: 'world'
-    });
-  },
-
-
-  /**
-   * Action blueprints:
-   *    `/ckpreviewer/find`
-   */
-   find: function (req, res) {
-    
-    // Send a JSON response
-    return res.json({
-      hello: 'world'
-    });
-  },
-
 
   ckpreviewerview : function(req,res){
+    console.log("Loading CK deliver (previewer ?) view")
     BootstrapService.bootstrapdata(req,res);
   },
 

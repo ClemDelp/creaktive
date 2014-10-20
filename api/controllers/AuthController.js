@@ -11,10 +11,12 @@ var xss = require('node-xss').clean;
 var AuthController = {
 
 	resetpassword : function(req,res){
+		console.log("Loading reset password view")
 		res.view();
 	},
 
 	processResetPassword : function(req,res){
+		console.log("processing reset password")
 		var key = ""
 		var url = "";
 

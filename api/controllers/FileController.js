@@ -56,7 +56,7 @@ module.exports = {
 
 
   export2pdf : function(req,res){
-
+    console.log('Processing export to pdf')
 
       var html =req.body.data;
       // var images = req.body.images

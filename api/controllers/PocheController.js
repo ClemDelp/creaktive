@@ -14,6 +14,7 @@
   */
 
   find : function (req,res){
+    console.log("fetching poche")
     if(req.session.currentProject){
       Poche.find({
        project : req.session.currentProject.id
@@ -30,6 +31,7 @@
 },
 
 update : function(req, res){
+  console.log("updating poche")
   Poche.findOne(req.body.params.id).done(function(err, poche){
     if(err) res.send(err);
     if(poche){
@@ -56,6 +58,7 @@ update : function(req, res){
 },
 
 destroy : function(req,res){
+  console.log('destroying poche')
   Poche.findOne(req.body.params.id).done(function(err,poche){
     if(err) console.log(err);
     req.socket.broadcast.to(req.session.currentProject.id).emit("poche:remove2", poche);

@@ -26,7 +26,7 @@ module.exports = {
 
   
   find : function (req,res){
-    
+    console.log("fetching notifications")
     if(req.body.params.projectId){
     Notification.find({
       project_id : req.session.currentProject.id
@@ -46,6 +46,7 @@ module.exports = {
   },
 
   create : function (req,res){
+    console.log("creating nottification")
     var c = req.body.params;
     c.project = req.session.currentProject.id;
 
@@ -57,6 +58,7 @@ module.exports = {
   },
 
   update : function(req, res){
+    console.log('updating notification')
     Notification.findOne(req.body.params.id).done(function(err, concept){
       if(err) res.send(err);
       if(concept){
@@ -79,6 +81,7 @@ module.exports = {
 
 
   destroy : function(req,res){
+    console.log('destroying notification')
     Notification.findOne(req.body.params.id).done(function(err,concept){
       if(err) console.log(err);
       concept.destroy(function(err){
@@ -89,6 +92,7 @@ module.exports = {
   },
 
   notificationview : function(req,res){
+    console.log("Loading notification view")
     BootstrapService.bootstrapmanager(req,res);
   },
 

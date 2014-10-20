@@ -14,7 +14,7 @@
   */
 
   find : function (req,res){
-
+    console.log("Fetching knowledge")
     if(req.session.currentProject){
 
       Knowledge.find({
@@ -35,6 +35,7 @@
   },
 
   update : function(req, res){
+    console.log("Updating knowledge")
   	Knowledge.findOne(req.body.params.id).done(function(err, knowledge){
   		if(err) res.send(err);
   		if(knowledge){
@@ -69,6 +70,7 @@
   },
 
   destroy : function(req,res){
+    console.log("Destroying knowledge")
     Knowledge.findOne(req.body.params.id).done(function(err,k){
       if(err) console.log(err);
       req.socket.broadcast.to(req.session.currentProject.id).emit("knowledge:remove2", k);
@@ -81,6 +83,7 @@
   },
 
   knowledgeview : function(req,res){
+    console.log("Loading knowledge view")
     BootstrapService.bootstrapdata(req,res);
   },
 

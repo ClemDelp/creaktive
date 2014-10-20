@@ -1,6 +1,7 @@
 module.exports = {
 
   bootstrapmanager : function(req,res){
+    console.log("Bootstraping manager data")
     req.session.user = req.session.user || {id:"999999999", name : "guest", img:"img/default-user-icon-profile.png"}
     ///////////////////////////////////////////////////
     unread_notifications = [];
@@ -59,6 +60,7 @@ module.exports = {
   },
 
 	bootstrapdata : function(req,res){
+    console.log("Bootstraping data")
 		req.session.user = req.session.user || {id:"999999999", name : "guest", img:"img/default-user-icon-profile.png"}
     
     if(_.contains(req.session.allowedProjects, req.query.projectId)){
