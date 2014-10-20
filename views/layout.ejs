@@ -108,6 +108,7 @@
 
         socket.on("disconnect", function(msg){
           alert("Connection with the server lost, please check your internet connection");
+          window.parent.location.reload();
         });
 
         socket.on('connect', function socketConnected() {
