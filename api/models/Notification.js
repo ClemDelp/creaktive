@@ -18,7 +18,7 @@
   },
 
   objectCreated : function(req,res, object, to){
-    
+    console.log("Notifications object created")
     if(req.body.action.length == 0) return;
     Notification.create({
   		id : IdService.guid(),
@@ -39,7 +39,7 @@
   },
 
   objectUpdated : function(req,res, object, to, old){
-
+    console.log("Notification object updated")
     var content ="";
 
     if(req.body.action.length == 0) return;
