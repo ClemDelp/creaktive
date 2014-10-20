@@ -103,7 +103,7 @@ activitiesList.Views.Main = Backbone.View.extend({
         // Init
         
         this.news_notifs     = this.models_notifs[this.model.get('id')].news;
-        this.activityLog     = this.models_notifs[this.model.get('id')].read//.slice(0,this.activity_size);
+        this.activityLog     = this.models_notifs[this.model.get('id')].read.toJSON().slice(0,this.activity_size);
         //this.read_notifs     = this.models_notifs[this.model.get('id')].read;
         $(this.el).empty();
         _this = this;
@@ -120,7 +120,7 @@ activitiesList.Views.Main = Backbone.View.extend({
           if(this.activityLog.length != 0){
             $(this.el).append(this.template_activityLog({
               model         : this.model.toJSON(),
-              notifications : this.activityLog.toJSON()
+              notifications : this.activityLog
             }))
           }
 
