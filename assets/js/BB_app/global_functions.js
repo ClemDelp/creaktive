@@ -11,9 +11,8 @@ global.Functions.uploadScreenshot = function(file,cb){
 }
 
 
-global.Functions.uploadFile = function(e,cb){   
+global.Functions.uploadFile = function(files,cb){   
 
-    var files = e.target.files;
     //console.log(files);
     var data = new FormData();
     $.each(files, function(key, value)
