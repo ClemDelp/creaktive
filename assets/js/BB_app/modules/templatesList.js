@@ -20,6 +20,7 @@ templatesList.Views.Template = Backbone.View.extend({
         _.bindAll(this, 'render');
         ////////////////////////////
         this.template = json.template;
+        this.mode = json.mode;
         this.model = json.model;
         this.templates_collection = json.templates_collection;
         // Templates
@@ -51,7 +52,10 @@ templatesList.Views.Template = Backbone.View.extend({
         // init
         _this = this;
         $(this.el).empty();
-        $(this.el).append(this.template_t({template:this.template}))
+        $(this.el).append(this.template_t({
+            template:this.template,
+            mode : this.mode
+        }))
         return this;
     }
 });
@@ -62,6 +66,7 @@ templatesList.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         ////////////////////////////
+        this.mode = json.mode;
         this.model = json.model;
         this.childViews = [];
         // Events
@@ -81,6 +86,7 @@ templatesList.Views.Main = Backbone.View.extend({
         global.models.currentProject.get('templates').forEach(function(template){
             var childView = new templatesList.Views.Template({
                 tagName : "span",
+                mode : this.mode,
                 model:_this.model,
                 templates_collection : _this.templates_collection,
                 template : template

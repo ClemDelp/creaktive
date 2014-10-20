@@ -5,10 +5,14 @@
 
 <script type="text/template" id="templatesList-template">
 	{{ if(template != null){ }}
-		<a style="{{- template.css }};margin:5px;float:left;padding-right: 4em;" href="#" data-dropdown="bbmap_templates_{{-template.id}}" class="button tiny dropdown">{{-template.title}}</a>
-		<ul id="bbmap_templates_{{-template.id}}" data-dropdown-content class="f-dropdown">
-		  <li><a id="{{-template.id}}" title="apply this tempalte" class="applyTemplate" href="#">apply</a></li>
-		  <li><a id="{{-template.id}}" title="remove this tempalte" class="removeTemplate" href="#">remove</a></li>
-		</ul>
+		{{ if(mode == "edit"){ }}
+			<a style="{{- template.css }};margin:5px;float:left;padding-right: 4em;" href="#" data-dropdown="bbmap_templates_{{-template.id}}" class="button tiny dropdown">{{-template.title}}</a>
+			<ul id="bbmap_templates_{{-template.id}}" data-dropdown-content class="f-dropdown">
+			  <li><a id="{{-template.id}}" title="apply this tempalte" class="applyTemplate" href="#">apply</a></li>
+			  <li><a id="{{-template.id}}" title="remove this tempalte" class="removeTemplate" href="#">remove</a></li>
+			</ul>
+		{{ }else{ }}
+			<a style="{{- template.css }};margin:5px;float:left;padding-right: 4em;" href="#" class="button tiny">{{-template.title}}</a>
+		{{ } }}
 	{{ } }}
 </script>

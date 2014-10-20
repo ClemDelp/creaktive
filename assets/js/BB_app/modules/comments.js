@@ -19,6 +19,7 @@ comments.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Variables
         this.model = json.model;
+        this.mode = json.mode;
         this.user = json.user;
         // Templates
         this.template = _.template($('#comments-template').html());
@@ -54,8 +55,9 @@ comments.Views.Main = Backbone.View.extend({
         $(this.el).empty();
         if((this.model.get('type') == "knowledge")||(this.model.get('type') == "concept")){
             $(this.el).append(this.template({
-            user : this.user,
-            model : this.model,
+                user : this.user,
+                model : this.model,
+                mode : this.mode,
                 comments : this.model.get('comments').toJSON()
             }));    
         }

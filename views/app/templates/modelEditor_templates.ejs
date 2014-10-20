@@ -8,8 +8,10 @@
 	    	{{= model.content }}
 	   	</div>
 	</center>
-	<a href="#" class="button tiny radius secondary edit">Edit</a>
-	<a href="#" id="{{-model.id}}_action" class="button tiny radius secondary structureSubTree">Structure subtree</a>
+	{{ if(mode == "edit"){ }}
+		<a href="#" class="button tiny radius secondary edit">Edit</a>
+		<a href="#" id="{{-model.id}}_action" class="button tiny radius secondary structureSubTree">Structure subtree</a>
+	{{ } }}
 </script>
 
 <script type="text/template" id="modelEditor-edition-template">

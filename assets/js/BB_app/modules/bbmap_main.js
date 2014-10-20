@@ -556,20 +556,22 @@ bbmap.Views.Main = Backbone.View.extend({
         this.isopen=false;
     },
     updateEditor : function(model){
-        if(this.mode == "edit"){
+        if((this.mode == "edit")||(this.mode == "visu")){
             $('#showMenu').show('slow');
             // Model editor module
             if(bbmap.views.modelEditor)bbmap.views.modelEditor.close();
             bbmap.views.modelEditor = new modelEditor.Views.Main({
-                user            : this.user,
-                model           : model
+                user    : this.user,
+                mode    : this.mode,
+                model   : model
             });
             // Templates list
             if(bbmap.views.templatesList) bbmap.views.templatesList.close();
             bbmap.views.templatesList = new templatesList.Views.Main({
                 templates : this.project.get('templates'),
+                mode : this.mode,
                 model : model
-            });    
+            });
             // check for template
             if(!this.project.get('templates')) this.project.save({templates : bbmap.default_templates},{silent:true});
             // IMG List module
@@ -582,12 +584,14 @@ bbmap.Views.Main = Backbone.View.extend({
             if(bbmap.views.attachment)bbmap.views.attachment.close();
             bbmap.views.attachment = new attachment.Views.Main({
                 model           : model,
+                mode            : this.mode,
                 eventAggregator : this.eventAggregator
             });
             // Comments module
             if(bbmap.views.comments)bbmap.views.comments.close();
             bbmap.views.comments = new comments.Views.Main({
                 model           : model,
+                mode            : this.mode,
                 user            : this.user
             });
             // Render & Append
@@ -1434,12 +1438,14 @@ bbmap.Views.Main = Backbone.View.extend({
             //$('#map').draggable();
             // css3 generator
             if(bbmap.views.css3)bbmap.views.css3.remove();
-            bbmap.views.css3 = new CSS3GENERATOR.Views.Main();
-            // CSS3 Button generator
-            this.css3Model_el.html(bbmap.views.css3.render().el);
-            CSS3GENERATOR.attach_handlers();
-            CSS3GENERATOR.initialize_controls();
-            CSS3GENERATOR.update_styles();
+            if(this.mode == "edit"){
+                bbmap.views.css3 = new CSS3GENERATOR.Views.Main();
+                // CSS3 Button generator
+                this.css3Model_el.html(bbmap.views.css3.render().el);
+                CSS3GENERATOR.attach_handlers();
+                CSS3GENERATOR.initialize_controls();
+                CSS3GENERATOR.update_styles();   
+            }
             // move DataCentroid To MapCentroid
             if((this.init == true)&&(this.sens == "init")){
                 this.moveDataCentroidToMapCentroid();

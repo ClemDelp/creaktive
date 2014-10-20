@@ -5,12 +5,16 @@
 		{{ _.each(attachments, function(attachment){ }}
 			<li>
 				<a href="/s3/getUrl?amz_id={{- attachment.url }}"  target="_blank" class="" data-file-path="{{- attachment.path }}" title="open">{{- attachment.name.substring(0,50) }}...</a>
-				<a style="color:red" class="removeFile" data-file-id="{{- attachment.id}}" title="remove">x</a>
+				{{ if(mode == "edit"){ }}
+					<a style="color:red" class="removeFile" data-file-id="{{- attachment.id}}" title="remove">x</a>
+				{{ } }}
 			</li>
 		{{ }) }}
 		</ul>
-		<input id="uploadfile" type="file"/>
-		<span id="status" class="label round">Please select a file</span>
+		{{ if(mode == "edit"){ }}
+			<input id="uploadfile" type="file"/>
+			<span id="status" class="label round">Please select a file</span>
+		{{ } }}
     </fieldset>	
 </script>
 

@@ -6,22 +6,24 @@
 					<li title="{{- comment.date }}">
 						
 						<strong><small>{{- comment.user.name }}</small></strong> :
-						{{- comment.content }} - 
-						<a class="removeComment" title="remove" data-id-comment="{{- comment.id }}" style="color:red">x</a>
+						{{- comment.content }}  
+						{{ if(mode == "edit"){ }} - <a class="removeComment" title="remove" data-id-comment="{{- comment.id }}" style="color:red">x</a>{{ } }}
 					</li>
 			{{ }); }}
 		</ul>
-		<div class="row">
-			<div class="small-12 large-12 medium-12 columns">
-				<div class="row collapse">
-					<div class="small-10 columns">
-						<input type="text" class="input_comment" placeholder="your comment">
-					</div>
-					<div class="small-2 columns">
-						<input type="submit" class="button prefix addComment" value="+">
+		{{ if(mode == "edit"){ }}
+			<div class="row">
+				<div class="small-12 large-12 medium-12 columns">
+					<div class="row collapse">
+						<div class="small-10 columns">
+							<input type="text" class="input_comment" placeholder="your comment">
+						</div>
+						<div class="small-2 columns">
+							<input type="submit" class="button prefix addComment" value="+">
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		{{ } }}
     </fieldset>		
 </script>

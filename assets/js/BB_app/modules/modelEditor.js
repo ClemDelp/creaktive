@@ -19,6 +19,7 @@ modelEditor.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Variables
         this.user = json.user;
+        this.mode = json.mode;
         this.model = json.model;
         this.mode = "normal";
         this.template_model_normal = _.template($('#modelEditor-normal-template').html());
@@ -113,9 +114,15 @@ modelEditor.Views.Main = Backbone.View.extend({
         $(this.el).html('');
         // content
         if(this.mode == "normal"){
-            $(this.el).append(this.template_model_normal({model : this.model.toJSON()}));
+            $(this.el).append(this.template_model_normal({
+                model : this.model.toJSON(),
+                mode : this.mode
+        }));
         } else if(this.mode == "edition"){
-            $(this.el).append(this.template_model_edition({model : this.model.toJSON()}));    
+            $(this.el).append(this.template_model_edition({
+                model : this.model.toJSON(),
+                mode : this.mode
+        }));    
         }
         
         return this;
