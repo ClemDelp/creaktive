@@ -36,8 +36,8 @@ attachment.Views.Main = Backbone.View.extend({
       _.each(files, function(file){
         var newattachment = {
           id : guid(),
-          name : fileName,
-          path : fileName,
+          name : file.name,
+          path : file.name,
           url : amz_id
         };
         _this.model.get('attachment').unshift(newattachment);
