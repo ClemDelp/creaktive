@@ -19,6 +19,8 @@ module.exports = {
 		});
 		var s3 = new AWS.S3();
 		var body = {};
+		var key = file.name || IdService.guid().replace(/-/g,"");
+		console.log("Sending " + key + " to S3");
 		if(file.path)  body = fs.createReadStream(file.path);
 		else{
 			//Convertit en image et enregistre sur le serveur cf. FileController
@@ -28,7 +30,7 @@ module.exports = {
 
 		var data = {
 			Bucket : S3_BUCKET,
-			Key: file.filename || IdService.guid().replace(/-/g,""), 
+			Key: key, 
 			Body: body,
 			ACL: "private",
 		};
@@ -36,15 +38,15 @@ module.exports = {
   		s3.putObject(data, function(err, file) {
 		    if(err) return cb(err)
 		    console.log("File pushed on s3", data.Key)
-		    cb(null,data.Key) 
-		    //On supprime le fichier   		      
+		    cb(null,data.Key)    		      
 	    });
+	    //cb(null,key)
 	},
 
 	deleteFile : function(file, cb){
 		AWS.config.update({
-			accessKeyId : "AKIAIK5NKF7MSBBB4EGQ",
-			secretAccessKey : "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",
+			accessKeyId : process.env.AWSAccessKeyId || "AKIAIK5NKF7MSBBB4EGQ",
+			secretAccessKey : process.env.AWSSecretKey || "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",
 			region: 'eu-west-1'
 		});
 		var s3 = new AWS.S3();
@@ -61,8 +63,8 @@ module.exports = {
 	getFile : function(file, cb){
 		console.log(file)
 				AWS.config.update({
-			accessKeyId : "AKIAIK5NKF7MSBBB4EGQ",
-			secretAccessKey : "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",
+			accessKeyId : process.env.AWSAccessKeyId || "AKIAIK5NKF7MSBBB4EGQ",
+			secretAccessKey : process.env.AWSSecretKey || "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",
 			region: 'eu-west-1'
 		});
 		var s3 = new AWS.S3();

@@ -9,7 +9,7 @@
 
 
   find : function (req,res){
-    
+    console.log("Fetch concepts");
     if(req.session.currentProject){
     Concept.find({
       project : req.session.currentProject.id
@@ -34,7 +34,7 @@
   },
 
   update : function(req, res){
-
+    console.log("Updating concept")
     Concept.findOne(req.body.params.id).done(function(err, concept){
       if(err) res.send(err);
       if(concept){
@@ -69,6 +69,7 @@
   },
 
   destroy : function(req,res){
+    console.log('Deleting concept')
     Concept.findOne(req.body.params.id).done(function(err,concept){
       if(err) console.log(err);
       if(concept.position == 0) res.send({err : "You can't remove c0"})
@@ -163,6 +164,7 @@ generateTree : function(req,res){
   
   
   conceptview : function(req,res){
+    console.log("Loading concept view")
     BootstrapService.bootstrapdata(req,res);
   }
 

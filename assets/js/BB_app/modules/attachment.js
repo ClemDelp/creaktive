@@ -31,21 +31,25 @@ attachment.Views.Main = Backbone.View.extend({
     uploadFile : function(e){
       e.preventDefault();
       e.stopPropagation();
-        _this=this;
-        global.Functions.uploadFile(e, function(amz_id, fileName){
-            var newattachment = {
-                    id : guid(),
-                    name : fileName,
-                    path : fileName,
-                    url : amz_id
-                };
+      _this=this;
+      var files = e.target.files;
+      _.each(files, function(file){
+        var newattachment = {
+          id : guid(),
+          name : fileName,
+          path : fileName,
+          url : amz_id
+        };
+        _this.model.get('attachment').unshift(newattachment);
+        _this.eventAggregator.trigger('fileuploaded');
+        _this.model.save();
+        _this.render();
+        _this.eventAggregator.trigger('attachment_added');
+      })
 
-            _this.model.get('attachment').unshift(newattachment);
-            _this.eventAggregator.trigger('fileuploaded');
-            _this.model.save();
-            _this.render();
-            _this.eventAggregator.trigger('attachment_added');
-        })  
+      global.Functions.uploadFile(files, function(amz_id, fileName){
+        console.log("Files uploaded")
+      });  
     },
 
 

@@ -17,6 +17,7 @@
 
 
   find : function (req,res){
+    console.log('fetch users')
     User.find().done(function(err,users){
       if(err) res.send({err:err})
       res.send(users)
@@ -25,6 +26,7 @@
 
   
   update : function(req,res){  	
+    console.log("update users")
     User.findOne(req.body.params.id).done(function(err, user){
   		if(err) res.send({err:err});
   		if(user){
@@ -49,6 +51,7 @@
   },
 
   destroy : function(req,res){
+    console.log("destroy user")
     User.findOne(req.body.params.id).done(function(err,user){
       if(err) console.log(err);
       user.destroy(function(err){
@@ -59,7 +62,7 @@
   },
 
   inviteUser : function(req,res){
-    console.log(req.body)
+    console.log("invite user to a project")
     User.create({
       img : "/img/default-user-icon-profile.png",
       name : req.body.email.substring(0,req.body.email.indexOf("@")),
@@ -100,6 +103,7 @@
   },
 
   changepassword : function(req,res){
+    console.log("processing change password")
     User.findOne(req.session.user.id).done(function(err, user){
       bcrypt.compare(req.body.oldpassword, user.pw, function (err, bcrypt_res) {
       if (!bcrypt_res) res.send("Invalid password")
@@ -122,6 +126,7 @@
   },
 
   editprofile : function(req,res){
+    console.log('processing edit profile')
     User.findOne(req.session.user.id).done(function(err, user){
       user.email = req.body.email;
       user.name = req.body.username;
@@ -136,12 +141,14 @@
   },
 
   editprofileview : function(req,res){
+    console.log("Loading edit profile view")
     BootstrapService.bootstrapmanager(req,res);
     //res.view({user : req.session.user});
   },
 
 
   userview : function(req,res){
+    console.log('procesing users manager view')
     BootstrapService.bootstrapdata(req,res);
   },
 };

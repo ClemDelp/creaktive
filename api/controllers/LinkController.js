@@ -14,6 +14,7 @@
   */
 
   find : function (req,res){
+    console.log("Fetching links")
     if(req.session.currentProject){
       Link.find({
       project : req.session.currentProject.id
@@ -32,6 +33,7 @@
   },
 
   update : function(req, res){
+    console.log("updating links")
   	Link.findOne(req.body.params.id).done(function(err, concept){
   		if(err) res.send(err);
   		if(concept){
@@ -57,6 +59,7 @@
   },
 
   destroy : function(req,res){
+    console.log('destroying link')
     Link.findOne(req.body.params.id).done(function(err,link){
       if(err) console.log(err);
       req.socket.broadcast.to(req.session.currentProject.id).emit("link:remove2", link);

@@ -19,6 +19,7 @@
 module.exports = {
 
   backupview : function(req,res){
+  	console.log('Loading backup view')
     BootstrapService.bootstrapdata(req,res);
   },
   

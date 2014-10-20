@@ -13,6 +13,7 @@ module.exports = {
   }
   */
   contactview : function(req,res){
+  	console.log("Loading contact view")
    	BootstrapService.bootstrapmanager(req,res);
   }
 

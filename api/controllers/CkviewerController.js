@@ -17,45 +17,6 @@
 
 module.exports = {
     
-  
-  /**
-   * Action blueprints:
-   *    `/ckviewer/create`
-   */
-   create: function (req, res) {
-    
-    // Send a JSON response
-    return res.json({
-      hello: 'world'
-    });
-  },
-
-
-  /**
-   * Action blueprints:
-   *    `/ckviewer/destroy`
-   */
-   destroy: function (req, res) {
-    
-    // Send a JSON response
-    return res.json({
-      hello: 'world'
-    });
-  },
-
-
-  /**
-   * Action blueprints:
-   *    `/ckviewer/find`
-   */
-   find: function (req, res) {
-    
-    // Send a JSON response
-    return res.json({
-      hello: 'world'
-    });
-  },
-
   ckviewerview : function(req,res){
     project = req.session.currentProject;    
     BackupService.cron(req,res);

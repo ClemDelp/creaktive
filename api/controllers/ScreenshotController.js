@@ -19,6 +19,7 @@
 module.exports = {
     
   find : function (req,res){
+    console.log("Fetch screenshot")
     if(req.body.params.projectId){
       Screenshot.find({
        project : req.session.currentProject.id
@@ -40,6 +41,7 @@ module.exports = {
    */
 
   create : function (req,res){
+    console.log("Create screenshot")
   var s = req.body.params;
   s.project = req.session.currentProject.id
   Screenshot.create(s).done(function(err, screnshot){
@@ -54,6 +56,7 @@ module.exports = {
 
 
 update : function(req, res){
+  console.log("Update screenshot")
  Screenshot.findOne(req.body.params.id).done(function(err, screenshot){
     if(err) res.send(err);
     ///////////////////////
@@ -89,6 +92,7 @@ update : function(req, res){
 },
 
 destroy : function(req,res){
+  console.log("destroy screenshot")
   Screenshot.findOne(req.body.params.id).done(function(err,screenshot){
     if(err) console.log(err);
     screenshot.destroy(function(err){
