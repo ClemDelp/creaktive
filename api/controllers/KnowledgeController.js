@@ -35,9 +35,8 @@
   },
 
   update : function(req, res){
-    console.log("Updating knowledge");
-    // console.log("param ",req.query.notification)
-    // var sendNotification = req.params.notification || false;
+    console.log("Updating knowledge", req.body.notification);
+
     Knowledge.findOne(req.body.params.id).done(function(err, knowledge){
   		if(err) res.send(err);
   		if(knowledge){
