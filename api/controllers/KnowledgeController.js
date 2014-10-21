@@ -35,15 +35,17 @@
   },
 
   update : function(req, res){
-    console.log("Updating knowledge")
-  	Knowledge.findOne(req.body.params.id).done(function(err, knowledge){
+    console.log("Updating knowledge");
+    // console.log("param ",req.query.notification)
+    // var sendNotification = req.params.notification || false;
+    Knowledge.findOne(req.body.params.id).done(function(err, knowledge){
   		if(err) res.send(err);
   		if(knowledge){
         // Update the Knowledge
   			Knowledge.update({id: req.body.params.id}, req.body.params).done(function(err,c){
   				if(err) res.send(err);
           req.socket.broadcast.to(req.session.currentProject.id).emit("knowledge:update", c[0]);
-          Notification.objectUpdated(req,res,"Knowledge", c[0], knowledge);
+          if(req.body.notification) Notification.objectUpdated(req,res,"Knowledge", c[0], knowledge);
           res.send(c[0]);
 
         });

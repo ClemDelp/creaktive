@@ -43,7 +43,7 @@
         }, req.body.params).done(function(err,c){
           if(err) res.send(err);
           req.socket.broadcast.to(req.session.currentProject.id).emit("concept:update", c[0]);
-          Notification.objectUpdated(req,res,"Concept", c[0], concept);
+          if(!req.body.notification) Notification.objectUpdated(req,res,"Concept", c[0], concept);
 
           res.send(c[0]);
 

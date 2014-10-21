@@ -25,10 +25,10 @@ menu.Views.Main = Backbone.View.extend({
         this.links = [];
         ///////////////////////////
         // links list
-        var visu = {href : "#visu", name : "Visualisation"};
+        var visu = {href : "#visu", name : "Visualization"};
         var edit = {href : "#edit", name : "Edition"};
         var timeline = {href : "#timeline", name : "Timeline"};
-        var bbmap_visu = {href : "/bbmap?projectId="+this.project.get('id')+"#visu", name : "Visualisation"};
+        var bbmap_visu = {href : "/bbmap?projectId="+this.project.get('id')+"#visu", name : "Visualization"};
         var bbmap_edit = {href : "/bbmap?projectId="+this.project.get('id')+"#edit", name : "Edition"};
         var bbmap_timeline = {href : "/bbmap?projectId="+this.project.get('id')+"#timeline", name : "Timeline"};
         var backup = {href : "/backup?projectId="+this.project.get('id'), name : "Backup"};
