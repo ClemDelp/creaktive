@@ -124,11 +124,11 @@ bbmap.Views.Main = Backbone.View.extend({
         // });
 
         // Prend un screenshot quand on quitte bbmap
-        window.onbeforeunload = function (e) {
-            $.get("/bbmap/screenshot", function(data){
-                console.log(data);
-            });
-        };
+        // window.onbeforeunload = function (e) {
+        //     $.get("/bbmap/screenshot", function(data){
+        //         console.log(data);
+        //     });
+        // };
     },
     events : {
         "change #visu_select_mode" : "setVisualMode",
@@ -266,7 +266,7 @@ bbmap.Views.Main = Backbone.View.extend({
             if(save == true) model.destroy();
         }
         else if(action == "update"){
-            global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),save);
+            global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),false);
             if(save == true) model.save();
         }
     },
@@ -342,149 +342,16 @@ bbmap.Views.Main = Backbone.View.extend({
     // Downdloadimage
     /////////////////////////////////////////
     downloadimage : function(e){
-        _this = this;
-        //var aLink = e.target; 
-
-        var zoomscale = bbmap.zoom.get('val');  //before take screenshot should change to the origin size
-        var project_id = this.project.get('id');
-        var moveLeft = (-$("#map")[0].offsetLeft)*(1-1.0/zoomscale);  //if zoomscale>1 we should move it to right else move to left
-        var moveTop = (-$("#map")[0].offsetTop)*(1-1.0/zoomscale);
-        var originLeft = $("#map")[0].offsetLeft;
-        var originTop = $("#map")[0].offsetTop;
-        var tmpscale = zoomscale;
-        
-        //On met le zoom à 1 sinon c'est le bazar dans les bulles
-        if(tmpscale>1){                           //resize
-            while(bbmap.zoom.get('val')>1){
-                _this.zoomin("downloadimage");
-            }
-        }else{
-            while(bbmap.zoom.get('val')<1){
-                _this.zoomout("downloadimage");
-            }
-        }
-        $("#map").offset({left:originLeft+moveLeft});   //change position
-        $("#map").offset({top:originTop+moveTop});
-        
-        html2canvas($("#map.demo"), {
-            width: $("#map")[0].offsetWidth,      
-            height: $("#map")[0].offsetHeight,
-            onrendered: function(bulleCanvas) {       //html2canvas can only find nodes not svgs
-                /**
-                On remet le zoom à l'état inital
-                **/
-                $("#map").offset({left:originLeft});       
-                $("#map").offset({top:originTop});              
-                if(tmpscale>1){
-                    while(bbmap.zoom.get('val')<tmpscale){
-                        _this.zoomout("downloadimage");
-                    }
-                }else{
-                    while(bbmap.zoom.get('val')>tmpscale){
-                        _this.zoomin("downloadimage");
-                    }
-                }
-
-                /**
-                Ajoute les lignes et les points qui sont au format SVG
-                * canvas : les bulles
-                * svgCanvas : tous les points et les lignes
-                **/
-                var svgCanvas = document.createElement("canvas");  //another canvas we will draw all the things left together to reproduce #map
-                var context = svgCanvas.getContext("2d");
-                svgCanvas.width = $("#map")[0].offsetWidth;
-                svgCanvas.height = $("#map")[0].offsetHeight;
-
-                var svgArray = $("#map>svg");                   // first we draw all the lines
-                for (var i = 0; i < svgArray.length; i++) {
-                    var top = parseFloat(svgArray[i].style.top);
-                    var left = parseFloat(svgArray[i].style.left);
-                    var height = svgArray[i].getAttribute("height");
-                    var width = svgArray[i].getAttribute("width");
-                    var tmpCanvas = document.createElement("canvas");
-                    tmpCanvas.width = width;
-                    tmpCanvas.height = height;
-                    var svgTagHtml = svgArray[i].innerHTML;
-                    canvg(tmpCanvas,svgTagHtml);                  //canvg is a library which can parse svg to canvas
-
-                    context.drawImage(tmpCanvas,left,top);
-                };
-
-                var pointArray = $("._jsPlumb_endpoint>svg");   //than we are ganna draw all the points to svgCanvas
-                var divArray = $("._jsPlumb_endpoint");         //cause the we can't get the position of points directly, we look at his parent div
-                //console.log(divArray.length);
-                for (var i = 0; i < divArray.length; i++) {
-                    var top = parseFloat(divArray[i].style.top);
-                    var left = parseFloat(divArray[i].style.left);
-                    var height = parseFloat(divArray[i].style.height);
-                    var width = parseFloat(divArray[i].style.width);
-                    var tmpCanvas = document.createElement("canvas");
-                    tmpCanvas.width = width;
-                    tmpCanvas.height = height;
-                    var svgTagHtml = pointArray[i].innerHTML;
-                    canvg(tmpCanvas,svgTagHtml);
-
-                    context.drawImage(tmpCanvas,left,top);
-                };
-
-                /**
-                merger bulleCanvas and svgCanvas
-                **/
-                context = bulleCanvas.getContext("2d");                
-                context.drawImage(svgCanvas,0,0);                
-                //console.log(canvas.toDataURL("image/png"));
-                /**
-                Centre le canvas sur la zone dessinée et couper le reste
-                **/
-
-                var currentWidth = $("#map_container")[0].offsetWidth;
-                var currentHeight = $("#creaktive_window")[0].offsetHeight-$(".tab-bar")[0].offsetHeight-$("#bottom_container")[0].offsetHeight;
-                var x1 = -parseFloat($("#map")[0].offsetLeft)/zoomscale;   // here we r ganna take the right part of canvas
-                var y1 = (-parseFloat($("#map")[0].offsetTop )+$(".tab-bar")[0].offsetHeight)/zoomscale;
-                var x2 = x1+currentWidth/zoomscale;
-                var y2 = y1+currentHeight/zoomscale; 
-                var canvas2 = document.createElement("canvas");
-                canvas2.width = (x2-x1); 
-                canvas2.height = (y2-y1);
-                var context2 = canvas2.getContext("2d");  
-                if((x1<0)&&(y1<0)){                                       //get data of canvas and put them to a new one(canvas2) according to the different situations of position between screen and #map
-                    var imgData=context.getImageData(0,0,x2,y2);  
-                    context2.putImageData(imgData,-x1,-y1);
-                }else{
-                    if(x1<0){
-                        var imgData=context.getImageData(0,y1,x2,y2);
-                        context2.putImageData(imgData,-x1,0);
-                    }else{
-                        if(y1<0){
-                            var imgData=context.getImageData(x1,0,x2,y2);
-                            context2.putImageData(imgData,0,-y1);
-                        }else{
-                            var imgData=context.getImageData(x1,y1,x2,y2);
-                            context2.putImageData(imgData,0,0);
-                        }
-                    }
-                }
-                var screenshot;
-
-                screenshot = canvas2.toDataURL( "image/png" );
-                //console.log(screenshot)
-                // var aLink = document.createElement('a');
-                // aLink.download = "screenshot";
-                // aLink.href = screenshot;
-                // document.body.appendChild(aLink);
-                // aLink.click();
-                // document.body.removeChild(aLink);
-
-            }
-        });    
+       e.preventDefault();
+       window.open("/bbmap/downloadScreenshot")   
     },
     /////////////////////////////////////////
     // Screenshot
     /////////////////////////////////////////
     screenshot : function(flag){
         $.get("/bbmap/screenshot", function(data){
-            console.log(data);
-        })
+                console.log(data);
+        });
     },
     /////////////////////////////////////////
     // Drop new data on map

@@ -120,7 +120,7 @@ bbmap.Views.Node = Backbone.View.extend({
         this.model.save({
             top: top,
             left: left
-        },{silent:broadcast});
+        },{silent:broadcast,notification:true, notification : false});
         var after_change = this.model.clone();
         // Set old father !!! 
         if(origin == "normal")global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
