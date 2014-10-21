@@ -89,14 +89,14 @@ Backbone.sync = function (method, model, options) {
   var type = methodMap[method];
   var action = actionMap[method];
 
-  if(options.silent) console.log(options.silent)
 
-  var json = {
+    console.log(options);
+    var json = {
     url : '/' + namespace + '/' + type,
     data : {
       params : params.data,
       action : global.Functions.whatChangedInModel(model),
-      notification : options.notification || true
+      notification : (options.notification == false) ? false : true
     }
   }
 

@@ -14,7 +14,7 @@
   */
 
   find : function (req,res){
-    console.log("fetching poche")
+    console.log("fetching poche",req.body.notification)
     if(req.session.currentProject){
       Poche.find({
        project : req.session.currentProject.id

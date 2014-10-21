@@ -34,7 +34,7 @@
   },
 
   update : function(req, res){
-    console.log("Updating concept")
+    console.log("Updating concept",req.body.notification)
     Concept.findOne(req.body.params.id).done(function(err, concept){
       if(err) res.send(err);
       if(concept){
