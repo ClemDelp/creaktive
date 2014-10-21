@@ -124,11 +124,11 @@ bbmap.Views.Main = Backbone.View.extend({
         // });
 
         // Prend un screenshot quand on quitte bbmap
-        // window.onbeforeunload = function (e) {
-        //     $.get("/bbmap/screenshot", function(data){
-        //         console.log(data);
-        //     });
-        // };
+        window.onbeforeunload = function (e) {
+            $.get("/bbmap/screenshot", function(data){
+                console.log(data);
+            });
+        };
     },
     events : {
         "change #visu_select_mode" : "setVisualMode",
