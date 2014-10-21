@@ -107,7 +107,17 @@
         // as soon as this file is loaded, connect automatically, 
         var socket = io.connect();
 
+        
+
         socket.on("disconnect", function(msg){
+          setTimeout(function(){
+            alert("Connection with the server lost, please check your internet connection");
+            window.parent.location.reload();
+          },3000);
+
+        });
+
+        socket.on("reconnect_failed", function(msg){
           alert("Connection with the server lost, please check your internet connection");
           window.parent.location.reload();
         });
