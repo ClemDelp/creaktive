@@ -90,7 +90,7 @@ Backbone.sync = function (method, model, options) {
   var action = actionMap[method];
 
 
-    console.log(options);
+    
     var json = {
     url : '/' + namespace + '/' + type,
     data : {

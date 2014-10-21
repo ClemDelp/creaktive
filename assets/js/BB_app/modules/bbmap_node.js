@@ -83,7 +83,7 @@ bbmap.Views.Node = Backbone.View.extend({
             var delta_left = hf_left - f_left;
             var x = n_left - delta_left;
             var y = n_top - delta_top;
-            this.setPosition(x,y,0,0,false);
+            this.setPosition(x,y,0,0,false,'followfather',true);
             this.oldFather = this.father.clone();
             bbmap.views.main.instance.repaint(this.model.get('id'));
         // }
@@ -109,10 +109,9 @@ bbmap.Views.Node = Backbone.View.extend({
         };
         $(this.el).css( styles );
     },
-    setPosition : function(x, y, sz, h, broadcast, from){
+    setPosition : function(x, y, sz, h, broadcast, from, notif){
         var origin = "normal";
         if(from) origin = from;
-        //alert(this.model.get('title')+" set position its position")
         var before_change = this.model.clone();
         var left = (x - h);
         var top  = (y - h);
@@ -120,10 +119,10 @@ bbmap.Views.Node = Backbone.View.extend({
         this.model.save({
             top: top,
             left: left
-        },{silent:broadcast, notification : false});
+        },{silent:broadcast, notification : notif});
         var after_change = this.model.clone();
         // Set old father !!! 
-        if(origin == "normal")global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
+        if((origin == "normal")||(origin == "followfather"))global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
     },
     /////////////////////////////////////////////
     /////////////////////////////////////////////

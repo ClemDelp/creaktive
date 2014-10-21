@@ -194,6 +194,7 @@ bbmap.Views.Main = Backbone.View.extend({
     //     })
     // },
     updateLocalHistory : function(model,from){
+        alert('notif received!')
         if((model.get('from').id == global.models.current_user.get('id'))&&(this.flag == "acceptLastNotif")){
             if(this.sens != "init"){
                 // on supprime tout ce qui est en dessous de history_pos (si on est à la psoition 2 on supprime 1 et 0)
@@ -214,7 +215,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     backInHistory : function(e){
         e.preventDefault();
-        this.flag = "refuseLastNotif";
+        this.flag = "refuseLastNotif"; // IMPORTANT! to not add to local history its own actions
         if(this.sens == "back") this.history_pos = this.history_pos + 1;
         else this.sens = "back";
         // console.log(this.history_pos,this.sens,this.flag)
@@ -223,7 +224,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     advanceInHistory : function(e){
         e.preventDefault();
-        this.flag = "refuseLastNotif";
+        this.flag = "refuseLastNotif"; // IMPORTANT! to not add to local history its own actions
         if(this.sens == "next") this.history_pos = this.history_pos - 1;
         else this.sens = "next";
         // console.log(this.history_pos,this.sens,this.flag)
@@ -603,7 +604,7 @@ bbmap.Views.Main = Backbone.View.extend({
         if (!sz) sz = bbmap.node_size()/bbmap.zoom.get('val');
         var h = sz / 2;
         var z = bbmap.zoom.get('val');
-        this.nodes_views[lbl].setPosition(x/z, y/z, sz/z, h/z, true, "srtucture_function_origin");
+        this.nodes_views[lbl].setPosition(x/z, y/z, sz/z, h/z, true, 'structureTree', true);
     },
     /////////////////////////////////////////
     // Hover bulle effect
@@ -815,12 +816,15 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     moveDataCentroidToMapCentroid : function(){
         var delta = api.getXYTranslationBtwTwoPoints(api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()),api.getMapCentroid($('#map').width(),$('#map').height()));
-        for (var id in bbmap.views.main.nodes_views){
-            var view = bbmap.views.main.nodes_views[id];
-            var position = view.getPosition();
-            var x = position.left + delta.x;
-            var y = position.top + delta.y;
-            view.setPosition(x/bbmap.zoom.get('val'),y/bbmap.zoom.get('val'),0,0,true,"restructuration");
+        var k = 10; // coeff de finess
+        if((abs(delta.x) > k)||(abs(delta.y) > k)){
+            for (var id in bbmap.views.main.nodes_views){
+                var view = bbmap.views.main.nodes_views[id];
+                var position = view.getPosition();
+                var x = position.left + delta.x;
+                var y = position.top + delta.y;
+                view.setPosition(x/bbmap.zoom.get('val'),y/bbmap.zoom.get('val'),0,0,true,"restructuration", false);
+            }
         }
     },
     getCoordinatesOfNodesViews : function(){
