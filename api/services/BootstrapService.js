@@ -7,41 +7,50 @@ module.exports = {
     unread_notifications = [];
     read_notifications = [];
     
-    Notification.find().done(function(err,notifications){
+    Notification.find({
+      read : { "!" : req.session.user.id}
+    }).done(function(err,unotifications){
       if(err) console.log(err);
-      unread_notifications = _.filter(notifications, function(n){
-        if(_.indexOf(n.read, req.session.user.id) === -1) return n
-      });
-      read_notifications = _.difference(notifications, unread_notifications);
-      read_notifications = _.groupBy(notifications, "project_id");
-      User.find().done(function(err,users){
-        Knowledge.find({project : req.session.allowedProjects}).done(function(err,knowledges){
-          Poche.find({project : req.session.allowedProjects}).done(function(err,poches){
-            Project.find({id : req.session.allowedProjects, backup : false}).done(function(err,projects){
-              Concept.find({project : req.session.allowedProjects}).done(function(err,concepts){
-                Link.find({project : req.session.allowedProjects}).done(function(err,links){
-                  Presentation.find().done(function(err,presentations){
-                    Permission.find().done(function(err, permissions){
-                      res.view({
-                        currentUser : JSON.stringify(req.session.user),
-                        users : JSON.stringify(users),
-                        knowledges : JSON.stringify(knowledges),
-                        poches : JSON.stringify(poches),
-                        projects : JSON.stringify(projects),
-                        concepts : JSON.stringify(concepts),
-                        links : JSON.stringify(links),
-                        notifications : JSON.stringify(unread_notifications),
-                        activityLog : JSON.stringify(read_notifications),
-                        presentations : JSON.stringify(presentations),
-                        permissions : JSON.stringify(permissions)
+      unread_notifications = unotifications;
+
+      Notification.find({
+        where : {
+          read : req.session.user.id,
+          content : { "!" : ""}
+        },
+        limit : 100
+      }).done(function(err, rnotifications){
+        if(err) console.log(err)
+        unread_notifications = rnotifications;
+        User.find().done(function(err,users){
+          Knowledge.find({project : req.session.allowedProjects}).done(function(err,knowledges){
+            Poche.find({project : req.session.allowedProjects}).done(function(err,poches){
+              Project.find({id : req.session.allowedProjects, backup : false}).done(function(err,projects){
+                Concept.find({project : req.session.allowedProjects}).done(function(err,concepts){
+                  Link.find({project : req.session.allowedProjects}).done(function(err,links){
+                    Presentation.find().done(function(err,presentations){
+                      Permission.find().done(function(err, permissions){
+                        res.view({
+                          currentUser : JSON.stringify(req.session.user),
+                          users : JSON.stringify(users),
+                          knowledges : JSON.stringify(knowledges),
+                          poches : JSON.stringify(poches),
+                          projects : JSON.stringify(projects),
+                          concepts : JSON.stringify(concepts),
+                          links : JSON.stringify(links),
+                          notifications : JSON.stringify(unread_notifications),
+                          activityLog : JSON.stringify(read_notifications),
+                          presentations : JSON.stringify(presentations),
+                          permissions : JSON.stringify(permissions)
+                        });
                       });
                     });
-                  });
+                  })
                 })
               })
             })
           })
-        })
+        });
       });
     });
     ///////////////////////////////////////////////////
@@ -58,16 +67,12 @@ module.exports = {
         req.session.currentProject = project;
         ///////////////////////////////////////////////////
         // Notifications
-        unread_notifications = [];
+
         all_notifications = [];
 
         Notification.find({project_id : project.id}).done(function(err,notifications){
+          if(err) res.send({err:err});
           all_notifications = notifications;
-          notifications.forEach(function(notif){
-            if((_.indexOf(notif.read, req.session.user.id) == -1)){
-              unread_notifications.unshift(notif);
-            }
-          });
         });
         ///////////////////////////////////////////////////
         var presentationId = "none";
