@@ -90,6 +90,18 @@ var api = {
     });
     return conceptsLinked;
   },
+  getModelsLinkedToModel : function(links,collection,model){
+    // links have to be a collection a link model
+    // concepts have to be a collection a concept model
+    // knowledge have to be a model
+    var modelsLinked = [];
+    var ckLinks = api.getCKLinksByModelId(links,model.get('id'));
+    ckLinks.forEach(function(link){
+      modelsLinked = _.union(modelsLinked, collection.get(link.get('source')))
+      modelsLinked = _.union(modelsLinked, collection.get(link.get('target')))
+    });
+    return modelsLinked;
+  },
   getCKLinksByModelId : function(links,id){
     // links have to be a collection a link model
     var ckLinks = [];
