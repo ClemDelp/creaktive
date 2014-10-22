@@ -167,7 +167,7 @@ bbmap.Views.Node = Backbone.View.extend({
                         left:position.left / bbmap.zoom.get('val')
                     });   
                     var after_change = this.model.clone();
-                    if(this.model.get('type') == "poche") alert('poche moved!')
+                    //if(this.model.get('type') == "poche") alert('poche moved!')
                     global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
                     //console.log(this.model.get('top'),this.model.get('left'))
                 }
