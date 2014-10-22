@@ -5,7 +5,7 @@ module.exports = {
 		S3Service.pushFile(file, function(err, filename){
             if(err) return callback(err);
             // Ajout de l'image au projet
-            Project.update({id : project_id}, {image : file}, function(err, projects){
+            Project.update({id : project_id}, {image : filename}, function(err, projects){
               if(err) return  callback(err);
             })
             Screenshot.findOrCreate({
