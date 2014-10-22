@@ -194,7 +194,6 @@ bbmap.Views.Main = Backbone.View.extend({
     //     })
     // },
     updateLocalHistory : function(model,from){
-        alert('notif received!')
         if((model.get('from').id == global.models.current_user.get('id'))&&(this.flag == "acceptLastNotif")){
             if(this.sens != "init"){
                 // on supprime tout ce qui est en dessous de history_pos (si on est à la psoition 2 on supprime 1 et 0)
