@@ -1,20 +1,15 @@
 //Libs
 var AWS = require('aws-sdk');
-var fs = require('fs');
 //var
 var S3_BUCKET = process.env.S3_BUCKET || "creaktivetest2";
-var AWS_CF_HOSTAME = process.env.AWS_CF_HOSTAME || "d2gsmu1q0g6u6n.cloudfront.net/";
-var AWS_CF_KEY_PAIR_ID = process.env.AWS_CF_KEY_PAIR_ID ||"APKAINMRZ47Y6KNXIJQQ";
-var AWS_PRIVATE_KEY = fs.readFileSync("pk-"+AWS_CF_KEY_PAIR_ID+".pem");
-
-
-
+var accessKeyId = process.env.AWSAccessKeyId || "AKIAIK5NKF7MSBBB4EGQ";
+var secretAccessKey = process.env.AWSSecretKey || "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";
 module.exports = {
 
 	pushFile : function(file, cb){
 		AWS.config.update({
-			accessKeyId : process.env.AWSAccessKeyId || "AKIAIK5NKF7MSBBB4EGQ",
-			secretAccessKey : process.env.AWSSecretKey || "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",
+			accessKeyId : accessKeyId,
+			secretAccessKey : secretAccessKey,
 			region: 'eu-west-1'
 		});
 		var s3 = new AWS.S3();
@@ -45,8 +40,8 @@ module.exports = {
 
 	deleteFile : function(file, cb){
 		AWS.config.update({
-			accessKeyId : process.env.AWSAccessKeyId || "AKIAIK5NKF7MSBBB4EGQ",
-			secretAccessKey : process.env.AWSSecretKey || "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",
+			accessKeyId : accessKeyId,
+			secretAccessKey : secretAccessKey,
 			region: 'eu-west-1'
 		});
 		var s3 = new AWS.S3();
@@ -63,8 +58,8 @@ module.exports = {
 	getFile : function(file, cb){
 		console.log(file)
 				AWS.config.update({
-			accessKeyId : process.env.AWSAccessKeyId || "AKIAIK5NKF7MSBBB4EGQ",
-			secretAccessKey : process.env.AWSSecretKey || "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",
+			accessKeyId : accessKeyId,
+			secretAccessKey : secretAccessKey,
 			region: 'eu-west-1'
 		});
 		var s3 = new AWS.S3();

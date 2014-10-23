@@ -14,7 +14,6 @@ module.exports = {
     Notification.find()
     .where({project_id : project_id})
     .where({read : req.session.user.id})
-    .sort('comparator DESC')
     .limit(limit)
     .done(function(err,notifications){
       if(err) res.send(err);
