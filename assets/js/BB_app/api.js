@@ -30,6 +30,14 @@ var api = {
     // console.log("All the data have to move : ",delta)
     return delta;
   },
+  getNewPositionAfterTranslation : function(position,delta){
+    // position have to be {'left': 10, 'top': 10}
+    // delta have to be {'x': 20, 'y': 20}
+    var newPosition = {};
+    newPosition.left = position.left + delta.x;
+    newPosition.top = position.top + delta.y;
+    return newPosition;
+  },
   getCentroidPointsCloud : function(points){
     // console.log(points.length)
     // points have to be : [{'top':12,'left':45},{'top':2,'left':845},...]
@@ -66,48 +74,24 @@ var api = {
   //////////////////////////////
   // API BBMAP
   //////////////////////////////
-  getKnowledgesLinkedToConcept : function(links,knowledges,concept){
-    // links have to be a collection a link model
-    // knowledges have to be a collection a knowledge model
-    // concept have to be a model
-    var knowledgesLinked = [];
-    var ckLinks = api.getCKLinksByModelId(links,concept.get('id'));
-    ckLinks.forEach(function(link){
-      knowledgesLinked = _.union(knowledgesLinked, knowledges.get(link.get('source')))
-      knowledgesLinked = _.union(knowledgesLinked, knowledges.get(link.get('target')))
-    });
-    return knowledgesLinked;
-  },
-  getConceptsLinkedToKnowledge : function(links,concepts,knowledge){
-    // links have to be a collection a link model
-    // concepts have to be a collection a concept model
-    // knowledge have to be a model
-    var conceptsLinked = [];
-    var ckLinks = api.getCKLinksByModelId(links,knowledge.get('id'));
-    ckLinks.forEach(function(link){
-      conceptsLinked = _.union(conceptsLinked, knowledges.get(link.get('source')))
-      conceptsLinked = _.union(conceptsLinked, knowledges.get(link.get('target')))
-    });
-    return conceptsLinked;
-  },
   getModelsLinkedToModel : function(links,collection,model){
     // links have to be a collection a link model
-    // concepts have to be a collection a concept model
-    // knowledge have to be a model
+    // Collection have to be a backbone collection
+    // Model have to be a backbone model
     var modelsLinked = [];
     var ckLinks = api.getCKLinksByModelId(links,model.get('id'));
     ckLinks.forEach(function(link){
-      modelsLinked = _.union(modelsLinked, collection.get(link.get('source')))
+      //modelsLinked = _.union(modelsLinked, collection.get(link.get('source')))
       modelsLinked = _.union(modelsLinked, collection.get(link.get('target')))
     });
-    return modelsLinked;
+    return _.compact(modelsLinked);
   },
   getCKLinksByModelId : function(links,id){
     // links have to be a collection a link model
     var ckLinks = [];
     ckLinks = _.union(ckLinks, links.where({source : id}));
-    ckLinks = _.union(ckLinks, links.where({target : id}));
-    return ckLinks;
+    //ckLinks = _.union(ckLinks, links.where({target : id}));
+    return _.compact(ckLinks);
   },
   //////////////////////////////
   // API Tree manipulation

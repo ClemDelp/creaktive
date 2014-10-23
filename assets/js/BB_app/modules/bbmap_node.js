@@ -13,16 +13,13 @@ bbmap.Views.Node = Backbone.View.extend({
         this.listenTo(global.eventAggregator,this.model.get('id')+"_server", this.actualize,this);
         this.listenTo(global.eventAggregator,"attachment_added", this.render,this); 
         // Se mettre en ecoute sur le deplacement du node pere
-        // this.oldFather = new Backbone.Model();
-        try{
-            this.father = bbmap.views.main.concepts.get(this.model.get('id_father'));
-            // this.oldFather = this.father.clone();
-            // this.listenTo(this.father,"change:top change:left", this.followFather,this);
-            // On se met en ecoute sur le pere
-            this.listenTo(global.eventAggregator,this.father.get('id')+"_followme",this.followFather,this);
-        }catch(err){
-            //console.log('no father detected')
-        }
+        // try{
+        //     this.father = bbmap.views.main.concepts.get(this.model.get('id_father'));
+        //     // On se met en ecoute sur le pere
+        //     this.listenTo(global.eventAggregator,this.father.get('id')+"_followme",this.followFather,this);
+        // }catch(err){
+        //     //console.log('no father detected')
+        // }
         // Events
 
         // Templates
@@ -58,37 +55,37 @@ bbmap.Views.Node = Backbone.View.extend({
     //////////////////////////////////////////
     // Follow father system
     //////////////////////////////////////////
-    unbindFollowFather : function(){
-        console.log("unbindFollowFather")
-        var ev = this.father.get('id')+"_followme";
-        console.log(ev)
-        this.stopListening(global.eventAggregator,ev);
-    },
-    bindFollowFather : function(){
-        console.log("bindFollowFather")
-        this.father = bbmap.views.main.concepts.get(this.model.get('id_father'));
-        // On se met en ecoute sur le pere
-        this.listenTo(global.eventAggregator,this.father.get('id')+"_followme",this.followFather,this);
-    },
-    followFather : function(oldFather,father){
-        // if(this.model.get('id_father') != "none"){
-            //console.log(this.model.get('title'),' - follow its father');
-            var hf_left = oldFather.get('left');
-            var hf_top = oldFather.get('top');
-            var f_left = father.get('left');
-            var f_top = father.get('top');
-            var n_left = this.model.get('left');
-            var n_top = this.model.get('top');
-            var delta_top = hf_top - f_top;
-            var delta_left = hf_left - f_left;
-            var x = n_left - delta_left;
-            var y = n_top - delta_top;
-            this.setPosition(x,y,0,0,false,'followfather',true);
-            this.oldFather = this.father.clone();
-            bbmap.views.main.instance.repaint(this.model.get('id'));
-        // }
+    // unbindFollowFather : function(){
+    //     console.log("unbindFollowFather")
+    //     var ev = this.father.get('id')+"_followme";
+    //     console.log(ev)
+    //     this.stopListening(global.eventAggregator,ev);
+    // },
+    // bindFollowFather : function(){
+    //     console.log("bindFollowFather")
+    //     this.father = bbmap.views.main.concepts.get(this.model.get('id_father'));
+    //     // On se met en ecoute sur le pere
+    //     this.listenTo(global.eventAggregator,this.father.get('id')+"_followme",this.followFather,this);
+    // },
+    // followFather : function(oldFather,father){
+    //     // if(this.model.get('id_father') != "none"){
+    //         //console.log(this.model.get('title'),' - follow its father');
+    //         var hf_left = oldFather.get('left');
+    //         var hf_top = oldFather.get('top');
+    //         var f_left = father.get('left');
+    //         var f_top = father.get('top');
+    //         var n_left = this.model.get('left');
+    //         var n_top = this.model.get('top');
+    //         var delta_top = hf_top - f_top;
+    //         var delta_left = hf_left - f_left;
+    //         var x = n_left - delta_left;
+    //         var y = n_top - delta_top;
+    //         this.setPosition(x,y,0,0,false,'followfather',true);
+    //         this.oldFather = this.father.clone();
+    //         bbmap.views.main.instance.repaint(this.model.get('id'));
+    //     // }
         
-    },
+    // },
     //////////////////////////////////////////
     applyStyle : function(){
         if(!this.model.get('css')){
@@ -122,14 +119,16 @@ bbmap.Views.Node = Backbone.View.extend({
         },{silent:broadcast, notification : notif});
         var after_change = this.model.clone();
         // Set old father !!! 
-        if((origin == "normal")||(origin == "followfather"))global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
+        //if((origin == "normal")||(origin == "followfather"))global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
     },
     /////////////////////////////////////////////
     /////////////////////////////////////////////
-    getPosition : function(){
+    getPosition : function(z){
+        var zoom = 1;
+        if(z) zoom = z;
         var position = {};
-        position.left = $(this.el).position().left
-        position.top = $(this.el).position().top
+        position.left = $(this.el).position().left/zoom;
+        position.top = $(this.el).position().top/zoom;
         return position;
     },
     getOffset : function(){
@@ -157,18 +156,39 @@ bbmap.Views.Node = Backbone.View.extend({
     savePosition: function(e){
         if(bbmap.views.main.mode == "edit"){
             var oldModel = this.model.clone();
-            var position = this.getPosition();
+            var zoom = bbmap.zoom.get('val');
+            var position = this.getPosition(zoom);
+            var p1 = {'left':oldModel.get('left'),'top':oldModel.get('top')};
+            var p2 = {'left':position.left,'top':position.top};
+            var delta = api.getXYTranslationBtwTwoPoints(p1,p2);
+            var followers = [];
+
             if((abs(oldModel.get('top')-position.top)>=1)||(abs(oldModel.get('left')-position.left)>=1)){
                 if((position.top != 0)&&($(this.el).position().left != 0)){
                     // Si la view n'a pas été supprimée on save
                     var before_change = this.model.clone();
                     this.model.save({
-                        top:position.top / bbmap.zoom.get('val'),
-                        left:position.left / bbmap.zoom.get('val')
+                        top:position.top,
+                        left:position.left
                     });   
                     var after_change = this.model.clone();
-                    //if(this.model.get('type') == "poche") alert('poche moved!')
-                    global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
+                    //////////////////////////////
+                    // Knowledges follow category
+                    if(this.model.get('type') == "poche") followers = api.getModelsLinkedToModel(bbmap.views.main.links,bbmap.views.main.knowledges,this.model);
+                    // Concepts childrens follow concept father
+                    else if(this.model.get('type') == "concept") followers = api.getTreeChildrenNodes(this.model,bbmap.views.main.concepts);
+                    // Knowleges childrens follow knowledge father
+                    else if(this.model.get('type') == "knowledge") followers = api.getModelsLinkedToModel(bbmap.views.main.links,bbmap.views.main.knowledges,this.model);
+                    // Set the followers
+                    followers.forEach(function(f){
+                        var f_view = bbmap.views.main.nodes_views[f.get('id')];
+                        var f_position = f_view.getPosition(zoom);
+                        var newPosition = api.getNewPositionAfterTranslation(f_position,delta);
+                        f_view.setPosition(newPosition.left,newPosition.top,0,0,false,'followers',true)
+                        bbmap.views.main.instance.repaint(f.get('id'));
+                    });
+                    //////////////////////////////
+                    //global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
                     //console.log(this.model.get('top'),this.model.get('left'))
                 }
                 ////console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))

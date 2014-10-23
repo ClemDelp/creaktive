@@ -117,12 +117,7 @@ bbmap.Views.Main = Backbone.View.extend({
 
         this.listener.simple_combo("ctrl z", this.backInHistory);
         this.listener.simple_combo("ctrl y", this.advanceInHistory);
-        // Cursor position
-        // $( document ).on( "mousemove", function( event ) {
-        //     bbmap.views.main.cursorX = event.pageX;
-        //     bbmap.views.main.cursorY = event.pageY;
-        // });
-
+        
         // Prend un screenshot quand on quitte bbmap
         window.onbeforeunload = function (e) {
             $.get("/bbmap/screenshot", function(data){
@@ -615,7 +610,6 @@ bbmap.Views.Main = Backbone.View.extend({
         // close all icones
         this.$(".icon").hide();
         // Show the sup menu anyway
-        //if(this.mode == "edit") $("#"+id+" .icon.sup").show(); 
         if(e.target.getAttribute("data-type") != "action"){
             // set last model
             if($(el).hasClass('concept') == true){
@@ -643,44 +637,6 @@ bbmap.Views.Main = Backbone.View.extend({
             }
         }
     },
-    // showIconConcept : function(e){
-    //     e.preventDefault();
-    //     var id = e.target.id;
-    //     if(this.mode == "edit") $("#"+id+" .icon.sup").show();    
-    //     if(e.target.getAttribute("data-type") == "title"){
-    //         this.setLastModel(this.concepts.get(id),'showIconConcept')
-    //         this.$(".icon").hide();
-    //         if(this.mode == "edit") $("#"+id+" .icon").show();    
-    //     }
-    // },
-    // showIconPoche : function(e){
-    //     e.preventDefault();
-    //     var id = e.target.id;
-    //     if(this.mode == "edit") $("#"+id+" .icon.sup").show();
-    //     if(e.target.getAttribute("data-type") == "title"){
-    //         this.setLastModel(this.poches.get(id),'showIconPoche');
-    //         this.$(".icon").hide();
-    //         if(this.mode == "edit"){
-    //             $("#"+id+" .sup").show();  
-    //             $("#"+id+" .ep3").show();  
-    //             $("#"+id+" .ep2").show();  
-    //         }
-    //     }
-    // },
-    // showIconKnowledge : function(e){
-    //     e.preventDefault();
-    //     var id = e.target.id;
-    //     if(this.mode == "edit") $("#"+id+" .icon.sup").show();
-    //     if(e.target.getAttribute("data-type") == "title"){
-    //         this.setLastModel(this.knowledges.get(id),'showIconKnowledge');
-    //         this.$(".icon").hide();
-    //         if(this.mode == "edit"){
-    //             $("#"+id+" .sup").show();  
-    //             $("#"+id+" .ep3").show();  
-    //             $("#"+id+" .ep").show();  
-    //         }
-    //     }
-    // },
     hideDependances : function(e){
         e.preventDefault();
         $('.selected').removeClass('selected');
@@ -700,9 +656,9 @@ bbmap.Views.Main = Backbone.View.extend({
         if(this.visualMode == "children") conceptsToSelect = _.union(conceptsToSelect,api.getTreeChildrenNodes(conceptHovered,bbmap.views.main.concepts));
         else if(this.visualMode == "parent") conceptsToSelect = _.union(conceptsToSelect,api.getTreeParentNodes(conceptHovered,bbmap.views.main.concepts));
         // add knowledges linked
-        var knowledgesLinkedToConcept = api.getKnowledgesLinkedToConcept(bbmap.views.main.links,bbmap.views.main.knowledges,conceptHovered);
+        var knowledgesLinkedToConcept = api.getModelsLinkedToModel(bbmap.views.main.links,bbmap.views.main.knowledges,conceptHovered);
         conceptsToSelect.forEach(function(concept){
-            knowledgesToSelect = _.union(knowledgesToSelect, api.getKnowledgesLinkedToConcept(bbmap.views.main.links,bbmap.views.main.knowledges,concept));
+            knowledgesToSelect = _.union(knowledgesToSelect, api.getModelsLinkedToModel(bbmap.views.main.links,bbmap.views.main.knowledges,concept));
         });
         // Compact to remove error
         nodesToSelect =_.compact(_.union(conceptsToSelect,knowledgesToSelect));
