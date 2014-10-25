@@ -1,6 +1,6 @@
 //Libs
 var AWS = require('aws-sdk');
-var fs = requirire("fs");
+var fs = require("fs");
 //var
 var S3_BUCKET = process.env.S3_BUCKET || "creaktivetest2";
 var accessKeyId = process.env.AWSAccessKeyId || "AKIAIK5NKF7MSBBB4EGQ";

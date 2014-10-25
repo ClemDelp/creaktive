@@ -32,6 +32,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.discussionModel_el = $(this.el).find('#discussionModel');
         this.activitiesModel_el = $(this.el).find('#activitiesModel');
         this.css3Model_el = $(this.el).find('#css3Model');
+        this.googleSearchModel_el = $(this.el).find('#googleSearchModel');
         ////////////////////////////////
         // Objects
         this.knowledges         = json.knowledges;
@@ -454,12 +455,19 @@ bbmap.Views.Main = Backbone.View.extend({
                 mode            : this.mode,
                 user            : this.user
             });
+            // GoogleSearch module
+            if(bbmap.views.googleSearch)bbmap.views.googleSearch.close();
+            bbmap.views.googleSearch = new googleSearch.Views.Main({
+                model           : model,
+                mode            : this.mode
+            });
             // Render & Append
             this.editModel_el.html(bbmap.views.modelEditor.render().el);
             this.editModel_el.append(bbmap.views.templatesList.render().el);
             this.attachementModel_el.html(bbmap.views.imagesList.render().el);
             this.attachementModel_el.append(bbmap.views.attachment.render().el);
             this.discussionModel_el.append(bbmap.views.comments.render().el);
+            //this.googleSearchModel_el.append(bbmap.views.googleSearch.render().el);
         }
     },
     /////////////////////////////////////////
