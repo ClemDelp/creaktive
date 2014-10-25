@@ -467,7 +467,7 @@ bbmap.Views.Main = Backbone.View.extend({
             this.attachementModel_el.html(bbmap.views.imagesList.render().el);
             this.attachementModel_el.append(bbmap.views.attachment.render().el);
             this.discussionModel_el.append(bbmap.views.comments.render().el);
-            //this.googleSearchModel_el.append(bbmap.views.googleSearch.render().el);
+            this.googleSearchModel_el.append(bbmap.views.googleSearch.render().el);
         }
     },
     /////////////////////////////////////////
