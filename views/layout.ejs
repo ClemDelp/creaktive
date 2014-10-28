@@ -25,7 +25,8 @@
     </script>
     <script src="js/vendor/backbone.js"></script>
     <script type="text/javascript" src="js/s3upload.js"></script>
-
+    
+    <script type="text/javascript" src="//d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js" data-token="8faefdd629724a7993025c6b51c82b3b"></script>
     <!--
       Stylesheets
       ========================     
@@ -147,6 +148,19 @@
     <script src="js/foundation/foundation.abide.js"></script>
     <script>
       $(document).foundation();
+      Backbone.Collection.prototype.debugEvents = Backbone.Model.prototype.debugEvents = Backbone.View.prototype.debugEvents = Backbone.Router.prototype.debugEvents = function() {
+        this.on('all', function(eventName) {
+          console.log('event "' + eventName + '" with ',
+            Array.prototype.slice.call(arguments, 1)
+          );
+        });
+      }
+      //Then use it:
+
+      // var model = new Backbone.Model();
+      // model.debugEvents();
+
+      // model.trigger('change', 'foo', 'bar'); // event "change" with ['foo', 'bar']
     </script>
 
 
