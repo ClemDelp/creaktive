@@ -70,6 +70,20 @@ var global = {
     console.log("******* Connected as ", this.models.current_user.get("name"), " on ", this.models.currentProject.get("title"));
     
     menu.init();   
+    /**
+    * Configures the instance of TrackJS with the provided configuration.
+    *
+    * @method configure
+    * @param {Object} params The Configuration object to apply
+    * @returns {Boolean} True if the configuration was successful.
+    */
+    trackJs.configure({
+      // Custom session identifier.
+      sessionId: this.models.currentProject.get('title'),
+      // Custom user identifier.
+      userId: this.models.current_user.get('email'),
+    });
+
     callback();
   },
   prepareNotifications : function(){

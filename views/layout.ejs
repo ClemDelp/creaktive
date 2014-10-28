@@ -25,8 +25,7 @@
     </script>
     <script src="js/vendor/backbone.js"></script>
     <script type="text/javascript" src="js/s3upload.js"></script>
-    
-    <script type="text/javascript" src="//d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js" data-token="8faefdd629724a7993025c6b51c82b3b"></script>
+
     <!--
       Stylesheets
       ========================     
@@ -35,7 +34,63 @@
 
   </head>
   <body>
-
+    <!-- ========================  
+            TrackJS 
+    ========================  -->
+    <script>
+      window._trackJs = {
+        // Whether to send errors to TrackJS
+        enabled: true,
+        // Custom error callback
+        onError: function () { return true; },
+        // Custom object serialization
+        serialize: function (what) { return what.toString(); },
+        // Custom session identifier.
+        sessionId: "",
+        // Your TrackJS token
+        token: "",
+        // An application key (optional)
+        application: "",
+        // Custom user identifier.
+        userId: "",
+        // Custom application version identifier.
+        version: "",
+        callback: {
+          // Watch host-function callbacks for errors
+          enabled: true,
+          // Whether to capture extended stacktraces
+          bindStack: false
+        },
+        console: {
+          // Watch the console for events
+          enabled: true,
+          // Pass console messages through to the browser
+          display: true,
+          // Transmit console errors to TrackJS
+          error: true,
+          // Names of console functions to watch
+          watch: ["log","debug","info","warn","error"]
+        },
+        network: {
+          // Watch the network for events
+          enabled: true,
+          // Transmit network failures to TrackJS
+          error: true
+        },
+        visitor: {
+          // Watch visitor interactions for events
+          enabled: true
+        },
+        window: {
+          // Watch the window for global errors
+          enabled: true
+        }
+      };
+    </script>
+    <script type="text/javascript" src="//d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js" data-token="8faefdd629724a7993025c6b51c82b3b"></script>
+    <!-- ========================  
+            end TrackJS 
+    ========================  -->
     <script src="/js/vendor/backbone.iosync.js"></script>
     <script src="/js/vendor/backbone.iobind.js"></script>
     <script type="text/javascript" src="js/vendor/socket.io.js"></script>
