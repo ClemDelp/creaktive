@@ -35,7 +35,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.googleSearchModel_el = $(this.el).find('#googleSearchModel');
         ////////////////////////////////
         // Objects
-        //this.knowledges         = json.knowledges;
+        this.knowledges         = json.knowledges;
         this.concepts           = json.concepts;
         this.user               = json.user;
         this.project            = json.project;
