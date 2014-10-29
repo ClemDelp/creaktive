@@ -223,6 +223,15 @@ manager.Views.ProjectDetails = Backbone.View.extend({
                 user            : this.user,
                 model           : this.project_render,
             }).render().el);
+            //GOOGLE SEARCH IMAGES
+            $(this.el).append($('<fieldset>').append(new googleSearch.Views.Main({
+                mode       : "edit",
+                model      : this.project_render,
+                type       : "images",
+                perpage    : 8,
+                moreButton : true,
+                width      : "50px",
+            }).render().el));
 
             //USERS LIST
             if(manager.views.main.users_rec_dic[this.project_render.get('id')]){

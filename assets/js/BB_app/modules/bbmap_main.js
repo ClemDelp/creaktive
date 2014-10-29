@@ -455,11 +455,45 @@ bbmap.Views.Main = Backbone.View.extend({
                 mode            : this.mode,
                 user            : this.user
             });
-            // GoogleSearch module
-            if(bbmap.views.googleSearch)bbmap.views.googleSearch.close();
-            bbmap.views.googleSearch = new googleSearch.Views.Main({
-                model           : model,
-                mode            : this.mode
+            // GoogleSearch module IMG
+            if(bbmap.views.gs_img)bbmap.views.gs_img.close();
+            bbmap.views.gs_img = new googleSearch.Views.Main({
+                model      : model,
+                mode       : this.mode,
+                type       : "images",
+                perpage    : 8,
+                moreButton : true,
+                width      : "100px",
+            });
+            // GoogleSearch module News
+            if(bbmap.views.gs_news)bbmap.views.gs_news.close();
+            bbmap.views.gs_news = new googleSearch.Views.Main({
+                model      : model,
+                mode       : this.mode,
+                type       : "news",
+                perpage    : 8,
+                moreButton : true,
+                width      : "",
+            });
+            // GoogleSearch module Web
+            if(bbmap.views.gs_web)bbmap.views.gs_web.close();
+            bbmap.views.gs_web = new googleSearch.Views.Main({
+                model      : model,
+                mode       : this.mode,
+                type       : "web",
+                perpage    : 8,
+                moreButton : true,
+                width      : "",
+            });
+            // GoogleSearch module video
+            if(bbmap.views.gs_video)bbmap.views.gs_video.close();
+            bbmap.views.gs_video = new googleSearch.Views.Main({
+                model      : model,
+                mode       : this.mode,
+                type       : "video",
+                perpage    : 8,
+                moreButton : true,
+                width      : "",
             });
             // Render & Append
             this.editModel_el.html(bbmap.views.modelEditor.render().el);
@@ -467,7 +501,11 @@ bbmap.Views.Main = Backbone.View.extend({
             this.attachementModel_el.html(bbmap.views.imagesList.render().el);
             this.attachementModel_el.append(bbmap.views.attachment.render().el);
             this.discussionModel_el.append(bbmap.views.comments.render().el);
-            this.googleSearchModel_el.append(bbmap.views.googleSearch.render().el);
+            this.googleSearchModel_el.empty();
+            this.googleSearchModel_el.append($('<fieldset>').append(bbmap.views.gs_img.render().el));
+            this.googleSearchModel_el.append($('<fieldset>').append(bbmap.views.gs_web.render().el));
+            this.googleSearchModel_el.append($('<fieldset>').append(bbmap.views.gs_news.render().el));
+            this.googleSearchModel_el.append($('<fieldset>').append(bbmap.views.gs_video.render().el));
         }
     },
     /////////////////////////////////////////
