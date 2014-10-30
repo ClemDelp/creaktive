@@ -49,8 +49,6 @@ var api = {
 
         $('#more_'+uid).remove();
         if(results.length){
-            // return results;
-
             // If results were returned, add them to a pageContainer div,
             // after which append them to the #resultsDiv:
             
