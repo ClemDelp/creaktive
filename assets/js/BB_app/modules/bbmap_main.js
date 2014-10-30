@@ -502,10 +502,10 @@ bbmap.Views.Main = Backbone.View.extend({
             this.attachementModel_el.append(bbmap.views.attachment.render().el);
             this.discussionModel_el.append(bbmap.views.comments.render().el);
             this.googleSearchModel_el.empty();
-            this.googleSearchModel_el.append($('<fieldset>').append(bbmap.views.gs_img.render().el));
-            this.googleSearchModel_el.append($('<fieldset>').append(bbmap.views.gs_web.render().el));
-            this.googleSearchModel_el.append($('<fieldset>').append(bbmap.views.gs_news.render().el));
-            this.googleSearchModel_el.append($('<fieldset>').append(bbmap.views.gs_video.render().el));
+            this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_img.render().el));
+            this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_web.render().el));
+            this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_news.render().el));
+            this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_video.render().el));
         }
     },
     /////////////////////////////////////////

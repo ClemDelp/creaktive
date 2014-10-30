@@ -75,7 +75,7 @@ var api = {
             // and deciding whether to show the More button:
             
             if((settings.more)&&(+cursor.estimatedResultCount > (settings.page+1)*settings.perPage)){
-                $('<div id="more_'+uid+'" class="button round tiny secondary">more</did>').appendTo(resultsDiv).click(function(){
+                $('<br><div id="more_'+uid+'" class="button round tiny secondary">more</did>').appendTo(resultsDiv).click(function(){
                     settings.append = true;
                     settings.page = settings.page+1;
                     api.googleSearch(settings,el);
