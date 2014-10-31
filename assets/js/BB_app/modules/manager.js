@@ -322,13 +322,23 @@ manager.Views.Main = Backbone.View.extend({
 
     removeProject : function (e){
         e.preventDefault();
-        _this = this;
-        if(confirm("Will remove the project and all its data! Confirm?")){
-            console.log("Remove project");
+        var _this = this;
+        swal({   
+            title: "Are you sure?",   
+            text: "Remove the project and all its data, would you continue?",   
+            type: "warning",   
+            showCancelButton: true,   
+            confirmButtonColor: "#DD6B55",   
+            confirmButtonText: "Yes, delete it!",   
+            closeOnConfirm: false,
+            allowOutsideClick : true
+        }, 
+        function(){   
+            swal("Deleted!", "this project has been deleted.", "success"); 
             project_id = e.target.getAttribute("data-id-project");
-            project = this.projects.get(project_id);
+            project = _this.projects.get(project_id);
             project.destroy();
-        }
+        });
     },
 
     search: function(e){
