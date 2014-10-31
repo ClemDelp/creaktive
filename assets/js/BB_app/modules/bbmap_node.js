@@ -249,9 +249,21 @@ bbmap.Views.Node = Backbone.View.extend({
     /////////////////////////////////////////
     removeModel : function(e){
         e.preventDefault();
-        if(confirm("this "+this.model.get('type')+" will be remove, would you continue?")){
-            this.removeNode();
-        }
+        var _this = this;
+        swal({   
+            title: "Are you sure?",   
+            text: "this "+_this.model.get('type')+" will be remove, would you continue?",   
+            type: "warning",   
+            showCancelButton: true,   
+            confirmButtonColor: "#DD6B55",   
+            confirmButtonText: "Yes, delete it!",   
+            closeOnConfirm: false,
+            allowOutsideClick : true
+        }, 
+        function(){   
+            swal("Deleted!", "this "+_this.model.get('type')+" has been deleted.", "success"); 
+            _this.removeNode();
+        });
     },
     removeNode : function(){
         var model = this.model;
