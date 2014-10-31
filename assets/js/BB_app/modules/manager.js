@@ -228,9 +228,9 @@ manager.Views.ProjectDetails = Backbone.View.extend({
                 mode       : "edit",
                 model      : this.project_render,
                 type       : "images",
-                perpage    : 8,
+                perpage    : 5,
                 moreButton : true,
-                width      : "50px",
+                width      : "100px",
             }).render().el));
 
             //USERS LIST
