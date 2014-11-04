@@ -11,7 +11,10 @@
     <script src="js/vendor/modernizr.js"></script>
     <script type='text/javascript' src='js/vendor/jquery-1.10.2.js'></script>
     <script src="js/vendor/underscore.js"></script>
-
+    <!-- sweet alert lib -->
+    <script src="js/vendor/sweetAlert/sweet-alert.js"></script> 
+    <link rel="stylesheet" type="text/css" href="styles/sweetAlert/sweet-alert.css">
+    <!-- Notification lib -->
     <link rel="stylesheet" href="styles/notifications/normalize.css" />
     <link rel="stylesheet" href="styles/notifications/ns-default.css" />
     <link rel="stylesheet" href="styles/notifications/ns-style-attached.css" />
@@ -22,7 +25,7 @@
     <script src="js/vendor/notifications/notificationFx.js"></script>
     <script src="js/vendor/notifications/snap.svg-min.js"></script>
     <script src="js/vendor/notifications/notif.js"></script>
-    
+    <!-- foundation lib -->
     <link rel="stylesheet" href="styles/foundation2.css" />
     <link rel="stylesheet" href="styles/pace.css" />
 
@@ -161,15 +164,17 @@
         
 
         socket.on("disconnect", function(msg){
+          swal("Problem!", "Connection with the server lost, please check your internet connection!", "error");
           setTimeout(function(){
-            alert("Connection with the server lost, please check your internet connection");
+            //alert("Connection with the server lost, please check your internet connection");
             window.parent.location.reload();
-          },3000);
+          },30000);
 
         });
 
         socket.on("reconnect_failed", function(msg){
-          alert("Connection with the server lost, please check your internet connection");
+          swal("Problem!", "Connection with the server lost, please check your internet connection!", "error");
+          //alert("Connection with the server lost, please check your internet connection");
           window.parent.location.reload();
         });
 
@@ -262,22 +267,22 @@
   <script>
   
     var releases = {
-      n1 : {
-        id :"1",
-        pathname:"/",
-        wrapper:document.body,
-        message:'<p>FAT NEWS : Je viens de me chier dessus</p>',
-        layout:'attached',
-        effect:'flip',
-        type:'notice',
-        ttl:10000,
-        archiveButton:true
-      },
+      //n1 : {
+      //  id :"1",
+      //  pathname:"/",
+      //  wrapper:document.body,
+      //  message:'<b>News !</b><p>Images from the web associated with the name of your project are now visible //below your project description<img title="Images from the web" src="/img/notifs/n1.png"/></p>',
+      //  layout:'attached',
+      //  effect:'flip',
+      //  type:'notice',
+      //  ttl:10000,
+      //  archiveButton:true
+      //},
       n2 : {
         id :"2",
         pathname : "/bbmap",
         wrapper:document.body,
-        message:'<p>News ! A new tab in the menu on the right sidebar shows you the web data associated to the selectionned concept</p>',
+        message:'<b>News !</b><p>A new tab in the menu on the right sidebar shows you the web data associated to the selectionned concept<img title="Images from the web" src="/img/notifs/n2.png"/></p>',
         layout:'attached',
         effect:'flip',
         type:'notice',
@@ -286,7 +291,7 @@
       }
     };
     
-    notif.showByPathname(releases);
+    nlib.showByPathname(releases);
   </script>
   
   </body>

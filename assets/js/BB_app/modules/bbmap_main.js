@@ -189,7 +189,28 @@ bbmap.Views.Main = Backbone.View.extend({
     //         console.log(h)           
     //     })
     // },
+    pushNotif : function(notif){
+        var content = "";
+        var type = 'notice';
+        if(notif.get('attr')[0] == "create"){content = notif.get('object')+" successfully created";type = 'success';}
+        if(notif.get('attr')[0] == "remove"){content = notif.get('object')+" successfully removed";type = 'error';}
+        if(notif.get('attr')[0] == "css") {content = notif.get('object') + " template updated";type = 'warning';}
+        if(notif.get('attr')[0] == "title") {content = notif.get('object') + " title updated";type = 'notice';}
+        if(content != ""){
+            var n = {
+                wrapper:document.body,
+                message:'<p>'+content+'</p>',
+                layout:'growl',
+                effect:'slide',
+                type:type,
+                ttl:2000,
+                archiveButton:false
+            }    
+            nlib.simplePush(n);
+        }
+    },
     updateLocalHistory : function(model,from){
+        this.pushNotif(model);
         if((model.get('from').id == global.models.current_user.get('id'))&&(this.flag == "acceptLastNotif")){
             if(this.sens != "init"){
                 // on supprime tout ce qui est en dessous de history_pos (si on est à la psoition 2 on supprime 1 et 0)
@@ -502,10 +523,10 @@ bbmap.Views.Main = Backbone.View.extend({
             this.attachementModel_el.append(bbmap.views.attachment.render().el);
             this.discussionModel_el.append(bbmap.views.comments.render().el);
             this.googleSearchModel_el.empty();
-            this.googleSearchModel_el.append($('<fieldset>').append(bbmap.views.gs_img.render().el));
-            this.googleSearchModel_el.append($('<fieldset>').append(bbmap.views.gs_web.render().el));
-            this.googleSearchModel_el.append($('<fieldset>').append(bbmap.views.gs_news.render().el));
-            this.googleSearchModel_el.append($('<fieldset>').append(bbmap.views.gs_video.render().el));
+            this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_img.render().el));
+            this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_web.render().el));
+            this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_news.render().el));
+            this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_video.render().el));
         }
     },
     /////////////////////////////////////////
@@ -957,7 +978,7 @@ bbmap.Views.Main = Backbone.View.extend({
         ///////////////////////
         // Remove link process        
         this.instance.bind("beforeDetach", function(conn) {
-            var resp = confirm("Delete connection?");
+            var resp = true;
             if(conn.scope == "cklink"){
                 if(resp == true){
                     var links_to_remove = bbmap.views.main.links.where({source : conn.sourceId, target : conn.targetId});
@@ -974,12 +995,24 @@ bbmap.Views.Main = Backbone.View.extend({
                     bbmap.views.main.concepts.get(conn.targetId).set({id_father : "none"}).save();
                 } 
             }
-            
+            swal("Deleted!", "The connection has been deleted.", "success");
             return resp;
         });
         this.instance.bind("click", function(conn) {
-            bbmap.views.main.instance.detach(conn);
-            bbmap.views.main.nodes_views[conn.targetId].unbindFollowFather();
+            swal({   
+                title: "Are you sure?",   
+                text: "This connection will be remove, would you continue?",   
+                type: "warning",   
+                showCancelButton: true,   
+                confirmButtonColor: "#DD6B55",   
+                confirmButtonText: "Yes, delete it!",   
+                closeOnConfirm: false,
+                allowOutsideClick : true
+            }, 
+            function(){   
+                bbmap.views.main.instance.detach(conn);
+            });
+            
         });
         ///////////////////////
         // New link process

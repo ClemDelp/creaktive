@@ -224,14 +224,14 @@ manager.Views.ProjectDetails = Backbone.View.extend({
                 model           : this.project_render,
             }).render().el);
             //GOOGLE SEARCH IMAGES
-            $(this.el).append($('<fieldset>').append(new googleSearch.Views.Main({
-                mode       : "edit",
-                model      : this.project_render,
-                type       : "images",
-                perpage    : 8,
-                moreButton : true,
-                width      : "50px",
-            }).render().el));
+            //$(this.el).append($('<fieldset>').append(new googleSearch.Views.Main({
+            //    mode       : "edit",
+            //    model      : this.project_render,
+            //    type       : "images",
+            //    perpage    : 5,
+            //    moreButton : true,
+            //    width      : "100px",
+            //}).render().el));
 
             //USERS LIST
             if(manager.views.main.users_rec_dic[this.project_render.get('id')]){
@@ -322,13 +322,23 @@ manager.Views.Main = Backbone.View.extend({
 
     removeProject : function (e){
         e.preventDefault();
-        _this = this;
-        if(confirm("Will remove the project and all its data! Confirm?")){
-            console.log("Remove project");
+        var _this = this;
+        swal({   
+            title: "Are you sure?",   
+            text: "Remove the project and all its data, would you continue?",   
+            type: "warning",   
+            showCancelButton: true,   
+            confirmButtonColor: "#DD6B55",   
+            confirmButtonText: "Yes, delete it!",   
+            closeOnConfirm: false,
+            allowOutsideClick : true
+        }, 
+        function(){   
+            swal("Deleted!", "this project has been deleted.", "success"); 
             project_id = e.target.getAttribute("data-id-project");
-            project = this.projects.get(project_id);
+            project = _this.projects.get(project_id);
             project.destroy();
-        }
+        });
     },
 
     search: function(e){
