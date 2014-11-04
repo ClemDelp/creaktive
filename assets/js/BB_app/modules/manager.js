@@ -43,6 +43,7 @@ manager.Views.Projects = Backbone.View.extend({
         this.users              = json.users;
         this.poches             = json.poches;
         this.eventAggregator    = json.eventAggregator;
+        this.currentSelection   = "_menu_button";
         // Events
         this.eventAggregator.on('projects_search', this.projectsSearch, this);
         this.eventAggregator.on('ProjectsNotificationsDictionary', this.actualize, this);
@@ -61,6 +62,14 @@ manager.Views.Projects = Backbone.View.extend({
         e.preventDefault();
         //manager.views.p_cklayout_modal.openModelEditorModal(e.target.getAttribute("data-model-id"));
         this.eventAggregator.trigger("show_project_details", e.target.getAttribute("data-model-id"));
+        this.changeCurrentSelection(e.target.getAttribute("data-model-id"));
+    },
+    changeCurrentSelection : function(id){ 
+        $('#'+this.currentSelection).addClass('secondary');
+        $('#'+this.currentSelection).children().attr( "style", "color:black");
+        this.currentSelection = id+"_menu_button";
+        $('#'+this.currentSelection).removeClass('secondary');
+        $('#'+this.currentSelection).children().attr( "style", "color:white");
     },
     projectsSearch: function(matched_projects){
         this.projects_render = matched_projects;
@@ -69,7 +78,7 @@ manager.Views.Projects = Backbone.View.extend({
     },
     render : function(){
         $(this.el).empty();
-        _this = this;
+        var _this = this;
         $(this.el).append("Projects :<hr>")
         this.projects_render.each(function(project){
             userNbr = 1;
@@ -206,12 +215,39 @@ manager.Views.ProjectDetails = Backbone.View.extend({
         this.template_header = _.template($('#manager-header-template').html());    
         this.template_footer = _.template($('#manager-footer-template').html());        
     },
+    events : {
+        "change #select_project_status" : "changeProjectStatus",
+    },
+    changeProjectStatus : function(e){
+        e.preventDefault();
+        var _this = this;
+        var status = $( "#select_project_status option:selected").val();
+        swal({   
+            title: "Are you sure?",   
+            text: "Your project will be "+status+"!",   
+            type: "warning",   
+            showCancelButton: true,   
+            confirmButtonColor: "#DD6B55",   
+            confirmButtonText: "Yes!",   
+            closeOnConfirm: false 
+        }, 
+        function(isConfirm){
+            if(isConfirm){
+                _this.project_render.save({status : status});
+                swal("Status changed!", "Your project is now "+status+".", "success"); 
+                manager.views.main.render();
+            }else{
+                manager.views.main.render();
+            }
+        });
+    },
     showDetails : function(project){
         //Set the project to render
         this.project_render = this.projects.get(project)
         this.render();
     },
     render : function(){
+        if(!this.project_render.get('status')) this.project_render.save({status : 'private'},{silent:true});
         $(this.el).empty();
         var _this = this;
 

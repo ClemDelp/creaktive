@@ -1,0 +1,42 @@
+<div id="publicmap-container"></div>
+
+<script type="text/template" id="publicmap-header-template">
+	<div class="row panel" style="border:0px">
+		<div class="large-6 small-6 medium-6 columns">
+			<img title="logo creaktive" src="/img/creaktive.png"/>
+		</div>
+		<div class="large-6 small-6 medium-6 columns">
+			
+		</div>
+	</div>
+	<div style="width:100%;background-color:#1b9dd3;">
+		<div class="row"><b><font style="font-size: 18px;line-height:75px;color:white">Public Maps</font></b></div>
+	</div>
+</script>
+
+<script type="text/template" id="publicmap-categories-template">
+	<br>
+	<b>Categories</b>
+	<hr>
+	{{ _.each(categories, function(category){ }}
+		<div class="row"><a href="#" class="button tiny expand secondary"><h4>{{-category}}</h4></a></div>
+	{{ });}}
+</script>
+
+<script type="text/template" id="publicmap-maps-template">
+	<br>
+	<div id="maps_container">
+	{{ _.each(projects, function(project){ }}
+		<ul class="item pricing-table">
+			<li class="price">{{-project.title}}{{ if(project.image){ }}<img class="large-12 medium-12 small-2" src="/S3/getUrl?amz_id={{- project.image}}" />{{ }; }}</li>
+			<li class="description">{{=project.content}}</li>
+			<li class="bullet-item"><em>Created by {{-project.author.name}} at {{-project.date}}</em></li>
+			<li class="cta-button"><a class="button expand" href="/publicVisu?projectId={{- project.id }}#visu">Open</a></li>
+		</ul>
+	{{ });}}
+	</div>
+</script>
+
+<script type="text/template" id="publicmap-footer-template">
+	
+</script>
