@@ -1,10 +1,22 @@
 <div id="welcome_container"></div>
 
 <script type="text/template" id="welcome-template">
-  <div class="row">
-      <center>
-          <h2>Hello, {{-user.name }}!</h2>
-          <p>You have <span class="alert round label">{{-notifNbre}}</span> pending notifications on your projects </p>
-      </center>
-  </div>
+  	<div class="row panel" style="border:0px">
+		<div class="large-6 small-6 medium-6 columns">
+			<img title="logo creaktive" src="/img/creaktive.png"/>
+		</div>
+		<div class="large-6 small-6 medium-6 columns">
+			<h2>Hello, {{-user.name }}!</h2>
+		</div>
+	</div>
+	<div style="width:100%;background-color:#1b9dd3;">
+		<div class="row">
+			<font style="font-size: 18px;line-height:75px;color:white">
+				<b>Manager : </b>
+				<em>You have <span class="alert round label">{{-notifNbre}}</span> pending notifications on your projects</em>
+			</font>
+		</div>
+	</div>
+
+  	
 </script>

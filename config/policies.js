@@ -80,7 +80,6 @@
     "*" : ["authenticated", "allowedProjects"],
   },
 
-
   "LinkController" : {
     "find" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"]
@@ -103,6 +102,18 @@
   },
 
   /*********** VIEWS ******************/
+  "PublicVisuController" : {
+    // "screenshot" : true,
+    // "publicvisuview" : ["authenticated", "allowedProjects","forceHTTPs"],
+    "*" : true
+  },
+
+  "PublicMapController" : {
+    // "screenshot" : true,
+    "publicmapview" : ["publicProjects"],
+    "*" : true
+  },
+
   "ManagerController" : {
     "managerview" : ["authenticated", "allowedProjects","forceHTTPs"],
     "editprofileview" : ["authenticated", "forceHTTPs"],

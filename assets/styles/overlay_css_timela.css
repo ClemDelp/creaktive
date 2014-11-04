@@ -156,7 +156,8 @@ margin:0px;
 
 body{
 	/*background-image:url(/img/pattern.png);*/
-	background-color: #f2f2f2;
+	/*background-color: #f2f2f2;*/
+	background-color: white;
 }
 
 .custom_row{
