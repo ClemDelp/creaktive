@@ -79,7 +79,7 @@ manager.Views.Projects = Backbone.View.extend({
     render : function(){
         $(this.el).empty();
         var _this = this;
-        $(this.el).append("Projects :<hr>")
+        $(this.el).append("Workspaces :<hr>")
         this.projects_render.each(function(project){
             userNbr = 1;
             if(manager.views.main.users_rec_dic[project.get('id')]) userNbr = manager.views.main.users_rec_dic[project.get('id')].length
@@ -224,7 +224,7 @@ manager.Views.ProjectDetails = Backbone.View.extend({
         var status = $( "#select_project_status option:selected").val();
         swal({   
             title: "Are you sure?",   
-            text: "Your project will be "+status+"!",   
+            text: "Your workspace will be "+status+"!",   
             type: "warning",   
             showCancelButton: true,   
             confirmButtonColor: "#DD6B55",   
@@ -234,7 +234,7 @@ manager.Views.ProjectDetails = Backbone.View.extend({
         function(isConfirm){
             if(isConfirm){
                 _this.project_render.save({status : status});
-                swal("Status changed!", "Your project is now "+status+".", "success"); 
+                swal("Status changed!", "Your workspace is now "+status+".", "success"); 
                 manager.views.main.render();
             }else{
                 manager.views.main.render();

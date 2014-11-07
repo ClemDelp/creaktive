@@ -9,7 +9,7 @@
 					<input type="text" id="project_title" class="search" placeholder="Project name" required pattern="[a-zA-Z]+">
 				</div>
 				<div class="small-2 columns">
-					<a class="button newProject postfix" href="#"><b>Start a new project!</b></a>
+					<a class="button newProject postfix" href="#"><b>Create a new workspace!</b></a>
 				</div>
 			</form>
 		</div>
@@ -67,7 +67,7 @@
 
 <script type="text/template" id="manager-footer-template">
 	<em>Created by {{-project.author.name}} at {{-project.date}}</em></center><br><br>
-	<a href="#" data-id-project="{{- project.id }}" class="button alert tiny removeProject">Delete project</a>
+	<a href="#" data-id-project="{{- project.id }}" class="button alert tiny removeProject">Delete workspace</a>
 	<select id="select_project_status" class="large-3 medium-3 small-3">
       <option value="private" {{ if(project.status == 'private'){ }}selected{{ } }}>Private</option>
       <option value="public" {{ if(project.status == 'public'){ }}selected{{ } }}>Public</option>
