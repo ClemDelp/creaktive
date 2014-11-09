@@ -52,17 +52,17 @@ menu.Views.Main = Backbone.View.extend({
         else if(this.pathname == "/bbmap") {
             var permission = global.collections.Permissions.findWhere({user_id : global.models.current_user.get('id'), project_id : this.project.get('id')}).get('right');
             if(permission === "r") this.links = [manager,profile,logout];
-            else this.links = [visu,edit,timeline,backup,manager,rapports_manager,users_manager,profile,logout];
+            else this.links = [visu,edit,backup,manager,rapports_manager,users_manager,profile,logout];
         }
         else if(this.pathname == "/ckpreviewer") {
             var permission = global.collections.Permissions.findWhere({user_id : global.models.current_user.get('id'), project_id : this.project.get('id')}).get('right');
             if(permission === "r") this.links = [bbmap_visu,manager,profile,logout];
-            else this.links = [bbmap_visu,bbmap_edit,bbmap_timeline,backup,manager,users_manager,profile,logout];
+            else this.links = [bbmap_visu,bbmap_edit,backup,manager,users_manager,profile,logout];
         }
         else if(this.pathname == "/userManager") {
             var permission = global.collections.Permissions.findWhere({user_id : global.models.current_user.get('id'), project_id : this.project.get('id')}).get('right');
             if(permission === "r") this.links = [bbmap_visu,manager,profile,logout];
-            else this.links = [bbmap_visu,bbmap_edit,bbmap_timeline,backup,manager,rapports_manager,profile,logout];
+            else this.links = [bbmap_visu,bbmap_edit,backup,manager,rapports_manager,profile,logout];
         }
         else if(this.pathname == "/editprofile") {
             this.links = [manager,logout]; 
@@ -70,7 +70,7 @@ menu.Views.Main = Backbone.View.extend({
         else if(this.pathname == "/backup") {
             var permission = global.collections.Permissions.findWhere({user_id : global.models.current_user.get('id'), project_id : this.project.get('id')}).get('right');
             if(permission === "r") this.links = [bbmap_visu,manager,profile,logout];
-            else this.links = [bbmap_visu,bbmap_edit,bbmap_timeline,manager,rapports_manager,profile,logout]; 
+            else this.links = [bbmap_visu,bbmap_edit,manager,rapports_manager,profile,logout]; 
         }
         
 

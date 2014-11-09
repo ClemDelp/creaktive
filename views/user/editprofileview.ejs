@@ -30,7 +30,7 @@
         // Modules
         editProfile.init();     
         /*activat of "hashchange events's monitoring"*/
-        Backbone.history.start();  
+        if(!Backbone.History.started) Backbone.history.start();  
         
       });
       $(document).foundation();
