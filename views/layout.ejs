@@ -164,7 +164,8 @@
         
 
         socket.on("disconnect", function(msg){
-          swal("Problem!", "Connection with the server lost, please check your internet connection!", "error");
+          setTimeout(function(){swal("Problem!", "Connection with the server lost, please check your internet connection!", "error");
+          },5000);
           setTimeout(function(){
             //alert("Connection with the server lost, please check your internet connection");
             window.parent.location.reload();

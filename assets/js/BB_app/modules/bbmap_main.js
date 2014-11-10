@@ -995,7 +995,7 @@ bbmap.Views.Main = Backbone.View.extend({
                     bbmap.views.main.concepts.get(conn.targetId).set({id_father : "none"}).save();
                 } 
             }
-            swal("Deleted!", "The connection has been deleted.", "success");
+            //swal("Deleted!", "The connection has been deleted.", "success");
             return resp;
         });
         this.instance.bind("click", function(conn) {
@@ -1006,7 +1006,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 showCancelButton: true,   
                 confirmButtonColor: "#DD6B55",   
                 confirmButtonText: "Yes, delete it!",   
-                closeOnConfirm: false,
+                closeOnConfirm: true,
                 allowOutsideClick : true
             }, 
             function(){   

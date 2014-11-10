@@ -257,11 +257,10 @@ bbmap.Views.Node = Backbone.View.extend({
             showCancelButton: true,   
             confirmButtonColor: "#DD6B55",   
             confirmButtonText: "Yes, delete it!",   
-            closeOnConfirm: false,
+            closeOnConfirm: true,
             allowOutsideClick : true
         }, 
         function(){   
-            swal("Deleted!", "this "+_this.model.get('type')+" has been deleted.", "success"); 
             _this.removeNode();
         });
     },

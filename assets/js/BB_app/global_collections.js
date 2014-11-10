@@ -15,14 +15,14 @@ global.Collections.Poches = Backbone.Collection.extend({
         this.ioBind('remove2', this.serverRemove, this);
     },
     serverCreate : function(model){
-        global.eventAggregator.trigger("model:create",new global.Models.Poche(model),"server");
+        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:create",new global.Models.Poche(model),"server");
     },
     serverUpdate : function(model){
-        global.eventAggregator.trigger(model.id+"_server",model);
+        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger(model.id+"_server",model);
     },
     serverRemove : function(model){
         //this.remove(knowledge.id);
-        global.eventAggregator.trigger("model:remove",new global.Models.Poche(model),"server");
+        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:remove",new global.Models.Poche(model),"server");
     }
 });
 /***************************************/
@@ -42,13 +42,13 @@ global.Collections.CKLinks = Backbone.Collection.extend({
         this.ioBind('remove2', this.serverRemove, this);
     },
     serverCreate : function(model){
-        global.eventAggregator.trigger("link:create",new global.Models.CKLink(model),"server");
+        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("link:create",new global.Models.CKLink(model),"server");
     },
     serverUpdate : function(model){
         //global.eventAggregator.trigger(model.id+"_server",model);
     },
     serverRemove : function(model){
-        global.eventAggregator.trigger("link:remove",new global.Models.CKLink(model),"server");
+        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("link:remove",new global.Models.CKLink(model),"server");
     }
 });
 /////////////////////////////////////////////////////////////////////
@@ -71,13 +71,13 @@ global.Collections.Knowledges = Backbone.Collection.extend({
         this.ioBind('remove2', this.serverRemove, this);
     },
     serverCreate : function(model){
-        global.eventAggregator.trigger("model:create",new global.Models.Knowledge(model),"server");
+        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:create",new global.Models.Knowledge(model),"server");
     },
     serverUpdate : function(model){
-        global.eventAggregator.trigger(model.id+"_server",model);
+        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger(model.id+"_server",model);
     },
     serverRemove : function(model){
-        global.eventAggregator.trigger("model:remove",new global.Models.Knowledge(model),"server");
+        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:remove",new global.Models.Knowledge(model),"server");
     }
 });
 /***************************************/
@@ -95,14 +95,14 @@ global.Collections.ConceptsCollection = Backbone.Collection.extend({
         this.ioBind('remove2', this.serverRemove, this);
     },
     serverCreate : function(model){
-        global.eventAggregator.trigger("model:create",new global.Models.ConceptModel(model),"server");
+        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:create",new global.Models.ConceptModel(model),"server");
     },
     serverUpdate : function(model){
-        global.eventAggregator.trigger(model.id+"_server",model);
+        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger(model.id+"_server",model);
     },
     serverRemove : function(model){
         //this.remove(knowledge.id);
-        global.eventAggregator.trigger("model:remove",new global.Models.ConceptModel(model),"server");
+        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:remove",new global.Models.ConceptModel(model),"server");
     }
 });
 /***************************************/
