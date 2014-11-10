@@ -35,9 +35,12 @@ module.exports = {
 	    var domain =  "";
 	    /////////////////////////
 	    var params = "";
+	    var sizeScreen = '1615x941';
 	    if(req.query.zoom) params += "#visu/"+req.query.zoom;
 	    if(req.query.left) params += "/"+req.query.left;
 	    if(req.query.top) params += "/"+req.query.top;
+	    if(req.query.window_w) sizeScreen = req.query.window_w+"x"+req.query.window_h;
+
 	    /////////////////////////
 	    if(req.get('host') == "localhost:1337"){
 	      url = req.baseUrl + "/bbmap?projectId="+req.session.currentProject.id+params;
@@ -53,7 +56,7 @@ module.exports = {
 	        cookies : [cookie],
 	        filename : req.session.currentProject.id
 	      })
-	      .src(url, ['2560x1440'])
+	      .src(url, [sizeScreen])
 	      .dest(".tmp");
 
 	    pageres.run(function (err, items) {

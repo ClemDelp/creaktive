@@ -366,11 +366,10 @@ manager.Views.Main = Backbone.View.extend({
             showCancelButton: true,   
             confirmButtonColor: "#DD6B55",   
             confirmButtonText: "Yes, delete it!",   
-            closeOnConfirm: false,
+            closeOnConfirm: true,
             allowOutsideClick : true
         }, 
         function(){   
-            swal("Deleted!", "this project has been deleted.", "success"); 
             project_id = e.target.getAttribute("data-id-project");
             project = _this.projects.get(project_id);
             project.destroy();

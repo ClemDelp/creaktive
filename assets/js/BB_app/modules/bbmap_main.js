@@ -4,27 +4,26 @@
 bbmap.router = Backbone.Router.extend({
     routes: {
         ""  : "init",
-        "visu/:zoom/:left/:top": "visu",
+        "visu/:zoom/:left/:top": "visuPlus",
         "visu": "visu",
-        "edit/:zoom/:left/:top": "edit",
         "edit": "edit",
-        "timeline/:zoom/:left/:top": "timeline",
         "timeline": "timeline"
     },
     init: function() {
-        if(bbmap.views.main.init == true) bbmap.views.main.setMode("visu");
+        if(bbmap.views.main.init == true) bbmap.views.main.setMode("visu",true);
     },
-    visu: function(zoom,top,left) {
-        bbmap.views.main.initMap(zoom,left,top)
-        bbmap.views.main.setMode("visu");
+    visu: function() {
+        bbmap.views.main.setMode("visu",true);
     },
-    edit: function(zoom,top,left) {
+    visuPlus: function(zoom,left,top) {
         bbmap.views.main.initMap(zoom,left,top)
-        bbmap.views.main.setMode("edit");
+        bbmap.views.main.setMode("visu",false);
     },
-    timeline: function(zoom,top,left) {
-        bbmap.views.main.initMap(zoom,left,top)
-        bbmap.views.main.setMode("timeline");
+    edit: function() {
+        bbmap.views.main.setMode("edit",true);
+    },
+    timeline: function() {
+        bbmap.views.main.setMode("timeline",true);
     },
 });
 /////////////////////////////////////////////////
@@ -360,7 +359,7 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Modes & Filters
     /////////////////////////////////////////
-    setMode : function(mode){
+    setMode : function(mode,initPos){
         this.mode = mode;
         $('#cbp-spmenu-s1').hide('slow');
         $('#showMenu').hide('slow');
@@ -370,6 +369,14 @@ bbmap.Views.Main = Backbone.View.extend({
             this.hideMenu();
         }
         this.render();
+        if(initPos){
+            // move DataCentroid To MapCentroid
+            if((this.init == true)&&(this.sens == "init")){
+                this.moveDataCentroidToMapCentroid();
+            }
+            this.intelligentRestructuring();
+
+        } 
     },
     setFilter : function(e){
         e.preventDefault();
@@ -387,7 +394,7 @@ bbmap.Views.Main = Backbone.View.extend({
     downloadimage : function(e){
        e.preventDefault();
        var json = this.getMapParameters();
-       window.open("/bbmap/downloadScreenshot?zoom="+json.zoom+"&left="+json.left+"&top="+json.top)   
+       window.open("/bbmap/downloadScreenshot?zoom="+json.zoom+"&left="+json.left+"&top="+json.top+"&window_w="+$(window).width()+"&window_h="+$(window).height())   
     },
     /////////////////////////////////////////
     // Screenshot
@@ -1380,10 +1387,12 @@ bbmap.Views.Main = Backbone.View.extend({
                 CSS3GENERATOR.initialize_controls();
                 CSS3GENERATOR.update_styles();   
             }
-            // move DataCentroid To MapCentroid
-            if((this.init == true)&&(this.sens == "init")){
-                this.moveDataCentroidToMapCentroid();
-            }
+            
+            // // move DataCentroid To MapCentroid
+            // if((this.init == true)&&(this.sens == "init")){
+            //     this.moveDataCentroidToMapCentroid();
+            // }
+
             //
             this.initTimelineHistoryParameters();
             
@@ -1391,7 +1400,7 @@ bbmap.Views.Main = Backbone.View.extend({
             else $('#map').css('background', 'transparent');
 
             this.init = false; 
-            this.intelligentRestructuring();
+            // this.intelligentRestructuring();
         }
 
         return this;

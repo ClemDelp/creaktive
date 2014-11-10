@@ -265,15 +265,19 @@ var api = {
     // return all children nodes from a parent node
     return childrens;
   },
-  getUserPermissionByProject : function(permissions,users,project_id){
+  getUserPermissionByProject : function(permissions,users,id){
     // users, permissions have to be collections
     // project_id have to be the project id
     var result = []; // 
     users.each(function(user){
-      var user = user
+          console.log(permissions)
+
+      var permission = permissions.findWhere({project_id : id, user_id : user.get('id')});
+      if(permission != undefined) permission = permission.toJSON();
+      else permission = {"right" : "admin"};
       var json = {
         "user" : user.toJSON(),
-        "permission" : permissions.findWhere({project_id : project_id, user_id : user.get('id')}).toJSON()
+        "permission" : permission
       }
       result.unshift(json);
     });
