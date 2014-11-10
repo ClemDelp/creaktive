@@ -35,7 +35,7 @@ var AuthController = {
 		}).done(function(err, users){
 			if(err) return res.send(err);
 			if(users.length === 0 ){
-				return res.send(400,"User not found")
+				return res.send(400,"Email not found")
 			}
 	      	var user = users[0];
 	      	if(req.baseUrl == "http://localhost:1337"){
