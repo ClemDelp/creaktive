@@ -4,16 +4,28 @@
 bbmap.router = Backbone.Router.extend({
     routes: {
         ""  : "init",
+        "visu/:zoom/:left/:top": "visu",
         "visu": "visu",
+        "edit/:zoom/:left/:top": "edit",
         "edit": "edit",
+        "timeline/:zoom/:left/:top": "timeline",
         "timeline": "timeline"
     },
-    init: function() {if(bbmap.views.main.init == true) bbmap.views.main.setMode("visu");},
-    visu: function() {
+    init: function() {
+        if(bbmap.views.main.init == true) bbmap.views.main.setMode("visu");
+    },
+    visu: function(zoom,top,left) {
+        bbmap.views.main.initMap(zoom,left,top)
         bbmap.views.main.setMode("visu");
     },
-    edit: function() {bbmap.views.main.setMode("edit");},
-    timeline: function() {bbmap.views.main.setMode("timeline");},
+    edit: function(zoom,top,left) {
+        bbmap.views.main.initMap(zoom,left,top)
+        bbmap.views.main.setMode("edit");
+    },
+    timeline: function(zoom,top,left) {
+        bbmap.views.main.initMap(zoom,left,top)
+        bbmap.views.main.setMode("timeline");
+    },
 });
 /////////////////////////////////////////////////
 // MAIN
@@ -155,6 +167,20 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .prevH" : "backInHistory",
         "click .nextH" : "advanceInHistory",
         "click .structureSubTree" : "structureTree"
+    },
+    /////////////////////////////////////////
+    // Init Map
+    /////////////////////////////////////////
+    initMap : function(zoom,left,top){
+        this.setZoom(zoom);
+        $('#map').offset({top:top, left:left})
+    },
+    getMapParameters : function(){
+        var json = {};
+        json.zoom = bbmap.zoom.get('val');
+        json.left = $('#map').offset().left;
+        json.top = $('#map').offset().top;
+        return json;
     },
     /////////////////////////////////////////
     // Timeline gestion
@@ -360,7 +386,8 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     downloadimage : function(e){
        e.preventDefault();
-       window.open("/bbmap/downloadScreenshot")   
+       var json = this.getMapParameters();
+       window.open("/bbmap/downloadScreenshot?zoom="+json.zoom+"&left="+json.left+"&top="+json.top)   
     },
     /////////////////////////////////////////
     // Screenshot
@@ -1362,13 +1389,6 @@ bbmap.Views.Main = Backbone.View.extend({
             
             if(this.mode == "edit") $('#map').css('background-image', 'url(/img/pattern.png)');
             else $('#map').css('background', 'transparent');
-
-
-            // $.get('/BBmap/image', function(hasChanged){
-            //     if (_this.project.image == undefined || _this.project.image=="" || hasChanged == true){
-            //         _this.screenshot(true);
-            //     }
-            // });
 
             this.init = false; 
             this.intelligentRestructuring();
