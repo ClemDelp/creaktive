@@ -33,14 +33,19 @@ module.exports = {
 	screenshot : function(req,res,mode,cb){
 	    var url = "";
 	    var domain =  "";
+	    /////////////////////////
+	    var params = "";
+	    if(req.query.zoom) params += "#visu/"+req.query.zoom;
+	    if(req.query.left) params += "/"+req.query.left;
+	    if(req.query.top) params += "/"+req.query.top;
+	    /////////////////////////
 	    if(req.get('host') == "localhost:1337"){
-	      url = req.baseUrl + "/bbmap?projectId="+req.session.currentProject.id;
+	      url = req.baseUrl + "/bbmap?projectId="+req.session.currentProject.id+params;
 	      domain = "localhost"
 	    }else{
-	       url = "http://"+req.get("host")+ "/bbmap?projectId="+req.session.currentProject.id;
+	       url = "http://"+req.get("host")+ "/bbmap?projectId="+req.session.currentProject.id+params;
 	       domain = req.get("host")
 	    }
-
 	    var cookie = "sails.sid="+req.signedCookies["sails.sid"]+";domain="+domain+";path=/";
 	 
 	    var pageres = new Pageres({
