@@ -337,7 +337,6 @@ manager.Views.Main = Backbone.View.extend({
     },
     newProject : function(e){
         e.preventDefault();
-        console.log(this.user)
         var id = guid();
         new_project = new global.Models.ProjectModel({
             id:id,

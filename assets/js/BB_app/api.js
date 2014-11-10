@@ -269,18 +269,15 @@ var api = {
     // users, permissions have to be collections
     // project_id have to be the project id
     var result = []; // 
-    users.each(function(user){
-          console.log(permissions)
-
-      var permission = permissions.findWhere({project_id : id, user_id : user.get('id')});
-      if(permission != undefined) permission = permission.toJSON();
-      else permission = {"right" : "admin"};
+    var perms = permissions.where({project_id : id});
+    perms.forEach(function(perm){
       var json = {
-        "user" : user.toJSON(),
-        "permission" : permission
+        "user" : users.get(perm.get('user_id')).toJSON(),
+        "permission" : perm.toJSON()
       }
       result.unshift(json);
     });
+
     return _.compact(result);
   }
 }
