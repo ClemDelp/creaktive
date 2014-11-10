@@ -1,10 +1,15 @@
 <script type="text/template" id="usersList-template">
 	<FIELDSET>
-		<LEGEND align=top> Members ({{-users.length}})<a href="/userManager?projectId={{- project.id}}"> manage</a></LEGEND>
-		{{ _.each(users, function(user){ }}
-			<div class="large-1 medium-1 small-1 columns" style="float:left">
-		    	<img  title="{{- user.name }}" src="{{- user.img }}"/>
-		    </div>
+		<LEGEND align=top> Members ({{-userPerms.length}})<a href="/userManager?projectId={{- project.id}}"> manage</a></LEGEND>
+		<table style="width:100%">
+		{{ _.each(userPerms,function(userPerm){ }}
+			<tr>
+		    	<td><img width="20" title="{{- userPerm.user.name }}" src="{{- userPerm.user.img }}"></td>
+		    	<td>{{- userPerm.user.name }}</td>
+		    	<td>{{- userPerm.permission.right }}</td>
+		    </tr>
 		{{ });}}
+		</table>
+
 	</FIELDSET>
 </script>

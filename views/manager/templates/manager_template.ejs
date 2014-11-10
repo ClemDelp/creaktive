@@ -15,7 +15,7 @@
 		</div>
 	</div>
 </script>
-
+<!--//////////////////////////////////////////////////////////////// -->
 <script type="text/template" id="manager-header-template">
 	<fieldset>
 		<a class="button secondary tiny expand" href="/bbmap?projectId={{- project.id}}#visu">
@@ -26,7 +26,7 @@
 		</a>
 	</fieldset>
 </script>
-
+<!--//////////////////////////////////////////////////////////////// -->
 <script type="text/template" id="manager-normal-template">
 	<div>
 		<fieldset>
@@ -38,7 +38,7 @@
 		</fieldset>
 	</div>	
 </script>
-
+<!--//////////////////////////////////////////////////////////////// -->
 <script type="text/template" id="manager-edition-template">
 	<div class="panel">
 		<a href="#" class="button tiny round success updateModel">Update!</a>
@@ -47,24 +47,24 @@
 		<textarea  class="ckeditor"  name="editor" rows="10" cols="80">{{= model.content }}</textarea>
 	</div>
 </script>
-
+<!--//////////////////////////////////////////////////////////////// -->
 <script type="text/template" id="manager-project-template"> 
 	<a id="{{-project.id}}_menu_button" href="#" class="openProjectModal manager button expand radius secondary" data-model-id="{{-project.id}}">
-		<h5 data-model-id="{{-project.id}}"><b>{{-project.title }}</b>
+		<h5 data-model-id="{{-project.id}}"><b data-model-id="{{-project.id}}">{{-project.title }}</b>
 			{{ if(project.status == 'public'){ }}
-		    	<img title="back" src="/img/icones/Open-24.png"/>
+		    	<img data-model-id="{{-project.id}}" title="back" src="/img/icones/Open-24.png"/>
 		    {{ }else{ }}
-		    	<img title="back" src="/img/icones/Lock-24.png"/>
+		    	<img data-model-id="{{-project.id}}" title="back" src="/img/icones/Lock-24.png"/>
 		    {{ } }}
 		    {{if(notifNbr > 0){ }}
-			<span class="top-bar-unread">{{-notifNbr}}</span>
+			<span data-model-id="{{-project.id}}" class="top-bar-unread">{{-notifNbr}}</span>
 			{{ } }}
 		</h5>
 	</a>
 	<br>
 	<br>
 </script>
-
+<!--//////////////////////////////////////////////////////////////// -->
 <script type="text/template" id="manager-footer-template">
 	<em>Created by {{-project.author.name}} at {{-project.date}}</em></center><br><br>
 	<a href="#" data-id-project="{{- project.id }}" class="button alert tiny removeProject">Delete workspace</a>

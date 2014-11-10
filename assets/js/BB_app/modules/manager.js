@@ -270,17 +270,17 @@ manager.Views.ProjectDetails = Backbone.View.extend({
             //}).render().el));
 
             //USERS LIST
-            if(manager.views.main.users_rec_dic[this.project_render.get('id')]){
-                var users_id = manager.views.main.users_rec_dic[this.project_render.get('id')]
-                var users_list = [];
-                users_id.forEach(function(id){
-                    users_list.push(global.collections.Users.get(id));
-                })
+            // if(manager.views.main.users_rec_dic[this.project_render.get('id')]){
+            //     var users_id = manager.views.main.users_rec_dic[this.project_render.get('id')]
+            //     var users_list = [];
+            //     users_id.forEach(function(id){
+            //         users_list.push(global.collections.Users.get(id));
+            //     })
                 $(this.el).append(new usersList.Views.Main({
+                    users : api.getUserPermissionByProject(global.collections.Permissions,global.collections.Users,this.project_render.get('id')),
                     project : _this.project_render,
-                    users : users_list
                 }).render().el);
-            }
+            // }
 
             //Reports 
             $(_this.el).append(new reportsList.Views.Main({

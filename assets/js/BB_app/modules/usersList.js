@@ -19,17 +19,16 @@ usersList.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         ////////////////////////////
-        this.users = new Backbone.Collection(json.users);
-        this.project = json.project
+        this.userPerms = json.users; //users hav to be [{user json,permission json},{user json,permission json},...]
+        this.project = json.project;
         // Templates
         this.template = _.template($('#usersList-template').html());
     },
     render : function(){        
         ///////////////////////
         // init
-        var _this = this;
         $(this.el).empty();
-        $(this.el).append(this.template({users : this.users.toJSON(), project : this.project.toJSON()}));
+        $(this.el).append(this.template({userPerms : this.userPerms,project : this.project.toJSON()}));
         return this;
     }
 });
