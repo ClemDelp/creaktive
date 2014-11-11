@@ -368,15 +368,7 @@ bbmap.Views.Main = Backbone.View.extend({
             classie.toggle( menu, 'cbp-spmenu-open' ); 
             this.hideMenu();
         }
-        this.render();
-        if(initPos){
-            // move DataCentroid To MapCentroid
-            if((this.init == true)&&(this.sens == "init")){
-                this.moveDataCentroidToMapCentroid();
-            }
-            this.intelligentRestructuring();
-
-        } 
+        this.render(initPos);
     },
     setFilter : function(e){
         e.preventDefault();
@@ -1282,7 +1274,7 @@ bbmap.Views.Main = Backbone.View.extend({
             });    
         }
     },
-    render : function(){  //alert('render')
+    render : function(initPos){  //alert('render')
         var _this = this;
         this.map_el.empty();
         ///////////////////////
@@ -1392,6 +1384,13 @@ bbmap.Views.Main = Backbone.View.extend({
             // if((this.init == true)&&(this.sens == "init")){
             //     this.moveDataCentroidToMapCentroid();
             // }
+            if(initPos){
+                // move DataCentroid To MapCentroid
+                if((bbmap.views.main.init == true)&&(bbmap.views.main.sens == "init")){
+                    bbmap.views.main.moveDataCentroidToMapCentroid();
+                    this.intelligentRestructuring();
+                }
+            } 
 
             //
             this.initTimelineHistoryParameters();

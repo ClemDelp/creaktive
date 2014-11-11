@@ -1,5 +1,52 @@
 <div id="user_container"></div>
+<!-- ////////////////////////////////////////////////////////////////////// -->
 
+<script type="text/template" id="user-search-template">
+	<div class="row panel" style="border:0px">
+		<div class="large-6 small-6 medium-6 columns">
+        	<a href="/"><img title="logo creaktive" src="/img/creaktive.png"/></a>
+		</div>
+		<div class="large-6 small-6 medium-6 columns">
+
+		</div>
+	</div>
+	<div style="width:100%;background-color:#1b9dd3;">
+		<div class="row">
+			<font style="font-size: 18px;line-height:75px;color:white">
+				<b>Users Manager </b>
+			</font>
+		</div>
+	</div>
+
+	<br>
+
+	<div class="row">
+    	<div class="large-6 medium-6 small-6 columns">
+	    	<div class="row collapse">
+		        <div class="small-3 columns">
+			      <span class="prefix">Search</span>
+			    </div>
+			    <div class="small-9 columns">
+		          <input type="text" class="search" placeholder="Search members by typing his name">
+		        </div>			  
+		    </div>
+		</div>
+        <div class="large-5 medium-6 small-6 columns">
+	        <div class="row collapse">
+		        <div class="small-1 large-1 columns">
+			      <span class="prefix">@</span>
+			    </div>
+			    <div class="small-9 columns">
+		          <input type="text" placeholder="Send an invitation by email" id="searchUser">
+		        </div>
+		        <div class="small-2 columns">
+		          <a href="#" class="button postfix inviteUser">Send</a>
+		        </div>
+		    </div>
+	    </div>
+    </div>
+</script>
+<!-- ////////////////////////////////////////////////////////////////////// -->
 <!-- ////////////////////////////////////////////////////////////////////// -->
 <!-- Left part -->
 <script type="text/template" id="user-profil-template">
@@ -9,7 +56,6 @@
 			<div class="row panel callout radius">
 				<div class="large-3 medium-3 small-3 columns">
 			    	<img class="roundedImage" src="{{- permission.user.img }}"/>
-			    	
 			    </div>
 			    <div class="large-9 medium-9 small-9 columns">
 			    	<div class="row">
@@ -66,51 +112,3 @@
 	</div>
     
 </script>
-<!-- ////////////////////////////////////////////////////////////////////// -->
-
-<script type="text/template" id="user-search-template">
-	<div class="row panel" style="border:0px">
-		<div class="large-6 small-6 medium-6 columns">
-			<img title="logo creaktive" src="/img/creaktive.png"/>
-		</div>
-		<div class="large-6 small-6 medium-6 columns">
-
-		</div>
-	</div>
-	<div style="width:100%;background-color:#1b9dd3;">
-		<div class="row">
-			<font style="font-size: 18px;line-height:75px;color:white">
-				<b>Users Manager </b>
-			</font>
-		</div>
-	</div>
-
-	<br>
-
-	<div class="row">
-    	<div class="large-6 medium-6 small-6 columns">
-	    	<div class="row collapse">
-		        <div class="small-3 columns">
-			      <span class="prefix">Search</span>
-			    </div>
-			    <div class="small-9 columns">
-		          <input type="text" class="search" placeholder="Search members by typing his name">
-		        </div>			  
-		    </div>
-		</div>
-        <div class="large-5 medium-6 small-6 columns">
-	        <div class="row collapse">
-		        <div class="small-1 large-1 columns">
-			      <span class="prefix">@</span>
-			    </div>
-			    <div class="small-9 columns">
-		          <input type="text" placeholder="Send an invitation by email" id="searchUser">
-		        </div>
-		        <div class="small-2 columns">
-		          <a href="#" class="button postfix inviteUser">Send</a>
-		        </div>
-		    </div>
-	    </div>
-    </div>
-</script>
-<!-- ////////////////////////////////////////////////////////////////////// -->
