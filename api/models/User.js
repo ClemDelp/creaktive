@@ -42,18 +42,18 @@ module.exports = {
     },
 
     hashPassword : function(user, cb){
-        bcrypt.genSalt(10, function(err, salt) {
-          bcrypt.hash(user.pw, salt, function(err, hash) {
-            if (err) {
-              console.log(err);
-              cb(err);
-            }else{
-              user.pw = hash;
-              cb(null, user);
-            }
-          });
+      bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(user.pw, salt, function(err, hash) {
+          if (err) {
+            console.log(err);
+            cb(err);
+          }else{
+            user.pw = hash;
+            cb(null, user);
+          }
         });
-      },
+      });
+    },
     
   },
 

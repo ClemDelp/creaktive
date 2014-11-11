@@ -42,8 +42,19 @@ editProfile.Views.Main = Backbone.View.extend({
         password : $('#password').val(),
         confirmPassword : $('#confirmPassword').val()
       }, function(data){
-        alert('Password updated')
+        console.log(data)
+        var n = {
+          wrapper:document.body,
+          message:'<p>'+data+'</p>',
+          layout:'growl',
+          effect:'slide',
+          type:'success',
+          ttl:2000,
+          archiveButton:false
+        }    
+        nlib.simplePush(n);
       });
+
     },
     editInfo : function(e){
       e.preventDefault();
@@ -52,14 +63,37 @@ editProfile.Views.Main = Backbone.View.extend({
         name : $('#username').val()
       }, {
         success : function(){
-          alert("Profile updated");
+          var n = {
+            wrapper:document.body,
+            message:'<p>Profile updated</p>',
+            layout:'growl',
+            effect:'slide',
+            type:'success',
+            ttl:2000,
+            archiveButton:false
+          }    
+          nlib.simplePush(n);
         }
       });
+
     },
     changeAvatar : function(e){
       e.preventDefault();
       this.user.save({
         img : e.target.getAttribute("data-img-src") 
+      }, {
+        success : function(){
+          var n = {
+            wrapper:document.body,
+            message:'<p>Avatar updated</p>',
+            layout:'growl',
+            effect:'slide',
+            type:'success',
+            ttl:2000,
+            archiveButton:false
+          }    
+          nlib.simplePush(n);
+        }
       });
     },
     render : function(){

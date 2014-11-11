@@ -144,7 +144,7 @@ global.Models.User = Backbone.Model.extend({
         id:"",
         name : "",
         email : "",
-        img : "",
+        img : "img/default-user-icon-profile.png",
         color : "",
         tags: [],
         top : "",

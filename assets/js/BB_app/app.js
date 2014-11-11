@@ -27,7 +27,8 @@ var global = {
     this.eventAggregator = {};//this.concepts.first();
     _.extend(this.eventAggregator, Backbone.Events);
     // Models
-    this.models.current_user = new this.Models.User(json.user); ; 
+    this.models.current_user = new this.Models.User(json.user);
+    if(this.models.current_user.get('img') == null) this.models.current_user.save({img : "img/default-user-icon-profile.png"}); 
     this.models.currentProject = new this.Models.ProjectModel(json.project);
     // Collection
     this.collections.Knowledges = new this.Collections.Knowledges(json.knowledges);

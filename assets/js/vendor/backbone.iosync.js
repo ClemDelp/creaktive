@@ -104,7 +104,7 @@ Backbone.sync = function (method, model, options) {
 
   io.emit(action, json, function (data) {
 
-    // console.log("*** SOCKET from ", json.url, "Response ", data, "***")
+    //console.log("*** SOCKET from ", json.url, "Response ", data, "***")
 
 
     if(data.err){

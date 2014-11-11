@@ -1,81 +1,87 @@
 <div id="editProfile_container"></div>
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <script type="text/template" id="editProfile-profile-template">
-    <br>
-    <center class="panel row">
+    <div class="row panel" style="border:0px">
+        <div class="large-6 small-6 medium-6 columns">
+            <img title="logo creaktive" src="/img/creaktive.png"/>
+        </div>
+        <div class="large-6 small-6 medium-6 columns">
+            <h2>Hello, {{-user.name }}!</h2>
+        </div>
+    </div>
+    <div style="width:100%;background-color:#1b9dd3;">
         <div class="row">
-            <h1>Your profile</h1>
-            <hr>
-            <img class="large-2 medium-2 small-2" src= "{{- user.img }}" id="avatar"/>      
-            <br>
-            <a href="#" class="button secondary small round" data-dropdown="drop2">Change avatar</a>
+            <font style="font-size: 18px;line-height:75px;color:white">
+                <b>Your user profile : </b>
+            </font>
+        </div>
+    </div>
+
+
+    <div class="panel row">
+        <div class="large-4 small-4 medium-4 columns">
+            <center>
+                <img class="large-12 medium-12 small-12" src= "{{- user.img }}" id="avatar"/>      
+                <br>
+                <br>
+                <a href="#" class="button small expand radius" data-dropdown="drop2">Choose an avatar</a>
+                <div id="drop2" data-dropdown-content class="f-dropdown content">
+                  <ul class="large-block-grid-4 medium-block-grid-5  small-block-grid-2">
+                    <li><img src= "img/profiles/1.png" data-img-src="img/profiles/1.png" class="changeAvatar"/> </li>
+                    <li><img src= "img/profiles/2.png" data-img-src="img/profiles/2.png" class="changeAvatar" /> </li>
+                    <li><img src= "img/profiles/3.png" data-img-src="img/profiles/3.png" class="changeAvatar"/> </li>
+                    <li><img src= "img/profiles/4.png"data-img-src="img/profiles/4.png"  class="changeAvatar"/> </li>
+                    <li><img src= "img/profiles/5.png" data-img-src="img/profiles/5.png" class="changeAvatar"/> </li>
+                    <li><img src= "img/profiles/6.png" data-img-src="img/profiles/6.png" class="changeAvatar"/> </li>
+                    <li><img src= "img/profiles/7.png" data-img-src="img/profiles/7.png" class="changeAvatar"/> </li>
+                    <li><img src= "img/profiles/8.png" data-img-src="img/profiles/8.png" class="changeAvatar"/> </li>
+                    <li><img src= "img/profiles/9.png" data-img-src="img/profiles/9.png" class="changeAvatar"/> </li>
+                    <li><img src= "img/profiles/10.png" data-img-src="img/profiles/10.png" class="changeAvatar" /> </li>
+                    <li><img src= "img/profiles/11.png" data-img-src="img/profiles/11.png" class="changeAvatar"/> </li>
+                    <li><img src= "img/profiles/12.png" data-img-src="img/profiles/12.png" class="changeAvatar"/> </li>
+                    <li><img src= "img/profiles/13.png" data-img-src="img/profiles/13.png" class="changeAvatar"/> </li>
+                    <li><img src= "img/profiles/14.png" data-img-src="img/profiles/14.png" class="changeAvatar"/> </li>
+                    <li><img src= "img/profiles/15.png" data-img-src="img/profiles/15.png" class="changeAvatar"/> </li>
+                    <li><img src= "img/profiles/16.png" data-img-src="img/profiles/16.png" class="changeAvatar"/> </li>
+                    <li><img src= "img/profiles/17.png" data-img-src="img/profiles/17.png" class="changeAvatar"/> </li>
+                    <li><img src= "img/profiles/18.png" data-img-src="img/profiles/18.png" class="changeAvatar"/></li>
+                  </ul>
+                </div>
+            </center>
         </div>
 
-        <div id="drop2" data-dropdown-content class="f-dropdown content">
-          <ul class="large-block-grid-4 medium-block-grid-5  small-block-grid-2">
-            <li><img src= "img/profiles/1.png" data-img-src="img/profiles/1.png" class="changeAvatar"/> </li>
-            <li><img src= "img/profiles/2.png" data-img-src="img/profiles/2.png" class="changeAvatar" /> </li>
-            <li><img src= "img/profiles/3.png" data-img-src="img/profiles/3.png" class="changeAvatar"/> </li>
-            <li><img src= "img/profiles/4.png"data-img-src="img/profiles/4.png"  class="changeAvatar"/> </li>
-            <li><img src= "img/profiles/5.png" data-img-src="img/profiles/5.png" class="changeAvatar"/> </li>
-            <li><img src= "img/profiles/6.png" data-img-src="img/profiles/6.png" class="changeAvatar"/> </li>
-            <li><img src= "img/profiles/7.png" data-img-src="img/profiles/7.png" class="changeAvatar"/> </li>
-            <li><img src= "img/profiles/8.png" data-img-src="img/profiles/8.png" class="changeAvatar"/> </li>
-            <li><img src= "img/profiles/9.png" data-img-src="img/profiles/9.png" class="changeAvatar"/> </li>
-            <li><img src= "img/profiles/10.png" data-img-src="img/profiles/10.png" class="changeAvatar" /> </li>
-            <li><img src= "img/profiles/11.png" data-img-src="img/profiles/11.png" class="changeAvatar"/> </li>
-            <li><img src= "img/profiles/12.png" data-img-src="img/profiles/12.png" class="changeAvatar"/> </li>
-            <li><img src= "img/profiles/13.png" data-img-src="img/profiles/13.png" class="changeAvatar"/> </li>
-            <li><img src= "img/profiles/14.png" data-img-src="img/profiles/14.png" class="changeAvatar"/> </li>
-            <li><img src= "img/profiles/15.png" data-img-src="img/profiles/15.png" class="changeAvatar"/> </li>
-            <li><img src= "img/profiles/16.png" data-img-src="img/profiles/16.png" class="changeAvatar"/> </li>
-            <li><img src= "img/profiles/17.png" data-img-src="img/profiles/17.png" class="changeAvatar"/> </li>
-            <li><img src= "img/profiles/18.png" data-img-src="img/profiles/18.png" class="changeAvatar"/></li>
-          </ul>
-        </div>
-
-
-
-        <div class="row">
+        <div class="large-8 small-8 medium-8 columns">
             <form data-abide>
-
-                <div class="large-4 medium-4 small-4 name-field">
+                <div class="large-12 medium-12 small-12 name-field">
                     <label>Name <small>required</small></label>
                     <input type="text" id="username" name="username" value="{{- user.name }}"/>
                 </div>
-                <div class="large-4 medium-4 small-4 email-field">
+                <div class="large-12 medium-12 small-12 email-field">
                     <label>Email adress <small>required</small></label>
                     <input type="email" id="email" name="email" value="{{- user.email }}" required/>
                 </div>
-
-                <button class="button secondary round editInfo" >Submit</button>
+                <button class="button radius small editInfo" >Submit</button>
             </form>
-
-
-
-
             <form data-abide>
-
-                <div class="large-4 medium-4 small-4 old-password-field">
+                <div class="large-12 medium-12 small-12 old-password-field">
                     <label>Old password <small>required</small></label>
                     <input type="password" name="oldpassword" id="oldpassword" />
                     <small class="error">Your password must match the requirements</small>
                 </div>
 
-                <div class="large-4 medium-4 small-4 password-field">
+                <div class="large-12 medium-12 small-12 password-field">
                     <label>New password <small>required</small></label>
                     <input type="password" name="password" id="password"/>
                     <small class="error">Passwords must be at least 8 characters with 1 capital letter, 1 number, and one special character.</small>
                 </div>
-                <div class="large-4 medium-4 small-4 confirm-password-field">
+                <div class="large-12 medium-12 small-12 confirm-password-field">
                     <label>Confirm new password <small>required</small></label>
                     <input type="password" name="confirmPassword" data-equalto="password" id="confirmPassword">
                     <small class="error">Passwords must be at least 8 characters with 1 capital letter, 1 number, and one special character.</small>
                 </div>
-
-                <button class="button secondary small round updatePassword" >Change password</button>
-
+                <button class="button small radius updatePassword" >Change password</button>
             </form>
         </div>
-    </center>
+
+    </div>
 </script>
