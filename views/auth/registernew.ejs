@@ -1,5 +1,3 @@
-
-
 <script>
     function select (data) {
         $('#image').val(data);
@@ -7,73 +5,84 @@
     }
 </script>
 
-<div class="row">
-    <h1> Registration form </h1>
-    <hr>
-    <div class="large-2 medium-2 small-2 columns">
-        <img src= "/img/default-user-icon-profile.png" id="avatar"/>      
+<div class="row panel" style="border:0px">
+    <div class="large-6 small-6 medium-6 columns">
+        <a href="/"><img title="logo creaktive" src="/img/creaktive.png"/></a>
     </div>
-    <div class="large-10 medium-10 small-10 columns">
-        <a href="#" class="button" data-dropdown="drop2">Change avatar</a>
+    <div class="large-6 small-6 medium-6 columns">
+    </div>
+</div>
+<div style="width:100%;background-color:#1b9dd3;">
+    <div class="row">
+        <font style="font-size: 18px;line-height:75px;color:white">
+            <b>Registration form : </b>
+        </font>
+    </div>
+</div>
+
+<div class="panel row">
+    <div class="large-3 medium-3 small-3 columns">
+        <center>
+            <img class="large-12 medium-12 small-12" src= "/img/default-user-icon-profile.png" id="avatar"/>
+            <br>
+            <br>
+            <a href="#" class="button expand small radius" data-dropdown="drop2">Choose an avatar</a>
+            <div id="drop2" data-dropdown-content class="f-dropdown content">
+              <ul class="large-block-grid-4 medium-block-grid-5  small-block-grid-2">
+                <li><img src= "img/profiles/1.png" onclick="select('img/profiles/1.png')" /> </li>
+                <li><img src= "img/profiles/2.png" onclick="select('img/profiles/2.png')"/> </li>
+                <li><img src= "img/profiles/3.png" onclick="select('img/profiles/3.png')"/> </li>
+                <li><img src= "img/profiles/4.png" onclick="select('img/profiles/4.png')"/> </li>
+                <li><img src= "img/profiles/5.png" onclick="select('img/profiles/5.png')"/> </li>
+                <li><img src= "img/profiles/6.png" onclick="select('img/profiles/6.png')"/> </li>
+                <li><img src= "img/profiles/7.png" onclick="select('img/profiles/7.png')"/> </li>
+                <li><img src= "img/profiles/8.png" onclick="select('img/profiles/8.png')"/> </li>
+                <li><img src= "img/profiles/9.png" onclick="select('img/profiles/9.png')"/> </li>
+                <li><img src= "img/profiles/10.png" onclick="select('img/profiles/10.png')"/> </li>
+                <li><img src= "img/profiles/11.png" onclick="select('img/profiles/11.png')"/> </li>
+                <li><img src= "img/profiles/12.png" onclick="select('img/profiles/12.png')"/> </li>
+                <li><img src= "img/profiles/13.png" onclick="select('img/profiles/13.png')"/> </li>
+                <li><img src= "img/profiles/14.png" onclick="select('img/profiles/14.png')"/> </li>
+                <li><img src= "img/profiles/15.png" onclick="select('img/profiles/15.png')"/> </li>
+                <li><img src= "img/profiles/16.png" onclick="select('img/profiles/16.png')"/> </li>
+                <li><img src= "img/profiles/17.png" onclick="select('img/profiles/17.png')"/> </li>
+                <li><img src= "img/profiles/18.png" onclick="select('img/profiles/18.png')"/> </li>
+              </ul>
+            </div>
+        </center>      
+    </div>
+    <div class="large-9 medium-9 small-9 columns">
+        <form data-abide action="/newuser" method="post">
+
+            <div class="large-12 medium-12 small-12 image-field">
+                <input type="hidden" id="image" name="image" />
+            </div>
+
+            <div class="large-12 medium-12 small-12 name-field">
+                <label>Name <small>required</small></label>
+                <input type="text" name="username" required />
+            </div>
+            <div class="large-12 medium-12 small-12 email-field">
+                <label>Email adress <small>required</small></label>
+                <input type="email" name="email"  required />
+                <small class="error">Valid email required.</small>
+            </div>
+     
+
+            <div class="large-12 medium-12 small-12 password-field">
+                <label>Password <small>required</small></label>
+                <input type="password" name="password" id="password" required />
+                <small class="error">Passwords must be at least 8 characters with 1 capital letter, 1 number, and one special character.</small>
+            </div>
+            <div class="large-12 medium-12 small-12 confirm-password-field">
+                <label>Confirm password <small>required</small></label>
+                <input type="password" name="confirmPassword" id="confirmPassword" data-equalto="password" required />
+                <small class="error">Passwords must match.</small>
+            </div>
+
+
+            <button class="button small radius" type="submit">Submit</button>
+        </form>
     </div>
 
 </div>
-
-<div id="drop2" data-dropdown-content class="f-dropdown content">
-  <ul class="large-block-grid-4 medium-block-grid-5  small-block-grid-2">
-    <li><img src= "img/profiles/1.png" onclick="select('img/profiles/1.png')" /> </li>
-    <li><img src= "img/profiles/2.png" onclick="select('img/profiles/2.png')"/> </li>
-    <li><img src= "img/profiles/3.png" onclick="select('img/profiles/3.png')"/> </li>
-    <li><img src= "img/profiles/4.png" onclick="select('img/profiles/4.png')"/> </li>
-    <li><img src= "img/profiles/5.png" onclick="select('img/profiles/5.png')"/> </li>
-    <li><img src= "img/profiles/6.png" onclick="select('img/profiles/6.png')"/> </li>
-    <li><img src= "img/profiles/7.png" onclick="select('img/profiles/7.png')"/> </li>
-    <li><img src= "img/profiles/8.png" onclick="select('img/profiles/8.png')"/> </li>
-    <li><img src= "img/profiles/9.png" onclick="select('img/profiles/9.png')"/> </li>
-    <li><img src= "img/profiles/10.png" onclick="select('img/profiles/10.png')"/> </li>
-    <li><img src= "img/profiles/11.png" onclick="select('img/profiles/11.png')"/> </li>
-    <li><img src= "img/profiles/12.png" onclick="select('img/profiles/12.png')"/> </li>
-    <li><img src= "img/profiles/13.png" onclick="select('img/profiles/13.png')"/> </li>
-    <li><img src= "img/profiles/14.png" onclick="select('img/profiles/14.png')"/> </li>
-    <li><img src= "img/profiles/15.png" onclick="select('img/profiles/15.png')"/> </li>
-    <li><img src= "img/profiles/16.png" onclick="select('img/profiles/16.png')"/> </li>
-    <li><img src= "img/profiles/17.png" onclick="select('img/profiles/17.png')"/> </li>
-    <li><img src= "img/profiles/18.png" onclick="select('img/profiles/18.png')"/> </li>
-  </ul>
-</div>
-
-
-<div class="row">
-    <form data-abide action="/newuser" method="post">
-
-        <div class="large-4 medium-4 small-4 image-field">
-            <input type="hidden" id="image" name="image" />
-        </div>
-
-        <div class="large-4 medium-4 small-4 name-field">
-            <label>Name <small>required</small></label>
-            <input type="text" name="username" required />
-        </div>
-        <div class="large-4 medium-4 small-4 email-field">
-            <label>Email adress <small>required</small></label>
-            <input type="email" name="email"  required />
-            <small class="error">Valid email required.</small>
-        </div>
- 
-
-        <div class="large-4 medium-4 small-4 password-field">
-            <label>Password <small>required</small></label>
-            <input type="password" name="password" id="password" required />
-            <small class="error">Passwords must be at least 8 characters with 1 capital letter, 1 number, and one special character.</small>
-        </div>
-        <div class="large-4 medium-4 small-4 confirm-password-field">
-            <label>Confirm password <small>required</small></label>
-            <input type="password" name="confirmPassword" id="confirmPassword" data-equalto="password" required />
-            <small class="error">Passwords must match.</small>
-        </div>
-
-
-        <button class="button" type="submit">Submit</button>
-    </form>
-
-  
