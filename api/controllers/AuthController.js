@@ -33,6 +33,10 @@ var AuthController = {
 		User.find({
 			email : req.body.email
 		}).done(function(err, users){
+			if(err) return res.send(err);
+			if(users.length === 0 ){
+				return res.send(400,"Email not found")
+			}
 	      	var user = users[0];
 	      	if(req.baseUrl == "http://localhost:1337"){
 		        url = req.baseUrl + "/newpassword?id="+user.id+"&k=" + key;
