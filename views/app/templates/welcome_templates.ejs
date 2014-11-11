@@ -2,11 +2,14 @@
 
 <script type="text/template" id="welcome-template">
   	<div class="row panel" style="border:0px">
-		<div class="large-6 small-6 medium-6 columns">
-			<img title="logo creaktive" src="/img/creaktive.png"/>
+		<div class="large-5 small-5 medium-5 columns">
+        	<a href="/"><img title="logo creaktive" src="/img/creaktive.png"/></a>
 		</div>
-		<div class="large-6 small-6 medium-6 columns">
+		<div class="large-5 small-5 medium-5 columns">
 			<h2>Hello, {{-user.name }}!</h2>
+		</div>
+		<div class="large-2 small-2 medium-2 columns">
+			<a style='float:right' href="/editprofile" class="button tiny secondary round " title="edit your profile"><img width="20" src="{{-user.img }}"/></a>
 		</div>
 	</div>
 	<div style="width:100%;background-color:#1b9dd3;">
