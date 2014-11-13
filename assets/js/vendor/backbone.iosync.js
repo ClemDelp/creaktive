@@ -108,12 +108,24 @@ Backbone.sync = function (method, model, options) {
 
 
     if(data.err){
-      if(options.error) options.error(data.err);
+      // if(options.error) options.error(data.err);
       if(data.err === "You have read-only permission"){
         defer.resolve();
       }else{
-        alert(data.err);
-        location.reload();
+        setTimeout(function(){
+          swal({   
+            title: "Problem!",   
+            text: data.err,   
+            type: "error",   
+            showCancelButton: true,   
+            confirmButtonColor: "#DD6B55",   
+            confirmButtonText: "Ok!",   
+            closeOnConfirm: false 
+          }, 
+          function(isConfirm){
+            location.reload();    
+          });
+        },1000);
       }
       defer.reject();
     }else{

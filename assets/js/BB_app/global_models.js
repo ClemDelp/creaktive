@@ -63,7 +63,8 @@ global.Models.CKObject = Backbone.Model.extend({
         top : "",
         left:"",
         project:"",
-        css : ""
+        css : "",
+        status : "private"
     },
     parse : function(serverObj){
         serverObj.comments = new global.Collections.Comments(serverObj.comments);
@@ -105,12 +106,6 @@ global.Models.Poche = global.Models.CKObject.extend({
 });
 /***************************************/
 global.Models.ProjectModel = global.Models.CKObject.extend({
-    // defaults : {
-    //     id : "",
-    //     title : "no projects",
-    //     conceptsMapJson : {},
-    //     date : getDate()
-    // },
     initialize : function Doc() {
         //console.log('Project Constructor');
         this.urlRoot = "project";
