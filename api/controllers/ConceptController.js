@@ -14,7 +14,7 @@
     Concept.find({
       project : req.session.currentProject.id
     }).done(function(err,concepts){
-      if(err) res.send(err);
+      if(err) return res.send({err:err});
       this.concepts = concepts;
       c0 = _.findWhere(concepts, {position : 0});
      
@@ -23,7 +23,7 @@
   }else{
         Concept.find({
     }).done(function(err,concepts){
-      if(err) res.send(err);
+      if(err) return res.send({err:err});
       this.concepts = concepts;
       c0 = _.findWhere(concepts, {position : 0});
      
@@ -36,7 +36,7 @@
   update : function(req, res){
     console.log("Updating concept",req.body.notification)
     Concept.findOne(req.body.params.id).done(function(err, concept){
-      if(err) res.send(err);
+      if(err) return res.send({err:err});
       if(concept){
         Concept.update({
           id: req.body.params.id
@@ -58,7 +58,7 @@
         ///////////////////////////
         concept.project = req.session.currentProject.id;
         Concept.create(concept).done(function(err,c){
-          if(err) res.send(err);
+          if(err) return res.send({err:err});
           req.socket.broadcast.to(req.session.currentProject.id).emit("concept:create", c);
           Notification.objectCreated(req,res,"Concept", c);
           res.send(c);
@@ -71,13 +71,13 @@
   destroy : function(req,res){
     console.log('Deleting concept')
     Concept.findOne(req.body.params.id).done(function(err,concept){
-      if(err) console.log(err);
+      if(err) return res.send({err:err});
       if(concept.position == 0) res.send({err : "You can't remove c0"})
       else{
         req.socket.broadcast.to(req.session.currentProject.id).emit("concept:remove2", concept);
         Notification.objectRemoved(req,res,"Concept", concept);
         concept.destroy(function(err){
-          if(err) res.send(err)
+          if(err) return res.send({err:err});
           res.send({msg:"destroyed"})
         });
       };

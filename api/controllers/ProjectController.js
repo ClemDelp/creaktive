@@ -29,6 +29,7 @@ module.exports = {
           id : authorized_projects,
           project : node0
         }).done(function(err, projects){
+          if(err) return res.send({err:err});
           res.send(projects);
         })
       }) 
@@ -40,6 +41,7 @@ module.exports = {
         Project.find({
           id : authorized_projects
         }).done(function(err, projects){
+          if(err) return res.send({err:err});
           res.send(projects);
         })
       })
@@ -52,7 +54,7 @@ module.exports = {
   create : function (req,res){
     console.log("creating project")
     Project.create(req.body.params).done(function(err, project){
-      if(err) res.send(err)
+      if(err) return res.send({err:err});
       res.send(project)
 
         Concept.create({
@@ -73,14 +75,14 @@ module.exports = {
 
 
     }).done(function(err, c0){
-      if(err) console.log(err);
+      if(err) return res.send({err:err});
       Presentation.create({
         id : IdService.guid(),
         title : values.title,
         data : "",
         project_id : values.id,
       }).done(function(err){
-        if(err) console.log(err);
+        if(err) return res.send({err:err});
         cb();
       });
     });
@@ -90,7 +92,7 @@ module.exports = {
         project_id : project.id,
         right : "admin"
       }).done(function(err, perm){
-        if(err) res.send(err)
+        if(err) return res.send({err:err});
         res.send(project)
       })
     })
@@ -100,15 +102,15 @@ module.exports = {
   update : function(req,res){
     console.log("updating project")
   	Project.findOne(req.body.params.id).done(function(err, project){
-  		if(err) res.send(err);
+  		if(err) return res.send({err:err});
   		if(project){
   			Project.update({id: req.body.params.id}, req.body.params).done(function(err,c){
-  				if(err) res.send(err)
+  				if(err) return res.send({err:err});
   				res.send(c[0]);
   			});
   		}else{
   			Project.create(req.body.params).done(function(err,project){
-  				if(err) res.send(err)
+  				if(err) return res.send({err:err});
 
           Concept.create({
             id : IdService.guid(),
@@ -125,21 +127,21 @@ module.exports = {
             top : 750,
             left: 750
           }).done(function(err, c0){
-            if(err) console.log(err);
+            if(err) return res.send({err:err});
             Presentation.create({
               id : IdService.guid(),
               title : project.title,
               data : "",
               project_id : project.id,
             }).done(function(err){
-              if(err) console.log(err);
+              if(err) return res.send({err:err});
               Permission.create({
                 id: IdService.guid(),
                 user_id : req.session.user.id,
                 project_id : project.id,
                 right : "admin"
               }).done(function(err, perm){
-                if(err) res.send(err)
+                if(err) return res.send({err:err});
                   res.send(project)
               })
             });
@@ -154,16 +156,16 @@ module.exports = {
     console.log('destroying project')
     var project_id = req.body.params.id
 		Project.findOne(project_id).done(function(err,project){
-		  if(err) console.log(err);
+		  if(err) return res.send({err:err});
       project.destroy(function(err){
-        if(err) console.log(err)
+        if(err) return res.send({err:err});
         Project.find({
           project : project_id
         }).done(function(err, nodes){
-          if(err) res.send(err);
+          if(err) return res.send({err:err});
           _.each(nodes, function(node){
             node.destroy(function(err){
-              if(err) console.log(err)
+              if(err) return res.send({err:err});
             })
           })
         })
@@ -184,7 +186,7 @@ module.exports = {
     var title = req.body.title;
     var content = req.body.content; 
     BackupService.createProjectFromNode(node_id, title, content, function(err, proj){
-      if(err) return res.send(err);
+      if(err) return res.send({err:err});
       res.send(proj);
     })
   },
@@ -198,7 +200,7 @@ module.exports = {
     var node_id = req.body.node_id;
 
     Project.findOne(req.session.currentProject.id).done(function(err, currentProject){
-      if(err) res.send(err);    
+      if(err) return res.send({err:err});    
       Project.findOne(node_id).done(function(err, project){
         if(err) return res.send(err);
           res.send(project)

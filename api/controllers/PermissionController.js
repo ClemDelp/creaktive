@@ -17,7 +17,7 @@ find : function (req,res){
     Permission.find({
 
     }).done(function(err,permissions){
-      if(err) res.send(err)
+      if(err) return res.send({err:err});
       res.send(permissions)
     });
 
@@ -26,9 +26,9 @@ find : function (req,res){
 destroy : function(req,res){
   console.log("destroying permission")
     Permission.findOne(req.body.params.id).done(function(err,permission){
-      if(err) console.log(err);
+      if(err) return res.send({err:err});
       permission.destroy(function(err){
-        if(err) console.log(err)
+        if(err) return res.send({err:err});
           res.send({msg:"permission destroyed"})
       })
     });
@@ -37,15 +37,15 @@ destroy : function(req,res){
 update : function(req,res){
   console.log('updating permission')
     Permission.findOne(req.body.params.id).done(function(err, permission){
-      if(err) res.send(err);
+      if(err) return res.send({err:err});
       if(permission){
         Permission.update({id: req.body.params.id}, req.body.params).done(function(err,c){
-          if(err) res.send(err)
+          if(err) return res.send({err:err});
           res.send(c);
         });
       }else{
         Permission.create(req.body.params).done(function(err,p){
-          if(err) res.send(err)
+          if(err) return res.send({err:err});
           res.send(p);
         })
       }

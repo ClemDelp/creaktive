@@ -23,12 +23,12 @@ module.exports = {
       Presentation.find({
        project : req.session.currentProject.id
       }).done(function(err,presentations){
-        if(err) res.send(err)
+        if(err) return res.send({err:err});
         res.send(presentations)
       });
     }else{
       Presentation.find({}).done(function(err,presentations){
-        if(err) res.send(err)
+        if(err) return res.send({err:err});
         res.send(presentations)
       });
     }
@@ -44,7 +44,7 @@ module.exports = {
   var s = req.body.params;
   s.project = req.session.currentProject.id
   Presentation.create(s).done(function(err, presentation){
-    if(err) res.send(err);
+    if(err) return res.send({err:err});
     Notification.objectCreated(req,res,"Presentation", presentation, function(notification){
       res.send(notification);
     });
@@ -56,12 +56,12 @@ module.exports = {
   update : function(req, res){
     console.log('updating presentation')
     Presentation.findOne(req.body.params.id).done(function(err, presentation){
-      if(err) res.send(err);
+      if(err) return res.send({err:err});
       ///////////////////////
       // Udpate
       if(presentation){
       Presentation.update({id: req.body.params.id}, req.body.params).done(function(err,s){
-        if(err) res.send(err);
+        if(err) return res.send({err:err});
         // Notification.objectUpdated(req,res,"Presentation", s[0], function(notification){
         //   res.send(notification);
         // });
@@ -73,7 +73,7 @@ module.exports = {
         var presentation = req.body.params;
         presentation.project = req.session.currentProject.id
         Presentation.create(presentation).done(function(err,s){
-          if(err) res.send(err);       
+          if(err) return res.send({err:err});       
           ////////////////////////////////////////
           // Notification
           Notification.objectCreated(req,res,"Presentation", s, function(notification){
@@ -89,9 +89,9 @@ module.exports = {
   destroy : function(req,res){
     console.log("destroying presentation")
     Presentation.findOne(req.body.params.id).done(function(err,presentation){
-      if(err) console.log(err);
+      if(err) return res.send({err:err});
       presentation.destroy(function(err){
-        if(err) console.log(err)
+        if(err) return res.send({err:err});
           res.send({msg:"destroyed"})
       })
     });

@@ -30,14 +30,14 @@ module.exports = {
     Notification.find({
       project_id : req.session.currentProject.id
     }).done(function(err,notifications){
-      if(err) res.send(err);
+      if(err) return res.send({err:err});
     
         res.send(notifications)
     });
   }else{
         Notification.find({
     }).done(function(err,notifications){
-      if(err) res.send(err);  
+      if(err) return res.send({err:err});  
         res.send(notifications)
     });
   }
@@ -50,7 +50,7 @@ module.exports = {
     c.project = req.session.currentProject.id;
 
     Notification.create(c).done(function(err, concept){
-      if(err) res.send(err);
+      if(err) return res.send({err:err});
 
       res.send(concept);
     });
@@ -59,19 +59,19 @@ module.exports = {
   update : function(req, res){
     console.log('updating notification')
     Notification.findOne(req.body.params.id).done(function(err, concept){
-      if(err) res.send(err);
+      if(err) return res.send({err:err});
       if(concept){
         Notification.update({
           id: req.body.params.id
         }, req.body.params).done(function(err,c){
-          if(err) res.send(err);
+          if(err) return res.send({err:err});
           res.send(c[0]);
       });
       }else{
         var concept = req.body.params;
         concept.project = req.session.currentProject.id;
         Notification.create(concept).done(function(err,c){
-          if(err) res.send(err);
+          if(err) return res.send({err:err});
           res.send(c);
         });
       }
@@ -82,9 +82,9 @@ module.exports = {
   destroy : function(req,res){
     console.log('destroying notification')
     Notification.findOne(req.body.params.id).done(function(err,concept){
-      if(err) console.log(err);
+      if(err) return res.send({err:err});
       concept.destroy(function(err){
-        if(err) console.log(err)
+        if(err) return res.send({err:err});
           res.send({msg:"destroyed"})
       })
     });
