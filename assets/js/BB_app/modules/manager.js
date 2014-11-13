@@ -247,7 +247,7 @@ manager.Views.ProjectDetails = Backbone.View.extend({
         this.render();
     },
     render : function(){
-        if(!this.project_render.get('status')) this.project_render.save({status : 'private'},{silent:true});
+        //if(!this.project_render.get('status')) this.project_render.save({status : 'private'},{silent:true});
         $(this.el).empty();
         var _this = this;
 

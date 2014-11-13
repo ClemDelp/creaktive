@@ -19,12 +19,12 @@
       Poche.find({
        project : req.session.currentProject.id
      }).done(function(err,poches){
-      if(err) res.send(err)
+      if(err) return res.send({err:err});
         res.send(poches)
     });
    }else{
     Poche.find({}).done(function(err,poches){
-      if(err) res.send(err)
+      if(err) return res.send({err:err});
         res.send(poches)
     });
   }
@@ -33,10 +33,10 @@
 update : function(req, res){
   console.log("updating poche")
   Poche.findOne(req.body.params.id).done(function(err, poche){
-    if(err) res.send(err);
+    if(err) return res.send({err:err});
     if(poche){
       Poche.update({id: req.body.params.id}, req.body.params).done(function(err,c){
-          if(err) res.send(err);
+          if(err) return res.send({err:err});
           req.socket.broadcast.to(req.session.currentProject.id).emit("poche:update", c[0]);
           if(req.body.notification) Notification.objectUpdated(req,res,"Poche", c[0], poche);
           res.send(c[0]);   
@@ -48,7 +48,7 @@ update : function(req, res){
       ///////////////////////////
       p.project = req.session.currentProject.id
       Poche.create(p).done(function(err,c){
-        if(err) res.send(err);
+        if(err) return res.send({err:err});
         req.socket.broadcast.to(req.session.currentProject.id).emit("poche:create", c);
         Notification.objectCreated(req,res,"Poche", c);
         res.send(c);
@@ -60,11 +60,11 @@ update : function(req, res){
 destroy : function(req,res){
   console.log('destroying poche')
   Poche.findOne(req.body.params.id).done(function(err,poche){
-    if(err) console.log(err);
+    if(err) return res.send({err:err});
     req.socket.broadcast.to(req.session.currentProject.id).emit("poche:remove2", poche);
     Notification.objectRemoved(req,res,"Poche", poche);    
     poche.destroy(function(err){
-      if(err) console.log(err)
+      if(err) return res.send({err:err});
       res.send({msg:"destroyed"})
     });
   });

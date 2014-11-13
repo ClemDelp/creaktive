@@ -24,12 +24,12 @@ module.exports = {
       Screenshot.find({
        project : req.session.currentProject.id
      }).done(function(err,screenshots){
-      if(err) res.send(err)
+      if(err) return res.send({err:err});
         res.send(screenshots)
     });
    }else{
     Screenshot.find({}).done(function(err,screenshots){
-      if(err) res.send(err)
+      if(err) return res.send({err:err});
         res.send(screenshots)
     });
   }
@@ -45,7 +45,7 @@ module.exports = {
   var s = req.body.params;
   s.project = req.session.currentProject.id
   Screenshot.create(s).done(function(err, screnshot){
-    if(err) res.send(err);
+    if(err) return res.send({err:err});
     Notification.objectCreated(req,res,"Screenshot", screenshot, function(notification){
       res.send(notification);
     });
@@ -58,12 +58,12 @@ module.exports = {
 update : function(req, res){
   console.log("Update screenshot")
  Screenshot.findOne(req.body.params.id).done(function(err, screenshot){
-    if(err) res.send(err);
+    if(err) return res.send({err:err});
     ///////////////////////
     // Udpate
     if(screenshot){
      Screenshot.update({id: req.body.params.id}, req.body.params).done(function(err,s){
-      if(err) res.send(err);
+      if(err) return res.send({err:err});
       Notification.objectUpdated(req,res,"Screenshot", s[0], function(notification){
         res.send(notification);
       });
@@ -78,7 +78,7 @@ update : function(req, res){
       var screenshot = req.body.params;
       screenshot.project = req.session.currentProject.id
       Screenshot.create(screenshot).done(function(err,s){
-        if(err) res.send(err);       
+        if(err) return res.send({err:err});      
         ////////////////////////////////////////
         // Notification
         Notification.objectCreated(req,res,"Screenshot", s, function(notification){
@@ -94,9 +94,9 @@ update : function(req, res){
 destroy : function(req,res){
   console.log("destroy screenshot")
   Screenshot.findOne(req.body.params.id).done(function(err,screenshot){
-    if(err) console.log(err);
+    if(err) return res.send({err:err});
     screenshot.destroy(function(err){
-      if(err) console.log(err)
+      if(err) return res.send({err:err});
         res.send({msg:"destroyed"})
     })
   });

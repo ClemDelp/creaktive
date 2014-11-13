@@ -22,13 +22,9 @@ var AuthController = {
 
 		bcrypt.genSalt(10, function(err, salt) {
           bcrypt.hash(IdService.guid(), salt, function(err, hash) {
-            if (err) {
-              console.log(err);
-            }else{
+            if(err) return res.send({err:err});
+            else{
               key = hash;
-
-
-
 
 		User.find({
 			email : req.body.email
@@ -73,16 +69,16 @@ var AuthController = {
 
 	processNewPassword : function(req,res){
 		User.findOne(req.session.pendingUser).done(function(err, user){
-			if(err) console.log(err)
+			if(err) return res.send({err:err});
 
 			if(req.session.pendingKey == user.recoveryLink){
 				user.pw = req.body.password;
 				user.hashPassword(user, function(err, user){
-					if(err) console.log(err)
+					if(err) return res.send({err:err});
 					delete user.recoveryLink;
 				
 					user.save(function(err, u){
-						if(err) console.log(err)
+						if(err) return res.send({err:err});
 						res.redirect("/login");
 					})
 
@@ -141,8 +137,8 @@ var AuthController = {
 			user.confirmed = true;
 			user.img = req.body.image;
 			user.hashPassword(user, function(err, user){
-							user.save(function(err, user){
-				if(err) console.log(err)
+			user.save(function(err, user){
+				if(err) return res.send({err:err});
 				delete req.session.pendingUser;
 				res.redirect("/login");
 			});
