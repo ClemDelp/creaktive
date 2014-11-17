@@ -24,7 +24,7 @@
     <script src="js/vendor/notifications/classie.js"></script>
     <script src="js/vendor/notifications/notificationFx.js"></script>
     <script src="js/vendor/notifications/snap.svg-min.js"></script>
-    <script src="js/vendor/notifications/notif.js"></script>
+    <script src="js/vendor/notifications/notif.js?v=<%= sails.config.session.version %>"></script>
     <!-- foundation lib -->
     <link rel="stylesheet" href="styles/foundation2.css" />
     <link rel="stylesheet" href="styles/pace.css" />
@@ -50,7 +50,7 @@
       Stylesheets
       ========================     
     -->
-    <link rel="stylesheet" type="text/css" href="styles/overlay_css_timela.css" /> 
+    <link rel="stylesheet" type="text/css" href="styles/overlay_css_timela.css?v=<%= sails.config.session.version %>" /> 
 
 
 <!-- Piwik -->
@@ -136,13 +136,13 @@
     <script type="text/javascript" src="js/BB_app/api.js"></script>
     <script type="text/javascript" src="js/BB_app/app.js"></script>
     <!-- Global objects -->
-    <script src="js/BB_app/global_functions.js"></script>
-    <script src="js/BB_app/global_models.js"></script>
-    <script src="js/BB_app/global_collections.js"></script>
+    <script src="js/BB_app/global_functions.js?v=<%= sails.config.session.version %>"></script>
+    <script src="js/BB_app/global_models.js?v=<%= sails.config.session.version %>"></script>
+    <script src="js/BB_app/global_collections.js?v=<%= sails.config.session.version %>"></script>
 
     <!-- ////////////////////// -->
     <!-- Menu -->
-    <script src="js/BB_app/modules/menu.js"></script>
+    <script src="js/BB_app/modules/menu.js?v=<%= sails.config.session.version %>"></script>
     <script type="text/template" id="menu-template">
       <button id="menuCreaktiveButton" href="#" data-dropdown="menuCreaktive" aria-controls="menuCreaktive" aria-expanded="false" class="button round secondary tiny dropdown"><img title="Menu" src="/img/icones/Menu-24.png"/></button>
       <ul id="menuCreaktive" data-dropdown-content class="f-dropdown" aria-hidden="true" tabindex="-1">
@@ -151,9 +151,10 @@
         {{ }); }}
       </ul>
     </script>
-    <span id="menu_container"></span>
+    <span id="menu_container"></span><small>v1.<%= sails.config.session.version %></small>
     <%- body %>
     <script>
+
       /////////////////////////////////////////////////////////////////////////////////////////////
       // Realtime connection
       /////////////////////////////////////////////////////////////////////////////////////////////

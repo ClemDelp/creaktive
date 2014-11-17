@@ -23,11 +23,11 @@
 <%- partial('templates/CKPreviewer_templates') %>
 
 <%- partial('../app/templates/together_templates') %>
-<script type="text/javascript" src="js/BB_app/modules/together.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/together.js?v=<%= sails.config.session.version %>"></script>
 
 
 <!-- Modules situés dans assets/js/BB_app -->
-<script type="text/javascript" src="js/BB_app/modules/CKPreviewer.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/CKPreviewer.js?v=<%= sails.config.session.version %>"></script>
 <script src="js/ckeditor/ckeditor.js"></script>
 <script>
   ///////////////////////////////////////////////////

@@ -13,10 +13,10 @@
 <%- partial('../app/templates/welcome_templates') %>
 <%- partial('templates/notification_templates') %>
 
-<script type="text/javascript" src="js/BB_app/modules/topbar.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/title.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/welcome.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/notification.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/topbar.js?v=<%= sails.config.session.version %>"></script>
+<script type="text/javascript" src="js/BB_app/modules/title.js?v=<%= sails.config.session.version %>"></script>
+<script type="text/javascript" src="js/BB_app/modules/welcome.js?v=<%= sails.config.session.version %>"></script>
+<script type="text/javascript" src="js/BB_app/modules/notification.js?v=<%= sails.config.session.version %>"></script>
 
 
 <script>

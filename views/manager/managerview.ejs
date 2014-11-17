@@ -9,8 +9,8 @@
 <!-- Modules to load -->
 <%- partial('../app/templates/welcome_templates') %>
 <%- partial('templates/manager_template') %>
-<script src="js/BB_app/modules/manager.js"></script>
-<script src="js/BB_app/modules/welcome.js"></script>
+<script src="js/BB_app/modules/manager.js?v=<%= sails.config.session.version %>"></script>
+<script src="js/BB_app/modules/welcome.js?v=<%= sails.config.session.version %>"></script>
 
 <!-- CKLayout -->
 <%- partial('../app/templates/activitiesList_templates') %>
@@ -22,18 +22,18 @@
 <%- partial('../app/templates/usersList_templates') %>
 
 <%- partial('../app/templates/reportsList_templates') %>
-<script type="text/javascript" src="js/BB_app/modules/reportsList.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/reportsList.js?v=<%= sails.config.session.version %>"></script>
 
-<script type="text/javascript" src="js/BB_app/modules/modelEditor.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/comments.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/attachment.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/CKLayout.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/activitiesList.js"></script>
-<script type="text/javascript" src="js/BB_app/modules/imagesList.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/modelEditor.js?v=<%= sails.config.session.version %>"></script>
+<script type="text/javascript" src="js/BB_app/modules/comments.js?v=<%= sails.config.session.version %>"></script>
+<script type="text/javascript" src="js/BB_app/modules/attachment.js?v=<%= sails.config.session.version %>"></script>
+<script type="text/javascript" src="js/BB_app/modules/CKLayout.js?v=<%= sails.config.session.version %>"></script>
+<script type="text/javascript" src="js/BB_app/modules/activitiesList.js?v=<%= sails.config.session.version %>"></script>
+<script type="text/javascript" src="js/BB_app/modules/imagesList.js?v=<%= sails.config.session.version %>"></script>
 <script type="text/javascript" src="js/BB_app/modules/usersList.js"></script>
 
 <%- partial('../app/templates/googleSearch_templates') %>
-<script type="text/javascript" src="js/BB_app/modules/googleSearch.js"></script>
+<script type="text/javascript" src="js/BB_app/modules/googleSearch.js?v=<%= sails.config.session.version %>"></script>
 
 
 <script>

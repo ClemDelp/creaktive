@@ -3,7 +3,7 @@
 <%- partial('../app/templates/topbar_templates') %>
 <br>
 <!-- Modules situés dans BB_app -->
-<script src="js/BB_app/modules/topbar.js"></script>
+<script src="js/BB_app/modules/topbar.js?v=<%= sails.config.session.version %>"></script>
 
 <script>
   $(document).ready(function () {

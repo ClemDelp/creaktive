@@ -4,7 +4,7 @@
 <!-- ******************************** -->
 <!-- Modules to load -->
 <%- partial('templates/publicmap_templates.ejs') %>
-<script src="js/BB_app/modules/publicMap.js"></script>
+<script src="js/BB_app/modules/publicMap.js?v=<%= sails.config.session.version %>"></script>
 
 <script>
   $(document).ready(function () {
