@@ -66,7 +66,8 @@ backup.Views.Main = Backbone.View.extend({
         title : name,
         content : description,
       }, function(data){
-        alert("Project "+ data.title + " created")
+        if(data.err) alert(data.err);
+        else alert("Project "+ data.title + " created")
       });
     },
     switchBranch : function(e){
@@ -88,7 +89,8 @@ backup.Views.Main = Backbone.View.extend({
         node_name : name,
         node_description : description
       }, function(data){
-        _this.nodesCollection.add(data);
+        if(data.err) alert(data.err);
+        else _this.nodesCollection.add(data);
         //document.location.replace("/backup?projectId="+data.id)
       });
 

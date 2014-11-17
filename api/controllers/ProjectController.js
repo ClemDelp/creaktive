@@ -184,11 +184,16 @@ module.exports = {
     console.log("Creating project from a backup")
     var node_id = req.body.node_id;
     var title = req.body.title;
-    var content = req.body.content; 
-    BackupService.createProjectFromNode(node_id, title, content, function(err, proj){
-      if(err) return res.send({err:err});
-      res.send(proj);
-    })
+    var content = req.body.content;
+    if(title != req.session.currentProject.title){
+      BackupService.createProjectFromNode(node_id, title, content, function(err, proj){
+        if(err) return res.send({err:err});
+        res.send(proj);
+      })
+    }else{
+      res.send({err : "A project with the same title has already been created"});
+    }
+
   },
 
   /**
