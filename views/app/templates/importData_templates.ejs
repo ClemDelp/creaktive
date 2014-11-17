@@ -1,0 +1,47 @@
+<script type="text/template" id="importData-template">
+	<div style="width:100%;background-color:#1b9dd3;">
+	    <div class="row">
+	        <font style="font-size: 18px;line-height:75px;color:white">
+	            <b>Import knowledges : </b>
+	        </font>
+	    </div>
+	</div>
+	<div class="panel row">
+		<b style="float:left">Select a project</b>
+		<a href="#" id="importData" style="float:right" class="button round small success">Import!</a>
+
+		<select id="projectSelection" class="expand">
+	      	{{ _.each(projects,function(project){ }}
+				<option value="{{- project.id }}">{{- project.title }}</option>
+	    	{{ });}}
+	    </select>
+	    <div id="categories_list_container" class="small-6 medium-6 large-6 columns"></div>
+	    <div id="knowledges_list_container" class="small-6 medium-6 large-6 columns"></div>
+	</div>
+	
+</script>
+
+
+<script type="text/template" id="importData-categories-template">
+	<label>Categories with affiliated knowledges...</label>
+	<table style="width:100%">
+		{{ _.each(categories,function(category){ }}
+			<tr>
+		    	<td><input type="checkbox" class="categories_list" id="checkbox_{{- category.id}}" value="{{- category.id}}" /></td>
+		    	<td><span style="{{- category.css }}">{{- category.title }}</span></td>
+		    </tr>
+		{{ });}}
+	</table>
+</script>
+
+<script type="text/template" id="importData-knowledges-template">
+	<label>... or just selected knowledges</label>
+	<table style="width:100%">
+		{{ _.each(knowledges,function(knowledge){ }}
+			<tr>
+		    	<td><input type="checkbox" class="knowledges_list" id="checkbox_{{- knowledge.id}}" value="{{- knowledge.id}}" /></td>
+		    	<td><span style="{{- knowledge.css }}">{{- knowledge.title }}</span></td>
+		    </tr>
+		{{ });}}
+	</table>
+</script>
