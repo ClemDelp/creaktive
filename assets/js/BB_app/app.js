@@ -78,12 +78,12 @@ var global = {
     * @param {Object} params The Configuration object to apply
     * @returns {Boolean} True if the configuration was successful.
     */
-    trackJs.configure({
-      // Custom session identifier.
-      sessionId: this.models.currentProject.get('title'),
-      // Custom user identifier.
-      userId: this.models.current_user.get('email'),
-    });
+    // trackJs.configure({
+    //   // Custom session identifier.
+    //   sessionId: this.models.currentProject.get('title'),
+    //   // Custom user identifier.
+    //   userId: this.models.current_user.get('email'),
+    // });
 
     callback();
   },
