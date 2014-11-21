@@ -64,10 +64,12 @@
       if(err) return res.send({err:err});
       req.socket.broadcast.to(req.session.currentProject.id).emit("link:remove2", link);
       Notification.objectRemoved(req,res,"Link", link);
-      link.destroy(function(err){
-        if(err) return res.send({err:err});
-        res.send({msg:"destroyed"})
-      })
+      if(link) {
+          link.destroy(function(err){
+            if(err) return res.send({err:err});
+            res.send({msg:"destroyed"})
+          })
+       }
     });
   },
 
