@@ -40,7 +40,7 @@
 </script>
 
 <script type="text/template" id="bbmap-bulle-template">
-    <img style="float:left" width="15" src="{{-user.img }}"/>
+    <img style="float:left" width="15" title="last update by {{-model.user.name }}" src="{{-model.user.img }}"/>
     {{ if(model.attachment.length>0) { }}
       <img src="img/icones/Attachment.png" class="attachments"/>
     {{ } }}
