@@ -44,11 +44,10 @@ var api = {
     var uid = api.guid();
     $.getJSON(apiURL,{q:settings.term,rsz:settings.perPage,start:settings.page*settings.perPage},function(r){
         
-
-        var results = r.responseData.results;
-
-        $('#more_'+uid).remove();
-        if(results.length){
+        try{
+          var results = r.responseData.results;
+          $('#more_'+uid).remove();
+          if(results.length){
             // If results were returned, add them to a pageContainer div,
             // after which append them to the #resultsDiv:
             
@@ -58,22 +57,17 @@ var api = {
                 // Creating a new result object and firing its toString method:
                 pageContainer.append(api.googleSearchResult(results[i],settings.width));
             }
-            
             if(!settings.append){
                 // This is executed when running a new search, 
                 // instead of clicking on the More button:
                 resultsDiv.empty();
             }
-            
             pageContainer.append('<div class="clear"></div>')
                          .hide().appendTo(resultsDiv)
                          .fadeIn('slow');
-            
             var cursor = r.responseData.cursor;
-            
             // Checking if there are more pages with results, 
             // and deciding whether to show the More button:
-            
             if((settings.more)&&(+cursor.estimatedResultCount > (settings.page+1)*settings.perPage)){
                 $('<br><div id="more_'+uid+'" class="button round tiny secondary">more</did>').appendTo(resultsDiv).click(function(){
                     settings.append = true;
@@ -82,14 +76,18 @@ var api = {
                     $(this).fadeOut();
                 });
             }
+          }
+          else {
+              
+              // No results were found for this search.
+              // return $('<p>',{className:'notFound',html:'No Results Were Found!'});
+              resultsDiv.empty();
+              $('<p>',{className:'notFound',html:'No Results Were Found!'}).hide().appendTo(resultsDiv).fadeIn();
+          }
+        }catch(err){
+          console.log("google search send no result...")
         }
-        else {
-            
-            // No results were found for this search.
-            // return $('<p>',{className:'notFound',html:'No Results Were Found!'});
-            resultsDiv.empty();
-            $('<p>',{className:'notFound',html:'No Results Were Found!'}).hide().appendTo(resultsDiv).fadeIn();
-        }
+        
     });
   },
   googleSearchResult : function(r,width){
