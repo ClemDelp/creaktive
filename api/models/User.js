@@ -28,11 +28,6 @@ module.exports = {
       defaultsTo : false
     },
 
-    super : {
-      type : 'boolean',
-      required : true,
-      defaultsTo : false
-    },
 
     toJSON: function() {
       var obj = this.toObject();

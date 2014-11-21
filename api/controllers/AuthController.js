@@ -104,7 +104,7 @@ var AuthController = {
 			email : req.body.email,
 			confirmed : false,
 			pw : req.body.password,
-			img : req.body.img
+			img : req.body.img || "img/default-user-icon-profile.png"
 		}).done(function(err, user){
 			if(err) return res.redirect("/newuser");
 	      	EmailService.sendNewUserMail(user, function(err, msg){
