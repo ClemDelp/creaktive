@@ -40,6 +40,7 @@
 </script>
 
 <script type="text/template" id="bbmap-bulle-template">
+    <img style="float:left" width="15" src="{{-user.img }}"/>
     {{ if(model.attachment.length>0) { }}
       <img src="img/icones/Attachment.png" class="attachments"/>
     {{ } }}
@@ -122,6 +123,9 @@
         <a href="#" class="tiny round button secondary structureSubTree"><img title="structure sub-tree" src="/img/icones/Network-Drives-24.png"/></a>
         <a href="#" class="button tiny round secondary prevH"><img title="ctrl-Z" src="/img/icones/Arrowhead-Left-24.png"/></a>
         <a href="#" class="button tiny round secondary nextH"><img title="ctrl-Y" src="/img/icones/Arrowhead-Right-24.png"/></a>
+        
+        <a href="#" data-reveal-id="importData_container" class="button tiny round secondary"><img title="Import data from an other project" src="/img/icones/Data-Import-24.png"/></a>
+        <div id="importData_container" class="reveal-modal medium" data-reveal></div>
       {{ } }}
     </center>
   </span>

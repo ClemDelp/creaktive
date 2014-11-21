@@ -149,7 +149,7 @@ module.exports = {
         
           Knowledge.find({project:project.id}).done(function(err,knowledges){
             Poche.find({project:project.id}).done(function(err,poches){
-              Project.find({backup : false}).done(function(err,projects){
+              Project.find({id : req.session.allowedProjects, backup : false}).done(function(err,projects){
                 Concept.find({project:project.id}).done(function(err,concepts){
                   Link.find({project:project.id}).done(function(err,links){
                     User.find().done(function(err,users){

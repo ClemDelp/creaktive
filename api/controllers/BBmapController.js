@@ -31,7 +31,33 @@ module.exports = {
       res.download(file.path);
     });
   },
-  
+
+  //////////////////////////////////////
+  // IMPORT DATA SERVICE
+  //////////////////////////////////////
+  importCategoriesFromProject : function(req, res){
+    Project.findOne(req.query.project_id).done(function(err, project){
+      Poche.find({project : project.id}).done(function(err, poches){
+        return res.send(poches);
+      });
+    });
+  },
+  importLinksFromProject : function(req, res){
+    Project.findOne(req.query.project_id).done(function(err, project){
+      Link.find({project : project.id}).done(function(err, links){
+        return res.send(links);
+      });
+    });
+  },
+  importKnowledgesFromProject : function(req, res){
+    Project.findOne(req.query.project_id).done(function(err, project){
+      Knowledge.find({project : project.id}).done(function(err, knowledges){
+        return res.send(knowledges);
+      });
+    });
+  },
+  //////////////////////////////////////
+  //////////////////////////////////////
 
   bbmapview : function(req,res){
     console.log("Loading bbmap view")
