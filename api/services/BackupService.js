@@ -14,6 +14,7 @@ module.exports = {
             new_project.content = content;
 
             BackupService.copyData(new_project, id_father, function(err, project){
+                if(err) return cb(err);
                 cb(null, project);
             });
         });
@@ -33,6 +34,7 @@ module.exports = {
         new_Project.node_description = node_description;
 
         BackupService.copyData(new_Project, id_father, function(err, project){
+          if(err) return cb(err);
             cb(null, project);
         });
 
@@ -114,50 +116,54 @@ module.exports = {
                         callback();
                     })
                 },
-                ], function(err){
+                ], 
+                function(err){
+                  try{  
                     // Attribut pour chaque concept l'id du nouveau père 
-                    _.each(all_concepts, function(concept){
-                      if(concept.old.id_father == "none") concept.new.id_father = "none";
-                      else {
-                        var data = _.find(all_concepts, function(c){
-                          if(c.old.id == concept.old.id_father) return c;
+                  _.each(all_concepts, function(concept){
+                    if(concept.old.id_father == "none") concept.new.id_father = "none";
+                    else {
+                      var data = _.find(all_concepts, function(c){
+                        if(c.old.id == concept.old.id_father) return c;
                       });
-                        concept.new.id_father = data.new.id
+                      concept.new.id_father = data.new.id
                     }
-                });
+                  });
+              //Créé tous les liens
+              _.each(all_links, function(link){
+                // On remplace toutes les sources
+                var new_object_source = _.find(all_concepts.concat(all_knowledge, all_categories), function(obj){
+                  if(obj.old.id == link.source) return obj;
+              })
+                link.source = new_object_source.new.id;
+                // On remplace toutes les target
+                var new_object_target = _.find(all_concepts.concat(all_knowledge, all_categories), function(obj){
+                  if(obj.old.id == link.target) return obj;
+              })
+                link.target = new_object_target.new.id;
+            });
+            }catch(e){
+              return cb(e);
+            }
 
-            //Créé tous les liens
-            _.each(all_links, function(link){
-              // On remplace toutes les sources
-              var new_object_source = _.find(all_concepts.concat(all_knowledge, all_categories), function(obj){
-                if(obj.old.id == link.source) return obj;
-            })
-              link.source = new_object_source.new.id;
-              // On remplace toutes les target
-              var new_object_target = _.find(all_concepts.concat(all_knowledge, all_categories), function(obj){
-                if(obj.old.id == link.target) return obj;
-            })
-              link.target = new_object_target.new.id;
-          });
 
-
-            Concept.create(_.pluck(all_concepts, "new")).done(function(err,c){
+              Concept.create(_.pluck(all_concepts, "new")).done(function(err,c){
+                  if(err) return cb(err);
+              }); 
+              //Enregistre toutes les connaissances et poches dans la BDD
+              Knowledge.create(_.pluck(all_knowledge,"new")).done(function(err, knowledges){
                 if(err) return cb(err);
-            }); 
-            //Enregistre toutes les connaissances et poches dans la BDD
-            Knowledge.create(_.pluck(all_knowledge,"new")).done(function(err, knowledges){
-              if(err) return cb(err);
-          });
-            //Enregistre toutes les connaissances et poches dans la BDD
-            Poche.create(_.pluck(all_categories,"new")).done(function(err, poches){
-              if(err) return cb(err);
-          });
-            //Enregistre toutes les connaissances et poches dans la BDD
-            Link.create(all_links).done(function(err, links){
-              if(err) return cb(err);
-          });
+            });
+              //Enregistre toutes les connaissances et poches dans la BDD
+              Poche.create(_.pluck(all_categories,"new")).done(function(err, poches){
+                if(err) return cb(err);
+            });
+              //Enregistre toutes les connaissances et poches dans la BDD
+              Link.create(all_links).done(function(err, links){
+                if(err) return cb(err);
+            });
 
-        });
+          });
 
 
 

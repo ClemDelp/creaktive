@@ -9,7 +9,12 @@ var menu = {
   models: {},
   views: {},
   init: function () {
-    this.views.main = new this.Views.Main({el : "#menu_container",});
+    this.views.main = new this.Views.Main({
+        el : "#menu_container",
+        project :  global.models.currentProject,
+        user : global.models.current_user,
+        pathname : window.location.pathname,
+    });
     this.views.main.render();
   }
 };
@@ -20,8 +25,9 @@ menu.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         ////////////////////////////
-        this.project = global.models.currentProject;
-        this.pathname = window.location.pathname;
+        this.project = json.project;
+        this.user = json.user;
+        this.pathname = json.pathname;
         this.links = [];
         ///////////////////////////
         // links list
@@ -82,7 +88,11 @@ menu.Views.Main = Backbone.View.extend({
     render : function(){        
         // init
         $(this.el).empty();
-        if(this.links.length > 0) $(this.el).append(this.template_menu({links  : this.links}));
+        if(this.links.length > 0) $(this.el).append(this.template_menu({
+            links  : this.links,
+            project : this.project.toJSON(),
+            user : this.user.toJSON()
+        }));
         $(document).foundation();
         return this;
     }

@@ -53,22 +53,6 @@
     <link rel="stylesheet" type="text/css" href="styles/overlay_css_timela.css?v=<%= sails.config.session.version %>" /> 
 
 
-<!-- Piwik -->
-<script type="text/javascript">
-  var _paq = _paq || [];
-  _paq.push(['trackPageView']);
-  _paq.push(['enableLinkTracking']);
-  (function() {
-    var u="//creaktive.piwikpro.com/";
-    _paq.push(['setTrackerUrl', u+'piwik.php']);
-    _paq.push(['setSiteId', 1]);
-    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-  })();
-</script>
-<noscript><p><img src="//creaktive.piwikpro.com/piwik.php?idsite=1" style="border:0;" alt="" /></p></noscript>
-<!-- End Piwik Code -->
-
 
   </head>
   <body>
@@ -125,6 +109,7 @@
         }
       };
     </script>
+
     <script type="text/javascript" crossorigin="anonymous" src="//d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js" data-token="8faefdd629724a7993025c6b51c82b3b"></script>
     <!-- ========================  
             end TrackJS 
@@ -142,16 +127,10 @@
 
     <!-- ////////////////////// -->
     <!-- Menu -->
+    <%- partial('app/templates/menu_templates') %>
     <script src="js/BB_app/modules/menu.js?v=<%= sails.config.session.version %>"></script>
-    <script type="text/template" id="menu-template">
-      <button id="menuCreaktiveButton" href="#" data-dropdown="menuCreaktive" aria-controls="menuCreaktive" aria-expanded="false" class="button round secondary tiny dropdown"><img title="Menu" src="/img/icones/Menu-24.png"/></button>
-      <ul id="menuCreaktive" data-dropdown-content class="f-dropdown" aria-hidden="true" tabindex="-1">
-        {{ _.each(links,function(link){ }}
-          <li><a href="{{-link.href}}">{{-link.name}}</a></li>
-        {{ }); }}
-      </ul>
-    </script>
-    <span id="menu_container"></span>
+    
+    
     <%- body %>
     <script>
 
