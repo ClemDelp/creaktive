@@ -45,7 +45,7 @@ module.exports = {
   },
 
   create : function (req,res){
-    console.log("creating nottification")
+    console.log("creating notification")
     var c = req.body.params;
     c.project = req.session.currentProject.id;
 
