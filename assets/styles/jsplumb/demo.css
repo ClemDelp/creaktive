@@ -196,6 +196,8 @@ body{
 	transition:box-shadow 0.25s ease-in;*/
 }
 
+
+
 .sup:hover{
 	box-shadow: 0px 0px 6px black;
 	background-color:red;

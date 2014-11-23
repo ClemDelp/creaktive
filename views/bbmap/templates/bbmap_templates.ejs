@@ -47,6 +47,8 @@
   </ol>
 </script>
 
+<!-- <img data-type="action" id="{{-model.id}}" title="mode" src="/img/icones/Delete.png"/> -->
+<!-- {{- model.comments.length + model.attachment.length}} -  -->
 <script type="text/template" id="bbmap-bulle-template">
     <span style="float:right" id="{{-model.id}}_tooltip"></span>
     <img style="float:left" width="15" title="create by {{-model.user.name }}" src="{{-model.user.img }}"/>
@@ -58,8 +60,16 @@
     <span id="{{-model.id}}" data-type="action" class="label round secondary ep icon">+c</span>
     <span id="{{-model.id}}" data-type="action" class="label round secondary ep2 icon">+k</span>
     <span id="{{-model.id}}" data-type="action" class="label round secondary ep3 icon"><img data-type="action" id="{{-model.id}}" title="mode" src="/img/icones/Edit.png"/></span>
-    <span id="{{-model.id}}" data-type="action" class="label round secondary sup icon"><img data-type="action" id="{{-model.id}}" title="mode" src="/img/icones/Delete.png"/></span>
-    
+    {{ if( (model.comments.length + model.attachment.length) >0) { }}
+    <a href="#{{-model.id}}_wheelMenu" id="{{-model.id}}" data-type="action" class="label round secondary sup wheel-button">
+      {{- model.comments.length + model.attachment.length}}
+    </a>
+    <ul id="{{-model.id}}_wheelMenu" class="wheel">
+      <li class="item"><a href="#home"><img src="/img/icones/Chat.png"/> - {{- model.comments.length }}</a></li>
+      <li class="item"><a href="#home"><img src="/img/icones/Attach.png"/> - {{- model.attachment.length }}</a></li>
+    </ul>
+    {{ } }}
+
 </script>
 
 <script type="text/template" id="bbmap-top-element-template">

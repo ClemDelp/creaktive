@@ -125,7 +125,7 @@ bbmap.Views.Main = Backbone.View.extend({
             bbmap.views.main.cursorY = event.pageY;
             if(event.deltaY == -1)bbmap.views.main.zoomin()
             else bbmap.views.main.zoomout()
-
+            
         });
 
         this.listener.simple_combo("ctrl z", this.backInHistory);
@@ -615,6 +615,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var zoomParameters = this.getZoomParameters(ref1,ref2);
         if(!from) this.targetToCursor('in',zoomParameters);
         else this.focusZoom(zoomParameters);
+        
     },
     zoomout : function(from){
         new_zoom = Math.round((bbmap.zoom.get('val') + 0.1)*100)/100;
@@ -723,7 +724,6 @@ bbmap.Views.Main = Backbone.View.extend({
     // Hover bulle effect
     /////////////////////////////////////////
     showIcon : function(e){
-        //e.preventDefault();
         var el = e.currentTarget;
         var id = e.target.id;
         // close all icones
@@ -755,6 +755,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 }
             }
         }
+
     },
     hideDependances : function(e){
         e.preventDefault();
@@ -1429,7 +1430,11 @@ bbmap.Views.Main = Backbone.View.extend({
             this.init = false; 
             // this.intelligentRestructuring();
         }
-
+        $(".wheel-button").wheelmenu({
+          trigger: "hover",
+          animation: "fly",
+          angle: "NE"
+        });
         return this;
     }
 });
