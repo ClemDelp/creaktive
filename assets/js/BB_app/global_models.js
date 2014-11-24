@@ -63,6 +63,7 @@ global.Models.CKObject = Backbone.Model.extend({
         top : "",
         left:"",
         project:"",
+        status : "private",
         css : ""
     },
     parse : function(serverObj){
