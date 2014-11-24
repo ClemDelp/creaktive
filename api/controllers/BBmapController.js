@@ -56,6 +56,13 @@ module.exports = {
       });
     });
   },
+  importConceptsFromProject : function(req, res){
+    Project.findOne(req.query.project_id).done(function(err, project){
+      Concept.find({project : project.id}).done(function(err, concepts){
+        return res.send(concepts);
+      });
+    });
+  },
   //////////////////////////////////////
   //////////////////////////////////////
 
