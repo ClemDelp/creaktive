@@ -135,7 +135,7 @@ var AuthController = {
 			user.email = req.body.email;
 			user.name = req.body.username;
 			user.confirmed = true;
-			user.img = req.body.image;
+			user.img = req.body.image || "/img/default-user-icon-profile.png";
 			user.hashPassword(user, function(err, user){
 			user.save(function(err, user){
 				if(err) return res.send({err:err});

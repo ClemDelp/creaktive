@@ -35,11 +35,16 @@ module.exports = {
 	    var domain =  "";
 	    /////////////////////////
 	    var params = "";
-	    var sizeScreen = '1615x941';
-	    if(req.query.zoom) params += "#visu/"+req.query.zoom;
-	    if(req.query.left) params += "/"+req.query.left;
-	    if(req.query.top) params += "/"+req.query.top;
-	    if(req.query.window_w) sizeScreen = req.query.window_w+"x"+req.query.window_h;
+	    var sizeScreen = '3840x2160'; //Déf 4k
+	    var multW = 3840/parseFloat(req.query.window_w);
+	    var multH = 2160/parseFloat(req.query.window_h);
+	    var multiplier = (req.query.window_h*multW > 2160) ? multH : multW;
+	    if(req.query.zoom) params += "#visu/"+(parseFloat(req.query.zoom)*multiplier);
+	    if(req.query.left) params += "/"+(parseFloat(req.query.left)*multiplier);
+	    if(req.query.top) params += "/"+(parseFloat(req.query.top)*multiplier);
+	    if(req.query.window_w) sizeScreen = (~~(parseFloat(req.query.window_w)*multiplier))+"x"+(~~(parseFloat(req.query.window_h)*multiplier));
+
+	    console.log("Multiplier: ",multiplier," *** resolution: ",sizeScreen)
 
 	    /////////////////////////
 	    if(req.get('host') == "localhost:1337"){
