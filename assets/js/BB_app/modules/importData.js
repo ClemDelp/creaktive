@@ -30,20 +30,17 @@ importData.Views.Main = Backbone.View.extend({
         this.categories = new Backbone.Collection();
         this.links = new Backbone.Collection();
         this.knowledges = new Backbone.Collection();
+        this.concepts = new Backbone.Collection();
         // Templates
         this.template = _.template($('#importData-template').html());
         this.template_categories_list = _.template($('#importData-categories-template').html());
         this.template_knowledges_list = _.template($('#importData-knowledges-template').html());
+        this.template_concepts_list = _.template($('#importData-concepts-template').html());
     },
     events : {
       "change #projectSelection" : "setProject",
       "click #importData" : "importDataIntoBBmap",
       "click .categories_list" : "clickOnCategoryEl",
-      "click .knowledges_list" : "clickOnKnowledgeEl",
-    },
-    clickOnKnowledgeEl : function(e){
-
-
     },
     clickOnCategoryEl : function(e){
       var ks_linked = api.getModelsLinkedToModel(this.links,this.knowledges,this.categories.get(e.target.getAttribute("value")));
@@ -69,12 +66,17 @@ importData.Views.Main = Backbone.View.extend({
           $('#knowledges_list_container').html(_this.template_knowledges_list({knowledges : data}))
           _this.knowledges = new global.Collections.Knowledges(data);
         });
+        $.get("/bbmap/importConceptsFromProject", {project_id : project_id}, function(data){ 
+          $('#concepts_list_container').html(_this.template_concepts_list({concepts : data}))
+          _this.concepts = new global.Collections.ConceptsCollection(data);
+        });
     },
     importDataIntoBBmap : function(e){
       e.preventDefault();
       var _this = this;
       var ks = [];
       var cs = [];
+      var cpts = [];
       $(".knowledges_list:checked").each(function(){
         ks.push($(this).val());
       });
@@ -90,9 +92,16 @@ importData.Views.Main = Backbone.View.extend({
       if(cs.length > 0){
         cs.forEach(function(c){
           _this.cloneAndImportToBBmap(c, _this.categories, bbmap.views.main.poches)
+        });  
+      }
 
-        });
-  
+      $(".concepts_list:checked").each(function(){
+        cpts.push($(this).val());
+      });
+      if(cpts.length > 0){
+        cpts.forEach(function(c){
+          _this.cloneAndImportToBBmap(c, _this.concepts, bbmap.views.main.concepts)
+        });  
       }
 
       $('#importData_container').foundation('reveal', 'close');
