@@ -45,10 +45,12 @@ manager.Views.Projects = Backbone.View.extend({
         this.eventAggregator    = json.eventAggregator;
         this.currentSelection   = "_menu_button";
         // Events
-        this.eventAggregator.on('projects_search', this.projectsSearch, this);
+        //this.eventAggregator.on('projects_search', this.projectsSearch, this);
         this.eventAggregator.on('ProjectsNotificationsDictionary', this.actualize, this);
         // Templates
-        this.template_project = _.template($('#manager-project-template').html());              
+        this.template_project = _.template($('#manager-project-template').html());       
+        this.template_search = _.template($('#manager-search-template').html());
+       
     },
     events : {
         "click .openProjectModal"  : "openProjectModal",
@@ -80,6 +82,7 @@ manager.Views.Projects = Backbone.View.extend({
         $(this.el).empty();
         var _this = this;
         $(this.el).append("Workspaces :<hr>")
+        $(this.el).append(this.template_search())
         this.projects_render.each(function(project){
             userNbr = 1;
             if(manager.views.main.users_rec_dic[project.get('id')]) userNbr = manager.views.main.users_rec_dic[project.get('id')].length
@@ -327,7 +330,6 @@ manager.Views.Main = Backbone.View.extend({
         this.projects.bind("add", this.render);
         this.projects.bind("remove", this.render);
         // Templates
-        this.template_search = _.template($('#manager-search-template').html());
     },
     events : {
         "keyup .search" : "search",
@@ -396,7 +398,7 @@ manager.Views.Main = Backbone.View.extend({
         this.users_rec_dic = global.Functions.getProjectsUsersDictionary(this.projects,this.permissions);
         $(this.el).html('');
         // Search bar
-        $(this.el).append(this.template_search());
+        // $(this.el).append(this.template_search());
         // Projects
         $(this.el).append(new manager.Views.Projects({
             id              : "categories_grid",

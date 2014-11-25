@@ -48,7 +48,7 @@
   }, 
 
   "CkviewerController" : {
-   "ckviewerview" : ["authenticated", "allowedProjects","forceHTTPs"],
+   "ckviewerview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
    "*" : "authenticated"
   },
 
@@ -62,7 +62,7 @@
   },
   
   "CkpreviewerController" : {
-    "ckpreviewerview" :["authenticated", "allowedProjects","forceHTTPs"],
+    "ckpreviewerview" :["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
     "*" : "authenticated"
   }, 
 
@@ -92,7 +92,7 @@
   }, 
 
   "NotificationController" : {
-    "notificationview" : ["authenticated", "allowedProjects","forceHTTPs"],
+    "notificationview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
     "*" : ["authenticated"],
   },
 
@@ -110,17 +110,17 @@
 
   "PublicMapController" : {
     // "screenshot" : true,
-    "publicmapview" : ["publicProjects"],
+    "publicmapview" : ["publicProjects","onlyMobile"],
     "*" : true
   },
 
   "MobileInterfaceController" : {
-    "*" : ["authenticated"]
+    "*" : ["authenticated","allowedProjects"]
   },
 
   "ManagerController" : {
-    "managerview" : ["authenticated", "allowedProjects","forceHTTPs"],
-    "editprofileview" : ["authenticated", "forceHTTPs"],
+    "managerview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
+    "editprofileview" : ["authenticated", "forceHTTPs","onlyMobile"],
     "find" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"]
   },
@@ -128,26 +128,26 @@
   "UserController" : {
     "*" : ["authenticated", "canWrite"],
     "inviteUser" : ["authenticated"],
-    "userview" : ["authenticated", "allowedProjects","forceHTTPs"],
-    "editprofileview" : ["authenticated", "forceHTTPs"],
+    "userview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
+    "editprofileview" : ["authenticated", "forceHTTPs","onlyMobile"],
     "editprofile" : "authenticated",
     "changepassword" :"authenticated",
     "find" : ["authenticated", "canRead"],
   },
 
   "AnalyseController" : {
-    "analyseview" : ["authenticated", "allowedProjects","forceHTTPs"],
+    "analyseview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
   }, 
 
   "ConceptController" : {
-    "conceptview" : ["authenticated", "allowedProjects","forceHTTPs"],
+    "conceptview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
     "find" : ["authenticated", "canRead"],
     "generateTree" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"] 
   },
 
   "KnowledgeController" : {
-    "knowledgeview" : ["authenticated", "allowedProjects","forceHTTPs"],
+    "knowledgeview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
     "find" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"]
   },
@@ -157,7 +157,7 @@
   },
 
   "CategoryController" : {
-    "categoryview" : ["authenticated", "allowedProjects","forceHTTPs"],
+    "categoryview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
     "find" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"]
   },

@@ -14,7 +14,7 @@ module.exports = {
   */
   mobileInterfaceview : function(req,res){
     console.log("Loading mobileInterface view")
-    BootstrapService.bootstrapdata(req,res);
+    BootstrapService.bootstrapmanager(req,res);
   },
 
 };

@@ -1106,7 +1106,7 @@ button, .button {
     button.secondary:hover, button.secondary:focus, .button.secondary:hover, .button.secondary:focus {
       color: #333333; }
   button.success, .button.success {
-    background-color: #43ac6a;
+    background-color: #C8D200;
     border-color: #368a55;
     color: white; }
     button.success:hover, button.success:focus, .button.success:hover, .button.success:focus {
@@ -1180,7 +1180,7 @@ button, .button {
       button.disabled.secondary:hover, button.disabled.secondary:focus, button[disabled].secondary:hover, button[disabled].secondary:focus, .button.disabled.secondary:hover, .button.disabled.secondary:focus, .button[disabled].secondary:hover, .button[disabled].secondary:focus {
         background-color: #e7e7e7; }
     button.disabled.success, button[disabled].success, .button.disabled.success, .button[disabled].success {
-      background-color: #43ac6a;
+      background-color: #C8D200;
       border-color: #368a55;
       color: white;
       cursor: default;
@@ -1191,7 +1191,7 @@ button, .button {
       button.disabled.success:hover, button.disabled.success:focus, button[disabled].success:hover, button[disabled].success:focus, .button.disabled.success:hover, .button.disabled.success:focus, .button[disabled].success:hover, .button[disabled].success:focus {
         color: white; }
       button.disabled.success:hover, button.disabled.success:focus, button[disabled].success:hover, button[disabled].success:focus, .button.disabled.success:hover, .button.disabled.success:focus, .button[disabled].success:hover, .button[disabled].success:focus {
-        background-color: #43ac6a; }
+        background-color: #C8D200; }
     button.disabled.alert, button[disabled].alert, .button.disabled.alert, .button[disabled].alert {
       background-color: #f04124;
       border-color: #cf2a0e;
@@ -1377,7 +1377,7 @@ meta.foundation-mq-topbar {
         .top-bar-section ul li > a.button.secondary:hover, .top-bar-section ul li > a.button.secondary:focus {
           color: #333333; }
       .top-bar-section ul li > a.button.success {
-        background-color: #43ac6a;
+        background-color: #C8D200;
         border-color: #368a55;
         color: white; }
         .top-bar-section ul li > a.button.success:hover, .top-bar-section ul li > a.button.success:focus {
@@ -1412,7 +1412,7 @@ meta.foundation-mq-topbar {
         .top-bar-section ul li > button.secondary:hover, .top-bar-section ul li > button.secondary:focus {
           color: #333333; }
       .top-bar-section ul li > button.success {
-        background-color: #43ac6a;
+        background-color: #C8D200;
         border-color: #368a55;
         color: white; }
         .top-bar-section ul li > button.success:hover, .top-bar-section ul li > button.success:focus {
@@ -1738,7 +1738,7 @@ meta.foundation-mq-topbar {
   .alert-box.round {
     border-radius: 1000px; }
   .alert-box.success {
-    background-color: #43ac6a;
+    background-color: #C8D200;
     border-color: #3a945b;
     color: white; }
   .alert-box.alert {
@@ -3544,7 +3544,7 @@ dialog[open] {
     height: 100%;
     display: block; }
   .progress.success .meter {
-    background: #43ac6a;
+    background: #C8D200;
     height: 100%;
     display: block; }
   .progress.alert .meter {
@@ -3779,7 +3779,7 @@ dialog[open] {
     background-color: #f04124;
     color: white; }
   .label.success {
-    background-color: #43ac6a;
+    background-color: #C8D200;
     color: white; }
   .label.secondary {
     background-color: #e7e7e7;
