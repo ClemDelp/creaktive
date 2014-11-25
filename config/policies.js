@@ -115,7 +115,7 @@
   },
 
   "MobileInterfaceController" : {
-    "*" : ["authenticated","allowedProjects"]
+    "*" : ["authenticated","forceHTTPs","allowedProjects"]
   },
 
   "ManagerController" : {

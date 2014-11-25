@@ -46,9 +46,7 @@ importData.Views.Main = Backbone.View.extend({
       var ks_linked = api.getModelsLinkedToModel(this.links,this.knowledges,this.categories.get(e.target.getAttribute("value")));
       ks_linked.forEach(function(k){
         $( "#checkbox_"+k.get('id') ).prop( "checked", true );  
-      })
-      
-
+      });
     },
     setProject : function(e){
         e.preventDefault();

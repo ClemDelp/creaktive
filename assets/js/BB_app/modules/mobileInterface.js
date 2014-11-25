@@ -60,7 +60,11 @@ mobileInterface.Views.Main = Backbone.View.extend({
             user: _this.user
         });
         new_concept.save();
+        this.sendSuccess()
+      }else{
+        this.sendError();
       }
+
     },
     newKnowledge : function(e){
       e.preventDefault();
@@ -69,7 +73,7 @@ mobileInterface.Views.Main = Backbone.View.extend({
       var project = $("#project").val();
       var description = $("#description").val();
       if(title != ""){
-        var new_concept = new global.Models.ConceptModel({
+        var new_knowledge = new global.Models.Knowledge({
             id : guid(),
             type : "knowledge",
             id_father: "none",
@@ -81,8 +85,31 @@ mobileInterface.Views.Main = Backbone.View.extend({
             content : description,
             user: _this.user
         });
-        new_concept.save();
+        new_knowledge.save();
+        this.sendSuccess()
+      }else{
+        this.sendError();
       }
+
+    },
+    sendError : function(){
+      $('.info').empty();
+      var msg = '<div data-alert class="alert-box alert radius">Please insert a title !<a href="#" class="close">&times;</a></div>';
+      $("#info").html(msg)      
+      $("#title").val("");
+      $("#description").val("");
+      this.closeDelay();
+    },
+    sendSuccess : function(){
+      $('.info').empty();
+      var msg = '<div data-alert class="alert-box info radius">Content added successfully !<a href="#" class="close">&times;</a></div>';
+      $("#info").html(msg)
+      $("#title").val("");
+      $("#description").val("");
+      this.closeDelay();
+    },
+    closeDelay : function(){
+      setTimeout(function(){$('#info').empty();},2000);
     },
     render : function(){        
         ///////////////////////
