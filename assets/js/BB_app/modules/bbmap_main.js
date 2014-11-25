@@ -84,6 +84,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.template_top = _.template($('#bbmap-top-element-template').html());
         this.template_bottom = _.template($('#bbmap-bottom-element-template').html());
         this.template_joyride = _.template($('#bbmap-joyride-template').html());
+        this.template_tooltip = _.template($('#bbmap-tooltip-notif-template').html());
         ////////////////////////////
         // JsPlumb
         this.instance = jsPlumb.getInstance({           
@@ -124,7 +125,7 @@ bbmap.Views.Main = Backbone.View.extend({
             bbmap.views.main.cursorY = event.pageY;
             if(event.deltaY == -1)bbmap.views.main.zoomin()
             else bbmap.views.main.zoomout()
-
+            
         });
 
         this.listener.simple_combo("ctrl z", this.backInHistory);
@@ -165,7 +166,11 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .next" : "advanceInTimeline",
         "click .prevH" : "backInHistory",
         "click .nextH" : "advanceInHistory",
-        "click .structureSubTree" : "structureTree"
+        "click .structureSubTree" : "structureTree",
+    },
+    openTooltipNotif : function(id){
+        // this.updateEditor(id)
+        // this.eventMenu();
     },
     /////////////////////////////////////////
     // Init Map
@@ -235,8 +240,8 @@ bbmap.Views.Main = Backbone.View.extend({
         }
     },
     updateLocalHistory : function(model,from){
-        this.pushNotif(model);
         if((model.get('from').id == global.models.current_user.get('id'))&&(this.flag == "acceptLastNotif")){
+            this.pushNotif(model);
             if(this.sens != "init"){
                 // on supprime tout ce qui est en dessous de history_pos (si on est à la psoition 2 on supprime 1 et 0)
                 var new_array = _.rest(this.localHistory.toArray(),this.history_pos);
@@ -251,6 +256,28 @@ bbmap.Views.Main = Backbone.View.extend({
             this.sens = 'init';
             // on ajoute l'action
             this.localHistory.unshift(model);
+        }else{
+            $('#'+model.get('to').id+'_tooltip').qtip('destroy', true);
+            setTimeout(function(){
+                $('#'+model.get('to').id+'_tooltip').qtip({
+                    content: {
+                        text: bbmap.views.main.template_tooltip({notif:model.toJSON()})
+                    },
+                    events: {
+                        show: function(event, api) {
+                            setTimeout(function(){$('#'+model.get('to').id+'_tooltip').qtip('destroy', true);},5000);
+                        }
+                    },
+                    show: {
+                        ready: true
+                    },
+                    position: {
+                        my: 'bottom left',  // Position my top left...
+                        at: 'top left', // at the bottom right of...
+                        target: $('#'+model.get('to').id+'_tooltip') // my target
+                    }
+                });
+            },500);
         }
         this.flag = "acceptLastNotif";
     },
@@ -440,8 +467,7 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Sliding editor bar
     /////////////////////////////////////////
-    eventMenu : function(e){
-        e.preventDefault();
+    eventMenu : function(){
         $('#cbp-spmenu-s1').show('slow');
         var menu = document.getElementById( 'cbp-spmenu-s1' );
         var button = document.getElementById( 'showMenu' );
@@ -589,6 +615,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var zoomParameters = this.getZoomParameters(ref1,ref2);
         if(!from) this.targetToCursor('in',zoomParameters);
         else this.focusZoom(zoomParameters);
+        
     },
     zoomout : function(from){
         new_zoom = Math.round((bbmap.zoom.get('val') + 0.1)*100)/100;
@@ -697,7 +724,6 @@ bbmap.Views.Main = Backbone.View.extend({
     // Hover bulle effect
     /////////////////////////////////////////
     showIcon : function(e){
-        //e.preventDefault();
         var el = e.currentTarget;
         var id = e.target.id;
         // close all icones
@@ -729,6 +755,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 }
             }
         }
+
     },
     hideDependances : function(e){
         e.preventDefault();
@@ -1403,7 +1430,11 @@ bbmap.Views.Main = Backbone.View.extend({
             this.init = false; 
             // this.intelligentRestructuring();
         }
-
+        $(".wheel-button").wheelmenu({
+          trigger: "hover",
+          animation: "fly",
+          angle: "NE"
+        });
         return this;
     }
 });

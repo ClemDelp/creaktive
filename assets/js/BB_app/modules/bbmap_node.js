@@ -21,7 +21,6 @@ bbmap.Views.Node = Backbone.View.extend({
         //     //console.log('no father detected')
         // }
         // Events
-
         // Templates
         this.template_bulle = _.template($('#bbmap-bulle-template').html());
     },

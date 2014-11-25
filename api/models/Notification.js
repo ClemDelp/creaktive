@@ -36,6 +36,8 @@
   	}).done(function(err,n){
   		if(err) console.log(err);
   		req.socket.in(req.session.currentProject.id).emit("notification:create", n);
+      req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+
   	})
   },
 
@@ -68,6 +70,8 @@
     }).done(function(err,n){
       if(err) console.log(err);
       req.socket.in(req.session.currentProject.id).emit("notification:create", n);
+      req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+
     });
   },
 
