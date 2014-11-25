@@ -114,6 +114,10 @@
     "*" : true
   },
 
+  "MobileInterfaceController" : {
+    "*" : ["authenticated"]
+  },
+
   "ManagerController" : {
     "managerview" : ["authenticated", "allowedProjects","forceHTTPs"],
     "editprofileview" : ["authenticated", "forceHTTPs"],

@@ -1,0 +1,46 @@
+<div id="mobileInterface_container"></div>
+
+<script type="text/template" id="mobileInterface-template">
+	<div class="row panel">
+		<div class="row ">
+			<div class="large-6 small-6 medium-6 columns">
+				<a href="http://creaktive.fr"><img title="logo creaktive" src="/img/creaktive.png"/></a>
+			</div>
+			<div class="large-6 small-6 medium-6 columns">
+				<h3>Welcome <b>{{-user.name}}</b></h3>
+				<a href="#" style="float:right" class="tiny round button secondary fullscreen"><img title="full-screen" src="/img/icones/Full-Screen-Expand-24.png"/></a>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+		    <div class="large-12 columns">
+		    	<label><b>Etape 1 - </b> Select a project
+				<select id="project" class="expand">
+			      	{{ _.each(projects,function(project){ }}
+						<option value="{{- project.id }}">{{- project.title }}</option>
+			    	{{ });}}
+			    </select>
+		    </div>
+		</div>
+		<div class="row">
+		    <div class="large-12 columns">
+		      <label><b>Etape 2 - </b> give a title
+		        <input id="title" type="text" placeholder="title..." />
+		      </label>
+		    </div>
+		</div>
+		<div class="row">
+		    <div class="large-12 columns">
+		      <label><b>Etape 3 - </b> give a description (optional)
+		        <textarea id="description" placeholder="description..."></textarea>
+		      </label>
+		    </div>
+		 </div>
+		<div class="row">
+			<a href="#" class="button large success round expand addC">+ Add like Concept</a>
+		</div>
+		<div class="row">
+			<a href="#" class="button large round expand addK">+ Add like Knowledge</a>
+		</div>
+	</div>
+</script>

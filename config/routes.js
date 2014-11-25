@@ -46,6 +46,7 @@ module.exports.routes = {
   '/elasticsearch/searchKnowledge': "ElasticsearchController.searchKnowledge",
   
   '/bbmap': "BBmapController.bbmapview",
+  '/mobileInterface': "MobileInterfaceController.mobileInterfaceview",
   // '/publicVisu': "PublicVisuController.publicvisuview",
   // '/publicMap': "PublicMapController.publicmapview",
   '/analyse': "AnalyseController.analyseview",
