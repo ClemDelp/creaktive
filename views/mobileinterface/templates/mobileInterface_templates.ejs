@@ -6,11 +6,14 @@
 			<div class="large-6 small-6 medium-6 columns">
 				<img title="logo creaktive" src="/img/creaktive.png"/>
 			</div>
-			<div class="large-4 small-4 medium-4 columns">
-				<h4>Welcome <b>{{-user.name}}</b></h4>
-			</div>
-			<div class="large-2 small-2 medium-2 columns">
-				<a href="#" style="float:right" class="tiny round button secondary fullscreen"><img title="full-screen" src="/img/icones/Full-Screen-Expand-24.png"/></a>
+			<div class="large-6 small-6 medium-6 columns">
+				<h3>{{-user.name }}</h3>
+				<button href="#" style="float:right" data-dropdown="menuCreaktive2" aria-controls="menuCreaktive2" aria-expanded="false" class="button round secondary tiny dropdown"><img width="20" src="{{-user.img }}"/></button>
+				<ul id="menuCreaktive2" data-dropdown-content class="f-dropdown" aria-hidden="true" tabindex="-1">
+					<li><a href="#" class="fullscreen">Full screen</a></li>
+					<li><a href="/logout">Logout</a></li>
+				</ul>
+				
 			</div>
 		</div>
 		<br>
