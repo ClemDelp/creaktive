@@ -47,6 +47,7 @@ module.exports.routes = {
   
   '/bbmap': "BBmapController.bbmapview",
   '/mobileInterface': "MobileInterfaceController.mobileInterfaceview",
+  '/mobileManager': "MobileManagerController.mobileManagerview",
   // '/publicVisu': "PublicVisuController.publicvisuview",
   // '/publicMap': "PublicMapController.publicmapview",
   '/analyse': "AnalyseController.analyseview",

@@ -4,7 +4,7 @@ module.exports = function(req, res, next) {
 
 	User.findOne(req.session.user.id).done(function(err, user){
 		try{
-		   	if(user.onlyMobile == true) res.redirect('/mobileInterface');
+		   	if(user.onlyMobile == true) res.redirect('/mobileManager');
 			else return next();
 		}catch(err){
 			return next();

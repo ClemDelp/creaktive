@@ -4,10 +4,10 @@
 	<div class="row panel">
 		<div class="row ">
 			<div class="large-6 small-6 medium-6 columns">
-				<img title="logo creaktive" src="/img/creaktive.png"/>
+				<a href="/mobileManager" title="manager"><img title="logo creaktive" src="/img/creaktive.png"/></a>
 			</div>
 			<div class="large-6 small-6 medium-6 columns">
-				<h3>{{-user.name }}</h3>
+				<h3>{{-user.name }}</h3> on <b>{{- project.title}}</b>
 				<button href="#" style="float:right" data-dropdown="menuCreaktive2" aria-controls="menuCreaktive2" aria-expanded="false" class="button round secondary tiny dropdown"><img width="20" src="{{-user.img }}"/></button>
 				<ul id="menuCreaktive2" data-dropdown-content class="f-dropdown" aria-hidden="true" tabindex="-1">
 					<li><a href="#" class="fullscreen">Full screen</a></li>
@@ -20,17 +20,7 @@
 		<div class="row"><div id="info" class="large-12 small-12 medium-12 columns"></div></div>
 		<div class="row">
 		    <div class="large-12 columns">
-		    	<label><b>Etape 1 - </b> Select a workspace
-				<select id="project" class="expand">
-			      	{{ _.each(projects,function(project){ }}
-						<option value="{{- project.id }}">{{- project.title }}</option>
-			    	{{ });}}
-			    </select>
-		    </div>
-		</div>
-		<div class="row">
-		    <div class="large-12 columns">
-		      <label><b>Etape 2 - </b> give a title
+		      <label><b>Etape 1 - </b> give a title
 		        <input id="title" type="text" placeholder="title..." />
 		      </label>
 		    </div>

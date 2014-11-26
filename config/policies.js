@@ -118,6 +118,10 @@
     "*" : ["authenticated","forceHTTPs","allowedProjects"]
   },
 
+  "MobileManagerController" : {
+    "*" : ["authenticated","forceHTTPs","allowedProjects"]
+  },
+
   "ManagerController" : {
     "managerview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
     "editprofileview" : ["authenticated", "forceHTTPs","onlyMobile"],

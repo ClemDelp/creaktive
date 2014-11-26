@@ -11,7 +11,7 @@ var mobileInterface = {
   init: function (json) {
     this.views.main = new mobileInterface.Views.Main({
       el : json.el,
-      projects : global.collections.Projects,
+      project : global.models.currentProject,
       user : global.models.current_user
     });
     this.views.main.render();
@@ -24,7 +24,7 @@ mobileInterface.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         ////////////////////////////
-        this.projects = json.projects;
+        this.project = json.project;
         this.user = json.user;
         this.template = _.template($('#mobileInterface-template').html());
         this.top = 5000;
@@ -43,7 +43,6 @@ mobileInterface.Views.Main = Backbone.View.extend({
     newConcept : function(e){
       e.preventDefault();
       var _this = this;
-      var project = $("#project").val();
       var title = $("#title").val();
       var description = $("#description").val();
       if(title != ""){
@@ -53,7 +52,7 @@ mobileInterface.Views.Main = Backbone.View.extend({
             id_father: "none",
             top : _this.top,
             left: _this.left,
-            project: project,
+            project: _this.project.get('id'),
             title: title,
             css : "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #27AE60;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #27AE60 2px;text-decoration: none;",
             content : description,
@@ -70,7 +69,6 @@ mobileInterface.Views.Main = Backbone.View.extend({
       e.preventDefault();
       var _this = this;
       var title = $("#title").val();
-      var project = $("#project").val();
       var description = $("#description").val();
       if(title != ""){
         var new_knowledge = new global.Models.Knowledge({
@@ -79,7 +77,7 @@ mobileInterface.Views.Main = Backbone.View.extend({
             id_father: "none",
             top : _this.top,
             left: _this.left,
-            project: project,
+            project: _this.project.get('id'),
             title: title,
             css : "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #2980B9;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #2980B9 2px;text-decoration: none;",
             content : description,
@@ -116,7 +114,7 @@ mobileInterface.Views.Main = Backbone.View.extend({
         // init
         $(this.el).empty();
         $(this.el).append(this.template({
-          projects:this.projects.toJSON(),
+          project:this.project.toJSON(),
           user:this.user.toJSON()
         }))
         $(document).foundation();

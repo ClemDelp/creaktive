@@ -48,36 +48,37 @@ menu.Views.Main = Backbone.View.extend({
         var terms = {href : "http://creaktive.fr/", name : "Terms of service"};
         var policy = {href : "http://creaktive.fr/", name : "Privacy Policy"};
         var faq = {href : "http://creaktive.fr/contact/", name : "FAQ"};
-        var mobile = {href : "/mobileInterface", name : "Version mobile"};
+        var mobileInterface = {href : "/mobileInterface?projectId="+this.project.get('id'), name : "Version mobile"};
+        var mobileManager = {href : "/mobileManager", name : "Version mobile"};
         
         //Find user permission
 
         // Build specific menu
         if(this.pathname == "/"){ 
-            this.links = [mobile,profile,logout];
+            this.links = [mobileManager,profile,logout];
         }
         else if(this.pathname == "/bbmap") {
             var permission = global.collections.Permissions.findWhere({user_id : global.models.current_user.get('id'), project_id : this.project.get('id')}).get('right');
-            if(permission === "r") this.links = [manager,mobile,profile,logout];
-            else this.links = [visu,edit,backup,manager,rapports_manager,users_manager,mobile,profile,logout];
+            if(permission === "r") this.links = [manager,mobileInterface,profile,logout];
+            else this.links = [visu,edit,backup,manager,rapports_manager,users_manager,mobileInterface,profile,logout];
         }
         else if(this.pathname == "/ckpreviewer") {
             var permission = global.collections.Permissions.findWhere({user_id : global.models.current_user.get('id'), project_id : this.project.get('id')}).get('right');
-            if(permission === "r") this.links = [bbmap_visu,manager,mobile,profile,logout];
-            else this.links = [bbmap_visu,bbmap_edit,backup,manager,users_manager,mobile,profile,logout];
+            if(permission === "r") this.links = [bbmap_visu,manager,mobileInterface,profile,logout];
+            else this.links = [bbmap_visu,bbmap_edit,backup,manager,users_manager,mobileInterface,profile,logout];
         }
         else if(this.pathname == "/userManager") {
             var permission = global.collections.Permissions.findWhere({user_id : global.models.current_user.get('id'), project_id : this.project.get('id')}).get('right');
-            if(permission === "r") this.links = [bbmap_visu,manager,mobile,profile,logout];
-            else this.links = [bbmap_visu,bbmap_edit,backup,manager,rapports_manager,mobile,profile,logout];
+            if(permission === "r") this.links = [bbmap_visu,manager,mobileInterface,profile,logout];
+            else this.links = [bbmap_visu,bbmap_edit,backup,manager,rapports_manager,mobileInterface,profile,logout];
         }
         else if(this.pathname == "/editprofile") {
-            this.links = [manager,logout]; 
+            this.links = [mobileManager,manager,logout]; 
         }
         else if(this.pathname == "/backup") {
             var permission = global.collections.Permissions.findWhere({user_id : global.models.current_user.get('id'), project_id : this.project.get('id')}).get('right');
-            if(permission === "r") this.links = [bbmap_visu,manager,mobile,profile,logout];
-            else this.links = [bbmap_visu,bbmap_edit,manager,rapports_manager,mobile,profile,logout]; 
+            if(permission === "r") this.links = [bbmap_visu,manager,mobileInterface,profile,logout];
+            else this.links = [bbmap_visu,bbmap_edit,manager,rapports_manager,mobileInterface,profile,logout]; 
         }
         
 
