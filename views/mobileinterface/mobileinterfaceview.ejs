@@ -52,7 +52,7 @@
       global.init(json, function(){
         // Modules
         mobileInterface.init({el : "#mobileInterface_container"});
-        Backbone.history.start();
+        if(!Backbone.History.started) Backbone.history.start();
         $(document).foundation();
         
       });

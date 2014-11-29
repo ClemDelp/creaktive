@@ -11,6 +11,7 @@ var menu = {
   init: function () {
     this.views.main = new this.Views.Main({
         el : "#menu_container",
+        projects : global.collections.Projects,
         project :  global.models.currentProject,
         user : global.models.current_user,
         pathname : window.location.pathname,
@@ -25,16 +26,17 @@ menu.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         ////////////////////////////
+        this.projects = json.projects;
         this.project = json.project;
         this.user = json.user;
         this.pathname = json.pathname;
         this.links = [];
         ///////////////////////////
         // links list
-        var visu = {href : "#visu", name : "Visualization"};
+        var visu = {href : "#visu", name : "Editor"};
         var edit = {href : "#edit", name : "Edition"};
         var timeline = {href : "#timeline", name : "Timeline"};
-        var bbmap_visu = {href : "/bbmap?projectId="+this.project.get('id')+"#visu", name : "Visualization"};
+        var bbmap_visu = {href : "/bbmap?projectId="+this.project.get('id')+"#visu", name : "Editor"};
         var bbmap_edit = {href : "/bbmap?projectId="+this.project.get('id')+"#edit", name : "Edition"};
         var bbmap_timeline = {href : "/bbmap?projectId="+this.project.get('id')+"#timeline", name : "Timeline"};
         var backup = {href : "/backup?projectId="+this.project.get('id'), name : "Backup"};
@@ -60,17 +62,17 @@ menu.Views.Main = Backbone.View.extend({
         else if(this.pathname == "/bbmap") {
             var permission = global.collections.Permissions.findWhere({user_id : global.models.current_user.get('id'), project_id : this.project.get('id')}).get('right');
             if(permission === "r") this.links = [manager,mobileInterface,profile,logout];
-            else this.links = [visu,edit,backup,manager,rapports_manager,users_manager,mobileInterface,profile,logout];
+            else this.links = [visu,backup,manager,rapports_manager,users_manager,mobileInterface,profile,logout];
         }
         else if(this.pathname == "/ckpreviewer") {
             var permission = global.collections.Permissions.findWhere({user_id : global.models.current_user.get('id'), project_id : this.project.get('id')}).get('right');
             if(permission === "r") this.links = [bbmap_visu,manager,mobileInterface,profile,logout];
-            else this.links = [bbmap_visu,bbmap_edit,backup,manager,users_manager,mobileInterface,profile,logout];
+            else this.links = [bbmap_visu,backup,manager,users_manager,mobileInterface,profile,logout];
         }
         else if(this.pathname == "/userManager") {
             var permission = global.collections.Permissions.findWhere({user_id : global.models.current_user.get('id'), project_id : this.project.get('id')}).get('right');
             if(permission === "r") this.links = [bbmap_visu,manager,mobileInterface,profile,logout];
-            else this.links = [bbmap_visu,bbmap_edit,backup,manager,rapports_manager,mobileInterface,profile,logout];
+            else this.links = [bbmap_visu,backup,manager,rapports_manager,mobileInterface,profile,logout];
         }
         else if(this.pathname == "/editprofile") {
             this.links = [mobileManager,manager,logout]; 
@@ -78,7 +80,7 @@ menu.Views.Main = Backbone.View.extend({
         else if(this.pathname == "/backup") {
             var permission = global.collections.Permissions.findWhere({user_id : global.models.current_user.get('id'), project_id : this.project.get('id')}).get('right');
             if(permission === "r") this.links = [bbmap_visu,manager,mobileInterface,profile,logout];
-            else this.links = [bbmap_visu,bbmap_edit,manager,rapports_manager,mobileInterface,profile,logout]; 
+            else this.links = [bbmap_visu,manager,rapports_manager,mobileInterface,profile,logout]; 
         }
         
 
@@ -92,6 +94,7 @@ menu.Views.Main = Backbone.View.extend({
         $(this.el).empty();
         if(this.links.length > 0) $(this.el).append(this.template_menu({
             links  : this.links,
+            projects : this.projects.toJSON(),
             project : this.project.toJSON(),
             user : this.user.toJSON()
         }));

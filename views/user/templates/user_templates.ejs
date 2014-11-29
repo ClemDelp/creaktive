@@ -68,10 +68,13 @@
 			          				<option data-id-user="{{- permission.user.id }}" {{if(permission.right == "admin"){ }}selected{{ } }} value="admin">Project administrator</option>
 			          				<option data-id-user="{{- permission.user.id }}" {{if(permission.right == "rw"){ }}selected{{ } }} value="rw">Read and write</option>
 			          				<option data-id-user="{{- permission.user.id }}" {{if(permission.right == "r"){ }}selected{{ } }} value="r">Read only</option>
+			          				<option data-id-user="{{- permission.user.id }}" {{if(permission.right == "smartphone"){ }}selected{{ } }} value="smartphone">Smartphone read & write</option>
 					        	</select>
 					        </div>
 					        <div class="small-2 columns">
-					          <a href="#" class="button postfix changePermission" style="color:white" data-id-user="{{- permission.user.id }}">Validate</a>
+					          <a href="#" class="button postfix changePermission" style="color:white" data-id-user="{{- permission.user.id }}">
+					          	<img title="update permission" src="/img/icones/Command-Refresh-32.png"/>
+					          </a>
 					        </div>
 					      </div>
 					    </div>
@@ -98,10 +101,13 @@
 					          		<option value="rw">Read and write</option>
 					          		<option value="r">Read only</option>
 					          		<option value="admin">Project administrator</option>
+					          		<option value="smartphone">Smartphone read & write</option>
 					        	</select>
 					        </div>
 					        <div class="small-2 columns">
-					          <a href="#" class="button postfix addPermission" style="color:white" data-id-user="{{- user.id }}">Add</a>
+					          <a href="#" class="button postfix addPermission" style="color:white" data-id-user="{{- user.id }}">
+					          	<img title="Add permission" src="/img/icones/Add-New-32.png"/>
+					          </a>
 					        </div>
 					      </div>
 					    </div>

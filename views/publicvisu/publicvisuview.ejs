@@ -57,6 +57,10 @@
 <%- partial('../bbmap/templates/bbmap_templates') %>
 <%- partial('../app/templates/title_templates') %>
 
+<%- partial('../app/templates/importData_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/importData.js?v=<%= sails.config.session.version %>"></script>
+
+
 <script type="text/javascript" src="js/BB_app/modules/modelEditor.js?v=<%= sails.config.session.version %>"></script>
 <script type="text/javascript" src="js/BB_app/modules/comments.js?v=<%= sails.config.session.version %>"></script>
 <script type="text/javascript" src="js/BB_app/modules/attachment.js?v=<%= sails.config.session.version %>"></script>
@@ -122,7 +126,7 @@
         $("#title_page").html(json.project.title);
         /*activat of "hashchange events's monitoring"*/
         
-        Backbone.history.start();
+        if(!Backbone.History.started) Backbone.history.start();
         $(document).foundation();
         
       });

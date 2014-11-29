@@ -3,15 +3,15 @@
 <div id="bbmap_container" style="height:100%;overflow:hidden">
   <div id="top_container"></div>
   <div id="map_container">
-    <a href="#" id="showMenu"  class="button tiny secondary round cbp-openbutton">
+    <a href="#" id="showMenu"  class="button large alert round cbp-openbutton">
       <image  src="/img/icones/Arrow-Left.png" id="cbp-openimage"/>
     </a>
     <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="cbp-spmenu-s1">
       <div id="editor" class="panel expand">
         <ul class="tabs" data-tab>
-          <li class="tab-title active"><a href="#editModel"><img title="edit" src="/img/icones/Edit.png"/></a></li>
-          <li class="tab-title"><a href="#attachementModel"><img title="attach" src="/img/icones/Attach.png"/></a></li>
-          <li class="tab-title"><a href="#discussionModel"><img title="comments" src="/img/icones/Chat.png"/></a></li>
+          <li class="tab-title active"><a href="#editModel"><img title="edit" src="/img/icones/Edit.png"/><span id="notifDesc"></span></a></li>
+          <li class="tab-title"><a href="#attachementModel"><img title="attach" src="/img/icones/Attach.png"/><span id="notifAttach"></span></a></li>
+          <li class="tab-title"><a href="#discussionModel"><img title="comments" src="/img/icones/Chat.png"/><span id="notifComment"></span></a></li>
           <li class="tab-title"><a href="#css3Model"><img title="template" src="/img/icones/Shape.png"/></a></li>
           <li class="tab-title"><a href="#googleSearchModel"><img title="web data" src="/img/icones/Web-24.png"/></a></li>
         </ul>
@@ -62,9 +62,7 @@
 <script type="text/template" id="bbmap-bulle-template">
     <span data-type="title" style="float:right" id="{{-model.id}}_tooltip"></span>
     <img id="{{-model.id}}" data-type="title" style="float:left" width="15" title="create by {{-model.user.name }}" src="{{-model.user.img }}"/>
-    {{ if(model.attachment.length>0) { }}
-      <img id="{{-model.id}}" data-type="title" src="img/icones/Attachment.png" class="attachments"/>
-    {{ } }}
+    
     <span id="{{-model.id}}_joyride"></span>
     <span id="{{-model.id}}" data-type="title" class="editTitle">{{-model.title}}</span>
     <span id="{{-model.id}}" data-type="action" class="label round secondary ep icon">+c</span>
@@ -73,9 +71,7 @@
     <span id="{{-model.id}}" data-type="action" class="label round secondary sup icon"><img data-type="action" id="{{-model.id}}" title="mode" src="/img/icones/Delete.png"/></span>
 
     {{ if( (model.comments.length + model.attachment.length) >0) { }}
-    <a href="#" id="{{-model.id}}" data-type="action" class="label round secondary info wheel-button">
-      {{- model.comments.length + model.attachment.length}}
-    </a>
+    <span id="{{-model.id}}" data-type="action" class="info top-bar-unread">{{- model.comments.length + model.attachment.length}}</span>
     {{ } }}
 
 </script>
@@ -88,11 +84,7 @@
   <div class="large-4 medium-4 small-4 columns">
     <center>
       {{ if(mode == "visu"){ }}
-        <select id="visu_select_mode" class="large-9 medium-9 small-9">
-          <option value="children">Display children & linked knowledge</option>
-          <option value="parent">Display parents & linked knowledge</option>
-          <option value="node">Display concept & linked knowledge</option>
-        </select>
+        <a href="#edit" class="button secondary small round"><img title="back" src="/img/icones/Pencil-24.png"/> <b>Edit</b></a>
       {{ } }}
       {{ if(mode == "timeline"){ }}
         <h3>
@@ -101,6 +93,7 @@
           <a href="#" class="button tiny secondary round next"><img title="next" src="/img/icones/Arrowhead-Right-24.png"/></a>
         </h3>
       {{ }else if(mode == "edit"){ }}
+        <small>Drag & Drop --></small> 
         {{ if((filter == "c")||(filter == "ck")||(filter == "ckp")){ }}
             <a href="#" id="dropC" class="drop dropC button tiny secondary round" title="Drag & Drop Concept to Map">
               <img class="drop" src="/img/icones/Light-Bulb-24.png"/>
@@ -124,6 +117,7 @@
     <div style="float:right">
       <a href="#" class="tiny round button secondary zoomin"><img title="zoom-out" src="/img/icones/Zoom-Out-24.png"/></a>
       <a href="#" class="tiny round button secondary zoomout"><img title="zoom-in" src="/img/icones/Zoom-In-24.png"/></a>
+      <a href="#" class="tiny round button secondary reset"><img title="reset" src="/img/icones/Fit-To-Size-24.png"/></a>
       <a href="#" class="tiny round button secondary fullscreen"><img title="full-screen" src="/img/icones/Full-Screen-Expand-24.png"/></a>
       <small style="display:none" id="zoom_val"></small>
     </div>
@@ -135,6 +129,13 @@
   <span id="bbmap_bottom_ui">
     <center>
       {{ if(mode != "timeline"){ }}
+        <img title="zoom-in" src="/img/icones/Light-32.png"/>
+        <select id="visu_select_mode" class="large-1 medium-1 small-1">
+          <option value="children">Display children & linked knowledge</option>
+          <option value="parent">Display parents & linked knowledge</option>
+          <option value="node">Display concept & linked knowledge</option>
+        </select>
+
         <img title="zoom-in" src="/img/icones/Filtering-24.png"/> 
         <select id="filterSelection" class="large-1 medium-1 small-1">
           <option value="c" {{ if(filter == "c"){ }}selected{{ } }}>Concepts</option>
@@ -145,15 +146,13 @@
       {{ if((filter == "ck")||(filter == "ckp")){ }}
         <a href="#" class="tiny round button secondary ckOperator"><img title="display CK links" src="/img/icones/Data-Share-24.png"/></a>
       {{ } }}
-      <a href="#" class="tiny round button secondary reset"><img title="reset" src="/img/icones/Fit-To-Size-24.png"/></a>
       <a href="#" class="button tiny round secondary downloadimage"><img title="Download screenshot" src="/img/icones/Download-24.png"/></a>
       {{ if(mode == "edit"){ }} 
+        <a href="#" data-reveal-id="importData_container" class="button tiny round secondary"><img title="Import data from an other project" src="/img/icones/Data-Import-24.png"/></a>
+        <div id="importData_container" class="reveal-modal large" data-reveal></div>
         <a href="#" class="tiny round button secondary structureSubTree"><img title="structure sub-tree" src="/img/icones/Network-Drives-24.png"/></a>
         <a href="#" class="button tiny round secondary prevH"><img title="ctrl-Z" src="/img/icones/Arrowhead-Left-24.png"/></a>
         <a href="#" class="button tiny round secondary nextH"><img title="ctrl-Y" src="/img/icones/Arrowhead-Right-24.png"/></a>
-        
-        <a href="#" data-reveal-id="importData_container" class="button tiny round secondary"><img title="Import data from an other project" src="/img/icones/Data-Import-24.png"/></a>
-        <div id="importData_container" class="reveal-modal large" data-reveal></div>
       {{ } }}
     </center>
   </span>

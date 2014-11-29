@@ -481,12 +481,12 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     showMenu : function(){
         $("#showMenu").animate({right:"25%"});
-        $("#cbp-openimage")[0].src="/img/icones/Arrow-Right.png";
+        // $("#cbp-openimage")[0].src="/img/icones/Arrow-Right.png";
         this.isopen=true;
     },
     hideMenu : function(){
         $("#showMenu").animate({right:"0px"});
-        $("#cbp-openimage")[0].src="/img/icones/Arrow-Left.png";
+        // $("#cbp-openimage")[0].src="/img/icones/Arrow-Left.png";
         this.isopen=false;
     },
     updateEditor : function(model){
@@ -723,6 +723,22 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Hover bulle effect
     /////////////////////////////////////////
+    setNotificationDisplayOnModel : function(model){
+        // inti
+        var comments = model.get('comments').length
+        var attachments = model.get('attachment').length
+        var description = 0
+        // notif big red button
+        // if(model.get('content') != "") description = 1;
+        $('#showMenu').html(comments + attachments + description);
+        // notif inside slideBar Menu
+        $('#notifDesc').empty()
+        $('#notifAttach').empty()
+        $('#notifComment').empty()
+        if(comments > 0) $('#notifComment').html('<span class="top-bar-unread">'+comments+'</span>')
+        if(attachments > 0) $('#notifAttach').html('<span class="top-bar-unread">'+attachments+'</span>')
+        //if(description > 0) $('#notifDesc').html('<span class="top-bar-unread">'+description+'</span>')
+    },
     showIcon : function(e){
         var el = e.currentTarget;
         var id = e.target.id;
@@ -732,11 +748,13 @@ bbmap.Views.Main = Backbone.View.extend({
         if(e.target.getAttribute("data-type") != "action"){
             // set last model
             if($(el).hasClass('concept') == true){
+                this.setNotificationDisplayOnModel(this.concepts.get(id))
                 this.updateEditor(this.concepts.get(id));
                 this.setLastModel(this.concepts.get(id));
                 if(this.mode == "edit") $("#"+id+" .icon").show();
             } 
             else if($(el).hasClass('knowledge') == true){
+                this.setNotificationDisplayOnModel(this.knowledges.get(id))
                 this.updateEditor(this.knowledges.get(id));
                 this.setLastModel(this.knowledges.get(id));
                 if(this.mode == "edit") {
@@ -746,6 +764,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 }
             } 
             else if($(el).hasClass('poche') == true){
+                this.setNotificationDisplayOnModel(this.poches.get(id))
                 this.updateEditor(this.poches.get(id));
                 this.setLastModel(this.poches.get(id));
                 if(this.mode == "edit"){ 

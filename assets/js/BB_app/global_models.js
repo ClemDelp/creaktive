@@ -72,7 +72,6 @@ global.Models.CKObject = Backbone.Model.extend({
         return serverObj;
     },
 });
-
 /***************************************/
 global.Models.Knowledge = global.Models.CKObject.extend({
     initialize : function Post() {

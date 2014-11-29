@@ -49,7 +49,7 @@
       global.init(json, function(){
         // Modules
         mobileManager.init({el : "#mobileManager_container"});
-        Backbone.history.start();
+        if(!Backbone.History.started) Backbone.history.start();
         $(document).foundation();
         
       });
