@@ -22,7 +22,7 @@ module.exports = function(req, res, next) {
 			}).done( function (err, perm){
 				if(err) next(err);
 				if(perm.length !== 0){
-					if (perm[0].right == "rw" || perm[0].right == "admin") next();
+					if (perm[0].right == "rw" || perm[0].right == "admin" || perm[0].right == "smartphone") next();
 					else res.send({err : "You have read-only permission" });
 				} 
 				else res.send({err : "You are not permitted to perform this action" });
