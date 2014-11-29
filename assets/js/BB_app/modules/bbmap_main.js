@@ -1449,11 +1449,6 @@ bbmap.Views.Main = Backbone.View.extend({
             this.init = false; 
             // this.intelligentRestructuring();
         }
-        $(".wheel-button").wheelmenu({
-          trigger: "hover",
-          animation: "fly",
-          angle: "NE"
-        });
         return this;
     }
 });

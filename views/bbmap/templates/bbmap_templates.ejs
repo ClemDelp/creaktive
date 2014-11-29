@@ -71,7 +71,7 @@
     <span id="{{-model.id}}" data-type="action" class="label round secondary sup icon"><img data-type="action" id="{{-model.id}}" title="mode" src="/img/icones/Delete.png"/></span>
 
     {{ if( (model.comments.length + model.attachment.length) >0) { }}
-    <span id="{{-model.id}}" data-type="action" class="info top-bar-unread">{{- model.comments.length + model.attachment.length}}</span>
+    <span id="{{-model.id}}" data-type="title" class="info top-bar-unread">{{- model.comments.length + model.attachment.length}}</span>
     {{ } }}
 
 </script>
