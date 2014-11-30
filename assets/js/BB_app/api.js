@@ -269,10 +269,12 @@ var api = {
     var result = []; // 
     var perms = permissions.where({project_id : id});
     perms.forEach(function(perm){
-      var json = {
-        "user" : users.get(perm.get('user_id')).toJSON(),
-        "permission" : perm.toJSON()
-      }
+      try{
+        var json = {
+          "user" : users.get(perm.get('user_id')).toJSON(),
+          "permission" : perm.toJSON()
+        }
+      }catch(err){console.log(err)}
       result.unshift(json);
     });
 

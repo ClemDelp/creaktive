@@ -127,8 +127,7 @@ if(data.err){
             location.reload();    
          });
         },1000);
-       alert(data.err);
-        location.reload();
+       
        }
        defer.reject();
      }else{
