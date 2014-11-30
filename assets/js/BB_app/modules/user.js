@@ -10,13 +10,13 @@ var user = {
   views: {},
   init: function (project_) {
     /*Init*/
-    this.views.Main = new this.Views.Main({
+    this.views.main = new this.Views.Main({
       project     : project_,
       users       : global.collections.Users,
       permissions : global.collections.Permissions,
       eventAggregator : global.eventAggregator
     });  
-    this.views.Main.render()
+    this.views.main.render()
   }
 };
 /////////////////////////////////////////
@@ -71,7 +71,7 @@ user.Views.Members = Backbone.View.extend({
     }
 });
 /////////////////////////////////////////
-// Main
+// main
 /////////////////////////////////////////
 user.Views.Main = Backbone.View.extend({
     el:"#user_container",
@@ -101,7 +101,7 @@ user.Views.Main = Backbone.View.extend({
         e.preventDefault();
         _this = this;
         if(this.users.where({email : $('#searchUser').val()}).length > 0 ){
-            alert("This user is already registered. If you want to add him to the project, please select him on the right part of the members page");
+            swal("This user is already registered!", "please select him on the right part of the members page", "warning")
             $('#searchUser').val("");
         }else{
                     $.post("/user/inviteUser", {email :  $('#searchUser').val()}, function(data){
@@ -129,26 +129,36 @@ user.Views.Main = Backbone.View.extend({
     },
     changePermission : function(e){
         e.preventDefault();
-        if(confirm("Be careful, change permission can lead to a ban on project! Confirm?")){
+        swal({   
+            title: "Be careful",   
+            text: "Change permission can lead to a ban on project! Confirm?",   
+            type: "warning",   
+            showCancelButton: true,   
+            confirmButtonColor: "#DD6B55",   
+            confirmButtonText: "Yes",   
+            closeOnConfirm: true,
+            allowOutsideClick : true
+        }, 
+        function(){   
             var user_id = e.target.getAttribute('data-id-user');
-            var project_id = this.project.id;
+            var project_id = user.views.main.project.id;
             var right_ = $("#"+e.target.getAttribute('data-id-user')+"_right").val();
             if(right_ == "u"){
-                permissions_to_remove = this.permissions.filter(function(permission){return ((permission.get('project_id') == project_id) && (permission.get('user_id') == user_id))});
+                permissions_to_remove = user.views.main.permissions.filter(function(permission){return ((permission.get('project_id') == project_id) && (permission.get('user_id') == user_id))});
                 permissions_to_remove.forEach(function(permission){
                     permission.destroy();
                 });    
             }else if((right_ == "r")||(right_=="rw")||(right_=="admin")||(right_=="smartphone")){
-                permissions_to_update = this.permissions.filter(function(permission){return ((permission.get('project_id') == project_id) && (permission.get('user_id') == user_id))});
+                permissions_to_update = user.views.main.permissions.filter(function(permission){return ((permission.get('project_id') == project_id) && (permission.get('user_id') == user_id))});
                 permissions_to_update.forEach(function(permission){
                     permission.set({"right":right_});
                     permission.save();
                 });
-                if(right_ != "smartphone") this.users.get(user_id).save({onlyMobile : false});
-                if(right_ == "smartphone") this.users.get(user_id).save({onlyMobile : true});
+                if(right_ != "smartphone") user.views.main.users.get(user_id).save({onlyMobile : false});
+                if(right_ == "smartphone") user.views.main.users.get(user_id).save({onlyMobile : true});
 
             }
-        }
+        });
         
         
     },
@@ -166,7 +176,7 @@ user.Views.Main = Backbone.View.extend({
         this.eventAggregator.trigger('members_search',matched);
     },
     render : function(){
-        $(this.el).html("");
+        $(this.el).empty();
         // Init
         project = this.project;
         permissions_filtred = this.permissions.filter(function(permission){ 
