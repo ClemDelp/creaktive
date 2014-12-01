@@ -18,12 +18,20 @@
 <!--//////////////////////////////////////////////////////////////// -->
 <script type="text/template" id="manager-header-template">
 	<fieldset>
-		<a class="button secondary tiny expand" href="/bbmap?projectId={{- project.id}}#visu">
-			<h2>{{-project.title}}</h2> 
-			{{ if(project.image){ }}
-				<img class="large-12 medium-12 small-2" src="/S3/getUrl?amz_id={{- project.image}}" />
-			{{ }; }}
+		<legend align=left>
+			<b>Open</b>
+		</legend>
+		<a class="button radius tiny expand" title="open the workspace" href="/bbmap?projectId={{- project.id}}#visu">
+			<h2 style='color:white'><b>{{-project.title}}</b></h2> 
 		</a>
+	</fieldset>
+	<fieldset>
+		<legend align=left>
+			<b>Miniature</b>
+		</legend>
+		{{ if(project.image){ }}
+			<img class="large-12 medium-12 small-2" src="/S3/getUrl?amz_id={{- project.image}}" />
+		{{ }; }}
 	</fieldset>
 </script>
 <!--//////////////////////////////////////////////////////////////// -->
@@ -31,7 +39,7 @@
 	<div>
 		<fieldset>
 			<legend align=left>
-				Objectives</strong>
+				<b>Objectives</b>
 				<a href="#" class="edit">edit</a>
 			</legend>
 			{{= model.content }}
