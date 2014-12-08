@@ -1,0 +1,72 @@
+<div id="workspacesList-container" class="row panel"></div>
+
+<script type="text/template" id="workspacesList-search-template">
+    <div class="large-12 columns">
+    	<input type="text" placeholder="find workspaces by name..." />
+    </div>
+</script>
+
+<script type="text/template" id="workspacesList-template">
+    <div class="large-12 columns">
+	    <h4>{{- title }}
+	    {{ if(newButton == true){ }}
+		    <button class="button small round secondary" data-dropdown="wks_new_dropdown" aria-controls="wks_new_dropdown" aria-expanded="true">Create new workspace  »</button>
+		    <div id="wks_new_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
+			  	<fieldset>
+				    <legend>Create workspace</legend>
+				    <div class="alertBox large-12 columns">
+				    </div>
+				    <div class="large-12 columns">
+				    	<label>Title
+				        <input type="text" id="wks_title" placeholder="title..." />
+				    	</label>
+				    </div>
+				    <div class="large-12 columns">
+					    <label>Description
+					    <textarea id="wks_description" placeholder="objectives, context..."></textarea>
+						</label>
+				    </div>
+				    <div class="large-12 columns">
+				        <label>Visibility
+				        <select id="wks_visibility">
+					      <option value="private">Private</option>
+					      <option value="public">Public</option>
+					    </select>
+						</label>
+				    </div>
+				    <div class="large-12 columns">
+				        <label>Organisation
+				        <select id="wks_organisation">
+					      <option value="none">(none)</option>
+					    </select>
+						</label>
+				    </div>
+				    <div class="large-12 columns">
+				    	<a href="#" id="wks_create" class="button success expand">Create</a>
+				    </div>
+				</fieldset>
+			</div>
+		{{ } }}
+		</h4>
+	    <br>
+	    <div class="workspaces_container">
+		{{ _.each(workspaces, function(project){ }}
+			<ul class="item pricing-table">
+				<li class="price">
+					{{ if(starred == true){ }}
+						<a style="float:left" href="#" class="round secondary tiny button"><img src="/img/icones/Shape-Star2-24.png" /></a>
+					{{ }else{ }}
+						<a style="float:left" href="#" class="round secondary tiny button"><img src="/img/icones/Shape-Star2-24_white.png" /></a>
+					{{ } }}
+					{{-project.title}}
+					{{ if(project.image){ }}<img class="large-12 medium-12 small-2" src="/S3/getUrl?amz_id={{- project.image}}" />{{ }; }}
+				</li>
+				<li class="description">{{=project.content}}</li>
+				<li class="bullet-item"><em>Created by {{-project.author.name}} at {{-project.date}}</em></li>
+				<li class="cta-button"><a class="button round expand" href="/publicVisu?projectId={{- project.id }}#visu">Open</a></li>
+			</ul>
+		{{ });}}
+		</div>
+	    
+   	</div>
+</script>
