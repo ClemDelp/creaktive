@@ -32,7 +32,7 @@
   		if(user){
   			User.update({id: req.body.params.id}, req.body.params).done(function(err,u){
   				if(err) return res.send({err:err})
-          req.session.user = u[0];
+          //req.session.user = u[0];
           //req.socket.broadcast.to(req.session.currentProject.id).emit("user:update", u[0]);
           res.send(u[0]);
         });
@@ -43,7 +43,7 @@
 
           p.save(function(err, u){
             if(err) return res.send({err:err})
-            req.session.user = u[0];
+            //req.session.user = u[0];
             //req.socket.broadcast.to(req.session.currentProject.id).emit("user:create", u[0]); 
             res.send(u[0]);
           })
