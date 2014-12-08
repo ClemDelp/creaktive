@@ -18,7 +18,10 @@
 <%- partial('../app/templates/comments_templates') %>
 <%- partial('../app/templates/attachment_templates') %>
 <%- partial('../app/templates/CKLayout_templates') %>
+
 <%- partial('../app/templates/usersList_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/usersList.js"></script>
+
 
 <%- partial('../app/templates/reportsList_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/reportsList.js?v=<%= sails.config.session.version %>"></script>
@@ -29,7 +32,6 @@
 <script type="text/javascript" src="js/BB_app/modules/CKLayout.js?v=<%= sails.config.session.version %>"></script>
 
 <script type="text/javascript" src="js/BB_app/modules/imagesList.js?v=<%= sails.config.session.version %>"></script>
-<script type="text/javascript" src="js/BB_app/modules/usersList.js"></script>
 
 <%- partial('../app/templates/googleSearch_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/googleSearch.js?v=<%= sails.config.session.version %>"></script>

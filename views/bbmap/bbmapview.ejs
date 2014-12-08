@@ -59,6 +59,10 @@
 <%- partial('../app/templates/importData_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/importData.js?v=<%= sails.config.session.version %>"></script>
 
+<%- partial('../app/templates/usersList_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/usersList.js"></script>
+
+
 <script type="text/javascript" src="js/BB_app/modules/modelEditor.js?v=<%= sails.config.session.version %>"></script>
 <script type="text/javascript" src="js/BB_app/modules/comments.js?v=<%= sails.config.session.version %>"></script>
 <script type="text/javascript" src="js/BB_app/modules/attachment.js?v=<%= sails.config.session.version %>"></script>
@@ -97,6 +101,7 @@
       var json = {};
       json.project = <%- currentProject %>;
       json.project_users = <%- project_users %>;
+      json.users = <%- users %>;
       json.user = <%- currentUser %>;
       json.knowledges = <%- knowledges %>;
       json.projects = <%- projects %>;

@@ -43,6 +43,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.discussionModel_el = $(this.el).find('#discussionModel');
         this.activitiesModel_el = $(this.el).find('#activitiesModel');
         this.css3Model_el = $(this.el).find('#css3Model');
+        this.members_el = $(this.el).find('#members');
         this.googleSearchModel_el = $(this.el).find('#googleSearchModel');
         ////////////////////////////////
         // Objects
@@ -528,6 +529,14 @@ bbmap.Views.Main = Backbone.View.extend({
                 mode            : this.mode,
                 user            : this.user
             });
+            // Members module
+            if(bbmap.views.usersList)bbmap.views.usersList.close();
+            bbmap.views.usersList = new usersList.Views.Main({
+                users   : api.getUserPermissionByProject(global.collections.Permissions,global.collections.Users,this.project.get('id')),
+                mode    : this.mode,
+                project : this.project
+            });
+            console.log(global.collections.Permissions,global.collections.Users,this.project.get('id'))
             // GoogleSearch module IMG
             if(bbmap.views.gs_img)bbmap.views.gs_img.close();
             bbmap.views.gs_img = new googleSearch.Views.Main({
@@ -574,6 +583,7 @@ bbmap.Views.Main = Backbone.View.extend({
             this.attachementModel_el.html(bbmap.views.imagesList.render().el);
             this.attachementModel_el.append(bbmap.views.attachment.render().el);
             this.discussionModel_el.append(bbmap.views.comments.render().el);
+            this.members_el.append(bbmap.views.usersList.render().el);
             this.googleSearchModel_el.empty();
             this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_img.render().el));
             this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_web.render().el));

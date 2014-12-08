@@ -1,6 +1,11 @@
 <script type="text/template" id="usersList-template">
 	<FIELDSET>
-		<LEGEND align=top> Members ({{-userPerms.length}})<a href="/userManager?projectId={{- project.id}}"> manage</a></LEGEND>
+		<LEGEND align=top>
+			Members ({{-userPerms.length}})
+			<button style="padding:0px;padding-left:10px;padding-right:10px;" class="button tiny radius" data-dropdown="members_dropdown" aria-controls="members_dropdown" aria-expanded="true">
+		          <img src="/img/icones/User-Add-32.png"/>Add members...
+		    </button>
+		</LEGEND>
 		<table style="width:100%">
 		{{ _.each(userPerms,function(userPerm){ }}
 			<tr>
@@ -10,6 +15,7 @@
 		    </tr>
 		{{ });}}
 		</table>
-
 	</FIELDSET>
+
+   	<div id="members_dropdown" class="f-dropdown content small" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
 </script>

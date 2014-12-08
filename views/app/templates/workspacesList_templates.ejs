@@ -1,7 +1,7 @@
-<br>
 <div id="workspacesList-container" class="row"></div>
 
 <script type="text/template" id="workspacesList-search-template">
+    <br>
     <div class="large-12 columns">
       <div class="row expand collapse">
         <div class="small-10 columns">
@@ -30,7 +30,7 @@
     <div class="workspaces_container large-12 medium-12 small-12 columns panel">
 	    <h4>{{ if(starred == true){ }}<img src="/img/icones/Shape-Star2-32-blue.png" />{{ }else{ }}<img src="/img/icones/User-Profile-32-blue.png" />{{ } }}{{- title }}
 	    {{ if(newButton == true){ }}
-		    <button class="button small round secondary" data-dropdown="wks_new_dropdown" aria-controls="wks_new_dropdown" aria-expanded="true">Create new workspace  »</button>
+		    <button class="button small radius success" data-dropdown="wks_new_dropdown" aria-controls="wks_new_dropdown" aria-expanded="true">Create new workspace  »</button>
 		    <div id="wks_new_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
 			  	<fieldset>
 				    <legend>Create workspace</legend>
