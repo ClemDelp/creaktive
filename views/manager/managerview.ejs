@@ -13,7 +13,6 @@
 <script src="js/BB_app/modules/welcome.js?v=<%= sails.config.session.version %>"></script>
 
 <!-- CKLayout -->
-<%- partial('../app/templates/activitiesList_templates') %>
 <%- partial('../app/templates/imagesList_templates') %>
 <%- partial('../app/templates/modelEditor_templates') %>
 <%- partial('../app/templates/comments_templates') %>
@@ -28,7 +27,7 @@
 <script type="text/javascript" src="js/BB_app/modules/comments.js?v=<%= sails.config.session.version %>"></script>
 <script type="text/javascript" src="js/BB_app/modules/attachment.js?v=<%= sails.config.session.version %>"></script>
 <script type="text/javascript" src="js/BB_app/modules/CKLayout.js?v=<%= sails.config.session.version %>"></script>
-<script type="text/javascript" src="js/BB_app/modules/activitiesList.js?v=<%= sails.config.session.version %>"></script>
+
 <script type="text/javascript" src="js/BB_app/modules/imagesList.js?v=<%= sails.config.session.version %>"></script>
 <script type="text/javascript" src="js/BB_app/modules/usersList.js"></script>
 
@@ -60,26 +59,24 @@
       _.each(json.knowledges, function(k){
         k.comments = new global.Collections.Comments(k.comments);
         k.members = new global.Collections.UsersCollection(k.members);
-      })
+      });
       _.each(json.concepts, function(c){
         c.comments = new global.Collections.Comments(c.comments);
         c.members = new global.Collections.UsersCollection(c.members);
-      })
-
+      });
       _.each(json.projects, function(p){
         p.comments = new global.Collections.Comments(p.comments);
         p.members = new global.Collections.UsersCollection(p.members);
-      })
-
+      });
       global.init(json, function(){
         // Modules
+        topbar.init({el:"#topbar_container"});
         welcome.init();     
         manager.init(); 
         /*activat of "hashchange events's monitoring"*/
         if(!Backbone.History.started) Backbone.history.start();  
         
       });
-      
     });
   }) ;
 </script>

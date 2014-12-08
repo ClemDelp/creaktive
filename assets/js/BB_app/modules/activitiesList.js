@@ -7,14 +7,21 @@ var activitiesList = {
   collections: {},
   models: {},
   views: {},
-  init: function () {}
+  init: function (json){
+    /*Init*/
+    this.views.main = new this.Views.Main({
+      el : json.el,
+      notifications : global.collections.Notifications
+    });
+    this.views.main.render();
+  }
 };
 /***************************************/
 activitiesList.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
-        this.model           = json.model;
+        this.model = json.model;
         this.activity_size = 10;
         if(this.model.get('type') == 'project'){
           this.models_notifs = global.ProjectsNotificationsDictionary;

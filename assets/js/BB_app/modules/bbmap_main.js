@@ -1192,7 +1192,8 @@ bbmap.Views.Main = Backbone.View.extend({
         this.bottom_el.empty();
         this.top_el.append(this.template_top({
             filter  : this.filter,
-            mode    : this.mode
+            mode    : this.mode,
+            project : this.project.toJSON()
         }));
         this.bottom_el.append(this.template_bottom({
             filter  : this.filter,
@@ -1413,7 +1414,7 @@ bbmap.Views.Main = Backbone.View.extend({
             // Initialize jsPlumb events
             this.jsPlumbEventsInit();
             ///////////////////////
-             jsPlumb.draggable($('#map'))
+            jsPlumb.draggable($('#map'))
             //$('#map').draggable();
             // css3 generator
             if(bbmap.views.css3)bbmap.views.css3.remove();

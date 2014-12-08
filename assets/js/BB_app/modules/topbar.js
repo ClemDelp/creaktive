@@ -8,56 +8,33 @@ var topbar = {
   collections: {},
   models: {},
   views: {},
-  init: function (page) {
+  eventAggregator : global.eventAggregator,
+  init: function (json) {
     /*Init*/
-    this.views.Main = new this.Views.Main({
-      user            : global.models.current_user,
-      eventAggregator : global.eventAggregator
+    this.views.main = new this.Views.Main({
+      el : json.el,
+      user : global.models.current_user,
+      notifications : global.collections.Notifications
     });
-    this.views.Main.render();
+    this.views.main.render();
   }
 };
 /////////////////////////////////////////
 // VIEWS
 /////////////////////////////////////////
-topbar.Views.TopBar = Backbone.View.extend({
-    initialize : function(json){
-        _.bindAll(this, 'render');
-        // Variables
-        this.user = json.user;
-        this.eventAggregator    = json.eventAggregator;
-        // Templates     
-        this.template = _.template($("#topbar-main-template").html());
-        // Events
-        
-    },
-    render : function(){
-        $(this.el).html('');
-        $(this.el).append(this.template({
-            user : this.user.toJSON()
-        }));
-
-        return this;
-    }
-});
-/***************************************/
 topbar.Views.Main = Backbone.View.extend({
-    el:"#topbar_container",
     initialize : function(json) {
         _.bindAll(this, 'render');
         // Variables
-        this.user               = json.user;
-        this.eventAggregator    = json.eventAggregator; 
+        this.user          = json.user;
+        this.Notifications = json.notifications;
+        // Templates
+        this.template = _.template($('#topbar-template').html());
     },
     render : function(){
-        $(this.el).html('');
-        _this = this;
-        // TopBar view
-        $(this.el).append(new topbar.Views.TopBar({
-            user : this.user,
-            eventAggregator : this.eventAggregator
-        }).render().el);
-
+        $(this.el).empty();
+        $(this.el).append(this.template({user:this.user.toJSON()}));
+        workspacesList.init({el:"#workspaces_dropdown",display:"list"});
         return this;
     }
 });
