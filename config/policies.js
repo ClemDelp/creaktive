@@ -35,26 +35,14 @@
     "openChannels" : ["authenticated"]
   },
 
-  "SparqlController" : {
-    "*" : "authenticated"
-  }, 
-
-  "ElasticsearchController" : {
-    "*" : "authenticated"
-  }, 
 
   "ContactController" : {
     "*" : "authenticated"
   }, 
 
-  "CkviewerController" : {
-   "ckviewerview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
-   "*" : "authenticated"
-  },
-
   "PocheController" : {
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"]
+    "find" : ["authenticated"],
+    "*" : ["authenticated"]
   },
 
   "FileController" : {
@@ -62,14 +50,9 @@
   },
   
   "CkpreviewerController" : {
-    "ckpreviewerview" :["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
+    "ckpreviewerview" :["authenticated","forceHTTPs","onlyMobile"],
     "*" : "authenticated"
   }, 
-
-
-  "AnalyseController" : {
-    "*" : "authenticated"
-  },
 
   "S3Controller" : {
     "*" : "authenticated"
@@ -77,34 +60,33 @@
 
   "bbmap" : {
     "screenshot" : true,
-    "*" : ["authenticated", "allowedProjects"],
+    "*" : ["authenticated"],
   },
 
   "LinkController" : {
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"]
+    "find" : ["authenticated"],
+    "*" : ["authenticated"]
   },
 
   "ProjectController" : {
     "*" : "authenticated",
-    "destroy" : ["authenticated", "canRemoveProject" ],
-
+    "destroy" : ["authenticated"],
   }, 
 
   "NotificationController" : {
-    "notificationview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
+    "notificationview" : ["authenticated","forceHTTPs","onlyMobile"],
     "*" : ["authenticated"],
   },
 
   "PermissionController" : {
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canManageUsers"]
+    "find" : ["authenticated"],
+    "*" : ["authenticated"]
   },
 
   /*********** VIEWS ******************/
   "PublicVisuController" : {
     // "screenshot" : true,
-    // "publicvisuview" : ["authenticated", "allowedProjects","forceHTTPs"],
+    // "publicvisuview" : ["authenticated","forceHTTPs"],
     "*" : true
   },
 
@@ -115,45 +97,41 @@
   },
 
   "MobileInterfaceController" : {
-    "*" : ["authenticated","forceHTTPs","allowedProjects"]
+    "*" : ["authenticated","forceHTTPs"]
   },
 
   "MobileManagerController" : {
-    "*" : ["authenticated","forceHTTPs","allowedProjects"]
+    "*" : ["authenticated","forceHTTPs"]
   },
 
   "ManagerController" : {
-    "managerview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
+    "managerview" : ["authenticated","forceHTTPs","onlyMobile"],
     "editprofileview" : ["authenticated", "forceHTTPs","onlyMobile"],
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"]
+    "find" : ["authenticated"],
+    "*" : ["authenticated"]
   },
 
   "UserController" : {
     "*" : ["authenticated", "canWrite"],
     "inviteUser" : ["authenticated"],
-    "userview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
+    "userview" : ["authenticated","forceHTTPs","onlyMobile"],
     "editprofileview" : ["authenticated", "forceHTTPs","onlyMobile"],
     "editprofile" : "authenticated",
     "changepassword" :"authenticated",
-    "find" : ["authenticated", "canRead"],
+    "find" : ["authenticated"],
   },
 
-  "AnalyseController" : {
-    "analyseview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
-  }, 
-
   "ConceptController" : {
-    "conceptview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
+    "conceptview" : ["authenticated","forceHTTPs","onlyMobile"],
     "find" : ["authenticated", "canRead"],
-    "generateTree" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"] 
+    "generateTree" : ["authenticated"],
+    "*" : ["authenticated"] 
   },
 
   "KnowledgeController" : {
-    "knowledgeview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"]
+    "knowledgeview" : ["authenticated","forceHTTPs","onlyMobile"],
+    "find" : ["authenticated"],
+    "*" : ["authenticated"]
   },
 
   "BackupController" : {
@@ -161,9 +139,9 @@
   },
 
   "CategoryController" : {
-    "categoryview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"]
+    "categoryview" : ["authenticated","forceHTTPs","onlyMobile"],
+    "find" : ["authenticated"],
+    "*" : ["authenticated"]
   },
 
   "ScreenshotController" : {
@@ -179,7 +157,7 @@
   },
 
   "BackupController" : {
-    "*" : ["authenticated", "allowedProjects","forceHTTPs"]
+    "*" : ["authenticated","forceHTTPs"]
   }
   /*
   // Here's an example of adding some policies to a controller
