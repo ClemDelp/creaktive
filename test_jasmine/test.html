@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+<title>Test BBmap API</title>
+<link rel="stylesheet" href="jasmine.css">
+
+<script type='text/javascript' src='../assets/js/vendor/jquery-1.10.2.js'></script>
+<script src="../assets/js/vendor/underscore.js"></script>
+<script src="../assets/js/vendor/backbone.js"></script>
+<script src="jasmine.js"></script>
+<script src="/testem.js"></script>
+</script>
+<script src="jasmine-html.js"></script>
+<script src="api_spec.js"></script>
+</head>
+<body>
+<!-- ******************************** -->
+<script type="text/javascript" src="../assets/js/BB_app/api.js"></script>
+<!-- ******************************** -->
+<script>
+    var reporter = new jasmine.TrivialReporter, env = jasmine.getEnv()
+    env.specFilter = function(spec){
+    	return reporter.specFilter(spec)
+    }
+    env.addReporter(reporter)
+    env.execute()
+</script>
+</body>
+</html>
