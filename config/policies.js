@@ -36,31 +36,19 @@
   },
 
 
-  "ContactController" : {
-    "*" : "authenticated"
+  "ProjectController" : {
+    "*" : "authenticated",
+    "destroy" : ["authenticated"],
   }, 
 
-  "PocheController" : {
+  "PermissionController" : {
     "find" : ["authenticated"],
     "*" : ["authenticated"]
   },
 
-  "FileController" : {
-    "*" : "authenticated"
-  },
-  
-  "CkpreviewerController" : {
-    "ckpreviewerview" :["authenticated","forceHTTPs","onlyMobile"],
-    "*" : "authenticated"
-  }, 
-
-  "S3Controller" : {
-    "*" : "authenticated"
-  },
-
-  "bbmap" : {
-    "screenshot" : true,
-    "*" : ["authenticated"],
+  "PocheController" : {
+    "find" : ["authenticated"],
+    "*" : ["authenticated"]
   },
 
   "LinkController" : {
@@ -68,81 +56,26 @@
     "*" : ["authenticated"]
   },
 
-  "ProjectController" : {
-    "*" : "authenticated",
-    "destroy" : ["authenticated"],
-  }, 
-
-  "NotificationController" : {
-    "notificationview" : ["authenticated","forceHTTPs","onlyMobile"],
-    "*" : ["authenticated"],
-  },
-
-  "PermissionController" : {
-    "find" : ["authenticated"],
-    "*" : ["authenticated"]
-  },
-
-  /*********** VIEWS ******************/
-  "PublicVisuController" : {
-    // "screenshot" : true,
-    // "publicvisuview" : ["authenticated","forceHTTPs"],
-    "*" : true
-  },
-
-  "PublicMapController" : {
-    // "screenshot" : true,
-    "publicmapview" : ["publicProjects","onlyMobile"],
-    "*" : true
-  },
-
-  "MobileInterfaceController" : {
-    "*" : ["authenticated","forceHTTPs"]
-  },
-
-  "MobileManagerController" : {
-    "*" : ["authenticated","forceHTTPs"]
-  },
-
-  "ManagerController" : {
-    "managerview" : ["authenticated","forceHTTPs","onlyMobile"],
-    "editprofileview" : ["authenticated", "forceHTTPs","onlyMobile"],
-    "find" : ["authenticated"],
-    "*" : ["authenticated"]
-  },
-
-  "UserController" : {
-    "*" : ["authenticated", "canWrite"],
-    "inviteUser" : ["authenticated"],
-    "userview" : ["authenticated","forceHTTPs","onlyMobile"],
-    "editprofileview" : ["authenticated", "forceHTTPs","onlyMobile"],
-    "editprofile" : "authenticated",
-    "changepassword" :"authenticated",
-    "find" : ["authenticated"],
-  },
-
   "ConceptController" : {
-    "conceptview" : ["authenticated","forceHTTPs","onlyMobile"],
     "find" : ["authenticated", "canRead"],
     "generateTree" : ["authenticated"],
     "*" : ["authenticated"] 
   },
 
   "KnowledgeController" : {
-    "knowledgeview" : ["authenticated","forceHTTPs","onlyMobile"],
     "find" : ["authenticated"],
-    "*" : ["authenticated"]
-  },
-
-  "BackupController" : {
     "*" : ["authenticated"]
   },
 
   "CategoryController" : {
-    "categoryview" : ["authenticated","forceHTTPs","onlyMobile"],
     "find" : ["authenticated"],
     "*" : ["authenticated"]
   },
+
+  /************************************/
+  /*********** Jian ******************/
+  /************************************/
+
 
   "ScreenshotController" : {
     "*" : ["authenticated"]
@@ -157,8 +90,84 @@
   },
 
   "BackupController" : {
+    "*" : ["authenticated"]
+  },
+
+  /************************************/
+  /*********** C'est quoi ces daubes ? ******************/
+  /************************************/
+  "BackupController" : {
+    "*" : ["authenticated"]
+  },
+
+  "ContactController" : {
+    "*" : "authenticated"
+  }, 
+
+  "FileController" : {
+    "*" : "authenticated"
+  },
+
+  "S3Controller" : {
+    "*" : "authenticated"
+  },
+  /************************************/
+  /*********** VIEWS ******************/
+  /************************************/
+  "PublicVisuController" : {
+    // "screenshot" : true,
+    // "publicvisuview" : ["authenticated","forceHTTPs"],
+    "*" : true
+  },
+
+  "PublicMapController" : {
+    // "screenshot" : true,
+    "publicmapview" : ["publicProjects","onlyMobile"],
+    "*" : true
+  },
+
+  "ManagerController" : {
+    "managerview" : ["authenticated","forceHTTPs","onlyMobile"],
+  },
+
+  "UserController" : {
+    "*" : ["authenticated", "canWrite"],
+    "inviteUser" : ["authenticated"],
+    "userview" : ["authenticated","forceHTTPs","onlyMobile"],
+    "editprofileview" : ["authenticated", "forceHTTPs","onlyMobile"],
+    "editprofile" : "authenticated",
+    "changepassword" :"authenticated",
+    "find" : ["authenticated"],
+  },
+
+  "bbmap" : {
+    "bbmapview" : ["authenticated", "forceHTTPs", "onlyMobile"],
+    "screenshot" : true,
+    "*" : ["authenticated"],
+  },
+
+  "NotificationController" : {
+    "notificationview" : ["authenticated","forceHTTPs","onlyMobile"],
+    "*" : ["authenticated"],
+  },
+
+  "CkpreviewerController" : {
+    "ckpreviewerview" :["authenticated","forceHTTPs","onlyMobile"],
+    "*" : "authenticated"
+  }, 
+
+  /************************************/
+  /************ MOBILE ****************/
+  /************************************/
+  "MobileInterfaceController" : {
     "*" : ["authenticated","forceHTTPs"]
-  }
+  },
+
+  "MobileManagerController" : {
+    "*" : ["authenticated","forceHTTPs"]
+  },
+
+
   /*
   // Here's an example of adding some policies to a controller
   RabbitController: {

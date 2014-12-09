@@ -71,7 +71,9 @@
       email : req.body.email,
       pw : "JKHk!lm3682jhqmfljzdofij654654dfsdf6522dfs#mkldqj$",
       confirmed : false,
-      id : IdService.guid()
+      id : IdService.guid(),
+      admin : false,
+      invitedBy : req.session.user.id
     }).done(function(err, user){
       if(err) return res.send({err:err});
         var url = "";
