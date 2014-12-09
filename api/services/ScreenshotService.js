@@ -42,9 +42,10 @@ module.exports = {
 	    if(req.query.zoom) params += "#visu/"+(parseFloat(req.query.zoom)*multiplier);
 	    if(req.query.left) params += "/"+(parseFloat(req.query.left)*multiplier);
 	    if(req.query.top) params += "/"+(parseFloat(req.query.top)*multiplier);
+	    params += "/1";// invisibility
 	    if(req.query.window_w) sizeScreen = (~~(parseFloat(req.query.window_w)*multiplier))+"x"+(~~(parseFloat(req.query.window_h)*multiplier));
 
-	    console.log("Multiplier: ",multiplier," *** resolution: ",sizeScreen)
+	    //console.log("Multiplier: ",multiplier," *** resolution: ",sizeScreen)
 
 	    /////////////////////////
 	    if(req.get('host') == "localhost:1337"){

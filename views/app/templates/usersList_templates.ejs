@@ -1,8 +1,10 @@
 <script type="text/template" id="usersList-template">	
 	<h4>Members ({{-userPerms.length}})</h4>
+	{{ if(mode == "edit"){ }}
 	<button style="padding:0px;padding-left:10px;padding-right:10px;" class="button tiny success radius" data-dropdown="members_dropdown" aria-controls="members_dropdown" aria-expanded="true">
           <img src="/img/icones/User-Add-32.png"/>Add members...
     </button>
+	{{ } }}
 	<table style="width:100%">
 	{{ _.each(userPerms,function(userPerm){ }}
 		<tr>

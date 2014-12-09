@@ -2,40 +2,15 @@
 <!-- Gridalicious -->
 <script src="/js/vendor/jquery.grid-a-licious.js"></script>
 <!-- ******************************** -->
-<script type="text/javascript" src="js/vendor/jquery.fileDownload.js"></script>
-<!-- ******************************** -->
-<!-- CKEditor -->
-<script src="/js/ckeditor/ckeditor.js"></script>
 <!-- Modules to load -->
-<%- partial('../app/templates/welcome_templates') %>
-<%- partial('templates/manager_template') %>
-<script src="js/BB_app/modules/manager.js?v=<%= sails.config.session.version %>"></script>
-<script src="js/BB_app/modules/welcome.js?v=<%= sails.config.session.version %>"></script>
+<%- partial('../app/templates/activitiesList_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/activitiesList.js?v=<%= sails.config.session.version %>"></script>
 
-<!-- CKLayout -->
-<%- partial('../app/templates/imagesList_templates') %>
-<%- partial('../app/templates/modelEditor_templates') %>
-<%- partial('../app/templates/comments_templates') %>
-<%- partial('../app/templates/attachment_templates') %>
-<%- partial('../app/templates/CKLayout_templates') %>
+<%- partial('../app/templates/topbar_templates.ejs') %>
+<script src="js/BB_app/modules/topbar.js?v=<%= sails.config.session.version %>"></script>
 
-<%- partial('../app/templates/usersList_templates') %>
-<script type="text/javascript" src="js/BB_app/modules/usersList.js"></script>
-
-
-<%- partial('../app/templates/reportsList_templates') %>
-<script type="text/javascript" src="js/BB_app/modules/reportsList.js?v=<%= sails.config.session.version %>"></script>
-
-<script type="text/javascript" src="js/BB_app/modules/modelEditor.js?v=<%= sails.config.session.version %>"></script>
-<script type="text/javascript" src="js/BB_app/modules/comments.js?v=<%= sails.config.session.version %>"></script>
-<script type="text/javascript" src="js/BB_app/modules/attachment.js?v=<%= sails.config.session.version %>"></script>
-<script type="text/javascript" src="js/BB_app/modules/CKLayout.js?v=<%= sails.config.session.version %>"></script>
-
-<script type="text/javascript" src="js/BB_app/modules/imagesList.js?v=<%= sails.config.session.version %>"></script>
-
-<%- partial('../app/templates/googleSearch_templates') %>
-<script type="text/javascript" src="js/BB_app/modules/googleSearch.js?v=<%= sails.config.session.version %>"></script>
-
+<%- partial('../app/templates/workspacesList_templates.ejs') %>
+<script src="js/BB_app/modules/workspacesList.js?v=<%= sails.config.session.version %>"></script>
 
 <script>
   $(document).ready(function () {
@@ -70,15 +45,15 @@
         p.comments = new global.Collections.Comments(p.comments);
         p.members = new global.Collections.UsersCollection(p.members);
       });
+      
       global.init(json, function(){
         // Modules
         topbar.init({el:"#topbar_container"});
-        welcome.init();     
-        manager.init(); 
+        workspacesList.init({el:"#workspacesList-container"}); 
         /*activat of "hashchange events's monitoring"*/
         if(!Backbone.History.started) Backbone.history.start();  
-        
       });
+
     });
   }) ;
 </script>

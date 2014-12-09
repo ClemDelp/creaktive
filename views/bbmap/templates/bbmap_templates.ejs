@@ -1,6 +1,6 @@
 <!-- ******************************** -->
 <!-- Container -->
-<div id="bbmap_container" style="height:93%;overflow:hidden;position:relative">
+<div id="bbmap_container" style="height:96%;overflow:hidden;position:relative">
   <div id="top_container"></div>
   <div id="map_container">
     <a href="#" id="showMenu"  class="button large alert round cbp-openbutton">
@@ -67,9 +67,17 @@
 </script>
 
 <script type="text/template" id="bbmap-top-element-template">
-  <div class="large-4 medium-4 small-4 columns">
+  <div class="large-7 medium-7 small-7 columns">
+    <button class="button secondary radius" data-dropdown="title_project_dropdown" aria-controls="title_project_dropdown" aria-expanded="true">
+        <b>
+        {{-project.title}}
+        {{ if(project.starred){ }}<img src="/img/icones/Shape-Star2-24.png" />{{ } }}
+        </b>
+    </button>
+    <div id="title_project_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
+    
     {{ if(mode == "visu"){ }}
-        <a href="#edit" class="button alert small round"><img title="back" src="/img/icones/Pencil-32-white.png"/> <b>Edit</b></a>
+        <a href="#edit" class="button alert small round"><img title="back" src="/img/icones/Pencil-24-white.png"/> <b>Edit</b></a>
       {{ } }}
       {{ if(mode == "timeline"){ }}
         <h3>
@@ -97,13 +105,7 @@
       {{ } }}
   </div>
 
-  <div class="large-4 medium-4 small-4 columns">
-    <center>
-      <h4><b>{{-project.title}}</b></h4>
-    </center>
-  </div>
-
-  <div class="large-4 medium-4 small-4 columns">
+  <div class="large-5 medium-5 small-5 columns">
     <div style="float:right">
       <a href="#" class="tiny round button secondary zoomin"><img title="zoom-out" src="/img/icones/Zoom-Out-24.png"/></a>
       <a href="#" class="tiny round button secondary zoomout"><img title="zoom-in" src="/img/icones/Zoom-In-24.png"/></a>

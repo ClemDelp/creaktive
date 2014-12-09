@@ -56,12 +56,14 @@
 <%- partial('templates/bbmap_templates') %>
 <%- partial('../app/templates/title_templates') %>
 
+<%- partial('../app/templates/workspaceEditor_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/workspaceEditor.js?v=<%= sails.config.session.version %>"></script>
+
 <%- partial('../app/templates/importData_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/importData.js?v=<%= sails.config.session.version %>"></script>
 
 <%- partial('../app/templates/usersList_templates') %>
-<script type="text/javascript" src="js/BB_app/modules/usersList.js"></script>
-
+<script type="text/javascript" src="js/BB_app/modules/usersList.js?v=<%= sails.config.session.version %>"></script>
 
 <script type="text/javascript" src="js/BB_app/modules/modelEditor.js?v=<%= sails.config.session.version %>"></script>
 <script type="text/javascript" src="js/BB_app/modules/comments.js?v=<%= sails.config.session.version %>"></script>

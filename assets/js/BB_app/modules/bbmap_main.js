@@ -4,7 +4,7 @@
 bbmap.router = Backbone.Router.extend({
     routes: {
         ""  : "init",
-        "visu/:zoom/:left/:top": "visuPlus",
+        "visu/:zoom/:left/:top/:invisibility": "visuPlus",
         "visu": "visu",
         "edit": "edit",
         "timeline": "timeline"
@@ -15,7 +15,8 @@ bbmap.router = Backbone.Router.extend({
     visu: function() {
         bbmap.views.main.setMode("visu",true);
     },
-    visuPlus: function(zoom,left,top) {
+    visuPlus: function(zoom,left,top,invisibility) {
+        bbmap.views.main.invisibility = invisibility;
         bbmap.views.main.initMap(zoom,left,top)
         bbmap.views.main.setMode("visu",false);
     },
@@ -65,6 +66,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.workspace = new bbmap.router();
         ////////////////////////////////
         // Parameters
+        this.invisibility       = false; // if true hide all icone and menu
         this.isopen             = false;
         this.positionRef        = 550;
         this.color              = "gray";
@@ -138,11 +140,14 @@ bbmap.Views.Main = Backbone.View.extend({
             });
         };
         //////////////////////////////
+        // MODULES
+        //////////////////////////////
         // Members module in Slide bar
         usersList.init({
             el : "#membersModel",
             mode : this.mode,
         });
+        
     },
     events : {
         "change #visu_select_mode" : "setVisualMode",
@@ -398,10 +403,12 @@ bbmap.Views.Main = Backbone.View.extend({
         $('#showMenu').hide('slow');
         if(this.isopen==true){
             var menu = document.getElementById( 'cbp-spmenu-s1' );
-            classie.toggle( menu, 'cbp-spmenu-open' ); 
+            classie.toggle( menu, 'cbp-spmenu-open' );
             this.hideMenu();
         }
+        // Set Modules mode
         if(usersList.views.main != undefined) usersList.views.main.setMode(this.mode);
+
         this.render(initPos);
     },
     setFilter : function(e){
@@ -1457,6 +1464,19 @@ bbmap.Views.Main = Backbone.View.extend({
             this.init = false; 
             // this.intelligentRestructuring();
         }
+        /////////////////////////
+        // Workspace editor
+        if(workspaceEditor.views.main != undefined) workspaceEditor.views.main.close();
+        workspaceEditor.init({el:"#title_project_dropdown",mode:this.mode});
+        
+        ////////////////////////
+        // invisibility
+        if(this.invisibility == 1){
+            $('#topbar_container').hide();
+            $('#top_container').hide();
+            $('#bottom_container').hide();    
+        }
+        
         return this;
     }
 });
