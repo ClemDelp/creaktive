@@ -193,7 +193,9 @@ global.Collections.Comments = Backbone.Collection.extend({
         return -m.get('date2');
     },
     initialize : function() {
-        //console.log('Comments Collection Constructor');
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
     }
 }); 
 /***************************************/

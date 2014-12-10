@@ -24,6 +24,9 @@ bbmap.Views.Node = Backbone.View.extend({
         // Templates
         this.template_bulle = _.template($('#bbmap-bulle-template').html());
     },
+    // commentsChange : function(){
+    //     
+    // },
     events : {
         "click .sup" : "removeModel",
         "click .ep" : "addConceptChild",
@@ -39,9 +42,11 @@ bbmap.Views.Node = Backbone.View.extend({
     actualize : function(model,save){
         var old_id_father = this.model.get('id_father');
         var new_id_father = model.id_father;
+        ////////////////////////
         this.model.set({
             top: model.top,
             left: model.left,
+            comments : new global.Collections.Comments(model.comments),
             title: model.title,
             css: model.css,
             id_father : model.id_father

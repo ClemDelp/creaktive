@@ -146,7 +146,7 @@ module.exports = {
           });
         });
         ///////////////////////////////////////////////////
-        
+        Comment.find({project:project.id}).done(function(err,comments){
           Knowledge.find({project:project.id}).done(function(err,knowledges){
             Poche.find({project:project.id}).done(function(err,poches){
               Project.find({id : req.session.allowedProjects, backup : false}).done(function(err,projects){
@@ -156,6 +156,7 @@ module.exports = {
                       Screenshot.find({project_id:project.id}).done(function(err, screenshots){
                           Presentation.find({project_id:project.id}).done(function(err, presentations){
                             res.view({
+                              comments : JSON.stringify(comments),
                               currentUser : JSON.stringify(req.session.user),
                               projectTitle : req.session.currentProject.title,
                               projectId : req.session.currentProject.id,
@@ -181,7 +182,7 @@ module.exports = {
                   });
                 });
               });
-            // });
+            });
           });
         });
       });

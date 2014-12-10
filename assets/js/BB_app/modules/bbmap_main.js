@@ -41,7 +41,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.editor_el = $(this.el).find('#editor');
         this.editModel_el = $(this.el).find('#editModel');
         this.attachementModel_el = $(this.el).find('#attachementModel');
-        this.discussionModel_el = $(this.el).find('#discussionModel');
         this.activitiesModel_el = $(this.el).find('#activitiesModel');
         this.css3Model_el = $(this.el).find('#css3Model');
         this.googleSearchModel_el = $(this.el).find('#googleSearchModel');
@@ -542,6 +541,23 @@ bbmap.Views.Main = Backbone.View.extend({
                 mode            : this.mode,
                 user            : this.user
             });
+            
+            
+            if(comments.views.main != undefined){
+                comments.views.main.mode = this.mode;
+                comments.views.main.model = model;
+                comments.views.main.comments = global.collections.Comments;
+                comments.views.main.render();
+            }else{
+                comments.init({
+                    el:"#discussionModel",
+                    mode: this.mode,
+                    model : model,
+                    comments : global.collections.Comments
+                });
+                
+            }
+            
             // GoogleSearch module IMG
             if(bbmap.views.gs_img)bbmap.views.gs_img.close();
             bbmap.views.gs_img = new googleSearch.Views.Main({
@@ -587,7 +603,6 @@ bbmap.Views.Main = Backbone.View.extend({
             this.editModel_el.append(bbmap.views.templatesList.render().el);
             this.attachementModel_el.html(bbmap.views.imagesList.render().el);
             this.attachementModel_el.append(bbmap.views.attachment.render().el);
-            this.discussionModel_el.append(bbmap.views.comments.render().el);
             this.googleSearchModel_el.empty();
             this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_img.render().el));
             this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_web.render().el));

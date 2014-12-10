@@ -28,9 +28,9 @@ var global = {
     _.extend(this.eventAggregator, Backbone.Events);
     // Models
     this.models.current_user = new this.Models.User(json.user);
-    //if(this.models.current_user.get('img') == null) this.models.current_user.save({img : "img/default-user-icon-profile.png"}); 
     this.models.currentProject = new this.Models.ProjectModel(json.project);
     // Collection
+    this.collections.Comments = new this.Collections.Comments(json.comments);
     this.collections.Knowledges = new this.Collections.Knowledges(json.knowledges);
     this.collections.Poches = new this.Collections.Poches(json.poches);
     this.collections.Project_users = new this.Collections.UsersCollection(json.project_users);

@@ -1,29 +1,29 @@
-<script type="text/template" id="comments-template">
-	<fieldset>
-        <legend align=left>Discussions ({{- comments.length }})</legend>
-		<ul>
-			{{ _.each(comments, function(comment) { }}  
-					<li title="{{- comment.date }}">
-						
-						<strong><small>{{- comment.user.name }}</small></strong> :
-						{{- comment.content }}  
-						{{ if(mode == "edit"){ }} - <a class="removeComment" title="remove" data-id-comment="{{- comment.id }}" style="color:red">x</a>{{ } }}
-					</li>
-			{{ }); }}
-		</ul>
-		{{ if(mode == "edit"){ }}
-			<div class="row">
-				<div class="small-12 large-12 medium-12 columns">
-					<div class="row collapse">
-						<div class="small-10 columns">
-							<input type="text" class="input_comment" placeholder="your comment">
-						</div>
-						<div class="small-2 columns">
-							<input type="submit" class="button prefix addComment" value="+">
-						</div>
+<script type="text/template" id="comments-header-template">
+    <h4>Discussions ({{- comments.length }})</h4>
+	{{ if(mode == "edit"){ }}
+		<div class="row">
+			<div class="small-12 large-12 medium-12 columns">
+				<div class="row collapse">
+					<div class="small-10 columns">
+						<input type="text" id="input_comment" placeholder="your comment">
+					</div>
+					<div class="small-2 columns">
+						<input type="submit" class="button prefix addComment" value="+">
 					</div>
 				</div>
 			</div>
-		{{ } }}
-    </fieldset>		
+		</div>
+	{{ } }}		
+</script>
+
+<script type="text/template" id="comments-comment-template">
+	<div class="row">
+		<div class="large-1 columns small-1">
+			<img width="20" src="{{- user.img }}">
+		</div>
+		<div class="large-11 columns">
+			<b>{{- user.name }}</b><small>{{- comment.date }}</small>
+			<p>{{- comment.content }}</p>
+		</div>
+	</div>	
 </script>

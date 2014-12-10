@@ -84,7 +84,7 @@ global.Models.Knowledge = global.Models.CKObject.extend({
 });
 /***************************************/
 global.Models.ConceptModel = global.Models.CKObject.extend({
-    initialize : function Comment() {
+    initialize : function Concept() {
         this.urlRoot = "concept";
         //this.set({type : "concept"});
         this.bind("error", function(model, error){
@@ -126,14 +126,18 @@ global.Models.Comment = Backbone.Model.extend({
     model: this,
     defaults : {
         id:"",
-        user : "",
+        project : "",//id
+        attachedTo : "",// id of concept/knowledge/...
+        user : "", // id
         date : "",
         content : "",
     },
     setText : function(value) {this.set({ text : value }); },
     initialize : function Comment() {
-        //this.urlRoot = "comment";
-        //console.log('Comment Constructor');
+        this.urlRoot = "comment";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
     }
 });
 /////////////////////////////////////////////////////////////////////
