@@ -13,6 +13,7 @@ var workspaceEditor = {
     this.views.main = new workspaceEditor.Views.Main({
         el : json.el,
         workspace : global.models.currentProject,
+        workspaces : global.collections.Projects,
         mode : json.mode
     });
     this.views.main.render();
@@ -26,13 +27,35 @@ workspaceEditor.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         ////////////////////////////
         this.workspace = json.workspace;
+        this.workspaces = json.workspaces;
         this.mode = json.mode;
         // Events
         // Templates
         this.template = _.template($('#workspaceEditor-template').html());
     },
     events : {
-        "click .updateWorkspace" : "updateWorkspace"
+        "click .updateWorkspace" : "updateWorkspace",
+        "click .removeWorkspace" : "removeWorkspace"
+    },
+    removeWorkspace : function(e){
+      e.preventDefault();
+      var _this = this;
+      swal({   
+          title: "Are you sure?",   
+          text: "Remove the workspace and all its data, would you continue?",   
+          type: "warning",   
+          showCancelButton: true,   
+          confirmButtonColor: "#DD6B55",   
+          confirmButtonText: "Yes, delete it!",   
+          closeOnConfirm: true,
+          allowOutsideClick : true
+      }, 
+      function(){   
+          project_id = _this.workspace.get('id');
+          project = _this.workspaces.get(project_id);
+          project.destroy();
+          window.location.href = "/";
+      });
     },
     updateWorkspace : function(e){
         e.preventDefault();

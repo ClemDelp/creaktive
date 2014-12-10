@@ -9,11 +9,15 @@
 <%- partial('../app/templates/topbar_templates.ejs') %>
 <script src="js/BB_app/modules/topbar.js?v=<%= sails.config.session.version %>"></script>
 
+<%- partial('../app/templates/timela_templates.ejs') %>
+<script src="js/BB_app/modules/timela.js?v=<%= sails.config.session.version %>"></script>
+
 <%- partial('../app/templates/workspacesList_templates.ejs') %>
 <script src="js/BB_app/modules/workspacesList.js?v=<%= sails.config.session.version %>"></script>
 
 <%- partial('templates/publicmap_templates.ejs') %>
 <script src="js/BB_app/modules/publicMap.js?v=<%= sails.config.session.version %>"></script>
+
 
 
 
@@ -55,8 +59,9 @@
       global.init(json, function(){
         // Modules
         topbar.init({el:"#topbar_container"});
-        publicMap.init();
-        workspacesList.init({el:"#workspacesList-container"}); 
+        timela.init({el:"#timela_container"});
+        // publicMap.init();
+        // workspacesList.init({el:"#workspacesList-container"}); 
         /*activat of "hashchange events's monitoring"*/
         if(!Backbone.History.started) Backbone.history.start();  
         

@@ -11,6 +11,7 @@ var workspacesList = {
   init: function (json) {
     this.views.main = new workspacesList.Views.Main({
         el : json.el,
+        user : global.models.current_user,
         display : json.display,
         projects : global.collections.Projects,
     });
@@ -26,6 +27,7 @@ workspacesList.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
 
         ////////////////////////////
+        this.user = json.user;
         this.workspaces = json.projects;
         this.json_worspaces = {};
         this.filterWorlspaces(this.workspaces);
@@ -75,9 +77,27 @@ workspacesList.Views.Main = Backbone.View.extend({
         var title = $('#wks_title').val();
         var description = $('#wks_description').val();
         var organisation = $('#wks_organisation').val();
-        var visibility = $('#wks_viibility').val();
+        var visibility = $('#wks_visibility').val();
         if(title != ""){
-            alert('ok')
+            var id = guid();
+            new_workspace = new global.Models.ProjectModel({
+                id:id,
+                author : this.user,
+                title: title,
+                date: getDate(),
+                date2:new Date().getTime(),
+                image:"",
+                content : description,
+                backup:false,
+                project:id,
+                status : visibility
+                //description : $("#project_description").val(),
+                //kLabels : [{color : "#27AE60", label:"Validated"},  {color : "#F39C12", label:"Processing"}, {color : "#C0392B", label:"Missing"}],
+                //cLabels : [{color : "#27AE60", label:"Known"}, {color : "#F39C12", label:"Reachable"}, {color : "#C0392B", label:"Alternative"}]
+            });
+            new_workspace.save();
+            this.workspaces.add(new_workspace);
+            this.filterWorlspaces(this.workspaces);
             this.render()
         }else{
             $('.alertBox').html('<div data-alert class="alert-box alert radius">Problem : title<a href="#" class="close">&times;</a></div>')
