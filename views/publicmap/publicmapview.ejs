@@ -3,6 +3,12 @@
 <script src="/js/vendor/jquery.grid-a-licious.js"></script>
 <!-- ******************************** -->
 <!-- Modules to load -->
+<%- partial('../app/templates/activitiesList_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/activitiesList.js?v=<%= sails.config.session.version %>"></script>
+
+<%- partial('../app/templates/topbar_templates.ejs') %>
+<script src="js/BB_app/modules/topbar.js?v=<%= sails.config.session.version %>"></script>
+
 <%- partial('../app/templates/workspacesList_templates.ejs') %>
 <script src="js/BB_app/modules/workspacesList.js?v=<%= sails.config.session.version %>"></script>
 
@@ -48,7 +54,8 @@
 
       global.init(json, function(){
         // Modules
-        publicMap.init(); 
+        topbar.init({el:"#topbar_container"});
+        publicMap.init();
         workspacesList.init({el:"#workspacesList-container"}); 
         /*activat of "hashchange events's monitoring"*/
         if(!Backbone.History.started) Backbone.history.start();  

@@ -1,6 +1,6 @@
 <!-- ******************************** -->
 <!-- Container -->
-<div id="bbmap_container" style="height:100%;overflow:hidden">
+<div id="bbmap_container" style="height:96%;overflow:hidden;position:relative">
   <div id="top_container"></div>
   <div id="map_container">
     <a href="#" id="showMenu"  class="button large alert round cbp-openbutton">
@@ -13,6 +13,7 @@
           <li class="tab-title"><a href="#attachementModel"><img title="attach" src="/img/icones/Attach.png"/><span id="notifAttach"></span></a></li>
           <li class="tab-title"><a href="#discussionModel"><img title="comments" src="/img/icones/Chat.png"/><span id="notifComment"></span></a></li>
           <li class="tab-title"><a href="#css3Model"><img title="template" src="/img/icones/Shape.png"/></a></li>
+          <li class="tab-title"><a href="#membersModel"><img title="template" src="/img/icones/User-Group-24.png"/></a></li>
           <li class="tab-title"><a href="#googleSearchModel"><img title="web data" src="/img/icones/Web-24.png"/></a></li>
         </ul>
         <div class="tabs-content">
@@ -20,6 +21,7 @@
           <div id="attachementModel" class="content"></div>
           <div id="discussionModel" class="content"></div>
           <div id="css3Model" class="content"></div>
+          <div id="membersModel" class="content"></div>
           <div id="googleSearchModel" class="content"></div>
         </div>
     </div>
@@ -35,7 +37,7 @@
     {{- notif.content }} by 
     <img style="float:right" width="15" title="last update by {{-notif.from.name }}" src="{{- notif.from.img }}"/>
     <b>{{- notif.from.name }}</b>
-  </span> 
+  </span>
 </script>
 
 <script type="text/template" id="bbmap-joyride-template">
@@ -47,18 +49,6 @@
   </ol>
 </script>
 
-<!-- <img data-type="action" id="{{-model.id}}" title="mode" src="/img/icones/Delete.png"/> -->
-<!-- {{- model.comments.length + model.attachment.length}} -  -->
-<!-- {{ if( (model.comments.length + model.attachment.length) >0) { }}
-    <a href="#{{-model.id}}_wheelMenu" id="{{-model.id}}" data-type="action" class="label round secondary sup wheel-button">
-      {{- model.comments.length + model.attachment.length}}
-    </a>
-    <ul id="{{-model.id}}_wheelMenu" class="wheel">
-      <li class="item"><a href="#home"><img src="/img/icones/Chat.png"/> - {{- model.comments.length }}</a></li>
-      <li class="item"><a href="#home"><img src="/img/icones/Attach.png"/> - {{- model.attachment.length }}</a></li>
-    </ul>
-    {{ } }}
-     -->
 <script type="text/template" id="bbmap-bulle-template">
     <span data-type="title" style="float:right" id="{{-model.id}}_tooltip"></span>
     <img id="{{-model.id}}" data-type="title" style="float:left" width="15" title="create by {{-model.user.name }}" src="{{-model.user.img }}"/>
@@ -77,14 +67,17 @@
 </script>
 
 <script type="text/template" id="bbmap-top-element-template">
-  <div class="large-4 medium-4 small-4 columns">
-    <br>
-  </div>
-
-  <div class="large-4 medium-4 small-4 columns">
-    <center>
-      {{ if(mode == "visu"){ }}
-        <a href="#edit" class="button secondary small round"><img title="back" src="/img/icones/Pencil-24.png"/> <b>Edit</b></a>
+  <div class="large-7 medium-7 small-7 columns">
+    <button class="button secondary radius" data-dropdown="title_project_dropdown" aria-controls="title_project_dropdown" aria-expanded="true">
+        <b>
+        {{-project.title}}
+        {{ if(project.starred){ }}<img src="/img/icones/Shape-Star2-24.png" />{{ } }}
+        </b>
+    </button>
+    <div id="title_project_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
+    
+    {{ if(mode == "visu"){ }}
+        <a href="#edit" class="button alert small round"><img title="back" src="/img/icones/Pencil-24-white.png"/> <b>Edit</b></a>
       {{ } }}
       {{ if(mode == "timeline"){ }}
         <h3>
@@ -93,7 +86,7 @@
           <a href="#" class="button tiny secondary round next"><img title="next" src="/img/icones/Arrowhead-Right-24.png"/></a>
         </h3>
       {{ }else if(mode == "edit"){ }}
-        <small>Drag & Drop --></small> 
+        <small><b>Drag & Drop --></b></small> 
         {{ if((filter == "c")||(filter == "ck")||(filter == "ckp")){ }}
             <a href="#" id="dropC" class="drop dropC button tiny secondary round" title="Drag & Drop Concept to Map">
               <img class="drop" src="/img/icones/Light-Bulb-24.png"/>
@@ -110,10 +103,9 @@
           </a>
         {{ } }}
       {{ } }}
-    </center>
   </div>
 
-  <div class="large-4 medium-4 small-4 columns">
+  <div class="large-5 medium-5 small-5 columns">
     <div style="float:right">
       <a href="#" class="tiny round button secondary zoomin"><img title="zoom-out" src="/img/icones/Zoom-Out-24.png"/></a>
       <a href="#" class="tiny round button secondary zoomout"><img title="zoom-in" src="/img/icones/Zoom-In-24.png"/></a>

@@ -10,8 +10,9 @@ var workspacesList = {
   views: {},
   init: function (json) {
     this.views.main = new workspacesList.Views.Main({
-      el : json.el,
-      projects : global.collections.Projects,
+        el : json.el,
+        display : json.display,
+        projects : global.collections.Projects,
     });
     this.views.main.render();
   }
@@ -20,20 +21,53 @@ var workspacesList = {
 // MAIN
 /////////////////////////////////////////////////
 workspacesList.Views.Main = Backbone.View.extend({
+
     initialize : function(json) {
         _.bindAll(this, 'render');
+
         ////////////////////////////
         this.workspaces = json.projects;
-        var json_ws = this.filterWorlspaces(this.workspaces);
-        this.staredWorkspaces = json_ws.starred;
-        this.myWorkspaces = json_ws.my;
+        this.json_worspaces = {};
+        this.filterWorlspaces(this.workspaces);
+        this.display = json.display;
         // Events
         // Templates
         this.template_search = _.template($('#workspacesList-search-template').html());
-        this.template_workspaces = _.template($('#workspacesList-template').html());
+        this.template_manager = _.template($('#workspacesList-template').html());
+        this.template_list = _.template($('#workspacesList-list-template').html());
     },
     events : {
+        "keyup .search" : "search",
         "click #wks_create" : "newWorkspace",
+        "click .starred" : "starred",
+        "click .unstarred" : "unstarred",
+    },
+    search : function(e){
+        e.preventDefault();
+        var research = e.target.value;
+        var research_size = research.length;
+        var matched = new Backbone.Collection();
+        this.workspaces.each(function(p){
+            if(research.toLowerCase() == p.get('title').substr(0,research_size).toLowerCase()){
+                matched.add(p);
+            }
+        });
+        this.filterWorlspaces(matched);
+        this.render_workspaces(this.json_worspaces);
+    },
+    starred : function(e){
+        e.preventDefault();
+        var id = e.target.getAttribute("data-id");
+        this.workspaces.get(id).save({starred : true});
+        this.filterWorlspaces(this.workspaces)
+        this.render();
+    },
+    unstarred : function(e){
+        e.preventDefault();
+        var id = e.target.getAttribute("data-id");
+        this.workspaces.get(id).save({starred : false});
+        this.filterWorlspaces(this.workspaces)        
+        this.render();
     },
     newWorkspace : function(e){
         e.preventDefault();
@@ -50,21 +84,34 @@ workspacesList.Views.Main = Backbone.View.extend({
         }
     },
     filterWorlspaces : function(workspaces){
-        var json = {"starred":[],"my":[]};
+        this.json_worspaces = {"starred":[],"my":[]};
+        var _this = this;
         workspaces.each(function(workspace){
-            if(workspaces.starred) json.starred.unshift(workspace.toJSON());
-            else json.my.unshift(workspace.toJSON());
+            if(workspace.get('starred')) _this.json_worspaces.starred.unshift(workspace.toJSON());
+            else _this.json_worspaces.my.unshift(workspace.toJSON());
         });
-        return json;
+        this.starredWorkspaces = this.json_worspaces.starred;
+        this.myWorkspaces = this.json_worspaces.my;
+    },
+    render_workspaces : function(json){
+        if(this.display == "list"){
+            $('.workspaces_container_list').remove();
+            $(this.el).append(this.template_list({title:"Starred workspaces",workspaces : json.starred ,newButton : false,starred : true}))
+            $(this.el).append(this.template_list({title:"My workspaces",workspaces : json.my,newButton : false,starred : false}))
+        }else{
+            $('.workspaces_container').remove();
+            $(this.el).append(this.template_manager({title:"Starred workspaces",workspaces : json.starred,newButton : false,starred : true}))
+            $(this.el).append(this.template_manager({title:"My workspaces",workspaces : json.my ,newButton : true,starred : false}))
+            $(".workspaces_container").gridalicious({width: 300});
+        }
+        $(document).foundation();
+        
     },
     render : function(){        
         $(this.el).empty();
-        $(this.el).append(this.template_search())
-        $(this.el).append(this.template_workspaces({title:"Starred workspaces",workspaces : this.staredWorkspaces,newButton : false,starred : true}))
-        $(this.el).append(this.template_workspaces({title:"My workspaces",workspaces : this.myWorkspaces,newButton : true,starred : false}))
-
-        $(".workspaces_container").gridalicious({width: 300});
-        $(document).foundation();
+        $(this.el).append(this.template_search());
+        this.render_workspaces(this.json_worspaces);
+        
         return this;
     }
 });

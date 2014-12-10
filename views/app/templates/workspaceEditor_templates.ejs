@@ -1,0 +1,19 @@
+<div id="workspaceEditor-container" class="row"></div>
+
+<script type="text/template" id="workspaceEditor-template">
+	<center><b>Update Workspace</b></center>
+	<hr>
+	<font style="text-align : left;">
+	{{ if(mode == "edit"){ }}
+		<label>Title</label>
+		<input id="workspaceEditor_title" type="text" class="title" value="{{- workspace.title}}"/>
+		<label>Descriptions</label>
+		<textarea  class="ckeditor2"  name="editor" rows="10" cols="80">{{= workspace.content }}</textarea>
+		<br>
+		<a href="#" class="button tiny radius success expand updateWorkspace">Update</a>
+
+	{{ }else{ }}
+		{{= workspace.content }}
+	{{ } }}
+	</font>
+</script>
