@@ -61,8 +61,6 @@ module.exports.routes = {
   'get /login' : 'AuthController.login',
   'post /login' : 'AuthController.process',
   'get /logout' : 'AuthController.logout',
-  'get /register' : 'AuthController.register',
-  'post /register' : "AuthController.processRegistration",
   "get /newuser" : "AuthController.registernew",
   "post /newuser" : "AuthController.processRegistrationNew",
   "get /confirmation" : {

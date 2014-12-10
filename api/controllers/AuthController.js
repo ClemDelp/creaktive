@@ -6,92 +6,32 @@
 ---------------------*/
 var bcrypt = require('bcrypt');
 var passport = require('passport');
+var activator = require('activator');
 var xss = require('node-xss').clean;
+
+model = {
+	find : function(user,cb){
+		User.findOne({email:user}).done(function(err, data){
+			if(err) return cb(err);
+			return data
+		});
+	},
+	save : function(id,data,cb){
+		User.update({id:id}, data).done(function(err){
+			if(err) cb(err);
+		});
+	}
+};
+
+var mailPort = 465;
+var transport = "smtp://creaktive.contact@smtp.gmail.com:465/localhost?secureConnection=true";
+var mailTemplatesDir = __dirname + "/../../assets/mailTemplatesDir";
+var config = { user : model, transport : transport, templates : mailTemplatesDir, from :"contact@creaktive.fr"};
+
+activator.init(config);
  
 var AuthController = {
 
-	resetpassword : function(req,res){
-		console.log("Loading reset password view")
-		res.view();
-	},
-
-	processResetPassword : function(req,res){
-		console.log("processing reset password")
-		var key = ""
-		var url = "";
-
-		bcrypt.genSalt(10, function(err, salt) {
-          bcrypt.hash(IdService.guid(), salt, function(err, hash) {
-            if(err) return res.send({err:err});
-            else{
-              key = hash;
-
-		User.find({
-			email : req.body.email
-		}).done(function(err, users){
-			if(err) return res.send(err);
-			if(users.length === 0 ){
-				return res.send(400,"Email not found")
-			}
-	      	var user = users[0];
-	      	if(req.baseUrl == "http://localhost:1337"){
-		        url = req.baseUrl + "/newpassword?id="+user.id+"&k=" + key;
-	      	} 
-	      	else{
-		        var u = req.baseUrl
-		        u = u.slice(0, u.lastIndexOf(":"))
-		        url = u + "/newpassword?id="+user.id+"&k=" + key;
-	      	}
-
-			user.recoveryLink = key;
-			user.save(function (err, u) {
-				if(err) console.log(err)
-				EmailService.sendPasswordRecovery(user.email, url,function(err, msg){
-			        if(err) console.log(err)
-
-			      res.redirect("/resetconfirmation")
-			      });
-			});
-		})		
-
-		
-
-		            }
-          });
-        });
-	},
-
-	newpassword : function(req,res){
-		req.session.pendingUser = req.query.id;
-		req.session.pendingKey = req.query.k;
-		res.view();
-	},
-
-	processNewPassword : function(req,res){
-		User.findOne(req.session.pendingUser).done(function(err, user){
-			if(err) return res.send({err:err});
-
-			if(req.session.pendingKey == user.recoveryLink){
-				user.pw = req.body.password;
-				user.hashPassword(user, function(err, user){
-					if(err) return res.send({err:err});
-					delete user.recoveryLink;
-				
-					user.save(function(err, u){
-						if(err) return res.send({err:err});
-						res.redirect("/login");
-					})
-
-				})
-
-
-			}
-
-
-			req.session.pendingUser = ""
-			req.session.pendingKey = "";
-		})
-	},
 
 	registernew : function(req,res){
 		res.view();
@@ -111,49 +51,25 @@ var AuthController = {
 			suscribing : suscribing
 		}).done(function(err, user){
 			if(err) return res.redirect("/newuser");
-	      	EmailService.sendNewUserMail(user, function(err, msg){
-		        if(err) console.log(err)
-	      	});
-
-	      	res.redirect("/confirmation");
-		})
-	},
-
-	register : function(req,res){
-	    if(req.query.id){
-	    	User.findOne(req.query.id).done(function(err, user){
-	    		req.session.pendingUser = user;
-	    		res.view({user : user});
-	    	})
-	    	
-	    }else {
-	    	res.send("You are not auhtorized to perform this action")
-	    }
-	},
-
-	processRegistration : function(req,res){
-		if(req.body.password !== req.body.confirmPassword) res.send("passwords must match")
-		User.findOne(req.session.pendingUser.id).done(function(err, user){
-			delete user.pw;
-			user.pw = req.body.password;
-			user.email = req.body.email;
-			user.name = req.body.username;
-			user.confirmed = true;
-			user.img = req.body.image || "/img/default-user-icon-profile.png";
-			user.hashPassword(user, function(err, user){
-			user.save(function(err, user){
-				if(err) return res.send({err:err});
-				delete req.session.pendingUser;
-				res.redirect("/login");
-			});
+			req.session.user = user;
+			req.activator = {id:user.id, body : user.id};
+			activator.createActivate(req,res,function(){
+				res.redirect("/confirmation");
 			})
-
-
 		})
-
-
-		
 	},
+
+	activate : function(req,res, next){
+		activator.completeActivate(req,res,function(){
+			res.redirect('activated')
+		})
+	},
+
+	activated: function(req,res){
+		res.view();
+	},
+
+	
  
 	login: function(req, res) {
 		res.view();
@@ -180,6 +96,11 @@ var AuthController = {
 			});
 
 		})(req, res);
+	},
+
+	logout: function(req, res) {
+		req.logout();
+		res.redirect('/login');
 	},
 
 
@@ -225,10 +146,7 @@ var AuthController = {
 	
 	},
  
-	logout: function(req, res) {
-		req.logout();
-		res.redirect('/login');
-	}
+
  
 };
 module.exports = AuthController;

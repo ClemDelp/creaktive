@@ -21,18 +21,7 @@
   '*': false,
 
   'AuthController': {
-    'login' : "forceHTTPs",
-    'logout' : true,
-    'process' : true,
-    'registernew' : true,
-    'processRegistrationNew' : true,
-    'register' : "forceHTTPs",
-    'resetpassword' : true,
-    'processResetPassword' : true,
-    'newpassword' : true,
-    'processnewpassword' : true,
-    'processRegistration' : true,
-    "openChannels" : ["authenticated"]
+    '*' : true
   },
 
   // PROBLEME SUR LA MODIFICATION DES PROJETS il faudrait pouvoir mettre
