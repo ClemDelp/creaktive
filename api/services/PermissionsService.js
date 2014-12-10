@@ -11,7 +11,7 @@ module.exports = {
 			req.session.permissions.rw = _.pluck(grouped_permissions["rw"],"project_id");
 			req.session.permissions.r = _.pluck(grouped_permissions["r"],"project_id");
 			req.session.permissions.smartphone = _.pluck(grouped_permissions["smartphone"],"project_id");
-
+			console.log(req.session.permissions)
 			cb();
 		})
 	}

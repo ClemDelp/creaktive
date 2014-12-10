@@ -72,7 +72,7 @@
       pw : "JKHk!lm3682jhqmfljzdofij654654dfsdf6522dfs#mkldqj$",
       confirmed : false,
       id : IdService.guid(),
-      admin : false,
+      platformAdmin : false,
       invitedBy : req.session.user.id
     }).done(function(err, user){
       if(err) return res.send({err:err});

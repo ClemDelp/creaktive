@@ -1118,7 +1118,8 @@ bbmap.Views.Main = Backbone.View.extend({
                         user : bbmap.views.main.user,
                         date : getDate(),
                         source : info.sourceId,
-                        target : info.targetId
+                        target : info.targetId,
+                        project : global.models.currentProject.get('id')
                     });
                     new_cklink.save();
                     bbmap.views.main.links.add(new_cklink);

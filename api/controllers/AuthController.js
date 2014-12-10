@@ -98,6 +98,8 @@ var AuthController = {
 	},
 
 	processRegistrationNew : function(req,res){
+		var today = new Date()
+		var suscribing = (new Date(today.setMonth(today.getMonth() + 1))).toUTCString();
 		User.create({
 			id : IdService.guid(),
 			name : req.body.username,
@@ -105,7 +107,8 @@ var AuthController = {
 			confirmed : false,
 			pw : req.body.password,
 			img : req.body.img || "img/default-user-icon-profile.png",
-			admin : true
+			platformAdmin : true,
+			suscribing : suscribing
 		}).done(function(err, user){
 			if(err) return res.redirect("/newuser");
 	      	EmailService.sendNewUserMail(user, function(err, msg){

@@ -87,86 +87,86 @@
   /*
 * Generates the json file for the concepts map
 */
-generateTree : function(req,res){
-  this.concepts = [];
-  this.tree = "";
+// generateTree : function(req,res){
+//   this.concepts = [];
+//   this.tree = "";
 
 
 
-    /*
-    * Format the idea json to mapjs format
-    */
-    createIdea = function(concept){
-      idea = concept;
-      idea.text = concept.title
-      if (concept.color != "") idea.color = concept.color
-        idea.shape = "box";
-      idea.children=[];
-      return idea;
-    }
+//     /*
+//     * Format the idea json to mapjs format
+//     */
+//     createIdea = function(concept){
+//       idea = concept;
+//       idea.text = concept.title
+//       if (concept.color != "") idea.color = concept.color
+//         idea.shape = "box";
+//       idea.children=[];
+//       return idea;
+//     }
 
-    /*
-    * Add a child to a node
-    */
-    createChildren = function (father, child){
+//     /*
+//     * Add a child to a node
+//     */
+//     createChildren = function (father, child){
 
-      father.children.push(child);
-    };
+//       father.children.push(child);
+//     };
 
-    /*
-    * Look into concepts and build the json
-    * @father : a node
-    * @children : all children nodes
-    */ 
-    populate = function(father, children){
-      children = _.sortBy(children, "siblingNumber").reverse();
-      for (var i = children.length - 1; i >= 0; i--) {
+//     /*
+//     * Look into concepts and build the json
+//     * @father : a node
+//     * @children : all children nodes
+//     */ 
+//     populate = function(father, children){
+//       children = _.sortBy(children, "siblingNumber").reverse();
+//       for (var i = children.length - 1; i >= 0; i--) {
 
-        createChildren(father, children[i])
+//         createChildren(father, children[i])
         
-        var c = _.where(this.concepts, {id_father : children[i].id})
-        if(c.length > 0){
+//         var c = _.where(this.concepts, {id_father : children[i].id})
+//         if(c.length > 0){
           
-          this.populate(children[i], c)
-        }
-      };
+//           this.populate(children[i], c)
+//         }
+//       };
 
-    };
+//     };
 
 
-    Concept.find({
-        project : req.session.currentProject.id
-      }).done(function(err,concepts){
-        if(err) res.send(err);
-        this.concepts = concepts;
-        //transform all concept in map idea
-        _.each(concepts, function(concept){
-          createIdea(concept);
-        })
+//     Concept.find({
+//         project : req.session.currentProject.id
+//       }).done(function(err,concepts){
+//         if(err) res.send(err);
+//         this.concepts = concepts;
+//         //transform all concept in map idea
+//         _.each(concepts, function(concept){
+//           createIdea(concept);
+//         })
 
-        var json = {root : {}};
+//         var json = {root : {}};
 
-        c0 = _.findWhere(concepts, {position : 0});
-        c0.text = c0.title;
-        c0.layout = "graph-bottom";
-        children = _.where(concepts, {id_father : c0.id});
+//         c0 = _.findWhere(concepts, {position : 0});
+//         c0.text = c0.title;
+//         c0.layout = "graph-bottom";
+//         children = _.where(concepts, {id_father : c0.id});
 
-        populate(c0, children)
+//         populate(c0, children)
         
-        json.root = c0
-        json.id ="dhflkjhfsdkljhfdslk"
+//         json.root = c0
+//         json.id ="dhflkjhfsdkljhfdslk"
 
-        res.send({tree : json});
-      });
-  },
+//         res.send({tree : json});
+//       });
+//   },
 
 
   
   
-  conceptview : function(req,res){
-    console.log("Loading concept view")
-    BootstrapService.bootstrapdata(req,res);
-  }
+//   conceptview : function(req,res){
+//     console.log("Loading concept view")
+//     BootstrapService.bootstrapdata(req,res);
+//   }
 
 
 };

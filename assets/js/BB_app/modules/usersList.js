@@ -129,7 +129,7 @@ usersList.Views.Main = Backbone.View.extend({
           swal("This user is already registered!", "please select him on the right part of the members page", "warning")
           $('#research_value').val("");
       }else{
-        $.post("/user/inviteUser", {email :  $('#research_value').val()}, function(data){
+        $.post("/user/inviteUser", {email :  $('#research_value').val(),project : _this.project.get('id')}, function(data){
           _this.users.add(data.user);
           _this.permissions.add(data.permission);
           $('#research_value').val("");

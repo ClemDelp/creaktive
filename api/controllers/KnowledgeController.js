@@ -83,9 +83,9 @@
     });
   },
 
-  knowledgeview : function(req,res){
-    console.log("Loading knowledge view")
-    BootstrapService.bootstrapdata(req,res);
-  },
+  // knowledgeview : function(req,res){
+  //   console.log("Loading knowledge view")
+  //   BootstrapService.bootstrapdata(req,res);
+  // },
 
 };

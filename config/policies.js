@@ -35,42 +35,40 @@
     "openChannels" : ["authenticated"]
   },
 
-
+  // PROBLEME SUR LA MODIFICATION DES PROJETS il faudrait pouvoir mettre
+  // update : isAdmin
+  // create : "canCreateProject"
   "ProjectController" : {
-    "*" : "authenticated",
-    "destroy" : ["authenticated"],
+    "find" : ["authenticated"],
+    "update" : ["authenticated", "canCreateProject"],
+    "destroy" : ["authenticated","canCreateProject"],
   }, 
 
   "PermissionController" : {
-    "find" : ["authenticated"],
+    "find" : ["authenticated", "canRead"],
     "*" : ["authenticated"]
   },
 
   "PocheController" : {
-    "find" : ["authenticated"],
-    "*" : ["authenticated"]
+    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated", "canWrite"]
   },
 
   "LinkController" : {
-    "find" : ["authenticated"],
-    "*" : ["authenticated"]
+    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated", "canWrite"]
   },
 
   "ConceptController" : {
     "find" : ["authenticated", "canRead"],
-    "generateTree" : ["authenticated"],
-    "*" : ["authenticated"] 
+    "*" : ["authenticated", "canWrite"]
   },
 
   "KnowledgeController" : {
-    "find" : ["authenticated"],
-    "*" : ["authenticated"]
+    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated", "canWrite"]
   },
 
-  "CategoryController" : {
-    "find" : ["authenticated"],
-    "*" : ["authenticated"]
-  },
 
   /************************************/
   /*********** Jian ******************/
@@ -94,7 +92,7 @@
   },
 
   /************************************/
-  /*********** C'est quoi ces daubes ? ******************/
+  /*********** C'est quoi ces daubes ? :-) ******************/
   /************************************/
   "BackupController" : {
     "*" : ["authenticated"]
@@ -110,6 +108,11 @@
 
   "S3Controller" : {
     "*" : "authenticated"
+  },
+
+  "CategoryController" : {
+    "find" : ["authenticated"],
+    "*" : ["authenticated"]
   },
   /************************************/
   /*********** VIEWS ******************/
@@ -131,13 +134,12 @@
   },
 
   "UserController" : {
-    "*" : ["authenticated", "canWrite"],
-    "inviteUser" : ["authenticated"],
+    "inviteUser" : ["authenticated", "isAdmin"],
     "userview" : ["authenticated","forceHTTPs","onlyMobile"],
     "editprofileview" : ["authenticated", "forceHTTPs","onlyMobile"],
     "editprofile" : "authenticated",
     "changepassword" :"authenticated",
-    "find" : ["authenticated"],
+    "*" : ["authenticated"],
   },
 
   "bbmap" : {
