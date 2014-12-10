@@ -85,7 +85,7 @@ global.Collections.ConceptsCollection = Backbone.Collection.extend({
     model : global.Models.ConceptModel,
     url : "concept",
     comparator: function(m){
-        return -m.get('date2');
+        return m.get('date2');
     },
     initialize : function() {
         //console.log('Comments Collection Constructor');
@@ -105,6 +105,24 @@ global.Collections.ConceptsCollection = Backbone.Collection.extend({
         if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:remove",new global.Models.ConceptModel(model),"server");
     }
 });
+/***************************************/
+global.Collections.Comments = Backbone.Collection.extend({
+    model : global.Models.Comment,
+    comparator: function(m){
+        return -m.get('date2');
+    },
+    initialize : function() {
+        this.url = "comment";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+        _.bindAll(this, 'serverCreate');
+        this.ioBind('create', this.serverCreate, this);
+    },
+    serverCreate : function(model){
+        if(model.project == global.models.currentProject.get('id')) global.collections.Comments.add(new global.Models.Comment(model));
+    },
+}); 
 /***************************************/
 global.Collections.UsersCollection = Backbone.Collection.extend({
     model : global.Models.User,
@@ -185,19 +203,6 @@ global.Collections.Filters = Backbone.Collection.extend({
         });
     }
 });
-/***************************************/
-global.Collections.Comments = Backbone.Collection.extend({
-    model : global.Models.Comment,
-    //url : "comment",
-    comparator: function(m){
-        return -m.get('date2');
-    },
-    initialize : function() {
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    }
-}); 
 /***************************************/
 global.Collections.GroupsCollection = Backbone.Collection.extend({
     model : global.Models.GroupModel,

@@ -71,6 +71,10 @@
     "*" : "authenticated"
   },
 
+  "CommentController" : {
+    "*" : "authenticated"
+  },
+
   "S3Controller" : {
     "*" : "authenticated"
   },

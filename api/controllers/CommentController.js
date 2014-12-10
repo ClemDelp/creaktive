@@ -22,14 +22,14 @@ module.exports = {
 	       res.send(comments)
 	    });
 	  }
-
   },
 
   update : function(req, res){
-    console.log("Updating comment")
+    
     Comment.findOne(req.body.params.id).done(function(err, comment){
       if(err) return res.send({err:err});
       if(comment){
+        console.log("Updating comment")
         Comment.update({
           id: req.body.params.id
         }, req.body.params).done(function(err,c){
@@ -42,13 +42,12 @@ module.exports = {
       });
 
       }else{
+      	console.log("Creating comment")
         var comment = req.body.params;
-        ///////////////////////////
-        comment.project = req.session.currentProject.id;
         Comment.create(comment).done(function(err,c){
           if(err) return res.send({err:err});
-          //req.socket.broadcast.to(req.session.currentProject.id).emit("comment:create", c);
-          Notification.objectCreated(req,res,"Comment", c);
+          req.socket.broadcast.to(req.session.currentProject.id).emit("comment:create", c);
+          //Notification.objectCreated(req,res,"Comment", c);
           res.send(c);
         });
 
@@ -60,7 +59,6 @@ module.exports = {
     console.log('Deleting comment')
     Comment.findOne(req.body.params.id).done(function(err,comment){
       if(err) return res.send({err:err});
-      if(comment.position == 0) res.send({err : "You can't remove c0"})
       else{
         //req.socket.broadcast.to(req.session.currentProject.id).emit("comment:remove2", comment);
         //Notification.objectRemoved(req,res,"Comment", comment);

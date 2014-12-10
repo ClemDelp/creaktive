@@ -535,25 +535,15 @@ bbmap.Views.Main = Backbone.View.extend({
                 eventAggregator : this.eventAggregator
             });
             // Comments module
-            if(bbmap.views.comments)bbmap.views.comments.close();
-            bbmap.views.comments = new comments.Views.Main({
-                model           : model,
-                mode            : this.mode,
-                user            : this.user
-            });
-            
-            
             if(comments.views.main != undefined){
                 comments.views.main.mode = this.mode;
                 comments.views.main.model = model;
-                comments.views.main.comments = global.collections.Comments;
                 comments.views.main.render();
             }else{
                 comments.init({
                     el:"#discussionModel",
                     mode: this.mode,
-                    model : model,
-                    comments : global.collections.Comments
+                    model : model
                 });
                 
             }

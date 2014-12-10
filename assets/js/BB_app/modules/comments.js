@@ -17,7 +17,7 @@ var comments = {
       user : global.models.current_user,
       mode    : json.mode,
       project : global.models.currentProject,
-      comments : json.comments
+      comments : global.collections.Comments
     });
     this.views.main.render()
   }
@@ -27,6 +27,7 @@ comments.Views.Comment = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
         // Variables
+        this.sens = json.sens;
         this.user = json.user;
         this.comment = json.comment;
         // Templates
@@ -35,6 +36,7 @@ comments.Views.Comment = Backbone.View.extend({
     render : function(){
         $(this.el).empty();
         $(this.el).append(this.template({
+            sens : this.sens,
             user : this.user.toJSON(),
             comment : this.comment.toJSON()
         }))
@@ -56,6 +58,7 @@ comments.Views.Main = Backbone.View.extend({
         // Templates
         this.template_header = _.template($('#comments-header-template').html());
         // Events
+        this.listenTo(this.comments, 'add', this.render);
         
     },
     events : {
@@ -80,12 +83,16 @@ comments.Views.Main = Backbone.View.extend({
         $(this.el).empty();
         var _this = this;
         $(this.el).append(this.template_header({
-            comments : comments,
+            comments : this.comments,
             mode : this.mode
         }));
+        var sens = 0;
         this.comments.forEach(function(comment){
+            if(sens == 0) sens = 1;
+            else sens = 0;
             if(comment.get('attachedTo') == _this.model.get('id')){
                 $(_this.el).append(new comments.Views.Comment({
+                    sens : sens,
                     comment : comment,
                     user : _this.users.get(comment.get('user'))
                 }).render().el);    
