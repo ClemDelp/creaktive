@@ -61,13 +61,16 @@ workspaceEditor.Views.Main = Backbone.View.extend({
         e.preventDefault();
         var title = $('#workspaceEditor_title').val();
         var content = CKEDITOR.instances.editor.getData();
+        var visibility = $('#wk_visibility').val();
         console.log(title,content)
         this.workspace.save({
             title:title,
             content:content,
+            status : visibility,
             date: getDate(),
             date2:new Date().getTime()
         });
+        window.location.href = "/";
     },
     render : function(){        
         $(this.el).empty();

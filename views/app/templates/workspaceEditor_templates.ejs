@@ -9,16 +9,30 @@
 	</center>
 	<hr>
 	<font style="text-align : left;">
-	{{ if(mode == "edit"){ }}
-		<label>Title</label>
-		<input id="workspaceEditor_title" type="text" class="title" value="{{- workspace.title}}"/>
-		<label>Descriptions</label>
-		<textarea  class="ckeditor2"  name="editor" rows="10" cols="80">{{= workspace.content }}</textarea>
-		<br>
-		<a href="#" class="button tiny radius success expand updateWorkspace">Update</a>
-
+	<div class="row">
+		{{ if(mode == "edit"){ }}
+			<div class="large-8 medium-8 small-12 columns">
+				<label>Title
+				<input id="workspaceEditor_title" type="text" class="title" value="{{- workspace.title}}"/></div>
+				</label>
+			<div class="large-4 medium-4 small-12 columns">
+				<label>Visibility
+		        <select id="wk_visibility">
+			      <option value="private">Private</option>
+			      <option value="public">Public</option>
+			    </select>
+				</label>
+		    </div>
+			<div class="large-12 medium-12 small-12 columns">
+				<label>Descriptions</label>
+				<textarea  class="ckeditor2"  name="editor" rows="10" cols="80">{{= workspace.content }}</textarea>
+				<br>
+				<a href="#" class="button tiny radius success expand updateWorkspace">Update</a>
+			</div>
 	{{ }else{ }}
-		{{= workspace.content }}
+		<div class="large-12 medium-12 small-12 columns">{{= workspace.content }}</div>
+		<div class="large-12 medium-12 small-12 columns"><center<small style="color:red"><b>pass in edition mode if you want to update workspace details</b></small></center></div>
 	{{ } }}
+	</div>
 	</font>
 </script>

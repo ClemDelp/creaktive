@@ -75,7 +75,12 @@
     <button class="button secondary radius" data-dropdown="title_project_dropdown" aria-controls="title_project_dropdown" aria-expanded="true">
         <b>
         {{-project.title}}
-        {{ if(project.starred){ }}<img src="/img/icones/Shape-Star2-24.png" />{{ } }}
+        {{ if(project.starred){ }}<img data-dropdown="title_project_dropdown"  title="starred project" src="/img/icones/Shape-Star2-24.png" />{{ } }}
+        {{ if(project.status == 'public'){ }}
+          <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="public project" src="/img/icones/Open-24.png"/>
+        {{ }else{ }}
+          <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="private project" src="/img/icones/Lock-24.png"/>
+        {{ } }}
         </b>
     </button>
     <div id="title_project_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>

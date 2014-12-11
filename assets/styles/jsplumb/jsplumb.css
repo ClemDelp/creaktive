@@ -311,7 +311,7 @@ path, ._jsPlumb_endpoint { cursor:pointer; }
   padding:0.4em; 
   font:12px sans-serif; 
   color:#444;
-  z-index:21;
+  z-index:10;
   border:1px dotted gray;
   opacity:0.8;
   filter:alpha(opacity=80);

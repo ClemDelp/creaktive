@@ -20,7 +20,12 @@
 		{{ _.each(workspaces, function(project){ }}
 			<a href="/bbmap?projectId={{- project.id }}#visu" class="expand button radius secondary tiny">
 				{{ if(starred == true){ }}<img style="float:left" src="/img/icones/Shape-Star2-24.png" />{{ } }}
-				{{-project.title}}
+				{{ if(project.status == 'public'){ }}
+			    	<img style="float:left" data-model-id="{{-project.id}}" title="visibility" src="/img/icones/Open-24.png"/>
+			    {{ }else{ }}
+			    	<img style="float:left" data-model-id="{{-project.id}}" title="visibility" src="/img/icones/Lock-24.png"/>
+			    {{ } }}
+			    {{-project.title}}
 			</a>
 		{{ }); }}
 	</div>
@@ -72,16 +77,22 @@
 	    <div class="workspaces_container">
 		{{ _.each(workspaces, function(project){ }}
 			<ul class="item pricing-table">
-				<li class="price">
+				<li class="price" style="text-align:left">
 					{{ if(starred == true){ }}
-						<a style="float:left" href="#" class="round secondary tiny button unstarred" data-id="{{-project.id}}"><img data-id="{{-project.id}}" src="/img/icones/Shape-Star2-24.png" /></a>
+						<a title="unstarred" style="float:left" href="#" class="round secondary tiny label unstarred" data-id="{{-project.id}}"><img data-id="{{-project.id}}" src="/img/icones/Shape-Star2-24.png" /></a>
 					{{ }else{ }}
-						<a style="float:left" href="#" class="round secondary tiny button starred" data-id="{{-project.id}}"><img data-id="{{-project.id}}" src="/img/icones/Shape-Star2-24_white.png" /></a>
+						<a title="starred" style="float:left" href="#" class="round secondary tiny label starred" data-id="{{-project.id}}"><img data-id="{{-project.id}}" src="/img/icones/Shape-Star2-24_white.png" /></a>
 					{{ } }}
-					{{-project.title}}
+					{{ if(project.status == 'public'){ }}
+				    	<a title="public project" href="#" style="float:left" class="label tiny secondary round"><img data-model-id="{{-project.id}}" src="/img/icones/Open-24.png"/></a>
+				    {{ }else{ }}
+				    	<a title="private project" href="#" style="float:left" class="label tiny secondary round"><img data-model-id="{{-project.id}}" src="/img/icones/Lock-24.png"/></a>
+				    {{ } }}
+				    <br>
+					<h4><b>{{-project.title}}</b></h4>
 					{{ if(project.image){ }}<img class="large-12 medium-12 small-2" src="/S3/getUrl?amz_id={{- project.image}}" />{{ }; }}
 				</li>
-				<li class="description">{{=project.content}}</li>
+				<li class="description" style="text-align:left">{{=project.content}}</li>
 				<li class="bullet-item"><em>Created by {{-project.author.name}} at {{-project.date}}</em></li>
 				<li class="cta-button"><a class="button radius expand" href="/bbmap?projectId={{- project.id }}#visu">Open</a></li>
 			</ul>
