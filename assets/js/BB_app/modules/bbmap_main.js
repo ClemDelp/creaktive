@@ -38,10 +38,10 @@ bbmap.Views.Main = Backbone.View.extend({
         this.top_el = $(this.el).find('#top_container');
         this.bottom_el = $(this.el).find('#bottom_container');
         this.map_el = $(this.el).find('#map');
+        this.timeline_el = $(this.el).find('#timeline_container');
         this.editor_el = $(this.el).find('#editor');
         this.editModel_el = $(this.el).find('#editModel');
         this.attachementModel_el = $(this.el).find('#attachementModel');
-        this.activitiesModel_el = $(this.el).find('#activitiesModel');
         this.css3Model_el = $(this.el).find('#css3Model');
         this.googleSearchModel_el = $(this.el).find('#googleSearchModel');
         ////////////////////////////////
@@ -79,7 +79,8 @@ bbmap.Views.Main = Backbone.View.extend({
         this.localHistory       = new global.Collections.LocalHistory();
         this.sens               = "init";
         this.listener           = new window.keypress.Listener();
-        this.flag               = "acceptLastNotif"
+        this.flag               = "acceptLastNotif";
+        this.presentation       = "graph"; // can be graph/timeline/split
         ////////////////////////////////
         // Templates
         this.template_top = _.template($('#bbmap-top-element-template').html());
@@ -177,10 +178,27 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .prevH" : "backInHistory",
         "click .nextH" : "advanceInHistory",
         "click .structureSubTree" : "structureTree",
+        "click .graphPresentation" : "graphPresentation",
+        "click .timelinePresentation" : "timelinePresentation",
+        "click .splitPresentation" : "splitPresentation",
     },
-    openTooltipNotif : function(id){
-        // this.updateEditor(id)
-        // this.eventMenu();
+    /////////////////////////////////////////
+    // Mode
+    /////////////////////////////////////////
+    timelinePresentation : function(e){
+        e.preventDefault();
+        this.presentation = "timeline";
+        this.render();
+    },
+    graphPresentation : function(e){
+        e.preventDefault();
+        this.presentation = "graph";
+        this.render();
+    },
+    splitPresentation : function(e){
+        e.preventDefault();
+        this.presentation = "split";
+        this.render();
     },
     /////////////////////////////////////////
     // Init Map
@@ -543,11 +561,20 @@ bbmap.Views.Main = Backbone.View.extend({
                 comments.init({
                     el:"#discussionModel",
                     mode: this.mode,
-                    model : model
-                });
-                
+                    model : model,
+                    presentation : "bulle"
+                }); 
             }
-            
+            // Activities module
+            if(activitiesList.views.main != undefined){
+                activitiesList.views.main.mode = this.mode;
+                activitiesList.views.main.render();
+            }else{
+                activitiesList.init({
+                    el:"#activitiesModel",
+                    mode: this.mode,
+                }); 
+            }
             // GoogleSearch module IMG
             if(bbmap.views.gs_img)bbmap.views.gs_img.close();
             bbmap.views.gs_img = new googleSearch.Views.Main({
@@ -1343,132 +1370,148 @@ bbmap.Views.Main = Backbone.View.extend({
     render : function(initPos){  //alert('render')
         var _this = this;
         this.map_el.empty();
-        ///////////////////////
-        // init
-        if((this.init == false)&&(this.sens != "init")){ // Si on change de mode et on a utiliser le prev/next de la timeline ou de l'historic
-            // console.log("--Mode ",this.mode," activated")
-            // console.log("----start global fetching process...")
-            bbmap.views.main.concepts.fetch({
-                error: function () {},
-                success: function () {
-                    // console.log("------concept fetched...");
-                },
-                complete: function () {
-                    bbmap.views.main.knowledges.fetch({
-                        error: function () {},
-                        success: function () {
-                            // console.log("------knowledges fetched...");
-                        },
-                        complete: function () {
-                            bbmap.views.main.poches.fetch({
-                                error: function () {},
-                                success: function () {
-                                    // console.log("------poches fetched...");
-                                },
-                                complete: function () {
-                                    bbmap.views.main.links.fetch({
-                                        error: function () {},
-                                        success: function () {
-                                            // console.log("------links fetched...");
-                                        },
-                                        complete: function () {
-                                            // console.log('----global fetching process done')
-                                            bbmap.views.main.init = true;
-                                            bbmap.views.main.render();
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-        }else{
-            // On supprime toutes les vues + les events sur tous les objets
-            if(this.nodes_views){
-                _.each(this.nodes_views,function(view){
-                    view.removeView("init");
+        this.timeline_el.empty();
+        $('#timeline_container').removeClass("large-6 small-6 medium-6 columns");
+        if((this.presentation == "graph")||(this.presentation == "split")){
+            ///////////////////////
+            // init
+            if((this.init == false)&&(this.sens != "init")){ // Si on change de mode et on a utiliser le prev/next de la timeline ou de l'historic
+                // console.log("--Mode ",this.mode," activated")
+                // console.log("----start global fetching process...")
+                bbmap.views.main.concepts.fetch({
+                    error: function () {},
+                    success: function () {
+                        // console.log("------concept fetched...");
+                    },
+                    complete: function () {
+                        bbmap.views.main.knowledges.fetch({
+                            error: function () {},
+                            success: function () {
+                                // console.log("------knowledges fetched...");
+                            },
+                            complete: function () {
+                                bbmap.views.main.poches.fetch({
+                                    error: function () {},
+                                    success: function () {
+                                        // console.log("------poches fetched...");
+                                    },
+                                    complete: function () {
+                                        bbmap.views.main.links.fetch({
+                                            error: function () {},
+                                            success: function () {
+                                                // console.log("------links fetched...");
+                                            },
+                                            complete: function () {
+                                                // console.log('----global fetching process done')
+                                                bbmap.views.main.init = true;
+                                                bbmap.views.main.render();
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
                 });
-                this.nodes_views = {};
-            }
-            this.instance.unbind('connection');
-            this.instance.unbind('click');
-            this.instance.unbind('beforeDetach');
-            this.instance.unbind('beforeDrop')
-            ///////////////////////
-            // Action bar
-            this.renderActionBar();
-            $(this.el).append(this.template_joyride());
-            ///////////////////////
-            // Modes
-            if(this.filter == "c"){
-                this.renderConceptsBulle();
-            }
-            else if(this.filter == "k"){
-                this.renderKnowledgesBulle();
-            }
-            else if(this.filter == "p"){
-                this.renderPochesBulle();
-            }
-            else if(this.filter == "ck"){
-                this.renderConceptsBulle();
-                this.renderKnowledgesBulle();
-                this.renderCKLinks();
-            }
-            else if(this.filter == "kp"){
-                this.renderKnowledgesBulle();
-                this.renderPochesBulle();   
-                this.renderCKLinks();
-            }
-            else if(this.filter == "ckp"){
-                this.renderConceptsBulle();
-                this.renderKnowledgesBulle();
-                this.renderPochesBulle();
-                this.renderCKLinks();
-            }
-            ///////////////////////
-            if(this.mode == "edit") this.showOverLays();
-            else this.hideOverLays();
-            ///////////////////////
-            // Initialize jsPlumb events
-            this.jsPlumbEventsInit();
-            ///////////////////////
-            jsPlumb.draggable($('#map'))
-            //$('#map').draggable();
-            // css3 generator
-            if(bbmap.views.css3)bbmap.views.css3.remove();
-            if(this.mode == "edit"){
-                bbmap.views.css3 = new CSS3GENERATOR.Views.Main();
-                // CSS3 Button generator
-                this.css3Model_el.html(bbmap.views.css3.render().el);
-                CSS3GENERATOR.attach_handlers();
-                CSS3GENERATOR.initialize_controls();
-                CSS3GENERATOR.update_styles();   
-            }
-            // import data module
-            if(importData.views.main)importData.views.main.remove();
-            if(this.mode == "edit") importData.init();
-            // // move DataCentroid To MapCentroid
-            // if((this.init == true)&&(this.sens == "init")){
-            //     this.moveDataCentroidToMapCentroid();
-            // }
-            if(initPos){
-                // move DataCentroid To MapCentroid
-                if((bbmap.views.main.init == true)&&(bbmap.views.main.sens == "init")){
-                    bbmap.views.main.moveDataCentroidToMapCentroid();
-                    this.intelligentRestructuring();
+            }else{
+                // On supprime toutes les vues + les events sur tous les objets
+                if(this.nodes_views){
+                    _.each(this.nodes_views,function(view){
+                        view.removeView("init");
+                    });
+                    this.nodes_views = {};
                 }
-            } 
+                this.instance.unbind('connection');
+                this.instance.unbind('click');
+                this.instance.unbind('beforeDetach');
+                this.instance.unbind('beforeDrop')
+                ///////////////////////
+                // Action bar
+                this.renderActionBar();
+                $(this.el).append(this.template_joyride());
+                ///////////////////////
+                // Modes
+                if(this.filter == "c"){
+                    this.renderConceptsBulle();
+                }
+                else if(this.filter == "k"){
+                    this.renderKnowledgesBulle();
+                }
+                else if(this.filter == "p"){
+                    this.renderPochesBulle();
+                }
+                else if(this.filter == "ck"){
+                    this.renderConceptsBulle();
+                    this.renderKnowledgesBulle();
+                    this.renderCKLinks();
+                }
+                else if(this.filter == "kp"){
+                    this.renderKnowledgesBulle();
+                    this.renderPochesBulle();   
+                    this.renderCKLinks();
+                }
+                else if(this.filter == "ckp"){
+                    this.renderConceptsBulle();
+                    this.renderKnowledgesBulle();
+                    this.renderPochesBulle();
+                    this.renderCKLinks();
+                }
+                ///////////////////////
+                if(this.mode == "edit") this.showOverLays();
+                else this.hideOverLays();
+                ///////////////////////
+                // Initialize jsPlumb events
+                this.jsPlumbEventsInit();
+                ///////////////////////
+                jsPlumb.draggable($('#map'))
+                //$('#map').draggable();
+                // css3 generator
+                if(bbmap.views.css3)bbmap.views.css3.remove();
+                if(this.mode == "edit"){
+                    bbmap.views.css3 = new CSS3GENERATOR.Views.Main();
+                    // CSS3 Button generator
+                    this.css3Model_el.html(bbmap.views.css3.render().el);
+                    CSS3GENERATOR.attach_handlers();
+                    CSS3GENERATOR.initialize_controls();
+                    CSS3GENERATOR.update_styles();   
+                }
+                // import data module
+                if(importData.views.main)importData.views.main.remove();
+                if(this.mode == "edit") importData.init();
+                // // move DataCentroid To MapCentroid
+                // if((this.init == true)&&(this.sens == "init")){
+                //     this.moveDataCentroidToMapCentroid();
+                // }
+                if(initPos){
+                    // move DataCentroid To MapCentroid
+                    if((bbmap.views.main.init == true)&&(bbmap.views.main.sens == "init")){
+                        bbmap.views.main.moveDataCentroidToMapCentroid();
+                        this.intelligentRestructuring();
+                    }
+                } 
 
-            //
-            this.initTimelineHistoryParameters();
-            
-            if(this.mode == "edit") $('#map').css('background-image', 'url(/img/pattern.png)');
-            else $('#map').css('background', 'transparent');
+                //
+                this.initTimelineHistoryParameters();
+                
+                if(this.mode == "edit") $('#map').css('background-image', 'url(/img/pattern.png)');
+                else $('#map').css('background', 'transparent');
 
-            this.init = false; 
-            // this.intelligentRestructuring();
+                this.init = false; 
+                // this.intelligentRestructuring();
+            }
+
         }
+        if((this.presentation == "timeline")||(this.presentation == "split")){
+            timela.init({el:"#timeline_container"});
+            $('#timeline_container').css({"height":"95%","overflow":"scroll","position":"relative"})
+            $('#timeline_container').removeClass("large-6 small-6 medium-6 columns");
+
+            if(this.presentation == "split"){
+                $('#timeline_container').css({"position":"fixed","top":"100px","background":"#EFEFEF","z-index": "9"})
+                $('#timeline_container').addClass("large-6 small-6 medium-6 columns");
+            }
+        }
+        
         /////////////////////////
         // Workspace editor
         if(workspaceEditor.views.main != undefined) workspaceEditor.views.main.close();

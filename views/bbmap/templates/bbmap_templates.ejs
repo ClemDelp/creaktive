@@ -1,8 +1,10 @@
 <!-- ******************************** -->
 <!-- Container -->
-<div id="bbmap_container" style="height:96%;overflow:hidden;position:relative">
+<div id="bbmap_container" style="height:96%;position:relative;overflow:hidden;">
   <div id="top_container"></div>
-  <div id="map_container">
+  <div id="timeline_container"></div>
+  <span id="split"></span>
+  <div id="map_container" style="overflow:hidden;">
     <a href="#" id="showMenu"  class="button large alert round cbp-openbutton">
       <image  src="/img/icones/Arrow-Left.png" id="cbp-openimage"/>
     </a>
@@ -14,6 +16,7 @@
           <li class="tab-title"><a href="#discussionModel"><img title="comments" src="/img/icones/Chat.png"/><span id="notifComment"></span></a></li>
           <li class="tab-title"><a href="#css3Model"><img title="template" src="/img/icones/Shape.png"/></a></li>
           <li class="tab-title"><a href="#membersModel"><img title="template" src="/img/icones/User-Group-24.png"/></a></li>
+          <li class="tab-title"><a href="#activitiesModel"><img title="template" src="/img/icones/Bell-24-circle.png"/></a></li>
           <li class="tab-title"><a href="#googleSearchModel"><img title="web data" src="/img/icones/Web-24.png"/></a></li>
         </ul>
         <div class="tabs-content">
@@ -22,6 +25,7 @@
           <div id="discussionModel" class="content"></div>
           <div id="css3Model" class="content"></div>
           <div id="membersModel" class="content"></div>
+          <div id="activitiesModel" class="content"></div>
           <div id="googleSearchModel" class="content"></div>
         </div>
     </div>
@@ -75,7 +79,9 @@
         </b>
     </button>
     <div id="title_project_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
-    
+    <a href="#edit" class="button secondary radius graphPresentation"><b>G</b></a>
+    <a href="#edit" class="button secondary radius timelinePresentation"><b>T</b></a>
+    <a href="#edit" class="button secondary radius splitPresentation"><b>S</b></a>
     {{ if(mode == "visu"){ }}
         <a href="#edit" class="button alert radius"><b>Edit</b></a>
       {{ } }}

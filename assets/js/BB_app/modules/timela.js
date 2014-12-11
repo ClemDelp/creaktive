@@ -58,6 +58,7 @@ timela.Views.Element = Backbone.View.extend({
             user : this.user.toJSON()
         }));
         
+
         return this;
     }
 });
@@ -95,6 +96,15 @@ timela.Views.Main = Backbone.View.extend({
             }).render().el);
         });
         
+        // Comments module
+        this.elements.each(function(k){
+          comments.init({
+              el:"#"+k.get('id')+"_comments",
+              mode: "edit",
+              model : k,
+              presentation : "classic"
+          });
+        });
         return this;
     }
 });

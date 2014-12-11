@@ -18,7 +18,8 @@
 <%- partial('templates/publicmap_templates.ejs') %>
 <script src="js/BB_app/modules/publicMap.js?v=<%= sails.config.session.version %>"></script>
 
-
+<%- partial('../app/templates/comments_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/comments.js?v=<%= sails.config.session.version %>"></script>
 
 
 <script>
@@ -40,7 +41,8 @@
       json.activityLog = [];
       json.permissions = [];
       json.presentations = [];
-      
+      json.comments = <%- comments %>;
+
       _.each(json.knowledges, function(k){
         k.comments = new global.Collections.Comments(k.comments);
         k.members = new global.Collections.UsersCollection(k.members);

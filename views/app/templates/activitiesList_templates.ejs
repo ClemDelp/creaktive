@@ -1,50 +1,41 @@
 <script type="text/template" id="activitiesList-template">
-   <fieldset>
-    <legend align=left>
-      Recent activities</strong>({{- _.filter(news_notifs, function(n){if(n.content != "")return n }).length }})
+  <h4>Recent activities</strong>({{- _.filter(news_notifs, function(n){if(n.content != "")return n }).length }})
       <a href="#" class="closeAll">close all</a>
-    </legend>
+  </h4>
 
-    <table width="100%">
-      <tbody>
-      {{_.each(news_notifs,function(notification){ }}
-        {{ if(notification.content != "") { }}
-          <tr>
-            <td width="100"><img class="large-4 small-4 medium-4 roundedImage" src="{{- notification.from.img }}"></td>
-            <td><strong>{{- notification.from.name}}</strong></td>
-            <td><small>{{- notification.date}}</small></td>
-            <td>{{- notification.content }}</td>
-            <td><a href="#" class="close" data-id-notification='{{-notification.id}}' style="color:red">X</a></td>
-          </tr>
-        {{ } }}
-      {{ }); }}
-      </tbody>
-    </table>
-  </fieldset>
+  <table width="100%">
+    <tbody>
+    {{_.each(news_notifs,function(notification){ }}
+      {{ if(notification.content != "") { }}
+        <tr>
+          <td width="100"><img width="30" src="{{- notification.from.img }}"></td>
+          <td><strong>{{- notification.from.name}}</strong><br><small>{{- notification.date}}</small></td>
+          <td>{{- notification.content }}</td>
+          <td><a href="#" class="label alert round close" data-id-notification='{{-notification.id}}'>X</a></td>
+        </tr>
+      {{ } }}
+    {{ }); }}
+    </tbody>
+  </table>
 </script>
 
 <script type="text/template" id="activityLog-template">
-  <fieldset>
-    <legend align=left>
-      <strong>Activity Log</strong>
-    </legend>
-
-    <table width="100%">
-      <tbody>
-      {{_.each(notifications,function(notification){ }}
-          
-        {{ if(notification.content != "") { }}
-          <tr>
-            <td><img width="20" src="{{- notification.from.img }}"></td>
-            <td><strong>{{- notification.from.name}}</strong></td>
-            <td><small>{{- notification.date}}</small></td>
-            <td>{{- notification.content }}</td>
-          
-          </tr>
-        {{ } }}
-      {{ }); }}
-      </tbody>
-    </table>
-    <a href='#' class="button tiny radius more">more</a>
-  </fieldset>
+  <h4>Activity Log</h4>
+    
+  <table width="100%">
+    <tbody>
+    {{_.each(notifications,function(notification){ }}
+        
+      {{ if(notification.content != "") { }}
+        <tr>
+          <td><img width="30" src="{{- notification.from.img }}"></td>
+          <td><strong>{{- notification.from.name}}</strong><br><small>{{- notification.date}}</small></td>
+          <td>{{- notification.content }}</td>
+        
+        </tr>
+      {{ } }}
+    {{ }); }}
+    </tbody>
+  </table>
+  <a href='#' class="button tiny radius more">more</a>
 </script>

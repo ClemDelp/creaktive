@@ -7,37 +7,35 @@
 		</div>
 		<div class="large-10 columns">
 			<p><strong>{{-model.user.name}} post:</strong> <span style="{{-model.css}}">{{-model.title}}</span>{{=model.content}}</p>
-			<ul class="inline-list">
-				<li><a href="">Reply</a></li>
-				<li><a href="">Share</a></li>
-			</ul>
-			<h6>{{- model.comments.length }} Comments</h6>
-			{{ _.each(model.comments,function(comment){ }}
-				<div class="row">
-					<div class="large-1 columns small-1">
-						<img width="20" src="{{- comment.user.img }}">
-					</div>
-					<div class="large-11 columns">
-						<b>{{- comment.user.name }}</b><small>{{- comment.date }}</small>
-						<p>{{- comment.content }}</p>
-					</div>
-				</div>	
-			{{ }); }}
-			<div class="row">
-				<div class="large-12 columns">
-					<div class="row collapse">
-						<div class="large-1 columns small-1">
-							<img width="20" src="{{- user.img }}">
-						</div>
-						<div class="small-9 columns">
-							<input type="text" placeholder="Hex Value">
-						</div>
-						<div class="small-2 columns">
-							<a href="#" class="button postfix">Go</a>
-						</div>
-					</div>
-				</div>
-			</div>	
+			<span id="{{-model.id}}_comments"></span>
 		</div>
 	</div>
 </script>
+
+<!-- <h6>{{- model.comments.length }} Comments</h6>
+		{{ _.each(model.comments,function(comment){ }}
+			<div class="row">
+				<div class="large-1 columns small-1">
+					<img width="20" src="{{- comment.user.img }}">
+				</div>
+				<div class="large-11 columns">
+					<b>{{- comment.user.name }}</b><small>{{- comment.date }}</small>
+					<p>{{- comment.content }}</p>
+				</div>
+			</div>	
+		{{ }); }}
+		<div class="row">
+			<div class="large-12 columns">
+				<div class="row collapse">
+					<div class="large-1 columns small-1">
+						<img width="20" src="{{- user.img }}">
+					</div>
+					<div class="small-9 columns">
+						<input type="text" placeholder="Hex Value">
+					</div>
+					<div class="small-2 columns">
+						<a href="#" class="button postfix">Go</a>
+					</div>
+				</div>
+			</div>
+		</div> -->

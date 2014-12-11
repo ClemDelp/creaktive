@@ -11,6 +11,8 @@ var activitiesList = {
     /*Init*/
     this.views.main = new this.Views.Main({
       el : json.el,
+      model : global.models.currentProject,
+      mode : json.mode,
       notifications : global.collections.Notifications
     });
     this.views.main.render();
@@ -26,15 +28,12 @@ activitiesList.Views.Main = Backbone.View.extend({
         if(this.model.get('type') == 'project'){
           this.models_notifs = global.ProjectsNotificationsDictionary;
           this.listenTo(global.eventAggregator,"ProjectsNotificationsDictionary",this.actualize,this);
-          //global.eventAggregator.bind("ProjectsNotificationsDictionary",this.actualize,this);
         }else{
           this.models_notifs = global.ModelsNotificationsDictionary;
           this.listenTo(global.eventAggregator,"ModelsNotificationsDictionary",this.actualize,this);
-          //global.eventAggregator.bind("ModelsNotificationsDictionary",this.actualize,this);
         } 
         // Event
         this.listenTo(this.model,"remove",this.removeView,this);
-        //this.model.on("remove",this.remove,this);
         // Templates
         this.template = _.template($('#activitiesList-template').html()); 
         this.template_activityLog = _.template($('#activityLog-template').html());    

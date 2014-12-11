@@ -120,12 +120,17 @@ font-size: 1rem;
 }
 
 #bottom_container{
-	/*background: #EFEFEF;*/
-	background: transparent;
+	background: #EFEFEF;
+	/*background: transparent;*/
 	z-index: 20;
 	position: fixed;
 	bottom:0;
 	width:100%;
+	padding-top: 10px;
+}
+
+#bbmap_bottom_ui .button, #bbmap_bottom_ui select{
+	margin:0px;
 }
 
 #modeSelection_ui{
@@ -146,9 +151,6 @@ font-size: 1rem;
 	float:right;
 	z-index: :1000;
 }
-
-
-
 
 #icon{
   display:block;

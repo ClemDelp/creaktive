@@ -77,18 +77,21 @@ module.exports = {
       "updatedAt" : "2014-11-04T09:28:29.081Z"
     }
     ///////////////////////////////////////////////////    
-    Knowledge.find({project : req.session.publicProjects}).done(function(err,knowledges){
-      Poche.find({project : req.session.publicProjects}).done(function(err,poches){
-        Project.find({id : req.session.publicProjects, backup : false}).done(function(err,projects){
-          Concept.find({project : req.session.publicProjects}).done(function(err,concepts){
-            Link.find({project : req.session.publicProjects}).done(function(err,links){
-              res.view({
-                currentUser : JSON.stringify(req.session.user),
-                knowledges : JSON.stringify(knowledges),
-                poches : JSON.stringify(poches),
-                projects : JSON.stringify(projects),
-                concepts : JSON.stringify(concepts),
-                links : JSON.stringify(links),
+    Comment.find({project:req.session.currentProject.id}).done(function(err,comments){
+      Knowledge.find({project : req.session.publicProjects}).done(function(err,knowledges){
+        Poche.find({project : req.session.publicProjects}).done(function(err,poches){
+          Project.find({id : req.session.publicProjects, backup : false}).done(function(err,projects){
+            Concept.find({project : req.session.publicProjects}).done(function(err,concepts){
+              Link.find({project : req.session.publicProjects}).done(function(err,links){
+                res.view({
+                  comments : JSON.stringify(comments),
+                  currentUser : JSON.stringify(req.session.user),
+                  knowledges : JSON.stringify(knowledges),
+                  poches : JSON.stringify(poches),
+                  projects : JSON.stringify(projects),
+                  concepts : JSON.stringify(concepts),
+                  links : JSON.stringify(links),
+                });
               });
             });
           });
