@@ -30,13 +30,13 @@
       action : "create",
   		date : IdService.getDate(),
   		read : [req.session.user.id],
-  		project_id : req.session.currentProject.id,
+  		project_id : req.body.params.project,
   		from : req.session.user,
       comparator : new Date().getTime()
   	}).done(function(err,n){
   		if(err) console.log(err);
-  		req.socket.in(req.session.currentProject.id).emit("notification:create", n);
-      req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+  		req.socket.in(req.body.params.project).emit("notification:create", n);
+      req.socket.broadcast.to(req.body.params.project).emit("notification:create", n);
 
   	})
   },
@@ -64,13 +64,13 @@
       old : old,
       date : IdService.getDate(),
       read : [req.session.user.id],
-      project_id : req.session.currentProject.id,
+      project_id : req.body.params.project,
       from : req.session.user,
       comparator : new Date().getTime()
     }).done(function(err,n){
       if(err) console.log(err);
-      req.socket.in(req.session.currentProject.id).emit("notification:create", n);
-      req.socket.broadcast.to(req.session.currentProject.id).emit("notification:create", n);
+      req.socket.in(req.body.params.project).emit("notification:create", n);
+      req.socket.broadcast.to(req.body.params.project).emit("notification:create", n);
 
     });
   },
@@ -88,12 +88,12 @@
   		to : to,
   		date : IdService.getDate(),
   		read : [req.session.user.id],
-  		project_id : req.session.currentProject.id,
+  		project_id : req.body.params.project,
   		from : req.session.user,
       comparator : new Date().getTime()
   	}).done(function(err,n){
   		if(err) console.log(err);
-  		req.socket.in(req.session.currentProject.id).emit("notification:create", n);
+  		req.socket.in(req.body.params.project).emit("notification:create", n);
   	});
   },
 

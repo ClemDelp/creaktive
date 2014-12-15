@@ -43,7 +43,7 @@
         // Update the Knowledge
   			Knowledge.update({id: req.body.params.id}, req.body.params).done(function(err,c){
   				if(err) res.send(err);
-          req.socket.broadcast.to(req.session.currentProject.id).emit("knowledge:update", c[0]);
+          req.socket.broadcast.to(c.project).emit("knowledge:update", c[0]);
           if(req.body.notification) Notification.objectUpdated(req,res,"Knowledge", c[0], knowledge);
           res.send(c[0]);
 
@@ -57,10 +57,9 @@
         if((k.top)&&(k.top == 0))k.top = 550;
         if((k.left)&&(k.left == 0))k.left = 550;
         ///////////////////////////
-        k.project = req.session.currentProject.id
         Knowledge.create(k).done(function(err,knowledge){
           if(err) return res.send({err:err});
-          req.socket.broadcast.to(req.session.currentProject.id).emit("knowledge:create", knowledge);
+          req.socket.broadcast.to(knowledge.project).emit("knowledge:create", knowledge);
           Notification.objectCreated(req,res,"Knowledge", knowledge);
           res.send(knowledge);
           
@@ -74,7 +73,7 @@
     console.log("Destroying knowledge")
     Knowledge.findOne(req.body.params.id).done(function(err,k){
       if(err) return res.send({err:err});
-      req.socket.broadcast.to(req.session.currentProject.id).emit("knowledge:remove2", k);
+      req.socket.broadcast.to(k.project).emit("knowledge:remove2", k);
       Notification.objectRemoved(req,res,"Knowledge", k);
       k.destroy(function(err){
         if(err) return res.send({err:err});
@@ -83,9 +82,5 @@
     });
   },
 
-  knowledgeview : function(req,res){
-    console.log("Loading knowledge view")
-    BootstrapService.bootstrapdata(req,res);
-  },
 
 };

@@ -47,7 +47,6 @@ module.exports = {
   create : function (req,res){
     console.log("creating notification")
     var c = req.body.params;
-    c.project = req.session.currentProject.id;
 
     Notification.create(c).done(function(err, concept){
       if(err) return res.send({err:err});
@@ -69,7 +68,6 @@ module.exports = {
       });
       }else{
         var concept = req.body.params;
-        concept.project = req.session.currentProject.id;
         Notification.create(concept).done(function(err,c){
           if(err) return res.send({err:err});
           res.send(c);

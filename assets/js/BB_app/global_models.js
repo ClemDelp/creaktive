@@ -263,7 +263,8 @@ global.Models.CKLink = Backbone.Model.extend({
         concept : "",
         knowledge : "",
         source : "",
-        target : ""
+        target : "",
+        project : ""
     },
     setText : function(value) {this.set({ text : value }); },
     initialize : function Comment() {

@@ -185,14 +185,19 @@ module.exports = {
     var node_id = req.body.node_id;
     var title = req.body.title;
     var content = req.body.content;
-    if(title != req.session.currentProject.title){
+
+    Project.findOne(node_id).done(function(err,project){
+      if(err) return res.send({err:err});
+      if(title != project.title){
       BackupService.createProjectFromNode(node_id, title, content, function(err, proj){
         if(err) return res.send({err:err});
         res.send(proj);
       })
-    }else{
-      res.send({err : "A project with the same title has already been created"});
-    }
+      }else{
+        res.send({err : "A project with the same title has already been created"});
+      }
+
+    });
 
   },
 
@@ -204,13 +209,11 @@ module.exports = {
     console.log('Loading backup from node')
     var node_id = req.body.node_id;
 
-    Project.findOne(req.session.currentProject.id).done(function(err, currentProject){
-      if(err) return res.send({err:err});    
-      Project.findOne(node_id).done(function(err, project){
-        if(err) return res.send(err);
-          res.send(project)
-      });
-    })
+    Project.findOne(node_id).done(function(err, project){
+      if(err) return res.send(err);
+        res.send(project)
+    });
+
   },
 
 
@@ -241,8 +244,7 @@ module.exports = {
     var author = req.session.user;
     var node_name = req.body.node_name;
     var node_description = req.body.node_description;
-    var currentProject = _.clone(req.session.currentProject);
-
+    
     BackupService.createNode(id_father, currentProject, author,node_name, node_description, function(err,node){
       if(err) return res.send(err);
       res.send(node);

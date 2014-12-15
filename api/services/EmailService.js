@@ -9,7 +9,7 @@ module.exports = {
 	    port: 465, // port for secure SMTP
 	    auth: {
 	        user:  "creaktive.contact@gmail.com",
-	        pass:  "creaktive30"
+	        pass:  "MichelTelo30"
 	    }
 	}),
 	

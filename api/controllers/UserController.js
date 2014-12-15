@@ -32,8 +32,6 @@
   		if(user){
   			User.update({id: req.body.params.id}, req.body.params).done(function(err,u){
   				if(err) return res.send({err:err})
-          //req.session.user = u[0];
-          //req.socket.broadcast.to(req.session.currentProject.id).emit("user:update", u[0]);
           res.send(u[0]);
         });
   		}else{
@@ -43,8 +41,6 @@
 
           p.save(function(err, u){
             if(err) return res.send({err:err})
-            //req.session.user = u[0];
-            //req.socket.broadcast.to(req.session.currentProject.id).emit("user:create", u[0]); 
             res.send(u[0]);
           })
         })
@@ -94,7 +90,7 @@
         id: IdService.guid(),
         right : "rw",
         user_id : user.id,
-        project_id : req.session.currentProject.id
+        project_id : req.body.currentProject
       }).done(function(err, permission){
         if(err) return res.send({err:err});
           res.send({user : user, permission : permission})

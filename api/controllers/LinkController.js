@@ -41,16 +41,16 @@
           id: req.body.params.id
         }, req.body.params).done(function(err,c){
           if(err) return res.send({err:err});
-          req.socket.broadcast.to(req.session.currentProject.id).emit("link:update", c[0]);
+          req.socket.broadcast.to(c.project_id).emit("link:update", c[0]);
           Notification.objectUpdated(req,res,"Link", c[0]);
           res.send(c[0]);   
         });
       }else{
         var l = req.body.params;
-        l.project = req.session.currentProject.id
+
         Link.create(l).done(function(err,c){
           if(err) return res.send({err:err});
-          req.socket.broadcast.to(req.session.currentProject.id).emit("link:create", c);
+          req.socket.broadcast.to(c.project).emit("link:create", c);
           Notification.objectCreated(req,res,"Link", c);
           res.send(c);
        })
@@ -62,7 +62,7 @@
     console.log('destroying link')
     Link.findOne(req.body.params.id).done(function(err,link){
       if(err) return res.send({err:err});
-      req.socket.broadcast.to(req.session.currentProject.id).emit("link:remove2", link);
+      req.socket.broadcast.to(link.project).emit("link:remove2", link);
       Notification.objectRemoved(req,res,"Link", link);
       if(link) {
           link.destroy(function(err){

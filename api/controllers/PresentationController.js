@@ -42,7 +42,7 @@ module.exports = {
   create : function (req,res){
     console.log("creating presentation")
   var s = req.body.params;
-  s.project = req.session.currentProject.id
+
   Presentation.create(s).done(function(err, presentation){
     if(err) return res.send({err:err});
     Notification.objectCreated(req,res,"Presentation", presentation, function(notification){
@@ -71,7 +71,6 @@ module.exports = {
       // Create
       }else{
         var presentation = req.body.params;
-        presentation.project = req.session.currentProject.id
         Presentation.create(presentation).done(function(err,s){
           if(err) return res.send({err:err});       
           ////////////////////////////////////////
