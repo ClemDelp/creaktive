@@ -10,9 +10,9 @@
 
   find : function (req,res){
     console.log("Fetch concepts");
-    if(req.session.currentProject){
+    if(req.body.params.project){
     Concept.find({
-      project : req.session.currentProject.id
+      project : req.body.params.project
     }).done(function(err,concepts){
       if(err) return res.send({err:err});
       this.concepts = concepts;
@@ -82,6 +82,5 @@
       };
     });
   },
-
 
 };

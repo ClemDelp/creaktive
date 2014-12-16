@@ -15,10 +15,10 @@
 
   find : function (req,res){
     console.log("Fetching knowledge")
-    if(req.session.currentProject){
+    if(req.body.params.project){
 
       Knowledge.find({
-        project : req.session.currentProject.id
+        project : req.body.params.project
       }).done(function(err,knowledges){
         if(err) return res.send({err:err});
           res.send(knowledges)

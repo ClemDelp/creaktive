@@ -26,9 +26,9 @@ module.exports = {
   
   find : function (req,res){
     console.log("fetching notifications")
-    if(req.body.params.projectId){
+    if(req.body.params.project){
     Notification.find({
-      project_id : req.session.currentProject.id
+      project_id : req.body.params.project
     }).done(function(err,notifications){
       if(err) return res.send({err:err});
     

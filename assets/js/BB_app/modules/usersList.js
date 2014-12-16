@@ -130,6 +130,7 @@ usersList.Views.Main = Backbone.View.extend({
           $('#research_value').val("");
       }else{
         $.post("/user/inviteUser", {email :  $('#research_value').val(), currentProject : usersList.views.main.project.get('id')}, function(data){
+
           _this.users.add(data.user);
           _this.permissions.add(data.permission);
           $('#research_value').val("");

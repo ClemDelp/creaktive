@@ -1,26 +1,18 @@
-// We use passport to determine if we're authenticated
+/*
+* 	Vérifie que l'utilisateur à les droits de lecture sur un projet
+*	Appel :
+*		- quand Concept, Knowledge, Link, Poche fetché
+*/
+
 module.exports = function(req, res, next) {
  
 	'use strict';
 
-	var project_id = "";
-
-	if(req.session.currentProject) project_id = req.session.currentProject.id;
-	else if (req.query.projectId) project_id = req.query.projectId
-	else if(req.body.params.projectId) project_id = req.body.params.projectId;
-
-	Permission.find({
-		user_id : req.session.user.id,
-		project_id : project_id
-	}).done( function (err, perm){
-		if(err) next(err);
-		if(perm.length !== 0){
-			next();
-		} 
-		else res.json({err : "You are not permitted to perform this action" });
-	})
-
-	return next();
-	
- 
+	if(_.indexOf(req.session.permissions.admin, req.body.project) > -1 ||
+		_.indexOf(req.session.permissions.rw, req.body.project) > -1 ||
+		_.indexOf(req.session.permissions.r, req.body.project) > -1){
+		return next();
+	}else{
+		return res.send({err : "You have no permission on this project"});
+	};
 };

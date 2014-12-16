@@ -98,13 +98,17 @@ var AuthController = {
 	},
 
 	processRegistrationNew : function(req,res){
+		var today = new Date()
+		var suscribing = (new Date(today.setMonth(today.getMonth() + 1))).toUTCString();
 		User.create({
 			id : IdService.guid(),
 			name : req.body.username,
 			email : req.body.email,
 			confirmed : false,
 			pw : req.body.password,
-			img : req.body.img || "img/default-user-icon-profile.png"
+			img : req.body.img || "img/default-user-icon-profile.png",
+			platformAdmin : true,
+			suscribing : suscribing
 		}).done(function(err, user){
 			if(err) return res.redirect("/newuser");
 	      	EmailService.sendNewUserMail(user, function(err, msg){
@@ -169,8 +173,10 @@ var AuthController = {
 					return;
 				}
  				req.session.user = req.user;
-				res.redirect('/');
-				return;
+
+ 					res.redirect('/');
+ 					return;
+
 			});
 
 		})(req, res);

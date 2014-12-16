@@ -15,9 +15,9 @@
 
   find : function (req,res){
     console.log("Fetching links")
-    if(req.session.currentProject){
+    if(req.body.params.project){
       Link.find({
-      project : req.session.currentProject.id
+      project : req.body.params.project
     }).done(function(err,links){
       if(err) return res.send({err:err});
         res.send(links)

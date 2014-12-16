@@ -96,6 +96,7 @@ Backbone.sync = function (method, model, options) {
     data : {
       params : params.data,
       action : global.Functions.whatChangedInModel(model),
+      project : global.models.currentProject.get('id'),
       notification : (options.notification == false) ? false : true
     }
   }

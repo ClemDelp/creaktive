@@ -1,39 +1,22 @@
-// We use passport to determine if we're authenticated
-module.exports = function(req, res, next) {
+/*
+* 	Vérifie que l'utilisateur à les droits d'écriture sur un projet
+*	Appel :
+*		- Concept, Knowledge, Link, Poche créé/edité/supprimé
+*		- Présentation éditée
+*/
 
+module.exports = function(req, res, next) {
+ 
 	'use strict';
 
+	console.log(req.body.project)
 
-	var project_id = "";
+	if(_.indexOf(req.session.permissions.rw, req.body.project) > -1 || 
+		_.indexOf(req.session.permissions.admin, req.body.project) > -1 ){
+		return next();
+	}else{
+		return res.send({err : "You don't have the right to perform this action"});
+	};
 
-	if(req.session.currentProject) project_id = req.session.currentProject.id;
-	else if (req.query.projectId) project_id = req.query.projectId
-	else if(req.body.params.projectId) project_id = req.body.params.projectId;
-
-	User.findOne(req.session.user.id).done(function(err,u){
-		
-
-		if(u.super == true){
-			next();
-		}else {
-			Permission.find({
-				user_id : req.session.user.id,
-				project_id : project_id
-			}).done( function (err, perm){
-				if(err) next(err);
-				if(perm.length !== 0){
-					if (perm[0].right == "rw" || perm[0].right == "admin" || perm[0].right == "smartphone") next();
-					else res.send({err : "You have read-only permission" });
-				} 
-				else res.send({err : "You are not permitted to perform this action" });
-			})	
-		}
-	})
-
-	
-	
-
-
-	
 
 };

@@ -35,21 +35,18 @@
     "openChannels" : ["authenticated"]
   },
 
-  "SparqlController" : {
-    "*" : "authenticated"
+  // PROBLEME SUR LA MODIFICATION DES PROJETS il faudrait pouvoir mettre
+  // update : isAdmin
+  // create : "canCreateProject"
+  "ProjectController" : {
+    "find" : ["authenticated"],
+    "update" : ["authenticated", "canCreateProject"],
+    "destroy" : ["authenticated","canCreateProject"],
   }, 
 
-  "ElasticsearchController" : {
-    "*" : "authenticated"
-  }, 
-
-  "ContactController" : {
-    "*" : "authenticated"
-  }, 
-
-  "CkviewerController" : {
-   "ckviewerview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
-   "*" : "authenticated"
+  "PermissionController" : {
+    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated"]
   },
 
   "PocheController" : {
@@ -57,118 +54,38 @@
     "*" : ["authenticated", "canWrite"]
   },
 
-  "FileController" : {
-    "*" : "authenticated"
+  "LinkController" : {
+    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated", "canWrite"]
   },
-  
-  "CkpreviewerController" : {
-    "ckpreviewerview" :["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
-    "*" : "authenticated"
-  }, 
 
+  "ConceptController" : {
+    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated", "canWrite"]
+  },
 
-  "AnalyseController" : {
-    "*" : "authenticated"
+  "KnowledgeController" : {
+    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated", "canWrite"]
   },
 
   "CommentController" : {
     "*" : "authenticated"
   },
 
-  "S3Controller" : {
+  /************************************/
+  /*********** Utils ******************/
+  /************************************/
+
+
+   "S3Controller" : {
     "*" : "authenticated"
   },
 
-  "bbmap" : {
-    "screenshot" : true,
-    "*" : ["authenticated", "allowedProjects"],
-  },
+  /************************************/
+  /*********** Jian ******************/
+  /************************************/
 
-  "LinkController" : {
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"]
-  },
-
-  "ProjectController" : {
-    "*" : "authenticated",
-    "destroy" : ["authenticated", "canRemoveProject" ],
-
-  }, 
-
-  "NotificationController" : {
-    "notificationview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
-    "*" : ["authenticated"],
-  },
-
-  "PermissionController" : {
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canManageUsers"]
-  },
-
-  /*********** VIEWS ******************/
-  "PublicVisuController" : {
-    // "screenshot" : true,
-    // "publicvisuview" : ["authenticated", "allowedProjects","forceHTTPs"],
-    "*" : true
-  },
-
-  "PublicMapController" : {
-    // "screenshot" : true,
-    "publicmapview" : ["publicProjects","onlyMobile"],
-    "*" : true
-  },
-
-  "MobileInterfaceController" : {
-    "*" : ["authenticated","forceHTTPs","allowedProjects"]
-  },
-
-  "MobileManagerController" : {
-    "*" : ["authenticated","forceHTTPs","allowedProjects"]
-  },
-
-  "ManagerController" : {
-    "managerview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
-    "editprofileview" : ["authenticated", "forceHTTPs","onlyMobile"],
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"]
-  },
-
-  "UserController" : {
-    "*" : ["authenticated", "canWrite"],
-    "inviteUser" : ["authenticated"],
-    "userview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
-    "editprofileview" : ["authenticated", "forceHTTPs","onlyMobile"],
-    "editprofile" : "authenticated",
-    "changepassword" :"authenticated",
-    "find" : ["authenticated", "canRead"],
-  },
-
-  "AnalyseController" : {
-    "analyseview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
-  }, 
-
-  "ConceptController" : {
-    "conceptview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
-    "find" : ["authenticated", "canRead"],
-    "generateTree" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"] 
-  },
-
-  "KnowledgeController" : {
-    "knowledgeview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"]
-  },
-
-  "BackupController" : {
-    "*" : ["authenticated"]
-  },
-
-  "CategoryController" : {
-    "categoryview" : ["authenticated", "allowedProjects","forceHTTPs","onlyMobile"],
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"]
-  },
 
   "ScreenshotController" : {
     "*" : ["authenticated"]
@@ -182,9 +99,81 @@
     "*" : ["authenticated"]
   },
 
+  /************************************/
+  /*********** C'est quoi ces daubes ? :-) ******************/
+  /************************************/
   "BackupController" : {
-    "*" : ["authenticated", "allowedProjects","forceHTTPs"]
-  }
+    "*" : ["authenticated"]
+  },
+
+  "ContactController" : {
+    "*" : "authenticated"
+  }, 
+
+  "FileController" : {
+    "*" : "authenticated"
+  },
+
+  "CategoryController" : {
+    "find" : ["authenticated"],
+    "*" : ["authenticated"]
+  },
+  /************************************/
+  /*********** VIEWS ******************/
+  /************************************/
+  "PublicVisuController" : {
+    // "screenshot" : true,
+    // "publicvisuview" : ["authenticated","forceHTTPs"],
+    "*" : true
+  },
+
+  "PublicMapController" : {
+    // "screenshot" : true,
+    "publicmapview" : ["publicProjects","onlyMobile"],
+    "*" : true
+  },
+
+  "ManagerController" : {
+    "managerview" : ["authenticated","forceHTTPs","onlyMobile"],
+  },
+
+  "UserController" : {
+    "inviteUser" : ["authenticated", "isAdmin"],
+    "userview" : ["authenticated","forceHTTPs","onlyMobile"],
+    "editprofileview" : ["authenticated", "forceHTTPs","onlyMobile"],
+    "editprofile" : "authenticated",
+    "changepassword" :"authenticated",
+    "*" : ["authenticated"],
+  },
+
+  "bbmap" : {
+    "bbmapview" : ["authenticated", "forceHTTPs", "onlyMobile"],
+    "screenshot" : true,
+    "*" : ["authenticated"],
+  },
+
+  "NotificationController" : {
+    "notificationview" : ["authenticated","forceHTTPs","onlyMobile"],
+    "*" : ["authenticated"],
+  },
+
+  "CkpreviewerController" : {
+    "ckpreviewerview" :["authenticated","forceHTTPs","onlyMobile"],
+    "*" : "authenticated"
+  }, 
+
+  /************************************/
+  /************ MOBILE ****************/
+  /************************************/
+  "MobileInterfaceController" : {
+    "*" : ["authenticated","forceHTTPs"]
+  },
+
+  "MobileManagerController" : {
+    "*" : ["authenticated","forceHTTPs"]
+  },
+
+
   /*
   // Here's an example of adding some policies to a controller
   RabbitController: {

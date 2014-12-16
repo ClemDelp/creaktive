@@ -42,17 +42,17 @@ module.exports = {
 	    if(req.query.zoom) params += "#visu/"+(parseFloat(req.query.zoom)*multiplier);
 	    if(req.query.left) params += "/"+(parseFloat(req.query.left)*multiplier);
 	    if(req.query.top) params += "/"+(parseFloat(req.query.top)*multiplier);
-	    params += "/1";// invisibility
+	    if(req.query.top) params += "/1";// invisibility
 	    if(req.query.window_w) sizeScreen = (~~(parseFloat(req.query.window_w)*multiplier))+"x"+(~~(parseFloat(req.query.window_h)*multiplier));
 
-	    //console.log("Multiplier: ",multiplier," *** resolution: ",sizeScreen)
+	    var currentProjectId = req.query.currentProject;
 
 	    /////////////////////////
 	    if(req.get('host') == "localhost:1337"){
-	      url = req.baseUrl + "/bbmap?projectId="+req.session.currentProject.id+params;
+	      url = req.baseUrl + "/bbmap?projectId="+currentProjectId+params;
 	      domain = "localhost"
 	    }else{
-	       url = "http://"+req.get("host")+ "/bbmap?projectId="+req.session.currentProject.id+params;
+	       url = "http://"+req.get("host")+ "/bbmap?projectId="+currentProjectId+params;
 	       domain = req.get("host")
 	    }
 	    var cookie = "sails.sid="+req.signedCookies["sails.sid"]+";domain="+domain+";path=/";
@@ -60,7 +60,7 @@ module.exports = {
 	    var pageres = new Pageres({
 	        delay: 10, 
 	        cookies : [cookie],
-	        filename : req.session.currentProject.id
+	        filename : currentProjectId
 	      })
 	      .src(url, [sizeScreen])
 	      .dest(".tmp");
@@ -71,7 +71,7 @@ module.exports = {
 	          	var file = {};
 	          	file.path = ".tmp/"+item.filename;
 	          	file.name = item.filename;      		
-	      		if(mode === "upload") ScreenshotService.uploadScreenshot(file, req.session.currentProject.id, callback);
+	      		if(mode === "upload") ScreenshotService.uploadScreenshot(file, currentProjectId, callback);
 	      		if(mode === "download"){ 
       				cb(null,file);
       				callback();
