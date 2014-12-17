@@ -32,7 +32,7 @@ bbmap.router = Backbone.Router.extend({
 /////////////////////////////////////////////////
 bbmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
-        _.bindAll(this, 'render','backInTimeline','advanceInTimeline','advanceInHistory','backInHistory','updateLastModelTitle','setLastModel');
+        _.bindAll(this, 'render','removeSelectedElement','backInTimeline','advanceInTimeline','advanceInHistory','backInHistory','updateLastModelTitle','setLastModel');
         ////////////////////////////
         // el
         this.top_el = $(this.el).find('#top_container');
@@ -132,6 +132,7 @@ bbmap.Views.Main = Backbone.View.extend({
 
         this.listener.simple_combo("ctrl z", this.backInHistory);
         this.listener.simple_combo("ctrl y", this.advanceInHistory);
+        this.listener.simple_combo("delete", this.removeSelectedElement);
         ///////////////////////////////
         // Prend un screenshot quand on quitte bbmap
         window.onbeforeunload = function (e) {
@@ -174,6 +175,11 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .graphPresentation" : "graphPresentation",
         "click .timelinePresentation" : "timelinePresentation",
         "click .splitPresentation" : "splitPresentation",
+    },
+    removeSelectedElement : function(){
+        var view = this.nodes_views[this.lastModel.get('id')]
+        this.lastModel = new Backbone.Model();
+        view.removeConfirmSwal();
     },
     /////////////////////////////////////////
     // Mode
@@ -1241,6 +1247,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var _this = this;
         // Views
         this.concepts.each(function(concept){ 
+            if(!concept.get('visibility')) concept.save({visibility : "show"}); // par default mettre la valeur à show
             bbmap.views.main.nodes_views[concept.get('id')] = new bbmap.Views.Node({
                 className : "window concept bulle",
                 id : concept.get('id'),
@@ -1249,7 +1256,7 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         // Render
         this.concepts.forEach(function(model){
-            _this.map_el.append(bbmap.views.main.nodes_views[model.get('id')].render().el);    
+            _this.map_el.append(bbmap.views.main.nodes_views[model.get('id')].render().el); 
         });
         // EndPoint
         this.concepts.forEach(function(model){
@@ -1498,18 +1505,13 @@ bbmap.Views.Main = Backbone.View.extend({
                 $('#timeline_container').addClass("large-6 small-6 medium-6 columns");
             }
         }
-        
         /////////////////////////
         // Workspace editor
         if(workspaceEditor.views.main != undefined) workspaceEditor.views.main.close();
         workspaceEditor.init({el:"#title_project_dropdown",mode:this.mode});
         // Members editor
-        // Members module in Slide bar
         if(usersList.views.main != undefined) usersList.views.main.close(); 
-        usersList.init({
-            el : "#members_anager_dropdown",
-            mode : this.mode,
-        });
+        usersList.init({el : "#members_anager_dropdown",mode : this.mode});
         ////////////////////////
         // invisibility
         if(this.invisibility == 1){

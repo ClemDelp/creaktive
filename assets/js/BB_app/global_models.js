@@ -64,7 +64,9 @@ global.Models.CKObject = Backbone.Model.extend({
         left:"",
         project:"",
         status : "private",
-        css : ""
+        css : "",
+        displayChildrens : true,
+        visibility : "show"
     },
     parse : function(serverObj){
         serverObj.comments = new global.Collections.Comments(serverObj.comments);

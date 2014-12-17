@@ -31,7 +31,14 @@ bbmap.Views.Node = Backbone.View.extend({
         "click .sup" : "removeModel",
         "click .ep" : "addConceptChild",
         "click .ep2" : "addKnowledgeChild",
-        "click .ep3" : "editBulle"
+        "click .ep3" : "editBulle",
+        // "click .replier" : "replier"
+    },
+    /////////////////////////////////////////
+    replier : function(e){
+        var nodes = api.getTreeChildrenNodes(this.model,bbmap.views.main.concepts);
+        nodes.forEach(function(node){node.save({visibility:"hide"});}); // pour cacher le node
+        this.model.save({displayChildrens : false}); // pour aficher le nbre de fils cachés
     },
     editBulle : function(e){
         e.preventDefault();
@@ -254,6 +261,9 @@ bbmap.Views.Node = Backbone.View.extend({
     /////////////////////////////////////////
     removeModel : function(e){
         e.preventDefault();
+        this.removeConfirmSwal();
+    }, 
+    removeConfirmSwal : function(){
         var _this = this;
         swal({   
             title: "Are you sure?",   
