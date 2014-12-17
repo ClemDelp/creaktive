@@ -15,7 +15,6 @@
           <li class="tab-title"><a href="#attachementModel"><img title="attach" src="/img/icones/Attach.png"/><span id="notifAttach"></span></a></li>
           <li class="tab-title"><a href="#discussionModel"><img title="comments" src="/img/icones/Chat.png"/><span id="notifComment"></span></a></li>
           <li class="tab-title"><a href="#css3Model"><img title="template" src="/img/icones/Shape.png"/></a></li>
-          <li class="tab-title"><a href="#membersModel"><img title="template" src="/img/icones/User-Group-24.png"/></a></li>
           <li class="tab-title"><a href="#activitiesModel"><img title="template" src="/img/icones/Bell-24-circle.png"/></a></li>
           <li class="tab-title"><a href="#googleSearchModel"><img title="web data" src="/img/icones/Web-24.png"/></a></li>
         </ul>
@@ -24,7 +23,6 @@
           <div id="attachementModel" class="content"></div>
           <div id="discussionModel" class="content"></div>
           <div id="css3Model" class="content"></div>
-          <div id="membersModel" class="content"></div>
           <div id="activitiesModel" class="content"></div>
           <div id="googleSearchModel" class="content"></div>
         </div>
@@ -72,20 +70,20 @@
 
 <script type="text/template" id="bbmap-top-element-template">
   <div class="large-7 medium-7 small-7 columns">
-    <button class="button secondary radius" data-dropdown="title_project_dropdown" aria-controls="title_project_dropdown" aria-expanded="true">
+    <button class="button simplePadding secondary radius" data-dropdown="title_project_dropdown" aria-controls="title_project_dropdown" aria-expanded="true">
         <b>
         {{-project.title}}
-        {{ if(project.starred){ }}<img data-dropdown="title_project_dropdown"  title="starred project" src="/img/icones/Shape-Star2-24.png" />{{ } }}
+        {{ if(project.starred){ }}<img data-dropdown="title_project_dropdown"  title="starred project" src="/img/icones/Shape-Star2-32.png" />{{ } }}
         {{ if(project.status == 'public'){ }}
-          <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="public project" src="/img/icones/Open-24.png"/>
+          <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="public project" src="/img/icones/Open-32.png"/>
         {{ }else{ }}
-          <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="private project" src="/img/icones/Lock-24.png"/>
+          <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="private project" src="/img/icones/Lock-32.png"/>
         {{ } }}
         </b>
     </button>
     <div id="title_project_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
 
-    <button class="button secondary radius" data-dropdown="members_anager_dropdown" aria-controls="members_anager_dropdown" aria-expanded="true">Members</button>
+    <button class="button secondary simplePadding radius" data-dropdown="members_anager_dropdown" aria-controls="members_anager_dropdown" aria-expanded="true"><b>Members</b><img data-type="action" title="mode" src="/img/icones/Group-Add-32.png"/></button>
     <div id="members_anager_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
 
 
@@ -94,7 +92,7 @@
     <a style="display:none" href="#edit" class="button tiny secondary radius splitPresentation"><img src="/img/icones/View-Split-32.png" /></a>
 
     {{ if(mode == "visu"){ }}
-        <a href="#edit" class="button alert radius"><b>Edit</b></a>
+        <a href="#edit" class="button simplePadding alert radius"><b>Edit</b><img data-type="action" title="mode" src="/img/icones/Pencil-32-white.png"/></a>
       {{ } }}
       {{ if(mode == "timeline"){ }}
         <h3>
