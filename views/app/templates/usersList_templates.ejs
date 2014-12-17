@@ -1,10 +1,19 @@
 <script type="text/template" id="usersList-template">	
 	<h4>Members ({{-userPerms.length}})</h4>
 	{{ if(mode == "edit"){ }}
-	<button style="padding:0px;padding-left:10px;padding-right:10px;" class="button tiny success radius" data-dropdown="members_dropdown" aria-controls="members_dropdown" aria-expanded="true">
+	<button style="padding:0px;padding-left:10px;padding-right:10px;" class="button tiny success radius" onclick="$('#members_dropdown').show('slow')">
           <img src="/img/icones/User-Add-32.png"/>Add members...
     </button>
+    <div id="members_dropdown" style="display:none" >
+	   	<p>Members</p>
+	   	<hr>
+	   	<input id="research_value" type="text" class="search_members" placeholder="name or email...">
+	   	<p id="usersList_search_info">{{-info}}</p>
+	   	<table style="width:100%" id="usersList_search_result"></table>
+   	</div>
 	{{ } }}
+	<hr>
+	<p>Members with permissions</p>
 	<table style="width:100%">
 	{{ _.each(userPerms,function(userPerm){ }}
 		<tr>
@@ -28,11 +37,5 @@
 	{{ });}}
 	</table>
 
-   	<div id="members_dropdown" class="f-dropdown content small" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
-	   	<center>Members</center>
-	   	<hr>
-	   	<input id="research_value" type="text" class="search_members" placeholder="name or email...">
-	   	<p id="usersList_search_info">{{-info}}</p>
-	   	<table style="width:100%" id="usersList_search_result"></table>
-   	</div>
+   	
 </script>

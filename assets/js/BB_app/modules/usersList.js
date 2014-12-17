@@ -28,6 +28,7 @@ usersList.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         ////////////////////////////
         this.users = json.users;
+        this.mode = json.mode;
         this.permissions = json.permissions;
         this.project = json.project;
         this.infos = {
@@ -139,17 +140,17 @@ usersList.Views.Main = Backbone.View.extend({
       }
     },
     render : function(){        
-        ///////////////////////
-        // init
-        var userPerms = api.getUserPermissionByProject(this.permissions,this.users,this.project.get('id')); //users hav to be [{user json,permission json},{user json,permission json},...]
-        $(this.el).empty();
-        $(this.el).append(this.template({
-          userPerms : userPerms,
-          project : this.project.toJSON(),
-          info : this.infos.init,
-          mode : this.mode
-        }));
-        return this;
+      ///////////////////////
+      // init
+      var userPerms = api.getUserPermissionByProject(this.permissions,this.users,this.project.get('id')); //users hav to be [{user json,permission json},{user json,permission json},...]
+      $(this.el).empty();
+      $(this.el).append(this.template({
+        userPerms : userPerms,
+        project : this.project.toJSON(),
+        info : this.infos.init,
+        mode : this.mode
+      }));
+      return this;
     }
 });
 /////////////////////////////////////////////////

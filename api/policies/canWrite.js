@@ -12,7 +12,8 @@ module.exports = function(req, res, next) {
 	console.log(req.body.project)
 
 	if(_.indexOf(req.session.permissions.rw, req.body.project) > -1 || 
-		_.indexOf(req.session.permissions.admin, req.body.project) > -1 ){
+		_.indexOf(req.session.permissions.admin, req.body.project) > -1|| 
+		_.indexOf(req.session.permissions.public, req.body.project) > -1 ){
 		return next();
 	}else{
 		return res.send({err : "You don't have the right to perform this action"});

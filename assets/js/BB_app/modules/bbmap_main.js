@@ -139,15 +139,8 @@ bbmap.Views.Main = Backbone.View.extend({
                 console.log(data);
             });
         };
-        //////////////////////////////
-        // MODULES
-        //////////////////////////////
-        // Members module in Slide bar
-        usersList.init({
-            el : "#membersModel",
-            mode : this.mode,
-        });
         
+        $("body").css({"overflow":"hidden"}); // IMPORTANT
     },
     events : {
         "change #visu_select_mode" : "setVisualMode",
@@ -424,7 +417,7 @@ bbmap.Views.Main = Backbone.View.extend({
             this.hideMenu();
         }
         // Set Modules mode
-        if(usersList.views.main != undefined) usersList.views.main.setMode(this.mode);
+        //if(usersList.views.main != undefined) usersList.views.main.setMode(this.mode);
 
         this.render(initPos);
     },
@@ -1510,7 +1503,13 @@ bbmap.Views.Main = Backbone.View.extend({
         // Workspace editor
         if(workspaceEditor.views.main != undefined) workspaceEditor.views.main.close();
         workspaceEditor.init({el:"#title_project_dropdown",mode:this.mode});
-        
+        // Members editor
+        // Members module in Slide bar
+        if(usersList.views.main != undefined) usersList.views.main.close(); 
+        usersList.init({
+            el : "#members_anager_dropdown",
+            mode : this.mode,
+        });
         ////////////////////////
         // invisibility
         if(this.invisibility == 1){

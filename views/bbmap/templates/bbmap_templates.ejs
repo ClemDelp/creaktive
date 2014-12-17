@@ -84,9 +84,15 @@
         </b>
     </button>
     <div id="title_project_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
-    <a href="#edit" class="button tiny secondary radius graphPresentation"><img src="/img/icones/Nodes-32.png" /></a>
-    <a href="#edit" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Bullets-32-blue.png" /></a>
-    <a href="#edit" class="button tiny secondary radius splitPresentation"><img src="/img/icones/View-Split-32.png" /></a>
+
+    <button class="button secondary radius" data-dropdown="members_anager_dropdown" aria-controls="members_anager_dropdown" aria-expanded="true">M</button>
+    <div id="members_anager_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
+
+
+    <a style="display:none" href="#edit" class="button tiny secondary radius graphPresentation"><img src="/img/icones/Nodes-32.png" /></a>
+    <a style="display:none" href="#edit" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Bullets-32-blue.png" /></a>
+    <a style="display:none" href="#edit" class="button tiny secondary radius splitPresentation"><img src="/img/icones/View-Split-32.png" /></a>
+
     {{ if(mode == "visu"){ }}
         <a href="#edit" class="button alert radius"><b>Edit</b></a>
       {{ } }}
@@ -154,8 +160,8 @@
         <a href="#" data-reveal-id="importData_container" class="button tiny round secondary"><img title="Import data from an other project" src="/img/icones/Data-Import-24.png"/></a>
         <div id="importData_container" class="reveal-modal large" data-reveal></div>
         <a href="#" class="tiny round button secondary structureSubTree"><img title="structure sub-tree" src="/img/icones/Network-Drives-24.png"/></a>
-        <a href="#" class="button tiny round secondary prevH"><img title="ctrl-Z" src="/img/icones/Arrowhead-Left-24.png"/></a>
-        <a href="#" class="button tiny round secondary nextH"><img title="ctrl-Y" src="/img/icones/Arrowhead-Right-24.png"/></a>
+        <a style="display:none" href="#" class="button tiny round secondary prevH"><img title="ctrl-Z" src="/img/icones/Arrowhead-Left-24.png"/></a>
+        <a style="display:none" href="#" class="button tiny round secondary nextH"><img title="ctrl-Y" src="/img/icones/Arrowhead-Right-24.png"/></a>
       {{ } }}
     </center>
   </span>
