@@ -4,7 +4,7 @@
 bbmap.router = Backbone.Router.extend({
     routes: {
         ""  : "init",
-        "visu/:zoom/:left/:top/:invisibility": "visuPlus",
+        "visu/:zoom/:left/:top/:invisibility": "visuCustom",
         "visu": "visu",
         "edit": "edit",
         "timeline": "timeline"
@@ -15,7 +15,7 @@ bbmap.router = Backbone.Router.extend({
     visu: function() {
         bbmap.views.main.setMode("visu",true);
     },
-    visuPlus: function(zoom,left,top,invisibility) {
+    visuCustom: function(zoom,left,top,invisibility) {
         bbmap.views.main.invisibility = invisibility;
         bbmap.views.main.initMap(zoom,left,top)
         bbmap.views.main.setMode("visu",false);
@@ -39,8 +39,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.bottom_el = $(this.el).find('#bottom_container');
         this.map_el = $(this.el).find('#map');
         this.timeline_el = $(this.el).find('#timeline_container');
-        this.editor_el = $(this.el).find('#editor');
-        this.editModel_el = $(this.el).find('#editModel');
         this.attachementModel_el = $(this.el).find('#attachementModel');
         this.css3Model_el = $(this.el).find('#css3Model');
         this.googleSearchModel_el = $(this.el).find('#googleSearchModel');
@@ -514,13 +512,6 @@ bbmap.Views.Main = Backbone.View.extend({
     updateEditor : function(model){
         if((this.mode == "edit")||(this.mode == "visu")){
             $('#showMenu').show('slow');
-            // Model editor module
-            if(bbmap.views.modelEditor)bbmap.views.modelEditor.close();
-            bbmap.views.modelEditor = new modelEditor.Views.Main({
-                user    : this.user,
-                mode    : this.mode,
-                model   : model
-            });
             // Templates list
             if(bbmap.views.templatesList) bbmap.views.templatesList.close();
             bbmap.views.templatesList = new templatesList.Views.Main({
@@ -554,6 +545,18 @@ bbmap.Views.Main = Backbone.View.extend({
                     mode: this.mode,
                     model : model,
                     presentation : "bulle"
+                }); 
+            }
+            // Editor module
+            if(modelEditor.views.main != undefined){
+                modelEditor.views.main.bbmapMode = this.mode;
+                modelEditor.views.main.model = model;
+                modelEditor.views.main.render();
+            }else{
+                modelEditor.init({
+                    el:"#editModel",
+                    mode: this.mode,
+                    model : model,
                 }); 
             }
             // Activities module
@@ -607,8 +610,8 @@ bbmap.Views.Main = Backbone.View.extend({
                 width      : "",
             });
             // Render & Append
-            this.editModel_el.html(bbmap.views.modelEditor.render().el);
-            this.editModel_el.append(bbmap.views.templatesList.render().el);
+            // this.editModel_el.html(bbmap.views.modelEditor.render().el);
+            $('#editModel').append(bbmap.views.templatesList.render().el);
             this.attachementModel_el.html(bbmap.views.imagesList.render().el);
             this.attachementModel_el.append(bbmap.views.attachment.render().el);
             this.googleSearchModel_el.empty();
@@ -1365,6 +1368,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var _this = this;
         this.map_el.empty();
         this.timeline_el.empty();
+        $('#timeline_container').css({"height":"0%","padding":"0px"})
         $('#timeline_container').removeClass("large-6 small-6 medium-6 columns");
         if((this.presentation == "graph")||(this.presentation == "split")){
             ///////////////////////
@@ -1497,11 +1501,11 @@ bbmap.Views.Main = Backbone.View.extend({
         }
         if((this.presentation == "timeline")||(this.presentation == "split")){
             timela.init({el:"#timeline_container"});
-            $('#timeline_container').css({"height":"95%","overflow":"scroll","position":"relative"})
+            $('#timeline_container').css({"height":"95%","overflow":"auto","position":"relative","padding-top":"100px","padding-bottom":"100px"})
             $('#timeline_container').removeClass("large-6 small-6 medium-6 columns");
 
             if(this.presentation == "split"){
-                $('#timeline_container').css({"position":"fixed","top":"100px","background":"#EFEFEF","z-index": "9"})
+                $('#timeline_container').css({"position":"fixed","background":"#EFEFEF","z-index": "9"})
                 $('#timeline_container').addClass("large-6 small-6 medium-6 columns");
             }
         }

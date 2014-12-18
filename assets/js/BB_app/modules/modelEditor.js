@@ -1,17 +1,23 @@
 /***************************************/
 var modelEditor = {
-  // Classes
-  Collections: {},
-  Models: {},
-  Views: {},
-  // Instances
-  collections: {},
-  models: {},
-  views: {},
-  init: function () {
-    /*Init*/
-
-  }
+    // Classes
+    Collections: {},
+    Models: {},
+    Views: {},
+    // Instances
+    collections: {},
+    models: {},
+    views: {},
+    eventAggregator : global.eventAggregator,
+    init: function (json) {
+        this.views.main = new this.Views.Main({
+          el : json.el,
+          user : global.models.current_user,
+          model : json.model,
+          mode    : json.mode,
+        });
+        this.views.main.render();
+    }
 };
 /***************************************/
 modelEditor.Views.Main = Backbone.View.extend({
@@ -20,8 +26,8 @@ modelEditor.Views.Main = Backbone.View.extend({
         // Variables
         this.user = json.user;
         this.bbmapMode = json.mode;
-        this.model = json.model;
         this.mode = "normal";
+        this.model = json.model;
         this.template_model_normal = _.template($('#modelEditor-normal-template').html());
         this.template_model_edition = _.template($('#modelEditor-edition-template').html());
         // Events
@@ -31,8 +37,6 @@ modelEditor.Views.Main = Backbone.View.extend({
         "click .edit"  : "editMode",
         "click .updateModel"  : "updateModel",
         "click .cancelEdition"  : "cancelEdition",
-        "click .updateLabel" : "updateLabel",
-        "click .remove" : "removeKnowledge"
     },
     cancelEdition : function(e){
         e.preventDefault();
@@ -41,55 +45,16 @@ modelEditor.Views.Main = Backbone.View.extend({
     },
     updateModel : function(e){
         e.preventDefault();
-        _this = this;
-        //////////////////////////////////////
-        // Si cest une category et que le titre change on doit updater tous tags qui référence les K
-        if(this.model.get('type') === "category"){
-            if(this.model.get('title') != $(this.el).find(".title").val()){
-                if (confirm("The title of the category has changed, would you want to change all references in the relevant knowledge?")) {
-                    // change knowledge reference
-                    global.collections.Knowledges.each(function(knowledge){
-                        new_tags_array = []
-                        knowledge.get('tags').forEach(function(tag){
-                            if(_this.model.get('title') == tag){
-                                new_tags_array.unshift($(_this.el).find(".title").val());
-                            }else{
-                                new_tags_array.unshift(tag);
-                            }
-                        });
-                        knowledge.set({
-                            tags : new_tags_array,
-                            date : getDate(),
-                            user : _this.user
-                        }).save();
-                    });
-                    // Set the category title
-                    this.model.set({
-                        title : $(this.el).find(".title").val(),
-                        date: getDate()
-                    });
-                    global.eventAggregator.trigger('updateCategory',this.model.get('id'),this.model.get('title'))
-                }
-            }
-            this.model.set({
-                user : this.user,
-                description:CKEDITOR.instances.editor.getData(),
-                content:CKEDITOR.instances.editor.getData(),
-                date: getDate(),
-                date2:new Date().getTime()
-            }).save(); 
-        //////////////////////////////////////
-        }else{
-            this.model.save({
-                user : this.user,
-                title:$(this.el).find(".title").val(),
-                content:CKEDITOR.instances.editor.getData(),
-                date: getDate(),
-                date2:new Date().getTime()
-            });       
-        }
+        console.log(this.model)
+        this.model.save({
+            user : this.user,
+            title:$(this.el).find(".title").val(),
+            content:CKEDITOR.instances.editor.getData(),
+            date: getDate(),
+            date2:new Date().getTime()
+        });       
         this.mode = "normal";
-        global.eventAggregator.trigger("updateMap")
+        //global.eventAggregator.trigger("updateMap")
         this.render();
     },
     editMode : function(e){

@@ -2,40 +2,7 @@
 
 <script type="text/template" id="timela-element-template">
 	<div class="row panel">
-		<div class="large-2 columns small-3">
-			<img width="50" src="{{-model.user.img}}">
-		</div>
-		<div class="large-10 columns">
-			<p><strong>{{-model.user.name}} post:</strong> <span style="{{-model.css}}">{{-model.title}}</span>{{=model.content}}</p>
-			<span id="{{-model.id}}_comments"></span>
-		</div>
+		<div id="{{-model.id}}_editor" class="large-12 medium-12 small-12 columns"></div>
+		<div id="{{-model.id}}_comments" class="large-12 medium-12 small-12 columns"></div>
 	</div>
 </script>
-
-<!-- <h6>{{- model.comments.length }} Comments</h6>
-		{{ _.each(model.comments,function(comment){ }}
-			<div class="row">
-				<div class="large-1 columns small-1">
-					<img width="20" src="{{- comment.user.img }}">
-				</div>
-				<div class="large-11 columns">
-					<b>{{- comment.user.name }}</b><small>{{- comment.date }}</small>
-					<p>{{- comment.content }}</p>
-				</div>
-			</div>	
-		{{ }); }}
-		<div class="row">
-			<div class="large-12 columns">
-				<div class="row collapse">
-					<div class="large-1 columns small-1">
-						<img width="20" src="{{- user.img }}">
-					</div>
-					<div class="small-9 columns">
-						<input type="text" placeholder="Hex Value">
-					</div>
-					<div class="small-2 columns">
-						<a href="#" class="button postfix">Go</a>
-					</div>
-				</div>
-			</div>
-		</div> -->

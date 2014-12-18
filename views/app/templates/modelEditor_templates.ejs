@@ -1,25 +1,33 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Timeline template parts -->
 <script type="text/template" id="modelEditor-normal-template">
-    <center>
-	    <div class="panel">
-	    	<a href="#" class="button" style="{{-model.css}}">{{= model.title }}</a>
-	    	<br>
-	    	{{= model.content }}
-	   	</div>
-	</center>
-	{{ if(mode == "edit"){ }}
-		<a href="#" class="button tiny radius secondary edit">Edit</a>
-		<a href="#" id="{{-model.id}}_action" class="button tiny radius secondary structureSubTree">Structure subtree</a>
-	{{ } }}
+	<div class="large-1 medium-1 small-1 columns">
+		<img width="50" src="{{-model.user.img}}">
+	</div>
+	<div class="large-11 medium-11 small-11 columns">
+		<b>{{-model.user.name}}</b> post a new <label class="label tiny secondary"><b>{{-model.type}}</b></label> : 
+		{{ if(mode == "edit"){ }}
+		<a href="#" class="button tiny radius alert edit">Edit</a>
+		{{ } }}
+		<h4 style="{{-model.css}};padding:0px;border:0px;">{{-model.title}}</h4>
+		<small>{{-model.date}}</small>
+	</div>
+	<div class="large-12 medium-12 small-12 columns">
+		{{=model.content}}
+	</div>
 </script>
 
 <script type="text/template" id="modelEditor-edition-template">
-    <div class="panel">
-	    <input type="text" class="title" value="{{- model.title}}"/>
-	    <textarea  class="ckeditor"  name="editor" rows="10" cols="80">{{= model.content }}</textarea>
-	    <br>
-	    <a href="#" class="button tiny radius success updateModel">Update!</a>
+    <div class="large-1 medium-1 small-1 columns">
+		<img width="50" src="{{-model.user.img}}">
+	</div>
+	<div class="large-11 medium-11 small-11 columns">
+		<b>{{-model.user.name}}</b> post a new <label class="label tiny secondary"><b>{{-model.type}}</b></label> : 
+		<a href="#" class="button tiny radius success updateModel">Update!</a>
 	    <a href="#" class="button tiny radius secondary cancelEdition">Cancel</a>
+		<input type="text" class="title" value="{{- model.title}}"/>
+	</div>
+	<div class="large-12 medium-12 small-12 columns">
+		<textarea  class="ckeditor"  name="editor" rows="10" cols="80">{{= model.content }}</textarea>
 	</div>
 </script>

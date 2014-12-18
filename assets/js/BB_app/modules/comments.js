@@ -50,7 +50,7 @@ comments.Views.Comment = Backbone.View.extend({
 comments.Views.Main = Backbone.View.extend({
     initialize : function(json) { 
         //console.log("comments view constructor!");
-        _.bindAll(this, 'render');
+        _.bindAll(this, 'render',"newComment");
         // Variables
         this.model = json.model;
         this.user = json.user;
@@ -66,11 +66,11 @@ comments.Views.Main = Backbone.View.extend({
         
     },
     events : {
-        "click .addComment" : "newComment"
+        "click .newComment" : "newComment"
     },
     newComment : function(e){
         e.preventDefault();
-        var content = $('#input_comment').val()
+        var content = $(this.el).find('#input_comment').val()
         var new_comment = new global.Models.Comment({
             id:guid(),
             project : this.project.get('id'),

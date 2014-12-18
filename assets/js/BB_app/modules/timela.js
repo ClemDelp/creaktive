@@ -95,15 +95,23 @@ timela.Views.Main = Backbone.View.extend({
                 user : _this.user
             }).render().el);
         });
-        
         // Comments module
         this.elements.each(function(k){
+          // Editor
+          modelEditor.init({
+              el:"#"+k.get('id')+"_editor",
+              mode: "edit",
+              model : k,
+          })
+          // Comment
           comments.init({
               el:"#"+k.get('id')+"_comments",
               mode: "edit",
               model : k,
               presentation : "classic"
           });
+
+
         });
         return this;
     }
