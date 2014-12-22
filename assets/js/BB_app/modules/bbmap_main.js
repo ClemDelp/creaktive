@@ -48,8 +48,9 @@ bbmap.Views.Main = Backbone.View.extend({
         this.knowledges         = json.knowledges;
         this.concepts           = json.concepts;
         this.user               = json.user;
+        this.users              = json.users;
         this.project            = json.project;
-        this.poches             = json.poches;
+        //this.poches             = json.poches;
         this.links              = json.links;
         this.eventAggregator    = json.eventAggregator;
         this.lastModel          = new Backbone.Model();
@@ -147,7 +148,7 @@ bbmap.Views.Main = Backbone.View.extend({
         "change #filterSelection" : "setFilter",
         "mouseup .dropC" : "newConceptUnlinked",
         "mouseup .dropK" : "newKnowledgeUnlinked",
-        "mouseup .dropP" : "newElementUnlinked",
+        "mouseup .dropP" : "newPocheUnlinked",
         "click .ckOperator" : "setCKOperator",
         "click .zoomin" : "zoomin",
         "click .zoomout" : "zoomout",
@@ -373,18 +374,18 @@ bbmap.Views.Main = Backbone.View.extend({
         if((action == "update")&&(sens == "go")){
             if(type == "concept"){model = new global.Models.ConceptModel(historic.get('to'));}
             else if(type == "knowledge") model = new global.Models.Knowledge(historic.get('to'));
-            else if(type == "poche") model = new global.Models.Poche(historic.get('to'));
+            else if(type == "poche") model = new global.Models.Element(historic.get('to'));
             else if(type == "link") model = new global.Models.CKLink(historic.get('to'));
             // console.log("sens : go - get next model - model id: ",model.get('id'),model.get('title'));
         }else if((action == "update")&&(sens == "back")){
             if(type == "concept") model = new global.Models.ConceptModel(historic.get('old'));
             else if(type == "knowledge") model = new global.Models.Knowledge(historic.get('old'));
-            else if(type == "poche") model = new global.Models.Poche(historic.get('old'));
+            else if(type == "poche") model = new global.Models.Element(historic.get('old'));
             //else if(type == "link") model = new global.Models.CKLink(historic.get('old'));
         }else{
             if(type == "concept") model = new global.Models.ConceptModel(historic.get('to'));
             else if(type == "knowledge") model = new global.Models.Knowledge(historic.get('to'));
-            else if(type == "poche") model = new global.Models.Poche(historic.get('to'));
+            else if(type == "poche") model = new global.Models.Element(historic.get('to'));
             else if(type == "link") model = new global.Models.CKLink(historic.get('to'));
         }
         return model;
@@ -447,11 +448,11 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Drop new data on map
     /////////////////////////////////////////
-    newElementUnlinked : function(e){
+    newPocheUnlinked : function(e){
         var pos = $('#dropP').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        this.createUnlinkedElement(left,top);
+        this.createUnlinkedPoche(left,top);
         this.renderActionBar();
     },
     newConceptUnlinked : function(e){
@@ -466,13 +467,6 @@ bbmap.Views.Main = Backbone.View.extend({
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
         this.createUnlinkedKnowledge(left,top);
-        this.renderActionBar();
-    },
-    newPocheUnlinked : function(e){
-        var pos = $('#dropP').offset();
-        var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
-        var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        this.createUnlinkedPoche(left,top);
         this.renderActionBar();
     },
     startJoyride : function(){
@@ -788,41 +782,32 @@ bbmap.Views.Main = Backbone.View.extend({
         //if(description > 0) $('#notifDesc').html('<span class="top-bar-unread">'+description+'</span>')
     },
     showIcon : function(e){
-        var el = e.currentTarget;
-        var id = e.target.id;
+        var element = this.elements.get(e.target.id)
         // close all icones
         this.$(".icon").hide();
         // Show the sup menu anyway
         if(e.target.getAttribute("data-type") != "action"){
             // set last model
-            if($(el).hasClass('concept') == true){
-                this.setNotificationDisplayOnModel(this.concepts.get(id))
-                this.updateEditor(this.concepts.get(id));
-                this.setLastModel(this.concepts.get(id));
-                if(this.mode == "edit") $("#"+id+" .icon").show();
-            } 
-            else if($(el).hasClass('knowledge') == true){
-                this.setNotificationDisplayOnModel(this.knowledges.get(id))
-                this.updateEditor(this.knowledges.get(id));
-                this.setLastModel(this.knowledges.get(id));
-                if(this.mode == "edit") {
-                    $("#"+id+" .sup").show();  
-                    $("#"+id+" .ep3").show();  
-                    $("#"+id+" .ep").show();
-                }
-            } 
-            else if($(el).hasClass('poche') == true){
-                this.setNotificationDisplayOnModel(this.poches.get(id))
-                this.updateEditor(this.poches.get(id));
-                this.setLastModel(this.poches.get(id));
-                if(this.mode == "edit"){ 
-                    $("#"+id+" .sup").show();  
-                    $("#"+id+" .ep3").show();
-                    $("#"+id+" .ep2").show();
-                }
+            this.setNotificationDisplayOnModel(element);
+            this.updateEditor(element);
+            this.setLastModel(element);
+
+            if(this.mode == "edit"){
+                if(element.get('type') == 'concept'){
+                    $("#"+element.get('id')+" .icon").show();
+                } 
+                else if(element.get('type') == 'knowledge'){
+                    $("#"+element.get('id')+" .sup").show();  
+                    $("#"+element.get('id')+" .ep3").show();  
+                    $("#"+element.get('id')+" .ep").show();
+                } 
+                else if(element.get('type') == 'poche'){
+                    $("#"+element.get('id')+" .sup").show();  
+                    $("#"+element.get('id')+" .ep3").show();
+                    $("#"+element.get('id')+" .ep2").show();
+                }    
             }
         }
-
     },
     hideDependances : function(e){
         e.preventDefault();
@@ -834,14 +819,14 @@ bbmap.Views.Main = Backbone.View.extend({
         this.selectBulle(id); 
     },
     selectBulle : function(id){
-        var conceptHovered = bbmap.views.main.concepts.get(id);
+        var conceptHovered = bbmap.views.main.elements.get(id);
         var knowledgesToSelect = [];
         var nodesToSelect = [];
         var ckLinks = [];
         // add concepts nodes
         var conceptsToSelect = [conceptHovered];
-        if(this.visualMode == "children") conceptsToSelect = _.union(conceptsToSelect,api.getTreeChildrenNodes(conceptHovered,bbmap.views.main.concepts));
-        else if(this.visualMode == "parent") conceptsToSelect = _.union(conceptsToSelect,api.getTreeParentNodes(conceptHovered,bbmap.views.main.concepts));
+        if(this.visualMode == "children") conceptsToSelect = _.union(conceptsToSelect,api.getTreeChildrenNodes(conceptHovered,bbmap.views.main.elements));
+        else if(this.visualMode == "parent") conceptsToSelect = _.union(conceptsToSelect,api.getTreeParentNodes(conceptHovered,bbmap.views.main.elements));
         // add knowledges linked
         var knowledgesLinkedToConcept = api.getModelsLinkedToModel(bbmap.views.main.links,bbmap.views.main.knowledges,conceptHovered);
         conceptsToSelect.forEach(function(concept){
@@ -988,35 +973,22 @@ bbmap.Views.Main = Backbone.View.extend({
     // Create unlinked model
     /////////////////////////////////////////
     createUnlinkedKnowledge : function(left,top){
-        new_knowledge = new global.Models.Knowledge({
+        var new_element = new global.Models.Element({
             id : guid(),
             type : "knowledge",
             top : top,
             left: left,
             project: this.project.get('id'),
             title: "new knowledge",
-            user: this.user
+            user: this.user,
+            css : bbmap.css_knowledge_default
         });
-        new_knowledge.save();
-        this.knowledges.add(new_knowledge);
-        this.addModelToView(new_knowledge);
-    },
-    createUnlinkedPoche : function(left,top){
-        var model = new global.Models.Poche({
-            id : guid(),
-            type : "poche",
-            top : top,
-            left: left,
-            project: this.project.get('id'),
-            title: "new category",
-            user: this.user
-        });
-        model.save();
-        
-        this.addModelToView(model);
+        new_element.save();
+        this.elements.add(new_element);
+        this.addModelToView(new_element);
     },
     createUnlinkedConcept : function(left,top){
-        new_concept = new global.Models.ConceptModel({
+        var new_element = new global.Models.Element({
             id : guid(),
             type : "concept",
             id_father: "none",
@@ -1024,13 +996,14 @@ bbmap.Views.Main = Backbone.View.extend({
             left: left,
             project: this.project.get('id'),
             title: "new concept",
-            user: this.user
+            user: this.user,
+            css : bbmap.css_concept_default
         });
-        new_concept.save();
+        new_element.save();
         
-        this.addModelToView(new_concept);
+        this.addModelToView(new_element);
     },
-    createUnlinkedElement : function(left,top){
+    createUnlinkedPoche : function(left,top){
         var new_element = new global.Models.Element({
             id : guid(),
             type : "poche",
@@ -1039,7 +1012,8 @@ bbmap.Views.Main = Backbone.View.extend({
             left: left,
             project: this.project.get('id'),
             title: "new poche",
-            user: this.user
+            user: this.user,
+            css : bbmap.css_poche_default
         });
         new_element.save();
         
@@ -1048,11 +1022,6 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Add remove model/link to view
     /////////////////////////////////////////
-    addModelToItsCollection : function(model){
-        if(model.get('type') == "concept") this.concepts.add(model);
-        else if(model.get('type') == "knowledge") this.knowledges.add(model);
-        else if(model.get('type') == "poche") this.poches.add(model);
-    },
     addModelToView : function(model,from){
         var origin = "client";
         if(from) origin = from;
@@ -1063,7 +1032,7 @@ bbmap.Views.Main = Backbone.View.extend({
             id : model.get('id'),
             model : model,
         });
-        this.addModelToItsCollection(model);
+        this.elements.add(model);
 
         this.map_el.append(new_view.render().el);
         new_view.addEndpoint();
@@ -1271,18 +1240,18 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     renderElementsBulle : function(){
         // Views
-        alert(this.elements.length)
         this.elements.each(function(model){ 
             if(!model.get('visibility')) model.save({visibility : "show"}); // par default mettre la valeur à show
             bbmap.views.main.nodes_views[model.get('id')] = new bbmap.Views.Node({
-                className : "window concept bulle",
+                className : "window "+model.get('type')+" bulle",
                 id : model.get('id'),
                 model : model,
+                users : bbmap.views.main.users
             });
         });
         // Render
         this.elements.forEach(function(model){
-            _this.map_el.append(bbmap.views.main.nodes_views[model.get('id')].render().el); 
+            bbmap.views.main.map_el.append(bbmap.views.main.nodes_views[model.get('id')].render().el); 
         });
         // EndPoint
         this.elements.forEach(function(model){
@@ -1299,73 +1268,6 @@ bbmap.Views.Main = Backbone.View.extend({
             });
             // Draggable
             this.elements.forEach(function(model){
-                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el),{ containment: "#map", scroll: false });
-            });
-        }
-    },
-    renderConceptsBulle : function(){
-        var _this = this;
-        // Views
-        this.concepts.each(function(concept){ 
-            if(!concept.get('visibility')) concept.save({visibility : "show"}); // par default mettre la valeur à show
-            bbmap.views.main.nodes_views[concept.get('id')] = new bbmap.Views.Node({
-                className : "window concept bulle",
-                id : concept.get('id'),
-                model : concept,
-            });
-        });
-        // Render
-        this.concepts.forEach(function(model){
-            _this.map_el.append(bbmap.views.main.nodes_views[model.get('id')].render().el); 
-        });
-        // EndPoint
-        this.concepts.forEach(function(model){
-            bbmap.views.main.nodes_views[model.get('id')].addEndpoint();    
-        });
-        // Add links
-        this.concepts.forEach(function(model){
-            bbmap.views.main.nodes_views[model.get('id')].addLink();    
-        });
-        if(this.mode == "edit"){
-            // Make its target
-            this.concepts.forEach(function(model){
-                bbmap.views.main.nodes_views[model.get('id')].makeTarget();    
-            });
-            // Set concept following his father
-            // this.concepts.forEach(function(model){
-            //     bbmap.views.main.nodes_views[model.get('id')].addFollowFather();
-            // });
-            // Draggable
-            this.concepts.forEach(function(model){
-                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el),{ containment: "#map", scroll: false });
-            });
-        }
-    },
-    renderKnowledgesBulle : function(){
-        var _this = this;
-        // Views
-        this.knowledges.each(function(knowledge){
-            bbmap.views.main.nodes_views[knowledge.get('id')] = new bbmap.Views.Node({
-                className : "window knowledge bulle",
-                id : knowledge.get('id'),
-                model : knowledge,
-            });
-        });
-        // Render
-        this.knowledges.forEach(function(model){
-            _this.map_el.append(bbmap.views.main.nodes_views[model.get('id')].render().el);    
-        });
-        // EndPoint
-        this.knowledges.forEach(function(model){
-            bbmap.views.main.nodes_views[model.get('id')].addEndpoint();    
-        });
-        if(this.mode == "edit"){
-            // Make its target
-            this.knowledges.forEach(function(model){
-                bbmap.views.main.nodes_views[model.get('id')].makeTarget();    
-            });
-            // Draggable
-            this.knowledges.forEach(function(model){
                 bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el),{ 
                     containment: "#map", 
                     scroll: false,
@@ -1373,35 +1275,6 @@ bbmap.Views.Main = Backbone.View.extend({
                         if(global.drawingAid == true) bbmap.views.main.drawingAid(model);
                     }
                 });
-            });
-        }
-    },
-    renderPochesBulle : function(){
-        var _this = this;
-        // Views
-        this.poches.each(function(poche){
-            bbmap.views.main.nodes_views[poche.get('id')] = new bbmap.Views.Node({
-                className : "window poche bulle",
-                id : poche.get('id'),
-                model : poche,
-            });
-        });
-        // Render
-        this.poches.forEach(function(model){
-            _this.map_el.append(bbmap.views.main.nodes_views[model.get('id')].render().el);    
-        });
-        // EndPoint
-        this.poches.forEach(function(model){
-            bbmap.views.main.nodes_views[model.get('id')].addEndpoint();    
-        });
-        if(this.mode == "edit"){
-            // Make its target
-            this.poches.forEach(function(model){
-                bbmap.views.main.nodes_views[model.get('id')].makeTarget();    
-            });
-            // Draggable
-            this.poches.forEach(function(model){
-                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el),{ containment: "#map", scroll: false });
             });
         }
     },
@@ -1433,39 +1306,12 @@ bbmap.Views.Main = Backbone.View.extend({
             if((this.init == false)&&(this.sens != "init")){ // Si on change de mode et on a utiliser le prev/next de la timeline ou de l'historic
                 // console.log("--Mode ",this.mode," activated")
                 // console.log("----start global fetching process...")
-                bbmap.views.main.concepts.fetch({
+                bbmap.views.main.elements.fetch({
                     error: function () {},
-                    success: function () {
-                        // console.log("------concept fetched...");
-                    },
+                    success: function () {},
                     complete: function () {
-                        bbmap.views.main.knowledges.fetch({
-                            error: function () {},
-                            success: function () {
-                                // console.log("------knowledges fetched...");
-                            },
-                            complete: function () {
-                                bbmap.views.main.poches.fetch({
-                                    error: function () {},
-                                    success: function () {
-                                        // console.log("------poches fetched...");
-                                    },
-                                    complete: function () {
-                                        bbmap.views.main.links.fetch({
-                                            error: function () {},
-                                            success: function () {
-                                                // console.log("------links fetched...");
-                                            },
-                                            complete: function () {
-                                                // console.log('----global fetching process done')
-                                                bbmap.views.main.init = true;
-                                                bbmap.views.main.render();
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
+                        bbmap.views.main.init = true;
+                        bbmap.views.main.render(); 
                     }
                 });
             }else{
@@ -1487,20 +1333,20 @@ bbmap.Views.Main = Backbone.View.extend({
                 ///////////////////////
                 // Modes
                 this.renderElementsBulle();
-                if(this.filter == "c"){
-                    this.renderConceptsBulle();
-                }
-                else if(this.filter == "kp"){
-                    this.renderKnowledgesBulle();
-                    this.renderPochesBulle();   
-                    this.renderCKLinks();
-                }
-                else if(this.filter == "ckp"){
-                    this.renderConceptsBulle();
-                    this.renderKnowledgesBulle();
-                    this.renderPochesBulle();
-                    this.renderCKLinks();
-                }
+                // if(this.filter == "c"){
+                //     this.renderConceptsBulle();
+                // }
+                // else if(this.filter == "kp"){
+                //     this.renderKnowledgesBulle();
+                //     //this.renderPochesBulle();   
+                //     this.renderCKLinks();
+                // }
+                // else if(this.filter == "ckp"){
+                //     this.renderConceptsBulle();
+                //     this.renderKnowledgesBulle();
+                //     //this.renderPochesBulle();
+                //     this.renderCKLinks();
+                // }
                 ///////////////////////
                 if(this.mode == "edit") this.showOverLays();
                 else this.hideOverLays();

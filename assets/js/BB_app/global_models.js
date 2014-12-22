@@ -46,18 +46,15 @@ global.Models.Filter = Backbone.Model.extend({
 global.Models.Element = Backbone.Model.extend({
     defaults : {
         id:"",
-        author : "",
         user: "",
         type : "",
         title : "",
         content : "",
-        tags : [],
         comments: [],
         date : "",
         date2: "",
         attachment: "",
         color: "#C0392B",
-        members:[],
         attachment:[],
         id_father: "",
         top : "",
@@ -68,11 +65,13 @@ global.Models.Element = Backbone.Model.extend({
         displayChildrens : true,
         visibility : "show"
     },
-    parse : function(serverObj){
-        serverObj.comments = new global.Collections.Comments(serverObj.comments);
-        serverObj.members = new global.Collections.UsersCollection(serverObj.members);
-        return serverObj;
-    },
+    initialize : function Element() {
+        this.urlRoot = "element";
+        //this.set({type : "knowledge"});
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
 });
 /***************************************/
 global.Models.CKObject = Backbone.Model.extend({

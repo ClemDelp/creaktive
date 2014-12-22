@@ -58,11 +58,12 @@ autoPK : false,
       })
     });
 
-    Concept.find({
-      project : project_id
-    }).done(function(err, concepts){
-      _.each(concepts, function(concept){
-        Link.find({concept : concept.id}).done(function(err,links){
+    Element.find({
+      project : project_id,
+      type : "concept"
+    }).done(function(err, elements){
+      _.each(elements, function(element){
+        Link.find({element : element.id}).done(function(err,links){
           if(err) console.log(err)
             _.each(links, function(l){
               l.destroy(function(err){
@@ -70,7 +71,7 @@ autoPK : false,
               })
             })
         })
-        concept.destroy(function(err){
+        element.destroy(function(err){
           if(err) console.log(err)
         })
       })

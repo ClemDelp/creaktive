@@ -78,6 +78,7 @@ var bbmap = {
       concepts        : global.collections.Concepts,
       project         : global.models.currentProject,
       user            : global.models.current_user,
+      users           : global.collections.Users,
       knowledges      : global.collections.Knowledges,
       poches          : global.collections.Poches,
       links           : global.collections.Links,

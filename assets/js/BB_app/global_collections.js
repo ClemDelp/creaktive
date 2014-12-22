@@ -2,29 +2,29 @@
 /////////////////////////////////////////////////////////////////////
 /*Explorer Collections*/
 /////////////////////////////////////////////////////////////////////
-global.Collections.Poches = Backbone.Collection.extend({
-    model : global.Models.Poche,
-    initialize : function() {
-        this.url = "poche";
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-        _.bindAll(this, 'serverCreate','serverUpdate','serverRemove');
-        this.ioBind('create', this.serverCreate, this);
-        this.ioBind('update', this.serverUpdate, this);
-        this.ioBind('remove2', this.serverRemove, this);
-    },
-    serverCreate : function(model){
-        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:create",new global.Models.Poche(model),"server");
-    },
-    serverUpdate : function(model){
-        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger(model.id+"_server",model);
-    },
-    serverRemove : function(model){
-        //this.remove(knowledge.id);
-        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:remove",new global.Models.Poche(model),"server");
-    }
-});
+// global.Collections.Poches = Backbone.Collection.extend({
+//     model : global.Models.Poche,
+//     initialize : function() {
+//         this.url = "poche";
+//         this.bind("error", function(model, error){
+//             console.log( error );
+//         });
+//         _.bindAll(this, 'serverCreate','serverUpdate','serverRemove');
+//         this.ioBind('create', this.serverCreate, this);
+//         this.ioBind('update', this.serverUpdate, this);
+//         this.ioBind('remove2', this.serverRemove, this);
+//     },
+//     serverCreate : function(model){
+//         if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:create",new global.Models.Poche(model),"server");
+//     },
+//     serverUpdate : function(model){
+//         if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger(model.id+"_server",model);
+//     },
+//     serverRemove : function(model){
+//         //this.remove(knowledge.id);
+//         if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:remove",new global.Models.Poche(model),"server");
+//     }
+// });
 /***************************************/
 global.Collections.CKLinks = Backbone.Collection.extend({
     model : global.Models.CKLink,

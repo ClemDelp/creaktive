@@ -52,7 +52,7 @@ global.Functions.getProjectsUsersDictionary = function(projects,permissions){
 	return dictionary;
 }
 
-global.Functions.getNotificationsDictionary = function(user_model,notifications,projects,knowledges,concepts,categories,activityLog){
+global.Functions.getNotificationsDictionary = function(user_model,notifications,projects,knowledges,concepts,elements,activityLog){
 	var dictionary = {"projects":{},"models":{},"allNews":{},"allRead":{}};
 	/////////////////////////////
 	// CREATION DES KEYS
@@ -65,7 +65,7 @@ global.Functions.getNotificationsDictionary = function(user_model,notifications,
 		dictionary.models[concept.get('id')] = {"news" : new Backbone.Collection(),"read" : new Backbone.Collection()};
 	});
 	// 
-	categories.each(function(category){
+	elements.each(function(category){
 		dictionary.models[category.get('id')] = {"news" : new Backbone.Collection(),"read" : new Backbone.Collection()};
 	});
 	// 

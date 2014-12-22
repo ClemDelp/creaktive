@@ -6,6 +6,7 @@ bbmap.Views.Node = Backbone.View.extend({
         _.bindAll(this, 'render','savePosition','addEndpoint','addLink','makeTarget');
         // Variables
         this.model = json.model;
+        this.users = json.users;
         // Events
         $(this.el).click(this.savePosition);
         this.listenTo(this.model,"change:title", this.render); 
@@ -66,44 +67,12 @@ bbmap.Views.Node = Backbone.View.extend({
     //////////////////////////////////////////
     // Follow father system
     //////////////////////////////////////////
-    // unbindFollowFather : function(){
-    //     console.log("unbindFollowFather")
-    //     var ev = this.father.get('id')+"_followme";
-    //     console.log(ev)
-    //     this.stopListening(global.eventAggregator,ev);
-    // },
-    // bindFollowFather : function(){
-    //     console.log("bindFollowFather")
-    //     this.father = bbmap.views.main.concepts.get(this.model.get('id_father'));
-    //     // On se met en ecoute sur le pere
-    //     this.listenTo(global.eventAggregator,this.father.get('id')+"_followme",this.followFather,this);
-    // },
-    // followFather : function(oldFather,father){
-    //     // if(this.model.get('id_father') != "none"){
-    //         //console.log(this.model.get('title'),' - follow its father');
-    //         var hf_left = oldFather.get('left');
-    //         var hf_top = oldFather.get('top');
-    //         var f_left = father.get('left');
-    //         var f_top = father.get('top');
-    //         var n_left = this.model.get('left');
-    //         var n_top = this.model.get('top');
-    //         var delta_top = hf_top - f_top;
-    //         var delta_left = hf_left - f_left;
-    //         var x = n_left - delta_left;
-    //         var y = n_top - delta_top;
-    //         this.setPosition(x,y,0,0,false,'followfather',true);
-    //         this.oldFather = this.father.clone();
-    //         bbmap.views.main.instance.repaint(this.model.get('id'));
-    //     // }
-        
-    // },
-    //////////////////////////////////////////
     applyStyle : function(){
-        if(!this.model.get('css')){
-            if(this.model.get('type') == "concept")this.model.set({css : bbmap.css_concept_default},{silent:true});
-            else if(this.model.get('type') == "knowledge") this.model.set({css : bbmap.css_knowledge_default},{silent:true});
-            else if(this.model.get('type') == "poche") this.model.set({css : bbmap.css_poche_default},{silent:true});
-        }
+        // if((!this.model.get('css'))||(this.model.get('css') == "")){
+        //     if(this.model.get('type') == "concept")this.model.set({css : bbmap.css_concept_default},{silent:true});
+        //     else if(this.model.get('type') == "knowledge") this.model.set({css : bbmap.css_knowledge_default},{silent:true});
+        //     else if(this.model.get('type') == "poche") this.model.set({css : bbmap.css_poche_default},{silent:true});
+        // }
         var left = this.model.get('left');
         var top = this.model.get('top');
         var style = 'top:' + top + 'px; left : ' + left + 'px;' + this.model.get('css');
@@ -441,6 +410,7 @@ bbmap.Views.Node = Backbone.View.extend({
         //style
         //$(this.el).attr( "style","top: "+this.model.get('top')+"px;left:"+this.model.get('left')+"px");
         // Init
+        var user = this.users.get(this.model.get('user'));
         $(this.el).empty();
         $(this.el).append(this.template_bulle({
             model:this.model.toJSON(),

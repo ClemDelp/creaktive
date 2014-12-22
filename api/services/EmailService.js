@@ -42,7 +42,7 @@ module.exports = {
 		    html: html, // plaintext body
 		};
 
-		var transport = this.smptMailgun;
+		var transport = this.smtpMailgun;
 		if(process.env.MAILGUN_SMTP_SERVER) transport = this.smtpTransport
 
 		transport.sendMail(mailOptions, function(error, response){
@@ -68,7 +68,7 @@ module.exports = {
 		    html: html, // plaintext body
 		};
 
-		var transport = this.smptMailgun;
+		var transport = this.smtpMailgun;
 		if(process.env.MAILGUN_SMTP_SERVER) transport = this.smtpTransport
 
 		transport.sendMail(mailOptions, function(error, response){
@@ -94,7 +94,7 @@ module.exports = {
 		    html: html, // plaintext body
 		};
 
-		var transport = this.smptMailgun;
+		var transport = this.smtpMailgun;
 		if(process.env.MAILGUN_SMTP_SERVER) transport = this.smtpTransport
 
 		transport.sendMail(mailOptions, function(error, response){

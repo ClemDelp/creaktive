@@ -74,7 +74,8 @@
   },
 
   "ElementController" : {
-    "*" : "authenticated"
+    "find" : ["authenticated", "canRead"],
+    "*" : ["authenticated", "canWrite"]
   },
 
   /************************************/

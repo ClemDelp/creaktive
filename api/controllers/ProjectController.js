@@ -51,54 +51,6 @@ module.exports = {
 
   },
 
-  create : function (req,res){
-    console.log("creating project")
-    Project.create(req.body.params).done(function(err, project){
-      if(err) return res.send({err:err});
-      res.send(project)
-
-        Concept.create({
-      id : IdService.guid(),
-      title : "c0 : "+values.title,
-
-      content :"",
-      date : IdService.getDate(),
-      position : 0,
-      project : values.id,
-      comments : [],
-      members:[],
-      attachment:[],
-      type : "concept",
-      id_father: "none",
-      top : 750,
-      left: 750
-
-
-    }).done(function(err, c0){
-      if(err) return res.send({err:err});
-      Presentation.create({
-        id : IdService.guid(),
-        title : values.title,
-        data : "",
-        project_id : values.id,
-      }).done(function(err){
-        if(err) return res.send({err:err});
-        cb();
-      });
-    });
-      Permission.create({
-        id: IdService.guid(),
-        user_id : req.session.user.id,
-        project_id : project.id,
-        right : "admin"
-      }).done(function(err, perm){
-        if(err) return res.send({err:err});
-        res.send(project)
-      })
-    })
-
-  },
-
   update : function(req,res){
     console.log("updating project")
   	Project.findOne(req.body.params.id).done(function(err, project){
@@ -112,18 +64,18 @@ module.exports = {
   			Project.create(req.body.params).done(function(err,project){
   				if(err) return res.send({err:err});
 
-          Concept.create({
+          Element.create({
             id : IdService.guid(),
             title : "c0 : "+project.title,
             content :"",
             date : IdService.getDate(),
             position : 0,
             project : project.id,
-            comments : [],
-            members:[],
+            user : req.session.user.id,
             attachment:[],
             type : "concept",
             id_father: "none",
+            css: "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #27AE60;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #27AE60 2px;text-decoration: none;",
             top : 750,
             left: 750
           }).done(function(err, c0){
