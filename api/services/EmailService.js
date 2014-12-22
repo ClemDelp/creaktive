@@ -21,6 +21,14 @@ module.exports = {
 	        pass: process.env.MAILGUN_SMTP_PASSWORD
 	    }
 	}),
+	
+	smtpMailgun : nodemailer.createTransport("SMTP", {
+		service : "Mailgun",
+		auth:{
+			user : "postmaster@app21719684.mailgun.org",
+			pass: "9s1fo0ikwr10"
+		}
+	}),
 
 
 	sendRegistrationMail : function(to, url, cb){
@@ -34,7 +42,7 @@ module.exports = {
 		    html: html, // plaintext body
 		};
 
-		var transport = this.smtpGmail;
+		var transport = this.smptMailgun;
 		if(process.env.MAILGUN_SMTP_SERVER) transport = this.smtpTransport
 
 		transport.sendMail(mailOptions, function(error, response){
@@ -60,7 +68,7 @@ module.exports = {
 		    html: html, // plaintext body
 		};
 
-		var transport = this.smtpGmail;
+		var transport = this.smptMailgun;
 		if(process.env.MAILGUN_SMTP_SERVER) transport = this.smtpTransport
 
 		transport.sendMail(mailOptions, function(error, response){
@@ -86,7 +94,7 @@ module.exports = {
 		    html: html, // plaintext body
 		};
 
-		var transport = this.smtpGmail;
+		var transport = this.smptMailgun;
 		if(process.env.MAILGUN_SMTP_SERVER) transport = this.smtpTransport
 
 		transport.sendMail(mailOptions, function(error, response){

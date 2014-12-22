@@ -52,7 +52,31 @@ global.Collections.CKLinks = Backbone.Collection.extend({
     }
 });
 /////////////////////////////////////////////////////////////////////
-/*Timela Collections*/
+global.Collections.Elements = Backbone.Collection.extend({
+    model : global.Models.Element,
+    comparator: function(m){
+        return -m.get('date2');
+    },
+    initialize : function() {
+        this.url = "element";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+        _.bindAll(this, 'serverCreate','serverUpdate','serverRemove');
+        this.ioBind('create', this.serverCreate, this);
+        this.ioBind('update', this.serverUpdate, this);
+        this.ioBind('remove2', this.serverRemove, this);
+    },
+    serverCreate : function(model){
+        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:create",new global.Models.Elementrs(model),"server");
+    },
+    serverUpdate : function(model){
+        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger(model.id+"_server",model);
+    },
+    serverRemove : function(model){
+        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:remove",new global.Models.Elementrs(model),"server");
+    }
+});
 /////////////////////////////////////////////////////////////////////
 global.Collections.Knowledges = Backbone.Collection.extend({
     model : global.Models.Knowledge,

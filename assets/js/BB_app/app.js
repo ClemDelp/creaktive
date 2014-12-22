@@ -31,6 +31,7 @@ var global = {
     this.models.currentProject = new this.Models.ProjectModel(json.project);
     // Collection
     this.collections.Comments = new this.Collections.Comments(json.comments);
+    this.collections.Elements = new this.Collections.Poches(json.Elements);
     this.collections.Knowledges = new this.Collections.Knowledges(json.knowledges);
     this.collections.Poches = new this.Collections.Poches(json.poches);
     this.collections.Project_users = new this.Collections.UsersCollection(json.project_users);

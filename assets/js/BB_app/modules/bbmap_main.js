@@ -44,6 +44,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.googleSearchModel_el = $(this.el).find('#googleSearchModel');
         ////////////////////////////////
         // Objects
+        this.elements           = json.elements;
         this.knowledges         = json.knowledges;
         this.concepts           = json.concepts;
         this.user               = json.user;
@@ -146,7 +147,7 @@ bbmap.Views.Main = Backbone.View.extend({
         "change #filterSelection" : "setFilter",
         "mouseup .dropC" : "newConceptUnlinked",
         "mouseup .dropK" : "newKnowledgeUnlinked",
-        "mouseup .dropP" : "newPocheUnlinked",
+        "mouseup .dropP" : "newElementUnlinked",
         "click .ckOperator" : "setCKOperator",
         "click .zoomin" : "zoomin",
         "click .zoomout" : "zoomout",
@@ -446,6 +447,13 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Drop new data on map
     /////////////////////////////////////////
+    newElementUnlinked : function(e){
+        var pos = $('#dropP').offset();
+        var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
+        var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
+        this.createUnlinkedElement(left,top);
+        this.renderActionBar();
+    },
     newConceptUnlinked : function(e){
         var pos = $('#dropC').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
@@ -1022,6 +1030,21 @@ bbmap.Views.Main = Backbone.View.extend({
         
         this.addModelToView(new_concept);
     },
+    createUnlinkedElement : function(left,top){
+        var new_element = new global.Models.Element({
+            id : guid(),
+            type : "poche",
+            id_father: "none",
+            top : top,
+            left: left,
+            project: this.project.get('id'),
+            title: "new poche",
+            user: this.user
+        });
+        new_element.save();
+        
+        this.addModelToView(new_element);
+    },
     /////////////////////////////////////////
     // Add remove model/link to view
     /////////////////////////////////////////
@@ -1035,7 +1058,7 @@ bbmap.Views.Main = Backbone.View.extend({
         if(from) origin = from;
         var type = model.get('type');
         this.setLastModel(model,'addModelToView');
-        new_view = new bbmap.Views.Node({
+        var new_view = new bbmap.Views.Node({
             className : "window "+type,
             id : model.get('id'),
             model : model,
@@ -1246,6 +1269,40 @@ bbmap.Views.Main = Backbone.View.extend({
         $( "#dropK" ).draggable();
         $( "#dropP" ).draggable();
     },
+    renderElementsBulle : function(){
+        // Views
+        alert(this.elements.length)
+        this.elements.each(function(model){ 
+            if(!model.get('visibility')) model.save({visibility : "show"}); // par default mettre la valeur à show
+            bbmap.views.main.nodes_views[model.get('id')] = new bbmap.Views.Node({
+                className : "window concept bulle",
+                id : model.get('id'),
+                model : model,
+            });
+        });
+        // Render
+        this.elements.forEach(function(model){
+            _this.map_el.append(bbmap.views.main.nodes_views[model.get('id')].render().el); 
+        });
+        // EndPoint
+        this.elements.forEach(function(model){
+            bbmap.views.main.nodes_views[model.get('id')].addEndpoint();    
+        });
+        // Add links
+        this.elements.forEach(function(model){
+            bbmap.views.main.nodes_views[model.get('id')].addLink();    
+        });
+        if(this.mode == "edit"){
+            // Make its target
+            this.elements.forEach(function(model){
+                bbmap.views.main.nodes_views[model.get('id')].makeTarget();    
+            });
+            // Draggable
+            this.elements.forEach(function(model){
+                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el),{ containment: "#map", scroll: false });
+            });
+        }
+    },
     renderConceptsBulle : function(){
         var _this = this;
         // Views
@@ -1429,19 +1486,9 @@ bbmap.Views.Main = Backbone.View.extend({
                 $(this.el).append(this.template_joyride());
                 ///////////////////////
                 // Modes
+                this.renderElementsBulle();
                 if(this.filter == "c"){
                     this.renderConceptsBulle();
-                }
-                else if(this.filter == "k"){
-                    this.renderKnowledgesBulle();
-                }
-                else if(this.filter == "p"){
-                    this.renderPochesBulle();
-                }
-                else if(this.filter == "ck"){
-                    this.renderConceptsBulle();
-                    this.renderKnowledgesBulle();
-                    this.renderCKLinks();
                 }
                 else if(this.filter == "kp"){
                     this.renderKnowledgesBulle();

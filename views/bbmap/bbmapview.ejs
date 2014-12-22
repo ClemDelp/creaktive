@@ -110,31 +110,24 @@
       json.project_users = <%- project_users %>;
       json.users = <%- users %>;
       json.user = <%- currentUser %>;
-      json.knowledges = <%- knowledges %>;
       json.projects = <%- projects %>;
-      json.poches = <%- poches %>;
+      
+      json.elements = <%- elements %>;
       json.concepts = <%- concepts %>;
+      json.knowledges = <%- knowledges %>;
+      json.poches = <%- poches %>;
+      
       json.links = <%- links %>;
       json.notifications = <%- notifications %>;
       json.permissions = <%- permissions %>;
       json.backups = <%- backups %>;
       json.comments = <%- comments %>;
 
-      _.each(json.knowledges, function(k){
-        //k.comments = new global.Collections.Comments(k.comments);
-        k.members = new global.Collections.UsersCollection(k.members);
-      });
-
-      _.each(json.concepts, function(c){
-        //c.comments = new global.Collections.Comments(c.comments);
-        c.members = new global.Collections.UsersCollection(c.members);
-      });
-
       global.init(json, function(){
         // Modules
         topbar.init({el:"#topbar_container"});
         bbmap.init();
-        together.init();
+        //together.init();
         $("#title_page").html(json.project.title);
         /*activat of "hashchange events's monitoring"*/
         if(!Backbone.History.started) Backbone.history.start();

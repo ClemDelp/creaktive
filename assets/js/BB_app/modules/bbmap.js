@@ -74,6 +74,7 @@ var bbmap = {
     // main
     this.views.main = new this.Views.Main({
       el              : "#bbmap_container",
+      elements        : global.collections.Elements,
       concepts        : global.collections.Concepts,
       project         : global.models.currentProject,
       user            : global.models.current_user,

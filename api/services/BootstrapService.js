@@ -153,49 +153,56 @@ module.exports = {
               })
             });
           });
-///////////////////////////////////////////////////
-        Comment.find({project:project.id}).done(function(err,comments){
-          Knowledge.find({project:project.id}).done(function(err,knowledges){
+          ///////////////////////////////////////////////////
+          Comment.find({project:project.id}).done(function(err,comments){
+            
+            Element.find({project:project.id}).done(function(err,elements){
+            Concept.find({project:project.id}).done(function(err,concepts){
+            Knowledge.find({project:project.id}).done(function(err,knowledges){
             Poche.find({project:project.id}).done(function(err,poches){
+              
               Project.find({id : req.session.permissions.all, backup : false}).done(function(err,projects){
-                Concept.find({project:project.id}).done(function(err,concepts){
-                  Link.find({project:project.id}).done(function(err,links){
-                    User.find().done(function(err,users){
-                      Screenshot.find({project_id:project.id}).done(function(err, screenshots){
-                          Presentation.find({project_id:project.id}).done(function(err, presentations){
-                            res.view({
-                              comments : JSON.stringify(comments),
-                              currentUser : JSON.stringify(req.session.user),
-                              projectTitle : project.title,
-                              projectId : project.id,
-                              currentProject : JSON.stringify(project),
-                              project_users : JSON.stringify(project_users),
-                              users : JSON.stringify(users),
-                              knowledges : JSON.stringify(knowledges),
-                              poches : JSON.stringify(poches),
-                              projects : JSON.stringify(projects),
-                              concepts : JSON.stringify(concepts),
-                              links : JSON.stringify(links),
-                              notifications : JSON.stringify(all_notifications),
-                              permissions : JSON.stringify(permissions),
-                              backups : JSON.stringify(backups_truncated),
-                              screenshots : JSON.stringify(screenshots),
-                              presentations : JSON.stringify(presentations),
-                              presentationId : JSON.stringify(presentationId)
-
-
-                              });
-                            });
+                Link.find({project:project.id}).done(function(err,links){
+                  User.find().done(function(err,users){
+                    Screenshot.find({project_id:project.id}).done(function(err, screenshots){
+                      Presentation.find({project_id:project.id}).done(function(err, presentations){
+                        res.view({
+                          comments : JSON.stringify(comments),
+                          
+                          elements : JSON.stringify(elements),
+                          concepts : JSON.stringify(concepts),
+                          knowledges : JSON.stringify(knowledges),
+                          poches : JSON.stringify(poches),
+                          
+                          currentUser : JSON.stringify(req.session.user),
+                          projectTitle : project.title,
+                          projectId : project.id,
+                          currentProject : JSON.stringify(project),
+                          project_users : JSON.stringify(project_users),
+                          users : JSON.stringify(users),
+                          projects : JSON.stringify(projects),
+                          links : JSON.stringify(links),
+                          notifications : JSON.stringify(all_notifications),
+                          permissions : JSON.stringify(permissions),
+                          backups : JSON.stringify(backups_truncated),
+                          screenshots : JSON.stringify(screenshots),
+                          presentations : JSON.stringify(presentations),
+                          presentationId : JSON.stringify(presentationId)
                         });
                       });
                     });
                   });
                 });
               });
+              
             });
+            });
+            });
+            });
+            
           });
+
         });
-        
 
       }else{
         res.send({err : "You have no permission on this project"});
