@@ -51,6 +51,7 @@ workspaceEditor.Views.Main = Backbone.View.extend({
           allowOutsideClick : true
       }, 
       function(){   
+        console.log(_this.workspaces)
           project_id = _this.workspace.get('id');
           project = _this.workspaces.get(project_id);
           project.destroy();

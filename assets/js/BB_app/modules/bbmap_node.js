@@ -6,7 +6,6 @@ bbmap.Views.Node = Backbone.View.extend({
         _.bindAll(this, 'render','savePosition','addEndpoint','addLink','makeTarget');
         // Variables
         this.model = json.model;
-        this.users = json.users;
         // Events
         $(this.el).click(this.savePosition);
         this.listenTo(this.model,"change:title", this.render); 
@@ -154,11 +153,7 @@ bbmap.Views.Node = Backbone.View.extend({
                     var after_change = this.model.clone();
                     //////////////////////////////
                     // Knowledges follow category
-                    if(this.model.get('type') == "poche") followers = api.getModelsLinkedToModel(bbmap.views.main.links,bbmap.views.main.knowledges,this.model);
-                    // Concepts childrens follow concept father
-                    else if(this.model.get('type') == "concept") followers = api.getTreeChildrenNodes(this.model,bbmap.views.main.concepts);
-                    // Knowleges childrens follow knowledge father
-                    else if(this.model.get('type') == "knowledge") followers = api.getModelsLinkedToModel(bbmap.views.main.links,bbmap.views.main.knowledges,this.model);
+                    followers = api.getModelsLinkedToModel(bbmap.views.main.links,bbmap.views.main.elements,this.model);
                     // Set the followers
                     followers.forEach(function(f){
                         var f_view = bbmap.views.main.nodes_views[f.get('id')];
@@ -178,7 +173,7 @@ bbmap.Views.Node = Backbone.View.extend({
     },
     addConceptChild : function(e){
         e.preventDefault();
-        var new_concept = new global.Models.ConceptModel({
+        var new_element = new global.Models.Element({
             id : guid(),
             type : "concept",
             id_father: this.model.get('id'),
@@ -186,18 +181,19 @@ bbmap.Views.Node = Backbone.View.extend({
             left : $(this.el).position().left / bbmap.zoom.get('val'),
             project: bbmap.views.main.project.get('id'),
             title: "new concept",
-            user: bbmap.views.main.user
+            user: bbmap.views.main.user.get('id'),
+            css : bbmap.css_concept_default,
         });
-        new_concept.save();
+        new_element.save();
         // On crée le link entre C et K
-        if(this.model.get('type') != "concept") this.newCKLink(new_concept);
+        this.newCKLink(new_element);
         // On ajoute le model à la view
-        bbmap.views.main.addModelToView(new_concept);
+        bbmap.views.main.addModelToView(new_element);
     },
     addKnowledgeChild : function(e){
         e.preventDefault();
         // On crée la K
-        var new_knowledge = new global.Models.Knowledge({
+        var new_element = new global.Models.Element({
             id : guid(),
             type : "knowledge",
             //id_fathers: [this.model.get('id')],
@@ -205,18 +201,19 @@ bbmap.Views.Node = Backbone.View.extend({
             left : $(this.el).position().left / bbmap.zoom.get('val'),
             project: bbmap.views.main.project.get('id'),
             title: "new knowledge",
-            user: bbmap.views.main.user
+            user: bbmap.views.main.user.get('id'),
+            css : bbmap.css_knowledge_default,
         });
-        new_knowledge.save();
+        new_element.save();
         // On crée le link entre C et K
-        this.newCKLink(new_knowledge);
+        this.newCKLink(new_element);
         // On ajoute le model à la view
-        bbmap.views.main.addModelToView(new_knowledge);
+        bbmap.views.main.addModelToView(new_element);
     },
     newCKLink : function(target_model){
         var new_cklink = new global.Models.CKLink({
             id :guid(),
-            user : bbmap.views.main.user,
+            user : bbmap.views.main.user.get('id'),
             date : getDate(),
             source : this.model.get('id'),
             target : target_model.get('id'),
@@ -410,7 +407,8 @@ bbmap.Views.Node = Backbone.View.extend({
         //style
         //$(this.el).attr( "style","top: "+this.model.get('top')+"px;left:"+this.model.get('left')+"px");
         // Init
-        var user = this.users.get(this.model.get('user'));
+        
+        var user = global.collections.Users.get(this.model.get('user'));
         $(this.el).empty();
         $(this.el).append(this.template_bulle({
             model:this.model.toJSON(),

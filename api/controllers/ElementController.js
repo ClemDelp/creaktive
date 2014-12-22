@@ -61,7 +61,6 @@ module.exports = {
       }else{
         var element = req.body.params;
         ///////////////////////////
-        element.type = "element";
         if((element.top)&&(element.top == 0))element.top = 550;
         if((element.left)&&(element.left == 0))element.left = 550;
         ///////////////////////////

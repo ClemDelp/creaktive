@@ -155,10 +155,6 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .fullscreen" : "putInFullScreen",
         "click .reset" : "resetToCentroid",
         "click .window" : "showIcon", 
-        // "click .window.poche" : "showIcon", 
-        // "click .window.knowledge" : "showIcon",
-        // "click .window.concept" : "showIcon", 
-
         "mouseenter .window.concept" : "showDependances", 
         "mouseleave .window" : "hideDependances", 
         "click .structureSubTree" : "structureTree",
@@ -785,7 +781,6 @@ bbmap.Views.Main = Backbone.View.extend({
         var element = this.elements.get(e.target.id)
         // close all icones
         this.$(".icon").hide();
-        // Show the sup menu anyway
         if(e.target.getAttribute("data-type") != "action"){
             // set last model
             this.setNotificationDisplayOnModel(element);
@@ -980,7 +975,7 @@ bbmap.Views.Main = Backbone.View.extend({
             left: left,
             project: this.project.get('id'),
             title: "new knowledge",
-            user: this.user,
+            user: this.user.get('id'),
             css : bbmap.css_knowledge_default
         });
         new_element.save();
@@ -996,7 +991,7 @@ bbmap.Views.Main = Backbone.View.extend({
             left: left,
             project: this.project.get('id'),
             title: "new concept",
-            user: this.user,
+            user: this.user.get('id'),
             css : bbmap.css_concept_default
         });
         new_element.save();
@@ -1012,7 +1007,7 @@ bbmap.Views.Main = Backbone.View.extend({
             left: left,
             project: this.project.get('id'),
             title: "new poche",
-            user: this.user,
+            user: this.user.get('id'),
             css : bbmap.css_poche_default
         });
         new_element.save();
@@ -1032,6 +1027,7 @@ bbmap.Views.Main = Backbone.View.extend({
             id : model.get('id'),
             model : model,
         });
+        alert(model.get('type'))
         this.elements.add(model);
 
         this.map_el.append(new_view.render().el);
@@ -1133,7 +1129,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 if(info.connection.scope == "cklink"){
                     var new_cklink = new global.Models.CKLink({
                         id :guid(),
-                        user : bbmap.views.main.user,
+                        user : bbmap.views.main.user.get('id'),
                         date : getDate(),
                         source : info.sourceId,
                         target : info.targetId,
@@ -1245,8 +1241,7 @@ bbmap.Views.Main = Backbone.View.extend({
             bbmap.views.main.nodes_views[model.get('id')] = new bbmap.Views.Node({
                 className : "window "+model.get('type')+" bulle",
                 id : model.get('id'),
-                model : model,
-                users : bbmap.views.main.users
+                model : model
             });
         });
         // Render
