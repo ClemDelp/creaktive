@@ -394,21 +394,21 @@ bbmap.Views.Main = Backbone.View.extend({
         var pos = $('#dropP').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        this.createUnlinkedPoche(left,top);
+        this.createUnlinkedPoche(left,top,pos);
         this.renderActionBar();
     },
     newConceptUnlinked : function(e){
         var pos = $('#dropC').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        this.createUnlinkedConcept(left,top);
+        this.createUnlinkedConcept(left,top,pos);
         this.renderActionBar();
     },
     newKnowledgeUnlinked : function(e){
         var pos = $('#dropK').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        this.createUnlinkedKnowledge(left,top);
+        this.createUnlinkedKnowledge(left,top,pos);
         this.renderActionBar();
     },
     startJoyride : function(){
@@ -791,22 +791,30 @@ bbmap.Views.Main = Backbone.View.extend({
     // superpose centroid Map and centroid screen and recenter data
     /////////////////////////////////////////
     intelligentRestructuring : function(){
-        this.superposeMapCenterToScreenCenter();
+        this.superposeElementCenterToScreenCenter("map",bbmap.zoom.get('val'));
         //this.moveDataCentroidToMapCentroid();
         this.resetToCentroid();
         this.instance.repaintEverything();
     },
-    superposeMapCenterToScreenCenter : function(){
-        var zoom = bbmap.zoom.get('val');
+    // superposeMapCenterToScreenCenter : function(){
+    //     var zoom = bbmap.zoom.get('val');
+    //     var screenCentroid = api.getScreenCentroid();
+    //     var mapCentroid = api.getElementCentroid($('#map').width(),$('#map').height());
+    //     var mapOffset = $('#map').offset(); // position relative to the document
+    //     var screenCentroid = api.getScreenCentroid();
+    //     var delta_left = - mapOffset.left + (screenCentroid.left - mapCentroid.left*zoom);
+    //     var delta_top = - mapOffset.top + (screenCentroid.top - mapCentroid.top*zoom);
+    //     $('#map').offset({ top: mapOffset.top + delta_top, left: mapOffset.left + delta_left });
+    // },
+    superposeElementCenterToScreenCenter : function(id,zoom){
         var screenCentroid = api.getScreenCentroid();
-        var mapCentroid = api.getMapCentroid($('#map').width(),$('#map').height());
-        var mapOffset = $('#map').offset(); // position relative to the document
+        var elementCentroid = api.getElementCentroid($('#'+id).width(),$('#'+id).height());
+        var elementOffset = $('#'+id).offset(); // position relative to the document
         var screenCentroid = api.getScreenCentroid();
-        var delta_left = - mapOffset.left + (screenCentroid.left - mapCentroid.left*zoom);
-        var delta_top = - mapOffset.top + (screenCentroid.top - mapCentroid.top*zoom);
-        $('#map').offset({ top: mapOffset.top + delta_top, left: mapOffset.left + delta_left });
+        var delta_left = - elementOffset.left + (screenCentroid.left - elementCentroid.left*zoom);
+        var delta_top = - elementOffset.top + (screenCentroid.top - elementCentroid.top*zoom);
+        $('#'+id).offset({ top: elementOffset.top + delta_top, left: elementOffset.left + delta_left });
     },
-    
     /////////////////////////////////////////
     // Centroid functions
     /////////////////////////////////////////
@@ -868,7 +876,7 @@ bbmap.Views.Main = Backbone.View.extend({
         }
     },
     moveDataCentroidToMapCentroid : function(){
-        var delta = api.getXYTranslationBtwTwoPoints(api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()),api.getMapCentroid($('#map').width(),$('#map').height()));
+        var delta = api.getXYTranslationBtwTwoPoints(api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()),api.getElementCentroid($('#map').width(),$('#map').height()));
         var k = 10; // coeff de finess
         if((abs(delta.x) > k)||(abs(delta.y) > k)){
             for (var id in bbmap.views.main.nodes_views){
@@ -898,7 +906,7 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Create unlinked model
     /////////////////////////////////////////
-    createUnlinkedKnowledge : function(left,top){
+    createUnlinkedKnowledge : function(left,top,posDrop){
         var new_element = new global.Models.Element({
             id : guid(),
             type : "knowledge",
@@ -910,10 +918,16 @@ bbmap.Views.Main = Backbone.View.extend({
             css : bbmap.css_knowledge_default
         });
         new_element.save();
-        this.elements.add(new_element);
-        this.addModelToView(new_element);
+
+        var screenCentroid = api.getScreenCentroid();
+        var mapOffset = $('#map').offset();
+        var delta_left = - posDrop.left + screenCentroid.left;
+        var delta_top = - posDrop.top + screenCentroid.top ;
+       $('#map').animate({ top: mapOffset.top + delta_top, left: mapOffset.left + delta_left },function(){
+            bbmap.views.main.addModelToView(new_element);
+        });
     },
-    createUnlinkedConcept : function(left,top){
+    createUnlinkedConcept : function(left,top,posDrop){
         var new_element = new global.Models.Element({
             id : guid(),
             type : "concept",
@@ -927,9 +941,18 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         new_element.save();
         
-        this.addModelToView(new_element);
+        var screenCentroid = api.getScreenCentroid();
+        var mapOffset = $('#map').offset();
+        var delta_left = - posDrop.left + screenCentroid.left;
+        var delta_top = - posDrop.top + screenCentroid.top ;
+        $('#map').animate({ top: mapOffset.top + delta_top, left: mapOffset.left + delta_left },function(){
+            bbmap.views.main.addModelToView(new_element);
+        });
+
+        
+
     },
-    createUnlinkedPoche : function(left,top){
+    createUnlinkedPoche : function(left,top,posDrop){
         var new_element = new global.Models.Element({
             id : guid(),
             type : "poche",
@@ -943,7 +966,13 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         new_element.save();
         
-        this.addModelToView(new_element);
+        var screenCentroid = api.getScreenCentroid();
+        var mapOffset = $('#map').offset();
+        var delta_left = - posDrop.left + screenCentroid.left;
+        var delta_top = - posDrop.top + screenCentroid.top ;
+        $('#map').animate({ top: mapOffset.top + delta_top, left: mapOffset.left + delta_left },function(){
+            bbmap.views.main.addModelToView(new_element);
+        });
     },
     /////////////////////////////////////////
     // Add remove model/link to view

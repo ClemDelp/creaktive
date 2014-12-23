@@ -151,12 +151,12 @@ var api = {
   //////////////////////////////
   // API Graphique
   //////////////////////////////
-  getMapCentroid : function(map_width,map_height){
-    var mapCentroid = {};
-    mapCentroid.left = map_width/2;
-    mapCentroid.top = map_height/2;
-    // console.log("Map centroid : ",mapCentroid);
-    return mapCentroid;
+  getElementCentroid : function(map_width,map_height){
+    var elementCentroid = {};
+    elementCentroid.left = map_width/2;
+    elementCentroid.top = map_height/2;
+    // console.log("Map centroid : ",elementCentroid);
+    return elementCentroid;
   },
   getXYTranslationBtwTwoPoints : function(point_1,point_2){
     // console.log("CentroidPointsCloud",point_1,' - getMapCentroid',point_2)
