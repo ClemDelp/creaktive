@@ -2,10 +2,10 @@
 <!-- Timeline template parts -->
 <script type="text/template" id="modelEditor-normal-template">
 	<div class="large-1 medium-1 small-1 columns">
-		<img width="50" src="{{-model.user.img}}">
+		<img width="50" src="{{-user.img}}">
 	</div>
 	<div class="large-11 medium-11 small-11 columns">
-		<b>{{-model.user.name}}</b> post a new <label class="label tiny secondary"><b>{{-model.type}}</b></label> : 
+		<b>{{-user.name}}</b> post a new <label class="label tiny secondary"><b>{{-model.type}}</b></label> : 
 		{{ if(mode == "edit"){ }}
 		<a href="#" class="button tiny radius alert edit">Edit</a>
 		{{ } }}
@@ -19,10 +19,10 @@
 
 <script type="text/template" id="modelEditor-edition-template">
     <div class="large-1 medium-1 small-1 columns">
-		<img width="50" src="{{-model.user.img}}">
+		<img width="50" src="{{-user.img}}">
 	</div>
 	<div class="large-11 medium-11 small-11 columns">
-		<b>{{-model.user.name}}</b> post a new <label class="label tiny secondary"><b>{{-model.type}}</b></label> : 
+		<b>{{-user.name}}</b> post a new <label class="label tiny secondary"><b>{{-model.type}}</b></label> : 
 		<a href="#" class="button tiny radius success updateModel">Update!</a>
 	    <a href="#" class="button tiny radius secondary cancelEdition">Cancel</a>
 		<input type="text" class="title" value="{{- model.title}}"/>

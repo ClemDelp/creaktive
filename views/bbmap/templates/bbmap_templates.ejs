@@ -2,8 +2,6 @@
 <!-- Container -->
 <div id="bbmap_container" style="height:96%;position:relative;overflow:hidden;">
   <div id="top_container"></div>
-  <div id="timeline_container"></div>
-  <span id="split"></span>
   <div id="map_container" style="overflow:hidden;">
     <a href="#" id="showMenu"  class="button large alert round cbp-openbutton">
       <image  src="/img/icones/Arrow-Left.png" id="cbp-openimage"/>
@@ -90,7 +88,7 @@
 
     <a style="display:true" href="#edit" class="button tiny secondary radius graphPresentation"><img src="/img/icones/Nodes-32.png" /></a>
     <a style="display:true" href="#edit" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Bullets-32-blue.png" /></a>
-    <a style="display:true" href="#edit" class="button tiny secondary radius splitPresentation"><img src="/img/icones/View-Split-32.png" /></a>
+    <a style="display:none" href="#edit" class="button tiny secondary radius splitPresentation"><img src="/img/icones/View-Split-32.png" /></a>
 
     {{ if(mode == "visu"){ }}
         <a href="#edit" class="button simplePadding alert radius"><b>Edit</b><img data-type="action" title="mode" src="/img/icones/Pencil-32-white.png"/></a>
@@ -137,19 +135,23 @@
   <span id="bbmap_bottom_ui">
     <center>
       {{ if(mode != "timeline"){ }}
-        <img title="zoom-in" src="/img/icones/Light-32.png"/>
-        <select id="visu_select_mode" class="large-1 medium-1 small-1">
-          <option value="children">Display children & linked knowledge</option>
-          <option value="parent">Display parents & linked knowledge</option>
-          <option value="node">Display concept & linked knowledge</option>
-        </select>
+        <span style="display:none">
+          <img title="zoom-in" src="/img/icones/Light-32.png"/>
+          <select id="visu_select_mode" class="large-1 medium-1 small-1">
+            <option value="children">Display children & linked knowledge</option>
+            <option value="parent">Display parents & linked knowledge</option>
+            <option value="node">Display concept & linked knowledge</option>
+          </select>
+        </span>
 
+        
         <img title="zoom-in" src="/img/icones/Filtering-24.png"/> 
         <select id="filterSelection" class="large-1 medium-1 small-1">
           <option value="c" {{ if(filter == "c"){ }}selected{{ } }}>Concepts</option>
           <option value="kp" {{ if(filter == "kp"){ }}selected{{ } }}>Knowledges & Categories</option>
           <option value="ckp" {{ if(filter == "ckp"){ }}selected{{ } }}>All</option>
         </select>
+
       {{ } }}
       {{ if((filter == "ck")||(filter == "ckp")){ }}
         <a href="#" class="tiny round button secondary ckOperator"><img title="display CK links" src="/img/icones/Data-Share-24.png"/></a>

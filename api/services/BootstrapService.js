@@ -56,56 +56,7 @@ module.exports = {
         });
       });
       ///////////////////////////////////////////////////
-
     });
-
-
-
-  },
-
-  bootstrapPublicMap : function(req,res){
-    console.log("Bootstraping manager data")
-    req.session.user = req.session.user || {
-      "_id" : "4dc99f7e-55d4-f66c-3fcc-d5a5e49e8260",
-      "color" : "",
-      "confirmed" : true,
-      "createdAt" : "2014-04-08T12:47:44.278Z",
-      "email" : "delpuech.clement@gmail.com",
-      "img" : "img/profiles/3.png",
-      "left" : 69,
-      "location" : "/publicVisu",
-      "name" : "Guess",
-      "pw" : "tutu",
-      "status" : "",
-      "tags" : [],
-      "top" : 68,
-      "updatedAt" : "2014-11-04T09:28:29.081Z"
-    }
-    ///////////////////////////////////////////////////    
-    Comment.find({project:req.session.currentProject.id}).done(function(err,comments){
-      Knowledge.find({project : req.session.publicProjects}).done(function(err,knowledges){
-        Poche.find({project : req.session.publicProjects}).done(function(err,poches){
-          Project.find({id : req.session.publicProjects, backup : false}).done(function(err,projects){
-            Concept.find({project : req.session.publicProjects}).done(function(err,concepts){
-              Link.find({project : req.session.publicProjects}).done(function(err,links){
-                res.view({
-                  comments : JSON.stringify(comments),
-                  currentUser : JSON.stringify(req.session.user),
-                  knowledges : JSON.stringify(knowledges),
-                  poches : JSON.stringify(poches),
-                  projects : JSON.stringify(projects),
-                  concepts : JSON.stringify(concepts),
-                  links : JSON.stringify(links),
-                });
-              });
-            });
-          });
-        });
-      });
-    });
-    ///////////////////////////////////////////////////
-
-
   },
 
 	bootstrapdata : function(req,res){

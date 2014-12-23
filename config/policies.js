@@ -157,6 +157,11 @@
     "*" : ["authenticated"],
   },
 
+  "timela" : {
+    "timela" : ["authenticated", "forceHTTPs", "onlyMobile"],
+    "*" : ["authenticated"],
+  },
+
   "NotificationController" : {
     "notificationview" : ["authenticated","forceHTTPs","onlyMobile"],
     "*" : ["authenticated"],
