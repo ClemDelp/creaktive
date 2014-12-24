@@ -394,21 +394,21 @@ bbmap.Views.Main = Backbone.View.extend({
         var pos = $('#dropP').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        this.createUnlinkedPoche(left,top,pos);
+        this.newElement("poche","none",top,left,pos);
         this.renderActionBar();
     },
     newConceptUnlinked : function(e){
         var pos = $('#dropC').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        this.createUnlinkedConcept(left,top,pos);
+        this.newElement("concept","none",top,left,pos);
         this.renderActionBar();
     },
     newKnowledgeUnlinked : function(e){
         var pos = $('#dropK').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        this.createUnlinkedKnowledge(left,top,pos);
+        this.newElement("knowledge","none",top,left,pos);
         this.renderActionBar();
     },
     startJoyride : function(){
@@ -831,7 +831,7 @@ bbmap.Views.Main = Backbone.View.extend({
         delta.top = screenCentroid.top - dataCentroid.top;
         delta.left = screenCentroid.left - dataCentroid.left;
         // superpose data and screen centroid 
-        $('#map').offset({ top: delta.top, left: delta.left });
+        $('#map').animate({ top: delta.top, left: delta.left });
     },
     findRightZoom : function(Data,Screen){
         var Data = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()); // coordonnée du barycentre des données
@@ -897,6 +897,19 @@ bbmap.Views.Main = Backbone.View.extend({
         }
         return coordinates;
     },
+    centerToElement : function(position,cb){
+        var screenCentroid = api.getScreenCentroid();
+        var mapOffset = $('#map').offset();
+        var delta_left = screenCentroid.left - position.left;
+        var delta_top = screenCentroid.top - position.top;
+
+         console.log("map offset : ",mapOffset.top,mapOffset.left)
+        console.log("delta : ",delta_left,delta_left)
+
+        $('#map').animate({ top: mapOffset.top + delta_top, left: mapOffset.left + delta_left },function(){
+            if(cb) cb();
+        });
+    },
     /////////////////////////////////////////
     setCKOperator : function(e){
         e.preventDefault();
@@ -904,75 +917,59 @@ bbmap.Views.Main = Backbone.View.extend({
         this.render();
     },
     /////////////////////////////////////////
-    // Create unlinked model
+    // Create link and element
     /////////////////////////////////////////
-    createUnlinkedKnowledge : function(left,top,posDrop){
+    newElement : function(type,father,top,left,pos){
+        var _this = this;
+        // CSS definition
+        var css = bbmap.css_transparent_element;
+        // Father definition
+        var father_id = father;
+        if(father != "none") father_id = father.get('id');
+        // Type definition
+        if(type == "concept") css = bbmap.css_concept_default;
+        else if(type == "knowledge") css = bbmap.css_knowledge_default;
+        else css = bbmap.css_poche_default;
+
+        // On crée l'object
         var new_element = new global.Models.Element({
             id : guid(),
-            type : "knowledge",
+            type : type,
+            id_father: father_id,
             top : top,
-            left: left,
-            project: this.project.get('id'),
-            title: "new knowledge",
-            user: this.user.get('id'),
-            css : bbmap.css_knowledge_default
+            left : left,
+            project: bbmap.views.main.project.get('id'),
+            title: "new "+type,
+            user: bbmap.views.main.user.get('id'),
+            css : css,
         });
         new_element.save();
-
-        var screenCentroid = api.getScreenCentroid();
-        var mapOffset = $('#map').offset();
-        var delta_left = - posDrop.left + screenCentroid.left;
-        var delta_top = - posDrop.top + screenCentroid.top ;
-       $('#map').animate({ top: mapOffset.top + delta_top, left: mapOffset.left + delta_left },function(){
+        // On ajoute le model à la collection
+        this.elements.add(new_element);
+        // On centre la map sur l'element
+        var position = {top:(top*bbmap.zoom.get('val')) + $('#map').offset().top,left:(left*bbmap.zoom.get('val')) + $('#map').offset().left};
+        if(pos) position = pos; // pour prendre la position du drop button
+        this.centerToElement(position,function(){
+            // On ajoute le model à la view
             bbmap.views.main.addModelToView(new_element);
+            // LINK
+            if(father != "none") _this.newLink(father,new_element);
         });
     },
-    createUnlinkedConcept : function(left,top,posDrop){
-        var new_element = new global.Models.Element({
-            id : guid(),
-            type : "concept",
-            id_father: "none",
-            top : top,
-            left: left,
-            project: this.project.get('id'),
-            title: "new concept",
-            user: this.user.get('id'),
-            css : bbmap.css_concept_default
+    newLink : function(source,target){
+        var new_cklink = new global.Models.CKLink({
+            id :guid(),
+            user : bbmap.views.main.user.get('id'),
+            date : getDate(),
+            source : source.get('id'),
+            target : target.get('id'),
+            project : bbmap.views.main.project.get('id')
         });
-        new_element.save();
-        
-        var screenCentroid = api.getScreenCentroid();
-        var mapOffset = $('#map').offset();
-        var delta_left = - posDrop.left + screenCentroid.left;
-        var delta_top = - posDrop.top + screenCentroid.top ;
-        $('#map').animate({ top: mapOffset.top + delta_top, left: mapOffset.left + delta_left },function(){
-            bbmap.views.main.addModelToView(new_element);
-        });
-
-        
-
-    },
-    createUnlinkedPoche : function(left,top,posDrop){
-        var new_element = new global.Models.Element({
-            id : guid(),
-            type : "poche",
-            id_father: "none",
-            top : top,
-            left: left,
-            project: this.project.get('id'),
-            title: "new poche",
-            user: this.user.get('id'),
-            css : bbmap.css_poche_default
-        });
-        new_element.save();
-        
-        var screenCentroid = api.getScreenCentroid();
-        var mapOffset = $('#map').offset();
-        var delta_left = - posDrop.left + screenCentroid.left;
-        var delta_top = - posDrop.top + screenCentroid.top ;
-        $('#map').animate({ top: mapOffset.top + delta_top, left: mapOffset.left + delta_left },function(){
-            bbmap.views.main.addModelToView(new_element);
-        });
+        new_cklink.save();
+        // On l'ajoute à la collection
+        this.links.add(new_cklink);
+        // On l'ajoute à la view
+        this.addLinkToView(new_cklink)  
     },
     /////////////////////////////////////////
     // Add remove model/link to view
@@ -980,22 +977,32 @@ bbmap.Views.Main = Backbone.View.extend({
     addModelToView : function(model,from){
         var origin = "client";
         if(from) origin = from;
-        var type = model.get('type');
+        // Set last model
         this.setLastModel(model,'addModelToView');
+        // create the view
         var new_view = new bbmap.Views.Node({
-            className : "window "+type,
+            className : "window "+model.get('type')+" bulle",
             id : model.get('id'),
             model : model,
         });
-        this.elements.add(model);
-
-        this.map_el.append(new_view.render().el);
-        new_view.addEndpoint();
-        new_view.makeTarget();
-
-        this.instance.draggable($(new_view.el),{ containment: "#map", scroll: false });
+        // On l'ajout à la liste
         this.nodes_views[model.get('id')] = new_view;
-        new_view.addLink();
+        // On l'ajout à la map
+        this.map_el.append(new_view.render().el);
+        if(this.mode == "edit"){
+            // On lui permet d'etre cible et source
+            new_view.addEndpoint();
+            new_view.makeTarget();
+            // On le rend draggable
+            this.instance.draggable($(new_view.el),{ 
+                containment: "#map", 
+                scroll: false,
+                drag : function(e){
+                    if(global.drawingAid == true) bbmap.views.main.drawingAid(model);
+                }
+            });
+        }
+        // On lance le joyride d'édition
         if(origin == "client"){
             this.startJoyride();
         }
@@ -1009,9 +1016,7 @@ bbmap.Views.Main = Backbone.View.extend({
     addLinkToView : function(model,from){
         var origin = "client";
         if(from) origin = from;
-        // console.log("model : ",model)
-        // console.log("model source : ",model.get('source'))
-        // console.log(bbmap.views.main.nodes_views[model.get('source')])
+
         bbmap.views.main.instance.connect({
             source:bbmap.views.main.nodes_views[model.get('source')].el, 
             target:bbmap.views.main.nodes_views[model.get('target')].el, 
@@ -1038,7 +1043,7 @@ bbmap.Views.Main = Backbone.View.extend({
         // Remove link process        
         this.instance.bind("beforeDetach", function(conn) {
             var resp = true;
-            // if(conn.scope == "cklink"){
+            if(conn.scope == "cklink"){
                 if(resp == true){
                     var links_to_remove = bbmap.views.main.links.where({source : conn.sourceId, target : conn.targetId});
                     links_to_remove.forEach(function(link){
@@ -1049,12 +1054,7 @@ bbmap.Views.Main = Backbone.View.extend({
                         link.destroy();
                     });
                 } 
-            // }else{
-                // if(resp == true){
-                    bbmap.views.main.elements.get(conn.targetId).set({id_father : "none"}).save();
-                // } 
-            // }
-            //swal("Deleted!", "The connection has been deleted.", "success");
+            }
             return resp;
         });
         this.instance.bind("click", function(conn) {
@@ -1070,6 +1070,7 @@ bbmap.Views.Main = Backbone.View.extend({
             }, 
             function(){   
                 bbmap.views.main.instance.detach(conn);
+                bbmap.views.main.elements.get(conn.targetId).set({id_father : "none"}).save();
             });
             
         });
@@ -1097,10 +1098,7 @@ bbmap.Views.Main = Backbone.View.extend({
                     });
                     new_cklink.save();
                     bbmap.views.main.links.add(new_cklink);
-
-                // }else{
                     bbmap.views.main.elements.get(info.targetId).set({id_father : info.sourceId}).save();
-                    //bbmap.views.main.nodes_views[info.targetId].bindFollowFather();
                 }    
             }
         });     
@@ -1193,61 +1191,6 @@ bbmap.Views.Main = Backbone.View.extend({
         $( "#dropK" ).draggable();
         $( "#dropP" ).draggable();
     },
-    renderElementsBulle : function(){
-        // Views
-        this.elements.each(function(model){ 
-            if(!model.get('visibility')) model.save({visibility : "show"}); // par default mettre la valeur à show
-            bbmap.views.main.nodes_views[model.get('id')] = new bbmap.Views.Node({
-                className : "window "+model.get('type')+" bulle",
-                id : model.get('id'),
-                model : model
-            });
-        });
-        // Render
-        this.elements.forEach(function(model){
-            bbmap.views.main.map_el.append(bbmap.views.main.nodes_views[model.get('id')].render().el); 
-        });
-        // EndPoint
-        this.elements.forEach(function(model){
-            bbmap.views.main.nodes_views[model.get('id')].addEndpoint();    
-        });
-        // Add links
-        this.elements.forEach(function(model){
-            bbmap.views.main.nodes_views[model.get('id')].addLink();    
-        });
-        if(this.mode == "edit"){
-            // Make its target
-            this.elements.forEach(function(model){
-                bbmap.views.main.nodes_views[model.get('id')].makeTarget();    
-            });
-            // Draggable
-            this.elements.forEach(function(model){
-                bbmap.views.main.instance.draggable($(bbmap.views.main.nodes_views[model.get('id')].el),{ 
-                    containment: "#map", 
-                    scroll: false,
-                    drag : function(e){
-                        if(global.drawingAid == true) bbmap.views.main.drawingAid(model);
-                    }
-                });
-            });
-        }
-    },
-    renderCKLinks : function(){
-        if(this.ckOperator == true){
-            bbmap.views.main.links.each(function(l){
-                try{
-                    bbmap.views.main.instance.connect({
-                        source:bbmap.views.main.nodes_views[l.get('source')].el, 
-                        target:bbmap.views.main.nodes_views[l.get('target')].el, 
-                        anchor:"AutoDefault",
-                        scope : "cklink"
-                    });
-                }catch(err){
-                    //console.log("Missing element to etablish graphical connection...")
-                }
-            });    
-        }
-    },
     render : function(initPos){  //alert('render')
         var _this = this;
         this.map_el.empty();
@@ -1281,8 +1224,16 @@ bbmap.Views.Main = Backbone.View.extend({
             this.renderActionBar();
             $(this.el).append(this.template_joyride());
             ///////////////////////
-            // Modes
-            this.renderElementsBulle();
+            // Create graphical element
+            this.elements.each(function(model){ 
+                if(!model.get('visibility')) model.save({visibility : "show"}); // par default mettre la valeur à show
+                // try{
+                    bbmap.views.main.addModelToView(model,"render");
+                // }catch(err){console.log("Problem to display element");}
+            });
+            this.links.each(function(l){
+                try{bbmap.views.main.addLinkToView(l);}catch(err){console.log("Missing element to etablish graphical connection...");}
+            });
             // if(this.filter == "c"){
             //     this.renderConceptsBulle();
             // }

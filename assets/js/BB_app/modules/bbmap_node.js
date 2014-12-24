@@ -3,7 +3,7 @@
 /////////////////////////////////////////////////
 bbmap.Views.Node = Backbone.View.extend({
     initialize : function(json){
-        _.bindAll(this, 'render','savePosition','addEndpoint','addLink','makeTarget');
+        _.bindAll(this, 'render','savePosition','addEndpoint','makeTarget');
         // Variables
         this.model = json.model;
         // Events
@@ -120,6 +120,10 @@ bbmap.Views.Node = Backbone.View.extend({
     },
     /////////////////////////////////////////////
     savePosition: function(e){
+        // center to element
+        var position = {top : $(this.el).offset().top, left :$(this.el).offset().left}
+        bbmap.views.main.centerToElement(position);
+        //
         if(bbmap.views.main.mode == "edit"){
             var position = this.getPosition(bbmap.zoom.get('val'));
             var oldModel = this.model.clone();
@@ -168,55 +172,24 @@ bbmap.Views.Node = Backbone.View.extend({
     },
     addConceptChild : function(e){
         e.preventDefault();
-        var new_element = new global.Models.Element({
-            id : guid(),
-            type : "concept",
-            id_father: this.model.get('id'),
-            top : ($(this.el).position().top + 100) / bbmap.zoom.get('val'),
-            left : $(this.el).position().left / bbmap.zoom.get('val'),
-            project: bbmap.views.main.project.get('id'),
-            title: "new concept",
-            user: bbmap.views.main.user.get('id'),
-            css : bbmap.css_concept_default,
-        });
-        new_element.save();
-        // On crée le link entre C et K
-        this.newCKLink(new_element);
-        // On ajoute le model à la view
-        bbmap.views.main.addModelToView(new_element);
+        bbmap.views.main.newElement("concept",this.model,($(this.el).position().top + 100) / bbmap.zoom.get('val'),$(this.el).position().left / bbmap.zoom.get('val'));
     },
     addKnowledgeChild : function(e){
         e.preventDefault();
-        // On crée la K
-        var new_element = new global.Models.Element({
-            id : guid(),
-            type : "knowledge",
-            id_father: this.model.get('id'),
-            top : ($(this.el).position().top + 100) / bbmap.zoom.get('val'),
-            left : $(this.el).position().left / bbmap.zoom.get('val'),
-            project: bbmap.views.main.project.get('id'),
-            title: "new knowledge",
-            user: bbmap.views.main.user.get('id'),
-            css : bbmap.css_knowledge_default,
-        });
-        new_element.save();
-        // On crée le link entre C et K
-        this.newCKLink(new_element);
-        // On ajoute le model à la view
-        bbmap.views.main.addModelToView(new_element);
+        bbmap.views.main.newElement("knowledge",this.model,($(this.el).position().top + 100) / bbmap.zoom.get('val'),$(this.el).position().left / bbmap.zoom.get('val'));
     },
-    newCKLink : function(target_model){
-        var new_cklink = new global.Models.CKLink({
-            id :guid(),
-            user : bbmap.views.main.user.get('id'),
-            date : getDate(),
-            source : this.model.get('id'),
-            target : target_model.get('id'),
-            project : bbmap.views.main.project.get('id')
-        });
-        new_cklink.save();
-        bbmap.views.main.links.add(new_cklink);
-    },
+    // newCKLink : function(target_model){
+    //     var new_cklink = new global.Models.CKLink({
+    //         id :guid(),
+    //         user : bbmap.views.main.user.get('id'),
+    //         date : getDate(),
+    //         source : this.model.get('id'),
+    //         target : target_model.get('id'),
+    //         project : bbmap.views.main.project.get('id')
+    //     });
+    //     new_cklink.save();
+    //     bbmap.views.main.links.add(new_cklink);
+    // },
     /////////////////////////////////////////
     // Remove function
     /////////////////////////////////////////
@@ -345,42 +318,42 @@ bbmap.Views.Node = Backbone.View.extend({
         // }
         
     },
-    addLink : function(){
-        // Add Link
-        _this = this;
-        try{
-            // if((this.model.get('type') == "concept")&&(this.model.get('id_father')) && (this.model.get('id_father') != "none")){
-            //     if(bbmap.views.main.concepts.where({id : this.model.get('id_father')}).length == 0){
-            //         // si c'est un concept qu'on ajoute à partir d'une connaissance
-            //         var link_byTarget = bbmap.views.main.links.where({target : this.model.get('id')});
-            //         link_byTarget.forEach(function(link){
-            //             bbmap.views.main.instance.connect({
-            //                 source:bbmap.views.main.nodes_views[link.get('source')].el, 
-            //                 target:bbmap.views.main.nodes_views[link.get('target')].el, 
-            //                 anchor:"AutoDefault",
-            //                 scope : "cklink"
-            //             });  
-            //         }); 
-            //     }else{
-            //         // Si c'est un concept qu'on ajoute à partir d'un concept
-            //         bbmap.views.main.instance.connect({uuids:[this.model.get('id_father')+"-bottom", this.model.get('id')+"-top" ]});     
-            //     }
-            // }else if((this.model.get('type') == "knowledge")||(this.model.get('type') == "poche")){
-                // Si cest une connaissance qu'on ajoute à partir d'une poche
-                var link_byTarget = bbmap.views.main.links.where({target : this.model.get('id')});
-                link_byTarget.forEach(function(link){
-                    bbmap.views.main.instance.connect({
-                        source:bbmap.views.main.nodes_views[link.get('source')].el, 
-                        target:bbmap.views.main.nodes_views[link.get('target')].el, 
-                        anchor:"AutoDefault",
-                        scope : "cklink"
-                    });  
-                });     
-            // }
-        }catch(err){
-            // console.log(err);
-        }         
-    },
+    // addLink : function(){
+    //     // Add Link
+    //     _this = this;
+    //     try{
+    //         // if((this.model.get('type') == "concept")&&(this.model.get('id_father')) && (this.model.get('id_father') != "none")){
+    //         //     if(bbmap.views.main.concepts.where({id : this.model.get('id_father')}).length == 0){
+    //         //         // si c'est un concept qu'on ajoute à partir d'une connaissance
+    //         //         var link_byTarget = bbmap.views.main.links.where({target : this.model.get('id')});
+    //         //         link_byTarget.forEach(function(link){
+    //         //             bbmap.views.main.instance.connect({
+    //         //                 source:bbmap.views.main.nodes_views[link.get('source')].el, 
+    //         //                 target:bbmap.views.main.nodes_views[link.get('target')].el, 
+    //         //                 anchor:"AutoDefault",
+    //         //                 scope : "cklink"
+    //         //             });  
+    //         //         }); 
+    //         //     }else{
+    //         //         // Si c'est un concept qu'on ajoute à partir d'un concept
+    //         //         bbmap.views.main.instance.connect({uuids:[this.model.get('id_father')+"-bottom", this.model.get('id')+"-top" ]});     
+    //         //     }
+    //         // }else if((this.model.get('type') == "knowledge")||(this.model.get('type') == "poche")){
+    //             // Si cest une connaissance qu'on ajoute à partir d'une poche
+    //             var link_byTarget = bbmap.views.main.links.where({target : this.model.get('id')});
+    //             link_byTarget.forEach(function(link){
+    //                 bbmap.views.main.instance.connect({
+    //                     source:bbmap.views.main.nodes_views[link.get('source')].el, 
+    //                     target:bbmap.views.main.nodes_views[link.get('target')].el, 
+    //                     anchor:"AutoDefault",
+    //                     scope : "cklink"
+    //                 });  
+    //             });     
+    //         // }
+    //     }catch(err){
+    //         // console.log(err);
+    //     }         
+    // },
     makeTarget : function(){
         ///////////////////////
         // initialise as connection target.
