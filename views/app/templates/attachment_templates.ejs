@@ -1,20 +1,25 @@
-<script type="text/template" id="attachment-list-template">
-	<fieldset>
-        <legend align=left>Attachments ({{- attachments.length }})</legend>
-		<ul id="attachmentList">
-		{{ _.each(attachments, function(attachment){ }}
-			<li>
-				<a href="/s3/getUrl?amz_id={{- attachment.url }}"  target="_blank" class="" data-file-path="{{- attachment.path }}" title="open">{{- attachment.name.substring(0,50) }}...</a>
-				{{ if(mode == "edit"){ }}
-					<a style="color:red" class="removeFile" data-file-id="{{- attachment.id}}" title="remove">x</a>
-				{{ } }}
-			</li>
-		{{ }) }}
-		</ul>
-		{{ if(mode == "edit"){ }}
-			<input id="uploadfile" type="file"/>
-			<span id="status" class="label round">Please select a file</span>
-		{{ } }}
-    </fieldset>	
+<script type="text/template" id="attachment-diapo-template">
+    <h4>Images ({{-images.length}})</h4>
+    <ul id="imageList"  class="clearing-thumbs" data-clearing >
+    {{ _.each(images, function(image){ }}
+    	<li class="large-3 medium-3 small-3">
+    		<a href="/s3/getUrl?amz_id={{- image.url }}"><img crossorigin="*" class="large-12 medium-12 small-12 th" title="{{- image.name }}" src="/s3/getUrl?amz_id={{- image.url }}"></a>
+    	</li>
+	{{ }) }}
+	</ul>
+</script>
+
+
+<script type="text/template" id="attachment-input-template">
+	<input id="uploadfile" type="file"/>
+	<span id="status" class="label round">Please select a file</span>
+</script>
+
+<script type="text/template" id="attachment-el-template">
+	<tr>
+      <td><img width="30" src="{{- user.img }}"></td>
+      <td><a href="/s3/getUrl?amz_id={{- attachment.url }}"  target="_blank" class="" data-file-path="{{- attachment.path }}" title="{{- attachment.name }}">{{- attachment.name.substring(0,20) }}...</a></td>
+      <td><small>{{- attachment.date}}</small></td>
+    </tr>
 </script>
 

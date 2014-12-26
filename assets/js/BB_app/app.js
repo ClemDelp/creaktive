@@ -31,14 +31,13 @@ var global = {
     this.models.currentProject = new this.Models.ProjectModel(json.project);
     // Collection
     this.collections.Comments = new this.Collections.Comments(json.comments);
+    this.collections.Attachments = new this.Collections.Attachments(json.attachments);
     this.collections.Elements = new this.Collections.Elements(json.elements);
-    this.collections.Knowledges = new this.Collections.Knowledges(json.knowledges);
-    //this.collections.Poches = new this.Collections.Poches(json.poches);
+
     this.collections.Project_users = new this.Collections.UsersCollection(json.project_users);
     this.collections.Users = new this.Collections.UsersCollection(json.users);
     this.collections.Permissions = new this.Collections.PermissionsCollection(json.permissions);
     this.collections.Projects = new this.Collections.ProjectsCollection(json.projects);
-    this.collections.Concepts = new this.Collections.ConceptsCollection(json.concepts);
     this.collections.Links = new this.Collections.CKLinks(json.links);
     this.collections.Backups = new this.Collections.Backups(json.backups);
     this.collections.Notifications = new this.Collections.NotificationsCollection(json.notifications);

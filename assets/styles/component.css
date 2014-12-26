@@ -18,9 +18,9 @@
 /*.cbp-spmenu h3 {
 	color: #afdefa;
 	font-size: 1.9em;
-	padding: 25px;
+	padding: 30px;
 	margin: 0;
-	font-weight: 250;
+	font-weight: 300;
 	background: #0d77b6;
 }
 
@@ -28,11 +28,11 @@
 	
 	color: #fff;
 	font-size: 1.1em;
-	font-weight: 250;
+	font-weight: 300;
 }
 
 .cbp-spmenu a:hover {
-	background: #258ecd;
+	background: #308ecd;
 }
 
 .cbp-spmenu a:active {
@@ -43,7 +43,7 @@
 /* Orientation-dependent styles for the content of the menu */
 
 .cbp-spmenu-vertical {
-	width: 25%;
+	width: 30%;
 	height: 100%;
 	/*top: 5%;*/
 	z-index: 1000;
@@ -51,7 +51,7 @@
 }
 
 /*.cbp-spmenu-vertical a {
-	border-bottom: 1px solid #258ecd;
+	border-bottom: 1px solid #308ecd;
 	padding: 1em;
 }*/
 
@@ -65,25 +65,25 @@
 
 .cbp-spmenu-horizontal h3 {
 	height: 100%;
-	width: 25%;
+	width: 30%;
 	float: left;
 }
 
 .cbp-spmenu-horizontal a {
 	float: left;
-	width: 25%;
+	width: 30%;
 	padding: 0.8em;
-	border-left: 1px solid #258ecd;
+	border-left: 1px solid #308ecd;
 }
 
 /* Vertical menu that slides from the left or right */
 
 .cbp-spmenu-left {
-	left: -25%;
+	left: -30%;
 }
 
 .cbp-spmenu-right {
-	right: -25%;
+	right: -30%;
 }
 
 .cbp-spmenu-left.cbp-spmenu-open {
@@ -121,7 +121,7 @@
 }
 
 .cbp-spmenu-push-toright {
-	left: 25%;
+	left: 30%;
 }
 
 .cbp-spmenu-push-toleft {

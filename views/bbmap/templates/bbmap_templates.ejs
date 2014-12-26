@@ -3,23 +3,24 @@
 <div id="bbmap_container" style="height:96%;position:relative;overflow:hidden;">
   <div id="top_container"></div>
   <div id="map_container" style="overflow:hidden;">
-    <a href="#" id="showMenu"  class="button large alert round cbp-openbutton">
-      <image  src="/img/icones/Arrow-Left.png" id="cbp-openimage"/>
+    <a href="#" id="showMenu"  class="button large cbp-openbutton alert" style="padding:0px; padding-right:10px;">
+      <image  src="/img/icones/Arrowhead-Left-48.png" id="cbp-openimage"/>
+      <span id="showMenu_notif"></span>
     </a>
     <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="cbp-spmenu-s1">
       <div id="editor" class="panel expand">
         <ul class="tabs" data-tab>
           <li class="tab-title active"><a href="#editModel"><img title="edit" src="/img/icones/Edit.png"/><span id="notifDesc"></span></a></li>
-          <li class="tab-title"><a href="#attachementModel"><img title="attach" src="/img/icones/Attach.png"/><span id="notifAttach"></span></a></li>
-          <li class="tab-title"><a href="#discussionModel"><img title="comments" src="/img/icones/Chat.png"/><span id="notifComment"></span></a></li>
           <li class="tab-title"><a href="#css3Model"><img title="template" src="/img/icones/Shape.png"/></a></li>
           <li class="tab-title"><a href="#activitiesModel"><img title="template" src="/img/icones/Bell-24-circle.png"/></a></li>
           <li class="tab-title"><a href="#googleSearchModel"><img title="web data" src="/img/icones/Web-24.png"/></a></li>
         </ul>
         <div class="tabs-content">
-          <div id="editModel" class="content active"></div>
-          <div id="attachementModel" class="content"></div>
-          <div id="discussionModel" class="content"></div>
+          <div id="editModel" class="content active">
+            <span id="editorPart"></span>
+            <span id="attachmentPart"></span>
+            <span id="commentPart"></span>
+          </div>
           <div id="css3Model" class="content"></div>
           <div id="activitiesModel" class="content"></div>
           <div id="googleSearchModel" class="content"></div>
@@ -85,10 +86,7 @@
     <button class="button secondary simplePadding radius" data-dropdown="members_anager_dropdown" aria-controls="members_anager_dropdown" aria-expanded="true"><b>Members</b><img data-type="action" title="mode" src="/img/icones/Group-Add-32.png"/></button>
     <div id="members_anager_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
 
-
-    <a style="display:true" href="#edit" class="button tiny secondary radius graphPresentation"><img src="/img/icones/Nodes-32.png" /></a>
-    <a style="display:true" href="#edit" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Bullets-32-blue.png" /></a>
-    <a style="display:none" href="#edit" class="button tiny secondary radius splitPresentation"><img src="/img/icones/View-Split-32.png" /></a>
+    <a style="display:true" href="/timela?projectId={{-project.id}}" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Bullets-32-blue.png" /></a>
 
     {{ if(mode == "visu"){ }}
         <a href="#edit" class="button simplePadding alert radius"><b>Edit</b><img data-type="action" title="mode" src="/img/icones/Pencil-32-white.png"/></a>

@@ -39,7 +39,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.bottom_el = $(this.el).find('#bottom_container');
         this.map_el = $(this.el).find('#map');
         this.timeline_el = $(this.el).find('#timeline_container');
-        this.attachementModel_el = $(this.el).find('#attachementModel');
         this.css3Model_el = $(this.el).find('#css3Model');
         this.googleSearchModel_el = $(this.el).find('#googleSearchModel');
         ////////////////////////////////
@@ -435,22 +434,22 @@ bbmap.Views.Main = Backbone.View.extend({
         $('#cbp-spmenu-s1').show('slow');
         var menu = document.getElementById( 'cbp-spmenu-s1' );
         var button = document.getElementById( 'showMenu' );
-        //var body = document.getElementById('map_container');
+        var body = document.getElementById('map_container');
         classie.toggle( button, 'active' );
-        //classie.toggle( body, 'cbp-spmenu-push-toright' );
+        classie.toggle( body, 'cbp-spmenu-push-toright' );
         classie.toggle( menu, 'cbp-spmenu-open' );              //ouvrir ou fermer fenetre
         //change et bouger icon de button
         if(this.isopen==false) this.showMenu();            
         else this.hideMenu();
     },
     showMenu : function(){
-        $("#showMenu").animate({right:"25%"});
-        // $("#cbp-openimage")[0].src="/img/icones/Arrow-Right.png";
+        $("#showMenu").animate({right:"28%"});
+        $("#cbp-openimage").attr("src","/img/icones/Arrowhead-Right-48.png");
         this.isopen=true;
     },
     hideMenu : function(){
         $("#showMenu").animate({right:"0px"});
-        // $("#cbp-openimage")[0].src="/img/icones/Arrow-Left.png";
+        $("#cbp-openimage").attr("src","/img/icones/Arrowhead-Left-48.png");
         this.isopen=false;
     },
     updateEditor : function(model){
@@ -472,12 +471,12 @@ bbmap.Views.Main = Backbone.View.extend({
                 eventAggregator : this.eventAggregator
             });
             // Attachment module
-            if(bbmap.views.attachment)bbmap.views.attachment.close();
-            bbmap.views.attachment = new attachment.Views.Main({
-                model           : model,
-                mode            : this.mode,
-                eventAggregator : this.eventAggregator
-            });
+            // if(bbmap.views.attachment)bbmap.views.attachment.close();
+            // bbmap.views.attachment = new attachment.Views.Main({
+            //     model           : model,
+            //     mode            : this.mode,
+            //     eventAggregator : this.eventAggregator
+            // });
             // Comments module
             if(comments.views.main != undefined){
                 comments.views.main.mode = this.mode;
@@ -485,10 +484,22 @@ bbmap.Views.Main = Backbone.View.extend({
                 comments.views.main.render();
             }else{
                 comments.init({
-                    el:"#discussionModel",
+                    el:"#commentPart",
                     mode: this.mode,
                     model : model,
-                    presentation : "bulle"
+                    presentation : "classic"
+                }); 
+            }
+            // attachment module
+            if(attachment.views.main != undefined){
+                attachment.views.main.mode = this.mode;
+                attachment.views.main.model = model;
+                attachment.views.main.render();
+            }else{
+                attachment.init({
+                    el:"#attachmentPart",
+                    mode: this.mode,
+                    model : model,
                 }); 
             }
             // Editor module
@@ -498,7 +509,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 modelEditor.views.main.render();
             }else{
                 modelEditor.init({
-                    el:"#editModel",
+                    el:"#editorPart",
                     mode: this.mode,
                     model : model,
                 }); 
@@ -554,10 +565,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 width      : "",
             });
             // Render & Append
-            // this.editModel_el.html(bbmap.views.modelEditor.render().el);
-            $('#editModel').append(bbmap.views.templatesList.render().el);
-            this.attachementModel_el.html(bbmap.views.imagesList.render().el);
-            this.attachementModel_el.append(bbmap.views.attachment.render().el);
+            $('#css3Model').prepend(bbmap.views.templatesList.render().el);
             this.googleSearchModel_el.empty();
             this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_img.render().el));
             this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_web.render().el));
@@ -714,7 +722,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var description = 0
         // notif big red button
         // if(model.get('content') != "") description = 1;
-        $('#showMenu').html(comments + attachments + description);
+        $('#showMenu_notif').html(comments + attachments + description);
         // notif inside slideBar Menu
         $('#notifDesc').empty()
         $('#notifAttach').empty()

@@ -25,32 +25,20 @@ module.exports = {
           if(err) console.log(err)
           unread_notifications = rnotifications;
           User.find().done(function(err,users){
-            Knowledge.find({project : req.session.permissions.all}).done(function(err,knowledges){
-              Poche.find({project : req.session.permissions.all}).done(function(err,poches){
-                Project.find({id : req.session.permissions.all, backup : false}).done(function(err,projects){
-                  Concept.find({project : req.session.permissions.all}).done(function(err,concepts){
-                    Link.find({project : req.session.permissions.all}).done(function(err,links){
-                      Presentation.find().done(function(err,presentations){
-                        Permission.find().done(function(err, permissions){
-                          res.view({
-                            currentUser : JSON.stringify(req.session.user),
-                            users : JSON.stringify(users),
-                            knowledges : JSON.stringify(knowledges),
-                            poches : JSON.stringify(poches),
-                            projects : JSON.stringify(projects),
-                            concepts : JSON.stringify(concepts),
-                            links : JSON.stringify(links),
-                            notifications : JSON.stringify(unread_notifications),
-                            activityLog : JSON.stringify(read_notifications),
-                            presentations : JSON.stringify(presentations),
-                            permissions : JSON.stringify(permissions)
-                          });
-                        });
-                      });
-                    })
-                  })
-                })
-              })
+            Project.find({id : req.session.permissions.all, backup : false}).done(function(err,projects){
+              Presentation.find().done(function(err,presentations){
+                Permission.find().done(function(err, permissions){
+                  res.view({
+                    currentUser : JSON.stringify(req.session.user),
+                    users : JSON.stringify(users),
+                    projects : JSON.stringify(projects),
+                    notifications : JSON.stringify(unread_notifications),
+                    activityLog : JSON.stringify(read_notifications),
+                    presentations : JSON.stringify(presentations),
+                    permissions : JSON.stringify(permissions)
+                  });
+                });
+              });
             })
           });
         });
@@ -105,13 +93,9 @@ module.exports = {
             });
           });
           ///////////////////////////////////////////////////
+          Attachment.find({project:project.id}).done(function(err,attachments){
           Comment.find({project:project.id}).done(function(err,comments){
-            
             Element.find({project:project.id}).done(function(err,elements){
-            Concept.find({project:project.id}).done(function(err,concepts){
-            Knowledge.find({project:project.id}).done(function(err,knowledges){
-            Poche.find({project:project.id}).done(function(err,poches){
-              
               Project.find({id : req.session.permissions.all, backup : false}).done(function(err,projects){
                 Link.find({project:project.id}).done(function(err,links){
                   User.find().done(function(err,users){
@@ -119,11 +103,9 @@ module.exports = {
                       Presentation.find({project_id:project.id}).done(function(err, presentations){
                         res.view({
                           comments : JSON.stringify(comments),
+                          attachments : JSON.stringify(attachments),
                           
                           elements : JSON.stringify(elements),
-                          concepts : JSON.stringify(concepts),
-                          knowledges : JSON.stringify(knowledges),
-                          poches : JSON.stringify(poches),
                           
                           currentUser : JSON.stringify(req.session.user),
                           projectTitle : project.title,
@@ -145,12 +127,8 @@ module.exports = {
                   });
                 });
               });
-              
             });
-            });
-            });
-            });
-            
+          });
           });
 
         });

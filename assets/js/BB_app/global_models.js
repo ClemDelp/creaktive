@@ -106,37 +106,6 @@ global.Models.CKObject = Backbone.Model.extend({
     },
 });
 /***************************************/
-global.Models.Knowledge = global.Models.CKObject.extend({
-    initialize : function Post() {
-        this.urlRoot = "knowledge";
-        //this.set({type : "knowledge"});
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    }
-});
-/***************************************/
-global.Models.ConceptModel = global.Models.CKObject.extend({
-    initialize : function Concept() {
-        this.urlRoot = "concept";
-        //this.set({type : "concept"});
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    }
-});
-/***************************************/
-global.Models.Poche = global.Models.CKObject.extend({
-    initialize : function Poche() {
-        //console.log('Poche Constructor');
-        this.urlRoot = "poche";
-        //this.set({type : "category"});
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    }
-});
-/***************************************/
 global.Models.ProjectModel = global.Models.CKObject.extend({
     // defaults : {
     //     id : "",
@@ -154,13 +123,12 @@ global.Models.ProjectModel = global.Models.CKObject.extend({
     },
 });
 /***************************************/
-/***************************************/
 global.Models.Comment = Backbone.Model.extend({
     model: this,
     defaults : {
         id:"",
         project : "",//id
-        attachedTo : "",// id of concept/knowledge/...
+        attachedTo : "",// id of element
         user : "", // id
         date : "",
         content : "",
@@ -168,6 +136,25 @@ global.Models.Comment = Backbone.Model.extend({
     setText : function(value) {this.set({ text : value }); },
     initialize : function Comment() {
         this.urlRoot = "comment";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    }
+});
+/***************************************/
+global.Models.Attachment = Backbone.Model.extend({
+    defaults : {
+        id : "",
+        name : "",
+        path : "",
+        url : "",
+        user : "", // user_id
+        date : "",
+        project : "", // project id
+        attachedTo : ""// id of element
+    },
+    initialize : function Poche() {
+        this.urlRoot = "attachment";
         this.bind("error", function(model, error){
             console.log( error );
         });
@@ -332,21 +319,6 @@ global.Models.Presentation = Backbone.Model.extend({
     },
     initialize : function Poche() {
         this.urlRoot = "presentation";
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    }
-});
-/***************************************/
-global.Models.Attachment = Backbone.Model.extend({
-    defaults : {
-        id : "",
-        name : "",
-        path : "",
-        url : "",
-    },
-    initialize : function Poche() {
-        this.urlRoot = "attachment";
         this.bind("error", function(model, error){
             console.log( error );
         });

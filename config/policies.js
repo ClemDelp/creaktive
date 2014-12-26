@@ -73,6 +73,10 @@
     "*" : "authenticated"
   },
 
+  "AttachmentController" : {
+    "*" : "authenticated"
+  },
+
   "ElementController" : {
     "find" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"]

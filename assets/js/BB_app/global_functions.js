@@ -61,16 +61,8 @@ global.Functions.getNotificationsDictionary = function(user_model,notifications,
 	dictionary.allNews = new Backbone.Collection();
 	dictionary.allRead = new Backbone.Collection();
 	// 
-	concepts.each(function(concept){
-		dictionary.models[concept.get('id')] = {"news" : new Backbone.Collection(),"read" : new Backbone.Collection()};
-	});
-	// 
 	elements.each(function(category){
 		dictionary.models[category.get('id')] = {"news" : new Backbone.Collection(),"read" : new Backbone.Collection()};
-	});
-	// 
-	knowledges.each(function(knowledge){
-		dictionary.models[knowledge.get('id')] = {"news" : new Backbone.Collection(),"read" : new Backbone.Collection()};
 	});
 	// 
 	projects.each(function(project){

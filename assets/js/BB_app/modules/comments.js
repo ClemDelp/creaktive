@@ -24,29 +24,6 @@ var comments = {
   }
 };
 /////////////////////////////////////////////////
-comments.Views.Comment = Backbone.View.extend({
-    initialize : function(json){
-        _.bindAll(this, 'render');
-        // Variables
-        this.sens = json.sens;
-        this.presentation = json.presentation;
-        this.user = json.user;
-        this.comment = json.comment;
-        // Templates
-        this.template = _.template($('#comments-comment-template').html());
-    },
-    render : function(){
-        $(this.el).empty();
-        $(this.el).append(this.template({
-            sens : this.sens,
-            presentation : this.presentation,
-            user : this.user.toJSON(),
-            comment : this.comment.toJSON()
-        }))
-        return this;
-    }
-});
-/////////////////////////////////////////////////
 comments.Views.Main = Backbone.View.extend({
     initialize : function(json) { 
         //console.log("comments view constructor!");
@@ -107,4 +84,26 @@ comments.Views.Main = Backbone.View.extend({
         return this;
     }
 });
-/***************************************/
+/////////////////////////////////////////////////
+comments.Views.Comment = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        // Variables
+        this.sens = json.sens;
+        this.presentation = json.presentation;
+        this.user = json.user;
+        this.comment = json.comment;
+        // Templates
+        this.template = _.template($('#comments-comment-template').html());
+    },
+    render : function(){
+        $(this.el).empty();
+        $(this.el).append(this.template({
+            sens : this.sens,
+            presentation : this.presentation,
+            user : this.user.toJSON(),
+            comment : this.comment.toJSON()
+        }))
+        return this;
+    }
+});
