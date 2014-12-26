@@ -1,8 +1,135 @@
-<div id="timela_container"></div>
+<div id="timela_container" class="row"></div>
+
+<script type="text/template" id="timela-submenu-template">
+	<div class="submenu">
+	    <button class="button simplePadding secondary radius" data-dropdown="title_project_dropdown" aria-controls="title_project_dropdown" aria-expanded="true">
+	        <b>
+	        {{-project.title}}
+	        {{ if(project.starred){ }}<img data-dropdown="title_project_dropdown"  title="starred project" src="/img/icones/Shape-Star2-32.png" />{{ } }}
+	        {{ if(project.status == 'public'){ }}
+	          <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="public project" src="/img/icones/Open-32.png"/>
+	        {{ }else{ }}
+	          <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="private project" src="/img/icones/Lock-32.png"/>
+	        {{ } }}
+	        </b>
+	    </button>
+	    <div id="title_project_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
+
+	    <button class="button secondary simplePadding radius" data-dropdown="members_anager_dropdown" aria-controls="members_anager_dropdown" aria-expanded="true"><b>Members</b><img data-type="action" title="mode" src="/img/icones/Group-Add-32.png"/></button>
+	    <div id="members_anager_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
+
+	    <a style="display:true" href="/bbmap?projectId={{-project.id}}" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Nodes-32.png" /></a>
+
+	    {{ if(mode == "visu"){ }}
+			<a href="#edit" class="button simplePadding alert radius"><b>Edit</b><img data-type="action" title="mode" src="/img/icones/Pencil-32-white.png"/></a>
+		{{ }else{ }}
+
+	        {{ if(filter == "c"){ }}
+	            <button class="button tiny secondary round" data-dropdown="add_simple_concept_dropdown" aria-controls="add_simple_concept_dropdown" aria-expanded="true">
+	            	<img class="drop" src="/img/icones/Light-Bulb-24.png"/>
+	            </button>	              
+	        {{ }else if(filter == "k"){ }}
+	          <a href="#" class="drop dropP button tiny secondary round" title="Add a new Knowledge">
+	            <img src="/img/icones/Book-Open-24.png">
+	          </a>
+	        {{ }else{ }}
+				<button class="button tiny secondary round" data-dropdown="add_simple_concept_dropdown" aria-controls="add_simple_concept_dropdown" aria-expanded="true">
+	            	<img class="drop" src="/img/icones/Light-Bulb-24.png"/>
+	            </button>
+
+	            <button class="button tiny secondary round" data-dropdown="add_simple_knowledge_dropdown" aria-controls="add_simple_knowledge_dropdown" aria-expanded="true">
+					<img src="/img/icones/Book-Open-24.png">
+	            </button>
+	        {{ } }}
+
+		    <div id="add_simple_concept_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
+		    	<div class="row">
+				    <div class="large-12 columns">
+				      	<div class="row collapse">
+				        	<div class="small-10 columns">
+				          		<input id="new_concept_input" type="text" placeholder="title">
+				        	</div>
+				        	<div class="small-2 columns">
+				          		<a href="#" class="button success postfix newSimpleConcept">+</a>
+				        	</div>
+				      	</div>
+				      	<small><b>describe after...</b></small>
+				    </div>
+				</div>
+		    </div>
+		    <div id="add_simple_knowledge_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
+		    	<div class="row">
+				    <div class="large-12 columns">
+				      	<div class="row collapse">
+				        	<div class="small-10 columns">
+				          		<input id="new_knowledge_input" type="text" placeholder="title">
+				        	</div>
+				        	<div class="small-2 columns">
+				          		<a href="#" class="button postfix newSimpleKnowledge">+</a>
+				        	</div>
+				      	</div>
+				      	<small><b>describe after...</b></small>
+				    </div>
+				</div>
+		    </div>
+
+	    {{ } }}
+  </div>
+</script>
+
+<script type="text/template" id="timela-filter-template">
+	<div class="large-3 medium-3 small-12 columns ">
+		<div class="panel">
+			<label>Filters by category:</label>
+			<hr>
+			{{ _.each(poches,function(poche){ }}
+				<a href="#" class="tiny button radius expand">{{- poche.title}}</a>
+			{{ }); }}
+		</div>
+	</div>
+</script>
 
 <script type="text/template" id="timela-element-template">
-	<div class="row panel">
+	<div id="{{- model.id}}_anchor" class="row panel">
+		<button class="button tiny radius success" data-dropdown="add_linked_concept_dropdown" aria-controls="add_linked_concept_dropdown" aria-expanded="true"><b>It give me an idea!</b><img data-type="action" title="mode" src="/img/icones/Group-Adddd-32.png"/></button>
+	    <div id="add_linked_concept_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
+	    	<div class="row">
+			    <div class="large-12 columns">
+			      	<div class="row collapse">
+			        	<div class="small-10 columns">
+			          		<input type="text" placeholder="title">
+			        	</div>
+			        	<div class="small-2 columns">
+			          		<a href="#" class="button success postfix">+</a>
+			        	</div>
+			      	</div>
+			      	<small><b>describe after...</b></small>
+			    </div>
+			</div>
+	    </div>
+
+	    <button class="button tiny radius" data-dropdown="add_linked_knowledge_dropdown" aria-controls="add_linked_knowledge_dropdown" aria-expanded="true"><b>Propose a Knowledge</b><img data-type="action" title="mode" src="/img/icones/Group-Adddd-32.png"/></button>
+	    <div id="add_linked_knowledge_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
+	    	<div class="row">
+			    <div class="large-12 columns">
+			      	<div class="row collapse">
+			        	<div class="small-10 columns">
+			          		<input type="text" placeholder="title">
+			        	</div>
+			        	<div class="small-2 columns">
+			          		<a href="#" class="button postfix">+</a>
+			        	</div>
+			      	</div>
+			      	<small><b>describe after...</b></small>
+			    </div>
+			</div>
+	    </div>
+
+		<a style="padding:5px;float:right" href="#" class="button tiny round alert remove"><img src="/img/icones/Delete-24-white.png"></a>
+
 		<div id="{{-model.id}}_editor" class="large-12 medium-12 small-12 columns"></div>
-		<div id="{{-model.id}}_comments" class="large-12 medium-12 small-12 columns"></div>
-	</div>
+		<hr>
+		<div id="{{-model.id}}_comments" class="large-6 medium-6 small-6 columns"></div>
+		<div id="{{-model.id}}_attachments" class="large-6 medium-6 small-6 columns"></div>
+	</div><br>
 </script>

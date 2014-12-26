@@ -15,7 +15,8 @@ var modelEditor = {
             user : global.models.current_user,
             model : json.model,
             mode    : json.mode,
-            users : global.collections.Users        
+            users : global.collections.Users,
+            elements : global.collections.Elements,
         });
         this.views.main.render();
     }
@@ -26,6 +27,7 @@ modelEditor.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Variables
         this.user = json.user;
+        this.elements = json.elements;
         this.users = json.users;
         this.bbmapMode = json.mode;
         this.mode = "normal";
@@ -79,17 +81,22 @@ modelEditor.Views.Main = Backbone.View.extend({
     },
     render : function(){
         $(this.el).html('');
+        // father
+        var father = this.model.get('id_father')
+        if(father != "none") father = this.elements.get(father).toJSON();
         // content
         if(this.mode == "normal"){
             $(this.el).append(this.template_model_normal({
                 model : this.model.toJSON(),
                 mode : this.bbmapMode,
+                father : father,
                 user : this.users.get(this.model.get('user')).toJSON()
         }));
         } else if(this.mode == "edition"){
             $(this.el).append(this.template_model_edition({
                 model : this.model.toJSON(),
                 mode : this.bbmapMode,
+                father : father,
                 user : this.users.get(this.model.get('user')).toJSON()
         }));    
         }

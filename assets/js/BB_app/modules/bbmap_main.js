@@ -71,6 +71,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.cursorX            = 0;
         this.cursorY            = 0;
         this.visualMode         = "children"; // children/node/parent respectivly display childrens concept/ parents concepts + knowledges associate / knowledges associate to concept
+        this.jeton              = true; // jeton pourevite que le center soit utilisé 2 fois simultanement
         ////////////////////////////////
         // Timeline & history parameter
         this.timeline_pos       = 0;
@@ -393,22 +394,39 @@ bbmap.Views.Main = Backbone.View.extend({
         var pos = $('#dropP').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        this.newElement("poche","none",top,left,pos);
+        var new_element = global.newElement("poche","","none",top,left);
+        this.newViewAndLink(new_element,top,left,pos);
         this.renderActionBar();
     },
     newConceptUnlinked : function(e){
         var pos = $('#dropC').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        this.newElement("concept","none",top,left,pos);
+        var new_element = global.newElement("concept","","none",top,left);
+        this.newViewAndLink(new_element,top,left,pos);
         this.renderActionBar();
     },
     newKnowledgeUnlinked : function(e){
         var pos = $('#dropK').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        this.newElement("knowledge","none",top,left,pos);
+        var new_element = global.newElement("knowledge","","none",top,left);
+        this.newViewAndLink(new_element,top,left,pos);
         this.renderActionBar();
+    },
+    newViewAndLink : function(new_element,top,left,pos){
+        // On centre la map sur l'element
+        var position = {top:(top*bbmap.zoom.get('val')) + $('#map').offset().top,left:(left*bbmap.zoom.get('val')) + $('#map').offset().left};
+        if(pos) position = pos; // pour prendre la position du drop button
+        this.centerToElement(position,function(){
+            // On ajoute le model à la view
+            bbmap.views.main.addModelToView(new_element);
+            // LINK
+            if(new_element.get('id_father') != "none"){
+                var new_cklink = global.newLink(bbmap.views.main.elements.get(new_element.get('id_father')),new_element);
+                bbmap.views.main.addLinkToView(new_cklink)
+            } 
+        });
     },
     startJoyride : function(){
         $("#joyride_id").attr('data-id',this.lastModel.get('id')+'_joyride')
@@ -487,7 +505,7 @@ bbmap.Views.Main = Backbone.View.extend({
                     el:"#commentPart",
                     mode: this.mode,
                     model : model,
-                    presentation : "classic"
+                    presentation : "bulle"
                 }); 
             }
             // attachment module
@@ -906,78 +924,24 @@ bbmap.Views.Main = Backbone.View.extend({
         return coordinates;
     },
     centerToElement : function(position,cb){
-        var screenCentroid = api.getScreenCentroid();
-        var mapOffset = $('#map').offset();
-        var delta_left = screenCentroid.left - position.left;
-        var delta_top = screenCentroid.top - position.top;
+        if(bbmap.views.main.jeton == true){
+            bbmap.views.main.jeton = false; //on prend le jeton
+            var screenCentroid = api.getScreenCentroid();
+            var mapOffset = $('#map').offset();
+            var delta_left = screenCentroid.left - position.left;
+            var delta_top = screenCentroid.top - position.top;
 
-         console.log("map offset : ",mapOffset.top,mapOffset.left)
-        console.log("delta : ",delta_left,delta_left)
-
-        $('#map').animate({ top: mapOffset.top + delta_top, left: mapOffset.left + delta_left },function(){
-            if(cb) cb();
-        });
+            $('#map').animate({ top: mapOffset.top + delta_top, left: mapOffset.left + delta_left },function(){
+                bbmap.views.main.jeton = true; // on rend le jeton
+                if(cb) cb();
+            });
+        }
     },
     /////////////////////////////////////////
     setCKOperator : function(e){
         e.preventDefault();
         if(this.ckOperator == true){this.ckOperator = false}else{this.ckOperator = true;}
         this.render();
-    },
-    /////////////////////////////////////////
-    // Create link and element
-    /////////////////////////////////////////
-    newElement : function(type,father,top,left,pos){
-        var _this = this;
-        // CSS definition
-        var css = bbmap.css_transparent_element;
-        // Father definition
-        var father_id = father;
-        if(father != "none") father_id = father.get('id');
-        // Type definition
-        if(type == "concept") css = bbmap.css_concept_default;
-        else if(type == "knowledge") css = bbmap.css_knowledge_default;
-        else css = bbmap.css_poche_default;
-
-        // On crée l'object
-        var new_element = new global.Models.Element({
-            id : guid(),
-            type : type,
-            id_father: father_id,
-            top : top,
-            left : left,
-            project: bbmap.views.main.project.get('id'),
-            title: "new "+type,
-            user: bbmap.views.main.user.get('id'),
-            css : css,
-        });
-        new_element.save();
-        // On ajoute le model à la collection
-        this.elements.add(new_element);
-        // On centre la map sur l'element
-        var position = {top:(top*bbmap.zoom.get('val')) + $('#map').offset().top,left:(left*bbmap.zoom.get('val')) + $('#map').offset().left};
-        if(pos) position = pos; // pour prendre la position du drop button
-        this.centerToElement(position,function(){
-            // On ajoute le model à la view
-            bbmap.views.main.addModelToView(new_element);
-            // LINK
-            if(father != "none") _this.newLink(father,new_element);
-        });
-    },
-    newLink : function(source,target){
-        var new_cklink = new global.Models.CKLink({
-            id :guid(),
-            user : bbmap.views.main.user.get('id'),
-            date : getDate(),
-            source : source.get('id'),
-            target : target.get('id'),
-            project : bbmap.views.main.project.get('id')
-        });
-        new_cklink.save();
-        // On l'ajoute à la collection
-        this.links.add(new_cklink);
-        // On l'ajoute à la view
-        this.addLinkToView(new_cklink)  
     },
     /////////////////////////////////////////
     // Add remove model/link to view

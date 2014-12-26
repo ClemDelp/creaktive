@@ -80,7 +80,7 @@ attachment.Views.Main = Backbone.View.extend({
         // get the diapo
         $(this.el).append(this.template_diapo({images:images}));
         // Attachments
-        $(this.el).append('<h4>Attachments ('+this.attachments.length+')</h4>');
+        $(this.el).append('<b>Attachments ('+this.attachments.length+')</b>');
         var table = $('<table>',{style:'width:100%'});
         this.attachments.each(function(attachment){
           if(attachment.get('attachedTo') == _this.model.get('id')){

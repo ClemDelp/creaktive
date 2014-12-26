@@ -5,6 +5,14 @@
    max-width: initial;
 }
 
+.submenu{
+	width:100%;
+	padding-top:10px;
+	padding-bottom:10px;
+	padding-left: 10px;
+	background: #EFEFEF;
+}
+
 .bull_left{
 	border:solid 2px #27AE60;
 	background-color: #ECF0F1;

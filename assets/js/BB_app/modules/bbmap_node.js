@@ -172,11 +172,17 @@ bbmap.Views.Node = Backbone.View.extend({
     },
     addConceptChild : function(e){
         e.preventDefault();
-        bbmap.views.main.newElement("concept",this.model,($(this.el).position().top + 100) / bbmap.zoom.get('val'),$(this.el).position().left / bbmap.zoom.get('val'));
+        var top = ($(this.el).position().top + 100) / bbmap.zoom.get('val');
+        var left = $(this.el).position().left / bbmap.zoom.get('val');
+        var new_element = global.newElement("concept","",this.model,top,left);
+        bbmap.views.main.newViewAndLink(new_element,top,left);
     },
     addKnowledgeChild : function(e){
         e.preventDefault();
-        bbmap.views.main.newElement("knowledge",this.model,($(this.el).position().top + 100) / bbmap.zoom.get('val'),$(this.el).position().left / bbmap.zoom.get('val'));
+        var top = ($(this.el).position().top + 100) / bbmap.zoom.get('val');
+        var left = $(this.el).position().left / bbmap.zoom.get('val');
+        var new_element = global.newElement("knowledge","",this.model,top,left);
+        bbmap.views.main.newViewAndLink(new_element,top,left);
     },
     // newCKLink : function(target_model){
     //     var new_cklink = new global.Models.CKLink({

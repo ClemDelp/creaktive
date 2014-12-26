@@ -19,6 +19,11 @@ var global = {
   mode : "visu", // define the mode into bbmap by default : visu/edit/timeline
   filter : "ckp", // define which data to display in bbmap : c/k/ck/kp/ckp
   ckOperator : true, // diplay or not ckoperator, links between C and K : true/false
+  default_element_position : {left: 4000, top: 4000},
+  css_knowledge_default : "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #2980B9;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #2980B9 2px;text-decoration: none;",
+  css_concept_default : "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #27AE60;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #27AE60 2px;text-decoration: none;",
+  css_poche_default : "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #D35400;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #D35400 2px;text-decoration: none;",
+  css_transparent_element : "font-family: Arial;color: #000000;background: transparent;padding: 10px 20px 10px 20px;text-decoration: none;",
   // Constructor
   init: function (json,callback) {
     //////////////////////////////////////////////////////////////////
@@ -110,6 +115,55 @@ var global = {
     this.eventAggregator.trigger("AllNewsNotificationsDictionary",this.AllNewsNotificationsDictionary);
     this.eventAggregator.trigger("AllReadNotificationsDictionary",this.AllReadNotificationsDictionary);
 
-  }
+  },
+  //////////////////////////////////////////////
+  // New applicaiton model
+  //////////////////////////////////////////////
+  newElement : function(type,title,father,top,left,pos){
+    // title
+    var title = title;
+    if(title == "") title = "new "+type;
+    // CSS definition
+    var css = global.css_transparent_element;
+    // Father definition
+    var father_id = father;
+    if(father != "none") father_id = father.get('id');
+    // Type definition
+    if(type == "concept") css = global.css_concept_default;
+    else if(type == "knowledge") css = global.css_knowledge_default;
+    else css = global.css_poche_default;
+    // On crée l'object
+    var new_element = new global.Models.Element({
+        id : guid(),
+        type : type,
+        id_father: father_id,
+        top : top,
+        left : left,
+        project: global.models.currentProject.get('id'),
+        title: title,
+        user: global.models.current_user.get('id'),
+        css : css,
+    });
+    new_element.save();
+    // On ajoute le model à la collection
+    global.collections.Elements.add(new_element);
+
+    return new_element;
+  },
+  newLink : function(source,target){
+    var new_cklink = new global.Models.CKLink({
+        id :guid(),
+        user : global.models.current_user.get('id'),
+        date : getDate(),
+        source : source.get('id'),
+        target : target.get('id'),
+        project : global.models.currentProject.get('id')
+    });
+    new_cklink.save();
+    // On l'ajoute à la collection
+    global.collections.Links.add(new_cklink); 
+
+    return new_cklink; 
+  },
 };
 //////////////////////////////////////////////
