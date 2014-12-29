@@ -41,7 +41,7 @@
           id: req.body.params.id
         }, req.body.params).done(function(err,c){
           if(err) return res.send({err:err});
-          req.socket.broadcast.to(c.project_id).emit("link:update", c[0]);
+          // req.socket.broadcast.to(c.project_id).emit("link:update", c[0]);
           Notification.objectUpdated(req,res,"Link", c[0]);
           res.send(c[0]);   
         });

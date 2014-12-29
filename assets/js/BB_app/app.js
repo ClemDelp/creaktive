@@ -19,7 +19,7 @@ var global = {
   mode : "visu", // define the mode into bbmap by default : visu/edit/timeline
   filter : "ckp", // define which data to display in bbmap : c/k/ck/kp/ckp
   ckOperator : true, // diplay or not ckoperator, links between C and K : true/false
-  default_element_position : {left: 4000, top: 4000},
+  default_element_position : {left: 4500, top: 4500},
   css_knowledge_default : "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #2980B9;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #2980B9 2px;text-decoration: none;",
   css_concept_default : "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #27AE60;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #27AE60 2px;text-decoration: none;",
   css_poche_default : "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #D35400;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #D35400 2px;text-decoration: none;",
@@ -135,6 +135,7 @@ var global = {
     // On crée l'object
     var new_element = new global.Models.Element({
         id : guid(),
+        date : getDate(),
         type : type,
         id_father: father_id,
         top : top,

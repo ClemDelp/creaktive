@@ -113,12 +113,17 @@ bbmap.Views.Main = Backbone.View.extend({
         // this.listenTo(this.notifications,'add',this.timelineAdd,this);
         // this.listenTo(this.notifications,'remove',this.timelineRemove,this);
         this.listenTo(global.eventAggregator,'notification:add',this.updateLocalHistory,this);
-        // Real-time : knowledge & poche & concept
-        global.eventAggregator.on('model:create',this.addModelToView,this);
-        global.eventAggregator.on('model:remove',this.removeModelToView,this);
-        // Real-time : Link
-        global.eventAggregator.on('link:create',this.addLinkToView,this);
-        global.eventAggregator.on('link:remove',this.removeLinkToView,this);
+        this.listenTo(this.elements, 'add', this.addModelToView);
+        this.listenTo(this.elements, 'remove', this.removeModelToView);
+        this.listenTo(this.links, 'add', this.addLinkToView);
+        this.listenTo(this.links, 'remove', this.removeLinkToView);
+
+        // Real-time
+        //global.eventAggregator.on('model:create',this.addModelToView,this);
+        //global.eventAggregator.on('model:remove',this.removeModelToView,this);
+        //global.eventAggregator.on('link:create',this.addLinkToView,this);
+        //global.eventAggregator.on('link:remove',this.removeLinkToView,this);
+        
         // zoom-in & zoom-out avec la moulette
         this.map_el.mousewheel(function(event) {
             event.preventDefault();
@@ -420,11 +425,11 @@ bbmap.Views.Main = Backbone.View.extend({
         if(pos) position = pos; // pour prendre la position du drop button
         this.centerToElement(position,function(){
             // On ajoute le model à la view
-            bbmap.views.main.addModelToView(new_element);
+            // bbmap.views.main.addModelToView(new_element);
             // LINK
             if(new_element.get('id_father') != "none"){
                 var new_cklink = global.newLink(bbmap.views.main.elements.get(new_element.get('id_father')),new_element);
-                bbmap.views.main.addLinkToView(new_cklink)
+                //bbmap.views.main.addLinkToView(new_cklink)
             } 
         });
     },
@@ -529,6 +534,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 modelEditor.init({
                     el:"#editorPart",
                     mode: this.mode,
+                    ckeditor : false,
                     model : model,
                 }); 
             }

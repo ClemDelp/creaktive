@@ -1,19 +1,21 @@
 <script type="text/template" id="comments-header-template">
-    <b>Discussions ({{- comments.length }})</b>
-	{{ if(mode == "edit"){ }}
-		<div class="row">
-			<div class="small-12 large-12 medium-12 columns">
-				<div class="row collapse postfix-round">
-					<div class="small-10 columns">
-						<input type="text" id="input_comment" placeholder="your comment">
-					</div>
-					<div class="small-2 columns">
-						<input type="submit" class="button postfix newComment" value="+">
+    <div class="row">
+	    <b>Discussions ({{- comments.length }})</b>
+		{{ if(mode == "edit"){ }}
+			<div class="row">
+				<div class="small-12 large-12 medium-12 columns">
+					<div class="row collapse postfix-round">
+						<div class="small-10 columns">
+							<input type="text" id="input_comment" placeholder="your comment">
+						</div>
+						<div class="small-2 columns">
+							<input type="submit" class="button postfix newComment" value="+">
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	{{ } }}		
+		{{ } }}
+	</div>
 </script>
 
 <script type="text/template" id="comments-comment-template">

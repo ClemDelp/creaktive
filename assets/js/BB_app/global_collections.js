@@ -42,13 +42,18 @@ global.Collections.CKLinks = Backbone.Collection.extend({
         this.ioBind('remove2', this.serverRemove, this);
     },
     serverCreate : function(model){
-        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("link:create",new global.Models.CKLink(model),"server");
+        if(model.project == global.models.currentProject.get('id')){
+            global.collections.Links.add(new global.Models.CKLink(model)) //global.eventAggregator.trigger("link:create",new global.Models.CKLink(model),"server");
+        } 
     },
     serverUpdate : function(model){
         //global.eventAggregator.trigger(model.id+"_server",model);
     },
     serverRemove : function(model){
-        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("link:remove",new global.Models.CKLink(model),"server");
+        if(model.project == global.models.currentProject.get('id')){
+            global.collections.Links.remove(new global.Models.CKLink(model));
+            // global.eventAggregator.trigger("link:remove",new global.Models.CKLink(model),"server");
+        } 
     }
 });
 /////////////////////////////////////////////////////////////////////
@@ -68,13 +73,20 @@ global.Collections.Elements = Backbone.Collection.extend({
         this.ioBind('remove2', this.serverRemove, this);
     },
     serverCreate : function(model){
-        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:create",new global.Models.Elementrs(model),"server");
+        if(model.project == global.models.currentProject.get('id')){
+            global.collections.Elements.add(new global.Models.Element(model))
+            //global.eventAggregator.trigger("model:create",new global.Models.Elementrs(model),"server");
+        } 
     },
     serverUpdate : function(model){
-        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger(model.id+"_server",model);
+        if(model.project == global.models.currentProject.get('id')){
+            var element = global.collections.Elements.get(model.id);
+            element.set(model)
+            // global.eventAggregator.trigger(model.id+"_server",model);  
+        } 
     },
     serverRemove : function(model){
-        if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:remove",new global.Models.Elementrs(model),"server");
+        if(model.project == global.models.currentProject.get('id')) global.collections.Elements.remove(new global.Models.Element(model))//global.eventAggregator.trigger("model:remove",new global.Models.Elementrs(model),"server");
     }
 });
 /////////////////////////////////////////////////////////////////////

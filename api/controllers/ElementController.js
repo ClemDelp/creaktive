@@ -51,7 +51,7 @@ module.exports = {
           id: req.body.params.id
         }, req.body.params).done(function(err,c){
           if(err) res.send(err);
-          req.socket.broadcast.to(c.id).emit("element:update", c[0]);
+          req.socket.broadcast.to(c.project).emit("element:update", c[0]);
           if(req.body.notification) Notification.objectUpdated(req,res,"Element", c[0], element);
 
           res.send(c[0]);
@@ -66,7 +66,7 @@ module.exports = {
         ///////////////////////////
         Element.create(element).done(function(err,c){
           if(err) return res.send({err:err});
-          req.socket.broadcast.to(c.id).emit("element:create", c);
+          req.socket.broadcast.to(c.project).emit("element:create", c);
           Notification.objectCreated(req,res,"Element", c);
           res.send(c);
         });
@@ -81,7 +81,7 @@ module.exports = {
       if(err) return res.send({err:err});
       if(element.position == 0) res.send({err : "You can't remove c0"})
       else{
-        req.socket.broadcast.to(element.id).emit("element:remove2", element);
+        req.socket.broadcast.to(element.project).emit("element:remove2", element);
         Notification.objectRemoved(req,res,"Element", element);
         element.destroy(function(err){
           if(err) return res.send({err:err});

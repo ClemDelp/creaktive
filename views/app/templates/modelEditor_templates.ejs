@@ -1,33 +1,37 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Timeline template parts -->
 <script type="text/template" id="modelEditor-normal-template">
-	<div class="large-1 medium-1 small-1 columns">
-		<img width="50" src="{{-user.img}}">
-	</div>
-	<div class="large-11 medium-11 small-11 columns">
-		<b>{{-user.name}}</b> post a new <label class="label tiny secondary"><b>{{-model.type}}</b></label> : 
-		{{ if(mode == "edit"){ }}
-		<a href="#" class="button tiny radius alert edit">Describe!</a>
-		{{ } }}
-		<h4><small><a href="#{{- father.id }}_anchor" title="father">{{ if(father != "none"){ }}<span style="{{-father.css}};padding:0px;border:0px;background:white;">{{- father.title}}</span></a></small><img src="/img/icones/Arrowhead-Right-32.png">{{ } }}<span style="{{-model.css}};padding:0px;border:0px;background:white;">{{-model.title}}</span></h4>
-		<small>{{-model.date}}</small>
-	</div>
-	<div class="large-12 medium-12 small-12 columns">
-		{{=model.content}}
+	<div class="row">
+		<div class="large-1 medium-1 small-1 columns">
+			<img width="50" src="{{-user.img}}">
+		</div>
+		<div class="large-11 medium-11 small-11 columns">
+			<b>{{-user.name}}</b> post a new <label class="label tiny secondary"><b>{{-model.type}}</b></label> : 
+			{{ if(mode == "edit"){ }}
+			<a href="#" class="button tiny radius alert edit">Describe!</a>
+			{{ } }}
+			<h4><small><a href="#{{- father.id }}_anchor" title="father">{{ if(father != "none"){ }}<span style="{{-father.css}};padding:0px;border:0px;background:white;">{{- father.title}}</span></a><img src="/img/icones/Arrowhead-Right-32.png">{{ } }}</small><span style="{{-model.css}};padding:0px;border:0px;background:white;">{{-model.title}}</span></h4>
+			<small>{{-model.date}}</small>
+		</div>
+		<div class="large-12 medium-12 small-12 columns">
+			{{=model.content}}
+		</div>
 	</div>
 </script>
 
 <script type="text/template" id="modelEditor-edition-template">
-	<div class="large-1 medium-1 small-1 columns">
-		<img width="50" src="{{-user.img}}">
-	</div>
-	<div class="large-11 medium-11 small-11 columns">
-		<b>{{-user.name}}</b> post a new <label class="label tiny secondary"><b>{{-model.type}}</b></label> : 
-		<a href="#" class="button tiny radius success updateModel">Update!</a>
-	    <a href="#" class="button tiny radius secondary cancelEdition">Cancel</a>
-		<input type="text" class="title" value="{{- model.title}}"/>
-	</div>
-	<div class="large-12 medium-12 small-12 columns">
-		<textarea  class="ckeditor"  name="editor" rows="10" cols="80">{{= model.content }}</textarea>
+	<div class="row">
+		<div class="large-1 medium-1 small-1 columns">
+			<img width="50" src="{{-user.img}}">
+		</div>
+		<div class="large-11 medium-11 small-11 columns">
+			<b>{{-user.name}}</b> post a new <label class="label tiny secondary"><b>{{-model.type}}</b></label> : 
+			<a href="#" class="button tiny radius success updateModel">Update!</a>
+		    <a href="#" class="button tiny radius secondary cancelEdition">Cancel</a>
+			<input type="text" class="title" value="{{- model.title}}"/>
+		</div>
+		<div class="large-12 medium-12 small-12 columns">
+			<textarea   class="ckeditor"  name="editor" rows="10" cols="80">{{= model.content }}</textarea>
+		</div>
 	</div>
 </script>

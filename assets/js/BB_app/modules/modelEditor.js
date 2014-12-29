@@ -16,6 +16,7 @@ var modelEditor = {
             model : json.model,
             mode    : json.mode,
             users : global.collections.Users,
+            ckeditor : json.ckeditor,
             elements : global.collections.Elements,
         });
         this.views.main.render();
@@ -31,6 +32,7 @@ modelEditor.Views.Main = Backbone.View.extend({
         this.users = json.users;
         this.bbmapMode = json.mode;
         this.mode = "normal";
+        this.ckeditor = json.ckeditor;
         this.model = json.model;
         this.template_model_normal = _.template($('#modelEditor-normal-template').html());
         this.template_model_edition = _.template($('#modelEditor-edition-template').html());
@@ -49,11 +51,15 @@ modelEditor.Views.Main = Backbone.View.extend({
     },
     updateModel : function(e){
         e.preventDefault();
-        console.log(this.model)
+        var content = $(this.el).find('.ckeditor').val();
+        if(this.ckeditor == true){
+            content = CKEDITOR.instances.editor.getData();
+            console.log(content)  
+        } 
         this.model.save({
             user : this.user,
             title:$(this.el).find(".title").val(),
-            content:CKEDITOR.instances.editor.getData(),
+            content:content,
             date: getDate(),
             date2:new Date().getTime()
         });       
@@ -65,25 +71,20 @@ modelEditor.Views.Main = Backbone.View.extend({
         e.preventDefault();
         this.mode = "edition";
         this.render();
-        CKEDITOR.replaceAll('ckeditor');
-        CKEDITOR.config.toolbar = [
-           ['Bold','Italic','Underline','NumberedList','BulletedList','Image','Link','TextColor']
-        ] ;
-        // CKEDITOR.config.toolbar = [
-        //     { name: 'document', groups: [ 'mode', 'document', 'doctools' ], items: [ 'Print', '-', 'Templates', '-' , 'Maximize' ] },
-        //     { name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
-        //     { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },
-        //     { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
-        //     { name: 'insert', items: [ 'Image', 'Link', 'Unlink', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar' ] },
-        //     { name: 'styles', items: [ 'Styles', 'Format', 'Font', 'FontSize' ] },
-        //     { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
-        // ];
+        if(this.ckeditor == true){
+            CKEDITOR.replaceAll('ckeditor');
+            CKEDITOR.config.toolbar = [
+               ['Bold','Italic','Underline','NumberedList','BulletedList','Image','Link','TextColor']
+            ] ;    
+        }
     },
     render : function(){
         $(this.el).html('');
         // father
         var father = this.model.get('id_father')
-        if(father != "none") father = this.elements.get(father).toJSON();
+        if(father != "none"){
+            try{father = this.elements.get(father).toJSON();}catch(err){}
+        }
         // content
         if(this.mode == "normal"){
             $(this.el).append(this.template_model_normal({
@@ -98,7 +99,7 @@ modelEditor.Views.Main = Backbone.View.extend({
                 mode : this.bbmapMode,
                 father : father,
                 user : this.users.get(this.model.get('user')).toJSON()
-        }));    
+            }));    
         }
         
         return this;
