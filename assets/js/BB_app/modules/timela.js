@@ -59,6 +59,7 @@ timela.Views.Main = Backbone.View.extend({
         this.router = new timela.router();
         // Events
         this.listenTo(this.elements, 'add', this.addPostView);
+        this.listenTo(this.elements, 'remove', this.removePostView);
         // templates
         this.template_submenu = _.template($('#timela-submenu-template').html());
         this.template_filter = _.template($('#timela-filter-template').html());
@@ -106,6 +107,9 @@ timela.Views.Main = Backbone.View.extend({
         
       }
     },
+    removePostView : function(model){
+      $("#"+model.get('id')+"_anchor").hide('slow');
+    },
     render : function(){ 
         this.submenu_el.empty();
         this.filter_el.empty();
@@ -118,9 +122,9 @@ timela.Views.Main = Backbone.View.extend({
           mode : this.mode
         }));
         // filter
-        this.filter_el.append(this.template_filter({
-          poches : new Backbone.Collection(this.elements.where({type : "poche"})).toJSON()
-        }))
+        // this.filter_el.append(this.template_filter({
+        //   poches : new Backbone.Collection(this.elements.where({type : "poche"})).toJSON()
+        // }))
         // elements
         this.elements.each(function(k){
           _this.addPostView(k);
@@ -171,7 +175,6 @@ timela.Views.Element = Backbone.View.extend({
       }, 
       function(){   
           _this.model.destroy();
-          $("#"+_this.model.get('id')+"_anchor").hide('slow');
       });      
     },
     newLinkedConcept :function(e){

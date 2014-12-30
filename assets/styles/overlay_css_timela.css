@@ -5,6 +5,18 @@
    max-width: initial;
 }
 
+a.pocheDesign{
+	background-color: #E67E22;
+}
+
+a.pocheDesign:hover{
+	background-color: #D35400;
+}
+
+.iconeAddElement{
+	padding:5px;
+}
+
 .submenu{
 	width:100%;
 	padding-top:10px;

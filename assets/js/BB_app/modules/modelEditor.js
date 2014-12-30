@@ -81,23 +81,23 @@ modelEditor.Views.Main = Backbone.View.extend({
     render : function(){
         $(this.el).html('');
         // father
-        var father = this.model.get('id_father')
-        if(father != "none"){
-            try{father = this.elements.get(father).toJSON();}catch(err){}
+        var fathers = this.model.get('id_father')
+        if(fathers != "none"){
+            var fathers = api.getTreeParentNodes(this.model,this.elements).reverse()
         }
         // content
         if(this.mode == "normal"){
             $(this.el).append(this.template_model_normal({
                 model : this.model.toJSON(),
                 mode : this.bbmapMode,
-                father : father,
+                fathers : fathers,
                 user : this.users.get(this.model.get('user')).toJSON()
         }));
         } else if(this.mode == "edition"){
             $(this.el).append(this.template_model_edition({
                 model : this.model.toJSON(),
                 mode : this.bbmapMode,
-                father : father,
+                fathers : fathers,
                 user : this.users.get(this.model.get('user')).toJSON()
             }));    
         }
