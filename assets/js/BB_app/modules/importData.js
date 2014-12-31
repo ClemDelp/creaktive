@@ -27,10 +27,10 @@ importData.Views.Main = Backbone.View.extend({
         this.project = json.project;
         this.projects = json.projects;
         this.projects.remove(this.project)
-        this.categories = new Backbone.Collection();
+        //this.categories = new Backbone.Collection();
         this.links = new Backbone.Collection();
-        this.knowledges = new Backbone.Collection();
-        this.concepts = new Backbone.Collection();
+        this.elements = new Backbone.Collection();
+        //this.concepts = new Backbone.Collection();
         // Templates
         this.template = _.template($('#importData-template').html());
         this.template_categories_list = _.template($('#importData-categories-template').html());
@@ -52,21 +52,13 @@ importData.Views.Main = Backbone.View.extend({
         e.preventDefault();
         var project_id = $(e.target).val();
         var _this = this;
-        $.get("/bbmap/importCategoriesFromProject", {project_id : project_id}, function(data){ 
+        $.get("/bbmap/importElementsFromProject", {project_id : project_id}, function(data){ 
           $('#categories_list_container').html(_this.template_categories_list({categories : data}))
-          _this.categories = new global.Collections.Poches(data);
+          _this.elements = new global.Collections.Elements(data);
         });
         $.get("/bbmap/importLinksFromProject", {project_id : project_id}, function(data){
           console.log("liiinks",data)
           _this.links = new global.Collections.CKLinks(data);
-        });
-        $.get("/bbmap/importKnowledgesFromProject", {project_id : project_id}, function(data){ 
-          $('#knowledges_list_container').html(_this.template_knowledges_list({knowledges : data}))
-          _this.knowledges = new global.Collections.Knowledges(data);
-        });
-        $.get("/bbmap/importConceptsFromProject", {project_id : project_id}, function(data){ 
-          $('#concepts_list_container').html(_this.template_concepts_list({concepts : data}))
-          _this.concepts = new global.Collections.ConceptsCollection(data);
         });
     },
     importDataIntoBBmap : function(e){

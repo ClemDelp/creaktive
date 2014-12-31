@@ -35,10 +35,10 @@ module.exports = {
   //////////////////////////////////////
   // IMPORT DATA SERVICE
   //////////////////////////////////////
-  importCategoriesFromProject : function(req, res){
+  importElementsFromProject : function(req, res){
     Project.findOne(req.query.project_id).done(function(err, project){
-      Poche.find({project : project.id}).done(function(err, poches){
-        return res.send(poches);
+      Element.find({project : project.id}).done(function(err, elements){
+        return res.send(elements);
       });
     });
   },
@@ -46,20 +46,6 @@ module.exports = {
     Project.findOne(req.query.project_id).done(function(err, project){
       Link.find({project : project.id}).done(function(err, links){
         return res.send(links);
-      });
-    });
-  },
-  importKnowledgesFromProject : function(req, res){
-    Project.findOne(req.query.project_id).done(function(err, project){
-      Knowledge.find({project : project.id}).done(function(err, knowledges){
-        return res.send(knowledges);
-      });
-    });
-  },
-  importConceptsFromProject : function(req, res){
-    Project.findOne(req.query.project_id).done(function(err, project){
-      Concept.find({project : project.id}).done(function(err, concepts){
-        return res.send(concepts);
       });
     });
   },

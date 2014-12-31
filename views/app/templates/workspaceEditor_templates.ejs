@@ -1,12 +1,9 @@
 <div id="workspaceEditor-container" class="row"></div>
 
 <script type="text/template" id="workspaceEditor-template">
-	<center>
-		<b>Update Workspace</b>
-		<a href="/backup?projectId={{- workspace.id}}" class="button success tiny radius" title="Create a backup"><img src="/img/icones/Save As-24.png" /></a>
-		<a href="/ckpreviewer?projectId={{- workspace.id}}" class="button tiny radius" title="Create reports"><img src="/img/icones/Documents-02-24.png" /></a>
-		<a href="#" class="button tiny radius alert removeWorkspace" title="Remove this workspace"><img src="/img/icones/Delete-24.png" /></a>
-	</center>
+	<a href="/backup?projectId={{- workspace.id}}" class="button success tiny radius" title="Create a backup"><img src="/img/icones/Save As-24.png" /></a>
+	<a href="/ckpreviewer?projectId={{- workspace.id}}" class="button tiny radius" title="Create reports"><img src="/img/icones/Documents-02-24.png" /></a>
+	<a href="#" class="button tiny radius alert removeWorkspace" title="Remove this workspace"><img src="/img/icones/Delete-24.png" /></a>
 	<hr>
 	<font style="text-align : left;">
 	<div class="row">

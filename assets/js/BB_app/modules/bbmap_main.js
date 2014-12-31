@@ -1210,7 +1210,12 @@ bbmap.Views.Main = Backbone.View.extend({
                 // }catch(err){console.log("Problem to display element");}
             });
             this.links.each(function(l){
-                try{bbmap.views.main.addLinkToView(l);}catch(err){console.log("Missing element to etablish graphical connection...");}
+                try{
+                    bbmap.views.main.addLinkToView(l);
+                }catch(err){
+                    l.destroy(); // clean undelete link!!!!!
+                    console.log("Missing element to etablish graphical connection...");
+                }
             });
             // if(this.filter == "c"){
             //     this.renderConceptsBulle();

@@ -126,31 +126,30 @@
 <script type="text/template" id="bbmap-bottom-element-template">
   <span id="bbmap_bottom_ui">
     <center>
-      {{ if(mode != "timeline"){ }}
-        <span style="display:none">
-          <img title="zoom-in" src="/img/icones/Light-32.png"/>
-          <select id="visu_select_mode" class="large-1 medium-1 small-1">
-            <option value="children">Display children & linked knowledge</option>
-            <option value="parent">Display parents & linked knowledge</option>
-            <option value="node">Display concept & linked knowledge</option>
-          </select>
-        </span>
+      <span style="display:none">
+        <img title="zoom-in" src="/img/icones/Light-32.png"/>
+        <select id="visu_select_mode" class="large-1 medium-1 small-1">
+          <option value="children">Display children & linked knowledge</option>
+          <option value="parent">Display parents & linked knowledge</option>
+          <option value="node">Display concept & linked knowledge</option>
+        </select>
+      </span>
 
-        
+      
+      <span style="display:none">
         <img title="zoom-in" src="/img/icones/Filtering-24.png"/> 
         <select id="filterSelection" class="large-1 medium-1 small-1">
           <option value="c" {{ if(filter == "c"){ }}selected{{ } }}>Concepts</option>
           <option value="kp" {{ if(filter == "kp"){ }}selected{{ } }}>Knowledges & Categories</option>
           <option value="ckp" {{ if(filter == "ckp"){ }}selected{{ } }}>All</option>
         </select>
-
-      {{ } }}
+      </span>
       {{ if((filter == "ck")||(filter == "ckp")){ }}
         <a style="display:none" href="#" class="tiny round button secondary ckOperator"><img title="display CK links" src="/img/icones/Data-Share-24.png"/></a>
       {{ } }}
       <a href="#" class="button tiny round secondary downloadimage"><img title="Download screenshot" src="/img/icones/Download-24.png"/></a>
-      {{ if(mode == "edit"){ }} 
-        <a href="#" data-reveal-id="importData_container" class="button tiny round secondary"><img title="Import data from an other project" src="/img/icones/Data-Import-24.png"/></a>
+      {{ if(mode == "edit"){ }}
+        <a style="display:none" href="#" data-reveal-id="importData_container" class="button tiny round secondary"><img title="Import data from an other project" src="/img/icones/Data-Import-24.png"/></a>
         <div id="importData_container" class="reveal-modal large" data-reveal></div>
         <a href="#" class="tiny round button secondary structureSubTree"><img title="structure sub-tree" src="/img/icones/Network-Drives-24.png"/></a>
         <a style="display:none" href="#" class="button tiny round secondary prevH"><img title="ctrl-Z" src="/img/icones/Arrowhead-Left-24.png"/></a>
