@@ -140,7 +140,11 @@
     <%- partial('app/templates/workspacesList_templates.ejs') %>
     <script src="js/BB_app/modules/workspacesList.js?v=<%= sails.config.session.version %>"></script>
     
+    <%- partial('app/templates/actionMenu_templates.ejs') %>
+    <script src="js/BB_app/modules/actionMenu.js?v=<%= sails.config.session.version %>"></script>
+    
     <%- body %>
+    
     <script>
 
       /////////////////////////////////////////////////////////////////////////////////////////////

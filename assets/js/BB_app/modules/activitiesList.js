@@ -13,6 +13,7 @@ var activitiesList = {
       el : json.el,
       model : global.models.currentProject,
       mode : json.mode,
+      users : global.Collections.Users,
       notifications : global.collections.Notifications
     });
     this.views.main.render();
@@ -24,114 +25,34 @@ activitiesList.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Variables
         this.model = json.model;
+        this.users = json.users;
         this.activity_size = 10;
-        if(this.model.get('type') == 'project'){
-          this.models_notifs = global.ProjectsNotificationsDictionary;
-          this.listenTo(global.eventAggregator,"ProjectsNotificationsDictionary",this.actualize,this);
-        }else{
-          this.models_notifs = global.ModelsNotificationsDictionary;
-          this.listenTo(global.eventAggregator,"ModelsNotificationsDictionary",this.actualize,this);
-        } 
-        // Event
-        this.listenTo(this.model,"remove",this.removeView,this);
+        this.notifications = json.notifications;
         // Templates
-        this.template = _.template($('#activitiesList-template').html()); 
         this.template_activityLog = _.template($('#activityLog-template').html());    
     },
-    events : {
-      "click .closeAll" : "globalValidation",
-      "click .close" : "simpleValidation",
-      "click .more" : "loadMore"
-    },
-    loadMore : function(e){
-      e.preventDefault();
-      _this = this;
-      this.activity_size = this.activity_size + 10;
-      this.render();
-
-      // socket.post("/notification/getmore", {project_id : this.model.id, limit:this.activity_size}, function(activities){
-
-      //   $(_this.el).empty();
-        
-      //   if(_this.news_notifs.length != 0){
-      //     $(_this.el).append(_this.template({
-      //       model       : _this.model.toJSON(),
-      //       news_notifs : _this.news_notifs.toJSON(),
-      //     }));
-      //   }
-
-      //   if(_this.model.get('type') == 'project'){
-      //     $(_this.el).append(_this.template_activityLog({
-      //       model         : _this.model.toJSON(),
-      //       notifications : activities
-      //     }))
-      //   }
-        
-      //   return this;
-      // })
-    },
-    globalValidation : function(e){
-        e.preventDefault();
-        _this = this;
-        this.models_notifs[this.model.get('id')].news.each(function(notif){
-            notif.set({read : _.union(notif.get('read'),global.models.current_user.get('id'))});
-            notif.save();
-            _this.models_notifs[_this.model.get('id')].news.remove(notif);
-            _this.models_notifs[_this.model.get('id')].read.add(notif);
-        });
-        this.render();
-    },
-    simpleValidation : function(e){
-        e.preventDefault();
-        notif = this.models_notifs[this.model.get('id')].news.get(e.target.getAttribute('data-id-notification'));
-        notif.set({read : _.union(notif.get('read'),global.models.current_user.get('id'))});
-        notif.save();
-        
-        this.models_notifs[this.model.get('id')].news.remove(notif);
-        this.models_notifs[this.model.get('id')].read.add(notif);
-        
-        this.render();
-    },
+    events : {},
     removeView : function(){
       this.remove();
     },
-    actualize : function(models_notifs){
-      _this = this;
-      if(this.model.get('type') == 'project'){
-          this.models_notifs = global.ProjectsNotificationsDictionary;
-        }else{
-          this.models_notifs = global.ModelsNotificationsDictionary;
-        } 
-      //this.read_notifs = models_notifs[this.model.get('id')].read;
-      this.render();
-    },
     render : function(){
-        // Init
-        
-        this.news_notifs     = this.models_notifs[this.model.get('id')].news;
-        this.activityLog     = this.models_notifs[this.model.get('id')].read.toJSON().slice(0,this.activity_size);
-        //this.read_notifs     = this.models_notifs[this.model.get('id')].read;
         $(this.el).empty();
-        _this = this;
-        if(this.news_notifs.length != 0){
-          $(this.el).append(this.template({
-            model       : this.model.toJSON(),
-            news_notifs : this.news_notifs.toJSON(),
-            //read_notifs : this.read_notifs.toJSON()
-          }));
-        }
-
-
-        if(this.model.get('type') == 'project'){
-          if(this.activityLog.length != 0){
-            $(this.el).append(this.template_activityLog({
-              model         : this.model.toJSON(),
-              notifications : this.activityLog
-            }))
+        var table = $('<table>',{style:'width:100%'});
+        var nbr = 0;
+        var _this = this;
+        this.notifications.each(function(notif){console.log(notif.get('attachedTo'))
+          if(notif.get('attachedTo') == _this.model.get('id')){
+            nbr +=1;
+            table.append(_this.template_el({
+              user : _this.users.get(notif.get('user')).toJSON(),
+              notif : notif.toJSON()
+            }));
           }
+        });
+        $(this.el).append('<div class="large-12 medium-12 small-12 columns"><b>Activity Log ('+nbr+')</b></div>');
+        $(this.el).append(table);
 
-        }
-        
         return this;
     }
 });
+/***************************************/

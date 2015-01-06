@@ -80,16 +80,18 @@ attachment.Views.Main = Backbone.View.extend({
         // get the diapo
         $(this.el).append(this.template_diapo({images:images}));
         // Attachments
-        $(this.el).append('<b>Attachments ('+this.attachments.length+')</b>');
+        var nbr = 0;
         var table = $('<table>',{style:'width:100%'});
         this.attachments.each(function(attachment){
           if(attachment.get('attachedTo') == _this.model.get('id')){
+            nbr +=1;
             table.append(_this.template_el({
               user : _this.users.get(attachment.get('user')).toJSON(),
               attachment : attachment.toJSON()
             }));
           }
         });
+        $(this.el).append('<div class="large-12 medium-12 small-12 columns"><b>Attachments ('+nbr+')</b></div>');
         $(this.el).append(table);
         // Imput
         if(this.mode == "edit") $(this.el).append(this.template_input());

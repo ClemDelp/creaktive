@@ -83,7 +83,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.presentation       = "graph"; // can be graph/timeline/split
         ////////////////////////////////
         // Templates
-        this.template_top = _.template($('#bbmap-top-element-template').html());
         this.template_bottom = _.template($('#bbmap-bottom-element-template').html());
         this.template_joyride = _.template($('#bbmap-joyride-template').html());
         this.template_tooltip = _.template($('#bbmap-tooltip-notif-template').html());
@@ -156,7 +155,6 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .ckOperator" : "setCKOperator",
         "click .zoomin" : "zoomin",
         "click .zoomout" : "zoomout",
-        "click .fullscreen" : "putInFullScreen",
         "click .reset" : "resetToCentroid",
         "click .window" : "showIcon", 
         "mouseenter .window.concept" : "showDependances", 
@@ -641,11 +639,6 @@ bbmap.Views.Main = Backbone.View.extend({
         var zoomParameters = this.getZoomParameters(ref1,ref2);
         if(!from) this.targetToCursor('out',zoomParameters);
         else this.focusZoom(zoomParameters);
-    },
-    putInFullScreen : function(e){
-        e.preventDefault();
-        if (screenfull.enabled) screenfull.request();
-        
     },
     getOffsetRef : function(){
         var ref = {'top':0, 'left':0}
@@ -1153,18 +1146,26 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     ////////////////////////////////////////
     renderActionBar : function(){
-        this.top_el.empty();
+        //this.top_el.empty();
+        //if(actionMenu.views.main != undefined) actionMenu.views.main.close(); 
+        actionMenu.init({
+            el : this.top_el,
+            filter : this.filter,
+            mode : this.mode,
+            from : "bbmap"
+        });
+
         this.bottom_el.empty();
-        this.top_el.append(this.template_top({
-            filter  : this.filter,
-            mode    : this.mode,
-            project : this.project.toJSON()
-        }));
+        // this.top_el.append(this.template_top({
+        //     filter  : this.filter,
+        //     mode    : this.mode,
+        //     project : this.project.toJSON()
+        // }));
         this.bottom_el.append(this.template_bottom({
             filter  : this.filter,
             mode    : this.mode
         }));
-        this.top_el.find("#zoom_val").html(bbmap.zoom.get('val'));
+        // this.top_el.find("#zoom_val").html(bbmap.zoom.get('val'));
         $( "#dropC" ).draggable();
         $( "#dropK" ).draggable();
         $( "#dropP" ).draggable();

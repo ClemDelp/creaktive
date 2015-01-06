@@ -51,18 +51,19 @@ var global = {
     this.presentationId = json.presentationId;
 
     // Dictionaries    
-    this.ProjectsUsersDictionary = this.Functions.getProjectsUsersDictionary(this.collections.Projects,this.collections.Permissions);// dictionaire pour le nombre d'utilisateur par projet
-    this.NotificationsDictionary = {};
-    this.ModelsNotificationsDictionary = {};
-    this.ProjectsNotificationsDictionary = {};
-    this.AllNewsNotificationsDictionary = {};
-    this.AllReadNotificationsDictionary = {};
-    this.ActivityLog = json.activityLog;
+    // this.ProjectsUsersDictionary = this.Functions.getProjectsUsersDictionary(this.collections.Projects,this.collections.Permissions);// dictionaire pour le nombre d'utilisateur par projet
+    // this.NotificationsDictionary = {};
+    // this.ModelsNotificationsDictionary = {};
+    // this.ProjectsNotificationsDictionary = {};
+    // this.AllNewsNotificationsDictionary = {};
+    // this.AllReadNotificationsDictionary = {};
+
+    //this.ActivityLog = json.activityLog;
     //////////////////////////////////////////////////////////////////
     // Events
     //////////////////////////////////////////////////////////////////
     // this.collections.Poches.on('add',this.prepareNotifications,this);
-    this.collections.Projects.on('add',this.prepareNotifications,this);
+    //this.collections.Projects.on('add',this.prepareNotifications,this);
     // this.collections.Projects.on('remove',this.prepareNotifications,this);
     // this.collections.Knowledges.on('add',this.prepareNotifications,this);
     // this.collections.Concepts.on('add',this.prepareNotifications,this);
@@ -72,7 +73,7 @@ var global = {
     //////////////////////////////////////////////////////////////////
     // Init
     //////////////////////////////////////////////////////////////////
-    this.prepareNotifications();
+    //this.prepareNotifications();
     console.log("******* Connected as ", this.models.current_user.get("name"), " on ", this.models.currentProject.get("title"));
     
     /**
@@ -97,25 +98,25 @@ var global = {
 
     callback();
   },
-  prepareNotifications : function(){
-    ////////////////////////////
-    // Dictionaries 
-    this.NotificationsDictionary = global.Functions.getNotificationsDictionary(global.models.current_user,global.collections.Notifications,global.collections.Projects,global.collections.Knowledges,global.collections.Concepts,global.collections.Elements,global.ActivityLog);
+  // prepareNotifications : function(){
+  //   ////////////////////////////
+  //   // Dictionaries 
+  //   this.NotificationsDictionary = global.Functions.getNotificationsDictionary(global.models.current_user,global.collections.Notifications,global.collections.Projects,global.collections.Knowledges,global.collections.Concepts,global.collections.Elements,global.ActivityLog);
     
-    this.ModelsNotificationsDictionary = this.NotificationsDictionary.models;
-    this.ProjectsNotificationsDictionary = this.NotificationsDictionary.projects;
-    this.AllNewsNotificationsDictionary = this.NotificationsDictionary.allNews;
-    this.AllReadNotificationsDictionary = this.NotificationsDictionary.allRead;
+  //   this.ModelsNotificationsDictionary = this.NotificationsDictionary.models;
+  //   this.ProjectsNotificationsDictionary = this.NotificationsDictionary.projects;
+  //   this.AllNewsNotificationsDictionary = this.NotificationsDictionary.allNews;
+  //   this.AllReadNotificationsDictionary = this.NotificationsDictionary.allRead;
 
-    console.log("AllNews : ",this.AllNewsNotificationsDictionary.length)
-    console.log("AllRead : ",this.AllReadNotificationsDictionary.length)
+  //   console.log("AllNews : ",this.AllNewsNotificationsDictionary.length)
+  //   console.log("AllRead : ",this.AllReadNotificationsDictionary.length)
 
-    this.eventAggregator.trigger("ModelsNotificationsDictionary",this.ModelsNotificationsDictionary);
-    this.eventAggregator.trigger("ProjectsNotificationsDictionary",this.ProjectsNotificationsDictionary);
-    this.eventAggregator.trigger("AllNewsNotificationsDictionary",this.AllNewsNotificationsDictionary);
-    this.eventAggregator.trigger("AllReadNotificationsDictionary",this.AllReadNotificationsDictionary);
+  //   this.eventAggregator.trigger("ModelsNotificationsDictionary",this.ModelsNotificationsDictionary);
+  //   this.eventAggregator.trigger("ProjectsNotificationsDictionary",this.ProjectsNotificationsDictionary);
+  //   this.eventAggregator.trigger("AllNewsNotificationsDictionary",this.AllNewsNotificationsDictionary);
+  //   this.eventAggregator.trigger("AllReadNotificationsDictionary",this.AllReadNotificationsDictionary);
 
-  },
+  // },
   //////////////////////////////////////////////
   // New applicaiton model
   //////////////////////////////////////////////

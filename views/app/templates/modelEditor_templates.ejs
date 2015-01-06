@@ -1,7 +1,6 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Timeline template parts -->
 <script type="text/template" id="modelEditor-normal-template">
-	<div class="row">
 		<div class="large-1 medium-1 small-1 columns">
 			<img width="50" src="{{-user.img}}">
 		</div>
@@ -22,16 +21,13 @@
 				{{ } }}
 				<span style="{{-model.css}};padding:0px;border:0px;background:white;">{{-model.title}}</span>
 			</h4>
-			<small>{{-model.date}}</small>
 		</div>
 		<div class="large-12 medium-12 small-12 columns">
 			{{=model.content}}
 		</div>
-	</div>
 </script>
 
 <script type="text/template" id="modelEditor-edition-template">
-	<div class="row">
 		<div class="large-1 medium-1 small-1 columns">
 			<img width="50" src="{{-user.img}}">
 		</div>
@@ -44,5 +40,4 @@
 		<div class="large-12 medium-12 small-12 columns">
 			<textarea   class="ckeditor"  name="editor" rows="10" cols="80">{{= model.content }}</textarea>
 		</div>
-	</div>
 </script>

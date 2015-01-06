@@ -111,16 +111,24 @@ timela.Views.Main = Backbone.View.extend({
       $("#"+model.get('id')+"_anchor").hide('slow');
     },
     render : function(){ 
-        this.submenu_el.empty();
+        //this.submenu_el.empty();
         this.filter_el.empty();
         this.timeline_el.empty();
         var _this = this;
         // sub menu bar
-        this.submenu_el.append(this.template_submenu({
-          project : this.project.toJSON(),
-          filter : this.filter,
-          mode : this.mode
-        }));
+        actionMenu.init({
+            el : this.submenu_el,
+            filter : "ck",
+            mode : this.mode,
+            from : "timela"
+        });
+
+        // this.submenu_el.append(this.template_submenu({
+        //   project : this.project.toJSON(),
+        //   filter : this.filter,
+        //   mode : this.mode
+        // }));
+        
         // filter
         // this.filter_el.append(this.template_filter({
         //   poches : new Backbone.Collection(this.elements.where({type : "poche"})).toJSON()

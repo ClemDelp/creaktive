@@ -3,7 +3,7 @@
 <div id="bbmap_container" style="height:96%;position:relative;overflow:hidden;">
   <div id="top_container"></div>
   <div id="map_container" style="overflow:hidden;">
-    <a href="#" id="showMenu"  class="button large cbp-openbutton alert" style="padding:0px; padding-right:10px;">
+    <a href="#" id="showMenu"  class="button large radius cbp-openbutton alert" style="padding:0px; padding-right:10px;">
       <image  src="/img/icones/Arrowhead-Left-48.png" id="cbp-openimage"/>
       <span id="showMenu_notif"></span>
     </a>
@@ -18,7 +18,9 @@
         <div class="tabs-content">
           <div id="editModel" class="content active">
             <span id="editorPart"></span>
+            <hr>
             <span id="attachmentPart"></span>
+            <hr>
             <span id="commentPart"></span>
           </div>
           <div id="css3Model" class="content"></div>
@@ -65,61 +67,6 @@
     {{ if( (model.comments.length + model.attachment.length) >0) { }}
     <span id="{{-model.id}}" data-type="title" class="info top-bar-unread">{{- model.comments.length + model.attachment.length}}</span>
     {{ } }}
-
-</script>
-
-<script type="text/template" id="bbmap-top-element-template">
-  <div class="large-6 medium-6 small-6 columns">
-    <button class="button simplePadding secondary radius" data-dropdown="title_project_dropdown" aria-controls="title_project_dropdown" aria-expanded="true">
-        <b>
-        {{-project.title}}
-        {{ if(project.starred){ }}<img data-dropdown="title_project_dropdown"  title="starred project" src="/img/icones/Shape-Star2-32.png" />{{ } }}
-        {{ if(project.status == 'public'){ }}
-          <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="public project" src="/img/icones/Open-32.png"/>
-        {{ }else{ }}
-          <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="private project" src="/img/icones/Lock-32.png"/>
-        {{ } }}
-        </b>
-    </button>
-    <div id="title_project_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
-
-    <button class="button secondary simplePadding radius" data-dropdown="members_anager_dropdown" aria-controls="members_anager_dropdown" aria-expanded="true"><b>Members</b><img data-type="action" title="mode" src="/img/icones/Group-Add-32.png"/></button>
-    <div id="members_anager_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
-
-    <a style="display:true" href="/timela?projectId={{-project.id}}" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Bullets-32-blue.png" /></a>
-
-  </div>
-  <div class="large-3 medium-3 small-3 columns">
-    {{ if(mode == "visu"){ }}
-        <a href="#edit" class="button simplePadding alert radius"><b>Edit</b><img data-type="action" title="mode" src="/img/icones/Pencil-32-white.png"/></a>
-      {{ }else if(mode == "edit"){ }}
-        {{ if((filter == "c")||(filter == "ck")||(filter == "ckp")){ }}
-            <a style="padding:10px" href="#" id="dropC" class="drop dropC button tiny success round" title="Drag & Drop Concept to Map">
-              <img title="Drag & Drop Concept to Map" width="24px" class="drop" src="/img/icones/add-concept-32-white.png"/>
-            </a>
-        {{ } }}
-        {{ if((filter == "p")||(filter == "kp")||(filter == "ckp")){ }}
-          <a style="padding:10px" href="#" id="dropP" class="drop dropP button tiny pocheDesign round" title="Drag & Drop Category to Map">
-            <img title="Drag & Drop Category to Map" width="24px" class="drop" src="/img/icones/add-poche-32-white.png"/>
-          </a>
-        {{ } }}
-        {{ if((filter == "k")||(filter == "ck")||(filter == "ckp")||(filter == "kp")){ }}
-          <a style="padding:10px" href="#" id="dropK" class="drop dropK button tiny round" title="Drag & Drop Knowledge to Map">
-            <img title="Drag & Drop Knowledge to Map" width="24px" class="drop" src="/img/icones/add-k-32-white.png"/>
-          </a>
-        {{ } }}
-      {{ } }}
-  </div>
-
-  <div class="large-3 medium-3 small-3 columns">
-    <div style="float:right">
-      <a href="#" class="tiny round button secondary zoomin"><img title="zoom-out" src="/img/icones/Zoom-Out-24.png"/></a>
-      <a href="#" class="tiny round button secondary zoomout"><img title="zoom-in" src="/img/icones/Zoom-In-24.png"/></a>
-      <a href="#" class="tiny round button secondary reset"><img title="reset" src="/img/icones/Fit-To-Size-24.png"/></a>
-      <a href="#" class="tiny round button secondary fullscreen"><img title="full-screen" src="/img/icones/Full-Screen-Expand-24.png"/></a>
-      <small style="display:none" id="zoom_val"></small>
-    </div>
-  </div>
 
 </script>
 

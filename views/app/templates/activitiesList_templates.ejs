@@ -1,41 +1,9 @@
-<script type="text/template" id="activitiesList-template">
-  <h4>Recent activities</strong>({{- _.filter(news_notifs, function(n){if(n.content != "")return n }).length }})
-      <a href="#" class="closeAll">close all</a>
-  </h4>
-
-  <table width="100%">
-    <tbody>
-    {{_.each(news_notifs,function(notification){ }}
-      {{ if(notification.content != "") { }}
-        <tr>
-          <td width="100"><img width="30" src="{{- notification.from.img }}"></td>
-          <td><strong>{{- notification.from.name}}</strong><br><small>{{- notification.date}}</small></td>
-          <td>{{- notification.content }}</td>
-          <td><a href="#" class="label alert round close" data-id-notification='{{-notification.id}}'>X</a></td>
-        </tr>
-      {{ } }}
-    {{ }); }}
-    </tbody>
-  </table>
-</script>
-
 <script type="text/template" id="activityLog-template">
-  <h4>Activity Log</h4>
-    
-  <table width="100%">
-    <tbody>
-    {{_.each(notifications,function(notification){ }}
-        
-      {{ if(notification.content != "") { }}
-        <tr>
-          <td><img width="30" src="{{- notification.from.img }}"></td>
-          <td><strong>{{- notification.from.name}}</strong><br><small>{{- notification.date}}</small></td>
-          <td>{{- notification.content }}</td>
-        
-        </tr>
-      {{ } }}
-    {{ }); }}
-    </tbody>
-  </table>
-  <a href='#' class="button tiny radius more">more</a>
+  {{ if(notif.content != "") { }}
+    <tr>
+      <td><img width="30" src="{{- user.img }}"></td>
+      <td><strong>{{- user.name}}</strong><br><small>{{- notif.date}}</small></td>
+      <td>{{- notif.content }}</td>
+    </tr>
+  {{ } }}
 </script>

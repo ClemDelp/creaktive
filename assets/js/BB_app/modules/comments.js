@@ -63,15 +63,13 @@ comments.Views.Main = Backbone.View.extend({
     render : function() {
         $(this.el).empty();
         var _this = this;
-        $(this.el).append(this.template_header({
-            comments : this.comments,
-            mode : this.mode
-        }));
         var sens = 0;
+        var nbr = 0;
         this.comments.forEach(function(comment){
             if(sens == 0) sens = 1;
             else sens = 0;
             if(comment.get('attachedTo') == _this.model.get('id')){
+                nbr += 1;
                 $(_this.el).append(new comments.Views.Comment({
                     presentation : _this.presentation,
                     sens : sens,
@@ -79,8 +77,11 @@ comments.Views.Main = Backbone.View.extend({
                     user : _this.users.get(comment.get('user'))
                 }).render().el);    
             }
-            
         });
+        $(this.el).prepend(this.template_header({
+            nbr : nbr,
+            mode : this.mode
+        }));
         return this;
     }
 });
@@ -107,3 +108,4 @@ comments.Views.Comment = Backbone.View.extend({
         return this;
     }
 });
+/////////////////////////////////////////////////

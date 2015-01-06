@@ -1,6 +1,6 @@
 <script type="text/template" id="comments-header-template">
-    <div class="row">
-	    <b>Discussions ({{- comments.length }})</b>
+	<div class="large-12 medium-12 small-12 columns">
+	    <b>Discussions ({{- nbr }})</b><br><br>
 		{{ if(mode == "edit"){ }}
 			<div class="row">
 				<div class="small-12 large-12 medium-12 columns">
@@ -19,35 +19,35 @@
 </script>
 
 <script type="text/template" id="comments-comment-template">
-	<div class="row">
-		{{ if(presentation == "classic"){ }}
-			<div class="row">
+		<div class="large-12 medium-12 small-12 columns">
+			{{ if(presentation == "classic"){ }}
+				<div class="row">
+					<div class="large-2 columns small-2">
+						<img width="20" src="{{- user.img }}">
+					</div>
+					<div class="large-10 columns">
+						<b>{{- user.name }}</b><small>{{- comment.date }}</small>
+						<p>{{- comment.content }}</p>
+					</div>
+				</div>
+			{{ }else{ }}
+				{{ if(sens == 1){ }}
 				<div class="large-2 columns small-2">
 					<img width="20" src="{{- user.img }}">
 				</div>
-				<div class="large-10 columns">
-					<b>{{- user.name }}</b><small>{{- comment.date }}</small>
+				<div class="panel bull_left large-10 columns">
+					<small><b>{{- user.name }}</b> ({{- comment.date }})</small>
 					<p>{{- comment.content }}</p>
 				</div>
-			</div>
-		{{ }else{ }}
-			{{ if(sens == 1){ }}
-			<div class="large-2 columns small-2">
-				<img width="20" src="{{- user.img }}">
-			</div>
-			<div class="panel bull_left large-10 columns">
-				<small><b>{{- user.name }}</b> ({{- comment.date }})</small>
-				<p>{{- comment.content }}</p>
-			</div>
-			{{ }else{ }}
-			<div class="panel bull_right large-10 columns">
-				<small><b>{{- user.name }}</b> ({{- comment.date }})</small>
-				<p>{{- comment.content }}</p>
-			</div>
-			<div class="large-2 columns small-2">
-				<img width="20" src="{{- user.img }}">
-			</div>
+				{{ }else{ }}
+				<div class="panel bull_right large-10 columns">
+					<small><b>{{- user.name }}</b> ({{- comment.date }})</small>
+					<p>{{- comment.content }}</p>
+				</div>
+				<div class="large-2 columns small-2">
+					<img width="20" src="{{- user.img }}">
+				</div>
+				{{ } }}
 			{{ } }}
-		{{ } }}
-	</div>	
+		</div>	
 </script>

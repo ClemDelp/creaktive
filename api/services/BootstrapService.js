@@ -93,6 +93,7 @@ module.exports = {
             });
           });
           ///////////////////////////////////////////////////
+          Notification.find({project:project.id}).done(function(err,notifications){
           Attachment.find({project:project.id}).done(function(err,attachments){
           Comment.find({project:project.id}).done(function(err,comments){
             Element.find({project:project.id}).done(function(err,elements){
@@ -115,7 +116,7 @@ module.exports = {
                           users : JSON.stringify(users),
                           projects : JSON.stringify(projects),
                           links : JSON.stringify(links),
-                          notifications : JSON.stringify(all_notifications),
+                          notifications : JSON.stringify(notifications),
                           permissions : JSON.stringify(permissions),
                           backups : JSON.stringify(backups_truncated),
                           screenshots : JSON.stringify(screenshots),
@@ -126,6 +127,7 @@ module.exports = {
                     });
                   });
                 });
+              });
               });
             });
           });

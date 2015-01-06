@@ -74,39 +74,39 @@ global.Models.Element = Backbone.Model.extend({
     }
 });
 /***************************************/
-global.Models.CKObject = Backbone.Model.extend({
-    defaults : {
-        id:"",
-        author : "",
-        user: "",
-        type : "",
-        title : "",
-        content : "",
-        tags : [],
-        comments: [],
-        date : "",
-        date2: "",
-        attachment: "",
-        color: "#C0392B",
-        members:[],
-        attachment:[],
-        id_father: "",
-        top : "",
-        left:"",
-        project:"",
-        status : "private",
-        css : "",
-        displayChildrens : true,
-        visibility : "show"
-    },
-    parse : function(serverObj){
-        serverObj.comments = new global.Collections.Comments(serverObj.comments);
-        serverObj.members = new global.Collections.UsersCollection(serverObj.members);
-        return serverObj;
-    },
-});
+// global.Models.CKObject = Backbone.Model.extend({
+//     defaults : {
+//         id:"",
+//         author : "",
+//         user: "",
+//         type : "",
+//         title : "",
+//         content : "",
+//         tags : [],
+//         comments: [],
+//         date : "",
+//         date2: "",
+//         attachment: "",
+//         color: "#C0392B",
+//         members:[],
+//         attachment:[],
+//         id_father: "",
+//         top : "",
+//         left:"",
+//         project:"",
+//         status : "private",
+//         css : "",
+//         displayChildrens : true,
+//         visibility : "show"
+//     },
+//     parse : function(serverObj){
+//         serverObj.comments = new global.Collections.Comments(serverObj.comments);
+//         serverObj.members = new global.Collections.UsersCollection(serverObj.members);
+//         return serverObj;
+//     },
+// });
 /***************************************/
-global.Models.ProjectModel = global.Models.CKObject.extend({
+global.Models.ProjectModel = Backbone.Model.extend({
     // defaults : {
     //     id : "",
     //     title : "no projects",
@@ -195,10 +195,10 @@ global.Models.NotificationModel = Backbone.Model.extend({
         content : "",//description de la notification: "mise à jour sur le post"
         to : "", // new model version
         old : "", // old model version
-        from : "",// Qui est à l'origine: utilisateur, mise à jour, ...
+        user : "",// Qui est à l'origine: utilisateur, mise à jour, ...
         date : getDate(),
-        project_id : "",
-        read : ""
+        project : "",
+        attachedTo : "",
     },
     initialize : function Doc() {
         //console.log('Notification part Constructor');

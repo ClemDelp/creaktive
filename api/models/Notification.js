@@ -29,10 +29,11 @@
       object : object,
       action : "create",
   		date : IdService.getDate(),
-  		read : [req.session.user.id],
-  		project_id : req.body.params.project,
-  		from : req.session.user,
-      comparator : new Date().getTime()
+  		read : false,
+  		project : req.body.params.project,
+  		user : req.session.user.id,
+      comparator : new Date().getTime(),
+      attachedTo : to.id,
   	}).done(function(err,n){
   		if(err) console.log(err);
   		req.socket.in(req.body.params.project).emit("notification:create", n);
@@ -47,7 +48,6 @@
 
     if(req.body.action.length == 0) return;
     if(_.indexOf(req.body.action, "css") > -1) content = object + " template updated: " + req.body.params.title;
-    //if(_.indexOf(req.body.action, "top") > -1 || _.indexOf(req.body.action, "left") >-1) return;
     if(_.indexOf(req.body.action, "title") > -1) content = object + " title updated: " + req.body.params.title;
     if(_.indexOf(req.body.action, "attachment") > -1) content = "New document attached to : "+object + ": " + req.body.params.title
     if(_.indexOf(req.body.action, "content") > -1) content = object + ": "+req.body.params.title + " content updated"
@@ -63,10 +63,11 @@
       to : to,
       old : old,
       date : IdService.getDate(),
-      read : [req.session.user.id],
-      project_id : req.body.params.project,
-      from : req.session.user,
-      comparator : new Date().getTime()
+      read : false,
+      project : req.body.params.project,
+      user : req.session.user.id,
+      comparator : new Date().getTime(),
+      attachedTo : to.id,
     }).done(function(err,n){
       if(err) console.log(err);
       req.socket.in(req.body.params.project).emit("notification:create", n);
@@ -87,10 +88,11 @@
   		content : content,
   		to : to,
   		date : IdService.getDate(),
-  		read : [req.session.user.id],
-  		project_id : req.body.params.project,
-  		from : req.session.user,
-      comparator : new Date().getTime()
+  		read : false,
+  		project : req.body.params.project,
+  		user : req.session.user.id,
+      comparator : new Date().getTime(),
+      attachedTo : to.id,
   	}).done(function(err,n){
   		if(err) console.log(err);
   		req.socket.in(req.body.params.project).emit("notification:create", n);

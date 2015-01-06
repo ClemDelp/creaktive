@@ -18,7 +18,7 @@
 	<div class="workspaces_container_list large-12 columns">
 		<label>{{- title }}</label>
 		{{ _.each(workspaces, function(project){ }}
-			<a href="/bbmap?projectId={{- project.id }}#visu" class="expand button radius secondary tiny">
+			<div class="row">
 				{{ if(starred == true){ }}<img style="float:left" src="/img/icones/Shape-Star2-24.png" />{{ } }}
 				{{ if(project.status == 'public'){ }}
 			    	<img style="float:left" data-model-id="{{-project.id}}" title="visibility" src="/img/icones/Open-24.png"/>
@@ -26,7 +26,9 @@
 			    	<img style="float:left" data-model-id="{{-project.id}}" title="visibility" src="/img/icones/Lock-24.png"/>
 			    {{ } }}
 			    <b>{{-project.title}}</b>
-			</a>
+			    <a style="padding:0px" title="Graphical mode" class="button tiny secondary radius" href="/bbmap?projectId={{- project.id }}#visu"><img style="width:24px" src="/img/icones/Nodes-128.png" /></a>
+			  	<a style="padding:0px" title="Timeline mode" class="button tiny secondary radius" href="/timela?projectId={{- project.id }}"><img style="width:24px" src="/img/icones/Bullets-128.png" /></a>
+			</div>
 		{{ }); }}
 	</div>
 </script>
