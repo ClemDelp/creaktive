@@ -16,30 +16,44 @@
   	nickname: 'string'
   	*/
   },
+  newNotification : function(req,json){
+    Notification.create({
+      id          : IdService.guid(),
+      type        : json.type,
+      content     : json.content,
+      to          : json.to,
+      attr        : json.attr,
+      object      : json.object,
+      action      : json.action,
+      date        : IdService.getDate(),
+      read        : false,
+      project     : json.project,
+      user        : req.session.user.id,
+      comparator  : new Date().getTime(),
+      attachedTo  : json.attachedTo,
+    }).done(function(err,n){
+      if(err) console.log(err);
+      req.socket.in(req.body.params.project).emit("notification:create", n);
+      req.socket.broadcast.to(req.body.params.project).emit("notification:create", n);
+    });
+  },
 
   objectCreated : function(req,res, object, to){
     console.log("Notifications object created")
     if(req.body.action.length == 0) return;
-    Notification.create({
-  		id : IdService.guid(),
-  		type : "create"+object,
-  		content : object + " created",
-  		to : to,
-      attr   : ['create'],
-      object : object,
-      action : "create",
-  		date : IdService.getDate(),
-  		read : false,
-  		project : req.body.params.project,
-  		user : req.session.user.id,
-      comparator : new Date().getTime(),
-      attachedTo : to.id,
-  	}).done(function(err,n){
-  		if(err) console.log(err);
-  		req.socket.in(req.body.params.project).emit("notification:create", n);
-      req.socket.broadcast.to(req.body.params.project).emit("notification:create", n);
+    
+    var json = {
+      type        : "create"+object,
+      content     : object + " created",
+      to          : to,
+      attr        : ['create'],
+      object      : object,
+      action      : "create",
+      project     : req.body.params.project,
+      attachedTo  : to.id,
+    }
+    this.newNotification(req,json);
 
-  	})
   },
 
   objectUpdated : function(req,res, object, to, old){
@@ -53,50 +67,32 @@
     if(_.indexOf(req.body.action, "content") > -1) content = object + ": "+req.body.params.title + " content updated"
     if(_.indexOf(req.body.action, "comments") > -1) if(req.body.params.comments[0]) if(req.body.params.comments[0].content != "")content = "Added a comment: " + req.body.params.comments[0].content
 
-    Notification.create({
-      id : IdService.guid(),
-      type : "update" + object,
-      object : object,
-      action : "update",
-      attr   : req.body.action,
-      content : content,
-      to : to,
-      old : old,
-      date : IdService.getDate(),
-      read : false,
-      project : req.body.params.project,
-      user : req.session.user.id,
-      comparator : new Date().getTime(),
-      attachedTo : to.id,
-    }).done(function(err,n){
-      if(err) console.log(err);
-      req.socket.in(req.body.params.project).emit("notification:create", n);
-      req.socket.broadcast.to(req.body.params.project).emit("notification:create", n);
-
-    });
+    var json = {
+      type        : "update"+object,
+      content     : content,
+      to          : to,
+      attr        : req.body.action,
+      object      : object,
+      action      : "update",
+      project     : req.body.params.project,
+      attachedTo  : to.id,
+    }
+    this.newNotification(req,json);
   },
 
   objectRemoved : function(req,res, object, to){
-    var content = "model removed";
-
-  	Notification.create({
-  		id : IdService.guid(),
-  		type : "remove" + object,
-      object : object,
-      action : "remove",
-      attr   : ['remove'],
-  		content : content,
-  		to : to,
-  		date : IdService.getDate(),
-  		read : false,
-  		project : req.body.params.project,
-  		user : req.session.user.id,
-      comparator : new Date().getTime(),
-      attachedTo : to.id,
-  	}).done(function(err,n){
-  		if(err) console.log(err);
-  		req.socket.in(req.body.params.project).emit("notification:create", n);
-  	});
+    console.log("Notification object removed")
+    var json = {
+      type        : "remove"+object,
+      content     : "model removed",
+      to          : to,
+      attr        : ['remove'],
+      object      : object,
+      action      : "remove",
+      project     : req.body.params.project,
+      attachedTo  : to.id,
+    }
+    this.newNotification(req,json);
   },
 
 };

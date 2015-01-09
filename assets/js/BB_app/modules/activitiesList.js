@@ -11,9 +11,9 @@ var activitiesList = {
     /*Init*/
     this.views.main = new this.Views.Main({
       el : json.el,
-      model : global.models.currentProject,
+      model : json.model,
       mode : json.mode,
-      users : global.Collections.Users,
+      users : global.collections.Users,
       notifications : global.collections.Notifications
     });
     this.views.main.render();
@@ -33,17 +33,18 @@ activitiesList.Views.Main = Backbone.View.extend({
     },
     events : {},
     removeView : function(){
-      this.remove();
+        this.remove();
     },
     render : function(){
         $(this.el).empty();
         var table = $('<table>',{style:'width:100%'});
+        console.log()
         var nbr = 0;
         var _this = this;
-        this.notifications.each(function(notif){console.log(notif.get('attachedTo'))
-          if(notif.get('attachedTo') == _this.model.get('id')){
+        this.notifications.each(function(notif){
+          if((notif.get('attachedTo') == _this.model.get('id'))&&(notif.get('content')!="")){
             nbr +=1;
-            table.append(_this.template_el({
+            table.append(_this.template_activityLog({
               user : _this.users.get(notif.get('user')).toJSON(),
               notif : notif.toJSON()
             }));

@@ -153,7 +153,7 @@
       function rt (io, callback) {
         // as soon as this file is loaded, connect automatically, 
         var socket = io.connect();
-        //socket.on("comment:create",function(){alert('comments created')});
+        socket.on("notification:create",function(){alert('notification created')});
         
 
         socket.on("disconnect", function(msg){

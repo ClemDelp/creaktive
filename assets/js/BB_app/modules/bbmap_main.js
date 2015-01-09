@@ -196,14 +196,15 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // LocalHistory gestion
     /////////////////////////////////////////
-    // displayHistoric : function(){
-        // console.log('history pos : ',this.history_pos,' - sens : ',this.sens)
-    //     this.localHistory.each(function(h){
-    //         console.log(h)           
-    //     })
-    // },
+    displayHistoric : function(){
+        console.log('history pos : ',this.history_pos,' - sens : ',this.sens)
+        this.localHistory.each(function(h){
+            console.log(h)           
+        })
+    },
     updateLocalHistory : function(model,from){
-        if((model.get('from').id == global.models.current_user.get('id'))&&(this.flag == "acceptLastNotif")){
+        var user_id = bbmap.views.main.users.get(model.get('user')).id
+        if((user_id == global.models.current_user.get('id'))&&(this.flag == "acceptLastNotif")){
             this.pushNotif(model);
             if(this.sens != "init"){
                 // on supprime tout ce qui est en dessous de history_pos (si on est à la psoition 2 on supprime 1 et 0)
@@ -539,10 +540,12 @@ bbmap.Views.Main = Backbone.View.extend({
             // Activities module
             if(activitiesList.views.main != undefined){
                 activitiesList.views.main.mode = this.mode;
+                activitiesList.views.main.model = model;
                 activitiesList.views.main.render();
             }else{
                 activitiesList.init({
                     el:"#activitiesModel",
+                    model : model,
                     mode: this.mode,
                 }); 
             }
@@ -845,7 +848,7 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     resetToCentroid : function(){
         if(api.getJsonSize(bbmap.views.main.nodes_views)>5) this.findRightZoom();
-        if(api.getJsonSize(bbmap.views.main.nodes_views)>2) this.findRightCentroid();
+        if(api.getJsonSize(bbmap.views.main.nodes_views)>0) this.findRightCentroid();
     },
     findRightCentroid : function(){
         var zoom = bbmap.zoom.get('val');

@@ -41,10 +41,8 @@
 <!-- Modules to load -->
 <%- partial('../app/templates/together_templates') %>
 
-<%- partial('../app/templates/activitiesList_templates') %>
 <%- partial('../app/templates/imagesList_templates') %>
 <%- partial('../app/templates/modelEditor_templates') %>
-<%- partial('../app/templates/attachment_templates') %>
 <%- partial('../app/templates/css3_templates') %>
 <%- partial('../app/templates/templatesList_templates') %>
 
@@ -70,8 +68,9 @@
 <%- partial('../app/templates/timela_templates.ejs') %>
 <script src="js/BB_app/modules/timela.js?v=<%= sails.config.session.version %>"></script>
 
+<%- partial('../app/templates/attachment_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/attachment.js?v=<%= sails.config.session.version %>"></script>
-<script type="text/javascript" src="js/BB_app/modules/activitiesList.js?v=<%= sails.config.session.version %>"></script>
+
 <script type="text/javascript" src="js/BB_app/modules/imagesList.js?v=<%= sails.config.session.version %>"></script>
 <script type="text/javascript" src="js/BB_app/modules/css3.js?v=<%= sails.config.session.version %>"></script>
 <script type="text/javascript" src="js/BB_app/modules/templatesList.js?v=<%= sails.config.session.version %>"></script>
