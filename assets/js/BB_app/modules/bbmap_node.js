@@ -259,7 +259,7 @@ bbmap.Views.Node = Backbone.View.extend({
         
         $(this.el).append(this.template_bulle({
             model:this.model.toJSON(),
-            user : bbmap.views.main.users.get(this.model.get('user')).toJSON(),
+            user : user,
             mode : bbmap.views.main.mode
         }));
         this.applyStyle();
