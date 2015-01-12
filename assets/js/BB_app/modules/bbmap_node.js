@@ -36,22 +36,6 @@ bbmap.Views.Node = Backbone.View.extend({
         bbmap.views.main.setLastModel(this.model,'editBulle');
         bbmap.views.main.startJoyride();
     },
-    // actualize : function(model,save){
-    //     var old_id_father = this.model.get('id_father');
-    //     var new_id_father = model.id_father;
-    //     ////////////////////////
-    //     this.model.set({
-    //         top: model.top,
-    //         left: model.left,
-    //         title: model.title,
-    //         css: model.css,
-    //         id_father : model.id_father
-    //     });
-    //     if((save)&&(save == true))this.model.save();
-    //     this.applyStyle();
-    //     if((old_id_father != new_id_father)&&(new_id_father == "none")) this.removeLink(old_id_father);
-    //     else if((old_id_father != new_id_father)&&(new_id_father != "none")) this.addSimpleLink(new_id_father);
-    // },
     //////////////////////////////////////////
     // Follow father system
     //////////////////////////////////////////

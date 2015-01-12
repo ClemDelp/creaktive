@@ -54,7 +54,7 @@ module.exports = {
           req.socket.broadcast.to(c.project).emit("element:update", c[0]);
           if(req.body.notification) Notification.objectUpdated(req,res,"Element", c[0], element);
 
-          res.send(c[0]);
+          // res.send(c[0]);
 
       });
 
@@ -68,7 +68,7 @@ module.exports = {
           if(err) return res.send({err:err});
           req.socket.broadcast.to(c.project).emit("element:create", c);
           Notification.objectCreated(req,res,"Element", c);
-          res.send(c);
+          // res.send(c);
         });
 
       }

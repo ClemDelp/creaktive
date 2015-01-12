@@ -152,6 +152,16 @@ var global = {
 
     return new_element;
   },
+  updateElement : function(element,json){
+    var model = this.collections.Elements.get(element.get('id'))
+    model.save({
+        top       : json.top,
+        left      : json.left,
+        title     : json.title,
+        css       : json.css,
+        id_father : json.id_father
+    });
+  },
   newLink : function(source,target){
     var new_cklink = new global.Models.CKLink({
         id :guid(),

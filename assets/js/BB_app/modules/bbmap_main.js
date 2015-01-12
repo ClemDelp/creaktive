@@ -160,19 +160,13 @@ bbmap.Views.Main = Backbone.View.extend({
         "mouseenter .window.concept" : "showDependances", 
         "mouseleave .window" : "hideDependances", 
         "click .structureSubTree" : "structureTree",
-        //"click .closeEditor" : "hideEditor",
         "click #okjoyride" : "updateLastModelTitle",
         "click .screenshot" : "screenshot",
         "click .downloadimage" : "downloadimage",
         "click #showMenu" : "eventMenu",
-        // "click .prev" : "backInTimeline",
-        // "click .next" : "advanceInTimeline",
         "click .prevH" : "backInHistory",
         "click .nextH" : "advanceInHistory",
         "click .structureSubTree" : "structureTree",
-        "click .graphPresentation" : "graphPresentation",
-        "click .timelinePresentation" : "timelinePresentation",
-        "click .splitPresentation" : "splitPresentation",
     },
     deleteButton : function(){
         var view = this.nodes_views[this.lastModel.get('id')]
@@ -197,7 +191,7 @@ bbmap.Views.Main = Backbone.View.extend({
     // LocalHistory gestion
     /////////////////////////////////////////
     displayHistoric : function(){
-        console.log('history pos : ',this.history_pos,' - sens : ',this.sens)
+        console.log('nbr: ',this.localHistory.length,' - pos: ',this.history_pos,' - sens: ',this.sens)
         this.localHistory.each(function(h){
             console.log(h)           
         })
@@ -223,9 +217,13 @@ bbmap.Views.Main = Backbone.View.extend({
         }else{
             $('#'+model.get('to').id+'_tooltip').qtip('destroy', true);
             setTimeout(function(){
+                var user = bbmap.views.main.users.get(model.get('user'))
                 $('#'+model.get('to').id+'_tooltip').qtip({
                     content: {
-                        text: bbmap.views.main.template_tooltip({notif:model.toJSON()})
+                        text: bbmap.views.main.template_tooltip({
+                            notif:model.toJSON(),
+                            user : user.toJSON()
+                        })
                     },
                     events: {
                         show: function(event, api) {
@@ -288,39 +286,29 @@ bbmap.Views.Main = Backbone.View.extend({
     // Action prev/next timeline/history gestion
     /////////////////////////////////////////
     nextPrevActionController : function(sens,from){
-        var historic = {};
-        var save = false;
-        if(from == "history"){
-            historic = this.localHistory.toArray()[this.history_pos];
-            save = true;
-        }
-        else if(from == "timeline"){
-            historic = this.notifications.toArray()[this.timeline_pos];
-            $("#timeline_date").html(historic.get('date'));
-        }
+        var historic = this.localHistory.toArray()[this.history_pos];
         var action = historic.get('action');
         var type = historic.get('object');
         var model = this.getTimelineHitoryModel(historic,type,sens,action);
         // Control sens to chose the right action
         if(((sens == "go")&&(action == "create")&&(type != "Link"))||((sens == "back")&&(action == "remove")&&(type != "Link"))){
             this.addModelToView(model,"history");
-            if(save == true) model.save();
+            model.save();
         }
         else if(((sens == "go")&&(action == "create")&&(type == "Link"))||((sens == "back")&&(action == "remove")&&(type == "Link"))){
             this.addLinkToView(model);
-            if(save == true) model.save();
+            model.save();
         }
         else if(((sens == "go")&&(action == "remove")&&(type != "Link"))||((sens == "back")&&(action == "create")&&(type != "Link"))){
             this.removeModelToView(model,"history");
-            if(save == true) model.destroy();
+            model.destroy();
         }
         else if(((sens == "go")&&(action == "remove")&&(type == "Link"))||((sens == "back")&&(action == "create")&&(type == "Link"))){
             this.removeLinkToView(model);
-            if(save == true) model.destroy();
+            model.destroy();
         }
         else if(action == "update"){
-            global.eventAggregator.trigger(model.get('id')+"_server",model.toJSON(),false);
-            if(save == true) model.save();
+            global.updateElement(model,model.toJSON())
         }
     },
     getTimelineHitoryModel : function(historic,type,sens,action){
@@ -334,6 +322,7 @@ bbmap.Views.Main = Backbone.View.extend({
             if(type == "link") model = new global.Models.CKLink(historic.get('to'));
             else model = new global.Models.Element(historic.get('to'));
         }
+        console.log('eeee',model)
         return model;
     },
     /////////////////////////////////////////
