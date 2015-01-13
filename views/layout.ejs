@@ -66,7 +66,7 @@
     <script>
       window._trackJs = {
         // Whether to send errors to TrackJS
-        enabled: true,// <---------------------------- here put a true in production
+        enabled: false,// <---------------------------- here put a true in production
         // Custom error callback
         onError: function () { return true; },
         // Custom object serialization
@@ -93,7 +93,7 @@
           // Pass console messages through to the browser
           display: true,
           // Transmit console errors to TrackJS
-          error: true, // <---------------------------- here put a true in production
+          error: false, // <---------------------------- here put a true in production
           // Names of console functions to watch
           watch: ["log","debug","info","warn","error"]
         },
@@ -153,7 +153,7 @@
       function rt (io, callback) {
         // as soon as this file is loaded, connect automatically, 
         var socket = io.connect();
-        //socket.on("notification:create",function(){alert('notification created')});
+        //socket.on("user:update",function(){alert('user update')});
         
 
         socket.on("disconnect", function(msg){
@@ -192,9 +192,10 @@
     </script>
 
     <script src="js/foundation.min.js"></script>
-    <script src="js/foundation/foundation.joyride.js"></script>
+    <script src="js/foundation/foundation.joyride.js?v=<%= sails.config.session.version %>"></script>
     <script src="js/vendor/jquery.cookie.js"></script>
     <script src="js/foundation/foundation.abide.js"></script>
+
     <script>
       $(document).foundation();
       // Backbone.Collection.prototype.debugEvents = Backbone.Model.prototype.debugEvents = Backbone.View.prototype.debugEvents = Backbone.Router.prototype.debugEvents = function() {
@@ -287,6 +288,6 @@
     
     nlib.showByPathname(releases);
   </script>
-  
+ 
   </body>
 </html>

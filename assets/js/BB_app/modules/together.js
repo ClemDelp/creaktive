@@ -13,14 +13,14 @@ var together = {
   
   // Constructor
   init: function (mode, filter) {
-    // this.views.main = new this.Views.Main({
-    //   el              : "#togetherjs-dock",
-    //   project         : global.models.currentProject,
-    //   user            : global.models.current_user,
-    //   users           : global.collections.Project_users,
-    //   eventAggregator : global.eventAggregator
-    // });
-    // this.views.main.render();
+    this.views.main = new this.Views.Main({
+      el              : "#togetherjs-dock",
+      project         : global.models.currentProject,
+      user            : global.models.current_user,
+      users           : global.collections.Project_users,
+      eventAggregator : global.eventAggregator
+    });
+    this.views.main.render();
   }
 };
 /////////////////////////////////////////////////

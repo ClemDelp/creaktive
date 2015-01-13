@@ -32,7 +32,8 @@
   		if(user){
   			User.update({id: req.body.params.id}, req.body.params).done(function(err,u){
   				if(err) return res.send({err:err})
-          res.send(u[0]);
+          req.socket.broadcast.to(req.body.params.project).emit("user:update", u[0]);
+          //res.send(u[0]);
         });
   		}else{
   			User.create(req.body.params).done(function(err,p){

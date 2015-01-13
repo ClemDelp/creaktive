@@ -273,7 +273,7 @@
 
           // scroll if not modal
           if (!/body/i.test(this.settings.$target.selector)) {
-            this.scroll_to();
+            //this.scroll_to();
           }
 
           if (this.is_phone()) {

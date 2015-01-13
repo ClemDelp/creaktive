@@ -1266,13 +1266,7 @@ bbmap.Views.Main = Backbone.View.extend({
             this.init = false; 
             // this.intelligentRestructuring();
         }
-        /////////////////////////
-        // Workspace editor
-        if(workspaceEditor.views.main != undefined) workspaceEditor.views.main.close();
-        workspaceEditor.init({el:"#title_project_dropdown",mode:this.mode});
-        // Members editor
-        if(usersList.views.main != undefined) usersList.views.main.close(); 
-        usersList.init({el : "#members_anager_dropdown",mode : this.mode});
+        
         ////////////////////////
         // invisibility
         if(this.invisibility == 1){

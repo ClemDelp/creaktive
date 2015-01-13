@@ -40,6 +40,7 @@
 <!-- ******************************** -->
 <!-- Modules to load -->
 <%- partial('../app/templates/together_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/together.js?v=<%= sails.config.session.version %>"></script>
 
 <%- partial('../app/templates/imagesList_templates') %>
 <%- partial('../app/templates/modelEditor_templates') %>
@@ -82,7 +83,6 @@
 <script type="text/javascript" src="js/BB_app/modules/bbmap.js?v=<%= sails.config.session.version %>"></script>
 <script type="text/javascript" src="js/BB_app/modules/bbmap_node.js?v=<%= sails.config.session.version %>"></script>
 <script type="text/javascript" src="js/BB_app/modules/bbmap_main.js?v=<%= sails.config.session.version %>"></script>
-<script type="text/javascript" src="js/BB_app/modules/together.js?v=<%= sails.config.session.version %>"></script>
 
 
 
@@ -121,7 +121,7 @@
         // Modules
         topbar.init({el:"#topbar_container"});
         bbmap.init();
-        //together.init();
+        together.init();
         $("#title_page").html(json.project.title);
         /*activat of "hashchange events's monitoring"*/
         if(!Backbone.History.started) Backbone.history.start();
