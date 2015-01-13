@@ -143,7 +143,7 @@ bbmap.Views.Main = Backbone.View.extend({
         ///////////////////////////////
         // Prend un screenshot quand on quitte bbmap
         window.onbeforeunload = function (e) {
-            $.get("/bbmap/screenshot?currentProject="+bbmap.views.main.project, function(data){
+            $.get("/bbmap/screenshot?currentProject="+bbmap.views.main.project.id, function(data){
                 console.log(data);
             });
         };
@@ -382,7 +382,7 @@ bbmap.Views.Main = Backbone.View.extend({
     downloadimage : function(e){
        e.preventDefault();
        var json = this.getMapParameters();
-       window.open("/bbmap/downloadScreenshot?zoom="+json.zoom+"&left="+json.left+"&top="+json.top+"&window_w="+$(window).width()+"&window_h="+$(window).height()+"&currentProject="+bbmap.views.main.project);  
+       window.open("/bbmap/downloadScreenshot?zoom="+json.zoom+"&left="+json.left+"&top="+json.top+"&window_w="+$(window).width()+"&window_h="+$(window).height()+"&currentProject="+bbmap.views.main.project.id);  
     },
     /////////////////////////////////////////
     // Drop new data on map

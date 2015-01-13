@@ -31,7 +31,8 @@
   		if(err) return res.send({err:err});
   		if(user){
   			User.update({id: req.body.params.id}, req.body.params).done(function(err,u){
-  				if(err) return res.send({err:err})
+  				if(err) return res.send({err:err});
+          req.session.user = u[0]
           req.socket.broadcast.to(req.body.params.project).emit("user:update", u[0]);
           //res.send(u[0]);
         });
@@ -93,7 +94,7 @@
         id: IdService.guid(),
         right : "rw",
         user_id : user.id,
-        project_id : req.body.currentProject
+        project_id : req.body.project
       }).done(function(err, permission){
         if(err) return res.send({err:err});
           res.send({user : user, permission : permission})
