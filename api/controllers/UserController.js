@@ -94,7 +94,7 @@
         id: IdService.guid(),
         right : "rw",
         user_id : user.id,
-        project_id : req.body.currentProject
+        project_id : req.body.project
       }).done(function(err, permission){
         if(err) return res.send({err:err});
           res.send({user : user, permission : permission})
