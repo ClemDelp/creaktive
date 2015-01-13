@@ -15,7 +15,6 @@
     "ejs": "0.8.4",
     "elasticsearch": "~1.5.10",
     "grunt": "0.4.1",
-    "html5-to-pdf": "~0.2.2",
     "mkdirp": "~0.3.5",
     "node-async": "0.0.1",
     "node-xss": "0.0.1",
