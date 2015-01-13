@@ -2,6 +2,7 @@ module.exports = {
 
   bootstrapmanager : function(req,res){
     console.log("Bootstraping manager data")
+    console.log('user bootstrapmanager : ',req.session.user)
     req.session.user = req.session.user || {id:"999999999", name : "guest", img:"img/default-user-icon-profile.png"}
     PermissionsService.checkPermissions(req,function(err){
       if(err) return res.send({err:err});
