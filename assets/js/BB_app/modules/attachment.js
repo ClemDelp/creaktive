@@ -51,7 +51,7 @@ attachment.Views.Main = Backbone.View.extend({
       var _this=this;
       var files = e.target.files;
       _.each(files, function(file){
-        var new_attachment = new global.Models.Attachment({
+        _this.attachments.create({
           id : guid(),
           name : file.name,
           path : file.name,
@@ -61,7 +61,7 @@ attachment.Views.Main = Backbone.View.extend({
           user : _this.user.get('id'), // id
           date : getDate(),
         });
-        new_attachment.save();
+        
         
       })
 
@@ -75,7 +75,7 @@ attachment.Views.Main = Backbone.View.extend({
         // filter attachment get only images
         var images = [];
         this.attachments.forEach(function(attachment){
-          if((attachment.get('attachedTo') == _this.model.get('id')) && (attachment.get('name').toLowerCase().match(/\.(jpg|jpeg|png|gif)$/))){images.unshift(attachment)}
+          if((attachment.get('attachedTo') == _this.model.get('id')) && (attachment.get('name').toLowerCase().match(/\.(jpg|jpeg|png|gif)$/))){images.unshift(attachment.toJSON())}
         })
         // get the diapo
         $(this.el).append(this.template_diapo({images:images}));
