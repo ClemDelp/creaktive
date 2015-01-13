@@ -149,9 +149,12 @@ var global = {
     new_element.save();
     // On ajoute le model à la collection
     global.collections.Elements.add(new_element,{from:"client"});
+    // Set last model
+    bbmap.views.main.setLastModel(new_element,'addModelToView');
+    // joyride
     setTimeout(function(){
         bbmap.views.main.startJoyride()
-    },1000);
+    },800);
     return new_element;
   },
   updateElement : function(element,json){

@@ -124,14 +124,17 @@ bbmap.Views.Main = Backbone.View.extend({
         //global.eventAggregator.on('link:remove',this.removeLinkToView,this);
         
         // zoom-in & zoom-out avec la moulette
+        this.multiple = 0;
         this.map_el.mousewheel(function(event) {
             event.preventDefault();
             //console.log(event.deltaY);
-            bbmap.views.main.cursorX = event.pageX;
-            bbmap.views.main.cursorY = event.pageY;
-            if(event.deltaY == -1)bbmap.views.main.zoomin()
-            else bbmap.views.main.zoomout()
-            
+            if(bbmap.views.main.multiple%3 == 0){
+                bbmap.views.main.cursorX = event.pageX;
+                bbmap.views.main.cursorY = event.pageY;
+                if(event.deltaY < 0)bbmap.views.main.zoomin()
+                else bbmap.views.main.zoomout()    
+            }
+            bbmap.views.main.multiple +=1;
         });
 
         this.listener.simple_combo("ctrl z", this.backInHistory);
@@ -215,7 +218,8 @@ bbmap.Views.Main = Backbone.View.extend({
             // on ajoute l'action
             this.localHistory.unshift(model);
         }else{
-            $('#'+model.get('to').id+'_tooltip').qtip('destroy', true);
+            $('.qtip').qtip('destroy', true);
+            //$('#'+model.get('to').id+'_tooltip').qtip('destroy', true);
             setTimeout(function(){
                 var user = bbmap.views.main.users.get(model.get('user'))
                 $('#'+model.get('to').id+'_tooltip').qtip({
@@ -940,8 +944,6 @@ bbmap.Views.Main = Backbone.View.extend({
     addModelToView : function(model,from){
         var origin = "client";
         if(from) origin = from;
-        // Set last model
-        this.setLastModel(model,'addModelToView');
         // create the view
         var new_view = new bbmap.Views.Node({
             className : "window "+model.get('type')+" bulle",
