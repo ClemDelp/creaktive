@@ -1060,7 +1060,7 @@ bbmap.Views.Main = Backbone.View.extend({
 
                     });
                     new_cklink.save();
-                    bbmap.views.main.links.add(new_cklink);
+                    bbmap.views.main.links.add(new_cklink,{silent : true});
                     bbmap.views.main.elements.get(info.targetId).set({id_father : info.sourceId}).save();
                 }    
             }
@@ -1206,7 +1206,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 try{
                     bbmap.views.main.addLinkToView(l);
                 }catch(err){
-                    l.destroy(); // clean undelete link!!!!!
+                    //l.destroy(); // clean undelete link!!!!!
                     console.log("Missing element to etablish graphical connection...");
                 }
             });
