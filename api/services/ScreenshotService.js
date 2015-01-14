@@ -61,7 +61,7 @@ module.exports = {
 	    console.log("URL ",url)
 
 	    var pageres = new Pageres({
-	        delay: 20, 
+	        delay: 10, 
 	        cookies : [cookie],
 	        filename : currentProjectId
 	      })
