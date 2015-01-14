@@ -177,6 +177,7 @@ global.Collections.UsersCollection = Backbone.Collection.extend({
         console.log("user created")
     },
     serverUpdate : function(modelServer){
+        //if(global.models.current_user.get('id') == modelServer.id) global.models.current_user.set(modelServer,{silent:true})
         var model = global.collections.Project_users.get(modelServer.id);
         if(model) model.set({
             top:modelServer.top,
