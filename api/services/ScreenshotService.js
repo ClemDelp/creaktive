@@ -57,6 +57,9 @@ module.exports = {
 	    }
 	    var cookie = "sails.sid="+req.signedCookies["sails.sid"]+";domain="+domain+";path=/";
 	 
+
+	    console.log("URL ",url)
+
 	    var pageres = new Pageres({
 	        delay: 10, 
 	        cookies : [cookie],
