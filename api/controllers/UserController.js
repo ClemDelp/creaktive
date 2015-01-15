@@ -34,7 +34,6 @@
   				if(err) return res.send({err:err});
           //req.session.user = u[0]
           if(req.session.user.id == u[0].id) req.session.user = u[0]
-          console.log("user update : ",req.session.user)
           //console.log(u[0])
           req.socket.broadcast.to(req.body.params.project).emit("user:update", u[0]);
           //res.send(u[0]);

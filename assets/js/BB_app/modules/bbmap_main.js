@@ -148,6 +148,15 @@ bbmap.Views.Main = Backbone.View.extend({
             });
         };
         $("body").css({"overflow":"hidden"}); // IMPORTANT
+
+        //Tell phantomjs that the page is loaded for screenshot
+        if (typeof window.callPhantom === 'function') {
+            Pace.on("done", function(){
+                setTimeout(function(){ 
+                    window.callPhantom({ hello: 'world' });
+                }, 1000);                
+            })
+        }
     },
     events : {
         "change #visu_select_mode" : "setVisualMode",
@@ -382,7 +391,24 @@ bbmap.Views.Main = Backbone.View.extend({
     downloadimage : function(e){
        e.preventDefault();
        var json = this.getMapParameters();
-       window.open("/bbmap/downloadScreenshot?zoom="+json.zoom+"&left="+json.left+"&top="+json.top+"&window_w="+$(window).width()+"&window_h="+$(window).height()+"&currentProject="+bbmap.views.main.project.id);  
+       // window.open("/bbmap/webshot?zoom="+json.zoom+"&left="+json.left+"&top="+json.top+"&window_w="+$(window).width()+"&window_h="+$(window).height()+"&currentProject="+bbmap.views.main.project.id);  
+        // $.get("/bbmap/webshot?zoom="+json.zoom+"&left="+json.left+"&top="+json.top+"&window_w="+$(window).width()+"&window_h="+$(window).height()+"&currentProject="+bbmap.views.main.project.id, function(data){
+        //     //console.log(data)
+        // })
+
+        $.fileDownload("/bbmap/webshot?zoom="+json.zoom+"&left="+json.left+"&top="+json.top+"&window_w="+$(window).width()+"&window_h="+$(window).height()+"&currentProject="+bbmap.views.main.project.id, {
+            preparingMessageHtml: "We are preparing your screenshot, please wait...",
+
+            successCallback: function (url) {
+
+                alert('You just got a file download dialog or ribbon for this URL :' + url);
+            },
+            failCallback: function (html, url) {
+
+                alert('Error HTML: \r\n' + html);
+            }
+        });
+
     },
     /////////////////////////////////////////
     // Drop new data on map
@@ -1276,6 +1302,7 @@ bbmap.Views.Main = Backbone.View.extend({
             $('#top_container').hide();
             $('#bottom_container').hide();    
         }
+
 
         return this;
     }
