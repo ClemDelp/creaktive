@@ -391,23 +391,20 @@ bbmap.Views.Main = Backbone.View.extend({
     downloadimage : function(e){
        e.preventDefault();
        var json = this.getMapParameters();
-       // window.open("/bbmap/webshot?zoom="+json.zoom+"&left="+json.left+"&top="+json.top+"&window_w="+$(window).width()+"&window_h="+$(window).height()+"&currentProject="+bbmap.views.main.project.id);  
-        // $.get("/bbmap/webshot?zoom="+json.zoom+"&left="+json.left+"&top="+json.top+"&window_w="+$(window).width()+"&window_h="+$(window).height()+"&currentProject="+bbmap.views.main.project.id, function(data){
-        //     //console.log(data)
-        // })
 
         $.fileDownload("/bbmap/webshot?zoom="+json.zoom+"&left="+json.left+"&top="+json.top+"&window_w="+$(window).width()+"&window_h="+$(window).height()+"&currentProject="+bbmap.views.main.project.id, {
-            preparingMessageHtml: "We are preparing your screenshot, please wait...",
-
-            successCallback: function (url) {
-
-                alert('You just got a file download dialog or ribbon for this URL :' + url);
+            prepareCallback : function(){
+                swal("We are preparing your screenshot"," please wait...","success");
+            },
+            successCallback : function(){
+                swal("Screenshot downloaded.");
             },
             failCallback: function (html, url) {
-
-                alert('Error HTML: \r\n' + html);
+                swal('Error',html,'error');
             }
         });
+
+        return false;
 
     },
     /////////////////////////////////////////
