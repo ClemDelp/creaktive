@@ -74,6 +74,8 @@ module.exports = {
       takeShotOnCallback : true
     };
 
+    console.log("**** Taking Screenshot", url)
+
 
     webshot(url,file,options, function(err, data) {
       if(err) return res.send(err);
