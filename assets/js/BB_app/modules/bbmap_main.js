@@ -392,7 +392,7 @@ bbmap.Views.Main = Backbone.View.extend({
        e.preventDefault();
        var json = this.getMapParameters();
 
-        $.fileDownload("/bbmap/webshot?zoom="+json.zoom+"&left="+json.left+"&top="+json.top+"&window_w="+$(window).width()+"&window_h="+$(window).height()+"&currentProject="+bbmap.views.main.project.id, {
+        $.fileDownload("/bbmap/downloadScreenshot?zoom="+json.zoom+"&left="+json.left+"&top="+json.top+"&window_w="+$(window).width()+"&window_h="+$(window).height()+"&currentProject="+bbmap.views.main.project.id, {
             prepareCallback : function(){
                 swal("We are preparing your screenshot"," please wait...","success");
             },
