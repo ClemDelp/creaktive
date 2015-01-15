@@ -50,7 +50,7 @@ module.exports = {
       url = req.baseUrl + "/bbmap?projectId="+currentProjectId+params;
       domain = "localhost"
     }else{
-       url = "http://"+req.get("host")+ "/bbmap?projectId="+currentProjectId+params;
+       url = "https://"+req.get("host")+ "/bbmap?projectId="+currentProjectId+params;
        domain = req.get("host")
     }
     // var cookie = "sails.sid="+req.signedCookies["sails.sid"]+";domain="+domain+";path=/";
