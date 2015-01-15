@@ -18,17 +18,47 @@
 
 module.exports = {
 
+ 
+
   screenshot : function(req,res){
-    console.log("Processing take screenshot")
-    ScreenshotService.screenshot(req,res,"upload");
-    res.send("Screenshot added");
+    console.log("Processing take screenshot");
+    ScreenshotService.screenshot(req,res,function(err,filePath){
+      if(err) res.send(err);
+
+      var project_id = req.query.currentProject;
+
+      var file = {
+        name: filePath.substring(filePath.indexOf("/")+1, filePath.length),
+        path: filePath
+      };
+      S3Service.pushFile(file, function(err, filename){
+            if(err) return res.send(err);
+            // Ajout de l'image au projet
+            Project.update({id : project_id}, {image : filename}, function(err, projects){
+              if(err) return  res.send(err);
+            })
+            Screenshot.findOrCreate({
+              src:filename
+            },{
+              id : IdService.guid(),
+              src : filename,
+              project_id : project_id,
+              date : IdService.getDate()
+            }).done(function(err,srcs){
+              if(err) console.log(err)
+            })
+            res.send("Screenshot uploaded")
+        });
+    });
+
+    
   },
 
   downloadScreenshot : function(req,res){
     console.log("Processing downloading screenshot")
-    ScreenshotService.screenshot(req,res,"download", function(err, file){
-      if(err) return res.send({err:err});
-      res.download(file.path);
+     ScreenshotService.screenshot(req,res,function(err,file){
+      if(err) res.send(err);
+      res.download(file);
     });
   },
 

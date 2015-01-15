@@ -148,6 +148,15 @@ bbmap.Views.Main = Backbone.View.extend({
             });
         };
         $("body").css({"overflow":"hidden"}); // IMPORTANT
+
+        //Tell phantomjs that the page is loaded for screenshot
+        if (typeof window.callPhantom === 'function') {
+            Pace.on("done", function(){
+                setTimeout(function(){ 
+                    window.callPhantom({ hello: 'world' });
+                }, 1000);                
+            })
+        }
     },
     events : {
         "change #visu_select_mode" : "setVisualMode",
@@ -382,7 +391,21 @@ bbmap.Views.Main = Backbone.View.extend({
     downloadimage : function(e){
        e.preventDefault();
        var json = this.getMapParameters();
-       window.open("/bbmap/downloadScreenshot?zoom="+json.zoom+"&left="+json.left+"&top="+json.top+"&window_w="+$(window).width()+"&window_h="+$(window).height()+"&currentProject="+bbmap.views.main.project.id);  
+
+        $.fileDownload("/bbmap/downloadScreenshot?zoom="+json.zoom+"&left="+json.left+"&top="+json.top+"&window_w="+$(window).width()+"&window_h="+$(window).height()+"&currentProject="+bbmap.views.main.project.id, {
+            prepareCallback : function(){
+                swal("We are preparing your screenshot"," please wait...","success");
+            },
+            successCallback : function(){
+                swal("Screenshot downloaded.");
+            },
+            failCallback: function (html, url) {
+                swal('Error',html,'error');
+            }
+        });
+
+        return false;
+
     },
     /////////////////////////////////////////
     // Drop new data on map
@@ -1276,6 +1299,7 @@ bbmap.Views.Main = Backbone.View.extend({
             $('#top_container').hide();
             $('#bottom_container').hide();    
         }
+
 
         return this;
     }

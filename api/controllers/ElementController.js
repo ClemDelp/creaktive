@@ -76,19 +76,13 @@ module.exports = {
   },
 
   destroy : function(req,res){
-    console.log('Deleting element')
-    Element.findOne(req.body.params.id).done(function(err,element){
-      if(err) return res.send({err:err});
-      if(element.position == 0) res.send({err : "You can't remove c0"})
-      else{
-        req.socket.broadcast.to(element.project).emit("element:remove2", element);
-        Notification.objectRemoved(req,res,"Element", element);
-        element.destroy(function(err){
-          if(err) return res.send({err:err});
-          res.send({msg:"destroyed"})
-        });
-      };
-    });
+    console.log('Deleting element');
+
+      Element.destroy(req.body.params.id).done(function(err, elements){
+        if(err) return res.send({err :err});
+        req.socket.broadcast.to(elements[0].project).emit("element:remove2", elements[0]);
+        Notification.objectRemoved(req,res,"Element", elements[0]);
+      });     
   },
 
   
