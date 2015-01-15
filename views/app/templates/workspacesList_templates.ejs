@@ -92,7 +92,7 @@
 				    {{ } }}
 				    <br>
 					<h4><b>{{-project.title}}</b></h4>
-					{{ if(project.image){ }}<img class="large-12 medium-12 small-2" src="/S3/getUrl?amz_id={{- project.image}}" />{{ }; }}
+					{{ if(project.image){ }}<span style="display:none"><img class="large-12 medium-12 small-2" src="/S3/getUrl?amz_id={{- project.image}}" /></span>{{ }; }}
 				</li>
 				<li class="description" style="text-align:left">{{=project.content}}</li>
 				<li class="bullet-item"><em>Created by {{-project.author.name}} at {{-project.date}}</em></li>
