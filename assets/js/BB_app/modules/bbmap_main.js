@@ -486,7 +486,7 @@ bbmap.Views.Main = Backbone.View.extend({
     showMenuEvent : function(){
         if((this.autOpen == true)&&(this.isopen == false)){
             $("#map").animate({left: "-=28%"})
-            this.setDeltaX(-28)
+            this.setDeltaX(-20)
             //this.translateMap("left",-28); 
             // button
             $("#showMenu").show();
@@ -515,7 +515,7 @@ bbmap.Views.Main = Backbone.View.extend({
     // },
     showMenu : function(){
         $("#map").animate({left: "-=28%"})
-        this.setDeltaX(-28)
+        this.setDeltaX(-20)
 
         $("#showMenu").animate({right:"28%"});
         $("#cbp-openimage").attr("src","/img/icones/Arrowhead-Right-48.png");
@@ -1058,20 +1058,20 @@ bbmap.Views.Main = Backbone.View.extend({
             return resp;
         });
         this.instance.bind("click", function(conn) {
-            swal({   
-                title: "Are you sure?",   
-                text: "This connection will be remove, would you continue?",   
-                type: "warning",   
-                showCancelButton: true,   
-                confirmButtonColor: "#DD6B55",   
-                confirmButtonText: "Yes, delete it!",   
-                closeOnConfirm: true,
-                allowOutsideClick : true
-            }, 
-            function(){   
+            // swal({   
+            //     title: "Are you sure?",   
+            //     text: "This connection will be remove, would you continue?",   
+            //     type: "warning",   
+            //     showCancelButton: true,   
+            //     confirmButtonColor: "#DD6B55",   
+            //     confirmButtonText: "Yes, delete it!",   
+            //     closeOnConfirm: true,
+            //     allowOutsideClick : true
+            // }, 
+            // function(){   
                 bbmap.views.main.instance.detach(conn);
                 bbmap.views.main.elements.get(conn.targetId).set({id_father : "none"}).save();
-            });
+            // });
             
         });
         ///////////////////////

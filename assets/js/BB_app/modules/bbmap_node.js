@@ -99,35 +99,37 @@ bbmap.Views.Node = Backbone.View.extend({
     },
     /////////////////////////////////////////////
     savePosition: function(e){
-        // center to element
-        var position = {top : $(this.el).offset().top, left :$(this.el).offset().left}
-        bbmap.views.main.centerToElement(position);
-        //
-        if(bbmap.views.main.mode == "edit"){
-            var position = this.getPosition(bbmap.zoom.get('val'));
-            var oldModel = this.model.clone();
-            var p1 = {'left':oldModel.get('left'),'top':oldModel.get('top')};
-            var p2 = {'left':position.left,'top':position.top};
-            var delta = api.getXYTranslationBtwTwoPoints(p1,p2);
-            
-            if((abs(oldModel.get('top')-position.top)>=1)||(abs(oldModel.get('left')-position.left)>=1)){
-                if((position.top != 0)&&($(this.el).position().left != 0)){
-                    // Si la view n'a pas été supprimée on save
-                    var before_change = this.model.clone();
-                    this.model.save({
-                        top:position.top,
-                        left:position.left
-                    });   
-                    var after_change = this.model.clone();
-                    //////////////////////////////
-                    var idAlreadyMoved = []; // important!!! Evite de déplacer un element qui a deja ete delpacer et evite ainsi de faire des boucles
-                    this.following(idAlreadyMoved,delta,this.model);
-                    //////////////////////////////
-                    //global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
-                    //console.log(this.model.get('top'),this.model.get('left'))
+        if(e.target.getAttribute("data-type") != "action"){
+            // center to element
+            var position = {top : $(this.el).offset().top, left :$(this.el).offset().left}
+            bbmap.views.main.centerToElement(position);
+            //
+            if(bbmap.views.main.mode == "edit"){
+                var position = this.getPosition(bbmap.zoom.get('val'));
+                var oldModel = this.model.clone();
+                var p1 = {'left':oldModel.get('left'),'top':oldModel.get('top')};
+                var p2 = {'left':position.left,'top':position.top};
+                var delta = api.getXYTranslationBtwTwoPoints(p1,p2);
+                
+                if((abs(oldModel.get('top')-position.top)>=1)||(abs(oldModel.get('left')-position.left)>=1)){
+                    if((position.top != 0)&&($(this.el).position().left != 0)){
+                        // Si la view n'a pas été supprimée on save
+                        var before_change = this.model.clone();
+                        this.model.save({
+                            top:position.top,
+                            left:position.left
+                        });   
+                        var after_change = this.model.clone();
+                        //////////////////////////////
+                        var idAlreadyMoved = []; // important!!! Evite de déplacer un element qui a deja ete delpacer et evite ainsi de faire des boucles
+                        this.following(idAlreadyMoved,delta,this.model);
+                        //////////////////////////////
+                        //global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
+                        //console.log(this.model.get('top'),this.model.get('left'))
+                    }
+                    ////console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
+                    //bbmap.views.main.reorganizeTree(this.model.get('id'))           
                 }
-                ////console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
-                //bbmap.views.main.reorganizeTree(this.model.get('id'))           
             }
         }
     },
@@ -172,19 +174,24 @@ bbmap.Views.Node = Backbone.View.extend({
     }, 
     removeConfirmSwal : function(){
         var _this = this;
-        swal({   
-            title: "Are you sure?",   
-            text: "this "+_this.model.get('type')+" will be remove, would you continue?",   
-            type: "warning",   
-            showCancelButton: true,   
-            confirmButtonColor: "#DD6B55",   
-            confirmButtonText: "Yes, delete it!",   
-            closeOnConfirm: true,
-            allowOutsideClick : true
-        }, 
-        function(){   
-            _this.removeNode();
-        });
+        if(this.model.get('content') != ""){
+            swal({   
+                title: "This "+_this.model.get('type')+" have a content!",   
+                text: "would you continue?",   
+                type: "warning",   
+                showCancelButton: true,   
+                confirmButtonColor: "#DD6B55",   
+                confirmButtonText: "Yes, delete it!",   
+                closeOnConfirm: true,
+                allowOutsideClick : true
+            }, 
+            function(){   
+                _this.removeNode();
+            });    
+        }else{
+            this.removeNode()
+        }
+        
     },
     removeNode : function(){
         var model = this.model;
