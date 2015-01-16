@@ -36,7 +36,10 @@ together.Views.Main = Backbone.View.extend({
       this.cursor_mode     = false;
       this.pathname        = window.location.pathname;
       // Conditions
-      this.user.save({location : this.pathname});
+      this.user.save({
+        location : this.pathname,
+        project  : this.currentProject.get('id')
+      });
       
       if(global.displayCursor == true){
         if(this.pathname == "/bbmap") this.cursor_mode = true;

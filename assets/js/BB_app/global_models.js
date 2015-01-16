@@ -74,45 +74,7 @@ global.Models.Element = Backbone.Model.extend({
     }
 });
 /***************************************/
-// global.Models.CKObject = Backbone.Model.extend({
-//     defaults : {
-//         id:"",
-//         author : "",
-//         user: "",
-//         type : "",
-//         title : "",
-//         content : "",
-//         tags : [],
-//         comments: [],
-//         date : "",
-//         date2: "",
-//         attachment: "",
-//         color: "#C0392B",
-//         members:[],
-//         attachment:[],
-//         id_father: "",
-//         top : "",
-//         left:"",
-//         project:"",
-//         status : "private",
-//         css : "",
-//         displayChildrens : true,
-//         visibility : "show"
-//     },
-//     parse : function(serverObj){
-//         serverObj.comments = new global.Collections.Comments(serverObj.comments);
-//         serverObj.members = new global.Collections.UsersCollection(serverObj.members);
-//         return serverObj;
-//     },
-// });
-/***************************************/
 global.Models.ProjectModel = Backbone.Model.extend({
-    // defaults : {
-    //     id : "",
-    //     title : "no projects",
-    //     conceptsMapJson : {},
-    //     date : getDate()
-    // },
     initialize : function Doc() {
         //console.log('Project Constructor');
         this.urlRoot = "project";
@@ -175,6 +137,7 @@ global.Models.User = Backbone.Model.extend({
         left : "",
         status : "",
         location : "",
+        project : "",
         onlyMobile : false
     },
     initialize : function User() {

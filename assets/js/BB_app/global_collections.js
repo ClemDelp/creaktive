@@ -89,58 +89,6 @@ global.Collections.Elements = Backbone.Collection.extend({
         if(model.project == global.models.currentProject.get('id')) global.collections.Elements.remove(new global.Models.Element(model))//global.eventAggregator.trigger("model:remove",new global.Models.Elementrs(model),"server");
     }
 });
-// /////////////////////////////////////////////////////////////////////
-// global.Collections.Knowledges = Backbone.Collection.extend({
-//     model : global.Models.Knowledge,
-//     /*url : "post",*/
-//     comparator: function(m){
-//         return -m.get('date2');
-//     },
-//     initialize : function() {
-//         this.url = "knowledge";
-//         this.bind("error", function(model, error){
-//             console.log( error );
-//         });
-//         _.bindAll(this, 'serverCreate','serverUpdate','serverRemove');
-//         this.ioBind('create', this.serverCreate, this);
-//         this.ioBind('update', this.serverUpdate, this);
-//         this.ioBind('remove2', this.serverRemove, this);
-//     },
-//     serverCreate : function(model){
-//         if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:create",new global.Models.Knowledge(model),"server");
-//     },
-//     serverUpdate : function(model){
-//         if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger(model.id+"_server",model);
-//     },
-//     serverRemove : function(model){
-//         if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:remove",new global.Models.Knowledge(model),"server");
-//     }
-// });
-/***************************************/
-// global.Collections.ConceptsCollection = Backbone.Collection.extend({
-//     model : global.Models.ConceptModel,
-//     url : "concept",
-//     comparator: function(m){
-//         return m.get('date2');
-//     },
-//     initialize : function() {
-//         //console.log('Comments Collection Constructor');
-//         _.bindAll(this, 'serverCreate');
-//         this.ioBind('create', this.serverCreate, this);
-//         this.ioBind('update', this.serverUpdate, this);
-//         this.ioBind('remove2', this.serverRemove, this);
-//     },
-//     serverCreate : function(model){
-//         if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:create",new global.Models.ConceptModel(model),"server");
-//     },
-//     serverUpdate : function(model){
-//         if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger(model.id+"_server",model);
-//     },
-//     serverRemove : function(model){
-//         //this.remove(knowledge.id);
-//         if(model.project == global.models.currentProject.get('id')) global.eventAggregator.trigger("model:remove",new global.Models.ConceptModel(model),"server");
-//     }
-// });
 /***************************************/
 global.Collections.Comments = Backbone.Collection.extend({
     model : global.Models.Comment,
@@ -178,12 +126,14 @@ global.Collections.UsersCollection = Backbone.Collection.extend({
     },
     serverUpdate : function(modelServer){
         //if(global.models.current_user.get('id') == modelServer.id) global.models.current_user.set(modelServer,{silent:true})
-        var model = global.collections.Project_users.get(modelServer.id);
-        if(model) model.set({
-            top:modelServer.top,
-            left:modelServer.left,
-            location:modelServer.location
-        });
+        if(model.project == global.models.currentProject.get('id')){
+            var model = global.collections.Project_users.get(modelServer.id);
+            if(model) model.set({
+                top:modelServer.top,
+                left:modelServer.left,
+                location:modelServer.location
+            });
+        }
     },
     serverRemove : function(model){
         console.log("user removed")
