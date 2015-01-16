@@ -63,7 +63,7 @@
 
     events : function () {
       var self = this;
-      
+      var _this = this;
       $(this.scope)
         .off('.joyride')
         .keypress(function(e) {

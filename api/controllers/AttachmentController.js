@@ -37,7 +37,7 @@ module.exports = {
           //req.socket.broadcast.to(c.project).emit("attachment:update", c[0]);
           //if(req.body.notification) Notification.objectUpdated(req,res,"Attachment", c[0], attachment);
 
-          res.send(c[0]);
+          res.send(attachment[0]);
 
       });
 
@@ -56,12 +56,13 @@ module.exports = {
   },
 
   destroy : function(req,res){
-    console.log('Deleting attachment')
+    console.log('Deleting attachment',req.body.params.id)
     Attachment.findOne(req.body.params.id).done(function(err,attachment){
       if(err) return res.send({err:err});
       else{
-        req.socket.broadcast.to(attachment.project).emit("attachment:remove2", attachment);
-        attachment.destroy(function(err){
+        console.log("aaaaa",attachment)
+        req.socket.broadcast.to(attachment[0].project).emit("attachment:remove2", attachment[0]);
+        attachment[0].destroy(function(err){
           if(err) return res.send({err:err});
           res.send({msg:"destroyed"})
         });

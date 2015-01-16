@@ -39,11 +39,10 @@ attachment.Views.Main = Backbone.View.extend({
         this.attachments = json.attachments;
         // Templates
         this.template_input = _.template($('#attachment-input-template').html()); 
-        this.template_el = _.template($('#attachment-el-template').html()); 
         this.template_diapo = _.template($('#attachment-diapo-template').html());  
     },
     events : {
-        "change #uploadfile" : "uploadFile"
+        "change #uploadfile" : "uploadFile",
     },
     uploadFile : function(e){
       e.preventDefault();
@@ -71,32 +70,68 @@ attachment.Views.Main = Backbone.View.extend({
     },
     render : function() {
       var _this = this;
-        $(this.el).empty();
-        // filter attachment get only images
-        var images = [];
-        this.attachments.forEach(function(attachment){
-          if((attachment.get('attachedTo') == _this.model.get('id')) && (attachment.get('name').toLowerCase().match(/\.(jpg|jpeg|png|gif)$/))){images.unshift(attachment.toJSON())}
-        })
-        // get the diapo
-        $(this.el).append(this.template_diapo({images:images}));
-        // Attachments
-        var nbr = 0;
-        var table = $('<table>',{style:'width:100%'});
-        this.attachments.each(function(attachment){
-          if(attachment.get('attachedTo') == _this.model.get('id')){
-            nbr +=1;
-            table.append(_this.template_el({
-              user : _this.users.get(attachment.get('user')).toJSON(),
-              attachment : attachment.toJSON()
-            }));
-          }
-        });
-        $(this.el).append('<div class="large-12 medium-12 small-12 columns"><b>Attachments ('+nbr+')</b></div>');
-        $(this.el).append(table);
-        // Imput
-        if(this.mode == "edit") $(this.el).append(this.template_input());
+      $(this.el).empty();
+      // filter attachment get only images
+      var images = [];
+      this.attachments.forEach(function(attachment){
+        if((attachment.get('attachedTo') == _this.model.get('id')) && (attachment.get('name').toLowerCase().match(/\.(jpg|jpeg|png|gif)$/))){images.unshift(attachment.toJSON())}
+      })
+      // get the diapo
+      $(this.el).append(this.template_diapo({images:images}));
+      // Attachments
+      var nbr = 0;
+      var table = $('<table>',{style:'width:100%'});
+      this.attachments.each(function(model){
+        if(model.get('attachedTo') == _this.model.get('id')){
+          nbr +=1;
+          table.append(new attachment.Views.Attachment({
+            user : _this.users.get(model.get('user')),
+            mode : _this.mode,
+            model : model
+          }).render().el)
+        }
+      });
+      $(this.el).append('<div class="large-12 medium-12 small-12 columns"><b>Attachments ('+nbr+')</b></div>');
+      $(this.el).append(table);
+      // Imput
+      if(this.mode == "edit") $(this.el).append(this.template_input());
 
-        $(document).foundation();
+      $(document).foundation();
         return this;
+    }
+});
+/////////////////////////////////////////////////
+attachment.Views.Attachment = Backbone.View.extend({
+    initialize : function(json) { 
+        //console.log("comments view constructor!");
+        _.bindAll(this, 'render','close');
+        // Variables
+        this.user = json.user;
+        this.mode    = json.mode;
+        this.attachment = json.model;
+        // Events
+        this.listenTo(this.attachment, "destroy", this.close)
+        // Templates
+        this.template_el = _.template($('#attachment-el-template').html()); 
+    },
+    events : {
+        "click .remove" : "remove"
+    },
+    close : function(){
+      this.remove();
+    },
+    remove : function(e){
+      e.preventDefault();
+      this.attachment.destroy();
+      
+    },
+    render : function() {
+      $(this.el).empty();
+      $(this.el).append(this.template_el({
+        user : this.user.toJSON(),
+        mode : this.mode,
+        attachment : this.attachment.toJSON()
+      }));
+      return this;
     }
 });

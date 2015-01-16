@@ -126,14 +126,12 @@ global.Collections.UsersCollection = Backbone.Collection.extend({
     },
     serverUpdate : function(modelServer){
         //if(global.models.current_user.get('id') == modelServer.id) global.models.current_user.set(modelServer,{silent:true})
-        if(model.project == global.models.currentProject.get('id')){
-            var model = global.collections.Project_users.get(modelServer.id);
-            if(model) model.set({
-                top:modelServer.top,
-                left:modelServer.left,
-                location:modelServer.location
-            });
-        }
+        var model = global.collections.Project_users.get(modelServer.id);
+        if(model) model.set({
+            top:modelServer.top,
+            left:modelServer.left,
+            location:modelServer.location
+        });
     },
     serverRemove : function(model){
         console.log("user removed")

@@ -44,6 +44,10 @@ a.pocheDesign:hover{
 	padding-left: 20px;
 }
 
+.button.noPadding{
+	padding: 10px;
+}
+
 .bull_right{
 	border:solid 2px #2980B9;
 	background-color: #ECF0F1;

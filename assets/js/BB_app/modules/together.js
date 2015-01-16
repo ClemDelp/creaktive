@@ -29,7 +29,7 @@ together.Views.Main = Backbone.View.extend({
       _.bindAll(this, 'render');
       together.views.main = this;
       // Variables
-      this.project         = json.currentProject;
+      this.project         = json.project;
       this.user            = json.user;
       this.users           = json.users;
       this.eventAggregator = json.eventAggregator;
@@ -38,7 +38,7 @@ together.Views.Main = Backbone.View.extend({
       // Conditions
       this.user.save({
         location : this.pathname,
-        project  : this.currentProject.get('id')
+        project  : this.project.get('id')
       });
       
       if(global.displayCursor == true){
@@ -69,7 +69,8 @@ together.Views.Main = Backbone.View.extend({
       $(this.el).empty();
       this.users.each(function(user){
         $(_this.el).append(new together.Views.User({
-          user : user
+          user : user,
+          project : _this.project
         }).render().el);
       });
 
@@ -82,6 +83,7 @@ together.Views.User = Backbone.View.extend({
       _.bindAll(this, 'render');
       // Variables
       this.user = json.user;
+      this.project = json.project;
       // Events
       if(global.displayCursor == true) this.listenTo(this.user,"change:top change:left", this.updateCursor,this);
       this.listenTo(this.user,"change:location", this.updateLocation,this);
@@ -100,8 +102,9 @@ together.Views.User = Backbone.View.extend({
       if(this.user.get('location') == together.views.main.pathname){
         // Si l'utilisateur est sur la mm page
         $("#avatar"+this.user.get('id')).show('slow');
-        if(together.views.main.cursor_mode == true){
-          // Si la page est /bbmap
+        ///////////////////////////
+        // Cursor
+        if((together.views.main.cursor_mode == true)&&(this.user.get('project') == this.project.get('id'))){
           $("#cursor"+this.user.get('id')).show('slow');
           var styles = {
               'left': this.user.get('left') +'px',

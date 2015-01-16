@@ -106,9 +106,7 @@ module.exports = {
                         res.view({
                           comments : JSON.stringify(comments),
                           attachments : JSON.stringify(attachments),
-                          
-                          elements : JSON.stringify(elements),
-                          
+                          elements : JSON.stringify(elements),                    
                           currentUser : JSON.stringify(req.session.user),
                           projectTitle : project.title,
                           projectId : project.id,
