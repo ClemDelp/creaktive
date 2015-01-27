@@ -85,6 +85,21 @@ global.Models.ProjectModel = Backbone.Model.extend({
     },
 });
 /***************************************/
+global.Models.News = Backbone.Model.extend({
+    defaults : {
+        id          : "",
+        project     : "",//id
+        attachedTo  : "",// id
+        user        : "", // id
+    },
+    initialize : function News() {
+        this.urlRoot = "news";
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    },
+});
+/***************************************/
 global.Models.Comment = Backbone.Model.extend({
     model: this,
     defaults : {
