@@ -77,10 +77,10 @@ attachment.Views.Main = Backbone.View.extend({
         if((attachment.get('attachedTo') == _this.model.get('id')) && (attachment.get('name').toLowerCase().match(/\.(jpg|jpeg|png|gif)$/))){images.unshift(attachment.toJSON())}
       })
       // get the diapo
-      $(this.el).append(this.template_diapo({images:images}));
+      //$(this.el).append(this.template_diapo({images:images}));
       // Attachments
       var nbr = 0;
-      var table = $('<table>',{style:'width:100%'});
+      var table = $('<table>',{style:'width:100%',class:'large-12 medium-12 small-12'});
       this.attachments.each(function(model){
         if(model.get('attachedTo') == _this.model.get('id')){
           nbr +=1;
@@ -91,7 +91,7 @@ attachment.Views.Main = Backbone.View.extend({
           }).render().el)
         }
       });
-      $(this.el).append('<div class="large-12 medium-12 small-12 columns"><b>Attachments ('+nbr+')</b></div>');
+      $(this.el).append('<div class="large-12 medium-12 small-12"><b>Attachments ('+nbr+')</b></div><br>');
       $(this.el).append(table);
       // Imput
       if(this.mode == "edit") $(this.el).append(this.template_input());
