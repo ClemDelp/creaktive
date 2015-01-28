@@ -172,14 +172,27 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .zoomout" : "zoomout",
         "click .reset" : "resetToCentroid",
         "click .window" : "showIcon", 
-        "click .structureSubTree" : "structureTree",
+        "click .structureSubTree" : "treeClassification",
+        //"click .structureSubTree" : "structureTree",
         "click #okjoyride" : "updateLastModelTitle",
         "click .screenshot" : "screenshot",
         "click .downloadimage" : "downloadimage",
         "click #showMenu" : "eventMenu",
         "click .prevH" : "backInHistory",
         "click .nextH" : "advanceInHistory",
-        "click .structureSubTree" : "structureTree",
+        "click .structureSubTree" : "treeClassification",
+        // "click .structureSubTree" : "structureTree",
+    },
+    treeClassification : function(e){
+        e.preventDefault();
+        var pere = this.lastModel.get('id');
+        var elements = TreeClassification.alignHF(pere,75,75,bbmap.views.main.elements.toJSON());
+        elements.forEach(function(el){
+            bbmap.views.main.elements.get(el.id).save(el)
+        });
+        setTimeout(function(){
+            bbmap.views.main.instance.repaintEverything();
+        },1000);
     },
     deleteButton : function(){
         var view = this.nodes_views[this.lastModel.get('id')]

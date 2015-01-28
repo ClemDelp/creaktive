@@ -62,20 +62,14 @@ body{
 	line-height:1em;	
 	z-index:4;
 	font-weight:bold;
-}
-
-.chart-demo .window.knowledge { 
-	/*border:0.15em dotted red; 	*/
-	/*width:20em;*/
 	max-width: 20em;
 	min-width: 5em;
 }
 
+
 .chart-demo .window.concept { 
 	/*border:0.15em dotted green;*/
 	padding: 15px;
-	min-width: 5em;
-	max-width: 10em;
 }
 
 .window.selected {
