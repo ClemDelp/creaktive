@@ -101,7 +101,7 @@
 		{{ if(mode == "edit"){ }}
 			<b>{{-model.date}}</b>
 			<a style="padding:5px;float:right" href="#" class="button tiny round alert remove"><img src="/img/icones/Delete-24-white.png"></a>
-		    <a style="padding:5px;float:right" title="Propose a Knowledge" id="kod{{-model.id}}" class="button tiny round" data-dropdown="alkd{{- model.id}}" aria-controls="alkd{{- model.id}}" aria-expanded="true"><img title="Propose a Knowledge" width="24px" class="drop" src="/img/icones/add-k-32-white.png"/></a>
+		    <a style="padding:5px;float:right" title="Propose a Knowledge" id="kod{{-model.id}}" class="button tiny round" data-dropdown="alkd{{- model.id}}" data-options="align:left" aria-controls="alkd{{- model.id}}" aria-expanded="true"><img title="Propose a Knowledge" width="24px" class="drop" src="/img/icones/add-k-32-white.png"/></a>
 		    <div id="alkd{{- model.id}}" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
 		    	<div class="row">
 				    <div class="large-12 columns">
@@ -117,7 +117,7 @@
 				    </div>
 				</div>
 		    </div>
-		    <a style="padding:5px;float:right" title="It give me an idea" id="cod{{-model.id}}" class="button tiny round success" data-dropdown="alcd{{- model.id}}" aria-controls="alcd{{- model.id}}" aria-expanded="true"><img title="It give me an idea" width="24px" class="drop" src="/img/icones/add-concept-32-white.png"/></a>
+		    <a style="padding:5px;float:right" title="It give me an idea" id="cod{{-model.id}}" class="button tiny round success" data-dropdown="alcd{{- model.id}}" data-options="align:left" aria-controls="alcd{{- model.id}}" aria-expanded="true"><img title="It give me an idea" width="24px" class="drop" src="/img/icones/add-concept-32-white.png"/></a>
 		    <div id="alcd{{- model.id}}" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
 		    	<div class="row">
 				    <div class="large-12 columns">

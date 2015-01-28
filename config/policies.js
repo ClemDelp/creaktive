@@ -158,6 +158,7 @@
   "bbmap" : {
     "bbmapview" : ["authenticated", "forceHTTPs", "onlyMobile"],
     "screenshot" : true,
+    "removeNews" : true,
     "*" : ["authenticated"],
   },
 

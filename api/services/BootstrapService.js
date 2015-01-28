@@ -26,10 +26,12 @@ module.exports = {
           if(err) console.log(err)
           unread_notifications = rnotifications;
           User.find().done(function(err,users){
+          News.find({user: req.session.user.id}).done(function(err,news){
             Project.find({id : req.session.permissions.all, backup : false}).done(function(err,projects){
               Presentation.find().done(function(err,presentations){
                 Permission.find().done(function(err, permissions){
-                  res.view({
+                  res.view({ 
+                    news : JSON.stringify(news),
                     currentUser : JSON.stringify(req.session.user),
                     users : JSON.stringify(users),
                     projects : JSON.stringify(projects),
@@ -39,6 +41,7 @@ module.exports = {
                     permissions : JSON.stringify(permissions)
                   });
                 });
+              });
               });
             })
           });
@@ -94,6 +97,7 @@ module.exports = {
             });
           });
           ///////////////////////////////////////////////////
+          News.find({project:project.id, user: req.session.user.id}).done(function(err,news){
           Notification.find({project:project.id}).done(function(err,notifications){
           Attachment.find({project:project.id}).done(function(err,attachments){
           Comment.find({project:project.id}).done(function(err,comments){
@@ -104,6 +108,7 @@ module.exports = {
                     Screenshot.find({project_id:project.id}).done(function(err, screenshots){
                       Presentation.find({project_id:project.id}).done(function(err, presentations){
                         res.view({
+                          news : JSON.stringify(news),
                           comments : JSON.stringify(comments),
                           attachments : JSON.stringify(attachments),
                           elements : JSON.stringify(elements),                    
@@ -129,6 +134,7 @@ module.exports = {
               });
               });
             });
+          });
           });
           });
 

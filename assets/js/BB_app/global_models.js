@@ -42,7 +42,6 @@ global.Models.Filter = Backbone.Model.extend({
     }
 });
 /***************************************/
-/***************************************/
 global.Models.Element = Backbone.Model.extend({
     defaults : {
         id:"",
@@ -79,6 +78,21 @@ global.Models.ProjectModel = Backbone.Model.extend({
         //console.log('Project Constructor');
         this.urlRoot = "project";
         this.set({type : "project"});
+        this.bind("error", function(model, error){
+            console.log( error );
+        });
+    },
+});
+/***************************************/
+global.Models.News = Backbone.Model.extend({
+    defaults : {
+        id          : "",
+        project     : "",//id
+        attachedTo  : "",// id
+        user        : "", // id
+    },
+    initialize : function News() {
+        this.urlRoot = "news";
         this.bind("error", function(model, error){
             console.log( error );
         });

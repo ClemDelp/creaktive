@@ -263,11 +263,23 @@ bbmap.Views.Node = Backbone.View.extend({
     render : function(){
         var user = global.collections.Users.get(this.model.get('user'));
         $(this.el).empty();
-        
+        var _this = this;
+        ////////////////////////////
+        // Define news style design
+        var pulse = "no-pulse";
+        var news  = global.collections.News;
+        news.forEach(function(n){
+            if(n.get('attachedTo') == _this.model.get('id')){
+                pulse = "pulse";
+                return ;
+            }
+        })
+        ////////////////////////////
         $(this.el).append(this.template_bulle({
-            model:this.model.toJSON(),
-            user : user.toJSON(),
-            mode : bbmap.views.main.mode
+            model   :this.model.toJSON(),
+            user    : user.toJSON(),
+            mode    : bbmap.views.main.mode,
+            pulse   : pulse,
         }));
         this.applyStyle();
 

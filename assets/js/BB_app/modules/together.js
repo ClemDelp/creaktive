@@ -68,10 +68,12 @@ together.Views.Main = Backbone.View.extend({
       var _this = this;
       $(this.el).empty();
       this.users.each(function(user){
-        $(_this.el).append(new together.Views.User({
-          user : user,
-          project : _this.project
-        }).render().el);
+        if(user.get('id') != _this.user.get('id')){
+          $(_this.el).append(new together.Views.User({
+            user : user,
+            project : _this.project
+          }).render().el);
+        }
       });
 
       return this;

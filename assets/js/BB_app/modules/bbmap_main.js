@@ -59,6 +59,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.notifications      = json.notifications;
         this.init               = json.init; // if true mean launch for the first time
         this.ckOperator         = json.ckOperator;
+        this.news               = json.news;
         ////////////////////////////////
         // Router
         this.workspace = new bbmap.router();
@@ -145,10 +146,9 @@ bbmap.Views.Main = Backbone.View.extend({
         this.listener.simple_combo("delete", this.deleteButton);
         ///////////////////////////////
         // Prend un screenshot quand on quitte bbmap
-        window.onbeforeunload = function (e) {
-            $.get("/bbmap/screenshot?currentProject="+bbmap.views.main.project.id, function(data){
-                console.log(data);
-            });
+        window.onbeforeunload = function (e){
+            $.get("/bbmap/removeNews?user="+bbmap.views.main.user.get('id')+"&project="+bbmap.views.main.project.id);
+            //$.get("/bbmap/screenshot?currentProject="+bbmap.views.main.project.id, function(data){console.log(data);});
         };
         $("body").css({"overflow":"hidden"}); // IMPORTANT
 
@@ -172,14 +172,27 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .zoomout" : "zoomout",
         "click .reset" : "resetToCentroid",
         "click .window" : "showIcon", 
-        "click .structureSubTree" : "structureTree",
+        "click .structureSubTree" : "treeClassification",
+        //"click .structureSubTree" : "structureTree",
         "click #okjoyride" : "updateLastModelTitle",
         "click .screenshot" : "screenshot",
         "click .downloadimage" : "downloadimage",
         "click #showMenu" : "eventMenu",
         "click .prevH" : "backInHistory",
         "click .nextH" : "advanceInHistory",
-        "click .structureSubTree" : "structureTree",
+        "click .structureSubTree" : "treeClassification",
+        // "click .structureSubTree" : "structureTree",
+    },
+    treeClassification : function(e){
+        e.preventDefault();
+        var pere = this.lastModel.get('id');
+        var elements = TreeClassification.alignHF(pere,75,75,bbmap.views.main.elements.toJSON());
+        elements.forEach(function(el){
+            bbmap.views.main.elements.get(el.id).save(el)
+        });
+        setTimeout(function(){
+            bbmap.views.main.instance.repaintEverything();
+        },1000);
     },
     deleteButton : function(){
         var view = this.nodes_views[this.lastModel.get('id')]

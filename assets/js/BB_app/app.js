@@ -35,6 +35,7 @@ var global = {
     this.models.current_user = new this.Models.User(json.user);
     this.models.currentProject = new this.Models.ProjectModel(json.project);
     // Collection
+    this.collections.News = new this.Collections.News(json.news);
     this.collections.Comments = new this.Collections.Comments(json.comments);
     this.collections.Attachments = new this.Collections.Attachments(json.attachments);
     this.collections.Elements = new this.Collections.Elements(json.elements);
@@ -150,11 +151,14 @@ var global = {
     // On ajoute le model à la collection
     global.collections.Elements.add(new_element,{from:"client"});
     // Set last model
-    bbmap.views.main.setLastModel(new_element,'addModelToView');
-    // joyride
-    setTimeout(function(){
-        bbmap.views.main.startJoyride()
-    },800);
+    try{
+      bbmap.views.main.setLastModel(new_element,'addModelToView');
+      // joyride
+      setTimeout(function(){
+          bbmap.views.main.startJoyride()
+      },800);  
+    }catch(err){}
+    
     return new_element;
   },
   updateElement : function(element,json){

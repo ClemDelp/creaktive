@@ -56,6 +56,7 @@
     
 <!-- <span id="{{-model.id}}" data-type="action" class="button tiny round secondary replier icon">-</span> -->
 <script type="text/template" id="bbmap-bulle-template">
+  <span class="{{-pulse}}">
     <span data-type="title" style="float:right" id="{{-model.id}}_tooltip"></span>
     <img id="{{-model.id}}" data-type="title" style="float:left" width="15" title="create by {{-user.name }}" src="{{-user.img }}"/>
     
@@ -68,7 +69,7 @@
     {{ if( (model.comments.length + model.attachment.length) >0) { }}
     <span id="{{-model.id}}" data-type="title" class="info top-bar-unread">{{- model.comments.length + model.attachment.length}}</span>
     {{ } }}
-
+  </span>
 </script>
 
 <script type="text/template" id="bbmap-bottom-element-template">

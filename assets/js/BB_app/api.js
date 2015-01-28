@@ -237,14 +237,17 @@ var api = {
     // tree have to be a collection of node/model with each an id_father attribute reference to a node father
     // node have to be a model with an id_father attribute reference to a node father
     var parents = [];
-    
+    var parents_id = [];
     if(currentNode.get('id_father')){
       tree.each(function(node){
-        //console.log("current node ",currentNode.get('id_father')," - node ",node.get('id'))
-        if(currentNode.get('id_father') == node.get('id')){
-          parents.unshift(node);
-          currentNode = node
-          parents = _.union(parents, api.getTreeParentNodes(currentNode,tree))
+        if(_.indexOf(parents_id, node.get('id'))>-1){
+          //console.log("current node ",currentNode.get('id_father')," - node ",node.get('id'))
+          if(currentNode.get('id_father') == node.get('id')){
+            parents.unshift(node);
+            parents_id.unshift(node.get('id'));
+            currentNode = node
+            parents = _.union(parents, api.getTreeParentNodes(currentNode,tree))
+          }  
         }
       });
     }

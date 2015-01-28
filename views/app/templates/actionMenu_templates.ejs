@@ -1,5 +1,5 @@
 <script type="text/template" id="actionMenu-template">
-  <div class="large-8 medium-8 small-8 columns">
+  <div class="large-9 medium-9 small-8 columns">
     <button class="button simplePadding secondary radius" data-dropdown="title_project_dropdown" aria-controls="title_project_dropdown" aria-expanded="true">
         <b>
         {{-project.title}}
@@ -42,7 +42,7 @@
               <img title="Drag & Drop Knowledge to Map" width="24px" class="drop" src="/img/icones/add-k-32-white.png"/>
             </a>
           {{ } }}
-        {{ }else{ }}
+        {{ }else if(filter == "tutututut"){ }}
           {{ if(filter == "c"){ }}
                 <a style="padding:10px" id="csod" title="add a new concept" class="button tiny success round" data-dropdown="add_simple_concept_dropdown" aria-controls="add_simple_concept_dropdown" aria-expanded="true">
                   <img title="add a new concept" width="24px" class="drop" src="/img/icones/add-concept-32-white.png"/>
@@ -64,16 +64,16 @@
       {{ } }}
   </div>
 
-  <div class="large-4 medium-4 small-4 columns">
-    <div style="float:right">
+  <div class="large-3 medium-3 small-4 columns">
+    <ul style="float:right" class="button-group tiny radius">
       {{ if(from == "bbmap"){ }}
-        <a href="#" class="tiny round button secondary zoomin"><img title="zoom-out" src="/img/icones/Zoom-Out-24.png"/></a>
-        <a href="#" class="tiny round button secondary zoomout"><img title="zoom-in" src="/img/icones/Zoom-In-24.png"/></a>
-        <a href="#" class="tiny round button secondary reset"><img title="reset" src="/img/icones/Fit-To-Size-24.png"/></a>
+        <li><a style="padding:10px" href="#" class="button secondary zoomin"><img title="zoom-out" src="/img/icones/Zoom-Out-24.png"/></a></li>
+        <li><a style="padding:10px" href="#" class="button secondary zoomout"><img title="zoom-in" src="/img/icones/Zoom-In-24.png"/></a></li>
+        <li><a style="padding:10px" href="#" class="button secondary reset"><img title="reset" src="/img/icones/Fit-To-Size-24.png"/></a></li>
       {{ } }}
-      <a href="#" class="tiny round button secondary fullscreen"><img title="full-screen" src="/img/icones/Full-Screen-Expand-24.png"/></a>
+        <li><a style="padding:10px" href="#" class="button secondary fullscreen"><img title="full-screen" src="/img/icones/Full-Screen-Expand-24.png"/></a></li>
       <small style="display:none" id="zoom_val"></small>
-    </div>
+    </ul>
   </div>
 
 

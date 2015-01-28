@@ -21,6 +21,7 @@
 
     rt(io, function(){
       var json = {};
+      json.news = <%- news %>;
       json.users = <%- users %>;
       json.user = <%- currentUser %>;
       json.projects = <%- projects %>;
@@ -31,7 +32,7 @@
       global.init(json, function(){
         // Modules
         topbar.init({el:"#topbar_container"});
-        workspacesList.init({el:"#workspacesList-container"}); 
+        workspacesList.init({el:"#workspacesList-container",display:"block"}); 
         /*activat of "hashchange events's monitoring"*/
         if(!Backbone.History.started) Backbone.history.start();  
       });
