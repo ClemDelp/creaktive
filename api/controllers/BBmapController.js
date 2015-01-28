@@ -20,6 +20,13 @@ module.exports = {
 
  
 
+  removeNews : function(req,res){
+    News.destroy({user: req.query.user, project:req.query.project}).exec(function deleteCB(err){
+      console.log('News has been deleted');
+    });
+    
+  },
+
   screenshot : function(req,res){
     console.log("Processing take screenshot");
     ScreenshotService.screenshot(req,res,function(err,filePath){

@@ -59,6 +59,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.notifications      = json.notifications;
         this.init               = json.init; // if true mean launch for the first time
         this.ckOperator         = json.ckOperator;
+        this.news               = json.news;
         ////////////////////////////////
         // Router
         this.workspace = new bbmap.router();
@@ -145,10 +146,9 @@ bbmap.Views.Main = Backbone.View.extend({
         this.listener.simple_combo("delete", this.deleteButton);
         ///////////////////////////////
         // Prend un screenshot quand on quitte bbmap
-        window.onbeforeunload = function (e) {
-            $.get("/bbmap/screenshot?currentProject="+bbmap.views.main.project.id, function(data){
-                console.log(data);
-            });
+        window.onbeforeunload = function (e){
+            $.get("/bbmap/removeNews?user="+bbmap.views.main.user.get('id')+"&project="+bbmap.views.main.project.id);
+            $.get("/bbmap/screenshot?currentProject="+bbmap.views.main.project.id, function(data){console.log(data);});
         };
         $("body").css({"overflow":"hidden"}); // IMPORTANT
 

@@ -63,7 +63,7 @@
 
 <script type="text/template" id="workspacesList-list-template">
 	<div class="row">
-		<a href="#" style="float:right" class="label tiny success round {{-pulse}}">{{-news_nbr}}</a>
+		{{ if(news_nbr>0){ }}<a href="#" style="float:right" class="label tiny success round {{-pulse}}" title="new activities">{{-news_nbr}}</a>{{ } }}
 		{{ if(project.starred == true){ }}<img style="float:left" src="/img/icones/Shape-Star2-24.png" />{{ } }}
 		{{ if(project.status == 'public'){ }}
 	    	<img style="float:left" data-model-id="{{-project.id}}" title="visibility" src="/img/icones/Open-24.png"/>
@@ -79,7 +79,7 @@
 <script type="text/template" id="workspacesList-block-template">
 	<ul class="item pricing-table">
 		<li class="price" style="text-align:left">
-			<a href="#" style="float:right" class="label tiny success round {{-pulse}}">{{-news_nbr}}</a>
+			{{ if(news_nbr>0){ }}<a href="#" style="float:right" class="label tiny success round {{-pulse}}" title="new activities">{{-news_nbr}}</a>{{ } }}
 		    {{ if(project.starred == true){ }}
 				<a title="unstarred" style="float:left" href="#" class="round secondary tiny label unstarred" data-id="{{-project.id}}"><img data-id="{{-project.id}}" src="/img/icones/Shape-Star2-24.png" /></a>
 			{{ }else{ }}

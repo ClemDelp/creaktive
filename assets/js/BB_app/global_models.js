@@ -42,7 +42,6 @@ global.Models.Filter = Backbone.Model.extend({
     }
 });
 /***************************************/
-/***************************************/
 global.Models.Element = Backbone.Model.extend({
     defaults : {
         id:"",

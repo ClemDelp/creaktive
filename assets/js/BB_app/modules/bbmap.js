@@ -85,6 +85,7 @@ var bbmap = {
       init            : true,
       ckOperator      : global.ckOperator,
       filter          : global.filter,
+      news            : global.collections.News
 
     });
   },
