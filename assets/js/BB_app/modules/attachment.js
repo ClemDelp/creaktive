@@ -123,6 +123,7 @@ attachment.Views.Attachment = Backbone.View.extend({
     remove : function(e){
       e.preventDefault();
       this.attachment.destroy();
+      this.render();
       
     },
     render : function() {

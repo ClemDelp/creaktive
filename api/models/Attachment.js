@@ -7,6 +7,8 @@
 
 module.exports = {
 
+	 	autoPK : false,
+
   attributes: {
 
   }

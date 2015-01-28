@@ -56,18 +56,12 @@ module.exports = {
   },
 
   destroy : function(req,res){
-    console.log('Deleting attachment',req.body.params.id)
-    Attachment.findOne(req.body.params.id).done(function(err,attachment){
-      if(err) return res.send({err:err});
-      else{
-        console.log("aaaaa",attachment)
-        req.socket.broadcast.to(attachment[0].project).emit("attachment:remove2", attachment[0]);
-        attachment[0].destroy(function(err){
-          if(err) return res.send({err:err});
-          res.send({msg:"destroyed"})
-        });
-      };
-    });
+    console.log('Deleting attachment',req.body.params.id);
+    Attachment.destroy(req.body.params.id).done(function(err, attachments){
+      if(err) return res.send({err :err});
+      req.socket.broadcast.to(attachments[0].project).emit("attachment:remove2", attachments[0]);
+      Notification.objectRemoved(req,res,"Attachment", attachments[0]);
+    });   
   },
   
 };
