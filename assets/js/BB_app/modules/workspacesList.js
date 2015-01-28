@@ -49,7 +49,7 @@ workspacesList.Views.Main = Backbone.View.extend({
                 matched.add(p);
             }
         });
-        this.render_workspaces(this.json_worspaces);
+        this.render_workspaces(matched);
     },
     starred : function(e){
         e.preventDefault();
@@ -63,13 +63,15 @@ workspacesList.Views.Main = Backbone.View.extend({
         this.workspaces.get(id).save({starred : false});
         this.render();
     },
-    render_workspaces : function(json){
+    render_workspaces : function(collection){
         var _this = this;
+        var workspaces = this.workspaces;
+        if(collection) workspaces = collection;
         ////////////////////////////
         if(this.display == "list"){
             $('.workspaces_container_list').remove();
             var list_container = $('<div>',{class:'workspaces_container_list large-12 columns'});
-            this.workspaces.each(function(ws){
+            workspaces.each(function(ws){
                 list_container.append(new workspacesList.Views.Workspace({
                     display : _this.display,
                     model   : ws
@@ -80,7 +82,7 @@ workspacesList.Views.Main = Backbone.View.extend({
             $('.workspaces_container').remove();
             //////////////////
             // Starred
-            var starred_ws = this.workspaces.where({starred : true});
+            var starred_ws = workspaces.where({starred : true});
             var starred_container = $('<div>',{class:'workspaces_container panel large-12 columns'});
             starred_container.append('<h4><img src="/img/icones/Shape-Star2-32-blue.png" />Starred workspaces</h4>')
             starred_ws.forEach(function(ws){
@@ -94,7 +96,7 @@ workspacesList.Views.Main = Backbone.View.extend({
             // All 
             var all_ws_container = $('<div>',{class:'workspaces_container panel large-12 columns'});
             all_ws_container.append('<h4><img src="/img/icones/User-Profile-32-blue.png" />All workspaces</h4>')
-            this.workspaces.each(function(ws){
+            workspaces.each(function(ws){
                 all_ws_container.append(new workspacesList.Views.Workspace({
                     display : _this.display,
                     model   : ws,
@@ -117,7 +119,7 @@ workspacesList.Views.Main = Backbone.View.extend({
             workspaces : this.workspaces,
             user : this.user
         }).render().el);
-        this.render_workspaces(this.json_worspaces);
+        this.render_workspaces();
         $(document).foundation();
         return this;
     }
@@ -162,7 +164,10 @@ workspacesList.Views.Formulaire = Backbone.View.extend({
             });
             new_workspace.save();
             this.workspaces.add(new_workspace);
-            window.location.href = "/bbmap?projectId="+new_workspace.get('id');
+            setTimeout(function(){ 
+                window.location.href = "/bbmap?projectId="+new_workspace.get('id');
+            }, 500);  
+            
         }else{
             $('.alertBox').html('<div data-alert class="alert-box alert radius">Problem : title<a href="#" class="close">&times;</a></div>')
         }

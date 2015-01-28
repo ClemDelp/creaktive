@@ -148,7 +148,7 @@ bbmap.Views.Main = Backbone.View.extend({
         // Prend un screenshot quand on quitte bbmap
         window.onbeforeunload = function (e){
             $.get("/bbmap/removeNews?user="+bbmap.views.main.user.get('id')+"&project="+bbmap.views.main.project.id);
-            $.get("/bbmap/screenshot?currentProject="+bbmap.views.main.project.id, function(data){console.log(data);});
+            //$.get("/bbmap/screenshot?currentProject="+bbmap.views.main.project.id, function(data){console.log(data);});
         };
         $("body").css({"overflow":"hidden"}); // IMPORTANT
 
