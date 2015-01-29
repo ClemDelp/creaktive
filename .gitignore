@@ -29,7 +29,10 @@ upload
 
 .env
 
+#######################
 # mongodb files on cloud 9
+#######################
+.c9
 data
 mongod
 
