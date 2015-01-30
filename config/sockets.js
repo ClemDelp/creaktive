@@ -41,10 +41,11 @@ module.exports.sockets = {
   //
   // The data store where socket.io will store its message queue 
   // and answer pubsub logic
-  adapter: 'memory',
+  // adapter: 'memory',
   //
   // To enable a remote redis pubsub server: 
-  // adapter: 'redis',
+  adapter: 'redis',
+  url : process.env.REDISTOGO_URL
   // host: '127.0.0.1',
   // port: 6379,
   // db: 'sails',
