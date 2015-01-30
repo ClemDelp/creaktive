@@ -1303,7 +1303,7 @@ bbmap.Views.Main = Backbone.View.extend({
             if(initPos){
                 // move DataCentroid To MapCentroid
                 if((bbmap.views.main.init == true)&&(bbmap.views.main.sens == "init")){
-                    bbmap.views.main.moveDataCentroidToMapCentroid();
+                    //bbmap.views.main.moveDataCentroidToMapCentroid();
                     this.intelligentRestructuring();
                 }
             } 
