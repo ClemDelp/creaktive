@@ -45,7 +45,7 @@ module.exports.sockets = {
   //
   // To enable a remote redis pubsub server: 
   adapter: 'redis',
-  url : process.env.REDISTOGO_URL
+  url : process.env.REDISTOGO_URL,
   // host: '127.0.0.1',
   // port: 6379,
   // db: 'sails',
