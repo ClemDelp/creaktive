@@ -27,7 +27,7 @@
     <script src="js/vendor/notifications/notif.js?v=<%= sails.config.session.version %>"></script>
     <!-- foundation lib -->
     <link rel="stylesheet" href="styles/foundation2.css" />
-    <link rel="stylesheet" href="styles/pace.css" />
+
 
 
     <!-- tqtip2 -->
@@ -36,8 +36,6 @@
     <script type="text/javascript" src="qtip2/imagesloaded.pkg.min.js"></script>
 
 
-
-    <script src="js/vendor/pace.min.js"></script>
     <script src="js/vendor/screenfull.js"></script>
     <script>
       _.templateSettings = {
@@ -155,19 +153,19 @@
         
 
         socket.on("disconnect", function(msg){
-          setTimeout(function(){swal("Problem!", "Connection with the server lost, please check your internet connection!", "error");
-          },5000);
-          setTimeout(function(){
-            //alert("Connection with the server lost, please check your internet connection");
-            window.parent.location.reload();
-          },30000);
+          // setTimeout(function(){swal("Problem!", "Connection with the server lost, please check your internet connection!", "error");
+          // },5000);
+          // setTimeout(function(){
+          //   //alert("Connection with the server lost, please check your internet connection");
+          //   window.parent.location.reload();
+          // },30000);
 
         });
 
         socket.on("reconnect_failed", function(msg){
-          swal("Problem!", "Connection with the server lost, please check your internet connection!", "error");
-          //alert("Connection with the server lost, please check your internet connection");
-          window.parent.location.reload();
+          // swal("Problem!", "Connection with the server lost, please check your internet connection!", "error");
+          // //alert("Connection with the server lost, please check your internet connection");
+          // window.parent.location.reload();
         });
 
         socket.on('connect', function socketConnected() {
