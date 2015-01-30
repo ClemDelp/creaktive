@@ -45,11 +45,10 @@ module.exports.sockets = {
   //
   // To enable a remote redis pubsub server: 
   adapter: 'redis',
-  url : process.env.REDISTOGO_URL,
-  // host: '127.0.0.1',
-  // port: 6379,
-  // db: 'sails',
-  // pass: '<redis auth password>'
+  host: 'cod.redistogo.com',
+  port: 10534,
+  db: 'sails',
+  pass: '673a0a79732ef58f75edeefa612e3881'
   // Worth mentioning is that, if `adapter` config is `redis`, 
   // but host/port is left unset, Sails will try to connect to redis 
   // running on localhost via port 6379 
