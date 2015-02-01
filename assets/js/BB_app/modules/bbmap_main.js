@@ -176,19 +176,20 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .structureSubTree" : "structureTree",
         "click #okjoyride" : "updateLastModelTitle",
         "click .screenshot" : "screenshot",
-        "click .downloadimage" : "downloadimage",
+        "click .downloadimage" : "laurie",
         "click #showMenu" : "eventMenu",
         "click .prevH" : "backInHistory",
         "click .nextH" : "advanceInHistory",
         // "click .structureSubTree" : "treeClassification",
         "click .structureSubTree" : "structureTree",
     },
-    laurie : function(){
+    laurie : function(e){
+        e.preventDefault();
         var left_min = 10000000000000000000000;
         var left_max = 0;
         var top_min = 10000000000000000000000;
         var top_max = 0;
-        var offset = 50;
+        var offset = 100;
         var childs = [];
         // on prend le cadre
         bbmap.views.main.elements.each(function(el){
@@ -204,11 +205,9 @@ bbmap.Views.Main = Backbone.View.extend({
         // on definit la hauteur + largeur du cadre
         var cadre_width = left_max - left_min;
         var cadre_height = top_max - top_min;
-        console.log(cadre_width,cadre_height)
         // on crée l'element cadre
-        var cadre = $('<div>',{id:'map',style:'width:'+cadre_width+'px;height:'+cadre_height+'px;background:red',class:'chart-demo'});
+        var cadre = $('<div>',{id:'youhou',style:'width:'+cadre_width+'px;height:'+cadre_height+'px;',class:'chart-demo'});
         var childs = $("#map > .window").clone();
-        console.log(childs)
         _.forEach(childs,function(child){
             //console.log(left,top)
             // console.log($(child))
@@ -218,6 +217,7 @@ bbmap.Views.Main = Backbone.View.extend({
         })
         //
         $('body').prepend(cadre)
+        console.log($(cadre).get(0))
         html2canvas($(cadre).get(0), {
             onrendered: function(canvas) {
                 var svgTags = $('#map > svg');
@@ -241,141 +241,12 @@ bbmap.Views.Main = Backbone.View.extend({
                 });
                 // canvas is the final rendered <canvas> element
                 $('#tutu').append(canvas)
+
+                var imgData = canvas.toDataURL("image/png");
+                window.open(imgData);
+                $("#youhou").remove();
             }
         });
-
-    },
-    getCadre : function(){
-        var left_min = 10000000000000000000000;
-        var left_max = 0;
-        var top_min = 10000000000000000000000;
-        var top_max = 0;
-        var offset = 50;
-        var childs = [];
-        // on prend le cadre
-        bbmap.views.main.elements.each(function(el){
-            if(el.get('left') < left_min) left_min = el.get('left')
-            if(el.get('left') + $('#'+el.get('id')).width() > left_max) left_max = el.get('left') + $('#'+el.get('id')).width() + offset;
-
-            if(el.get('top') < top_min) top_min = el.get('top')
-            if(el.get('top') + $('#'+el.get('id')).height() > top_max) top_max = el.get('top') + $('#'+el.get('id')).height() + offset;
-
-            //childs.unshift($(el.get('id')).clone();
-        });
-
-        // on definit la hauteur + largeur du cadre
-        var cadre_width = left_max - left_min;
-        var cadre_height = top_max - top_min;
-        console.log(cadre_width,cadre_height)
-        // on crée l'element cadre
-        var cadre = $('<div>',{id:'map',style:'width:'+cadre_width+'px;height:'+cadre_height+'px;background:red',class:'chart-demo'});
-        var childs = $("#map > .window").clone();
-        console.log(childs)
-        _.forEach(childs,function(child){
-            //console.log(left,top)
-            // console.log($(child))
-            $(child).css( "top", "-="+ top_min);
-            $(child).css( "left", "-="+left_min );
-            cadre.append(child)
-        })
-        //
-        $('body').prepend(cadre)
-        
-        // console.log(left_min,left_max,top_min,top_max)
-    },
-    exportation : function(e){
-        var height = 800;
-        var width = 750;
-        var endpointDefault = {
-            isSource: true,
-            isTarget: true,
-            endPoint: ["Dot", {radius: 8}],
-            container: $('#map')
-        }
-        ////
-        var svgTags = $('#map > svg');
-        var canvas = $('#mon_canvas')[0];
-        canvas.height = height;
-        canvas.width = width;
-        var ctx = canvas.getContext('2d');
-        ////
-        _.forEach(svgTags, function(svgElem){
-            var svgNode = svgElem.cloneNode(true);
-            console.log(svgElem.style.top,svgElem.style.left)
-            var top=10;//svgNode.style.top;
-            var left = 10;//svgNode.style.left;
-         
-            var div = document.createElement('div');
-            div.appendChild(svgNode);
-            var svgTag = div.innerHTML;
-            ctx.drawSvg(svgTag, left, top);
-        });
-
-        html2canvas($('#topbar_container').get(0), {
-            onrendered: function(canvas) {
-                // canvas is the final rendered <canvas> element
-                $('#tutu').append(canvas)
-            }
-        });
-        ////
-        // var ratio = 150 / canvas.width;
-        // var thumbCanvas = document.createElement('canvas');
-        // thumbCanvas.width = canvas.width * ratio;
-        // thumbCanvas.height = canvas.height * ratio;
-         
-        // var ctx2 = thumbCanvas.getContext('2d');
-        // ctx2.scale(ratio, ratio);
-        // ctx2.drawImage(canvas, 0, 0);
-
-    },
-    exportation2 : function(){
-        var el;
-
-        el = $('#map').get(0);
-
-        html2canvas(el, {
-          onrendered: function(canvas) {
-            alert('drr')
-            var $endpoints, $flows, ctx;
-            ctx = canvas.getContext('2d');
-            $flows = $('> svg', el);
-            $flows.each(function() {
-              var $svg, offset, svgStr;
-              $svg = $(this);
-              offset = $svg.position();
-              svgStr = $svg.prop('outerHTML');
-              return ctx.drawSvg(svgStr, offset.left, offset.top);
-            });
-            $endpoints = $('._jsPlumb_endpoint > svg', el);
-            $endpoints.each(function() {
-              var $svg, offset, svgStr;
-              $svg = $(this);
-              offset = $svg.parent().position();
-              svgStr = $svg.prop('outerHTML');
-              return ctx.drawSvg(svgStr, offset.left, offset.top);
-            });
-
-
-         
-                return canvas.toBlob(
-                    function (blob) {
-                        // Do something with the blob object,
-                        // e.g. creating a multipart form for file uploads:
-                        var formData = new FormData();
-                        formData.append('file', blob, fileName);
-                        return formData
-                        /* ... */
-                    },
-                    'image/jpeg'
-                );
-            
-            
-            // return canvas.toBlob(function(blob) {
-            //   return downloadData("" + $scope.selectedDiagram.title + ".jpg", blob, 'image/jpeg');
-            // });
-          }
-        });
-
     },
     treeClassification : function(e){
         e.preventDefault();
