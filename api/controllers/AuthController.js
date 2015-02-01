@@ -104,7 +104,7 @@ var AuthController = {
 			id : IdService.guid(),
 			name : req.body.username,
 			email : req.body.email,
-			confirmed : false,
+			confirmed : true,
 			pw : req.body.password,
 			img : req.body.img || "img/default-user-icon-profile.png",
 			platformAdmin : true,
