@@ -62,7 +62,7 @@
     <script>
       window._trackJs = {
         // Whether to send errors to TrackJS
-        enabled: false,// <---------------------------- here put a true in production
+        enabled: true,// <---------------------------- here put a true in production
         // Custom error callback
         onError: function () { return true; },
         // Custom object serialization
@@ -89,7 +89,7 @@
           // Pass console messages through to the browser
           display: true,
           // Transmit console errors to TrackJS
-          error: false, // <---------------------------- here put a true in production
+          error: true, // <---------------------------- here put a true in production
           // Names of console functions to watch
           watch: ["log","debug","info","warn","error"]
         },
