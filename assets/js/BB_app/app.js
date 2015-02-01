@@ -85,16 +85,7 @@ var global = {
     * @returns {Boolean} True if the configuration was successful.
     */
 
-    try{
-      trackJs.configure({
-        // Custom session identifier.
-        sessionId: this.models.currentProject.get('title'),
-        // Custom user identifier.
-        userId: this.models.current_user.get('email'),
-      });
-    }catch(err){
-      console.log("track is not defined")
-    }
+    
     
 
     callback();
