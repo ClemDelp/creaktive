@@ -37,7 +37,7 @@ module.exports = {
 		mailOptions = {
 		    from: "CreaKtive ✔ contact@creaktive.fr", // sender address
 		    to: to, // list of receivers
-		    subject: "Invititation on CreaKtive", // Subject line
+		    subject: "Invitation CreaKtive", // Subject line
 		    generateTextFromHTML: true,
 		    html: html, // plaintext body
 		};
@@ -68,14 +68,31 @@ module.exports = {
 		    html: html, // plaintext body
 		};
 
+		var html2 = "<h1>Bonjour</h1></br>Votre inscription est validée, vous pouvez maintenant vous connecter à la plateforme</br> "
+		mailToUser = {
+		    from: "CreaKtive ✔ contact@creaktive.fr", // sender address
+		    to: user.email,
+		    subject: "CreaKtive account created " , // Subject line
+		    generateTextFromHTML: true,
+		    html: html2, // plaintext body
+		};
+
 		var transport = this.smtpMailgun;
 		if(process.env.MAILGUN_SMTP_SERVER) transport = this.smtpTransport
 
-		transport.sendMail(mailOptions, function(error, response){
+		transport.sendMail(mailToUser, function(error, response){
 		    if(error){
 		        cb(error)
 		    }else{
-		        cb(null, "Message sent: " + response.message);
+		        transport.sendMail(mailOptions, function(error, response){
+				    if(error){
+				        cb(error)
+				    }else{
+				        cb(null, "Message sent: " + response.message);
+				    }
+				    // if you don't want to use this transport object anymore, uncomment following line
+				    //smtpTransport.close(); // shut down the connection pool, no more messages
+				});
 		    }
 		    // if you don't want to use this transport object anymore, uncomment following line
 		    //smtpTransport.close(); // shut down the connection pool, no more messages

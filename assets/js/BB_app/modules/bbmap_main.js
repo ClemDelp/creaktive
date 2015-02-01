@@ -195,13 +195,9 @@ bbmap.Views.Main = Backbone.View.extend({
         bbmap.views.main.elements.each(function(el){
             if(el.get('left') < left_min) left_min = el.get('left')
             if(el.get('left') + $('#'+el.get('id')).width() > left_max) left_max = el.get('left') + $('#'+el.get('id')).width() + offset;
-
             if(el.get('top') < top_min) top_min = el.get('top')
             if(el.get('top') + $('#'+el.get('id')).height() > top_max) top_max = el.get('top') + $('#'+el.get('id')).height() + offset;
-
-            //childs.unshift($(el.get('id')).clone();
         });
-
         // on definit la hauteur + largeur du cadre
         var cadre_width = left_max - left_min;
         var cadre_height = top_max - top_min;
@@ -209,15 +205,15 @@ bbmap.Views.Main = Backbone.View.extend({
         var cadre = $('<div>',{id:'youhou',style:'width:'+cadre_width+'px;height:'+cadre_height+'px;',class:'chart-demo'});
         var childs = $("#map > .window").clone();
         _.forEach(childs,function(child){
-            //console.log(left,top)
-            // console.log($(child))
+            var el_width = $('#'+$(child).attr('id')).width();
+            var el_heigth = $('#'+$(child).attr('id')).height();
             $(child).css( "top", "-="+ top_min);
             $(child).css( "left", "-="+left_min );
+            $(child).css( "width", el_width+50 );
             cadre.append(child)
         })
         //
         $('body').prepend(cadre)
-        console.log($(cadre).get(0))
         html2canvas($(cadre).get(0), {
             onrendered: function(canvas) {
                 var svgTags = $('#map > svg');
@@ -230,10 +226,8 @@ bbmap.Views.Main = Backbone.View.extend({
                     var svgNode = svgElem.cloneNode(true);
                     $(svgNode).css( "top", "-="+ top_min);
                     $(svgNode).css( "left", "-="+left_min );
-                    console.log(svgElem.style.top,svgElem.style.left)
                     var top = svgNode.style.top;
-                    var left = svgNode.style.left;
-                 
+                    var left = svgNode.style.left;                 
                     var div = document.createElement('div');
                     div.appendChild(svgNode);
                     var svgTag = div.innerHTML;
