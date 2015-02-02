@@ -189,7 +189,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var left_max = 0;
         var top_min = 10000000000000000000000;
         var top_max = 0;
-        var offset = 100;
+        var offset = 250;
         var childs = [];
         // on prend le cadre
         bbmap.views.main.elements.each(function(el){
@@ -198,6 +198,7 @@ bbmap.Views.Main = Backbone.View.extend({
             if(el.get('top') < top_min) top_min = el.get('top')
             if(el.get('top') + $('#'+el.get('id')).height() > top_max) top_max = el.get('top') + $('#'+el.get('id')).height() + offset;
         });
+        alert(top_max)
         // on definit la hauteur + largeur du cadre
         var cadre_width = left_max - left_min;
         var cadre_height = top_max - top_min;
