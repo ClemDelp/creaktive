@@ -85,6 +85,7 @@ modelEditor.Views.Main = Backbone.View.extend({
         if(fathers != "none"){
             var fathers = api.getTreeParentNodes(this.model,this.elements).reverse()
         }
+        console.log(fathers)
         // content
         if(this.mode == "normal"){
             $(this.el).append(this.template_model_normal({
