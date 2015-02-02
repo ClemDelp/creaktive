@@ -226,10 +226,8 @@ bbmap.Views.Main = Backbone.View.extend({
                     var svgNode = svgElem.cloneNode(true);
                     $(svgNode).css( "top", "-="+ top_min);
                     $(svgNode).css( "left", "-="+left_min );
-                    console.log(svgElem.style.top,svgElem.style.left)
                     var top = svgNode.style.top;
-                    var left = svgNode.style.left;
-                 
+                    var left = svgNode.style.left;                 
                     var div = document.createElement('div');
                     div.appendChild(svgNode);
                     var svgTag = div.innerHTML;
