@@ -101,8 +101,9 @@ bbmap.Views.Node = Backbone.View.extend({
     savePosition: function(e){
         if(e.target.getAttribute("data-type") != "action"){
             // center to element
+            var screenCentroid = api.getScreenCentroid();
             var position = {top : $(this.el).offset().top, left :$(this.el).offset().left}
-            bbmap.views.main.centerToElement(position);
+            if((Math.abs(screenCentroid.top - position.top)>150)||(Math.abs(screenCentroid.left - position.left)>300)) bbmap.views.main.centerToElement(position);
             //
             if(bbmap.views.main.mode == "edit"){
                 var position = this.getPosition(bbmap.zoom.get('val'));
