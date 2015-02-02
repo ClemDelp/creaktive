@@ -198,7 +198,6 @@ bbmap.Views.Main = Backbone.View.extend({
             if(el.get('top') < top_min) top_min = el.get('top')
             if(el.get('top') + $('#'+el.get('id')).height() > top_max) top_max = el.get('top') + $('#'+el.get('id')).height() + offset;
         });
-        alert(top_max)
         // on definit la hauteur + largeur du cadre
         var cadre_width = left_max - left_min;
         var cadre_height = top_max - top_min;
