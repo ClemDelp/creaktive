@@ -2204,7 +2204,7 @@ animate : function(tableau, color)
   alignHF : function(father, espaceLeftH, espaceTopH, elemen)
 
   {
-    var TreeClassification.elements.length = 0;
+    TreeClassification.elements.length = 0;
 
     var Tlvl = [];
 
