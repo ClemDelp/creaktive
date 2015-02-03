@@ -2102,9 +2102,6 @@ animate : function(tableau, color)
 
           if( TabChilds[0].id != "A"){
 
-            console.log(position[u][i].id)
-
-            console.log(TabChilds)
 
             if ( $("#"+TabChilds[0].id+"").width() > $("#"+position[u][i].id+"").width() )
 
@@ -2215,7 +2212,7 @@ animate : function(tableau, color)
 
     TreeClassification.CreateTab(father, elemen)
 
-    TreeClassification.render(TreeClassification.elements, "red");
+    //TreeClassification.render(TreeClassification.elements, "red");
 
     TabAlignAllH = TreeClassification.alignAllH(espaceLeftH, espaceTopH)
 
