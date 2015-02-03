@@ -7,7 +7,7 @@ alfred = {
 		var lg = "fr";
 		var option1 = "extracts&exintro&explaintext&format=json&redirects&callback=?";
 		var option2 = "extracts&exintro&format=json&redirects&callback=?";
-		url = "http://"+lg+".wikipedia.org/w/api.php?action=query&prop=description&titles=" + item.toString() + "&prop="+option2;
+		url = "https://"+lg+".wikipedia.org/w/api.php?action=query&prop=description&titles=" + item.toString() + "&prop="+option2;
 		$.getJSON(url, function (json) {
 		    var item_id = Object.keys(json.query.pages)[0]; // THIS DO THE TRICK !
 		    sent = json.query.pages[item_id].extract;
@@ -15,7 +15,7 @@ alfred = {
 		});
 	},
 	getWikiSuggestion : function(item){
-		var url = 'http://fr.wikipedia.org/w/api.php?action=opensearch&search='+item.toString()+'&format=json&callback=spellcheck';
+		var url = 'https://fr.wikipedia.org/w/api.php?action=opensearch&search='+item.toString()+'&format=json&callback=spellcheck';
 		$.getJSON(url, function (json) {
 			console.log(json)
 		});
