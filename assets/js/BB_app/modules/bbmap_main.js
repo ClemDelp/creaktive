@@ -171,8 +171,10 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .zoomin" : "zoomin",
         "click .zoomout" : "zoomout",
         "click .reset" : "resetToCentroid",
+        "mouseover .window" : "showChildrens",
+        "mouseleave .window" : "hideChildrens",
         "click .window" : "showIcon", 
-         "click .structureSubTree" : "treeClassification",
+        "click .structureSubTree" : "treeClassification",
         //"click .structureSubTree" : "structureTree",
         "click #okjoyride" : "updateLastModelTitle",
         "click .screenshot" : "screenshot",
@@ -637,6 +639,24 @@ bbmap.Views.Main = Backbone.View.extend({
             this.setLastModel(element);
             if(this.mode == "edit") $("#"+element.get('id')+" .icon").show();
         }
+    },
+    showChildrens : function(e){
+        e.preventDefault();
+        var element = this.elements.get(e.target.id)
+        if(e.target.getAttribute("data-type") != "action"){
+            var childs = api.getTreeChildrenNodes(element,this.elements)
+            childs.forEach(function(child){
+                $('#'+child.get('id')).addClass('windowHover')
+            })
+        }
+    },
+    hideChildrens : function(e){
+        e.preventDefault();
+        //this.$(".icon").hide();
+        var dom = $('.windowHover');
+        _.forEach(dom,function(el){
+            $(el).removeClass('windowHover');
+        });
     },
     //////////////////////////////
     updateEditor : function(model){
@@ -1246,6 +1266,19 @@ bbmap.Views.Main = Backbone.View.extend({
         $('.'+id_source+"_svg").hide('slow')
     },
     ////////////////////////////////////////
+    setPulse : function(){
+        var _this = this;
+        var news  = global.collections.News;
+        this.elements.each(function(el){
+            news.forEach(function(n){
+                if(n.get('attachedTo') ==  el.get('id')){
+                    $('#'+ el.get('id')).addClass("pulse")
+                    return ;
+                }
+            })    
+        })
+        
+    },
     renderActionBar : function(){
         //this.top_el.empty();
         //if(actionMenu.views.main != undefined) actionMenu.views.main.close(); 
@@ -1384,6 +1417,7 @@ bbmap.Views.Main = Backbone.View.extend({
             $('#bottom_container').hide();    
         }
 
+        this.setPulse();
 
         return this;
     }
