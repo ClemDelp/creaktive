@@ -233,20 +233,21 @@ var api = {
   //////////////////////////////
   // API Tree manipulation
   //////////////////////////////
-  getTreeParentNodes : function(currentNode,tree){
+  getTreeParentNodes : function(currentNode,tree,alreadyDone){
     // tree have to be a collection of node/model with each an id_father attribute reference to a node father
     // node have to be a model with an id_father attribute reference to a node father
     var parents = [];
     var parents_id = [];
+    if(alreadyDone) parents_id = alreadyDone;
     if(currentNode.get('id_father')){
       tree.each(function(node){
-        if(_.indexOf(parents_id, node.get('id'))>-1){
+        if(_.indexOf(parents_id, node.get('id')) == -1){
           //console.log("current node ",currentNode.get('id_father')," - node ",node.get('id'))
           if(currentNode.get('id_father') == node.get('id')){
             parents.unshift(node);
             parents_id.unshift(node.get('id'));
             currentNode = node
-            parents = _.union(parents, api.getTreeParentNodes(currentNode,tree))
+            parents = _.union(parents, api.getTreeParentNodes(currentNode,tree,parents_id))
           }  
         }
       });
@@ -255,17 +256,23 @@ var api = {
     // return all parent nodes from a branch node
     return parents;
   },
-  getTreeChildrenNodes : function(currentNode,tree){
+  getTreeChildrenNodes : function(currentNode,tree,alreadyDone){
     // tree have to be a collection of node/model with each an id_father attribute reference to a node father
     // node have to be a model with an id_father attribute reference to a node father
     var childrens = [];
     var nodes = [];
+    var childs_id = [];
+    if(alreadyDone) childs_id = alreadyDone;
     if(currentNode.get('id_father')){
       nodes = tree.where({id_father : currentNode.get('id')});
       childrens = _.union(childrens, nodes)
       nodes.forEach(function(node){
-        childrens = _.union(childrens, api.getTreeChildrenNodes(node,tree))
+        if(_.indexOf(childs_id, node.get('id')) == -1){
+          childs_id.unshift(node.get('id'));
+          childrens = _.union(childrens, api.getTreeChildrenNodes(node,tree,childs_id))
+        }
       });
+
     }
     // return all children nodes from a parent node
     return childrens;

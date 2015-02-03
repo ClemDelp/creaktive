@@ -110,8 +110,6 @@ user.Views.Main = Backbone.View.extend({
             $('#searchUser').val("");
         });
         }
-
-
     },
     addPermission : function(e){
         e.preventDefault();

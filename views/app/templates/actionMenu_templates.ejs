@@ -1,20 +1,23 @@
 <script type="text/template" id="actionMenu-template">
   <div class="large-9 medium-9 small-8 columns">
-    <button class="button simplePadding secondary radius" data-dropdown="title_project_dropdown" aria-controls="title_project_dropdown" aria-expanded="true">
-        <b>
-        {{-project.title}}
-        {{ if(project.starred){ }}<img data-dropdown="title_project_dropdown"  title="starred project" src="/img/icones/Shape-Star2-32.png" />{{ } }}
-        {{ if(project.status == 'public'){ }}
-          <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="public project" src="/img/icones/Open-32.png"/>
-        {{ }else{ }}
-          <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="private project" src="/img/icones/Lock-32.png"/>
-        {{ } }}
-        </b>
-    </button>
-    <div id="title_project_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
-
-    <button class="button secondary simplePadding radius" data-dropdown="members_anager_dropdown" aria-controls="members_anager_dropdown" aria-expanded="true"><b>Members</b><img data-type="action" title="mode" src="/img/icones/Group-Add-32.png"/></button>
-    <div id="members_anager_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
+  
+    <a href="#" class="button secondary simplePadding radius" data-reveal-id="title_project_modal">
+      <b>
+      {{-project.title}}
+      {{ if(project.starred){ }}<img data-dropdown="title_project_dropdown"  title="starred project" src="/img/icones/Shape-Star2-32.png" />{{ } }}
+      {{ if(project.status == 'public'){ }}
+        <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="public project" src="/img/icones/Open-32.png"/>
+      {{ }else{ }}
+        <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="private project" src="/img/icones/Lock-32.png"/>
+      {{ } }}
+      </b>
+    </a>
+    <div id="title_project_modal" class="modalContainer reveal-modal" data-reveal></div>
+    
+    <a href="#" class="button secondary simplePadding radius" data-reveal-id="members_manager_modal">
+      <b>Members</b><img data-type="action" title="mode" src="/img/icones/Group-Add-32.png"/>
+    </a>
+    <div id="members_manager_modal" class="modalContainer reveal-modal" data-reveal></div>
 
     {{ if(from == "bbmap"){ }}
       <a style="display:true" href="/timela?projectId={{-project.id}}" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Bullets-32-blue.png" /></a>
