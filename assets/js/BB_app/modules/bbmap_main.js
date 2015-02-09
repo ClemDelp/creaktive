@@ -185,16 +185,34 @@ bbmap.Views.Main = Backbone.View.extend({
          "click .structureSubTree" : "treeClassification",
         //"click .structureSubTree" : "structureTree",
     },
-    laurie : function(e){
-        e.preventDefault();
+    svgWindowController : function(){
+        $('body .svg_window').remove();
+        var c_candidats = bbmap.views.main.elements.where({type:"concept",id_father:"none"})
+        var p_candidats = bbmap.views.main.elements.where({type:"poche",id_father:"none"})
+        var peres = _.union(c_candidats,p_candidats)
+        peres.forEach(function(pere){
+            bbmap.views.main.drawSvgWindow(pere);
+        })
+
+    },
+    drawSvgWindow : function(pere){
+        var elements = api.getTreeChildrenNodes(pere,bbmap.views.main.elements);
+        elements.push(pere);
+        var cadre = this.getCadre(elements,100);
+        var color = "#E67E22";
+        if(pere.get('type') == "concept") color = "#C8D400";
+        var left = cadre.left_min - 25;
+        var right = cadre.top_min - 30;
+        var text = pere.get('title')+" ("+(api.getTreeChildrenNodes(pere,bbmap.views.main.elements).length+1)+" childs)";
+        this.map_el.append('<svg class="svg_window" style="position:absolute;left:'+left+'px;top:'+right+'px" width="'+cadre.width+'" height="'+cadre.height+'" pointer-events="none" position="absolute" version="1.1" xmlns="http://www.w3.org/1999/xhtml"><text x="5" y="10" font-family="sans-serif" font-size="10px" fill="'+color+'">'+text+'</text><rect rx="10" ry="10" x="0" y="0" width="'+cadre.width+'" height="'+cadre.height+'" stroke-width="3" stroke="'+color+'" fill="transparent" /></svg>')
+    },
+    getCadre : function(elements,offset){
         var left_min = 10000000000000000000000;
         var left_max = 0;
         var top_min = 10000000000000000000000;
         var top_max = 0;
-        var offset = 250;
-        var childs = [];
         // on prend le cadre
-        bbmap.views.main.elements.each(function(el){
+        elements.forEach(function(el){
             if(el.get('left') < left_min) left_min = el.get('left')
             if(el.get('left') + $('#'+el.get('id')).width() > left_max) left_max = el.get('left') + $('#'+el.get('id')).width() + offset;
             if(el.get('top') < top_min) top_min = el.get('top')
@@ -203,6 +221,19 @@ bbmap.Views.Main = Backbone.View.extend({
         // on definit la hauteur + largeur du cadre
         var cadre_width = left_max - left_min;
         var cadre_height = top_max - top_min;
+        return {width:cadre_width,height:cadre_height,left_min:left_min,left_max:left_max,top_min:top_min,top_max:top_max};
+    },
+    laurie : function(e){
+        e.preventDefault();
+        var offset = 250;
+        var childs = [];
+        var cadre = this.getCadre(bbmap.views.main.elements.toArray(),300);
+        var left_min = cadre.left_min;
+        var left_max = cadre.left_max;
+        var top_min = cadre.top_min;
+        var top_max = cadre.top_max;
+        var cadre_width = cadre.width;
+        var cadre_height = cadre.height;
         // on crée l'element cadre
         var cadre = $('<div>',{id:'youhou',style:'width:'+cadre_width+'px;height:'+cadre_height+'px;',class:'chart-demo'});
         var childs = $("#map > .window").clone();
@@ -1263,7 +1294,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.map_el.append('<svg class="'+id_source+'_svg" style="position:absolute;left:'+left+'px;top:'+top+'px" width="'+width+'" height="'+height+'" pointer-events="none" position="absolute" version="1.1" xmlns="http://www.w3.org/1999/xhtml" class="_jsPlumb_connector"><line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" style="stroke:black;stroke-width:2px;" /></svg>')
     },
     hideSvgLine : function(id_source){
-        $('.'+id_source+"_svg").hide('slow')
+        $('.'+id_source+"_svg").remove()
     },
     ////////////////////////////////////////
     setPulse : function(){
@@ -1418,6 +1449,7 @@ bbmap.Views.Main = Backbone.View.extend({
         }
 
         this.setPulse();
+        this.svgWindowController();
 
         return this;
     }

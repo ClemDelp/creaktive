@@ -131,6 +131,7 @@ bbmap.Views.Node = Backbone.View.extend({
                     ////console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
                     //bbmap.views.main.reorganizeTree(this.model.get('id'))           
                 }
+                bbmap.views.main.svgWindowController();
             }
         }
     },
