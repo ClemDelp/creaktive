@@ -237,7 +237,7 @@ bbmap.Views.Node = Backbone.View.extend({
         // Add endpoints
         var is_source = true;
         if(bbmap.views.main.mode == "visu") is_source = false;
-        
+
         if(bbmap.views.main.mode == "edit"){
             bbmap.views.main.instance.addEndpoint(
                 $(this.el), {
@@ -248,7 +248,7 @@ bbmap.Views.Node = Backbone.View.extend({
                     maxConnections:-1
                 },
                 {
-                    connectorStyle : { strokeStyle:"#2980B9", lineWidth:1,dashstyle:"2 2" },
+                    //connectorStyle : { strokeStyle:"#2980B9", lineWidth:1,dashstyle:"2 2" },
                     endpoint:["Dot", { radius:10 }],
                     paintStyle:{ fillStyle:"#2980B9" },
                 }

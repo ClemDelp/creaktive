@@ -96,7 +96,7 @@ bbmap.Views.Main = Backbone.View.extend({
             Connector : [ "Bezier", { curviness:50 } ],
             DragOptions : { cursor: "pointer", zIndex:2000 },
             PaintStyle : { strokeStyle:this.color, lineWidth:1 },
-            EndpointStyle : { radius:5, fillStyle:this.color },
+            EndpointStyle : { radius:1, fillStyle:this.color },
             HoverPaintStyle : {strokeStyle:"#27AE60" },
             EndpointHoverStyle : {fillStyle:"#27AE60" },
             ConnectionOverlays : [
@@ -203,7 +203,7 @@ bbmap.Views.Main = Backbone.View.extend({
         if(pere.get('type') == "concept") color = "#C8D400";
         var left = cadre.left_min - 25;
         var right = cadre.top_min - 30;
-        var text = pere.get('title')+" ("+(api.getTreeChildrenNodes(pere,bbmap.views.main.elements).length+1)+" childs)";
+        var text = pere.get('title')+" ("+(api.getTreeChildrenNodes(pere,bbmap.views.main.elements).length+1)+" elements)";
         this.map_el.append('<svg class="svg_window" style="position:absolute;left:'+left+'px;top:'+right+'px" width="'+cadre.width+'" height="'+cadre.height+'" pointer-events="none" position="absolute" version="1.1" xmlns="http://www.w3.org/1999/xhtml"><text x="5" y="10" font-family="sans-serif" font-size="10px" fill="'+color+'">'+text+'</text><rect rx="10" ry="10" x="0" y="0" width="'+cadre.width+'" height="'+cadre.height+'" stroke-width="3" stroke="'+color+'" fill="transparent" /></svg>')
     },
     getCadre : function(elements,offset){
@@ -214,9 +214,9 @@ bbmap.Views.Main = Backbone.View.extend({
         // on prend le cadre
         elements.forEach(function(el){
             if(el.get('left') < left_min) left_min = el.get('left')
-            if(el.get('left') + $('#'+el.get('id')).width() > left_max) left_max = el.get('left') + $('#'+el.get('id')).width() + offset;
+            if((el.get('left') + $('#'+el.get('id')).width()+offset) > left_max) left_max = el.get('left') + $('#'+el.get('id')).width() + offset;
             if(el.get('top') < top_min) top_min = el.get('top')
-            if(el.get('top') + $('#'+el.get('id')).height() > top_max) top_max = el.get('top') + $('#'+el.get('id')).height() + offset;
+            if((el.get('top') + $('#'+el.get('id')).height()+offset) > top_max) top_max = el.get('top') + $('#'+el.get('id')).height() + offset;
         });
         // on definit la hauteur + largeur du cadre
         var cadre_width = left_max - left_min;
@@ -225,12 +225,14 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     laurie : function(e){
         e.preventDefault();
+        var padding_left = -100;
+        var padding_top = -100;
         var offset = 250;
         var childs = [];
         var cadre = this.getCadre(bbmap.views.main.elements.toArray(),300);
-        var left_min = cadre.left_min;
+        var left_min = cadre.left_min + padding_left;
         var left_max = cadre.left_max;
-        var top_min = cadre.top_min;
+        var top_min = cadre.top_min + padding_top;
         var top_max = cadre.top_max;
         var cadre_width = cadre.width;
         var cadre_height = cadre.height;
@@ -664,7 +666,7 @@ bbmap.Views.Main = Backbone.View.extend({
     showIcon : function(e){
         e.preventDefault();
         var element = this.elements.get(e.target.id)
-        console.log("Element details : ",element.toJSON())
+        //console.log("Element details : ",element.toJSON())
         // close all icones
         this.$(".icon").hide();
         if(e.target.getAttribute("data-type") != "action"){
@@ -1143,15 +1145,40 @@ bbmap.Views.Main = Backbone.View.extend({
         this.nodes_views[model.get('id')].removeView();
         this.svgWindowController();
     },
+    getCKLinkStyle : function(link){
+        var c_color = "#27AE60";
+        var k_color = "#1B9DD3";
+        var p_color = "#E67E22";
+        var source = bbmap.views.main.elements.get(link.get('source'));
+        var target = bbmap.views.main.elements.get(link.get('target'));
+        var style = { strokeStyle : "gray", lineWidth : 1, dashstyle : "2 4"}
+        if(source.get('type') == "concept"){
+            if(target.get('type') == "concept") style = {strokeStyle:c_color,lineWidth:1};
+            else if(target.get('type') == "knowledge") style = {strokeStyle:c_color,lineWidth:1,dashstyle:"2 4"};
+            else if(target.get('type') == "poche") style = {strokeStyle:c_color,lineWidth:1,dashstyle:"2 4"};
+        }
+        else if(source.get('type') == "knowledge"){
+            if(target.get('type') == "concept") style = {strokeStyle:k_color,lineWidth:1,dashstyle:"2 4"};
+            else if(target.get('type') == "knowledge") style = {strokeStyle:k_color,lineWidth:1};
+            else if(target.get('type') == "poche") style = {strokeStyle:k_color,lineWidth:1,dashstyle:"2 4"};
+        }
+        else if(source.get('type') == "poche"){
+            if(target.get('type') == "concept") style = {strokeStyle:p_color,lineWidth:1,dashstyle:"2 4"};
+            else if(target.get('type') == "knowledge") style = {strokeStyle:p_color,lineWidth:1,dashstyle:"2 4"};
+            else if(target.get('type') == "poche") style = {strokeStyle:p_color,lineWidth:1};
+        }
+        return style;
+    },
     addLinkToView : function(model,from){
         var origin = "client";
         if(from) origin = from;
-
+        var style = this.getCKLinkStyle(model)
         bbmap.views.main.instance.connect({
             source:bbmap.views.main.nodes_views[model.get('source')].el, 
             target:bbmap.views.main.nodes_views[model.get('target')].el, 
             anchor:"AutoDefault",
-            scope : "cklink"
+            scope : "cklink",
+            paintStyle:style
         });
     },
     removeLinkToView : function(model,from){
@@ -1191,25 +1218,12 @@ bbmap.Views.Main = Backbone.View.extend({
             return resp;
         });
         this.instance.bind("click", function(conn) {
-            // swal({   
-            //     title: "Are you sure?",   
-            //     text: "This connection will be remove, would you continue?",   
-            //     type: "warning",   
-            //     showCancelButton: true,   
-            //     confirmButtonColor: "#DD6B55",   
-            //     confirmButtonText: "Yes, delete it!",   
-            //     closeOnConfirm: true,
-            //     allowOutsideClick : true
-            // }, 
-            // function(){   
-                bbmap.views.main.instance.detach(conn);
-                // Choise the right new id_father
-                var id_father = api.getTheRightIDFather(bbmap.views.main.links,bbmap.views.main.elements,bbmap.views.main.elements.get(conn.targetId))
-                bbmap.views.main.elements.get(conn.targetId).set({id_father : id_father}).save();
+            bbmap.views.main.instance.detach(conn);
+            // Choise the right new id_father
+            var id_father = api.getTheRightIDFather(bbmap.views.main.links,bbmap.views.main.elements,bbmap.views.main.elements.get(conn.targetId))
+            bbmap.views.main.elements.get(conn.targetId).set({id_father : id_father}).save();
 
-                bbmap.views.main.svgWindowController();
-            // });
-            
+            bbmap.views.main.svgWindowController();            
         });
         ///////////////////////
         // New link process
@@ -1226,19 +1240,11 @@ bbmap.Views.Main = Backbone.View.extend({
                 if(info.connection.scope == "cklink"){
                     var source = bbmap.views.main.elements.get(info.sourceId);
                     var target = bbmap.views.main.elements.get(info.targetId);
-                    global.newLink(source,target,true);
-                    // var new_cklink = new global.Models.CKLink({
-                    //     id :guid(),
-                    //     user : bbmap.views.main.user.get('id'),
-                    //     date : getDate(),
-                    //     source : info.sourceId,
-                    //     target : info.targetId,
-                    //     project : bbmap.views.main.project.get('id')
-
-                    // });
-                    // new_cklink.save();
-                    // bbmap.views.main.links.add(new_cklink,{silent : true});
-                    //bbmap.views.main.elements.get(info.targetId).set({id_father : info.sourceId}).save();
+                    var new_link = global.newLink(source,target,true);
+                    // Set the link style
+                    var style = bbmap.views.main.getCKLinkStyle(new_link);
+                    info.connection.setPaintStyle(style);
+                    // Re-draw windows
                     bbmap.views.main.svgWindowController();
                 }    
             }
