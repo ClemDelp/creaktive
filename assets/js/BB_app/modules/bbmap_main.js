@@ -168,9 +168,16 @@ bbmap.Views.Main = Backbone.View.extend({
         "mouseup .dropK" : "newKnowledgeUnlinked",
         "mouseup .dropP" : "newPocheUnlinked",
         "click .ckOperator" : "setCKOperator",
-        "click .zoomin" : "zoomin",
-        "click .zoomout" : "zoomout",
-        "click .reset" : "resetToCentroid",
+
+        "click .zoomin"     : "zoomin",
+        "click .zoomout"    : "zoomout",
+        "click .reset"      : "resetToCentroid",
+        "click .edit"       : "edit",
+        "click .design"     : "design",
+        "click .history"    : "history",
+        "click .web"        : "web",
+
+        "click .closeSibeBar" : "closeSibeBar",
         "mouseover .window" : "showChildrens",
         "mouseleave .window" : "hideChildrens",
         "click .window" : "showIcon", 
@@ -179,7 +186,7 @@ bbmap.Views.Main = Backbone.View.extend({
         "click #okjoyride" : "updateLastModelTitle",
         "click .screenshot" : "screenshot",
         "click .downloadimage" : "laurie",
-        "click #showMenu" : "eventMenu",
+        //"click #showMenu" : "eventMenu",
         "click .prevH" : "backInHistory",
         "click .nextH" : "advanceInHistory",
          "click .structureSubTree" : "treeClassification",
@@ -582,64 +589,43 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Sliding editor bar
     /////////////////////////////////////////
-    eventMenu : function(e){
-        e.preventDefault();
-        $('#cbp-spmenu-s1').show('slow');
-        var menu = document.getElementById( 'cbp-spmenu-s1' );
-        var button = document.getElementById( 'showMenu' );
-        var body = document.getElementById('map_container');
-        classie.toggle( button, 'active' );
-        classie.toggle( body, 'cbp-spmenu-push-toright' );
-        classie.toggle( menu, 'cbp-spmenu-open' ); 
-        if(this.isopen == false) this.showMenu();            
-        else this.hideMenu();
-    },
-    showMenuEvent : function(){
-        if((this.autOpen == true)&&(this.isopen == false)){
-            $("#map").animate({left: "-=28%"})
-            this.setDeltaX(-20)
-            //this.translateMap("left",-28); 
-            // button
-            $("#showMenu").show();
-            $("#showMenu").animate({right:"28%"});
-            $("#showMenu").addClass('active');
-            $("#cbp-openimage").attr("src","/img/icones/Arrowhead-Right-48.png");
-            // slide barre
-            $('#cbp-spmenu-s1').show('slow');
-            $('#cbp-spmenu-s1').addClass('cbp-spmenu-open')
-            // 
-            this.isopen = true;   
-        }
-    },
-    // hideMenuEvent : function(){
-    //     //this.translateMap("left",28); 
-    //     // button
-    //     $("#showMenu").hide();
-    //     $("#showMenu").animate({right:"0px"});
-    //     $("#showMenu").removeClass('active');
-    //     $("#cbp-openimage").attr("src","/img/icones/Arrowhead-Left-48.png");
-    //     // slide barre
-    //     $('#cbp-spmenu-s1').hide('slow');
-    //     $('#cbp-spmenu-s1').removeClass('cbp-spmenu-open')
-    //     //
-    //     this.isopen = false;
+    // showMenuEvent : function(){
+    //     if((this.autOpen == true)&&(this.isopen == false)){
+    //         $("#map").animate({left: "-=28%"})
+    //         this.setDeltaX(-20)
+    //         //this.translateMap("left",-28); 
+    //         // button
+    //         $("#right_buttons").show();
+    //         $("#right_buttons").animate({right:$('#cbp-spmenu-s1').width()});
+    //         $("#right_buttons").addClass('active');
+    //         $("#cbp-openimage").attr("src","/img/icones/Arrowhead-Right-48.png");
+    //         // slide barre
+    //         $('#cbp-spmenu-s1').show('slow');
+    //         $('#cbp-spmenu-s1').addClass('cbp-spmenu-open')
+    //         // 
+    //         this.isopen = true;   
+    //     }
     // },
     showMenu : function(){
-        $("#map").animate({left: "-=28%"})
-        this.setDeltaX(-20)
-
-        $("#showMenu").animate({right:"28%"});
-        $("#cbp-openimage").attr("src","/img/icones/Arrowhead-Right-48.png");
-        this.isopen=true;
+        if(this.isopen == false){
+            $("#map").animate({left: "-=28%"})
+            this.setDeltaX(-20)
+            $("#sideBar").animate({right:"0px"});
+            $("#right_buttons").animate({right:$('#sideBar').width()});
+            //$("#cbp-openimage").attr("src","/img/icones/Arrowhead-Right-48.png");
+            this.isopen=true;    
+        }
     },
     hideMenu : function(){
-        $("#map").animate({left: "+=28%"})
-        this.setDeltaX(0)
-        
-        $("#showMenu").animate({right:"0px"});
-        $("#cbp-openimage").attr("src","/img/icones/Arrowhead-Left-48.png");
-        this.isopen=false;
-        this.autOpen = false;
+        if(this.isopen == true){
+            $("#map").animate({left: "+=28%"})
+            this.setDeltaX(0)
+            $("#sideBar").animate({right:"-30%"});
+            $("#right_buttons").animate({right:"0px"});
+            //$("#cbp-openimage").attr("src","/img/icones/Arrowhead-Left-48.png");
+            this.isopen=false;
+            this.autOpen = false;
+        }
     },
     setDeltaX : function(pourc){
         this.deltaX = pourc * $(window).width()/100;
@@ -654,7 +640,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var description = 0
         // notif big red button
         // if(model.get('content') != "") description = 1;
-        $('#showMenu_notif').html(comments + attachments + description);
+        //$('#showMenu_notif').html(comments + attachments + description);
         // notif inside slideBar Menu
         $('#notifDesc').empty()
         $('#notifAttach').empty()
@@ -670,7 +656,6 @@ bbmap.Views.Main = Backbone.View.extend({
         // close all icones
         this.$(".icon").hide();
         if(e.target.getAttribute("data-type") != "action"){
-            this.showMenuEvent()
             // set last model
             this.setNotificationDisplayOnModel(element);
             this.updateEditor(element);
@@ -697,9 +682,88 @@ bbmap.Views.Main = Backbone.View.extend({
         });
     },
     //////////////////////////////
+    // Side bar
+    closeSibeBar : function(e){
+        e.preventDefault();
+        this.hideMenu();
+    },
+    edit : function(e){
+        e.preventDefault();
+        var model = this.lastModel;
+        this.showMenu()
+        $('#sideBar_container').html('');
+        $('#sideBar_container').append($('<div>',{id:'editorPart'}))
+        $('#sideBar_container').append($('<div>',{id:'attachmentPart'}))
+        $('#sideBar_container').append($('<div>',{id:'commentPart'}))
+        // Comments module
+        // if(comments.views.main != undefined){
+        //     comments.views.main.mode = this.mode;
+        //     comments.views.main.model = model;
+        //     comments.views.main.render();
+        // }else{
+            comments.init({
+                el:"#commentPart",
+                mode: this.mode,
+                model : model,
+                presentation : "bulle"
+            }); 
+        // }
+        // attachment module
+        // if(attachment.views.main != undefined){
+        //     attachment.views.main.mode = this.mode;
+        //     attachment.views.main.model = model;
+        //     attachment.views.main.render();
+        // }else{
+            attachment.init({
+                el:"#attachmentPart",
+                mode: this.mode,
+                model : model,
+            }); 
+        // }
+        // Editor module
+        // if(modelEditor.views.main != undefined){
+        //     modelEditor.views.main.bbmapMode = this.mode;
+        //     modelEditor.views.main.model = model;
+        //     modelEditor.views.main.render();
+        // }else{
+            modelEditor.init({
+                el:"#editorPart",
+                mode: this.mode,
+                ckeditor : false,
+                model : model,
+            }); 
+        // }    
+    },
+    design : function(e){
+        e.preventDefault();
+        var model = this.lastModel;
+        this.showMenu()
+        $('#sideBar_container').html('');
+        $('#sideBar_container').append($('<div>',{id:'css3Model'}))
+        $('#css3Model').prepend(bbmap.views.templatesList.render().el);
+    },
+    history : function(e){
+        e.preventDefault();
+        var model = this.lastModel;
+        this.showMenu()
+        $('#sideBar_container').html('');
+        $('#sideBar_container').append($('<div>',{id:'activitiesModel'}))
+        // if(activitiesList.views.main != undefined){
+        //     activitiesList.views.main.mode = this.mode;
+        //     activitiesList.views.main.model = model;
+        //     activitiesList.views.main.render();
+        // }else{
+            activitiesList.init({
+                el:"#activitiesModel",
+                model : model,
+                mode: this.mode,
+            }); 
+        // }
+    },
     updateEditor : function(model){
         if((this.mode == "edit")||(this.mode == "visu")){
-            $('#showMenu').show('slow');
+            $('#right_buttons').show('slow');
+            
             // Templates list
             if(bbmap.views.templatesList) bbmap.views.templatesList.close();
             bbmap.views.templatesList = new templatesList.Views.Main({
@@ -710,117 +774,60 @@ bbmap.Views.Main = Backbone.View.extend({
             // check for template
             if(!this.project.get('templates')) this.project.save({templates : bbmap.default_templates},{silent:true});
             // IMG List module
-            if(bbmap.views.imagesList)bbmap.views.imagesList.close();
-            bbmap.views.imagesList = new imagesList.Views.Main({
-                model           : model,
-                eventAggregator : this.eventAggregator
-            });
-            // Attachment module
-            // if(bbmap.views.attachment)bbmap.views.attachment.close();
-            // bbmap.views.attachment = new attachment.Views.Main({
+            // if(bbmap.views.imagesList)bbmap.views.imagesList.close();
+            // bbmap.views.imagesList = new imagesList.Views.Main({
             //     model           : model,
-            //     mode            : this.mode,
             //     eventAggregator : this.eventAggregator
             // });
-            // Comments module
-            if(comments.views.main != undefined){
-                comments.views.main.mode = this.mode;
-                comments.views.main.model = model;
-                comments.views.main.render();
-            }else{
-                comments.init({
-                    el:"#commentPart",
-                    mode: this.mode,
-                    model : model,
-                    presentation : "bulle"
-                }); 
-            }
-            // attachment module
-            if(attachment.views.main != undefined){
-                attachment.views.main.mode = this.mode;
-                attachment.views.main.model = model;
-                attachment.views.main.render();
-            }else{
-                attachment.init({
-                    el:"#attachmentPart",
-                    mode: this.mode,
-                    model : model,
-                }); 
-            }
-            // Editor module
-            if(modelEditor.views.main != undefined){
-                modelEditor.views.main.bbmapMode = this.mode;
-                modelEditor.views.main.model = model;
-                modelEditor.views.main.render();
-            }else{
-                modelEditor.init({
-                    el:"#editorPart",
-                    mode: this.mode,
-                    ckeditor : false,
-                    model : model,
-                }); 
-            }
-            // Activities module
-            if(activitiesList.views.main != undefined){
-                activitiesList.views.main.mode = this.mode;
-                activitiesList.views.main.model = model;
-                activitiesList.views.main.render();
-            }else{
-                activitiesList.init({
-                    el:"#activitiesModel",
-                    model : model,
-                    mode: this.mode,
-                }); 
-            }
             ///////////////////////////
             // GoogleSearch module IMG
-            if(bbmap.views.gs_img)bbmap.views.gs_img.close();
-            bbmap.views.gs_img = new googleSearch.Views.Main({
-                model      : model,
-                mode       : this.mode,
-                type       : "images",
-                perpage    : 8,
-                moreButton : true,
-                width      : "100px",
-            });
-            // GoogleSearch module News
-            if(bbmap.views.gs_news)bbmap.views.gs_news.close();
-            bbmap.views.gs_news = new googleSearch.Views.Main({
-                model      : model,
-                mode       : this.mode,
-                type       : "news",
-                perpage    : 8,
-                moreButton : true,
-                width      : "",
-            });
-            // GoogleSearch module Web
-            if(bbmap.views.gs_web)bbmap.views.gs_web.close();
-            bbmap.views.gs_web = new googleSearch.Views.Main({
-                model      : model,
-                mode       : this.mode,
-                type       : "web",
-                perpage    : 8,
-                moreButton : true,
-                width      : "",
-            });
-            // GoogleSearch module video
-            if(bbmap.views.gs_video)bbmap.views.gs_video.close();
-            bbmap.views.gs_video = new googleSearch.Views.Main({
-                model      : model,
-                mode       : this.mode,
-                type       : "video",
-                perpage    : 8,
-                moreButton : true,
-                width      : "",
-            });
+            // if(bbmap.views.gs_img)bbmap.views.gs_img.close();
+            // bbmap.views.gs_img = new googleSearch.Views.Main({
+            //     model      : model,
+            //     mode       : this.mode,
+            //     type       : "images",
+            //     perpage    : 8,
+            //     moreButton : true,
+            //     width      : "100px",
+            // });
+            // // GoogleSearch module News
+            // if(bbmap.views.gs_news)bbmap.views.gs_news.close();
+            // bbmap.views.gs_news = new googleSearch.Views.Main({
+            //     model      : model,
+            //     mode       : this.mode,
+            //     type       : "news",
+            //     perpage    : 8,
+            //     moreButton : true,
+            //     width      : "",
+            // });
+            // // GoogleSearch module Web
+            // if(bbmap.views.gs_web)bbmap.views.gs_web.close();
+            // bbmap.views.gs_web = new googleSearch.Views.Main({
+            //     model      : model,
+            //     mode       : this.mode,
+            //     type       : "web",
+            //     perpage    : 8,
+            //     moreButton : true,
+            //     width      : "",
+            // });
+            // // GoogleSearch module video
+            // if(bbmap.views.gs_video)bbmap.views.gs_video.close();
+            // bbmap.views.gs_video = new googleSearch.Views.Main({
+            //     model      : model,
+            //     mode       : this.mode,
+            //     type       : "video",
+            //     perpage    : 8,
+            //     moreButton : true,
+            //     width      : "",
+            // });
             ///////////////////////////
             // Render & Append
-            $('#css3Model').prepend(bbmap.views.templatesList.render().el);
-            this.googleSearchModel_el.empty();
-            this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_img.render().el));
-            this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_web.render().el));
-            this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_news.render().el));
-            this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_video.render().el));
+            
+            // this.googleSearchModel_el.empty();
+            // this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_img.render().el));
+            // this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_web.render().el));
+            // this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_news.render().el));
+            // this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_video.render().el));
         }
     },
     /////////////////////////////////////////

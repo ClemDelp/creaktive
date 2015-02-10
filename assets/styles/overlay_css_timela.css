@@ -1,8 +1,27 @@
+#sideBar {
+background: #eeeeee;
+position: fixed;
+width: 30%;
+height: 100%;
+right: -30%;
+/* top: 5%; */
+z-index: 1000;
+/* overflow: auto; */
+border-left: 1px solid #1B9DD3;
+}
+
+
+
+
 .reveal-modal.modalContainer{
 	max-height: 80%;
 	overflow: auto;
 }
 
+.button.borderBlue{
+	border: 1px #1B9DD3 solid;
+	/*background: white;*/
+}
 
 .fullWidth {
    width: 100%;
