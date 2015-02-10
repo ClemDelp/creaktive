@@ -275,6 +275,7 @@ bbmap.Views.Main = Backbone.View.extend({
             }
         });
     },
+    ///////////////////////////////////////////
     treeClassification : function(e){
         e.preventDefault();
         var pere = this.lastModel.get('id');
@@ -284,6 +285,7 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         setTimeout(function(){
             bbmap.views.main.instance.repaintEverything();
+            bbmap.views.main.svgWindowController();
         },1000);
     },
     deleteButton : function(){
@@ -427,7 +429,9 @@ bbmap.Views.Main = Backbone.View.extend({
             model.destroy();
         }
         else if(action == "update"){
-            global.updateElement(model,model.toJSON())
+            var m = bbmap.views.main.elements.get(model.get('id'))
+            m.save(model.toJSON())
+            //global.updateElement(model,model.toJSON())
         }
     },
     getTimelineHitoryModel : function(historic,type,sens,action){
@@ -441,7 +445,6 @@ bbmap.Views.Main = Backbone.View.extend({
             if(type == "link") model = new global.Models.CKLink(historic.get('to'));
             else model = new global.Models.Element(historic.get('to'));
         }
-        console.log('eeee',model)
         return model;
     },
     /////////////////////////////////////////
@@ -521,27 +524,27 @@ bbmap.Views.Main = Backbone.View.extend({
         var pos = $('#dropP').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        var new_element = global.newElement("poche","","none",top,left);
-        this.newViewAndLink(new_element,top,left,pos);
+        var new_element = global.newElement("poche","",top,left);
+        this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
     },
     newConceptUnlinked : function(e){
         var pos = $('#dropC').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        var new_element = global.newElement("concept","","none",top,left);
-        this.newViewAndLink(new_element,top,left,pos);
+        var new_element = global.newElement("concept","",top,left);
+        this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
     },
     newKnowledgeUnlinked : function(e){
         var pos = $('#dropK').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        var new_element = global.newElement("knowledge","","none",top,left);
-        this.newViewAndLink(new_element,top,left,pos);
+        var new_element = global.newElement("knowledge","",top,left);
+        this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
     },
-    newViewAndLink : function(new_element,top,left,pos){
+    newViewAndLink : function(source,target,top,left,pos){
         // On centre la map sur l'element
         var position = {top:(top*bbmap.zoom.get('val')) + $('#map').offset().top,left:(left*bbmap.zoom.get('val')) + $('#map').offset().left};
         if(pos) position = pos; // pour prendre la position du drop button
@@ -549,9 +552,10 @@ bbmap.Views.Main = Backbone.View.extend({
             // On ajoute le model à la view
             // bbmap.views.main.addModelToView(new_element);
             // LINK
-            if(new_element.get('id_father') != "none"){
-                var new_cklink = global.newLink(bbmap.views.main.elements.get(new_element.get('id_father')),new_element);
+            if(source != "none"){
+                var new_cklink = global.newLink(source,target);
                 //bbmap.views.main.addLinkToView(new_cklink)
+                bbmap.views.main.svgWindowController();
             } 
         });
     },
@@ -660,6 +664,7 @@ bbmap.Views.Main = Backbone.View.extend({
     showIcon : function(e){
         e.preventDefault();
         var element = this.elements.get(e.target.id)
+        console.log("Element details : ",element.toJSON())
         // close all icones
         this.$(".icon").hide();
         if(e.target.getAttribute("data-type") != "action"){
@@ -1129,12 +1134,14 @@ bbmap.Views.Main = Backbone.View.extend({
         if(origin == "client"){
             this.startJoyride();
         }
+        this.svgWindowController();
     },
     removeModelToView : function(model,from){
         var origin = "client";
         if(from) origin = from;
         //console.log(this.nodes_views[model.get('id')])
         this.nodes_views[model.get('id')].removeView();
+        this.svgWindowController();
     },
     addLinkToView : function(model,from){
         var origin = "client";
@@ -1156,6 +1163,7 @@ bbmap.Views.Main = Backbone.View.extend({
         connections.forEach(function(conn){
             if((conn.targetId == target)&&(conn.sourceId == source))conn.setVisible(false)//bbmap.views.main.instance.detach({source:source, target:target, fireEvent:false});
         });
+        bbmap.views.main.svgWindowController();
         //this.nodes_views[model.get('source')].removeView();    
     },
     /////////////////////////////////////////
@@ -1176,6 +1184,8 @@ bbmap.Views.Main = Backbone.View.extend({
                     links_to_remove.forEach(function(link){
                         link.destroy();
                     });
+
+                    bbmap.views.main.svgWindowController();
                 } 
             }
             return resp;
@@ -1193,7 +1203,11 @@ bbmap.Views.Main = Backbone.View.extend({
             // }, 
             // function(){   
                 bbmap.views.main.instance.detach(conn);
-                bbmap.views.main.elements.get(conn.targetId).set({id_father : "none"}).save();
+                // Choise the right new id_father
+                var id_father = api.getTheRightIDFather(bbmap.views.main.links,bbmap.views.main.elements,bbmap.views.main.elements.get(conn.targetId))
+                bbmap.views.main.elements.get(conn.targetId).set({id_father : id_father}).save();
+
+                bbmap.views.main.svgWindowController();
             // });
             
         });
@@ -1210,18 +1224,22 @@ bbmap.Views.Main = Backbone.View.extend({
         this.instance.bind("connection", function(info, originalEvent) {
             if(originalEvent){
                 if(info.connection.scope == "cklink"){
-                    var new_cklink = new global.Models.CKLink({
-                        id :guid(),
-                        user : bbmap.views.main.user.get('id'),
-                        date : getDate(),
-                        source : info.sourceId,
-                        target : info.targetId,
-                        project : bbmap.views.main.project.get('id')
+                    var source = bbmap.views.main.elements.get(info.sourceId);
+                    var target = bbmap.views.main.elements.get(info.targetId);
+                    global.newLink(source,target,true);
+                    // var new_cklink = new global.Models.CKLink({
+                    //     id :guid(),
+                    //     user : bbmap.views.main.user.get('id'),
+                    //     date : getDate(),
+                    //     source : info.sourceId,
+                    //     target : info.targetId,
+                    //     project : bbmap.views.main.project.get('id')
 
-                    });
-                    new_cklink.save();
-                    bbmap.views.main.links.add(new_cklink,{silent : true});
-                    bbmap.views.main.elements.get(info.targetId).set({id_father : info.sourceId}).save();
+                    // });
+                    // new_cklink.save();
+                    // bbmap.views.main.links.add(new_cklink,{silent : true});
+                    //bbmap.views.main.elements.get(info.targetId).set({id_father : info.sourceId}).save();
+                    bbmap.views.main.svgWindowController();
                 }    
             }
         });     

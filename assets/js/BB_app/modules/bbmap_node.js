@@ -137,7 +137,8 @@ bbmap.Views.Node = Backbone.View.extend({
     },
     following : function(idAlreadyMoved,delta,model){
         var _this = this;
-        var followers = api.getModelsLinkedToModel(bbmap.views.main.links,bbmap.views.main.elements,model);
+        //var followers = api.getModelsLinkedToModel(bbmap.views.main.links,bbmap.views.main.elements,model);
+        var followers = api.getTreeChildrenNodes(this.model,bbmap.views.main.elements)
         // Set the followers
         followers.forEach(function(f){
             if(_.indexOf(idAlreadyMoved, f.get('id')) == -1){
@@ -149,7 +150,7 @@ bbmap.Views.Node = Backbone.View.extend({
 
                 f_view.setPosition(newPosition.left,newPosition.top,0,0,false,'followers',true)
                 bbmap.views.main.instance.repaint(f.get('id'));
-                _this.following(idAlreadyMoved,delta,f)
+                //_this.following(idAlreadyMoved,delta,f)
             }
         });
     },
@@ -157,15 +158,15 @@ bbmap.Views.Node = Backbone.View.extend({
         e.preventDefault();
         var top = ($(this.el).position().top + 100) / bbmap.zoom.get('val');
         var left = $(this.el).position().left / bbmap.zoom.get('val');
-        var new_element = global.newElement("concept","",this.model,top,left);
-        bbmap.views.main.newViewAndLink(new_element,top,left);
+        var new_element = global.newElement("concept","",top,left);
+        bbmap.views.main.newViewAndLink(this.model,new_element,top,left);
     },
     addKnowledgeChild : function(e){
         e.preventDefault();
         var top = ($(this.el).position().top + 100) / bbmap.zoom.get('val');
         var left = $(this.el).position().left / bbmap.zoom.get('val');
-        var new_element = global.newElement("knowledge","",this.model,top,left);
-        bbmap.views.main.newViewAndLink(new_element,top,left);
+        var new_element = global.newElement("knowledge","",top,left);
+        bbmap.views.main.newViewAndLink(this.model,new_element,top,left);
     },
     /////////////////////////////////////////
     // Remove function
