@@ -65,12 +65,18 @@ comments.Views.Main = Backbone.View.extend({
         var _this = this;
         var sens = 0;
         var nbr = 0;
+        
+        var container = $('<div>',{class:'row'});
+        var container2 = $('<div>',{class:'col-xs-12 col-md-12'});
+        var container3 = $('<div>',{class:'max_panel-body msg_container_base'});
+        
+        
         this.comments.forEach(function(comment){
             if(sens == 0) sens = 1;
             else sens = 0;
             if(comment.get('attachedTo') == _this.model.get('id')){
                 nbr += 1;
-                $(_this.el).append(new comments.Views.Comment({
+                container3.append(new comments.Views.Comment({
                     presentation : _this.presentation,
                     sens : sens,
                     comment : comment,
@@ -78,6 +84,9 @@ comments.Views.Main = Backbone.View.extend({
                 }).render().el);    
             }
         });
+        container2.append(container3)
+        container.append(container2)
+        $(this.el).append(container)
         $(this.el).prepend(this.template_header({
             nbr : nbr,
             mode : this.mode

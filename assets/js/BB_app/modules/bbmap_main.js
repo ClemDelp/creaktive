@@ -76,6 +76,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.cursorY            = 0;
         this.visualMode         = "children"; // children/node/parent respectivly display childrens concept/ parents concepts + knowledges associate / knowledges associate to concept
         this.jeton              = true; // jeton pourevite que le center soit utilisé 2 fois simultanement
+        this.moduleSideBar      = "edit";
         ////////////////////////////////
         // Timeline & history parameter
         this.timeline_pos       = 0;
@@ -172,9 +173,9 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .zoomin"     : "zoomin",
         "click .zoomout"    : "zoomout",
         "click .reset"      : "resetToCentroid",
-        "click .edit"       : "edit",
-        "click .design"     : "design",
-        "click .history"    : "history",
+        "click .edit"       : "editEvent",
+        "click .design"     : "designEvent",
+        "click .history"    : "historyEvent",
         "click .web"        : "web",
 
         "click .closeSibeBar" : "closeSibeBar",
@@ -657,9 +658,9 @@ bbmap.Views.Main = Backbone.View.extend({
         this.$(".icon").hide();
         if(e.target.getAttribute("data-type") != "action"){
             // set last model
+            this.setLastModel(element);
             this.setNotificationDisplayOnModel(element);
             this.updateEditor(element);
-            this.setLastModel(element);
             if(this.mode == "edit") $("#"+element.get('id')+" .icon").show();
         }
     },
@@ -687,10 +688,14 @@ bbmap.Views.Main = Backbone.View.extend({
         e.preventDefault();
         this.hideMenu();
     },
-    edit : function(e){
+    editEvent : function(e){
         e.preventDefault();
+        this.edit();
+        this.showMenu();
+    },
+    edit : function(){
+        this.moduleSideBar = "edit";
         var model = this.lastModel;
-        this.showMenu()
         $('#sideBar_container').html('');
         $('#sideBar_container').append($('<div>',{id:'editorPart'}))
         $('#sideBar_container').append($('<div>',{id:'attachmentPart'}))
@@ -734,18 +739,26 @@ bbmap.Views.Main = Backbone.View.extend({
             }); 
         // }    
     },
-    design : function(e){
+    designEvent : function(e){
         e.preventDefault();
+        this.design();
+        this.showMenu();
+    },
+    design : function(){
+        this.moduleSideBar = "design";
         var model = this.lastModel;
-        this.showMenu()
         $('#sideBar_container').html('');
         $('#sideBar_container').append($('<div>',{id:'css3Model'}))
         $('#css3Model').prepend(bbmap.views.templatesList.render().el);
     },
-    history : function(e){
+    historyEvent : function(e){
         e.preventDefault();
+        this.history();
+        this.showMenu();
+    },
+    history : function(){
+        this.moduleSideBar = "history";
         var model = this.lastModel;
-        this.showMenu()
         $('#sideBar_container').html('');
         $('#sideBar_container').append($('<div>',{id:'activitiesModel'}))
         // if(activitiesList.views.main != undefined){
@@ -763,7 +776,9 @@ bbmap.Views.Main = Backbone.View.extend({
     updateEditor : function(model){
         if((this.mode == "edit")||(this.mode == "visu")){
             $('#right_buttons').show('slow');
-            
+            if(this.moduleSideBar == "edit") this.edit();
+            else if(this.moduleSideBar == "design") this.design();
+            else this.history();
             // Templates list
             if(bbmap.views.templatesList) bbmap.views.templatesList.close();
             bbmap.views.templatesList = new templatesList.Views.Main({
