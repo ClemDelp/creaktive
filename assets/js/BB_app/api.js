@@ -226,6 +226,19 @@ var api = {
   //////////////////////////////
   // API BBMAP
   //////////////////////////////
+  getType2LinkedToType1 : function(links,collection,type1,type2){
+    var elements = [];
+    // Concepts source
+    links.each(function(link){
+      var source_id = link.get('source');  
+      var target_id = link.get('target');
+      var source_el = collection.get(source_id);
+      var target_el = collection.get(target_id);
+      if((source_el.get('type') == type1)&&(target_el.get('type') == type2)) elements.push(target_el)
+    })
+
+    return elements;
+  },
   getModelsLinkedToModel : function(links,collection,model){
     // links have to be a collection a link model
     // Collection have to be a backbone collection

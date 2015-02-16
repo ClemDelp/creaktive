@@ -66,6 +66,102 @@ var bbmap = {
       title: "Missing"
     }
   ],
+
+  CKLegend : [
+    {
+      id : "c",
+      css: "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #27AE60;background: #ffffff;padding: 0 5px 0 5px;border: solid #27AE60 2px;text-decoration: none;",
+      title: "C",
+      desc : "empty concept",
+      stat : 0
+    },
+    {
+      id : "c+",
+      css: "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #ffffff;background: #2ECC71;padding: 0 5px 0 5px;border: solid #27AE60 2px;text-decoration: none;",
+      title: "C",
+      desc: "concept with description",
+      stat : 0
+    },
+    {
+      id : "k",
+      css: "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #2980B9;background: #ffffff;padding: 0 5px 0 5px;border: solid #2980B9 2px;text-decoration: none;",
+      title: "K",
+      desc : "empty knowledge",
+      stat : 0
+    },
+    {
+      id : "k+",
+      css: "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #ffffff;background: #3498DB;padding: 0 5px 0 5px;border: solid #2980B9 2px;text-decoration: none;",
+      title: "K",
+      desc: "knowledge with description",
+      stat : 0
+    },
+    {
+      id : "p",
+      css: "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #D35400;background: #ffffff;padding: 0 5px 0 5px;border: solid #D35400 2px;text-decoration: none;",
+      title: "P",
+      desc : "no linked knowledges",
+      stat : 0
+    },
+    {
+      id : "p+",
+      css: "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #ffffff;background: #E67E22;padding: 0 5px 0 5px;border: solid #D35400 2px;text-decoration: none;",
+      title: "P",
+      desc: "with linked knowledges",
+      stat : 0
+    },
+    {
+      id : "other",
+      css: "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #ffffff;background: #E74C3C;padding: 0 5px 0 5px;border: dotted #C0392B 2px;text-decoration: none;",
+      title: "?",
+      desc: "way to explore",
+      stat : 0
+    },
+
+
+    {
+      id : "cc",
+      css: "font-family: Arial;color: #27AE60;background: transparent;padding: 0 5px 0 5px;border-bottom: solid #27AE60 2px;text-decoration: none;",
+      title: "C-C",
+      desc: "operator C to C",
+      stat : 0
+    },
+    {
+      id : "c*",
+      css: "font-family: Arial;color: #27AE60;background: transparent;padding: 0 5px 0 5px;border-bottom: dotted #27AE60 2px;text-decoration: none;",
+      title: "C-*",
+      desc: "operator C to *",
+      stat : 0
+    },
+    {
+      id : "kk",
+      css: "font-family: Arial;color: #2980B9;background: transparent;padding: 0 5px 0 5px;border-bottom: solid #2980B9 2px;text-decoration: none;",
+      title: "K-K",
+      desc: "operator K to K",
+      stat : 0
+    },
+    {
+      id : "k*",
+      css: "font-family: Arial;color: #2980B9;background: transparent;padding: 0 5px 0 5px;border-bottom: dotted #2980B9 2px;text-decoration: none;",
+      title: "K-*",
+      desc: "operator K to *",
+      stat : 0
+    },
+    {
+      id : "pp",
+      css: "font-family: Arial;color: #D35400;background: transparent;padding: 0 5px 0 5px;border-bottom: solid #D35400 2px;text-decoration: none;",
+      title: "P-P",
+      desc: "operator P to P",
+      stat : 0
+    },
+    {
+      id : "p*",
+      css: "font-family: Arial;color: #D35400;background: transparent;padding: 0 5px 0 5px;border-bottom: dotted #D35400 2px;text-decoration: none;",
+      title: "P-*",
+      desc: "operator P to C/K",
+      stat : 0
+    },
+  ],
   // Constructor
   init: function () {
     // main

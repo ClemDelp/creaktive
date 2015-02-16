@@ -1493,11 +1493,93 @@ bbmap.Views.Main = Backbone.View.extend({
             $('#top_container').hide();
             $('#bottom_container').hide();    
         }
-
+        ////////////////////////
+        // Set pulse on news
         this.setPulse();
+        ////////////////////////
+        // Draw windows
         this.svgWindowController();
+        ////////////////////////
+        // Set legend
+        new bbmap.Views.Legend({
+            el : "#left_legend",
+            elements : this.elements,
+            links : this.links,
+        }).render();
 
         return this;
     }
 });
 /////////////////////////////////////////////////
+bbmap.Views.Legend = Backbone.View.extend({
+    initialize : function(json) { 
+        //console.log("comments view constructor!");
+        _.bindAll(this, 'render','close');
+        // Variables
+        this.elements = json.elements;
+        this.links = json.links;
+        this.legend = bbmap.CKLegend;
+        // legend elements
+        this.c_ = _.pick(this.legend, "c*") 
+        this.cc = _.pick(this.legend, "cc") 
+        this.k_ = _.pick(this.legend, "k*") 
+        this.kk = _.pick(this.legend, "kk") 
+        this.p_ = _.pick(this.legend, "p*") 
+        this.pp = _.pick(this.legend, "pp") 
+        // Templates
+        this.template_legend = _.template($('#bbmap-legend-template').html());
+    },
+    events : {},
+    setElementStat : function(){
+        var all = this.elements.length;
+        var all_c = this.elements.where({type : "concept"}).length;
+        var all_k = this.elements.where({type : "knowledge"}).length;
+        var all_p = this.elements.where({type : "poche"}).length;
+        var empty_c = this.elements.where({type : "concept", content : ""}).length;
+        var empty_k = this.elements.where({type : "knowledge", content : ""}).length;
+        var empty_p = this.elements.where({type : "poche", content : ""}).length;
+        var c = all_c - empty_c;
+        var k = all_k - empty_k;
+        var p = all_p - empty_p;
+        console.log("el : ",c,k,p,empty_c,empty_k,empty_p,all)
+        // Set legend        
+        this.legend.forEach(function(json){
+            if(json.id == "c") json.stat = Math.floor(empty_c*100/all);
+            else if(json.id == "c+") json.stat = Math.floor(c*100/all);
+            else if(json.id == "k") json.stat = Math.floor(empty_k*100/all);
+            else if(json.id == "k+") json.stat = Math.floor(k*100/all);
+            else if(json.id == "p") json.stat = Math.floor(empty_p*100/all);
+            else if(json.id == "p+") json.stat = Math.floor(p*100/all);
+        });
+    },
+    setLinkStat : function(){
+        var all = this.links.length;
+        var c_ = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"concept","poche").length + api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"concept","knowledge").length;
+        var cc = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"concept","concept").length;
+        var k_ = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"knowledge","poche").length + api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"knowledge","concept").length;
+        var kk = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"knowledge","knowledge").length;;
+        var p_ = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"poche","concept").length + api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"poche","knowledge").length;
+        var pp = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"poche","poche").length;;
+        console.log("link : ",cc,kk,pp,c_,k_,p_,all)
+        // Set legend        
+        this.legend.forEach(function(json){
+            if(json.id == "c*") json.stat = Math.floor(c_*100/all);
+            else if(json.id == "cc") json.stat = Math.floor(cc*100/all);
+            else if(json.id == "k*") json.stat = Math.floor(k_*100/all);
+            else if(json.id == "kk") json.stat = Math.floor(kk*100/all);
+            else if(json.id == "p*") json.stat = Math.floor(p_*100/all);
+            else if(json.id == "pp") json.stat = Math.floor(pp*100/all);
+        });
+    },
+    render : function() {
+        $(this.el).empty();
+        // Set stats
+        this.setLinkStat();
+        this.setElementStat();
+        $(this.el).append(this.template_legend({
+            legend : this.legend
+        }));
+
+      return this;
+    }
+});
