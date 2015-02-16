@@ -11,7 +11,6 @@
     <script src="js/vendor/pace.min.js"></script>
     <link rel="stylesheet" href="styles/pace.css"/>
 
-
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <script src="js/vendor/modernizr.js"></script>
     <script type='text/javascript' src='js/vendor/jquery-1.10.2.js'></script>
@@ -32,7 +31,8 @@
     <script src="js/vendor/notifications/notif.js?v=<%= sails.config.session.version %>"></script>
     <!-- foundation lib -->
     <link rel="stylesheet" href="styles/foundation2.css" />
-
+    <!-- Maxime css -->
+<link rel="stylesheet" href="/styles/stylebulle.css">
 
 
     <!-- tqtip2 -->
@@ -72,6 +72,7 @@
     <script type="text/javascript" src="js/vendor/socket.io.js"></script>
     <script type="text/javascript" src="js/sails.io.js"></script>
     <script type="text/javascript" src="js/BB_app/api.js?v=<%= sails.config.session.version %>"></script>
+    <script type="text/javascript" src="js/BB_app/alfred.js?v=<%= sails.config.session.version %>"></script>
     <script type="text/javascript" src="js/BB_app/app.js?v=<%= sails.config.session.version %>"></script>
     <!-- Global objects -->
     <script src="js/BB_app/global_functions.js?v=<%= sails.config.session.version %>"></script>
@@ -92,6 +93,10 @@
     <%- partial('app/templates/actionMenu_templates.ejs') %>
     <script src="js/BB_app/modules/actionMenu.js?v=<%= sails.config.session.version %>"></script>
     
+    <%- partial('app/templates/googleSearch_templates') %>
+    <script type="text/javascript" src="js/BB_app/modules/googleSearch.js?v=<%= sails.config.session.version %>"></script>
+
+
     <%- body %>
     
     <script>

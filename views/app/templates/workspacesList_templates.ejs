@@ -1,5 +1,5 @@
 <div id="workspacesList-container" class="row"></div>
-
+<div id="tutu"></tutu>
 <script type="text/template" id="workspacesList-form-template">
 	<div class="row">
   	  	<fieldset>
@@ -42,21 +42,13 @@
 	<br>
     <div class="large-12 columns">
       <div class="row expand">
-      	{{ if(display == "block"){ }}
 	        <div class="small-12 large-2 medium-2 columns">
 	        	<a href="#" class="button tiny expand radius success" data-reveal-id="new_ws_modal_{{- display }}"><img title="new workspace" src="/img/icones/Add-New-24.png"></a>
 	        </div>
 	        <div class="small-12 large-10 medium-10 columns">
 	          <input type="text" class="search" placeholder="find workspaces by name..." />
 	        </div>
-	    {{ }else{ }}
-	    	<div class="small-12 large-12 medium-12 columns">
-	        	<a href="#" class="button tiny expand radius success" data-reveal-id="new_ws_modal_{{- display }}"><img title="new workspace" src="/img/icones/Add-New-24.png"></a>
-	        </div>
-	        <div class="small-12 large-12 medium-12 columns">
-	          <input type="text" class="search expand" placeholder="find workspaces by name..." />
-	        </div>
-	    {{ } }}
+	    
       </div>
     </div>
 </script>

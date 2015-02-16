@@ -1,5 +1,20 @@
 var api = {
   //////////////////////////////
+  // WIKIPEDIA
+  //////////////////////////////
+  // One query, example code:
+  getWikiDef :function(item){
+    var lg = "fr";
+    var option1 = "extracts&exintro&explaintext&format=json&redirects&callback=?";
+    var option2 = "extracts&exintro&format=json&redirects&callback=?";
+    url = "http://"+lg+".wikipedia.org/w/api.php?action=query&prop=description&titles=" + item.toString() + "&prop="+option2;
+    $.getJSON(url, function (json) {
+        var item_id = Object.keys(json.query.pages)[0]; // THIS DO THE TRICK !
+        sent = json.query.pages[item_id].extract;
+        console.log(sent);
+    });
+  },
+  //////////////////////////////
   // API UTILITIES
   //////////////////////////////
   getJsonSize : function(json){
@@ -230,6 +245,31 @@ var api = {
     //ckLinks = _.union(ckLinks, links.where({target : id}));
     return _.compact(ckLinks);
   },
+  isTarget : function(links,id){
+    // links have to be a collection a link model
+    var is = false;
+    var ckLinks = links.where({target : id});
+    if(ckLinks.length > 0) is = true;
+    return is;
+  },
+  isSource : function(links,id){
+    // links have to be a collection a link model
+    var is = false;
+    var ckLinks = links.where({source : id});
+    if(ckLinks.length > 0) is = true;
+    return is;
+  },
+  getTheRightIDFather : function(links,elements,model){
+    // links have to be a collection a link model
+    var id_father = "none";
+    var ckLinks = links.where({target : model.get('id')});
+    ckLinks.forEach(function(link){
+      var source = elements.get(link.get('source'));
+      var target = model;
+      if((source.get('type') == target.get('type'))||((source.get('type') == "poche")&&(target.get('type') == "knowledge"))) id_father = source.get('id');
+    });
+    return id_father;
+  },
   //////////////////////////////
   // API Tree manipulation
   //////////////////////////////
@@ -263,6 +303,7 @@ var api = {
     var nodes = [];
     var childs_id = [];
     if(alreadyDone) childs_id = alreadyDone;
+    
     if(currentNode.get('id_father')){
       nodes = tree.where({id_father : currentNode.get('id')});
       childrens = _.union(childrens, nodes)

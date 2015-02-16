@@ -90,37 +90,20 @@ var global = {
 
     callback();
   },
-  // prepareNotifications : function(){
-  //   ////////////////////////////
-  //   // Dictionaries 
-  //   this.NotificationsDictionary = global.Functions.getNotificationsDictionary(global.models.current_user,global.collections.Notifications,global.collections.Projects,global.collections.Knowledges,global.collections.Concepts,global.collections.Elements,global.ActivityLog);
-    
-  //   this.ModelsNotificationsDictionary = this.NotificationsDictionary.models;
-  //   this.ProjectsNotificationsDictionary = this.NotificationsDictionary.projects;
-  //   this.AllNewsNotificationsDictionary = this.NotificationsDictionary.allNews;
-  //   this.AllReadNotificationsDictionary = this.NotificationsDictionary.allRead;
-
-  //   console.log("AllNews : ",this.AllNewsNotificationsDictionary.length)
-  //   console.log("AllRead : ",this.AllReadNotificationsDictionary.length)
-
-  //   this.eventAggregator.trigger("ModelsNotificationsDictionary",this.ModelsNotificationsDictionary);
-  //   this.eventAggregator.trigger("ProjectsNotificationsDictionary",this.ProjectsNotificationsDictionary);
-  //   this.eventAggregator.trigger("AllNewsNotificationsDictionary",this.AllNewsNotificationsDictionary);
-  //   this.eventAggregator.trigger("AllReadNotificationsDictionary",this.AllReadNotificationsDictionary);
-
-  // },
   //////////////////////////////////////////////
   // New applicaiton model
   //////////////////////////////////////////////
-  newElement : function(type,title,father,top,left,pos){
+  newElement : function(type,title,top,left,pos){
     // title
     var title = title;
     if(title == "") title = "new "+type;
     // CSS definition
     var css = global.css_transparent_element;
     // Father definition
-    var father_id = father;
-    if(father != "none") father_id = father.get('id');
+    // var father_id = father;
+    // if(father != "none"){
+    //     father_id = father.get('id');
+    // }
     // Type definition
     if(type == "concept") css = global.css_concept_default;
     else if(type == "knowledge") css = global.css_knowledge_default;
@@ -130,7 +113,7 @@ var global = {
         id : guid(),
         date : getDate(),
         type : type,
-        id_father: father_id,
+        id_father: "none",//father_id
         top : top,
         left : left,
         project: global.models.currentProject.get('id'),
@@ -152,29 +135,23 @@ var global = {
     
     return new_element;
   },
-  updateElement : function(element,json){
-    var model = this.collections.Elements.get(element.get('id'))
-    model.save({
-        top       : json.top,
-        left      : json.left,
-        title     : json.title,
-        css       : json.css,
-        id_father : json.id_father
-    });
-  },
-  newLink : function(source,target){
+  newLink : function(source,target,silent){
+    var silent_event = false;
+    if(silent) silent_event = silent;
+    //////////////////
     var new_cklink = new global.Models.CKLink({
-        id :guid(),
-        user : global.models.current_user.get('id'),
-        date : getDate(),
-        source : source.get('id'),
-        target : target.get('id'),
-        project : global.models.currentProject.get('id')
+      id :guid(),
+      user : global.models.current_user.get('id'),
+      date : getDate(),
+      source : source.get('id'),
+      target : target.get('id'),
+      project : global.models.currentProject.get('id')
     });
     new_cklink.save();
     // On l'ajoute à la collection
-    global.collections.Links.add(new_cklink); 
-
+    global.collections.Links.add(new_cklink,{silent : silent});   
+    // Securité pour avoir des id_father cohérents
+    if((source.get('type') == target.get('type'))||((source.get('type') == "poche")&&(target.get('type') == "knowledge"))) target.save({id_father : source.get('id')});
     return new_cklink; 
   },
 };
