@@ -31,7 +31,8 @@
     <script src="js/vendor/notifications/notif.js?v=<%= sails.config.session.version %>"></script>
     <!-- foundation lib -->
     <link rel="stylesheet" href="styles/foundation2.css" />
-
+    <!-- Maxime css -->
+<link rel="stylesheet" href="/styles/stylebulle.css">
 
 
     <!-- tqtip2 -->
@@ -66,7 +67,7 @@
     <script>
       window._trackJs = {
         // Whether to send errors to TrackJS
-        enabled: true,// <---------------------------- here put a true in production
+        enabled: false,// <---------------------------- here put a true in production
         // Custom error callback
         onError: function () { return true; },
         // Custom object serialization
@@ -93,7 +94,7 @@
           // Pass console messages through to the browser
           display: true,
           // Transmit console errors to TrackJS
-          error: true, // <---------------------------- here put a true in production
+          error: false, // <---------------------------- here put a true in production
           // Names of console functions to watch
           watch: ["log","debug","info","warn","error"]
         },
@@ -144,6 +145,10 @@
     <%- partial('app/templates/actionMenu_templates.ejs') %>
     <script src="js/BB_app/modules/actionMenu.js?v=<%= sails.config.session.version %>"></script>
     
+    <%- partial('app/templates/googleSearch_templates') %>
+    <script type="text/javascript" src="js/BB_app/modules/googleSearch.js?v=<%= sails.config.session.version %>"></script>
+
+
     <%- body %>
     
     <script>

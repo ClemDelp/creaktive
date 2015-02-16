@@ -80,19 +80,25 @@ attachment.Views.Main = Backbone.View.extend({
       //$(this.el).append(this.template_diapo({images:images}));
       // Attachments
       var nbr = 0;
-      var table = $('<table>',{style:'width:100%',class:'large-12 medium-12 small-12'});
+      var container = $('<div>',{class:'row'});
+      var container2 = $('<div>',{style:'padding:15px;'});
+
+      var table = $('<table>',{class:'large-12 medium-12 small-12 tableAttachement'});
       this.attachments.each(function(model){
         if(model.get('attachedTo') == _this.model.get('id')){
           nbr +=1;
           table.append(new attachment.Views.Attachment({
+            tagName : "tr",
             user : _this.users.get(model.get('user')),
             mode : _this.mode,
             model : model
           }).render().el)
         }
       });
-      $(this.el).append('<div class="large-12 medium-12 small-12"><b>Attachments ('+nbr+')</b></div><br>');
-      $(this.el).append(table);
+      container.append('<div id="mainAttachement" class="large-12 medium-12 small-12 columns"><h5>Attachments<strong> ('+nbr+')</strong> :</h5></div>');
+      container2.append(table);
+      container.append(container2);
+      $(this.el).append(container);
       // Imput
       if(this.mode == "edit") $(this.el).append(this.template_input());
 

@@ -1,33 +1,36 @@
 <!-- //////////////////////////////////////////////////////////////////////: -->
 <!-- Timeline template parts -->
 <script type="text/template" id="modelEditor-normal-template">
-		<div class="large-1 medium-1 small-1 columns">
-			<img width="50" src="{{-user.img}}">
-		</div>
-		<div class="large-11 medium-11 small-11 columns">
-			<b>{{-user.name}}</b> post a new <label class="label tiny secondary"><b>{{-model.type}}</b></label> : 
-			{{ if(mode == "edit"){ }}
-			<a href="#" class="button tiny radius alert edit">Describe!</a>
-			{{ } }}
-			<h4>
-				{{ if(fathers != "none"){ }}
+	
+	<div class="row">
+      <div class="large-12 medium-12 columns" id="container" style="background-color:#efefef;">
+        <div class="row">
+          <div id="mainPost" class="large-12 medium-12 columns">
+            <h5 id="max_concept"><img width="50" class="max_img-responsive" src="{{-user.img}}"><strong> {{-user.name}}</strong><small> post a new <strong class="">{{-model.type}}</strong> :</small></h5>
+          </div>  
+          <div class="large-11 post">        
+            <ul class="max_breadcrumbs breadcrumbs">
+            {{ if(fathers != "none"){ }}
 					{{ _.each(fathers,function(father){ }}	
-						<small>
-							<a href="#{{- father.id }}_anchor" title="father">
-							<span style="{{-father.css}};padding:0px;border:0px;">{{- father.get('title')}}</span>
-							</a><img src="/img/icones/Arrowhead-Right-32.png">
-						</small>
+						<li><a href="#{{- father.id }}_anchor" title="father">{{- father.get('title')}}</a></li>
 					{{ }); }}
 					<br>
 				{{ } }}
-				<span style="{{-model.css}};padding:0px;padding-left:10px;padding-right:10px;border:0px;">{{-model.title}}</span>
+            </ul>
+          </div>
 
-				
-			</h4>
-		</div>
-		<div class="large-12 medium-12 small-12 columns">
-			{{=model.content}}
-		</div>
+          <div class="large-11 medium-11 small-11 bulleConcept">
+            <h4 class="titreConcept">{{-model.title}}</h4>
+            <center id="{{-model.id}}_google_img" style="padding:10px;width:100%"></center>
+            <p class="descriptionConcept">{{=model.content}}</p>
+          </div>
+          {{ if(mode == "edit"){ }}
+			<a href="#" style="float:right" class="button tiny radius alert edit">Describe!</a>
+		  {{ } }}
+        </div>
+
+      </div>
+    </div>
 </script>
 
 <script type="text/template" id="modelEditor-edition-template">

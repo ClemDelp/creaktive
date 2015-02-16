@@ -102,6 +102,17 @@ modelEditor.Views.Main = Backbone.View.extend({
             }));    
         }
         
+        if(this.model.get('content') == ""){
+            $('#'+this.model.get('id')+"_google_img").append(new googleSearch.Views.Main({
+                model      : this.model,
+                mode       : this.mode,
+                type       : "images",
+                perpage    : 8,
+                moreButton : true,
+                width      : "75px",
+            }).render().el)
+        } 
+
         return this;
     }
 });

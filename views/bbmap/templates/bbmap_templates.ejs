@@ -3,32 +3,14 @@
 <div id="bbmap_container" style="height:96%;position:relative;overflow:hidden;">
   <div id="top_container"></div>
   <div id="map_container" style="overflow:hidden;">
-    <a href="#" id="showMenu"  class="button large radius cbp-openbutton alert" style="padding:0px; padding-right:10px;">
-      <image  src="/img/icones/Arrowhead-Left-48.png" id="cbp-openimage"/>
-      <span id="showMenu_notif"></span>
-    </a>
-    <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="cbp-spmenu-s1">
-      <div id="editor" class="panel expand">
-        <ul class="tabs" data-tab>
-          <li class="tab-title active"><a href="#editModel"><img title="edit" src="/img/icones/Edit.png"/><span id="notifDesc"></span></a></li>
-          <li class="tab-title"><a href="#css3Model"><img title="template" src="/img/icones/Shape.png"/></a></li>
-          <li class="tab-title"><a href="#activitiesModel"><img title="template" src="/img/icones/Bell-24-circle.png"/></a></li>
-          <li class="tab-title"><a href="#googleSearchModel"><img title="web data" src="/img/icones/Web-24.png"/></a></li>
-        </ul>
-        <div class="tabs-content">
-          <div id="editModel" class="content active">
-            <span id="editorPart"></span>
-            <hr>
-            <span id="attachmentPart"></span>
-            <hr>
-            <span id="commentPart"></span>
-            <hr>
-          </div>
-          <div id="css3Model" class="content"></div>
-          <div id="activitiesModel" class="content"></div>
-          <div id="googleSearchModel" class="content"></div>
-        </div>
-    </div>
+    <span id="right_buttons" style="right:0px;position:fixed;top:40%;width:70px;z-index:10000000;display:none">
+      <a href="#" style="float:right" class="borderBlue tiny radius button secondary edit"><img title="edit" src="/img/icones/Edit.png"/></a>
+      <a href="#" style="float:right" class="borderBlue tiny radius button secondary design"><img title="template" src="/img/icones/Shape.png"/></a>
+      <a href="#" style="float:right" class="borderBlue tiny radius button secondary history"><img title="template" src="/img/icones/Bell-24-circle.png"/></a>
+    </span>
+    <nav id="sideBar">
+      <a href="#" class="button radius tiny alert closeSibeBar" style="position:absolute;right:0px;z-index:1000000">X</a>
+      <div id="sideBar_container" style="height:100%;overflow:auto"></div>
     </nav>
     <div id="map" class="demo chart-demo"></div>
   </div>
