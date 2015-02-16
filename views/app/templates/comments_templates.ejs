@@ -26,10 +26,10 @@
 <script type="text/template" id="comments-comment-template">        
 	{{ if(sens == 1){ }}
 		<div class="row msg_container base_receive">
-            <div class="max_avatar">
+            <div class="large-3 medium-3 small-3 columns">
                 <img src="{{- user.img }}" class="max_img-responsive">
             </div>
-            <div class="col-md-10 col-xs-10">
+            <div class="large-9 medium-9 small-9 columns">
                 <div class="max_messages msg_sent">
                     <p>{{- comment.content }}</p>
                     <time datetime="2009-11-13T20:00">{{- user.name }} • {{- comment.date }}</time>
@@ -40,7 +40,7 @@
         </div>
 	{{ }else{ }}
 		<div class="row msg_container base_sent">
-            <div class="col-xs-10 col-md-10">
+            <div class="large-9 medium-9 small-9 columns">
                 <div class="max_messages msg_sent">
                     <p>{{- comment.content }}</p>
                     <time datetime="2009-11-13T20:00">{{- user.name }} • {{- comment.date }}</time>
@@ -48,7 +48,7 @@
                     <a href="#" class="max_delete">delete</a>
                 </div>
             </div>
-            <div class="col-md-2 col-xs-2 max_avatar">
+            <div class="large-3 medium-3 small-3 columns">
                 <img src="{{- user.img }}" class="max_img-responsive">
             </div>
         </div>

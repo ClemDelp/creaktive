@@ -68,7 +68,7 @@ comments.Views.Main = Backbone.View.extend({
         
         var container = $('<div>',{class:'row'});
         var container2 = $('<div>',{class:'col-xs-12 col-md-12'});
-        var container3 = $('<div>',{class:'max_panel-body msg_container_base'});
+        var container3 = $('<div>',{style : "padding-bottom:100px",class:'max_panel-body msg_container_base'});
         
         
         this.comments.forEach(function(comment){

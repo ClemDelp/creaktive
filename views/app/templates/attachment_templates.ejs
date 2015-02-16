@@ -23,13 +23,11 @@
 </script>
 
 <script type="text/template" id="attachment-el-template">
-
-    <td width="20%">
-      <img src="{{- user.img }}" class="max_img max_img-responsive" style="margin-left:10px; height:20%; width:30%; margin-left:40px;">
+    <td>
+      <img src="{{- user.img }}" class="max_img max_img-responsive" style="width:100%;">
     </td>
-
     <td width="80%">
-      <p><a href="/s3/getUrl?amz_id={{- attachment.url }}"  target="_blank" class="" data-file-path="{{- attachment.path }}" title="{{- attachment.name }}">{{- attachment.name}}</a></p>
+      <p style="margin-bottom:0px"><a href="/s3/getUrl?amz_id={{- attachment.url }}"  target="_blank" class="" data-file-path="{{- attachment.path }}" title="{{- attachment.name }}">{{- attachment.name}}</a></p>
       <p id="attachmentinfopost">{{- user.name }} • {{- attachment.date}} <a href="#" id="attachmentdelete">delete</a></p>
     </td>
 </script>
