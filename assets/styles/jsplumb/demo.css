@@ -64,11 +64,12 @@ body{
 	font-weight:bold;
 	max-width: 20em;
 	min-width: 5em;
+	padding: 10px 20px 10px 20px;
 }
 
 .chart-demo .window.concept { 
 	/*border:0.15em dotted green;*/
-	padding: 15px;
+	/*padding: 15px;*/
 }
 
 .window.selected {
@@ -82,7 +83,7 @@ body{
 }
 
 /** HOVER EFFECTS **/
-.windowHover{
+.windowHover, .window:hover{
 	box-shadow: 0px 0px 20px rgba(241, 196, 15, 0.7);
 } 
 
@@ -235,3 +236,63 @@ body{
 
 /*.chart-demo .knowledge.dragHover, .chart-demo .concept.dragHover { border:2px solid orange; }
 */
+/* ---------------------- */
+/* ELement */
+.legend_element{
+	padding: 0 5px 0 5px;
+	margin-bottom: 5px;
+}
+
+.c_empty{
+	-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #27AE60;background: #ffffff;border: solid #27AE60 2px;text-decoration: none;
+}
+
+.c_full{
+	-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #ffffff;background: #2ECC71;border: solid #27AE60 2px;text-decoration: none;
+}
+
+.k_empty{
+	-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #2980B9;background: #ffffff;border: solid #2980B9 2px;text-decoration: none;
+}
+
+.k_full{
+	-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #ffffff;background: #3498DB;border: solid #2980B9 2px;text-decoration: none;
+}
+
+.p_empty{
+	-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #D35400;background: #ffffff;border: solid #D35400 2px;text-decoration: none;
+}
+
+.p_full{
+	-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #ffffff;background: #E67E22;border: solid #D35400 2px;text-decoration: none;
+}
+
+.other{
+	-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #ffffff;background: #E74C3C;border: dotted #C0392B 2px;text-decoration: none;
+}
+/* ------------ */
+/* Links */
+.cc_link{
+	font-family: Arial;color: #27AE60;background: transparent;padding: 0 5px 0 5px;border-bottom: solid #27AE60 2px;text-decoration: none;
+}
+      
+.co_link{
+	font-family: Arial;color: #27AE60;background: transparent;padding: 0 5px 0 5px;border-bottom: dotted #27AE60 2px;text-decoration: none;
+}
+      
+.kk_link{
+	font-family: Arial;color: #2980B9;background: transparent;padding: 0 5px 0 5px;border-bottom: solid #2980B9 2px;text-decoration: none;
+}
+      
+.ko_link{
+	font-family: Arial;color: #2980B9;background: transparent;padding: 0 5px 0 5px;border-bottom: dotted #2980B9 2px;text-decoration: none;
+}
+      
+.pp_link{
+	font-family: Arial;color: #D35400;background: transparent;padding: 0 5px 0 5px;border-bottom: solid #D35400 2px;text-decoration: none;
+}
+      
+.po_link{
+	font-family: Arial;color: #D35400;background: transparent;padding: 0 5px 0 5px;border-bottom: dotted #D35400 2px;text-decoration: none;
+}
+      

@@ -20,10 +20,10 @@ var global = {
   filter : "ckp", // define which data to display in bbmap : c/k/ck/kp/ckp
   ckOperator : true, // diplay or not ckoperator, links between C and K : true/false
   default_element_position : {left: 4500, top: 4500},
-  css_knowledge_default : "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #2980B9;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #2980B9 2px;text-decoration: none;",
-  css_concept_default : "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #27AE60;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #27AE60 2px;text-decoration: none;",
-  css_poche_default : "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #D35400;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #D35400 2px;text-decoration: none;",
-  css_transparent_element : "font-family: Arial;color: #000000;background: transparent;padding: 10px 20px 10px 20px;text-decoration: none;",
+  css_knowledge_default : "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #2980B9;background: #ffffff;border: solid #2980B9 2px;text-decoration: none;",
+  css_concept_default : "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #27AE60;background: #ffffff;border: solid #27AE60 2px;text-decoration: none;",
+  css_poche_default : "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #D35400;background: #ffffff;border: solid #D35400 2px;text-decoration: none;",
+  css_transparent_element : "font-family: Arial;color: #000000;background: transparent;text-decoration: none;",
   // Constructor
   init: function (json,callback) {
     //////////////////////////////////////////////////////////////////
@@ -96,7 +96,7 @@ var global = {
       console.log("track is not defined")
     }
     
-
+    rules.init();
     callback();
   },
   //////////////////////////////////////////////

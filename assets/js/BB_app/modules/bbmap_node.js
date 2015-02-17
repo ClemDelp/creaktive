@@ -42,8 +42,9 @@ bbmap.Views.Node = Backbone.View.extend({
     applyStyle : function(){
         var left = this.model.get('left');
         var top = this.model.get('top');
-        var style = 'top:' + top + 'px; left : ' + left + 'px;' + this.model.get('css');
+        var style = 'top:' + top + 'px; left : ' + left + 'px;';// + this.model.get('css');
         $(this.el).attr('style',style)
+        $(this.el).addClass(this.model.get('css'))
         bbmap.views.main.instance.repaint(this.model.get('id'));
     },
     cssPosition : function(top,left){
@@ -266,8 +267,12 @@ bbmap.Views.Node = Backbone.View.extend({
     render : function(){
         var user = global.collections.Users.get(this.model.get('user'));
         $(this.el).empty();
+        /////////////////
+        // Rules
+        rules.applyLegend(this.model);
+        /////////////////
         $(this.el).append(this.template_bulle({
-            model   :this.model.toJSON(),
+            model   : this.model.toJSON(),
             user    : user.toJSON(),
             mode    : bbmap.views.main.mode,
         }));

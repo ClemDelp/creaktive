@@ -36,7 +36,7 @@ bbmap.Views.Main = Backbone.View.extend({
         ////////////////////////////
         // el
         this.top_el = $(this.el).find('#top_container');
-        this.bottom_el = $(this.el).find('#bottom_container');
+        this.bottom_el = $(this.el).find('#bbmap_bottom_ui');
         this.map_el = $(this.el).find('#map');
         this.timeline_el = $(this.el).find('#timeline_container');
         this.css3Model_el = $(this.el).find('#css3Model');
@@ -161,6 +161,11 @@ bbmap.Views.Main = Backbone.View.extend({
                 }, 1000);                
             })
         }
+        ////////////////
+        this.statistics = new bbmap.Views.Stat({
+            elements : this.elements,
+            links : this.links,
+        });
     },
     events : {
         "change #visu_select_mode" : "setVisualMode",
@@ -200,7 +205,9 @@ bbmap.Views.Main = Backbone.View.extend({
         var peres = _.union(c_candidats,p_candidats)
         peres.forEach(function(pere){
             bbmap.views.main.drawSvgWindow(pere);
-        })
+        });
+
+        this.statistics.render();
 
     },
     drawSvgWindow : function(pere){
@@ -1273,76 +1280,6 @@ bbmap.Views.Main = Backbone.View.extend({
         });     
     },
     ////////////////////////////////////////
-    // Drawin aid session
-    ////////////////////////////////////////
-    drawingAid : function(model){
-        var currentView = bbmap.views.main.nodes_views[model.get('id')];
-        var currentViewCentroid = currentView.getCentroid();
-        var views = bbmap.views.main.nodes_views;
-        for (var id in views){
-            if ((id != model.get('id'))&&(views.hasOwnProperty(id))) {
-                var zoom = bbmap.zoom.get('val');
-                var view = views[id];
-                var centroid = view.getCentroid();
-                var width = 0;
-                var height = 0;
-                var left = 0;
-                var top = 0;
-                var x1 = 0;
-                var x2 = 0;
-                var y1 = 0;
-                var y2 = 0;
-                if(Math.floor(centroid.top) == Math.floor(currentViewCentroid.top)){
-                    // console.log('horrizontal alignement!')
-                    var width = abs(centroid.left - currentViewCentroid.left);
-                    var height = 10;
-                    if(centroid.left < currentViewCentroid.left){
-                        left = centroid.left;
-                        top = centroid.top;
-                        x2 = currentViewCentroid.left;
-                    }else{
-                        left = currentViewCentroid.left;
-                        top = currentViewCentroid.top;
-                        x2 = centroid.left
-                    }
-                    this.drawSvgLine(model.get('id'),width,height,left,top,x1,x2,y1,y2,zoom);    
-                }
-
-                if(Math.floor(currentViewCentroid.left) == Math.floor(centroid.left)){
-                    // console.log("vertical alignement!");
-                    var width = 10;
-                    var height = abs(centroid.top - currentViewCentroid.top);
-                    if(centroid.top < currentViewCentroid.top){
-                        left = centroid.left;
-                        top = centroid.top;
-                        y2 = height;
-                    }else{
-                        left = centroid.left;
-                        top = currentViewCentroid.top;
-                        y2 = height;
-                    }
-                    this.drawSvgLine(model.get('id'),width,height,left,top,x1,x2,y1,y2,zoom);
-                }
-                this.hideSvgLine(model.get('id'),id);
-            }
-        }
-    },
-    drawSvgLine : function(id_source,width,height,left,top,x1,x2,y1,y2,zoom){
-        delta = 10;
-        left = (left + delta )/ zoom;
-        top = (top + delta )/ zoom;
-        // x1 = x1 / zoom;
-        // x2 = x2 / zoom;
-        // y1 = y1 / zoom;
-        // y2 = y2 / zoom;
-
-        // console.log("width:",width,"- height:",height,"- left:",left,"- top:",top,"- x1:",x1,"- x2:",x2,"- y1:",y1,"- y2:",y2);               
-        this.map_el.append('<svg class="'+id_source+'_svg" style="position:absolute;left:'+left+'px;top:'+top+'px" width="'+width+'" height="'+height+'" pointer-events="none" position="absolute" version="1.1" xmlns="http://www.w3.org/1999/xhtml" class="_jsPlumb_connector"><line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" style="stroke:black;stroke-width:2px;" /></svg>')
-    },
-    hideSvgLine : function(id_source){
-        $('.'+id_source+"_svg").remove()
-    },
-    ////////////////////////////////////////
     setPulse : function(){
         var _this = this;
         var news  = global.collections.News;
@@ -1493,11 +1430,93 @@ bbmap.Views.Main = Backbone.View.extend({
             $('#top_container').hide();
             $('#bottom_container').hide();    
         }
-
+        ////////////////////////
+        // Set pulse on news
         this.setPulse();
+        ////////////////////////
+        // Draw windows
         this.svgWindowController();
-
+        
         return this;
     }
 });
 /////////////////////////////////////////////////
+bbmap.Views.Stat = Backbone.View.extend({
+    initialize : function(json) { 
+        //console.log("comments view constructor!");
+        _.bindAll(this, 'render');
+        // Variables
+        this.elements = json.elements;
+        this.links = json.links;
+        this.stats = bbmap.stats;
+        this.left_stats_el = $("#stat_left")
+        this.bottom_stats_el = $("#stat_bottom")
+        // Templates
+        this.template_bottom = _.template($('#bbmap-stat-bottom-template').html());
+        this.template_left = _.template($('#bbmap-stat-left-template').html());
+    },
+    events : {},
+    getStats : function(){
+        return this.stats
+    },
+    setStats : function(){
+        //////////////
+        var all_elements = this.elements.length;
+        var all_c = this.elements.where({type : "concept"}).length;
+        var all_k = this.elements.where({type : "knowledge"}).length;
+        var all_p = this.elements.where({type : "poche"}).length;
+        var empty_c = this.elements.where({type : "concept", content : ""}).length;
+        var empty_k = this.elements.where({type : "knowledge", content : ""}).length;
+        var empty_p = this.elements.where({type : "poche", content : ""}).length;
+        var c = all_c - empty_c;
+        var k = all_k - empty_k;
+        var p = all_p - empty_p;
+        var all_ck = all_c + all_k;
+        var all_links = this.links.length;
+        var c_ = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"concept","poche").length + api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"concept","knowledge").length;
+        var cc = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"concept","concept").length;
+        var k_ = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"knowledge","poche").length + api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"knowledge","concept").length;
+        var kk = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"knowledge","knowledge").length;;
+        var p_ = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"poche","concept").length + api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"poche","knowledge").length;
+        var pp = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"poche","poche").length;;
+        /////////////
+        // Set JSON
+        this.stats.c_empty.stat = Math.floor(empty_c*100/all_elements);
+        this.stats.c_full.stat = Math.floor(c*100/all_elements);
+        this.stats.k_empty.stat = Math.floor(empty_k*100/all_elements);
+        this.stats.k_full.stat = Math.floor(k*100/all_elements);
+        this.stats.p_empty.stat = Math.floor(empty_p*100/all_elements);
+        this.stats.p_full.stat = Math.floor(p*100/all_elements);
+        this.stats.co_link.stat = Math.floor(c_*100/all_links);
+        this.stats.cc_link.stat = Math.floor(cc*100/all_links);
+        this.stats.ko_link.stat = Math.floor(k_*100/all_links);
+        this.stats.kk_link.stat = Math.floor(kk*100/all_links);
+        this.stats.po_link.stat = Math.floor(p_*100/all_links);
+        this.stats.pp_link.stat = Math.floor(pp*100/all_links);
+        this.stats.c_nbre.stat = all_c;
+        this.stats.c_perc.stat = Math.floor(all_c*100/all_ck);
+        this.stats.k_nbre.stat = all_k;
+        this.stats.k_perc.stat = Math.floor(all_k*100/all_ck);
+    },
+    render : function() {
+        this.left_stats_el.empty();
+        this.bottom_stats_el.empty();
+        // Set stats
+        this.setStats();
+        // left stat
+        this.left_stats_el.append(this.template_left({
+            stats : this.stats
+        }));
+        // bottom stats
+        this.bottom_stats_el.append(this.template_bottom({
+            c_nbre : this.stats.c_nbre.stat,
+            c_perc : this.stats.c_perc.stat,
+            k_nbre : this.stats.k_nbre.stat,
+            k_perc : this.stats.k_perc.stat,
+        }));
+
+      return this;
+    }
+});
+/////////////////////////////////////////////////
+
