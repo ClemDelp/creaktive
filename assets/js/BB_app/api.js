@@ -230,11 +230,15 @@ var api = {
     var elements = [];
     // Concepts source
     links.each(function(link){
-      var source_id = link.get('source');  
-      var target_id = link.get('target');
-      var source_el = collection.get(source_id);
-      var target_el = collection.get(target_id);
-      if((source_el.get('type') == type1)&&(target_el.get('type') == type2)) elements.push(target_el)
+      try{
+        var source_id = link.get('source');  
+        var target_id = link.get('target');
+        var source_el = collection.get(source_id);
+        var target_el = collection.get(target_id);
+        if((source_el.get('type') == type1)&&(target_el.get('type') == type2)) elements.push(target_el)
+      }catch(err){
+        console.log(err)
+      }
     })
 
     return elements;
