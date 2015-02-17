@@ -238,8 +238,9 @@ var api = {
         if((source_el.get('type') == type1)&&(target_el.get('type') == type2)) elements.push(target_el)
       }catch(err){
         console.log(err)
+        link.destroy();
       }
-    })
+    });
 
     return elements;
   },
