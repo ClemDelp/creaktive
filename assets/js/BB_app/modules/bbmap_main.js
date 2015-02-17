@@ -36,7 +36,7 @@ bbmap.Views.Main = Backbone.View.extend({
         ////////////////////////////
         // el
         this.top_el = $(this.el).find('#top_container');
-        this.bottom_el = $(this.el).find('#bottom_container');
+        this.bottom_el = $(this.el).find('#bbmap_bottom_ui');
         this.map_el = $(this.el).find('#map');
         this.timeline_el = $(this.el).find('#timeline_container');
         this.css3Model_el = $(this.el).find('#css3Model');
@@ -161,6 +161,19 @@ bbmap.Views.Main = Backbone.View.extend({
                 }, 1000);                
             })
         }
+        ////////////////////////
+        // Set legend & Stats
+        this.left_stat = new bbmap.Views.Stat1({
+            el : "#stat_left",
+            elements : this.elements,
+            links : this.links,
+        });
+
+        this.bottom_stat = new bbmap.Views.Stat2({
+            el : "#stat_bottom",
+            elements : this.elements,
+            links : this.links,
+        });
     },
     events : {
         "change #visu_select_mode" : "setVisualMode",
@@ -201,6 +214,9 @@ bbmap.Views.Main = Backbone.View.extend({
         peres.forEach(function(pere){
             bbmap.views.main.drawSvgWindow(pere);
         })
+
+        this.left_stat.render();
+        this.bottom_stat.render();
 
     },
     drawSvgWindow : function(pere){
@@ -1273,76 +1289,6 @@ bbmap.Views.Main = Backbone.View.extend({
         });     
     },
     ////////////////////////////////////////
-    // Drawin aid session
-    ////////////////////////////////////////
-    drawingAid : function(model){
-        var currentView = bbmap.views.main.nodes_views[model.get('id')];
-        var currentViewCentroid = currentView.getCentroid();
-        var views = bbmap.views.main.nodes_views;
-        for (var id in views){
-            if ((id != model.get('id'))&&(views.hasOwnProperty(id))) {
-                var zoom = bbmap.zoom.get('val');
-                var view = views[id];
-                var centroid = view.getCentroid();
-                var width = 0;
-                var height = 0;
-                var left = 0;
-                var top = 0;
-                var x1 = 0;
-                var x2 = 0;
-                var y1 = 0;
-                var y2 = 0;
-                if(Math.floor(centroid.top) == Math.floor(currentViewCentroid.top)){
-                    // console.log('horrizontal alignement!')
-                    var width = abs(centroid.left - currentViewCentroid.left);
-                    var height = 10;
-                    if(centroid.left < currentViewCentroid.left){
-                        left = centroid.left;
-                        top = centroid.top;
-                        x2 = currentViewCentroid.left;
-                    }else{
-                        left = currentViewCentroid.left;
-                        top = currentViewCentroid.top;
-                        x2 = centroid.left
-                    }
-                    this.drawSvgLine(model.get('id'),width,height,left,top,x1,x2,y1,y2,zoom);    
-                }
-
-                if(Math.floor(currentViewCentroid.left) == Math.floor(centroid.left)){
-                    // console.log("vertical alignement!");
-                    var width = 10;
-                    var height = abs(centroid.top - currentViewCentroid.top);
-                    if(centroid.top < currentViewCentroid.top){
-                        left = centroid.left;
-                        top = centroid.top;
-                        y2 = height;
-                    }else{
-                        left = centroid.left;
-                        top = currentViewCentroid.top;
-                        y2 = height;
-                    }
-                    this.drawSvgLine(model.get('id'),width,height,left,top,x1,x2,y1,y2,zoom);
-                }
-                this.hideSvgLine(model.get('id'),id);
-            }
-        }
-    },
-    drawSvgLine : function(id_source,width,height,left,top,x1,x2,y1,y2,zoom){
-        delta = 10;
-        left = (left + delta )/ zoom;
-        top = (top + delta )/ zoom;
-        // x1 = x1 / zoom;
-        // x2 = x2 / zoom;
-        // y1 = y1 / zoom;
-        // y2 = y2 / zoom;
-
-        // console.log("width:",width,"- height:",height,"- left:",left,"- top:",top,"- x1:",x1,"- x2:",x2,"- y1:",y1,"- y2:",y2);               
-        this.map_el.append('<svg class="'+id_source+'_svg" style="position:absolute;left:'+left+'px;top:'+top+'px" width="'+width+'" height="'+height+'" pointer-events="none" position="absolute" version="1.1" xmlns="http://www.w3.org/1999/xhtml" class="_jsPlumb_connector"><line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" style="stroke:black;stroke-width:2px;" /></svg>')
-    },
-    hideSvgLine : function(id_source){
-        $('.'+id_source+"_svg").remove()
-    },
-    ////////////////////////////////////////
     setPulse : function(){
         var _this = this;
         var news  = global.collections.News;
@@ -1499,35 +1445,24 @@ bbmap.Views.Main = Backbone.View.extend({
         ////////////////////////
         // Draw windows
         this.svgWindowController();
-        ////////////////////////
-        // Set legend
-        new bbmap.Views.Legend({
-            el : "#left_legend",
-            elements : this.elements,
-            links : this.links,
-        }).render();
+        ///////////////
+        this.left_stat.render();
+        this.bottom_stat.render();
 
         return this;
     }
 });
 /////////////////////////////////////////////////
-bbmap.Views.Legend = Backbone.View.extend({
+bbmap.Views.Stat1 = Backbone.View.extend({
     initialize : function(json) { 
         //console.log("comments view constructor!");
-        _.bindAll(this, 'render','close');
+        _.bindAll(this, 'render');
         // Variables
         this.elements = json.elements;
         this.links = json.links;
         this.legend = bbmap.CKLegend;
-        // legend elements
-        this.c_ = _.pick(this.legend, "c*") 
-        this.cc = _.pick(this.legend, "cc") 
-        this.k_ = _.pick(this.legend, "k*") 
-        this.kk = _.pick(this.legend, "kk") 
-        this.p_ = _.pick(this.legend, "p*") 
-        this.pp = _.pick(this.legend, "pp") 
         // Templates
-        this.template_legend = _.template($('#bbmap-legend-template').html());
+        this.template_legend = _.template($('#bbmap-stat-left-template').html());
     },
     events : {},
     setElementStat : function(){
@@ -1541,7 +1476,7 @@ bbmap.Views.Legend = Backbone.View.extend({
         var c = all_c - empty_c;
         var k = all_k - empty_k;
         var p = all_p - empty_p;
-        console.log("el : ",c,k,p,empty_c,empty_k,empty_p,all)
+        // console.log("el : ",c,k,p,empty_c,empty_k,empty_p,all)
         // Set legend        
         this.legend.forEach(function(json){
             if(json.id == "c") json.stat = Math.floor(empty_c*100/all);
@@ -1560,7 +1495,7 @@ bbmap.Views.Legend = Backbone.View.extend({
         var kk = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"knowledge","knowledge").length;;
         var p_ = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"poche","concept").length + api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"poche","knowledge").length;
         var pp = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"poche","poche").length;;
-        console.log("link : ",cc,kk,pp,c_,k_,p_,all)
+        // console.log("link : ",cc,kk,pp,c_,k_,p_,all)
         // Set legend        
         this.legend.forEach(function(json){
             if(json.id == "c*") json.stat = Math.floor(c_*100/all);
@@ -1578,6 +1513,33 @@ bbmap.Views.Legend = Backbone.View.extend({
         this.setElementStat();
         $(this.el).append(this.template_legend({
             legend : this.legend
+        }));
+
+      return this;
+    }
+});
+/////////////////////////////////////////////////
+bbmap.Views.Stat2 = Backbone.View.extend({
+    initialize : function(json) { 
+        //console.log("comments view constructor!");
+        _.bindAll(this, 'render');
+        // Variables
+        this.elements = json.elements;
+        // Templates
+        this.template = _.template($('#bbmap-stat-bottom-template').html());
+    },
+    events : {},
+    render : function() {
+        $(this.el).empty();
+        var all_c = this.elements.where({type : "concept"}).length;
+        var all_k = this.elements.where({type : "knowledge"}).length;
+        var all_ck = all_c + all_k;
+        // Set stats
+        $(this.el).append(this.template({
+            c_nbre : all_c,
+            c_perc : Math.floor(all_c*100/all_ck),
+            k_nbre : all_k,
+            k_perc : Math.floor(all_k*100/all_ck),
         }));
 
       return this;
