@@ -31,17 +31,24 @@
 <!-- ******************************** -->
 <!-- STAT & LEGEND -->
 <script type="text/template" id="bbmap-stat-left-template">
-  {{ _.each(legend,function(l){ }}
-    <div title="{{- l.desc }}" class="{{- l.class_ }}" style="margin-bottom:5px"><center><small><strong>{{- l.stat }}%</strong></small></center></div>
-  {{ }); }}
+  <div title="{{-stats.c_empty.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius c_empty legend_element"><center><small><strong>{{-stats.c_empty.stat}}%</strong></small></center></div>
+  <div title="{{-stats.c_full.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius c_full legend_element"><center><small><strong>{{-stats.c_full.stat}} %</strong></small></center></div>
+  <div title="{{-stats.k_empty.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius k_empty legend_element"><center><small><strong>{{-stats.k_empty.stat}}%</strong></small></center></div>
+  <div title="{{-stats.k_full.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius k_full legend_element"><center><small><strong>{{-stats.k_full.stat}} %</strong></small></center></div>
+  <div title="{{-stats.p_empty.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius p_empty legend_element"><center><small><strong>{{-stats.p_empty.stat}}%</strong></small></center></div>
+  <div title="{{-stats.p_full.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius p_full legend_element"><center><small><strong>{{-stats.p_full.stat}} %</strong></small></center></div>
+  <div title="{{-stats.co_link.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius co_link legend_element"><center><small><strong>{{-stats.co_link.stat}}%</strong></small></center></div>
+  <div title="{{-stats.cc_link.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius cc_link legend_element"><center><small><strong>{{-stats.cc_link.stat}}%</strong></small></center></div>
+  <div title="{{-stats.ko_link.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius ko_link legend_element"><center><small><strong>{{-stats.ko_link.stat}}%</strong></small></center></div>
+  <div title="{{-stats.kk_link.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius kk_link legend_element"><center><small><strong>{{-stats.kk_link.stat}}%</strong></small></center></div>
+  <div title="{{-stats.po_link.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius po_link legend_element"><center><small><strong>{{-stats.po_link.stat}}%</strong></small></center></div>
+  <div title="{{-stats.pp_link.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius pp_link legend_element"><center><small><strong>{{-stats.pp_link.stat}}%</strong></small></center></div>
 </script>
 
 <script type="text/template" id="bbmap-stat-bottom-template">
-  <li><a href="#" style="margin:0" class="button tiny radius success"><img title="Download screenshot" src="/img/icones/Light-Bulb-24-white.png"/>
-      <strong>{{- c_nbre }} ({{- c_perc}}%)</strong>
+  <li><a href="#" style="margin:0" class="button tiny radius success">{{- c_nbre }}<img title="Download screenshot" src="/img/icones/Light-Bulb-24-white.png"/><strong> ({{- c_perc}}%)</strong>
   </a></li>
-  <li><a href="#" style="margin:0" class="button tiny radius"><img title="Download screenshot" src="/img/icones/Book-Open-24-white.png"/>
-    <strong>{{- k_nbre }} ({{- k_perc}}%)</strong>
+  <li><a href="#" style="margin:0" class="button tiny radius">{{- k_nbre }}<img title="Download screenshot" src="/img/icones/Book-Open-24-white.png"/><strong> ({{- k_perc}}%)</strong>
   </a></li>
 </script>
 <!-- ******************************** -->

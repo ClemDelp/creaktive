@@ -161,16 +161,8 @@ bbmap.Views.Main = Backbone.View.extend({
                 }, 1000);                
             })
         }
-        ////////////////////////
-        // Set legend & Stats
-        this.left_stat = new bbmap.Views.Stat1({
-            el : "#stat_left",
-            elements : this.elements,
-            links : this.links,
-        });
-
-        this.bottom_stat = new bbmap.Views.Stat2({
-            el : "#stat_bottom",
+        ////////////////
+        this.statistics = new bbmap.Views.Stat({
             elements : this.elements,
             links : this.links,
         });
@@ -213,10 +205,9 @@ bbmap.Views.Main = Backbone.View.extend({
         var peres = _.union(c_candidats,p_candidats)
         peres.forEach(function(pere){
             bbmap.views.main.drawSvgWindow(pere);
-        })
+        });
 
-        this.left_stat.render();
-        this.bottom_stat.render();
+        this.statistics.render();
 
     },
     drawSvgWindow : function(pere){
@@ -1445,28 +1436,32 @@ bbmap.Views.Main = Backbone.View.extend({
         ////////////////////////
         // Draw windows
         this.svgWindowController();
-        ///////////////
-        this.left_stat.render();
-        this.bottom_stat.render();
-
+        
         return this;
     }
 });
 /////////////////////////////////////////////////
-bbmap.Views.Stat1 = Backbone.View.extend({
+bbmap.Views.Stat = Backbone.View.extend({
     initialize : function(json) { 
         //console.log("comments view constructor!");
         _.bindAll(this, 'render');
         // Variables
         this.elements = json.elements;
         this.links = json.links;
-        this.legend = bbmap.CKLegend;
+        this.stats = bbmap.stats;
+        this.left_stats_el = $("#stat_left")
+        this.bottom_stats_el = $("#stat_bottom")
         // Templates
-        this.template_legend = _.template($('#bbmap-stat-left-template').html());
+        this.template_bottom = _.template($('#bbmap-stat-bottom-template').html());
+        this.template_left = _.template($('#bbmap-stat-left-template').html());
     },
     events : {},
-    setElementStat : function(){
-        var all = this.elements.length;
+    getStats : function(){
+        return this.stats
+    },
+    setStats : function(){
+        //////////////
+        var all_elements = this.elements.length;
         var all_c = this.elements.where({type : "concept"}).length;
         var all_k = this.elements.where({type : "knowledge"}).length;
         var all_p = this.elements.where({type : "poche"}).length;
@@ -1476,72 +1471,52 @@ bbmap.Views.Stat1 = Backbone.View.extend({
         var c = all_c - empty_c;
         var k = all_k - empty_k;
         var p = all_p - empty_p;
-        // console.log("el : ",c,k,p,empty_c,empty_k,empty_p,all)
-        // Set legend        
-        this.legend.forEach(function(json){
-            if(json.id == "c") json.stat = Math.floor(empty_c*100/all);
-            else if(json.id == "c+") json.stat = Math.floor(c*100/all);
-            else if(json.id == "k") json.stat = Math.floor(empty_k*100/all);
-            else if(json.id == "k+") json.stat = Math.floor(k*100/all);
-            else if(json.id == "p") json.stat = Math.floor(empty_p*100/all);
-            else if(json.id == "p+") json.stat = Math.floor(p*100/all);
-        });
-    },
-    setLinkStat : function(){
-        var all = this.links.length;
+        var all_ck = all_c + all_k;
+        var all_links = this.links.length;
         var c_ = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"concept","poche").length + api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"concept","knowledge").length;
         var cc = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"concept","concept").length;
         var k_ = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"knowledge","poche").length + api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"knowledge","concept").length;
         var kk = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"knowledge","knowledge").length;;
         var p_ = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"poche","concept").length + api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"poche","knowledge").length;
         var pp = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"poche","poche").length;;
-        // console.log("link : ",cc,kk,pp,c_,k_,p_,all)
-        // Set legend        
-        this.legend.forEach(function(json){
-            if(json.id == "c*") json.stat = Math.floor(c_*100/all);
-            else if(json.id == "cc") json.stat = Math.floor(cc*100/all);
-            else if(json.id == "k*") json.stat = Math.floor(k_*100/all);
-            else if(json.id == "kk") json.stat = Math.floor(kk*100/all);
-            else if(json.id == "p*") json.stat = Math.floor(p_*100/all);
-            else if(json.id == "pp") json.stat = Math.floor(pp*100/all);
-        });
+        /////////////
+        // Set JSON
+        this.stats.c_empty.stat = Math.floor(empty_c*100/all_elements);
+        this.stats.c_full.stat = Math.floor(c*100/all_elements);
+        this.stats.k_empty.stat = Math.floor(empty_k*100/all_elements);
+        this.stats.k_full.stat = Math.floor(k*100/all_elements);
+        this.stats.p_empty.stat = Math.floor(empty_p*100/all_elements);
+        this.stats.p_full.stat = Math.floor(p*100/all_elements);
+        this.stats.co_link.stat = Math.floor(c_*100/all_links);
+        this.stats.cc_link.stat = Math.floor(cc*100/all_links);
+        this.stats.ko_link.stat = Math.floor(k_*100/all_links);
+        this.stats.kk_link.stat = Math.floor(kk*100/all_links);
+        this.stats.po_link.stat = Math.floor(p_*100/all_links);
+        this.stats.pp_link.stat = Math.floor(pp*100/all_links);
+        this.stats.c_nbre.stat = all_c;
+        this.stats.c_perc.stat = Math.floor(all_c*100/all_ck);
+        this.stats.k_nbre.stat = all_k;
+        this.stats.k_perc.stat = Math.floor(all_k*100/all_ck);
     },
     render : function() {
-        $(this.el).empty();
+        this.left_stats_el.empty();
+        this.bottom_stats_el.empty();
         // Set stats
-        this.setLinkStat();
-        this.setElementStat();
-        $(this.el).append(this.template_legend({
-            legend : this.legend
+        this.setStats();
+        // left stat
+        this.left_stats_el.append(this.template_left({
+            stats : this.stats
+        }));
+        // bottom stats
+        this.bottom_stats_el.append(this.template_bottom({
+            c_nbre : this.stats.c_nbre.stat,
+            c_perc : this.stats.c_perc.stat,
+            k_nbre : this.stats.k_nbre.stat,
+            k_perc : this.stats.k_perc.stat,
         }));
 
       return this;
     }
 });
 /////////////////////////////////////////////////
-bbmap.Views.Stat2 = Backbone.View.extend({
-    initialize : function(json) { 
-        //console.log("comments view constructor!");
-        _.bindAll(this, 'render');
-        // Variables
-        this.elements = json.elements;
-        // Templates
-        this.template = _.template($('#bbmap-stat-bottom-template').html());
-    },
-    events : {},
-    render : function() {
-        $(this.el).empty();
-        var all_c = this.elements.where({type : "concept"}).length;
-        var all_k = this.elements.where({type : "knowledge"}).length;
-        var all_ck = all_c + all_k;
-        // Set stats
-        $(this.el).append(this.template({
-            c_nbre : all_c,
-            c_perc : Math.floor(all_c*100/all_ck),
-            k_nbre : all_k,
-            k_perc : Math.floor(all_k*100/all_ck),
-        }));
 
-      return this;
-    }
-});

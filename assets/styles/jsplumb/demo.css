@@ -240,6 +240,7 @@ body{
 /* ELement */
 .legend_element{
 	padding: 0 5px 0 5px;
+	margin-bottom: 5px;
 }
 
 .c_empty{
