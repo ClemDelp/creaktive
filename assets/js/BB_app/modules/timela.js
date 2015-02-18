@@ -61,113 +61,24 @@ timela.Views.Main = Backbone.View.extend({
         this.listenTo(this.elements, 'add', this.addPostView);
         this.listenTo(this.elements, 'remove', this.removePostView);
         // templates
-        this.template_submenu = _.template($('#timela-submenu-template').html());
         this.template_filter = _.template($('#timela-filter-template').html());
 
     },
     events : {
       "click .newSimpleConcept" : "newSimpleConcept",
       "click .newSimpleKnowledge" : "newSimpleKnowledge",
-    },
-    ////////////////////////////////////////////////
-    // New element
-    ////////////////////////////////////////////////
-    newSimpleConcept : function(e){
-      e.preventDefault();
-      var el = $(this.el).find('#new_concept_input');
-      var title = el.val();
-      el.html('');
-      var new_element = global.newElement("concept",title,"none",global.default_element_position.top,global.default_element_position.left);
-      $('#csod').trigger('click');
-    },
-    newSimpleKnowledge : function(e){
-      e.preventDefault();
-      var el = $(this.el).find('#new_knowledge_input');
-      var title = el.val();
-      el.html('');
-      var new_element = global.newElement("knowledge",title,"none",global.default_element_position.top,global.default_element_position.left);
-      $('#ksod').trigger('click');
-    },
-    ////////////////////////////////////////////////
-    //
-    ////////////////////////////////////////////////
-    setMode : function(mode){
-      this.mode = mode;
-      this.render();
-    },
-    ////////////////////////////////////////////////
-    addPostView : function(model){
-      var _this = this;
-      if(model.get('type') != "poche"){
-        this.timeline_el.prepend(new timela.Views.Element({
-            model : model,
-            users : this.users,
-            user : this.user
-        }).render().el);
-        
-      }
-    },
-    removePostView : function(model){
-      $("#"+model.get('id')+"_anchor").hide('slow');
-    },
-    render : function(){ 
-        //this.submenu_el.empty();
-        this.filter_el.empty();
-        this.timeline_el.empty();
-        var _this = this;
-        // sub menu bar
-        actionMenu.init({
-            el : this.submenu_el,
-            filter : "ck",
-            mode : this.mode,
-            from : "timela"
-        });
 
-        // this.submenu_el.append(this.template_submenu({
-        //   project : this.project.toJSON(),
-        //   filter : this.filter,
-        //   mode : this.mode
-        // }));
-        
-        // filter
-        // this.filter_el.append(this.template_filter({
-        //   poches : new Backbone.Collection(this.elements.where({type : "poche"})).toJSON()
-        // }))
-        // elements
-        this.elements.each(function(k){
-          _this.addPostView(k);
-        });
-        
-
-
-        return this;
-    }
-});
-/////////////////////////////////////////////////
-// POST element
-/////////////////////////////////////////////////
-timela.Views.Element = Backbone.View.extend({
-    initialize : function(json) {
-        _.bindAll(this, 'render','newLinkedConcept','newLinkedKnowledge');
-        ////////////////////////////
-        this.model = json.model;
-        this.user = json.user;
-        // Events
-        this.listenTo(this.model,"change", this.render); 
-        // Templates
-        this.template = _.template($('#timela-element-template').html());
-    },
-    events : {
       "click .newLinkedConcept" : "newLinkedConcept",
       "click .newLinkedKnowledge" : "newLinkedKnowledge",
       "click .remove" : "removeElement"
     },
     removeElement : function(e){
       e.preventDefault();
-      var _this = this;
+      var id = 
+      var model = this.elements.get(e.target.getAttribute("data-model-id"))
       swal({   
           title: "Are you sure?",   
-          text: "this "+_this.model.get('type')+" will be remove, would you continue?",   
+          text: "this "+model.get('type')+" will be remove, would you continue?",   
           type: "warning",   
           showCancelButton: true,   
           confirmButtonColor: "#DD6B55",   
@@ -176,7 +87,8 @@ timela.Views.Element = Backbone.View.extend({
           allowOutsideClick : true
       }, 
       function(){   
-          _this.model.destroy();
+          model.destroy();
+          $("#"+model.get('id')+"_anchor").hide('slow');
       });      
     },
     newLinkedConcept :function(e){
@@ -199,6 +111,61 @@ timela.Views.Element = Backbone.View.extend({
       $(this.el).find('#input_knowledge_title').html('');
       $('#kod'+this.model.get('id')).trigger('click'); // close the dropdon
     },
+    ////////////////////////////////////////////////
+    //
+    ////////////////////////////////////////////////
+    setMode : function(mode){
+      this.mode = mode;
+      this.render();
+    },
+    ////////////////////////////////////////////////
+    addPostView : function(model){
+      var _this = this;
+      if(model.get('type') != "poche"){
+        this.timeline_el.prepend(new timela.Views.Element({
+            model : model,
+            users : this.users,
+            user : this.user
+        }).render().el);
+        
+      }
+    },
+    render : function(){ 
+        //this.submenu_el.empty();
+        this.filter_el.empty();
+        this.timeline_el.empty();
+        var _this = this;
+        // sub menu bar
+        actionMenu.init({
+            el : this.submenu_el,
+            filter : "ck",
+            mode : this.mode,
+            from : "timela"
+        });
+        // elements
+        this.elements.each(function(k){
+          _this.addPostView(k);
+        });
+        
+        $(".wall").gridalicious({width: 200});
+
+        return this;
+    }
+});
+/////////////////////////////////////////////////
+// POST element
+/////////////////////////////////////////////////
+timela.Views.Element = Backbone.View.extend({
+    initialize : function(json) {
+        _.bindAll(this, 'render');
+        ////////////////////////////
+        this.model = json.model;
+        this.user = json.user;
+        // Events
+        this.listenTo(this.model,"change", this.render); 
+        // Templates
+        this.template = _.template($('#timela-grid-element-template').html());
+    },
     render : function(){  
       var _this = this;      
       $(this.el).empty();
@@ -206,30 +173,19 @@ timela.Views.Element = Backbone.View.extend({
         mode : timela.views.main.mode,
         model : this.model.toJSON()            
       }));
+
       setTimeout(function() {
         // Editor
-        modelEditor.init({
-            el:"#"+_this.model.get('id')+"_editor",
-            mode: timela.views.main.mode,
-            ckeditor : true,
-            model : _this.model,
-        })
-        // Comment
-        comments.init({
-            el:"#"+_this.model.get('id')+"_comments",
-            mode: timela.views.main.mode,
-            model : _this.model,
-            presentation : "bulle"
-        });
-        // Comment
-        attachment.init({
-            el:"#"+_this.model.get('id')+"_attachments",
-            mode: timela.views.main.mode,
-            model : _this.model,
-        });
-        // Display true
-        //$("#"+model.get('id')+"_anchor").show('slow')      // Do something after 5 seconds
-      }, 1000);
+        $('#'+_this.model.get('id')+"_googleImage").html(new googleSearch.Views.Main({
+            model      : _this.model,
+            mode       : _this.mode,
+            type       : "images",
+            perpage    : 3,
+            moreButton : true,
+            width      : "75px",
+        }).render().el);
+
+      }, 100);
       return this;
     }
 });
