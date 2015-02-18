@@ -83,9 +83,25 @@
 		    {{ } }}
 		    <br>
 			<h4><b>{{-project.title}}</b></h4>
-			{{ if(project.image){ }}<span style="display:none"><img class="large-12 medium-12 small-2" src="/S3/getUrl?amz_id={{- project.image}}" /></span>{{ }; }}
 		</li>
 		<li class="description" style="text-align:left">{{=project.content}}</li>
+		
+		{{ if((c_perc == 0)&&(k_perc == 0)){}else{ }}
+		<li class="bullet-item">	
+			<div class="progress expand success" style="background:#1B9DD3;height:45px;margin-bottom:0px">
+			    <b style="color:white;float:left">
+			      {{- c_perc }}%
+			      <img title="Download screenshot" src="/img/icones/Light-Bulb-32-white.png"/>
+			    </b>
+			    <b style="color:white;float:right">
+			        {{- k_perc}}%
+			        <img title="Download screenshot" src="/img/icones/Book-Open-32-white.png"/>
+			    </b>
+			    <span class="meter pulse" style="width: {{- c_perc}}%">
+			    </span>
+			</div>
+  		</li>
+  		{{ } }}
 		<li class="bullet-item"><em>Created by {{-project.author.name}} at {{-project.date}}</em></li>
 		<li class="cta-button">
 		  <div class="row">

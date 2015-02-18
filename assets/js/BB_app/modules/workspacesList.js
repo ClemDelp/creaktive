@@ -208,6 +208,13 @@ workspacesList.Views.Workspace = Backbone.View.extend({
             }    
         });
         ////////////////////////////
+        var c_perc = 0;
+        var k_perc = 0;
+        if(this.model.get('stats')){
+            c_perc = this.model.get('stats').c_perc.stat;
+            k_perc = this.model.get('stats').k_perc.stat;
+        }
+        ////////////////////////////
         if(this.display == "list"){
             $(this.el).append(this.template_list({
                 pulse : pulse,
@@ -219,6 +226,8 @@ workspacesList.Views.Workspace = Backbone.View.extend({
                 pulse : pulse,
                 news_nbr : news_nbr,
                 project : this.model.toJSON(),
+                c_perc : c_perc,
+                k_perc : k_perc
             }));
         }        
         return this;
