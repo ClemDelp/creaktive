@@ -198,7 +198,7 @@ timela.Views.Element = Backbone.View.extend({
             type       : "images",
             perpage    : 3,
             moreButton : true,
-            width      : "75px",
+            width      : "80px",
         }).render().el);
 
       }, 100);

@@ -243,6 +243,10 @@ body{
 	margin-bottom: 5px;
 }
 
+.legend_element2{
+	padding: 10px 10px 10px 10px;
+}
+
 .c_empty{
 	-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #27AE60;background: #ffffff;border: solid #27AE60 2px;text-decoration: none;
 }
@@ -273,26 +277,26 @@ body{
 /* ------------ */
 /* Links */
 .cc_link{
-	font-family: Arial;color: #27AE60;background: transparent;padding: 0 5px 0 5px;border-bottom: solid #27AE60 2px;text-decoration: none;
+	font-family: Arial;color: #27AE60;background: transparent;border-bottom: solid #27AE60 2px;text-decoration: none;
 }
       
 .co_link{
-	font-family: Arial;color: #27AE60;background: transparent;padding: 0 5px 0 5px;border-bottom: dotted #27AE60 2px;text-decoration: none;
+	font-family: Arial;color: #27AE60;background: transparent;border-bottom: dotted #27AE60 2px;text-decoration: none;
 }
       
 .kk_link{
-	font-family: Arial;color: #2980B9;background: transparent;padding: 0 5px 0 5px;border-bottom: solid #2980B9 2px;text-decoration: none;
+	font-family: Arial;color: #2980B9;background: transparent;border-bottom: solid #2980B9 2px;text-decoration: none;
 }
       
 .ko_link{
-	font-family: Arial;color: #2980B9;background: transparent;padding: 0 5px 0 5px;border-bottom: dotted #2980B9 2px;text-decoration: none;
+	font-family: Arial;color: #2980B9;background: transparent;border-bottom: dotted #2980B9 2px;text-decoration: none;
 }
       
 .pp_link{
-	font-family: Arial;color: #D35400;background: transparent;padding: 0 5px 0 5px;border-bottom: solid #D35400 2px;text-decoration: none;
+	font-family: Arial;color: #D35400;background: transparent;border-bottom: solid #D35400 2px;text-decoration: none;
 }
       
 .po_link{
-	font-family: Arial;color: #D35400;background: transparent;padding: 0 5px 0 5px;border-bottom: dotted #D35400 2px;text-decoration: none;
+	font-family: Arial;color: #D35400;background: transparent;border-bottom: dotted #D35400 2px;text-decoration: none;
 }
       

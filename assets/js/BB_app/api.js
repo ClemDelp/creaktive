@@ -227,6 +227,22 @@ var api = {
   //////////////////////////////
   // API BBMAP
   //////////////////////////////
+  getTypeLinkedToModel : function(links,collection,model,type){
+    var elements = [];
+    // Concepts source
+    var f_links = links.where({source : model.get('id')});
+    f_links.forEach(function(link){
+      try{
+        var target_id = link.get('target');
+        var target_el = collection.get(target_id);
+        if(target_el.get('type') == type) elements.push(target_el)
+      }catch(err){
+        console.log(err)
+      }
+    });
+
+    return elements;
+  },
   getType2LinkedToType1 : function(links,collection,type1,type2){
     var elements = [];
     // Concepts source
@@ -380,12 +396,17 @@ var api = {
       },
       "p_empty" : {
         title: "P",
-        desc : "no linked knowledges",
+        desc : "category without linked knowledges",
         stat : 0
       },
       "p_full" : {
         title: "P",
-        desc: "with linked knowledges",
+        desc: "category with linked knowledges",
+        stat : 0
+      },
+      "to_explore" : {
+        title : "?",
+        desc : "concept to explore",
         stat : 0
       },
       "other" : {
