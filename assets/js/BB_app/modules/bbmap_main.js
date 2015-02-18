@@ -4,28 +4,36 @@
 bbmap.router = Backbone.Router.extend({
     routes: {
         ""  : "init",
-        "visu/:zoom/:left/:top/:invisibility": "visuCustom",
-        "visu": "visu",
-        "edit": "edit",
-        "timeline": "timeline"
+        //"visu/:zoom/:left/:top/:invisibility": "visuCustom",
+        "controller": "controller",
+        // "edit": "edit",
+        // "timeline": "timeline"
     },
-    init: function() {
-        if(bbmap.views.main.init == true) bbmap.views.main.setMode("visu",true);
+    controller : function(){
+        var permissions = global.collections.Permissions;
+        var currentUser = global.models.current_user;
+        var perm = permissions.where({user_id : currentUser.get('id')})
+        if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))) bbmap.views.main.setMode("edit",true);
+        else bbmap.views.main.setMode("visu",true);
     },
-    visu: function() {
-        bbmap.views.main.setMode("visu",true);
+    init: function(){
+        if(bbmap.views.main.init == true){
+            var permissions = global.collections.Permissions;
+            var currentUser = global.models.current_user;
+            var perm = permissions.where({user_id : currentUser.get('id')})
+            if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))) bbmap.views.main.setMode("edit",true);
+            else bbmap.views.main.setMode("visu",true);
+        }
     },
-    visuCustom: function(zoom,left,top,invisibility) {
-        bbmap.views.main.invisibility = invisibility;
-        bbmap.views.main.initMap(zoom,left,top)
-        bbmap.views.main.setMode("visu",false);
-    },
-    edit: function() {
-        bbmap.views.main.setMode("edit",true);
-    },
-    timeline: function() {
-        bbmap.views.main.setMode("timeline",true);
-    },
+    // visu: function() {
+    //     bbmap.views.main.setMode("visu",true);
+    // },
+    // edit: function() {
+    //     bbmap.views.main.setMode("edit",true);
+    // },
+    // timeline: function() {
+    //     bbmap.views.main.setMode("timeline",true);
+    // },
 });
 /////////////////////////////////////////////////
 // MAIN
@@ -597,23 +605,6 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Sliding editor bar
     /////////////////////////////////////////
-    // showMenuEvent : function(){
-    //     if((this.autOpen == true)&&(this.isopen == false)){
-    //         $("#map").animate({left: "-=28%"})
-    //         this.setDeltaX(-20)
-    //         //this.translateMap("left",-28); 
-    //         // button
-    //         $("#right_buttons").show();
-    //         $("#right_buttons").animate({right:$('#cbp-spmenu-s1').width()});
-    //         $("#right_buttons").addClass('active');
-    //         $("#cbp-openimage").attr("src","/img/icones/Arrowhead-Right-48.png");
-    //         // slide barre
-    //         $('#cbp-spmenu-s1').show('slow');
-    //         $('#cbp-spmenu-s1').addClass('cbp-spmenu-open')
-    //         // 
-    //         this.isopen = true;   
-    //     }
-    // },
     showMenu : function(){
         if(this.isopen == false){
             $("#map").animate({left: "-=28%"})
@@ -781,7 +772,7 @@ bbmap.Views.Main = Backbone.View.extend({
         // }
     },
     updateEditor : function(model){
-        if((this.mode == "edit")||(this.mode == "visu")){
+        if(this.mode == "edit"){
             $('#right_buttons').show('slow');
             if(this.moduleSideBar == "edit") this.edit();
             else if(this.moduleSideBar == "design") this.design();
@@ -795,61 +786,6 @@ bbmap.Views.Main = Backbone.View.extend({
             });
             // check for template
             if(!this.project.get('templates')) this.project.save({templates : bbmap.default_templates},{silent:true});
-            // IMG List module
-            // if(bbmap.views.imagesList)bbmap.views.imagesList.close();
-            // bbmap.views.imagesList = new imagesList.Views.Main({
-            //     model           : model,
-            //     eventAggregator : this.eventAggregator
-            // });
-            ///////////////////////////
-            // GoogleSearch module IMG
-            // if(bbmap.views.gs_img)bbmap.views.gs_img.close();
-            // bbmap.views.gs_img = new googleSearch.Views.Main({
-            //     model      : model,
-            //     mode       : this.mode,
-            //     type       : "images",
-            //     perpage    : 8,
-            //     moreButton : true,
-            //     width      : "100px",
-            // });
-            // // GoogleSearch module News
-            // if(bbmap.views.gs_news)bbmap.views.gs_news.close();
-            // bbmap.views.gs_news = new googleSearch.Views.Main({
-            //     model      : model,
-            //     mode       : this.mode,
-            //     type       : "news",
-            //     perpage    : 8,
-            //     moreButton : true,
-            //     width      : "",
-            // });
-            // // GoogleSearch module Web
-            // if(bbmap.views.gs_web)bbmap.views.gs_web.close();
-            // bbmap.views.gs_web = new googleSearch.Views.Main({
-            //     model      : model,
-            //     mode       : this.mode,
-            //     type       : "web",
-            //     perpage    : 8,
-            //     moreButton : true,
-            //     width      : "",
-            // });
-            // // GoogleSearch module video
-            // if(bbmap.views.gs_video)bbmap.views.gs_video.close();
-            // bbmap.views.gs_video = new googleSearch.Views.Main({
-            //     model      : model,
-            //     mode       : this.mode,
-            //     type       : "video",
-            //     perpage    : 8,
-            //     moreButton : true,
-            //     width      : "",
-            // });
-            ///////////////////////////
-            // Render & Append
-            
-            // this.googleSearchModel_el.empty();
-            // this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_img.render().el));
-            // this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_web.render().el));
-            // this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_news.render().el));
-            // this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_video.render().el));
         }
     },
     /////////////////////////////////////////

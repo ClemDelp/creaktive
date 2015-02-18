@@ -25,16 +25,17 @@ var timela = {
 /////////////////////////////////////////////////
 timela.router = Backbone.Router.extend({
     routes: {
-        "": "edit",
-        "edit": "edit",
-        "visu": "visu",
+        "": "controller",
     },
-    edit: function() {
-      timela.views.main.setMode("edit");
+    controller : function(){
+        var permissions = global.collections.Permissions;
+        var currentUser = global.models.current_user;
+        var perm = permissions.where({user_id : currentUser.get('id')})
+        if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))) timela.views.main.setMode("edit");
+        else timela.views.main.setMode("visu");
     },
-    visu: function() {
-      timela.views.main.setMode("visu");
-    }
+
+
 });
 /////////////////////////////////////////////////
 // MAIN
