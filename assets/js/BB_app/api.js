@@ -240,7 +240,7 @@ var api = {
         console.log(err)
         link.destroy();
       }
-    })
+    });
 
     return elements;
   },

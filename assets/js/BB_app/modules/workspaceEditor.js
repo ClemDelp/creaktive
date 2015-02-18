@@ -40,10 +40,10 @@ workspaceEditor.Views.Main = Backbone.View.extend({
     },
     ckeditor : function(e){
       if(this.mode == "edit"){
-          CKEDITOR.replaceAll('ckeditor2');
-          CKEDITOR.config.toolbar = [
-             ['Bold','Italic','Underline','NumberedList','BulletedList','Image','Link','TextColor']
-          ];       
+          // CKEDITOR.replaceAll('ckeditor2');
+          // CKEDITOR.config.toolbar = [
+          //    ['Bold','Italic','Underline','NumberedList','BulletedList','Image','Link','TextColor']
+          // ];       
       }
     },
     removeWorkspace : function(e){
@@ -71,7 +71,7 @@ workspaceEditor.Views.Main = Backbone.View.extend({
     updateWorkspace : function(e){
         e.preventDefault();
         var title = $('#workspaceEditor_title').val();
-        var content = CKEDITOR.instances.editor.getData();
+        var content = $('.ckeditor2').val();
         var visibility = $('#wk_visibility').val();
         console.log(title,content)
         this.workspace.save({

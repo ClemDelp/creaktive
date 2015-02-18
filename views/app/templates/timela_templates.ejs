@@ -2,89 +2,9 @@
 	<div id="submenu_el" class="submenu"></div>
 	<div class="row">
 		<!-- <div id="filter_el" class="show-for-large-up large-3 medium-3 columns"></div> -->
-		<div id="timeline_el" class="large-12 medium-12 small-12 columns"></div>
+		<div id="timeline_el" class="large-12 medium-12 small-12 columns wall"></div>
 	</div>
 </div>
-
-<script type="text/template" id="timela-submenu-template">
-  	<div class="large-6 medium-6 small-6 columns">
-	    <button class="button simplePadding secondary radius" data-dropdown="title_project_dropdown" aria-controls="title_project_dropdown" aria-expanded="true">
-	        <b>
-	        {{-project.title}}
-	        {{ if(project.starred){ }}<img data-dropdown="title_project_dropdown"  title="starred project" src="/img/icones/Shape-Star2-32.png" />{{ } }}
-	        {{ if(project.status == 'public'){ }}
-	          <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="public project" src="/img/icones/Open-32.png"/>
-	        {{ }else{ }}
-	          <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="private project" src="/img/icones/Lock-32.png"/>
-	        {{ } }}
-	        </b>
-	    </button>
-	    <div id="title_project_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
-
-	    <button class="button secondary simplePadding radius" data-dropdown="members_anager_dropdown" aria-controls="members_anager_dropdown" aria-expanded="true"><b>Members</b><img data-type="action" title="mode" src="/img/icones/Group-Add-32.png"/></button>
-
-	    <div id="members_anager_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
-
-	    <a style="display:true" href="/bbmap?projectId={{-project.id}}" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Nodes-32.png" /></a>
-	</div>
-	<div class="large-6 medium-6 small-6 columns">
-
-	    {{ if(mode == "visu"){ }}
-			<a href="#edit" class="button simplePadding alert radius"><b>Edit</b><img data-type="action" title="mode" src="/img/icones/Pencil-32-white.png"/></a>
-		{{ }else{ }}
-
-	        {{ if(filter == "c"){ }}
-	            <a style="padding:10px" id="csod" title="add a new concept" class="button tiny success round" data-dropdown="add_simple_concept_dropdown" aria-controls="add_simple_concept_dropdown" aria-expanded="true">
-	            	<img title="add a new concept" width="24px" class="drop" src="/img/icones/add-concept-32-white.png"/>
-	            </a>	              
-	        {{ }else if(filter == "k"){ }}
-	          	<a style="padding:10px" id="ksod" title="add a new knowledge" class="button tiny round" data-dropdown="add_simple_knowledge_dropdown" aria-controls="add_simple_knowledge_dropdown" aria-expanded="true">
-					<img title="add a new knowledge" width="24px" class="drop" src="/img/icones/add-k-32-white.png"/>
-	            </a>
-	        {{ }else{ }}
-				<a style="padding:10px" id="csod" title="add a new concept" class="button tiny success round" data-dropdown="add_simple_concept_dropdown" aria-controls="add_simple_concept_dropdown" aria-expanded="true">
-	            	<img title="add a new concept" width="24px" class="drop" src="/img/icones/add-concept-32-white.png"/>
-	            </a>
-
-	            <a style="padding:10px" id="ksod" title="add a new knowledge" class="button tiny round" data-dropdown="add_simple_knowledge_dropdown" aria-controls="add_simple_knowledge_dropdown" aria-expanded="true">
-					<img title="add a new knowledge" width="24px" class="drop" src="/img/icones/add-k-32-white.png"/>
-	            </a>
-	        {{ } }}
-
-		    <div id="add_simple_concept_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
-		    	<div class="row">
-				    <div class="large-12 columns">
-				      	<div class="row collapse">
-				        	<div class="small-10 columns">
-				          		<input id="new_concept_input" type="text" placeholder="title">
-				        	</div>
-				        	<div class="small-2 columns">
-				          		<a href="#" class="button success postfix newSimpleConcept">+</a>
-				        	</div>
-				      	</div>
-				      	<small><b>describe after...</b></small>
-				    </div>
-				</div>
-		    </div>
-		    <div id="add_simple_knowledge_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
-		    	<div class="row">
-				    <div class="large-12 columns">
-				      	<div class="row collapse">
-				        	<div class="small-10 columns">
-				          		<input id="new_knowledge_input" type="text" placeholder="title">
-				        	</div>
-				        	<div class="small-2 columns">
-				          		<a href="#" class="button postfix newSimpleKnowledge">+</a>
-				        	</div>
-				      	</div>
-				      	<small><b>describe after...</b></small>
-				    </div>
-				</div>
-		    </div>
-
-	    {{ } }}
-	</div>
-</script>
 
 <script type="text/template" id="timela-filter-template">
 		<div class="panel">
@@ -94,6 +14,56 @@
 				<a href="#" class="tiny button radius pocheDesign expand">{{- poche.title}}</a>
 			{{ }); }}
 		</div>
+</script>
+
+<script type="text/template" id="timela-grid-element-template">
+	<ul class="item pricing-table" id="{{-model.id}}_anchor">
+		<li class="price" style="text-align:left">
+			{{ if(mode == "edit"){ }}
+				<ul class="button-group radius">
+				  <li><a style="padding:5px;" href="#" data-model-id="{{- model.id}}" class="button tiny alert remove"><img data-model-id="{{- model.id}}" src="/img/icones/Delete-24-white.png"></a></li>
+				  <li><a style="padding:5px;" href="#" title="Propose a Knowledge" id="kod{{-model.id}}" class="button tiny" data-dropdown="alkd{{- model.id}}" data-options="align:left" aria-controls="alkd{{- model.id}}" aria-expanded="true"><img title="Propose a Knowledge" width="20px" class="drop" src="/img/icones/Book-Open-24-white.png"/></a></li>
+				  <li><a style="padding:5px;" title="It give me an idea" id="cod{{-model.id}}" class="button tiny success" data-dropdown="alcd{{- model.id}}" data-options="align:left" aria-controls="alcd{{- model.id}}" aria-expanded="true"><img title="It give me an idea" width="24px" class="drop" src="/img/icones/Light-Bulb-24-white.png"/></a></li>
+				</ul>
+			{{ } }}
+			<strong>{{-model.title}}</strong>
+		    
+		    <div id="alkd{{- model.id}}" class="f-dropdown content tiny" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
+		    	<div class="row">
+				    <div class="large-12 columns">
+				      	<div class="row collapse">
+				        	<div class="small-10 columns">
+				          		<input id="{{- model.id}}_input_knowledge_title" type="text" placeholder="title">
+				        	</div>
+				        	<div class="small-2 columns">
+				          		<a href="#" data-model-id="{{- model.id}}" class="button postfix newLinkedKnowledge">+</a>
+				        	</div>
+				      	</div>
+				      	<small><b>describe after...</b></small>
+				    </div>
+				</div>
+		    </div>
+		    
+		    <div id="alcd{{- model.id}}" class="f-dropdown content tiny" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
+		    	<div class="row">
+				    <div class="large-12 columns">
+				      	<div class="row collapse">
+				        	<div class="small-10 columns">
+				          		<input id="{{- model.id}}_input_concept_title" type="text" placeholder="title">
+				        	</div>
+				        	<div class="small-2 columns">
+				          		<a href="#" data-model-id="{{- model.id}}" class="button success postfix newLinkedConcept">+</a>
+				        	</div>
+				      	</div>
+				      	<small><b>describe after...</b></small>
+				    </div>
+				</div>
+		    </div>
+			
+		</li>
+		<li id="{{-model.id}}_googleImage" class="description" style="text-align:left"><center><span style="width:30%"><img style="width:30%" src="/img/loading_big.gif"></span></center></li>
+		<li class="bullet-item"><em>Created by at {{-model.date}}</em></li>
+	</ul>
 </script>
 
 <script type="text/template" id="timela-element-template">
