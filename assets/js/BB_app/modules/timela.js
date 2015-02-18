@@ -138,13 +138,13 @@ timela.Views.Main = Backbone.View.extend({
     ////////////////////////////////////////////////
     addPostView : function(model,grid){
       var _this = this;
-      if(model.get('type') != "poche"){
+      //if(model.get('type') != "poche"){
         this.timeline_el.prepend(new timela.Views.Element({
             model : model,
             users : this.users,
             user : this.user
         }).render().el);
-      }
+      //}
     },
     render : function(){ 
         //this.submenu_el.empty();

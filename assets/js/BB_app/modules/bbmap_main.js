@@ -344,7 +344,7 @@ bbmap.Views.Main = Backbone.View.extend({
     updateLocalHistory : function(model,from){
         var user_id = bbmap.views.main.users.get(model.get('user')).id
         if((user_id == global.models.current_user.get('id'))&&(this.flag == "acceptLastNotif")){
-            this.pushNotif(model);
+            //this.pushNotif(model);
             if(this.sens != "init"){
                 // on supprime tout ce qui est en dessous de history_pos (si on est à la psoition 2 on supprime 1 et 0)
                 var new_array = _.rest(this.localHistory.toArray(),this.history_pos);
@@ -774,6 +774,7 @@ bbmap.Views.Main = Backbone.View.extend({
     updateEditor : function(model){
         if(this.mode == "edit"){
             $('#right_buttons').show('slow');
+            //if(bbmap.rules == false) $('.design').show()
             if(this.moduleSideBar == "edit") this.edit();
             else if(this.moduleSideBar == "design") this.design();
             else this.history();
@@ -1384,7 +1385,7 @@ bbmap.Views.Stat = Backbone.View.extend({
         // Variables
         this.elements = json.elements;
         this.links = json.links;
-        this.stats = bbmap.stats;
+        this.stats = {};
         this.left_stats_el = $("#stat_left")
         this.bottom_stats_el = $("#stat_bottom")
         // Templates
@@ -1395,50 +1396,15 @@ bbmap.Views.Stat = Backbone.View.extend({
     getStats : function(){
         return this.stats
     },
-    setStats : function(){
-        //////////////
-        var all_elements = this.elements.length;
-        var all_c = this.elements.where({type : "concept"}).length;
-        var all_k = this.elements.where({type : "knowledge"}).length;
-        var all_p = this.elements.where({type : "poche"}).length;
-        var empty_c = this.elements.where({type : "concept", content : ""}).length;
-        var empty_k = this.elements.where({type : "knowledge", content : ""}).length;
-        var empty_p = this.elements.where({type : "poche", content : ""}).length;
-        var c = all_c - empty_c;
-        var k = all_k - empty_k;
-        var p = all_p - empty_p;
-        var all_ck = all_c + all_k;
-        var all_links = this.links.length;
-        var c_ = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"concept","poche").length + api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"concept","knowledge").length;
-        var cc = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"concept","concept").length;
-        var k_ = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"knowledge","poche").length + api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"knowledge","concept").length;
-        var kk = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"knowledge","knowledge").length;;
-        var p_ = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"poche","concept").length + api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"poche","knowledge").length;
-        var pp = api.getType2LinkedToType1(bbmap.views.main.links,bbmap.views.main.elements,"poche","poche").length;;
-        /////////////
-        // Set JSON
-        this.stats.c_empty.stat = Math.floor(empty_c*100/all_elements);
-        this.stats.c_full.stat = Math.floor(c*100/all_elements);
-        this.stats.k_empty.stat = Math.floor(empty_k*100/all_elements);
-        this.stats.k_full.stat = Math.floor(k*100/all_elements);
-        this.stats.p_empty.stat = Math.floor(empty_p*100/all_elements);
-        this.stats.p_full.stat = Math.floor(p*100/all_elements);
-        this.stats.co_link.stat = Math.floor(c_*100/all_links);
-        this.stats.cc_link.stat = Math.floor(cc*100/all_links);
-        this.stats.ko_link.stat = Math.floor(k_*100/all_links);
-        this.stats.kk_link.stat = Math.floor(kk*100/all_links);
-        this.stats.po_link.stat = Math.floor(p_*100/all_links);
-        this.stats.pp_link.stat = Math.floor(pp*100/all_links);
-        this.stats.c_nbre.stat = all_c;
-        this.stats.c_perc.stat = Math.floor(all_c*100/all_ck);
-        this.stats.k_nbre.stat = all_k;
-        this.stats.k_perc.stat = Math.floor(all_k*100/all_ck);
-    },
     render : function() {
         this.left_stats_el.empty();
         this.bottom_stats_el.empty();
         // Set stats
-        this.setStats();
+        this.stats = api.statistics(this.elements,this.links);
+        var permissions = global.collections.Permissions;
+        var currentUser = global.models.current_user;
+        var perm = permissions.where({user_id : currentUser.get('id')})
+        if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))) bbmap.views.main.project.save({stats : this.stats});
         // left stat
         this.left_stats_el.append(this.template_left({
             stats : this.stats

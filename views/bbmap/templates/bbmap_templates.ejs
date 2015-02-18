@@ -46,10 +46,20 @@
 </script>
 
 <script type="text/template" id="bbmap-stat-bottom-template">
-  <li><a href="#" style="margin:0" class="button tiny radius success">{{- c_nbre }}<img title="Download screenshot" src="/img/icones/Light-Bulb-24-white.png"/><strong> ({{- c_perc}}%)</strong>
-  </a></li>
-  <li><a href="#" style="margin:0" class="button tiny radius">{{- k_nbre }}<img title="Download screenshot" src="/img/icones/Book-Open-24-white.png"/><strong> ({{- k_perc}}%)</strong>
-  </a></li>
+  
+  <div class="progress large-12 success" style="background:#1B9DD3;height:45px;width:200px;margin-bottom:0px">
+    <b style="color:white;float:left">
+      <img title="Download screenshot" src="/img/icones/Light-Bulb-32-white.png"/>
+      {{- c_perc }}%
+    </b>
+    <b style="color:white;float:right">
+        {{- k_perc}}%
+        <img title="Download screenshot" src="/img/icones/Book-Open-32-white.png"/>
+    </b>
+    <span class="meter pulse" style="width: {{- c_perc}}%">
+    </span>
+  </div>
+  
 </script>
 <!-- ******************************** -->
 
