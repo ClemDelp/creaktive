@@ -774,6 +774,7 @@ bbmap.Views.Main = Backbone.View.extend({
     updateEditor : function(model){
         if(this.mode == "edit"){
             $('#right_buttons').show('slow');
+            //if(bbmap.rules == false) $('.design').show()
             if(this.moduleSideBar == "edit") this.edit();
             else if(this.moduleSideBar == "design") this.design();
             else this.history();

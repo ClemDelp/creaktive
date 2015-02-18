@@ -39,17 +39,17 @@
 }
 
 #mainPost {
-	background-color:#1b9dd3;
+	/*background-color:#1b9dd3;*/
 }
 
 #mainPost h5 {
 	margin-bottom:15px;
 	margin-top:15px;
-	color:#fff;
+	color:#1b9dd3;
 }
 
 #mainPost strong {
-	color:#c8d400;
+	color:#1b9dd3;
 }
 
 /****************/
@@ -80,18 +80,18 @@
 }
 
 #mainAttachement{
-	background-color:#1b9dd3;
+	/*background-color:#1b9dd3;*/
 	margin-bottom:10px;
 }
 
 #mainAttachement h5{
 	margin-bottom:15px;
 	margin-top:15px;
-	color:#fff;
+	color:#1b9dd3;
 }
 
 #mainAttachement strong{
-	color:#c8d400;
+	color:#1b9dd3;
 }
 
 .attachementDeleteBtn{
@@ -129,18 +129,18 @@
 }
 
 .max_chat{
-  background-color:#1b9dd3;
+  /*background-color:#1b9dd3;*/
   margin-bottom:10px;
 }
 
 .max_chat h5{
   margin-bottom:15px;
   margin-top:15px;
-  color:#fff;
+  color:#1b9dd3;
 }
 
 .max_chat h5 strong {
-  color:#c8d400;
+  color:#1b9dd3;
 }
 
 .inputChat{
