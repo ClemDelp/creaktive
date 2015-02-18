@@ -17,24 +17,24 @@
 </script>
 
 <script type="text/template" id="timela-grid-element-template">
-	<ul class="item pricing-table">
-		<li class="price" style="text-align:right">
+	<ul class="item pricing-table" id="{{-model.id}}_anchor">
+		<li class="price" style="text-align:left">
 			<ul class="button-group radius">
-			  <li><a style="padding:5px;" href="#" data-model-id="{{- model.id}}" class="button tiny alert remove"><img src="/img/icones/Delete-24-white.png"></a></li>
+			  <li><a style="padding:5px;" href="#" data-model-id="{{- model.id}}" class="button tiny alert remove"><img data-model-id="{{- model.id}}" src="/img/icones/Delete-24-white.png"></a></li>
 			  <li><a style="padding:5px;" href="#" title="Propose a Knowledge" id="kod{{-model.id}}" class="button tiny" data-dropdown="alkd{{- model.id}}" data-options="align:left" aria-controls="alkd{{- model.id}}" aria-expanded="true"><img title="Propose a Knowledge" width="20px" class="drop" src="/img/icones/Book-Open-24-white.png"/></a></li>
 			  <li><a style="padding:5px;" title="It give me an idea" id="cod{{-model.id}}" class="button tiny success" data-dropdown="alcd{{- model.id}}" data-options="align:left" aria-controls="alcd{{- model.id}}" aria-expanded="true"><img title="It give me an idea" width="24px" class="drop" src="/img/icones/Light-Bulb-24-white.png"/></a></li>
 			</ul>
-
+			<strong>{{-model.title}}</strong>
 		    
 		    <div id="alkd{{- model.id}}" class="f-dropdown content tiny" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
 		    	<div class="row">
 				    <div class="large-12 columns">
 				      	<div class="row collapse">
 				        	<div class="small-10 columns">
-				          		<input id="input_knowledge_title" type="text" placeholder="title">
+				          		<input id="{{- model.id}}_input_knowledge_title" type="text" placeholder="title">
 				        	</div>
 				        	<div class="small-2 columns">
-				          		<a href="#" class="button postfix newLinkedKnowledge">+</a>
+				          		<a href="#" data-model-id="{{- model.id}}" class="button postfix newLinkedKnowledge">+</a>
 				        	</div>
 				      	</div>
 				      	<small><b>describe after...</b></small>
@@ -47,10 +47,10 @@
 				    <div class="large-12 columns">
 				      	<div class="row collapse">
 				        	<div class="small-10 columns">
-				          		<input id="input_concept_title" type="text" placeholder="title">
+				          		<input id="{{- model.id}}_input_concept_title" type="text" placeholder="title">
 				        	</div>
 				        	<div class="small-2 columns">
-				          		<a href="#" class="button success postfix newLinkedConcept">+</a>
+				          		<a href="#" data-model-id="{{- model.id}}" class="button success postfix newLinkedConcept">+</a>
 				        	</div>
 				      	</div>
 				      	<small><b>describe after...</b></small>

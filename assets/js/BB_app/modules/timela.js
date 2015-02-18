@@ -25,7 +25,7 @@ var timela = {
 /////////////////////////////////////////////////
 timela.router = Backbone.Router.extend({
     routes: {
-        "": "visu",
+        "": "edit",
         "edit": "edit",
         "visu": "visu",
     },
@@ -53,12 +53,12 @@ timela.Views.Main = Backbone.View.extend({
         this.user = json.user;
         this.workspaces = json.workspaces;
         this.filter = "all";
-        this.mode = "visu";
+        this.mode = "edit";
         ////////////////////////////////
         // Router
         this.router = new timela.router();
         // Events
-        this.listenTo(this.elements, 'add', this.addPostView);
+        //this.listenTo(this.elements, 'add', this.addPostView);
         this.listenTo(this.elements, 'remove', this.removePostView);
         // templates
         this.template_filter = _.template($('#timela-filter-template').html());
@@ -74,9 +74,16 @@ timela.Views.Main = Backbone.View.extend({
     },
     removeElement : function(e){
       e.preventDefault();
-      var id = 
-      var model = this.elements.get(e.target.getAttribute("data-model-id"))
-      swal({   
+      var id = e.target.getAttribute("data-model-id");
+      var model = this.elements.get(id)
+      var _this = this;
+      if(model.get('content') == ""){
+          $("#"+model.get('id')+"_anchor").hide('slow');
+          model.destroy();
+          this.render();
+      }
+      else{
+        swal({   
           title: "Are you sure?",   
           text: "this "+model.get('type')+" will be remove, would you continue?",   
           type: "warning",   
@@ -85,31 +92,40 @@ timela.Views.Main = Backbone.View.extend({
           confirmButtonText: "Yes, delete it!",   
           closeOnConfirm: true,
           allowOutsideClick : true
-      }, 
-      function(){   
-          model.destroy();
-          $("#"+model.get('id')+"_anchor").hide('slow');
-      });      
+        }, 
+        function(){   
+            $("#"+model.get('id')+"_anchor").hide('slow');
+            model.destroy();
+            _this.render();
+        });  
+      }
+            
     },
     newLinkedConcept :function(e){
       e.preventDefault();
-      var title = $(this.el).find('#input_concept_title').val();
-      var top = timela.views.main.elements.get(this.model).get('top') + 100;
-      var left = timela.views.main.elements.get(this.model).get('left') + 100;
-      var new_element = global.newElement("concept",title,this.model,top,left);
-      var new_cklink = global.newLink(timela.views.main.elements.get(new_element.get('id_father')),new_element);
-      $(this.el).find('#input_concept_title').html('');
-      $('#cod'+this.model.get('id')).trigger('click'); // close the dropdown
+      var id = e.target.getAttribute("data-model-id");
+      var model = this.elements.get(id)
+      var title = $(this.el).find('#'+id+'_input_concept_title').val();
+      var top = timela.views.main.elements.get(model).get('top') + 100;
+      var left = timela.views.main.elements.get(model).get('left') + 100;
+      var new_element = global.newElement("concept",title,top,left);
+      var new_cklink = global.newLink(model,new_element);
+      $(this.el).find('#'+id+'_input_concept_title').html('');
+      $('#cod'+model.get('id')).trigger('click'); // close the dropdown
+      this.render();
     },
     newLinkedKnowledge : function(e){
       e.preventDefault();
-      var title = $(this.el).find('#input_knowledge_title').val();
-      var top = timela.views.main.elements.get(this.model).get('top') + 100;
-      var left = timela.views.main.elements.get(this.model).get('left') + 100;
-      var new_element = global.newElement("knowledge",title,this.model,top,left);
-      var new_cklink = global.newLink(timela.views.main.elements.get(new_element.get('id_father')),new_element);
-      $(this.el).find('#input_knowledge_title').html('');
-      $('#kod'+this.model.get('id')).trigger('click'); // close the dropdon
+      var id = e.target.getAttribute("data-model-id");
+      var model = this.elements.get(id)
+      var title = $(this.el).find('#'+id+'_input_knowledge_title').val();
+      var top = timela.views.main.elements.get(model).get('top') + 100;
+      var left = timela.views.main.elements.get(model).get('left') + 100;
+      var new_element = global.newElement("knowledge",title,top,left);
+      var new_cklink = global.newLink(model,new_element);
+      $(this.el).find('#'+id+'_input_knowledge_title').html('');
+      $('#kod'+model.get('id')).trigger('click'); // close the dropdon
+      this.render();
     },
     ////////////////////////////////////////////////
     //
@@ -119,7 +135,7 @@ timela.Views.Main = Backbone.View.extend({
       this.render();
     },
     ////////////////////////////////////////////////
-    addPostView : function(model){
+    addPostView : function(model,grid){
       var _this = this;
       if(model.get('type') != "poche"){
         this.timeline_el.prepend(new timela.Views.Element({
@@ -127,7 +143,6 @@ timela.Views.Main = Backbone.View.extend({
             users : this.users,
             user : this.user
         }).render().el);
-        
       }
     },
     render : function(){ 

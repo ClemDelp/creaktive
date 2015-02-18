@@ -27,7 +27,10 @@
 
 
       {{ if(mode == "visu"){ }}
-        <a href="#edit" class="button simplePadding alert radius"><b>Edit</b><img data-type="action" title="mode" src="/img/icones/Pencil-32-white.png"/></a>
+        {{ if(from == "bbmap"){ }}
+          <a href="#edit" class="button simplePadding alert radius"><b>Edit</b><img data-type="action" title="mode" src="/img/icones/Pencil-32-white.png"/></a>{{ }else{ }}
+          <a class="button simplePadding success radius"><b>Inspiration Wall</b><img data-type="action" title="mode" src="/img/icones/Pencil-32-white.png"/></a> <strong><small>(get inspired with images)</small></strong>
+        {{ } }}
       {{ }else if(mode == "edit"){ }}
         {{ if(from == "bbmap"){ }}
           {{ if((filter == "c")||(filter == "ck")||(filter == "ckp")){ }}
@@ -45,24 +48,8 @@
               <img title="Drag & Drop Knowledge to Map" width="24px" class="drop" src="/img/icones/add-k-32-white.png"/>
             </a>
           {{ } }}
-        {{ }else if(filter == "tutututut"){ }}
-          {{ if(filter == "c"){ }}
-                <a style="padding:10px" id="csod" title="add a new concept" class="button tiny success round" data-dropdown="add_simple_concept_dropdown" aria-controls="add_simple_concept_dropdown" aria-expanded="true">
-                  <img title="add a new concept" width="24px" class="drop" src="/img/icones/add-concept-32-white.png"/>
-                </a>                
-            {{ }else if(filter == "k"){ }}
-                <a style="padding:10px" id="ksod" title="add a new knowledge" class="button tiny round" data-dropdown="add_simple_knowledge_dropdown" aria-controls="add_simple_knowledge_dropdown" aria-expanded="true">
-            <img title="add a new knowledge" width="24px" class="drop" src="/img/icones/add-k-32-white.png"/>
-                </a>
-          {{ }else{ }}
-            <a style="padding:10px" id="csod" title="add a new concept" class="button tiny success round" data-dropdown="add_simple_concept_dropdown" aria-controls="add_simple_concept_dropdown" aria-expanded="true">
-              <img title="add a new concept" width="24px" class="drop" src="/img/icones/add-concept-32-white.png"/>
-            </a>
-
-            <a style="padding:10px" id="ksod" title="add a new knowledge" class="button tiny round" data-dropdown="add_simple_knowledge_dropdown" aria-controls="add_simple_knowledge_dropdown" aria-expanded="true">
-              <img title="add a new knowledge" width="24px" class="drop" src="/img/icones/add-k-32-white.png"/>
-            </a>
-          {{ } }}
+        {{ }else{ }}
+            <a class="button simplePadding success radius"><b>Inspiration Wall</b><img data-type="action" title="mode" src="/img/icones/Pencil-32-white.png"/></a> <strong><small>(get inspired with images)</small></strong>
         {{ } }}
       {{ } }}
   </div>
@@ -77,38 +64,6 @@
         <li><a style="padding:10px" href="#" class="button secondary fullscreen"><img title="full-screen" src="/img/icones/Full-Screen-Expand-24.png"/></a></li>
       <small style="display:none" id="zoom_val"></small>
     </ul>
-  </div>
-
-
-  <div id="add_simple_concept_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
-    <div class="row">
-      <div class="large-12 columns">
-          <div class="row collapse">
-            <div class="small-10 columns">
-                <input id="new_concept_input" type="text" placeholder="title">
-            </div>
-            <div class="small-2 columns">
-                <a href="#" class="button success postfix newSimpleConcept">+</a>
-            </div>
-          </div>
-          <small><b>describe after...</b></small>
-      </div>
-  </div>
-  </div>
-  <div id="add_simple_knowledge_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
-    <div class="row">
-      <div class="large-12 columns">
-          <div class="row collapse">
-            <div class="small-10 columns">
-                <input id="new_knowledge_input" type="text" placeholder="title">
-            </div>
-            <div class="small-2 columns">
-                <a href="#" class="button postfix newSimpleKnowledge">+</a>
-            </div>
-          </div>
-          <small><b>describe after...</b></small>
-      </div>
-    </div>
   </div>
 
 </script>
