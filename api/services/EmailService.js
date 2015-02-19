@@ -61,8 +61,8 @@ module.exports = {
 		var html = "New user added on CreaKtive " + user.name + " " + user.email;  
 		var APP_NAME = process.env.APP_NAME || "local"
 		mailOptions = {
-		    from: "CreaKtive ✔ contact@creaktive.fr", // sender address
-		    to: "creaktive.contact@gmail.com",
+		    from: "CreaKtive ✔ new_user@creaktive.fr", // sender address
+		    to: "contact@creaktive.fr",
 		    subject: "New user on CreaKtive (" + APP_NAME + ")" , // Subject line
 		    generateTextFromHTML: true,
 		    html: html, // plaintext body
