@@ -1,67 +1,73 @@
 <script type="text/template" id="actionMenu-template">
   <div class="large-9 medium-9 small-8 columns">
-    <button class="button simplePadding secondary radius" data-dropdown="title_project_dropdown" aria-controls="title_project_dropdown" aria-expanded="true">
-        <b>
-        {{-project.title}}
-        {{ if(project.starred){ }}<img data-dropdown="title_project_dropdown"  title="starred project" src="/img/icones/Shape-Star2-32.png" />{{ } }}
-        {{ if(project.status == 'public'){ }}
-          <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="public project" src="/img/icones/Open-32.png"/>
-        {{ }else{ }}
-          <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="private project" src="/img/icones/Lock-32.png"/>
-        {{ } }}
-        </b>
-    </button>
-    <div id="title_project_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
-
-    <button class="button secondary simplePadding radius" data-dropdown="members_anager_dropdown" aria-controls="members_anager_dropdown" aria-expanded="true"><b>Members</b><img data-type="action" title="mode" src="/img/icones/Group-Add-32.png"/></button>
-    <div id="members_anager_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" ></div>
-
     {{ if(from == "bbmap"){ }}
       <a style="display:true" href="/timela?projectId={{-project.id}}" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Bullets-32-blue.png" /></a>
     {{ }else{ }}
       <a style="display:true" href="/bbmap?projectId={{-project.id}}" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Nodes-32.png" /></a>
+    {{ } }}  
+
+    {{ if(mode == "edit"){ }}
+
+        <a href="#" class="button secondary simplePadding radius" data-reveal-id="title_project_modal">
+          <b>
+          {{-project.title}}
+          {{ if(project.starred){ }}<img data-dropdown="title_project_dropdown"  title="starred project" src="/img/icones/Shape-Star2-32.png" />{{ } }}
+          {{ if(project.status == 'public'){ }}
+            <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="public project" src="/img/icones/Open-32.png"/>
+          {{ }else{ }}
+            <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="private project" src="/img/icones/Lock-32.png"/>
+          {{ } }}
+          </b>
+        </a>
+        <div id="title_project_modal" class="modalContainer reveal-modal" data-reveal></div>
+        
+
+
+
+        <a href="#" class="button secondary simplePadding radius" data-reveal-id="members_manager_modal">
+          <b>Members</b><img data-type="action" title="mode" src="/img/icones/Group-Add-32.png"/>
+        </a>
+        <div id="members_manager_modal" class="modalContainer reveal-modal" data-reveal></div>
+
     {{ } }}
 
 
-      {{ if(mode == "visu"){ }}
-        <a href="#edit" class="button simplePadding alert radius"><b>Edit</b><img data-type="action" title="mode" src="/img/icones/Pencil-32-white.png"/></a>
-      {{ }else if(mode == "edit"){ }}
-        {{ if(from == "bbmap"){ }}
-          {{ if((filter == "c")||(filter == "ck")||(filter == "ckp")){ }}
-              <a style="padding:10px" href="#" id="dropC" class="drop dropC button tiny success round" title="Drag & Drop Concept to Map">
-                <img title="Drag & Drop Concept to Map" width="24px" class="drop" src="/img/icones/add-concept-32-white.png"/>
-              </a>
-          {{ } }}
-          {{ if((filter == "p")||(filter == "kp")||(filter == "ckp")){ }}
-            <a style="padding:10px" href="#" id="dropP" class="drop dropP button tiny pocheDesign round" title="Drag & Drop Category to Map">
-              <img title="Drag & Drop Category to Map" width="24px" class="drop" src="/img/icones/add-poche-32-white.png"/>
-            </a>
-          {{ } }}
-          {{ if((filter == "k")||(filter == "ck")||(filter == "ckp")||(filter == "kp")){ }}
-            <a style="padding:10px" href="#" id="dropK" class="drop dropK button tiny round" title="Drag & Drop Knowledge to Map">
-              <img title="Drag & Drop Knowledge to Map" width="24px" class="drop" src="/img/icones/add-k-32-white.png"/>
-            </a>
-          {{ } }}
-        {{ }else if(filter == "tutututut"){ }}
-          {{ if(filter == "c"){ }}
-                <a style="padding:10px" id="csod" title="add a new concept" class="button tiny success round" data-dropdown="add_simple_concept_dropdown" aria-controls="add_simple_concept_dropdown" aria-expanded="true">
-                  <img title="add a new concept" width="24px" class="drop" src="/img/icones/add-concept-32-white.png"/>
-                </a>                
-            {{ }else if(filter == "k"){ }}
-                <a style="padding:10px" id="ksod" title="add a new knowledge" class="button tiny round" data-dropdown="add_simple_knowledge_dropdown" aria-controls="add_simple_knowledge_dropdown" aria-expanded="true">
-            <img title="add a new knowledge" width="24px" class="drop" src="/img/icones/add-k-32-white.png"/>
-                </a>
-          {{ }else{ }}
-            <a style="padding:10px" id="csod" title="add a new concept" class="button tiny success round" data-dropdown="add_simple_concept_dropdown" aria-controls="add_simple_concept_dropdown" aria-expanded="true">
-              <img title="add a new concept" width="24px" class="drop" src="/img/icones/add-concept-32-white.png"/>
-            </a>
+    {{ if(from != "bbmap"){ }}
+      <a class="button simplePadding success radius"><b>Inspiration Wall</b><img data-type="action" title="mode" src="/img/icones/Pencil-32-white.png"/></a> <strong><small>(get inspired with images)</small></strong>
+    {{ } }}
 
-            <a style="padding:10px" id="ksod" title="add a new knowledge" class="button tiny round" data-dropdown="add_simple_knowledge_dropdown" aria-controls="add_simple_knowledge_dropdown" aria-expanded="true">
-              <img title="add a new knowledge" width="24px" class="drop" src="/img/icones/add-k-32-white.png"/>
-            </a>
-          {{ } }}
-        {{ } }}
+
+
+    {{ if(mode == "visu"){ }}
+      
+
+      {{ if(from == "bbmap"){ }}
+        <a style="display:none" href="#edit" class="button simplePadding alert radius"><b>Edit</b><img data-type="action" title="mode" src="/img/icones/Pencil-32-white.png"/></a>
       {{ } }}
+
+
+    {{ }else if(mode == "edit"){ }}
+      
+
+      {{ if(from == "bbmap"){ }}
+        {{ if((filter == "c")||(filter == "ck")||(filter == "ckp")){ }}
+            <a style="padding:10px" href="#" id="dropC" class="drop dropC button tiny success round" title="Drag & Drop Concept to Map">
+              <img title="Drag & Drop Concept to Map" width="24px" class="drop" src="/img/icones/add-concept-32-white.png"/>
+            </a>
+        {{ } }}
+        {{ if((filter == "p")||(filter == "kp")||(filter == "ckp")){ }}
+          <a style="padding:10px" href="#" id="dropP" class="drop dropP button tiny pocheDesign round" title="Drag & Drop Category to Map">
+            <img title="Drag & Drop Category to Map" width="24px" class="drop" src="/img/icones/add-poche-32-white.png"/>
+          </a>
+        {{ } }}
+        {{ if((filter == "k")||(filter == "ck")||(filter == "ckp")||(filter == "kp")){ }}
+          <a style="padding:10px" href="#" id="dropK" class="drop dropK button tiny round" title="Drag & Drop Knowledge to Map">
+            <img title="Drag & Drop Knowledge to Map" width="24px" class="drop" src="/img/icones/add-k-32-white.png"/>
+          </a>
+        {{ } }}
+
+      {{ } }}
+    {{ } }}
   </div>
 
   <div class="large-3 medium-3 small-4 columns">
@@ -74,38 +80,6 @@
         <li><a style="padding:10px" href="#" class="button secondary fullscreen"><img title="full-screen" src="/img/icones/Full-Screen-Expand-24.png"/></a></li>
       <small style="display:none" id="zoom_val"></small>
     </ul>
-  </div>
-
-
-  <div id="add_simple_concept_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
-    <div class="row">
-      <div class="large-12 columns">
-          <div class="row collapse">
-            <div class="small-10 columns">
-                <input id="new_concept_input" type="text" placeholder="title">
-            </div>
-            <div class="small-2 columns">
-                <a href="#" class="button success postfix newSimpleConcept">+</a>
-            </div>
-          </div>
-          <small><b>describe after...</b></small>
-      </div>
-  </div>
-  </div>
-  <div id="add_simple_knowledge_dropdown" class="f-dropdown content medium" data-dropdown-content="" aria-hidden="false" tabindex="-1" >
-    <div class="row">
-      <div class="large-12 columns">
-          <div class="row collapse">
-            <div class="small-10 columns">
-                <input id="new_knowledge_input" type="text" placeholder="title">
-            </div>
-            <div class="small-2 columns">
-                <a href="#" class="button postfix newSimpleKnowledge">+</a>
-            </div>
-          </div>
-          <small><b>describe after...</b></small>
-      </div>
-    </div>
   </div>
 
 </script>

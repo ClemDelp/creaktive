@@ -15,6 +15,7 @@
 
 
 <script type="text/template" id="attachment-input-template">
+  <hr>
   <div class="large-12 medium-12 small-12 columns">
   	<span id="status">Please select a file</span>
     <input id="uploadfile" type="file"/>
@@ -22,11 +23,12 @@
 </script>
 
 <script type="text/template" id="attachment-el-template">
-	<tr>
-    <td><img width="30" src="{{- user.img }}"></td>
-    <td><a href="/s3/getUrl?amz_id={{- attachment.url }}"  target="_blank" class="" data-file-path="{{- attachment.path }}" title="{{- attachment.name }}">{{- attachment.name.substring(0,20) }}...</a></td>
-    <td><small>{{- attachment.date}}</small></td>
-    {{ if(mode == "edit"){ }}<td><a href="#" class="button tiny alert round noPadding remove">x</td>{{ } }}
-  </tr>
+    <td>
+      <img src="{{- user.img }}" class="max_img max_img-responsive" style="width:100%;">
+    </td>
+    <td width="80%">
+      <p style="margin-bottom:0px"><a href="/s3/getUrl?amz_id={{- attachment.url }}"  target="_blank" class="" data-file-path="{{- attachment.path }}" title="{{- attachment.name }}">{{- attachment.name}}</a></p>
+      <p id="attachmentinfopost">{{- user.name }} • {{- attachment.date}} <a href="#" id="attachmentdelete">delete</a></p>
+    </td>
 </script>
 

@@ -34,8 +34,17 @@ workspaceEditor.Views.Main = Backbone.View.extend({
         this.template = _.template($('#workspaceEditor-template').html());
     },
     events : {
+        "click .ckeditor2" : "ckeditor",
         "click .updateWorkspace" : "updateWorkspace",
         "click .removeWorkspace" : "removeWorkspace"
+    },
+    ckeditor : function(e){
+      if(this.mode == "edit"){
+          // CKEDITOR.replaceAll('ckeditor2');
+          // CKEDITOR.config.toolbar = [
+          //    ['Bold','Italic','Underline','NumberedList','BulletedList','Image','Link','TextColor']
+          // ];       
+      }
     },
     removeWorkspace : function(e){
       e.preventDefault();
@@ -62,7 +71,7 @@ workspaceEditor.Views.Main = Backbone.View.extend({
     updateWorkspace : function(e){
         e.preventDefault();
         var title = $('#workspaceEditor_title').val();
-        var content = CKEDITOR.instances.editor.getData();
+        var content = $('.ckeditor2').val();
         var visibility = $('#wk_visibility').val();
         console.log(title,content)
         this.workspace.save({
@@ -78,10 +87,10 @@ workspaceEditor.Views.Main = Backbone.View.extend({
         $(this.el).empty();
         $(this.el).append(this.template({workspace : this.workspace.toJSON(),mode : this.mode}));
         if(this.mode == "edit"){
-            CKEDITOR.replaceAll('ckeditor2');
-            CKEDITOR.config.toolbar = [
-               ['Bold','Italic','Underline','NumberedList','BulletedList','Image','Link','TextColor']
-            ];       
+            // CKEDITOR.replaceAll('ckeditor2');
+            // CKEDITOR.config.toolbar = [
+            //    ['Bold','Italic','Underline','NumberedList','BulletedList','Image','Link','TextColor']
+            // ];       
         }
         
         return this;

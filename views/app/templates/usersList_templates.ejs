@@ -36,6 +36,6 @@
 	{{ });}}
 	</table>
 
-	<div class="large-12 medium-12 small-12 columns"><center<small style="color:red"><b>pass in edition mode if you want to add members</b></small></center></div>
-   	
+	{{ if(mode != "edit"){ }}<div class="large-12 medium-12 small-12 columns"><center<small style="color:red"><b>pass in edition mode if you want to add members</b></small></center></div>{{ } }}
+   	<a class="close-reveal-modal">&#215;</a>
 </script>

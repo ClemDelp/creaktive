@@ -85,7 +85,6 @@ modelEditor.Views.Main = Backbone.View.extend({
         if(fathers != "none"){
             var fathers = api.getTreeParentNodes(this.model,this.elements).reverse()
         }
-        console.log(fathers)
         // content
         if(this.mode == "normal"){
             $(this.el).append(this.template_model_normal({
@@ -103,6 +102,17 @@ modelEditor.Views.Main = Backbone.View.extend({
             }));    
         }
         
+        if(this.model.get('content') == ""){
+            $('#'+this.model.get('id')+"_google_img").append(new googleSearch.Views.Main({
+                model      : this.model,
+                mode       : this.mode,
+                type       : "images",
+                perpage    : 8,
+                moreButton : true,
+                width      : "75px",
+            }).render().el)
+        } 
+
         return this;
     }
 });

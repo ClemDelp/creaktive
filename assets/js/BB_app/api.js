@@ -1,4 +1,20 @@
 var api = {
+  
+  //////////////////////////////
+  // WIKIPEDIA
+  //////////////////////////////
+  // One query, example code:
+  getWikiDef :function(item){
+    var lg = "fr";
+    var option1 = "extracts&exintro&explaintext&format=json&redirects&callback=?";
+    var option2 = "extracts&exintro&format=json&redirects&callback=?";
+    url = "http://"+lg+".wikipedia.org/w/api.php?action=query&prop=description&titles=" + item.toString() + "&prop="+option2;
+    $.getJSON(url, function (json) {
+        var item_id = Object.keys(json.query.pages)[0]; // THIS DO THE TRICK !
+        sent = json.query.pages[item_id].extract;
+        console.log(sent);
+    });
+  },
   //////////////////////////////
   // API UTILITIES
   //////////////////////////////
@@ -73,7 +89,7 @@ var api = {
             // Checking if there are more pages with results, 
             // and deciding whether to show the More button:
             if((settings.more)&&(+cursor.estimatedResultCount > (settings.page+1)*settings.perPage)){
-                $('<br><div id="more_'+uid+'" class="button round tiny secondary">more</did>').appendTo(resultsDiv).click(function(){
+                $('<br><div id="more_'+uid+'" class="button radius tiny secondary">more</did>').appendTo(resultsDiv).click(function(){
                     settings.append = true;
                     settings.page = settings.page+1;
                     api.googleSearch(settings,el);
@@ -211,6 +227,24 @@ var api = {
   //////////////////////////////
   // API BBMAP
   //////////////////////////////
+  getType2LinkedToType1 : function(links,collection,type1,type2){
+    var elements = [];
+    // Concepts source
+    links.each(function(link){
+      try{
+        var source_id = link.get('source');  
+        var target_id = link.get('target');
+        var source_el = collection.get(source_id);
+        var target_el = collection.get(target_id);
+        if((source_el.get('type') == type1)&&(target_el.get('type') == type2)) elements.push(target_el)
+      }catch(err){
+        console.log(err)
+        link.destroy();
+      }
+    });
+
+    return elements;
+  },
   getModelsLinkedToModel : function(links,collection,model){
     // links have to be a collection a link model
     // Collection have to be a backbone collection
@@ -230,23 +264,49 @@ var api = {
     //ckLinks = _.union(ckLinks, links.where({target : id}));
     return _.compact(ckLinks);
   },
+  isTarget : function(links,id){
+    // links have to be a collection a link model
+    var is = false;
+    var ckLinks = links.where({target : id});
+    if(ckLinks.length > 0) is = true;
+    return is;
+  },
+  isSource : function(links,id){
+    // links have to be a collection a link model
+    var is = false;
+    var ckLinks = links.where({source : id});
+    if(ckLinks.length > 0) is = true;
+    return is;
+  },
+  getTheRightIDFather : function(links,elements,model){
+    // links have to be a collection a link model
+    var id_father = "none";
+    var ckLinks = links.where({target : model.get('id')});
+    ckLinks.forEach(function(link){
+      var source = elements.get(link.get('source'));
+      var target = model;
+      if((source.get('type') == target.get('type'))||((source.get('type') == "poche")&&(target.get('type') == "knowledge"))) id_father = source.get('id');
+    });
+    return id_father;
+  },
   //////////////////////////////
   // API Tree manipulation
   //////////////////////////////
-  getTreeParentNodes : function(currentNode,tree){
+  getTreeParentNodes : function(currentNode,tree,alreadyDone){
     // tree have to be a collection of node/model with each an id_father attribute reference to a node father
     // node have to be a model with an id_father attribute reference to a node father
     var parents = [];
     var parents_id = [];
+    if(alreadyDone) parents_id = alreadyDone;
     if(currentNode.get('id_father')){
       tree.each(function(node){
-        if(_.indexOf(parents_id, node.get('id'))>-1){
+        if(_.indexOf(parents_id, node.get('id')) == -1){
           //console.log("current node ",currentNode.get('id_father')," - node ",node.get('id'))
           if(currentNode.get('id_father') == node.get('id')){
             parents.unshift(node);
             parents_id.unshift(node.get('id'));
             currentNode = node
-            parents = _.union(parents, api.getTreeParentNodes(currentNode,tree))
+            parents = _.union(parents, api.getTreeParentNodes(currentNode,tree,parents_id))
           }  
         }
       });
@@ -255,17 +315,24 @@ var api = {
     // return all parent nodes from a branch node
     return parents;
   },
-  getTreeChildrenNodes : function(currentNode,tree){
+  getTreeChildrenNodes : function(currentNode,tree,alreadyDone){
     // tree have to be a collection of node/model with each an id_father attribute reference to a node father
     // node have to be a model with an id_father attribute reference to a node father
     var childrens = [];
     var nodes = [];
+    var childs_id = [];
+    if(alreadyDone) childs_id = alreadyDone;
+    
     if(currentNode.get('id_father')){
       nodes = tree.where({id_father : currentNode.get('id')});
       childrens = _.union(childrens, nodes)
       nodes.forEach(function(node){
-        childrens = _.union(childrens, api.getTreeChildrenNodes(node,tree))
+        if(_.indexOf(childs_id, node.get('id')) == -1){
+          childs_id.unshift(node.get('id'));
+          childrens = _.union(childrens, api.getTreeChildrenNodes(node,tree,childs_id))
+        }
       });
+
     }
     // return all children nodes from a parent node
     return childrens;
@@ -286,5 +353,136 @@ var api = {
     });
 
     return _.compact(result);
-  }
+  },
+  //////////////////////////////
+  // Stats
+  statistics : function(elements,links){
+    var stats = {
+      "c_empty" : {
+        title: "C",
+        desc : "empty concept",
+        stat : 0
+      },
+      "c_full" : {
+        title: "C",
+        desc: "concept with description",
+        stat : 0
+      },
+      "k_empty" : {
+        title: "K",
+        desc : "empty knowledge",
+        stat : 0
+      },
+      "k_full" : {
+        title: "K",
+        desc: "knowledge with description",
+        stat : 0
+      },
+      "p_empty" : {
+        title: "P",
+        desc : "no linked knowledges",
+        stat : 0
+      },
+      "p_full" : {
+        title: "P",
+        desc: "with linked knowledges",
+        stat : 0
+      },
+      "other" : {
+        title: "?",
+        desc: "way to explore",
+        stat : 0
+      },
+      "cc_link" : {
+        title: "C-C",
+        desc: "operator C to C",
+        stat : 0
+      },
+      "co_link" : {
+        title: "C-*",
+        desc: "operator C to *",
+        stat : 0
+      },
+      "kk_link" : {
+        title: "K-K",
+        desc: "operator K to K",
+        stat : 0
+      },
+      "ko_link" : {
+        title: "K-*",
+        desc: "operator K to *",
+        stat : 0
+      },
+      "pp_link" : {
+        title: "P-P",
+        desc: "operator P to P",
+        stat : 0
+      },
+      "po_link" : {
+        title: "P-*",
+        desc: "operator P to *",
+        stat : 0
+      },
+      "c_nbre" : {
+        title: "dC",
+        desc: "concept number",
+        stat : 0
+      },
+      "c_perc" : {
+        title: "%C",
+        desc: "percentage of concept",
+        stat : 0
+      },
+      
+      "k_nbre" : {
+        title: "dK",
+        desc: "knowledge number",
+        stat : 0
+      },
+      
+      "k_perc" : {
+        title: "%K",
+        desc: "percentage of knowledge",
+        stat : 0
+      }
+    };
+    var all_elements = elements.length;
+    var all_c = elements.where({type : "concept"}).length;
+    var all_k = elements.where({type : "knowledge"}).length;
+    var all_p = elements.where({type : "poche"}).length;
+    var empty_c = elements.where({type : "concept", content : ""}).length;
+    var empty_k = elements.where({type : "knowledge", content : ""}).length;
+    var empty_p = elements.where({type : "poche", content : ""}).length;
+    var c = all_c - empty_c;
+    var k = all_k - empty_k;
+    var p = all_p - empty_p;
+    var all_ck = all_c + all_k;
+    var all_links = links.length;
+    var c_ = api.getType2LinkedToType1(links,elements,"concept","poche").length + api.getType2LinkedToType1(links,elements,"concept","knowledge").length;
+    var cc = api.getType2LinkedToType1(links,elements,"concept","concept").length;
+    var k_ = api.getType2LinkedToType1(links,elements,"knowledge","poche").length + api.getType2LinkedToType1(links,elements,"knowledge","concept").length;
+    var kk = api.getType2LinkedToType1(links,elements,"knowledge","knowledge").length;;
+    var p_ = api.getType2LinkedToType1(links,elements,"poche","concept").length + api.getType2LinkedToType1(links,elements,"poche","knowledge").length;
+    var pp = api.getType2LinkedToType1(links,elements,"poche","poche").length;;
+    /////////////
+    // Set JSON
+    stats.c_empty.stat = Math.floor(empty_c*100/all_elements);
+    stats.c_full.stat = Math.floor(c*100/all_elements);
+    stats.k_empty.stat = Math.floor(empty_k*100/all_elements);
+    stats.k_full.stat = Math.floor(k*100/all_elements);
+    stats.p_empty.stat = Math.floor(empty_p*100/all_elements);
+    stats.p_full.stat = Math.floor(p*100/all_elements);
+    stats.co_link.stat = Math.floor(c_*100/all_links);
+    stats.cc_link.stat = Math.floor(cc*100/all_links);
+    stats.ko_link.stat = Math.floor(k_*100/all_links);
+    stats.kk_link.stat = Math.floor(kk*100/all_links);
+    stats.po_link.stat = Math.floor(p_*100/all_links);
+    stats.pp_link.stat = Math.floor(pp*100/all_links);
+    stats.c_nbre.stat = all_c;
+    stats.c_perc.stat = Math.floor(all_c*100/all_ck);
+    stats.k_nbre.stat = all_k;
+    stats.k_perc.stat = Math.floor(all_k*100/all_ck);
+
+    return stats;
+  },
 }

@@ -1,0 +1,48 @@
+/**************/
+/* Workspace */
+/************/
+
+.tableWorkspace{
+  border:none;
+  border-radius:5px;
+  margin-bottom: 7px;
+}
+
+.tableWorkspace:hover{
+  background-color:#efefef;
+}
+
+.btnCreateWorkspace {
+  margin-bottom:0px;
+  padding-top: 15px;
+}
+
+.inputFindWorkspace{
+  margin-bottom:0px;
+  padding-top: 18px;
+}
+
+.imgWorkspacePrivatePublic{
+  width: 100%;
+  margin-bottom: 10px
+}
+
+.imgWorkspacePublicPrivate{
+  margin-bottom: 10px;
+}
+
+.imgWorkspace{
+  border-radius: 50px;
+  width: 50%;
+}
+
+.imgNodes{
+  margin-bottom: 5px;
+  border-radius: 5px;
+}
+
+.imgBullets{
+  margin-bottom: 5px;
+  border-radius: 5px;
+}
+

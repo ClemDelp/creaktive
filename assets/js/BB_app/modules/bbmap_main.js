@@ -4,28 +4,36 @@
 bbmap.router = Backbone.Router.extend({
     routes: {
         ""  : "init",
-        "visu/:zoom/:left/:top/:invisibility": "visuCustom",
-        "visu": "visu",
-        "edit": "edit",
-        "timeline": "timeline"
+        //"visu/:zoom/:left/:top/:invisibility": "visuCustom",
+        "controller": "controller",
+        // "edit": "edit",
+        // "timeline": "timeline"
     },
-    init: function() {
-        if(bbmap.views.main.init == true) bbmap.views.main.setMode("visu",true);
+    controller : function(){
+        var permissions = global.collections.Permissions;
+        var currentUser = global.models.current_user;
+        var perm = permissions.where({user_id : currentUser.get('id')})
+        if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))) bbmap.views.main.setMode("edit",true);
+        else bbmap.views.main.setMode("visu",true);
     },
-    visu: function() {
-        bbmap.views.main.setMode("visu",true);
+    init: function(){
+        if(bbmap.views.main.init == true){
+            var permissions = global.collections.Permissions;
+            var currentUser = global.models.current_user;
+            var perm = permissions.where({user_id : currentUser.get('id')})
+            if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))) bbmap.views.main.setMode("edit",true);
+            else bbmap.views.main.setMode("visu",true);
+        }
     },
-    visuCustom: function(zoom,left,top,invisibility) {
-        bbmap.views.main.invisibility = invisibility;
-        bbmap.views.main.initMap(zoom,left,top)
-        bbmap.views.main.setMode("visu",false);
-    },
-    edit: function() {
-        bbmap.views.main.setMode("edit",true);
-    },
-    timeline: function() {
-        bbmap.views.main.setMode("timeline",true);
-    },
+    // visu: function() {
+    //     bbmap.views.main.setMode("visu",true);
+    // },
+    // edit: function() {
+    //     bbmap.views.main.setMode("edit",true);
+    // },
+    // timeline: function() {
+    //     bbmap.views.main.setMode("timeline",true);
+    // },
 });
 /////////////////////////////////////////////////
 // MAIN
@@ -36,7 +44,7 @@ bbmap.Views.Main = Backbone.View.extend({
         ////////////////////////////
         // el
         this.top_el = $(this.el).find('#top_container');
-        this.bottom_el = $(this.el).find('#bottom_container');
+        this.bottom_el = $(this.el).find('#bbmap_bottom_ui');
         this.map_el = $(this.el).find('#map');
         this.timeline_el = $(this.el).find('#timeline_container');
         this.css3Model_el = $(this.el).find('#css3Model');
@@ -76,6 +84,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.cursorY            = 0;
         this.visualMode         = "children"; // children/node/parent respectivly display childrens concept/ parents concepts + knowledges associate / knowledges associate to concept
         this.jeton              = true; // jeton pourevite que le center soit utilisé 2 fois simultanement
+        this.moduleSideBar      = "edit";
         ////////////////////////////////
         // Timeline & history parameter
         this.timeline_pos       = 0;
@@ -96,7 +105,7 @@ bbmap.Views.Main = Backbone.View.extend({
             Connector : [ "Bezier", { curviness:50 } ],
             DragOptions : { cursor: "pointer", zIndex:2000 },
             PaintStyle : { strokeStyle:this.color, lineWidth:1 },
-            EndpointStyle : { radius:5, fillStyle:this.color },
+            EndpointStyle : { radius:1, fillStyle:this.color },
             HoverPaintStyle : {strokeStyle:"#27AE60" },
             EndpointHoverStyle : {fillStyle:"#27AE60" },
             ConnectionOverlays : [
@@ -160,6 +169,11 @@ bbmap.Views.Main = Backbone.View.extend({
                 }, 1000);                
             })
         }
+        ////////////////
+        this.statistics = new bbmap.Views.Stat({
+            elements : this.elements,
+            links : this.links,
+        });
     },
     events : {
         "change #visu_select_mode" : "setVisualMode",
@@ -168,39 +182,83 @@ bbmap.Views.Main = Backbone.View.extend({
         "mouseup .dropK" : "newKnowledgeUnlinked",
         "mouseup .dropP" : "newPocheUnlinked",
         "click .ckOperator" : "setCKOperator",
-        "click .zoomin" : "zoomin",
-        "click .zoomout" : "zoomout",
-        "click .reset" : "resetToCentroid",
+
+        "click .zoomin"     : "zoomin",
+        "click .zoomout"    : "zoomout",
+        "click .reset"      : "resetToCentroid",
+        "click .edit"       : "editEvent",
+        "click .design"     : "designEvent",
+        "click .history"    : "historyEvent",
+        "click .web"        : "web",
+
+        "click .closeSibeBar" : "closeSibeBar",
+        "mouseover .window" : "showChildrens",
+        "mouseleave .window" : "hideChildrens",
         "click .window" : "showIcon", 
-         "click .structureSubTree" : "treeClassification",
+        "click .structureSubTree" : "treeClassification",
         //"click .structureSubTree" : "structureTree",
         "click #okjoyride" : "updateLastModelTitle",
         "click .screenshot" : "screenshot",
         "click .downloadimage" : "laurie",
-        "click #showMenu" : "eventMenu",
+        //"click #showMenu" : "eventMenu",
         "click .prevH" : "backInHistory",
         "click .nextH" : "advanceInHistory",
          "click .structureSubTree" : "treeClassification",
         //"click .structureSubTree" : "structureTree",
     },
-    laurie : function(e){
-        e.preventDefault();
+    svgWindowController : function(){
+        $('body .svg_window').remove();
+        var c_candidats = bbmap.views.main.elements.where({type:"concept",id_father:"none"})
+        var p_candidats = bbmap.views.main.elements.where({type:"poche",id_father:"none"})
+        var peres = _.union(c_candidats,p_candidats)
+        peres.forEach(function(pere){
+            bbmap.views.main.drawSvgWindow(pere);
+        });
+
+        this.statistics.render();
+
+    },
+    drawSvgWindow : function(pere){
+        var elements = api.getTreeChildrenNodes(pere,bbmap.views.main.elements);
+        elements.push(pere);
+        var cadre = this.getCadre(elements,100);
+        var color = "#E67E22";
+        if(pere.get('type') == "concept") color = "#C8D400";
+        var left = cadre.left_min - 25;
+        var right = cadre.top_min - 30;
+        var text = pere.get('title')+" ("+(api.getTreeChildrenNodes(pere,bbmap.views.main.elements).length+1)+" elements)";
+        this.map_el.append('<svg class="svg_window" style="position:absolute;left:'+left+'px;top:'+right+'px" width="'+cadre.width+'" height="'+cadre.height+'" pointer-events="none" position="absolute" version="1.1" xmlns="http://www.w3.org/1999/xhtml"><text x="5" y="10" font-family="sans-serif" font-size="10px" fill="'+color+'">'+text+'</text><rect rx="10" ry="10" x="0" y="0" width="'+cadre.width+'" height="'+cadre.height+'" stroke-width="3" stroke="'+color+'" fill="transparent" /></svg>')
+    },
+    getCadre : function(elements,offset){
         var left_min = 10000000000000000000000;
         var left_max = 0;
         var top_min = 10000000000000000000000;
         var top_max = 0;
-        var offset = 250;
-        var childs = [];
         // on prend le cadre
-        bbmap.views.main.elements.each(function(el){
+        elements.forEach(function(el){
             if(el.get('left') < left_min) left_min = el.get('left')
-            if(el.get('left') + $('#'+el.get('id')).width() > left_max) left_max = el.get('left') + $('#'+el.get('id')).width() + offset;
+            if((el.get('left') + $('#'+el.get('id')).width()+offset) > left_max) left_max = el.get('left') + $('#'+el.get('id')).width() + offset;
             if(el.get('top') < top_min) top_min = el.get('top')
-            if(el.get('top') + $('#'+el.get('id')).height() > top_max) top_max = el.get('top') + $('#'+el.get('id')).height() + offset;
+            if((el.get('top') + $('#'+el.get('id')).height()+offset) > top_max) top_max = el.get('top') + $('#'+el.get('id')).height() + offset;
         });
         // on definit la hauteur + largeur du cadre
         var cadre_width = left_max - left_min;
         var cadre_height = top_max - top_min;
+        return {width:cadre_width,height:cadre_height,left_min:left_min,left_max:left_max,top_min:top_min,top_max:top_max};
+    },
+    laurie : function(e){
+        e.preventDefault();
+        var padding_left = -100;
+        var padding_top = -100;
+        var offset = 250;
+        var childs = [];
+        var cadre = this.getCadre(bbmap.views.main.elements.toArray(),300);
+        var left_min = cadre.left_min + padding_left;
+        var left_max = cadre.left_max;
+        var top_min = cadre.top_min + padding_top;
+        var top_max = cadre.top_max;
+        var cadre_width = cadre.width;
+        var cadre_height = cadre.height;
         // on crée l'element cadre
         var cadre = $('<div>',{id:'youhou',style:'width:'+cadre_width+'px;height:'+cadre_height+'px;',class:'chart-demo'});
         var childs = $("#map > .window").clone();
@@ -242,6 +300,7 @@ bbmap.Views.Main = Backbone.View.extend({
             }
         });
     },
+    ///////////////////////////////////////////
     treeClassification : function(e){
         e.preventDefault();
         var pere = this.lastModel.get('id');
@@ -251,6 +310,7 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         setTimeout(function(){
             bbmap.views.main.instance.repaintEverything();
+            bbmap.views.main.svgWindowController();
         },1000);
     },
     deleteButton : function(){
@@ -284,7 +344,7 @@ bbmap.Views.Main = Backbone.View.extend({
     updateLocalHistory : function(model,from){
         var user_id = bbmap.views.main.users.get(model.get('user')).id
         if((user_id == global.models.current_user.get('id'))&&(this.flag == "acceptLastNotif")){
-            this.pushNotif(model);
+            //this.pushNotif(model);
             if(this.sens != "init"){
                 // on supprime tout ce qui est en dessous de history_pos (si on est à la psoition 2 on supprime 1 et 0)
                 var new_array = _.rest(this.localHistory.toArray(),this.history_pos);
@@ -394,7 +454,9 @@ bbmap.Views.Main = Backbone.View.extend({
             model.destroy();
         }
         else if(action == "update"){
-            global.updateElement(model,model.toJSON())
+            var m = bbmap.views.main.elements.get(model.get('id'))
+            m.save(model.toJSON())
+            //global.updateElement(model,model.toJSON())
         }
     },
     getTimelineHitoryModel : function(historic,type,sens,action){
@@ -408,7 +470,6 @@ bbmap.Views.Main = Backbone.View.extend({
             if(type == "link") model = new global.Models.CKLink(historic.get('to'));
             else model = new global.Models.Element(historic.get('to'));
         }
-        console.log('eeee',model)
         return model;
     },
     /////////////////////////////////////////
@@ -488,27 +549,27 @@ bbmap.Views.Main = Backbone.View.extend({
         var pos = $('#dropP').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        var new_element = global.newElement("poche","","none",top,left);
-        this.newViewAndLink(new_element,top,left,pos);
+        var new_element = global.newElement("poche","",top,left);
+        this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
     },
     newConceptUnlinked : function(e){
         var pos = $('#dropC').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        var new_element = global.newElement("concept","","none",top,left);
-        this.newViewAndLink(new_element,top,left,pos);
+        var new_element = global.newElement("concept","",top,left);
+        this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
     },
     newKnowledgeUnlinked : function(e){
         var pos = $('#dropK').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        var new_element = global.newElement("knowledge","","none",top,left);
-        this.newViewAndLink(new_element,top,left,pos);
+        var new_element = global.newElement("knowledge","",top,left);
+        this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
     },
-    newViewAndLink : function(new_element,top,left,pos){
+    newViewAndLink : function(source,target,top,left,pos){
         // On centre la map sur l'element
         var position = {top:(top*bbmap.zoom.get('val')) + $('#map').offset().top,left:(left*bbmap.zoom.get('val')) + $('#map').offset().left};
         if(pos) position = pos; // pour prendre la position du drop button
@@ -516,9 +577,10 @@ bbmap.Views.Main = Backbone.View.extend({
             // On ajoute le model à la view
             // bbmap.views.main.addModelToView(new_element);
             // LINK
-            if(new_element.get('id_father') != "none"){
-                var new_cklink = global.newLink(bbmap.views.main.elements.get(new_element.get('id_father')),new_element);
+            if(source != "none"){
+                var new_cklink = global.newLink(source,target);
                 //bbmap.views.main.addLinkToView(new_cklink)
+                bbmap.views.main.svgWindowController();
             } 
         });
     },
@@ -543,64 +605,26 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Sliding editor bar
     /////////////////////////////////////////
-    eventMenu : function(e){
-        e.preventDefault();
-        $('#cbp-spmenu-s1').show('slow');
-        var menu = document.getElementById( 'cbp-spmenu-s1' );
-        var button = document.getElementById( 'showMenu' );
-        var body = document.getElementById('map_container');
-        classie.toggle( button, 'active' );
-        classie.toggle( body, 'cbp-spmenu-push-toright' );
-        classie.toggle( menu, 'cbp-spmenu-open' ); 
-        if(this.isopen == false) this.showMenu();            
-        else this.hideMenu();
-    },
-    showMenuEvent : function(){
-        if((this.autOpen == true)&&(this.isopen == false)){
+    showMenu : function(){
+        if(this.isopen == false){
             $("#map").animate({left: "-=28%"})
             this.setDeltaX(-20)
-            //this.translateMap("left",-28); 
-            // button
-            $("#showMenu").show();
-            $("#showMenu").animate({right:"28%"});
-            $("#showMenu").addClass('active');
-            $("#cbp-openimage").attr("src","/img/icones/Arrowhead-Right-48.png");
-            // slide barre
-            $('#cbp-spmenu-s1').show('slow');
-            $('#cbp-spmenu-s1').addClass('cbp-spmenu-open')
-            // 
-            this.isopen = true;   
+            $("#sideBar").animate({right:"0px"});
+            $("#right_buttons").animate({right:$('#sideBar').width()});
+            //$("#cbp-openimage").attr("src","/img/icones/Arrowhead-Right-48.png");
+            this.isopen=true;    
         }
     },
-    // hideMenuEvent : function(){
-    //     //this.translateMap("left",28); 
-    //     // button
-    //     $("#showMenu").hide();
-    //     $("#showMenu").animate({right:"0px"});
-    //     $("#showMenu").removeClass('active');
-    //     $("#cbp-openimage").attr("src","/img/icones/Arrowhead-Left-48.png");
-    //     // slide barre
-    //     $('#cbp-spmenu-s1').hide('slow');
-    //     $('#cbp-spmenu-s1').removeClass('cbp-spmenu-open')
-    //     //
-    //     this.isopen = false;
-    // },
-    showMenu : function(){
-        $("#map").animate({left: "-=28%"})
-        this.setDeltaX(-20)
-
-        $("#showMenu").animate({right:"28%"});
-        $("#cbp-openimage").attr("src","/img/icones/Arrowhead-Right-48.png");
-        this.isopen=true;
-    },
     hideMenu : function(){
-        $("#map").animate({left: "+=28%"})
-        this.setDeltaX(0)
-        
-        $("#showMenu").animate({right:"0px"});
-        $("#cbp-openimage").attr("src","/img/icones/Arrowhead-Left-48.png");
-        this.isopen=false;
-        this.autOpen = false;
+        if(this.isopen == true){
+            $("#map").animate({left: "+=28%"})
+            this.setDeltaX(0)
+            $("#sideBar").animate({right:"-30%"});
+            $("#right_buttons").animate({right:"0px"});
+            //$("#cbp-openimage").attr("src","/img/icones/Arrowhead-Left-48.png");
+            this.isopen=false;
+            this.autOpen = false;
+        }
     },
     setDeltaX : function(pourc){
         this.deltaX = pourc * $(window).width()/100;
@@ -615,7 +639,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var description = 0
         // notif big red button
         // if(model.get('content') != "") description = 1;
-        $('#showMenu_notif').html(comments + attachments + description);
+        //$('#showMenu_notif').html(comments + attachments + description);
         // notif inside slideBar Menu
         $('#notifDesc').empty()
         $('#notifAttach').empty()
@@ -627,21 +651,133 @@ bbmap.Views.Main = Backbone.View.extend({
     showIcon : function(e){
         e.preventDefault();
         var element = this.elements.get(e.target.id)
+        //console.log("Element details : ",element.toJSON())
         // close all icones
         this.$(".icon").hide();
         if(e.target.getAttribute("data-type") != "action"){
-            this.showMenuEvent()
             // set last model
+            this.setLastModel(element);
             this.setNotificationDisplayOnModel(element);
             this.updateEditor(element);
-            this.setLastModel(element);
             if(this.mode == "edit") $("#"+element.get('id')+" .icon").show();
         }
     },
+    showChildrens : function(e){
+        e.preventDefault();
+        var element = this.elements.get(e.target.id)
+        if(e.target.getAttribute("data-type") != "action"){
+            var childs = api.getTreeChildrenNodes(element,this.elements)
+            childs.forEach(function(child){
+                $('#'+child.get('id')).addClass('windowHover')
+            })
+        }
+    },
+    hideChildrens : function(e){
+        e.preventDefault();
+        //this.$(".icon").hide();
+        var dom = $('.windowHover');
+        _.forEach(dom,function(el){
+            $(el).removeClass('windowHover');
+        });
+    },
     //////////////////////////////
+    // Side bar
+    closeSibeBar : function(e){
+        e.preventDefault();
+        this.hideMenu();
+    },
+    editEvent : function(e){
+        e.preventDefault();
+        this.edit();
+        this.showMenu();
+    },
+    edit : function(){
+        this.moduleSideBar = "edit";
+        var model = this.lastModel;
+        $('#sideBar_container').html('');
+        $('#sideBar_container').append($('<div>',{id:'editorPart'}))
+        $('#sideBar_container').append($('<div>',{id:'attachmentPart'}))
+        $('#sideBar_container').append($('<div>',{id:'commentPart'}))
+        // Comments module
+        // if(comments.views.main != undefined){
+        //     comments.views.main.mode = this.mode;
+        //     comments.views.main.model = model;
+        //     comments.views.main.render();
+        // }else{
+            comments.init({
+                el:"#commentPart",
+                mode: this.mode,
+                model : model,
+                presentation : "bulle"
+            }); 
+        // }
+        // attachment module
+        // if(attachment.views.main != undefined){
+        //     attachment.views.main.mode = this.mode;
+        //     attachment.views.main.model = model;
+        //     attachment.views.main.render();
+        // }else{
+            attachment.init({
+                el:"#attachmentPart",
+                mode: this.mode,
+                model : model,
+            }); 
+        // }
+        // Editor module
+        // if(modelEditor.views.main != undefined){
+        //     modelEditor.views.main.bbmapMode = this.mode;
+        //     modelEditor.views.main.model = model;
+        //     modelEditor.views.main.render();
+        // }else{
+            modelEditor.init({
+                el:"#editorPart",
+                mode: this.mode,
+                ckeditor : false,
+                model : model,
+            }); 
+        // }    
+    },
+    designEvent : function(e){
+        e.preventDefault();
+        this.design();
+        this.showMenu();
+    },
+    design : function(){
+        this.moduleSideBar = "design";
+        var model = this.lastModel;
+        $('#sideBar_container').html('');
+        $('#sideBar_container').append($('<div>',{id:'css3Model'}))
+        $('#css3Model').prepend(bbmap.views.templatesList.render().el);
+    },
+    historyEvent : function(e){
+        e.preventDefault();
+        this.history();
+        this.showMenu();
+    },
+    history : function(){
+        this.moduleSideBar = "history";
+        var model = this.lastModel;
+        $('#sideBar_container').html('');
+        $('#sideBar_container').append($('<div>',{id:'activitiesModel'}))
+        // if(activitiesList.views.main != undefined){
+        //     activitiesList.views.main.mode = this.mode;
+        //     activitiesList.views.main.model = model;
+        //     activitiesList.views.main.render();
+        // }else{
+            activitiesList.init({
+                el:"#activitiesModel",
+                model : model,
+                mode: this.mode,
+            }); 
+        // }
+    },
     updateEditor : function(model){
-        if((this.mode == "edit")||(this.mode == "visu")){
-            $('#showMenu').show('slow');
+        if(this.mode == "edit"){
+            $('#right_buttons').show('slow');
+            //if(bbmap.rules == false) $('.design').show()
+            if(this.moduleSideBar == "edit") this.edit();
+            else if(this.moduleSideBar == "design") this.design();
+            else this.history();
             // Templates list
             if(bbmap.views.templatesList) bbmap.views.templatesList.close();
             bbmap.views.templatesList = new templatesList.Views.Main({
@@ -651,118 +787,6 @@ bbmap.Views.Main = Backbone.View.extend({
             });
             // check for template
             if(!this.project.get('templates')) this.project.save({templates : bbmap.default_templates},{silent:true});
-            // IMG List module
-            if(bbmap.views.imagesList)bbmap.views.imagesList.close();
-            bbmap.views.imagesList = new imagesList.Views.Main({
-                model           : model,
-                eventAggregator : this.eventAggregator
-            });
-            // Attachment module
-            // if(bbmap.views.attachment)bbmap.views.attachment.close();
-            // bbmap.views.attachment = new attachment.Views.Main({
-            //     model           : model,
-            //     mode            : this.mode,
-            //     eventAggregator : this.eventAggregator
-            // });
-            // Comments module
-            if(comments.views.main != undefined){
-                comments.views.main.mode = this.mode;
-                comments.views.main.model = model;
-                comments.views.main.render();
-            }else{
-                comments.init({
-                    el:"#commentPart",
-                    mode: this.mode,
-                    model : model,
-                    presentation : "bulle"
-                }); 
-            }
-            // attachment module
-            if(attachment.views.main != undefined){
-                attachment.views.main.mode = this.mode;
-                attachment.views.main.model = model;
-                attachment.views.main.render();
-            }else{
-                attachment.init({
-                    el:"#attachmentPart",
-                    mode: this.mode,
-                    model : model,
-                }); 
-            }
-            // Editor module
-            if(modelEditor.views.main != undefined){
-                modelEditor.views.main.bbmapMode = this.mode;
-                modelEditor.views.main.model = model;
-                modelEditor.views.main.render();
-            }else{
-                modelEditor.init({
-                    el:"#editorPart",
-                    mode: this.mode,
-                    ckeditor : false,
-                    model : model,
-                }); 
-            }
-            // Activities module
-            if(activitiesList.views.main != undefined){
-                activitiesList.views.main.mode = this.mode;
-                activitiesList.views.main.model = model;
-                activitiesList.views.main.render();
-            }else{
-                activitiesList.init({
-                    el:"#activitiesModel",
-                    model : model,
-                    mode: this.mode,
-                }); 
-            }
-            ///////////////////////////
-            // GoogleSearch module IMG
-            if(bbmap.views.gs_img)bbmap.views.gs_img.close();
-            bbmap.views.gs_img = new googleSearch.Views.Main({
-                model      : model,
-                mode       : this.mode,
-                type       : "images",
-                perpage    : 8,
-                moreButton : true,
-                width      : "100px",
-            });
-            // GoogleSearch module News
-            if(bbmap.views.gs_news)bbmap.views.gs_news.close();
-            bbmap.views.gs_news = new googleSearch.Views.Main({
-                model      : model,
-                mode       : this.mode,
-                type       : "news",
-                perpage    : 8,
-                moreButton : true,
-                width      : "",
-            });
-            // GoogleSearch module Web
-            if(bbmap.views.gs_web)bbmap.views.gs_web.close();
-            bbmap.views.gs_web = new googleSearch.Views.Main({
-                model      : model,
-                mode       : this.mode,
-                type       : "web",
-                perpage    : 8,
-                moreButton : true,
-                width      : "",
-            });
-            // GoogleSearch module video
-            if(bbmap.views.gs_video)bbmap.views.gs_video.close();
-            bbmap.views.gs_video = new googleSearch.Views.Main({
-                model      : model,
-                mode       : this.mode,
-                type       : "video",
-                perpage    : 8,
-                moreButton : true,
-                width      : "",
-            });
-            ///////////////////////////
-            // Render & Append
-            $('#css3Model').prepend(bbmap.views.templatesList.render().el);
-            this.googleSearchModel_el.empty();
-            this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_img.render().el));
-            this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_web.render().el));
-            this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_news.render().el));
-            this.googleSearchModel_el.append($('<div>',{className:'panel'}).append(bbmap.views.gs_video.render().el));
         }
     },
     /////////////////////////////////////////
@@ -1078,22 +1102,49 @@ bbmap.Views.Main = Backbone.View.extend({
         if(origin == "client"){
             this.startJoyride();
         }
+        this.svgWindowController();
     },
     removeModelToView : function(model,from){
         var origin = "client";
         if(from) origin = from;
         //console.log(this.nodes_views[model.get('id')])
         this.nodes_views[model.get('id')].removeView();
+        this.svgWindowController();
+    },
+    getCKLinkStyle : function(link){
+        var c_color = "#27AE60";
+        var k_color = "#1B9DD3";
+        var p_color = "#E67E22";
+        var source = bbmap.views.main.elements.get(link.get('source'));
+        var target = bbmap.views.main.elements.get(link.get('target'));
+        var style = { strokeStyle : "gray", lineWidth : 1, dashstyle : "2 4"}
+        if(source.get('type') == "concept"){
+            if(target.get('type') == "concept") style = {strokeStyle:c_color,lineWidth:1};
+            else if(target.get('type') == "knowledge") style = {strokeStyle:c_color,lineWidth:1,dashstyle:"2 4"};
+            else if(target.get('type') == "poche") style = {strokeStyle:c_color,lineWidth:1,dashstyle:"2 4"};
+        }
+        else if(source.get('type') == "knowledge"){
+            if(target.get('type') == "concept") style = {strokeStyle:k_color,lineWidth:1,dashstyle:"2 4"};
+            else if(target.get('type') == "knowledge") style = {strokeStyle:k_color,lineWidth:1};
+            else if(target.get('type') == "poche") style = {strokeStyle:k_color,lineWidth:1,dashstyle:"2 4"};
+        }
+        else if(source.get('type') == "poche"){
+            if(target.get('type') == "concept") style = {strokeStyle:p_color,lineWidth:1,dashstyle:"2 4"};
+            else if(target.get('type') == "knowledge") style = {strokeStyle:p_color,lineWidth:1,dashstyle:"2 4"};
+            else if(target.get('type') == "poche") style = {strokeStyle:p_color,lineWidth:1};
+        }
+        return style;
     },
     addLinkToView : function(model,from){
         var origin = "client";
         if(from) origin = from;
-
+        var style = this.getCKLinkStyle(model)
         bbmap.views.main.instance.connect({
             source:bbmap.views.main.nodes_views[model.get('source')].el, 
             target:bbmap.views.main.nodes_views[model.get('target')].el, 
             anchor:"AutoDefault",
-            scope : "cklink"
+            scope : "cklink",
+            paintStyle:style
         });
     },
     removeLinkToView : function(model,from){
@@ -1105,6 +1156,7 @@ bbmap.Views.Main = Backbone.View.extend({
         connections.forEach(function(conn){
             if((conn.targetId == target)&&(conn.sourceId == source))conn.setVisible(false)//bbmap.views.main.instance.detach({source:source, target:target, fireEvent:false});
         });
+        bbmap.views.main.svgWindowController();
         //this.nodes_views[model.get('source')].removeView();    
     },
     /////////////////////////////////////////
@@ -1125,26 +1177,19 @@ bbmap.Views.Main = Backbone.View.extend({
                     links_to_remove.forEach(function(link){
                         link.destroy();
                     });
+
+                    bbmap.views.main.svgWindowController();
                 } 
             }
             return resp;
         });
         this.instance.bind("click", function(conn) {
-            // swal({   
-            //     title: "Are you sure?",   
-            //     text: "This connection will be remove, would you continue?",   
-            //     type: "warning",   
-            //     showCancelButton: true,   
-            //     confirmButtonColor: "#DD6B55",   
-            //     confirmButtonText: "Yes, delete it!",   
-            //     closeOnConfirm: true,
-            //     allowOutsideClick : true
-            // }, 
-            // function(){   
-                bbmap.views.main.instance.detach(conn);
-                bbmap.views.main.elements.get(conn.targetId).set({id_father : "none"}).save();
-            // });
-            
+            bbmap.views.main.instance.detach(conn);
+            // Choise the right new id_father
+            var id_father = api.getTheRightIDFather(bbmap.views.main.links,bbmap.views.main.elements,bbmap.views.main.elements.get(conn.targetId))
+            bbmap.views.main.elements.get(conn.targetId).set({id_father : id_father}).save();
+
+            bbmap.views.main.svgWindowController();            
         });
         ///////////////////////
         // New link process
@@ -1159,93 +1204,32 @@ bbmap.Views.Main = Backbone.View.extend({
         this.instance.bind("connection", function(info, originalEvent) {
             if(originalEvent){
                 if(info.connection.scope == "cklink"){
-                    var new_cklink = new global.Models.CKLink({
-                        id :guid(),
-                        user : bbmap.views.main.user.get('id'),
-                        date : getDate(),
-                        source : info.sourceId,
-                        target : info.targetId,
-                        project : bbmap.views.main.project.get('id')
-
-                    });
-                    new_cklink.save();
-                    bbmap.views.main.links.add(new_cklink,{silent : true});
-                    bbmap.views.main.elements.get(info.targetId).set({id_father : info.sourceId}).save();
+                    var source = bbmap.views.main.elements.get(info.sourceId);
+                    var target = bbmap.views.main.elements.get(info.targetId);
+                    var new_link = global.newLink(source,target,true);
+                    // Set the link style
+                    var style = bbmap.views.main.getCKLinkStyle(new_link);
+                    info.connection.setPaintStyle(style);
+                    // Re-draw windows
+                    bbmap.views.main.svgWindowController();
                 }    
             }
         });     
     },
     ////////////////////////////////////////
-    // Drawin aid session
-    ////////////////////////////////////////
-    drawingAid : function(model){
-        var currentView = bbmap.views.main.nodes_views[model.get('id')];
-        var currentViewCentroid = currentView.getCentroid();
-        var views = bbmap.views.main.nodes_views;
-        for (var id in views){
-            if ((id != model.get('id'))&&(views.hasOwnProperty(id))) {
-                var zoom = bbmap.zoom.get('val');
-                var view = views[id];
-                var centroid = view.getCentroid();
-                var width = 0;
-                var height = 0;
-                var left = 0;
-                var top = 0;
-                var x1 = 0;
-                var x2 = 0;
-                var y1 = 0;
-                var y2 = 0;
-                if(Math.floor(centroid.top) == Math.floor(currentViewCentroid.top)){
-                    // console.log('horrizontal alignement!')
-                    var width = abs(centroid.left - currentViewCentroid.left);
-                    var height = 10;
-                    if(centroid.left < currentViewCentroid.left){
-                        left = centroid.left;
-                        top = centroid.top;
-                        x2 = currentViewCentroid.left;
-                    }else{
-                        left = currentViewCentroid.left;
-                        top = currentViewCentroid.top;
-                        x2 = centroid.left
-                    }
-                    this.drawSvgLine(model.get('id'),width,height,left,top,x1,x2,y1,y2,zoom);    
+    setPulse : function(){
+        var _this = this;
+        var news  = global.collections.News;
+        this.elements.each(function(el){
+            news.forEach(function(n){
+                if(n.get('attachedTo') ==  el.get('id')){
+                    $('#'+ el.get('id')).addClass("pulse")
+                    return ;
                 }
-
-                if(Math.floor(currentViewCentroid.left) == Math.floor(centroid.left)){
-                    // console.log("vertical alignement!");
-                    var width = 10;
-                    var height = abs(centroid.top - currentViewCentroid.top);
-                    if(centroid.top < currentViewCentroid.top){
-                        left = centroid.left;
-                        top = centroid.top;
-                        y2 = height;
-                    }else{
-                        left = centroid.left;
-                        top = currentViewCentroid.top;
-                        y2 = height;
-                    }
-                    this.drawSvgLine(model.get('id'),width,height,left,top,x1,x2,y1,y2,zoom);
-                }
-                this.hideSvgLine(model.get('id'),id);
-            }
-        }
+            })    
+        })
+        
     },
-    drawSvgLine : function(id_source,width,height,left,top,x1,x2,y1,y2,zoom){
-        delta = 10;
-        left = (left + delta )/ zoom;
-        top = (top + delta )/ zoom;
-        // x1 = x1 / zoom;
-        // x2 = x2 / zoom;
-        // y1 = y1 / zoom;
-        // y2 = y2 / zoom;
-
-        // console.log("width:",width,"- height:",height,"- left:",left,"- top:",top,"- x1:",x1,"- x2:",x2,"- y1:",y1,"- y2:",y2);               
-        this.map_el.append('<svg class="'+id_source+'_svg" style="position:absolute;left:'+left+'px;top:'+top+'px" width="'+width+'" height="'+height+'" pointer-events="none" position="absolute" version="1.1" xmlns="http://www.w3.org/1999/xhtml" class="_jsPlumb_connector"><line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" style="stroke:black;stroke-width:2px;" /></svg>')
-    },
-    hideSvgLine : function(id_source){
-        $('.'+id_source+"_svg").hide('slow')
-    },
-    ////////////////////////////////////////
     renderActionBar : function(){
         //this.top_el.empty();
         //if(actionMenu.views.main != undefined) actionMenu.views.main.close(); 
@@ -1383,9 +1367,58 @@ bbmap.Views.Main = Backbone.View.extend({
             $('#top_container').hide();
             $('#bottom_container').hide();    
         }
-
-
+        ////////////////////////
+        // Set pulse on news
+        this.setPulse();
+        ////////////////////////
+        // Draw windows
+        this.svgWindowController();
+        
         return this;
     }
 });
 /////////////////////////////////////////////////
+bbmap.Views.Stat = Backbone.View.extend({
+    initialize : function(json) { 
+        //console.log("comments view constructor!");
+        _.bindAll(this, 'render');
+        // Variables
+        this.elements = json.elements;
+        this.links = json.links;
+        this.stats = {};
+        this.left_stats_el = $("#stat_left")
+        this.bottom_stats_el = $("#stat_bottom")
+        // Templates
+        this.template_bottom = _.template($('#bbmap-stat-bottom-template').html());
+        this.template_left = _.template($('#bbmap-stat-left-template').html());
+    },
+    events : {},
+    getStats : function(){
+        return this.stats
+    },
+    render : function() {
+        this.left_stats_el.empty();
+        this.bottom_stats_el.empty();
+        // Set stats
+        this.stats = api.statistics(this.elements,this.links);
+        var permissions = global.collections.Permissions;
+        var currentUser = global.models.current_user;
+        var perm = permissions.where({user_id : currentUser.get('id')})
+        if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))) bbmap.views.main.project.save({stats : this.stats});
+        // left stat
+        this.left_stats_el.append(this.template_left({
+            stats : this.stats
+        }));
+        // bottom stats
+        this.bottom_stats_el.append(this.template_bottom({
+            c_nbre : this.stats.c_nbre.stat,
+            c_perc : this.stats.c_perc.stat,
+            k_nbre : this.stats.k_nbre.stat,
+            k_perc : this.stats.k_perc.stat,
+        }));
+
+      return this;
+    }
+});
+/////////////////////////////////////////////////
+

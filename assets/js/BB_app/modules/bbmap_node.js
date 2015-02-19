@@ -42,8 +42,9 @@ bbmap.Views.Node = Backbone.View.extend({
     applyStyle : function(){
         var left = this.model.get('left');
         var top = this.model.get('top');
-        var style = 'top:' + top + 'px; left : ' + left + 'px;' + this.model.get('css');
+        var style = 'top:' + top + 'px; left : ' + left + 'px;';// + this.model.get('css');
         $(this.el).attr('style',style)
+        $(this.el).addClass(this.model.get('css'))
         bbmap.views.main.instance.repaint(this.model.get('id'));
     },
     cssPosition : function(top,left){
@@ -131,12 +132,14 @@ bbmap.Views.Node = Backbone.View.extend({
                     ////console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
                     //bbmap.views.main.reorganizeTree(this.model.get('id'))           
                 }
+                bbmap.views.main.svgWindowController();
             }
         }
     },
     following : function(idAlreadyMoved,delta,model){
         var _this = this;
-        var followers = api.getModelsLinkedToModel(bbmap.views.main.links,bbmap.views.main.elements,model);
+        //var followers = api.getModelsLinkedToModel(bbmap.views.main.links,bbmap.views.main.elements,model);
+        var followers = api.getTreeChildrenNodes(this.model,bbmap.views.main.elements)
         // Set the followers
         followers.forEach(function(f){
             if(_.indexOf(idAlreadyMoved, f.get('id')) == -1){
@@ -148,7 +151,7 @@ bbmap.Views.Node = Backbone.View.extend({
 
                 f_view.setPosition(newPosition.left,newPosition.top,0,0,false,'followers',true)
                 bbmap.views.main.instance.repaint(f.get('id'));
-                _this.following(idAlreadyMoved,delta,f)
+                //_this.following(idAlreadyMoved,delta,f)
             }
         });
     },
@@ -156,15 +159,15 @@ bbmap.Views.Node = Backbone.View.extend({
         e.preventDefault();
         var top = ($(this.el).position().top + 100) / bbmap.zoom.get('val');
         var left = $(this.el).position().left / bbmap.zoom.get('val');
-        var new_element = global.newElement("concept","",this.model,top,left);
-        bbmap.views.main.newViewAndLink(new_element,top,left);
+        var new_element = global.newElement("concept","",top,left);
+        bbmap.views.main.newViewAndLink(this.model,new_element,top,left);
     },
     addKnowledgeChild : function(e){
         e.preventDefault();
         var top = ($(this.el).position().top + 100) / bbmap.zoom.get('val');
         var left = $(this.el).position().left / bbmap.zoom.get('val');
-        var new_element = global.newElement("knowledge","",this.model,top,left);
-        bbmap.views.main.newViewAndLink(new_element,top,left);
+        var new_element = global.newElement("knowledge","",top,left);
+        bbmap.views.main.newViewAndLink(this.model,new_element,top,left);
     },
     /////////////////////////////////////////
     // Remove function
@@ -235,7 +238,7 @@ bbmap.Views.Node = Backbone.View.extend({
         // Add endpoints
         var is_source = true;
         if(bbmap.views.main.mode == "visu") is_source = false;
-        
+
         if(bbmap.views.main.mode == "edit"){
             bbmap.views.main.instance.addEndpoint(
                 $(this.el), {
@@ -246,7 +249,7 @@ bbmap.Views.Node = Backbone.View.extend({
                     maxConnections:-1
                 },
                 {
-                    connectorStyle : { strokeStyle:"#2980B9", lineWidth:1,dashstyle:"2 2" },
+                    //connectorStyle : { strokeStyle:"#2980B9", lineWidth:1,dashstyle:"2 2" },
                     endpoint:["Dot", { radius:10 }],
                     paintStyle:{ fillStyle:"#2980B9" },
                 }
@@ -264,23 +267,14 @@ bbmap.Views.Node = Backbone.View.extend({
     render : function(){
         var user = global.collections.Users.get(this.model.get('user'));
         $(this.el).empty();
-        var _this = this;
-        ////////////////////////////
-        // Define news style design
-        var pulse = "no-pulse";
-        var news  = global.collections.News;
-        news.forEach(function(n){
-            if(n.get('attachedTo') == _this.model.get('id')){
-                pulse = "pulse";
-                return ;
-            }
-        })
-        ////////////////////////////
+        /////////////////
+        // Rules
+        rules.applyLegend(this.model);
+        /////////////////
         $(this.el).append(this.template_bulle({
-            model   :this.model.toJSON(),
+            model   : this.model.toJSON(),
             user    : user.toJSON(),
             mode    : bbmap.views.main.mode,
-            pulse   : pulse,
         }));
         this.applyStyle();
 

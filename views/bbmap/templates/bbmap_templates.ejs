@@ -3,39 +3,66 @@
 <div id="bbmap_container" style="height:96%;position:relative;overflow:hidden;">
   <div id="top_container"></div>
   <div id="map_container" style="overflow:hidden;">
-    <a href="#" id="showMenu"  class="button large radius cbp-openbutton alert" style="padding:0px; padding-right:10px;">
-      <image  src="/img/icones/Arrowhead-Left-48.png" id="cbp-openimage"/>
-      <span id="showMenu_notif"></span>
-    </a>
-    <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-right" id="cbp-spmenu-s1">
-      <div id="editor" class="panel expand">
-        <ul class="tabs" data-tab>
-          <li class="tab-title active"><a href="#editModel"><img title="edit" src="/img/icones/Edit.png"/><span id="notifDesc"></span></a></li>
-          <li class="tab-title"><a href="#css3Model"><img title="template" src="/img/icones/Shape.png"/></a></li>
-          <li class="tab-title"><a href="#activitiesModel"><img title="template" src="/img/icones/Bell-24-circle.png"/></a></li>
-          <li class="tab-title"><a href="#googleSearchModel"><img title="web data" src="/img/icones/Web-24.png"/></a></li>
-        </ul>
-        <div class="tabs-content">
-          <div id="editModel" class="content active">
-            <span id="editorPart"></span>
-            <hr>
-            <span id="attachmentPart"></span>
-            <hr>
-            <span id="commentPart"></span>
-            <hr>
-          </div>
-          <div id="css3Model" class="content"></div>
-          <div id="activitiesModel" class="content"></div>
-          <div id="googleSearchModel" class="content"></div>
-        </div>
-    </div>
+    
+    <span id="stat_left" style="left:0px;position:fixed;top:30%;z-index:10000000;"></span>
+
+    <span id="right_buttons" style="right:0px;position:fixed;top:50%;width:70px;z-index:10000000;display:none">
+      <a href="#" style="float:right" class="borderBlue pulseBlue tiny radius button secondary edit"><img title="edit" src="/img/icones/Edit.png"/></a>
+      <a href="#" style="float:right;display:none" class="borderBlue tiny radius button secondary design"><img title="template" src="/img/icones/Shape.png"/></a>
+      <a href="#" style="float:right;display:none" class="borderBlue tiny radius button secondary history"><img title="template" src="/img/icones/Bell-24-circle.png"/></a>
+    </span>
+    
+    <nav id="sideBar">
+      <a href="#" class="button radius tiny alert closeSibeBar" style="position:absolute;right:0px;z-index:1000000">X</a>
+      <div id="sideBar_container" style="height:100%;overflow:auto"></div>
     </nav>
+    
     <div id="map" class="demo chart-demo"></div>
+  
   </div>
   
-  <div id="bottom_container"></div>
+  <div id="bottom_container">
+    <span style="display: inline-flex;" class="large-12 medium-12 small-12 columns">
+      <ul class="button-group tiny radius" id="stat_bottom"></ul>
+      <span id="bbmap_bottom_ui"></span>
+    </span>
+  </div>
 </div>
 <!-- ******************************** -->
+<!-- STAT & LEGEND -->
+<script type="text/template" id="bbmap-stat-left-template">
+  <div title="{{-stats.c_empty.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius c_empty legend_element"><center><small><strong>{{-stats.c_empty.stat}}%</strong></small></center></div>
+  <div title="{{-stats.c_full.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius c_full legend_element"><center><small><strong>{{-stats.c_full.stat}} %</strong></small></center></div>
+  <div title="{{-stats.k_empty.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius k_empty legend_element"><center><small><strong>{{-stats.k_empty.stat}}%</strong></small></center></div>
+  <div title="{{-stats.k_full.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius k_full legend_element"><center><small><strong>{{-stats.k_full.stat}} %</strong></small></center></div>
+  <div title="{{-stats.p_empty.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius p_empty legend_element"><center><small><strong>{{-stats.p_empty.stat}}%</strong></small></center></div>
+  <div title="{{-stats.p_full.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius p_full legend_element"><center><small><strong>{{-stats.p_full.stat}} %</strong></small></center></div>
+  <div title="{{-stats.co_link.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius co_link legend_element"><center><small><strong>{{-stats.co_link.stat}}%</strong></small></center></div>
+  <div title="{{-stats.cc_link.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius cc_link legend_element"><center><small><strong>{{-stats.cc_link.stat}}%</strong></small></center></div>
+  <div title="{{-stats.ko_link.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius ko_link legend_element"><center><small><strong>{{-stats.ko_link.stat}}%</strong></small></center></div>
+  <div title="{{-stats.kk_link.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius kk_link legend_element"><center><small><strong>{{-stats.kk_link.stat}}%</strong></small></center></div>
+  <div title="{{-stats.po_link.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius po_link legend_element"><center><small><strong>{{-stats.po_link.stat}}%</strong></small></center></div>
+  <div title="{{-stats.pp_link.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius pp_link legend_element"><center><small><strong>{{-stats.pp_link.stat}}%</strong></small></center></div>
+</script>
+
+<script type="text/template" id="bbmap-stat-bottom-template">
+  
+  <div class="progress large-12 success" style="background:#1B9DD3;height:45px;width:200px;margin-bottom:0px">
+    <b style="color:white;float:left">
+      <img title="Download screenshot" src="/img/icones/Light-Bulb-32-white.png"/>
+      {{- c_perc }}%
+    </b>
+    <b style="color:white;float:right">
+        {{- k_perc}}%
+        <img title="Download screenshot" src="/img/icones/Book-Open-32-white.png"/>
+    </b>
+    <span class="meter pulse" style="width: {{- c_perc}}%">
+    </span>
+  </div>
+  
+</script>
+<!-- ******************************** -->
+
 <script type="text/template" id="bbmap-tooltip-notif-template">
   <span class="tooltip_notif" onClick="bbmap.views.main.openTooltipNotif({{- notif.to.id }})" >
     {{- notif.content }} by 
@@ -56,56 +83,31 @@
     
 <!-- <span id="{{-model.id}}" data-type="action" class="button tiny round secondary replier icon">-</span> -->
 <script type="text/template" id="bbmap-bulle-template">
-  <span class="{{-pulse}}">
-    <span data-type="title" style="float:right" id="{{-model.id}}_tooltip"></span>
-    <img id="{{-model.id}}" data-type="title" style="float:left" width="15" title="create by {{-user.name }}" src="{{-user.img }}"/>
-    
-    <span id="{{-model.id}}_joyride"></span>
-    <span id="{{-model.id}}" data-type="title" class="editTitle">{{-model.title}}</span>
-    <span id="{{-model.id}}" data-type="action" class="label round secondary ep icon">+c</span>
-    <span id="{{-model.id}}" data-type="action" class="label round secondary ep2 icon">+k</span>
-    <span id="{{-model.id}}" data-type="action" class="label round secondary ep3 icon"><img data-type="action" id="{{-model.id}}" title="mode" src="/img/icones/Edit.png"/></span>
-    <span id="{{-model.id}}" data-type="action" class="label round secondary sup icon"><img data-type="action" id="{{-model.id}}" title="mode" src="/img/icones/Delete.png"/></span>
-    {{ if( (model.comments.length + model.attachment.length) >0) { }}
-    <span id="{{-model.id}}" data-type="title" class="info top-bar-unread">{{- model.comments.length + model.attachment.length}}</span>
-    {{ } }}
-  </span>
+  <span data-type="title" style="float:right" id="{{-model.id}}_tooltip"></span>
+  <img id="{{-model.id}}" data-type="title" style="float:left" width="15" title="create by {{-user.name }}" src="{{-user.img }}"/>
+  
+  <span id="{{-model.id}}_joyride"></span>
+  <span id="{{-model.id}}" data-type="title" class="editTitle">{{-model.title}}</span>
+  <span id="{{-model.id}}" data-type="action" class="label round secondary ep icon">+c</span>
+  <span id="{{-model.id}}" data-type="action" class="label round secondary ep2 icon">+k</span>
+  <span id="{{-model.id}}" data-type="action" class="label round secondary ep3 icon"><img data-type="action" id="{{-model.id}}" title="mode" src="/img/icones/Edit.png"/></span>
+  <span id="{{-model.id}}" data-type="action" class="label round secondary sup icon"><img data-type="action" id="{{-model.id}}" title="mode" src="/img/icones/Delete.png"/></span>
+  {{ if( (model.comments.length + model.attachment.length) >0) { }}
+  <span id="{{-model.id}}" data-type="title" class="info top-bar-unread">{{- model.comments.length + model.attachment.length}}</span>
+  {{ } }}
 </script>
 
 <script type="text/template" id="bbmap-bottom-element-template">
-  <span id="bbmap_bottom_ui">
-    <center>
-      <span style="display:none">
-        <img title="zoom-in" src="/img/icones/Light-32.png"/>
-        <select id="visu_select_mode" class="large-1 medium-1 small-1">
-          <option value="children">Display children & linked knowledge</option>
-          <option value="parent">Display parents & linked knowledge</option>
-          <option value="node">Display concept & linked knowledge</option>
-        </select>
-      </span>
-
-      
-      <span style="display:none">
-        <img title="zoom-in" src="/img/icones/Filtering-24.png"/> 
-        <select id="filterSelection" class="large-1 medium-1 small-1">
-          <option value="c" {{ if(filter == "c"){ }}selected{{ } }}>Concepts</option>
-          <option value="kp" {{ if(filter == "kp"){ }}selected{{ } }}>Knowledges & Categories</option>
-          <option value="ckp" {{ if(filter == "ckp"){ }}selected{{ } }}>All</option>
-        </select>
-      </span>
-      {{ if((filter == "ck")||(filter == "ckp")){ }}
-        <a style="display:none" href="#" class="tiny round button secondary ckOperator"><img title="display CK links" src="/img/icones/Data-Share-24.png"/></a>
-      {{ } }}
-      <a href="#" class="button tiny round secondary downloadimage"><img title="Download screenshot" src="/img/icones/Download-24.png"/></a>
-      {{ if(mode == "edit"){ }}
-        <a style="display:none" href="#" data-reveal-id="importData_container" class="button tiny round secondary"><img title="Import data from an other project" src="/img/icones/Data-Import-24.png"/></a>
-        <div id="importData_container" class="reveal-modal large" data-reveal></div>
-        <a href="#" class="tiny round button secondary structureSubTree"><img title="structure sub-tree" src="/img/icones/Network-Drives-24.png"/></a>
-        <a style="display:none" href="#" class="button tiny round secondary prevH"><img title="ctrl-Z" src="/img/icones/Arrowhead-Left-24.png"/></a>
-        <a style="display:none" href="#" class="button tiny round secondary nextH"><img title="ctrl-Y" src="/img/icones/Arrowhead-Right-24.png"/></a>
-      {{ } }}
-    </center>
-  </span>
+  
+  <ul class="button-group tiny radius">
+    <li><a href="#" class="button tiny radius secondary downloadimage"><img title="Download screenshot" src="/img/icones/Download-24.png"/></a></li>
+    {{ if(mode == "edit"){ }}
+      <li><a href="#" class="tiny radius button secondary structureSubTree"><img title="structure sub-tree" src="/img/icones/Network-Drives-24.png"/></a></li>
+      <li><a style="display:none" href="#" class="button tiny radius secondary prevH"><img title="ctrl-Z" src="/img/icones/Arrowhead-Left-24.png"/></a></li>
+      <li><a style="display:none" href="#" class="button tiny radius secondary nextH"><img title="ctrl-Y" src="/img/icones/Arrowhead-Right-24.png"/></a></li>
+  {{ } }}
+  </ul>
+  
 </script>
 
 
