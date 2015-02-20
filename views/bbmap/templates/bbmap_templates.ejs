@@ -30,6 +30,59 @@
 </div>
 <!-- ******************************** -->
 <!-- STAT & LEGEND -->
+<script type="text/template" id="bbmap-legend-template">
+  <table style="float:right;margin-top:20px">
+  <tr>
+    <td><span class="c_empty legend_element2"><small><strong>{{-stats.c_empty.stat}}%</strong></small></td>
+    <td>{{-stats.c_empty.desc}}</td>
+  </tr>
+  <tr>
+    <td><span class="c_full legend_element2"><small><strong>{{-stats.c_full.stat}} %</strong></small></td>
+    <td>{{-stats.c_full.desc}}</td>  
+  </tr>
+  <tr>
+    <td><span class="k_empty legend_element2"><small><strong>{{-stats.k_empty.stat}}%</strong></small></td>
+    <td>{{-stats.k_empty.desc}}</td>
+  </tr>
+  <tr>
+    <td><span class="k_full legend_element2"><small><strong>{{-stats.k_full.stat}} %</strong></small></td>
+    <td>{{-stats.k_full.desc}}</td>  
+  </tr>
+  <tr>
+    <td><span class="p_empty legend_element2"><small><strong>{{-stats.p_empty.stat}}%</strong></small></td>
+    <td>{{-stats.p_empty.desc}}</td>
+  </tr>
+  <tr>
+    <td><span class="p_full legend_element2"><small><strong>{{-stats.p_full.stat}} %</strong></small></td>
+    <td>{{-stats.p_full.desc}}</td>  
+  </tr>
+  <tr>
+    <td><span class="co_link legend_element2"><small><strong>{{-stats.co_link.stat}}%</strong></small></td>
+    <td>{{-stats.co_link.desc}}</td>
+  </tr>
+  <tr>
+    <td><span class="cc_link legend_element2"><small><strong>{{-stats.cc_link.stat}}%</strong></small></td>
+    <td>{{-stats.cc_link.desc}}</td>
+  </tr>
+  <tr>
+    <td><span class="ko_link legend_element2"><small><strong>{{-stats.ko_link.stat}}%</strong></small></td>
+    <td>{{-stats.ko_link.desc}}</td>
+  </tr>
+  <tr>
+    <td><span class="kk_link legend_element2"><small><strong>{{-stats.kk_link.stat}}%</strong></small></td>
+    <td>{{-stats.kk_link.desc}}</td>
+  </tr>
+  <tr>
+    <td><span class="po_link legend_element2"><small><strong>{{-stats.po_link.stat}}%</strong></small></td>
+    <td>{{-stats.po_link.desc}}</td>
+  </tr>
+  <tr>
+    <td><span class="pp_link legend_element2"><small><strong>{{-stats.pp_link.stat}}%</strong></small></td>
+    <td>{{-stats.pp_link.desc}}</td>
+  </tr>
+  </table>
+</script>
+
 <script type="text/template" id="bbmap-stat-left-template">
   <div title="{{-stats.c_empty.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius c_empty legend_element"><center><small><strong>{{-stats.c_empty.stat}}%</strong></small></center></div>
   <div title="{{-stats.c_full.desc}}" data-tooltip aria-haspopup="true" class="tip-right radius c_full legend_element"><center><small><strong>{{-stats.c_full.stat}} %</strong></small></center></div>

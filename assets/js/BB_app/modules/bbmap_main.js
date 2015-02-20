@@ -257,8 +257,13 @@ bbmap.Views.Main = Backbone.View.extend({
         var left_max = cadre.left_max;
         var top_min = cadre.top_min + padding_top;
         var top_max = cadre.top_max;
+        // Prepar legend
+        var legend = this.statistics.getLegend();
+        // Def the cadre
+
         var cadre_width = cadre.width;
         var cadre_height = cadre.height;
+        //if(cadre_height<400) cadre_height = 400;
         // on crée l'element cadre
         var cadre = $('<div>',{id:'youhou',style:'width:'+cadre_width+'px;height:'+cadre_height+'px;',class:'chart-demo'});
         var childs = $("#map > .window").clone();
@@ -270,7 +275,8 @@ bbmap.Views.Main = Backbone.View.extend({
             $(child).css( "width", el_width+50 );
             cadre.append(child)
         })
-        //
+        
+        // Append to body i dont know why 
         $('body').prepend(cadre)
         html2canvas($(cadre).get(0), {
             onrendered: function(canvas) {
@@ -292,7 +298,7 @@ bbmap.Views.Main = Backbone.View.extend({
                     ctx.drawSvg(svgTag, left, top);
                 });
                 // canvas is the final rendered <canvas> element
-                $('#tutu').append(canvas)
+                //$('#tutu').append(canvas)
 
                 var imgData = canvas.toDataURL("image/png");
                 window.open(imgData);
@@ -498,16 +504,6 @@ bbmap.Views.Main = Backbone.View.extend({
     setMode : function(mode,initPos){
         this.mode = mode;
         if(this.lastModel.get('id')) this.updateEditor(this.lastModel);
-        // $('#cbp-spmenu-s1').hide('slow');
-        // $('#showMenu').hide('slow');
-        // if(this.isopen==true){
-        //     var menu = document.getElementById( 'cbp-spmenu-s1' );
-        //     classie.toggle( menu, 'cbp-spmenu-open' );
-        //     this.hideMenu();
-        // }
-        // Set Modules mode
-        //if(usersList.views.main != undefined) usersList.views.main.setMode(this.mode);
-
         this.render(initPos);
     },
     setFilter : function(e){
@@ -1389,12 +1385,18 @@ bbmap.Views.Stat = Backbone.View.extend({
         this.left_stats_el = $("#stat_left")
         this.bottom_stats_el = $("#stat_bottom")
         // Templates
+        this.template_legend = _.template($('#bbmap-legend-template').html());
         this.template_bottom = _.template($('#bbmap-stat-bottom-template').html());
         this.template_left = _.template($('#bbmap-stat-left-template').html());
     },
     events : {},
     getStats : function(){
         return this.stats
+    },
+    getLegend : function(){
+        return this.template_legend({
+            stats : this.stats
+        })
     },
     render : function() {
         this.left_stats_el.empty();

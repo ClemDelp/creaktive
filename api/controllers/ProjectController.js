@@ -77,7 +77,7 @@ module.exports = {
             id_father: "none",
             css: "-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #27AE60;background: #ffffff;padding: 10px 20px 10px 20px;border: solid #27AE60 2px;text-decoration: none;",
             top : 4000,
-            left: 4000
+            left: 50000
           }).done(function(err, c0){
             if(err) return res.send({err:err});
             Presentation.create({

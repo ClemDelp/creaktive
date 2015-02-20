@@ -11,7 +11,7 @@ var rules = {
             // Apply legend
             this.elements.each(function(model){
                 rules.applyLegend(model);
-            })    
+            });   
         }
     },
     //////////////////////////////
@@ -29,8 +29,9 @@ var rules = {
 
             }else if(model.get('type') == "poche"){
 
-                if((model.get('content') == "")&&(model.get('css') != "p_empty")) model.save({ css : "p_empty"},{silent:true});
-                else if((model.get('content') != "")&&(model.get('css') != "p_full"))model.save({ css : "p_full"},{silent:true});
+                var elements = api.getTypeLinkedToModel(rules.links,rules.elements,model,"knowledge");
+                if((elements.length == 0)&&(model.get('css') != "p_empty")) model.save({ css : "p_empty"},{silent:true});
+                else if((elements.length > 0)&&(model.get('css') != "p_full"))model.save({ css : "p_full"},{silent:true});
             }
         }
     },
