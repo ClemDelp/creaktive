@@ -11,7 +11,7 @@ var rules = {
             // Apply legend
             this.elements.each(function(model){
                 rules.applyLegend(model);
-            })    
+            });   
         }
     },
     //////////////////////////////

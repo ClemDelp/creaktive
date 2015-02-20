@@ -266,10 +266,14 @@ bbmap.Views.Node = Backbone.View.extend({
     },
     render : function(){
         var user = global.collections.Users.get(this.model.get('user'));
+        var _this = this;
         $(this.el).empty();
         /////////////////
         // Rules
-        rules.applyLegend(this.model);
+        setTimeout(function(){
+            rules.applyLegend(_this.model);
+            _this.applyStyle();
+        },1000);
         /////////////////
         $(this.el).append(this.template_bulle({
             model   : this.model.toJSON(),

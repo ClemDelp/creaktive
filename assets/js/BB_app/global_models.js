@@ -7,7 +7,6 @@ global.Models.File = Backbone.Model.extend({
         name : "",
         path : "",
     },
-
 });
 /***************************************/
 global.Models.Backup = Backbone.Model.extend({
