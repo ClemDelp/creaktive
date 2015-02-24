@@ -113,7 +113,7 @@ bbmap.Views.Node = Backbone.View.extend({
                 var p2 = {'left':position.left,'top':position.top};
                 var delta = api.getXYTranslationBtwTwoPoints(p1,p2);
                 
-                if((abs(oldModel.get('top')-position.top)>=1)||(abs(oldModel.get('left')-position.left)>=1)){
+                if((abs(oldModel.get('top')-position.top)>=5)||(abs(oldModel.get('left')-position.left)>=5)){
                     if((position.top != 0)&&($(this.el).position().left != 0)){
                         // Si la view n'a pas été supprimée on save
                         var before_change = this.model.clone();
@@ -131,8 +131,9 @@ bbmap.Views.Node = Backbone.View.extend({
                     }
                     ////console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
                     //bbmap.views.main.reorganizeTree(this.model.get('id'))           
+                    bbmap.views.main.svgWindowController();
                 }
-                bbmap.views.main.svgWindowController();
+                
             }
         }
     },

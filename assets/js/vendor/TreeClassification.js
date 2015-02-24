@@ -1,2248 +1,502 @@
-var TreeClassification ={
-
-
-
+  var TreeClassification ={
 elements : [],
-
-
-
-
-
-
-
-// A VIRER
-
-
-
-render : function(tableau, color)
-
-
-
-{
-
-
-
-  tableau.forEach(function(el)
-
-
-
-  {
-
-
-
-    var html = "<div id='"+el.id+"' class='el' style='top:"+el.top+"px;left:"+el.left+"px;width: "+Math.floor((Math.random() * 100) + 10)+"; height: "+Math.floor((Math.random() * 50) + 10)+";background:"+color+"'><spam>"+el.id+"</div>";
-
-
-
-      $('#container').append(html)
-
-
-
-    });
-
-
-
-  },
-
-
-
-
-
-
-
-// Récupère un élément père en donnant son Id.
-
-
-
-GetFather : function(father)
-
-
-
-{
-
-
-
-  for ( i in TreeClassification.elements)
-
-
-
-  {
-
-
-
-    if ( TreeClassification.elements[i].id == father ){
-
-
-
+animate : function(tableau, color){
+  tableau.forEach(function(el){
+  $('#'+el.id+'').animate({ top : ''+el.top+'px', left : ''+el.left+'px' },'slow');$('#'+el.id+'').css({background : ''+color+''});});
+},
+render : function(tableau, color){
+  TreeClassification.elements.forEach(function(el){
+  var html = "<div id='"+el.id+"' class='el' style='top:"+el.top+"px;left:"+el.left+"px;width:"+Math.floor((Math.random() * 150) + 50)+"; height:"+Math.floor((Math.random() * 100) + 5)+";background:"+color+"'><spam>"+el.id+"</div>";$('#container').append(html)});
+},
+//retourne l'objet élément à partir de son id
+GetElement : function(idelement){
+  for ( i in TreeClassification.elements){
+    if ( TreeClassification.elements[i].id == idelement ){
       return TreeClassification.elements[i];
-
-
-
     }
-
-
-
   }
-
-
-
 },
-
-
-
-// Donne le dernier objet enfant du tableau de tous les enfants
-
-
-
-GetLastChild : function()
-
-
-
-{
-
-
-
-  return TabChild[(TabChild.length - 1)];
-
-
-
-},
-
-
-
-// Retourne un tableau d'objets enfants à partir d'un id père
-
-
-
-GetChilds : function(father)
-
-
-
-{
-
-
-
-  TabChild = [];
-
-
-
-  for ( i in TreeClassification.elements)
-
-
-
-  {
-
-
-
-    if ( TreeClassification.elements[i].id_father == father ){
-
-
-
-      TabChild.push(TreeClassification.elements[i])
-
-
-
+AddBoard : function ( tableau, tableauaAjouter){
+    for ( i in tableauaAjouter)
+    {
+      tableau.push(tableauaAjouter[i])
     }
-
-
-
+},
+//Compare le left actuel des éléments avec le left q'ils devraient avoir
+GetTrihorizontal : function(elements){
+var itin = 2
+var diff = 1
+for (var e=0; e<elements.length-2; e++){
+  if (elements[e].left == elements[e+1].left){
+    elements[e+1] = elements[e+1].left + diff
+    diff = diff +1
   }
-
-
-
-  return TabChild;
-
-
-
-},
-
-
-
-// Crée un tableau contenant tous les fils d'un père en plus de ce père en 1ere position
-
-
-
-CreateTab : function(father, elemen)
-
-
-
-{
-
-
-
-
-
-
-
-  for ( var i =0; i < elemen.length; i++)
-
-
-
-  {
-
-
-
-    if ( elemen[i].id == father){
-
-
-
-      TreeClassification.elements.push(elemen[i])
-
-
-
-    }
-
-
-
-  }
-
-
-
-  TreeClassification.elements[0].id_father = "";
-
-
-
-  var TabChild = []
-
-
-
-  for ( var e = 0; e < TreeClassification.elements.length; e++)
-
-
-
-  {
-
-
-
-    var TabChild = []
-
-
-
-    for ( var t =0; t < elemen.length; t++)
-
-
-
-    {
-
-
-
-      if ( elemen[t].id_father == TreeClassification.elements[e].id ){
-
-
-
-        TabChild.push(elemen[t])
-
-
-
-      }
-
-
-
-    }
-
-
-
-    TreeClassification.AddBoard(TreeClassification.elements,TabChild)
-
-
-
-  }
-
-
-
-},
-
-
-
-// Copie un tableau
-
-
-
-AddBoard : function ( tableau, tableauAAjouter)
-
-
-
-{
-
-
-
-  for ( i in tableauAAjouter)
-
-
-
-  {
-
-
-
-    tableau.push(tableauAAjouter[i])
-
-
-
-  }
-
-
-
-},
-
-
-
-// Récupère le tableau final des positions et anime les éléments jusqu'à leur position alignée
-
-
-
-animate : function(tableau, color)
-
-
-
-{
-
-
-
-  for ( var a = 0 ; a < tableau.length; a++ )
-
-
-
-  {
-
-
-
-    tableau[a].forEach(function(el)
-
-
-
-    {
-
-
-
-      $('#'+el.id+'').animate({
-
-
-
-        top : ''+el.top+'px', left : ''+el.left+'px'
-
-
-
-      },'slow');
-
-
-
-      $('#'+el.id+'').css({
-
-
-
-        background : ''+color+''
-
-
-
-      });
-
-
-
-    });
-
-
-
-  }
-
-
-
-},
-
-
-
-  // Retourne pour un élément donné un tableau de ses feuilles (fils n'ayant aucun autre fils)
-
-
-
-  GetFeuilles : function(tableau, feuilles)
-
-
-
-  {
-
-
-
-    var TabChildsIntermediaire =[];
-
-
-
-    var TabChilds = tableau;
-
-
-
-    for ( f in TabChilds)
-
-
-
-    {
-
-
-
-      var TabChildFeuille = TreeClassification.GetChilds(TabChilds[f].id)
-
-
-
-      if ( TabChildFeuille.length < 1)
-
-
-
-      {
-
-
-
-        feuilles.push(TabChilds[f])
-
-
-
-      }else
-
-
-
-      {
-
-
-
-        TreeClassification.AddBoard(TabChildsIntermediaire, TabChildFeuille);
-
-
-
-      }
-
-
-
-    }
-
-
-
-    return TabChildsIntermediaire;
-
-
-
-  },
-
-
-
-  // Retourne toutes les feuilles (fils n'ayant aucun autre fils) d'un élément donné
-
-
-
-  GetAllFeuilles : function(father)
-
-
-
-  {
-
-
-
-    var TabFeuilles =[];
-
-
-
-    var TabDChilds = TreeClassification.GetChilds(father);
-
-
-
-    for ( var f = 0; TabDChilds.length > 0; f++)
-
-
-
-    {
-
-
-
-      TabDChilds = TreeClassification.GetFeuilles(TabDChilds, TabFeuilles)
-
-
-
-    }
-
-
-
-    return TabFeuilles;
-
-
-
-  },
-
-
-
-  //Retourne un tableau contenant, pour chaque élément de la table enfants, son id et
-
-
-
-  //le nombre de "colonnes" (emplacement vertical d'un élément) que ses descendants vont occuper.
-
-
-
-  GetNbColonne : function()
-
-
-
-  {
-
-
-
-    var TabColonne =[];
-
-
-
-    for ( var i = 0; i < TreeClassification.elements.length; i++)
-
-
-
-    {
-
-
-
-      TreeClassification.GetAllFeuilles(TreeClassification.elements[i].id)
-
-
-
-      if ( TreeClassification.GetAllFeuilles(TreeClassification.elements[i].id).length < 1)
-
-
-
-      {
-
-
-
-        TabColonne.push({id : TreeClassification.elements[i].id, nbrC : 1 })
-
-
-
-      }else{
-
-
-
-        TabColonne.push({id : TreeClassification.elements[i].id, nbrC : TreeClassification.GetAllFeuilles(TreeClassification.elements[i].id).length })
-
-
-
-      }
-
-
-
-    }
-
-
-
-    return TabColonne;
-
-
-
-  },
-
-
-
-  // Cette fonction est la base pour l'organisation de l'arbre.
-
-
-
-  // Elle permet de créer un échiquier de cases vides et
-
-
-
-  // place au bon endroit chaque élément
-
-
-
-  // dans une des cases.
-
-
-
-  // Le tableau de colonnes est utilisé pour connaitre la
-
-
-
-  // taille de l'échiquier ainsi que pour placer chaque élément
-
-
-
-  // en les centrant horizontalement sur leurs fils.
-
-
-
-  // Si le nombre de fils est pairs, le père est placé dans la colonne inferieure.
-
-
-
-  // Les cases sont alors remplies par des éléments réels ou virtuels.
-
-
-
-  // Un tableau d'objets fils est créé pour chaque génération, formant la matrice finale.
-
-
-
-  GetMatrice : function(tableauColonne, father)
-
-
-
-  {
-
-
-
-    var TbC = tableauColonne;
-
-
-
-    var matrice = [];
-
-
-
-    var TabDChilds = TreeClassification.GetChilds(father);
-
-
-
-    var Elzero = 0;
-
-
-
-    var Elinter = 0;
-
-
-
-    var El = 0;
-
-
-
-    var a = 0;
-
-
-
-
-
-
-
-    if (TabDChilds.length == 0 )
-
-
-
-    {
-
-
-
-      TreeClassification.GetFather(father).vide = false;
-
-
-
-      matrice.push({ id : 0 ,top : 10, left : 10, width : 10, height : 10, vide : true, id_father: father})                                                 // et que l'on as un element B avec un nbrC ( Nombre de colonne)
-
-
-
-    }else{
-
-
-
-      for ( p in TbC )
-
-
-
-      {
-
-
-
-        if ( TbC[p].id == father){
-
-
-
-          for ( i = 0; i < TbC[p].nbrC  ; i++)
-
-
-
-          {
-
-
-
-            matrice.push({ id : i ,top : 10, left : 10, width : 10, height : 10, vide : true, id_father: father})
-
-
-
-          }
-
-
-
-        }
-
-
-
-      }
-
-
-
-      for ( var c = 0; c < TbC.length ; c++)
-
-
-
-      {
-
-
-
-        if( TabDChilds[0].id == TbC[c].id)
-
-
-
-        {
-
-
-
-          Elzero = TbC[c].nbrC / 2
-
-
-
-          Elzero = Math.floor(Elzero);
-
-
-
-          matrice[Elzero] = TabDChilds[0]
-
-
-
-          Elinter = TbC[c].nbrC - 1
-
-
-
-          matrice[Elzero].vide = false;
-
-
-
-
-
-
-
-        }
-
-
-
-      }
-
-
-
-
-
-
-
-      for ( j = 1; j < TabDChilds.length ; j++)
-
-
-
-      {
-
-
-
-        for ( var c = 0; c < TbC.length ; c++)
-
-
-
-        {
-
-
-
-          if( TabDChilds[j].id == TbC[c].id)
-
-
-
-          {
-
-
-
-
-
-
-
-            El =  TbC[c].nbrC / 2
-
-
-
-            test =  Elinter + Math.ceil(El)
-
-
-
-            Elinter = test + Math.floor(TbC[c].nbrC / 2)
-
-
-
-            matrice[test] = TabDChilds[j]
-
-
-
-
-
-
-
-            matrice[test].vide = false;
-
-
-
-          }
-
-
-
-        }
-
-
-
-      }
-
-
-
-    }
-
-
-
-
-
-
-
-    return matrice;
-
-
-
-  },
-
-
-
-  //Permet de calculer l'espace entre chaques cases réelles d'une ligne
-
-
-
-  GetDeltaXH : function(tableau,espaceLeftH)
-
-
-
-  {
-
-
-
-    var espace =0 ;
-
-
-
-    var nbrchild = tableau[0].length;
-
-
-
-    for ( var a = 0; a < tableau[0].length; a++)
-
-
-
-    {
-
-
-
-      if( tableau[0][a].vide == true )
-
-
-
-      {
-
-
-
-        espace = espace + tableau[0][a].width;
-
-
-
-      }
-
-
-
-      else
-
-
-
-      {
-
-
-
-        espace = espace + $("#"+tableau[0][a].id+"").width();
-
-
-
-      }
-
-
-
-    }
-
-
-
-
-
-
-
-    DeltaXH = ((( nbrchild - 1) * espaceLeftH )+ espace )/2  ;
-
-
-
-
-
-
-
-    return DeltaXH;
-
-
-
-
-
-
-
-  },
-
-
-
-  //Remplace le tableau des enfants par la matrice des enfants incluant leur reposition brute
-
-
-
-  alignH : function(father)
-
-
-
-  {
-
-
-
-    var TabChild = TreeClassification.GetMatrice(TreeClassification.GetNbColonne(), father);
-
-
-
-
-
-
-
-    return TabChild;
-
-
-
-  },
-
-
-
-  //Ajuste la position horizontale de chaque élément afin qu'il se centre sur sa case
-
-
-
-  MajEspaceLeft : function (tableau,TcolonneW,Tlvl, espaceleftH)
-
-
-
-  {
-
-
-
-    var espaceL = 0;
-
-
-
-    var espaceLeftF = 0;
-
-
-
-    var Gros = 0;
-
-
-
-    for ( var i = 0; i < TcolonneW.length; i++){
-
-
-
-      for ( var a = 0; a < Tlvl.length; a++){
-
-
-
-        if ( tableau.id == TcolonneW[i][a].id){
-
-
-
-          for ( var u = 0; u < TcolonneW[0].length; u++){
-
-
-
-            if ( TcolonneW[i][u].vide == true){
-
-
-
-              if ( TcolonneW[i][u].width > Gros){
-
-
-
-                Gros = TcolonneW[i][u].width
-
-
-
-              }
-
-
-
-            }else{
-
-
-
-              if ( $("#"+TcolonneW[i][u].id+"").width() > Gros){
-
-
-
-                Gros = $("#"+TcolonneW[i][u].id+"").width()
-
-
-
-              }
-
-
-
-            }
-
-
-
-          }
-
-
-
-        }
-
-
-
-      }
-
-
-
-    }
-
-
-
-    if ( tableau.vide == false ){
-
-
-
-      espaceL = Gros - $("#"+tableau.id+"").width()
-
-
-
-    }else{
-
-
-
-      espaceL = Gros - tableau.width
-
-
-
-    }
-
-
-
-    if ( espaceL <= 0){
-
-
-
-      espaceLeftFinal = espaceleftH
-
-
-
-    }else{
-
-
-
-
-
-
-
-      espaceLeftFinal = espaceleftH + espaceL
-
-
-
-    }
-
-
-
-    return espaceLeftFinal
-
-
-
-  },
-
-
-
-  //appliquée dans la matrice, cette fonction permet de définir la position d'un élément dans la case qui lui est attribuée
-
-
-
-  GetHeightMaxLigne : function(tableau)
-
-
-
-  {
-
-
-
-    var HeightMax = 0;
-
-
-
-    for ( var i = 0; i < tableau.length; i++){
-
-
-
-        if ( $("#"+tableau[i].id+"").height() > HeightMax ){
-
-
-
-          HeightMax = $("#"+tableau[i].id+"").height()
-
-
-
-        }
-
-
-
-
-
-
-
-    }
-
-
-
-    return HeightMax
-
-
-
-
-
-
-
-  },
-
-
-
-  GetPosition : function(tableau, DeltaX, TcolonneW,Tlvl, espaceLeftH, espaceTopH)
-
-
-
-  {
-
-
-
-    var espaceLeftHF =0 ;
-
-
-
-    tableau[0][0].left = TreeClassification.elements[0].left + ($("#"+TreeClassification.elements[0].id+"").width() /2)
-
-
-
-    tableau[0][0].top = TreeClassification.elements[0].top + $("#"+TreeClassification.elements[0].id+"").height() + espaceTopH
-
-
-
-
-
-
-
-    for ( var i = 0; i < tableau.length; i++){
-
-
-
-      for ( var a = 0; a < tableau[0].length; a++){
-
-
-
-        if (a == 0){
-
-
-
-          tableau[i][a].left = tableau[0][0].left
-
-
-
-          if ( i >= 1){
-
-
-
-
-
-
-
-          if ( tableau[i-1][0].vide == true){
-
-
-
-//console.log(tableau[i-1][0])
-
-
-
-            tableau[i][0].top = tableau[i-1][0].top + tableau[i-1][0].height + espaceTopH
-
-          }
-
-          if( tableau[i-1][0].vide == false){
-
-                var HeightMax = TreeClassification.GetHeightMaxLigne(tableau[i-1])
-
-                tableau[i][0].top = tableau[i-1][0].top + HeightMax + espaceTopH
-
-          }
-
-        }
-
-        }else{
-
-          tableau[i][a].top = tableau[i][a-1].top
-
-        }
-
-
-
-        if ( i == 0 & a !=0){
-
-
-
-          if ( tableau[i][a].vide == true){
-
-
-
-            if ( tableau[i][a-1].vide == true){
-
-
-
-              tableau[i][a].left = tableau[i][a-1].left +  tableau[i][a-1].width + espaceLeftH;
-
-
-
-            }else {
-
-
-
-              espaceLeftHF = TreeClassification.MajEspaceLeft( tableau[i][a-1], TcolonneW, Tlvl, espaceLeftH)
-
-
-
-              tableau[i][a].left = tableau[i][a-1].left +  $("#"+tableau[i][a-1].id+"").width() + espaceLeftHF;
-
-
-
-            }
-
-
-
-          }else{
-
-
-
-            espaceLeftHF = TreeClassification.MajEspaceLeft( tableau[i][a-1], TcolonneW, Tlvl, espaceLeftH)
-
-
-
-            if ( tableau[i][a-1].vide == true){
-
-
-
-              tableau[i][a].left = tableau[i][a-1].left +  tableau[i][a-1].width + espaceLeftHF;
-
-
-
-            }else {
-
-
-
-              tableau[i][a].left = tableau[i][a-1].left +  $("#"+tableau[i][a-1].id+"").width() + espaceLeftHF
-
-
-
-            }
-
-
-
-          }
-
-
-
-        }if ( i > 0 & a != 0){
-
-
-
-          tableau[i][a].left = tableau[i-1][a].left
-
-
-
-        }
-
-
-
-        if ( tableau[i][0].level == 1){
-
-
-
-          tableau[i][a].top = tableau[0][0].top
-
-
-
-        }
-
-
-
-      }
-
-
-
-    }
-
-
-
-    return tableau;
-
-
-
-  },
-
-
-
-  //Crée un tableau dans lequel on associe à chaque id d'élément un level
-
-
-
-  GetLevel : function(TabAlignAllH, lvlmax)
-
-
-
-  {
-
-
-
-    TabAlignAllH[0].forEach(function(el){
-
-
-
-      el.level = 1
-
-
-
-    });
-
-
-
-    for ( i = 1; i < TabAlignAllH.length ; i++){
-
-
-
-      for ( t = 0; t < TabAlignAllH[i].length; t++){
-
-
-
-        father = TabAlignAllH[i][t].id_father
-
-
-
-        if ( father == null ){
-
-
-
-        }else{
-
-
-
-          TabAlignAllH[i].forEach(function(el){
-
-
-
-            el.level = TreeClassification.GetFather(father).level + 1
-
-
-
-          });
-
-
-
-        }
-
-
-
-      }
-
-
-
-    }
-
-
-
-    return TabAlignAllH
-
-
-
-  },
-
-
-
-  //Crée un tableau contenant chaque ligne d'objets créée avec la fonction alignH
-
-
-
-  alignAllH : function(espaceLeftH, espaceTopH )
-
-
-
-  {
-
-
-
-    var TabAlignAllH = []
-
-
-
-    for ( i in TreeClassification.elements){
-
-
-
-      TabAlignAllH.push(TreeClassification.alignH(TreeClassification.elements[i].id,espaceLeftH, espaceTopH ))
-
-
-
-    }
-
-
-
-    return TabAlignAllH
-
-
-
-  },
-
-
-
-  //Récupère le niveau de la dernière génération d'enfants à partir du tableau de niveaux créé par GetLevel
-
-
-
-  LvlMax : function(tab)
-
-
-
-  {
-
-
-
-    var lvlMax=0
-
-
-
-    for ( var a = 0 ; a < tab.length; a++){
-
-
-
-      if ( tab[a][0].level > lvlMax){
-
-
-
-        lvlMax = tab[a][0].level
-
-
-
-      }
-
-
-
-    }
-
-
-
-    return lvlMax
-
-
-
-  },
-
-
-
-  //Génère un tableau contenant les blocs vides
-
-
-
-  GetTabLevelColonne : function(Tlevel, Tlvl, Tcolonne, lvlmax)
-
-
-
-  {
-
-
-
-    for (var a = 1; a <= lvlmax -1 ; a++){
-
-
-
-      Tlvl[a-1]= []
-
-
-
-      var BlocVide = []
-
-
-
-      BlocVide.push({ id : i ,top : 20, left : 10, width : 10, height : 30, vide : true})
-
-
-
-      for ( var i = 0; i < Tlevel.length ; i++){
-
-
-
-        if ( a == 1){
-
-
-
-          if ( Tlevel[i][0].level == a){
-
-
-
-            TreeClassification.AddBoard(Tlvl[a-1],Tlevel[i])
-
-
-
-          }
-
-
-
-        }else{
-
-
-
-          if ( Tlevel[i][0].level == a){
-
-
-
-            for ( var t = 0; t < Tlvl[a-2].length ; t++){
-
-
-
-              if( Tlevel[i][0].id_father == Tlvl[a-2][t].id){
-
-
-
-                condition = t - Tlvl[a-1].length - Math.floor(Tlevel[i].length)
-
-
-
-                for ( var z = 0; z <= condition ; z++){
-
-
-
-                  TreeClassification.AddBoard(Tlvl[a-1],BlocVide)
-
-
-
-                }
-
-
-
-                TreeClassification.AddBoard(Tlvl[a-1],Tlevel[i])
-
-
-
-              }
-
-
-
-
-
-
-
-            }
-
-
-
-          }
-
-
-
-        }
-
-
-
-      }
-
-
-
-    }
-
-
-
-    for ( var a = 0; a < Tlvl[0].length; a++){
-
-
-
-      Tcolonne[a]= []
-
-
-
-      for ( var z = 0; z < Tlvl.length; z ++){
-
-
-
-        Tcolonne[a].push(Tlvl[z][a])
-
-
-
-      }
-
-
-
-    }
-
-
-
-    for ( var i = 0; i < Tcolonne.length; i++){
-
-
-
-      for ( var e = 0; e < Tcolonne[0].length; e++){
-
-
-
-        if ( Tcolonne[i][e] == null){
-
-
-
-          var BlocVide = []
-
-
-
-          BlocVide.push({ id : i ,top : 20, left : 10, width : 10, height : 10, vide : true, id_father: father})
-
-
-
-          Tcolonne[i][e] = BlocVide[0]
-
-
-
-        }
-
-
-
-      }
-
-
-
-    }
-
-
-
-    for ( var i = 0; i < Tlvl.length; i++){
-
-
-
-      for ( var e = 0; e < Tlvl[0].length; e++){
-
-
-
-        if ( Tlvl[i][e] == null){
-
-
-
-          var BlocVide = []
-
-
-
-          BlocVide.push({ id : i ,top : 20, left : 10, width : 10, height : 10, vide : true, id_father: father})
-
-
-
-          Tlvl[i][e] = BlocVide[0]
-
-
-
-        }
-
-
-
-      }
-
-
-
-    }
-
-
-
-  },
-
-
-
-  //Retourne le width max d'une colonne
-
-
-
-  GetDimensionEmptyBloc : function ( TlvlH, TcolonneW)
-
-
-
-  {
-
-
-
-    for ( var i = 0; i < TlvlH.length; i++){
-
-
-
-      for ( var z = 0; z < TcolonneW.length; z++){
-
-
-
-        if ( TlvlH[i][z].vide == true){
-
-
-
-          TlvlH[i][z].width = TcolonneW[z][i].width
-
-
-
-        }
-
-
-
-      }
-
-
-
-    }
-
-
-
-    return TlvlH
-
-
-
-  },
-
-
-
-  //Retourne le height max d'une ligne à partir du tableau des levels
-
-
-
-  GetHeightMax : function (Tlvl)
-
-
-
-  {
-
-
-
-    var heightMax = 0;
-
-
-
-    for ( var i = 0; i < Tlvl.length; i++){
-
-
-
-      for ( var u = 0; u < Tlvl[0].length; u++){
-
-
-
-        if ( Tlvl[i][u].vide == false){
-
-
-
-          if ( $("#"+Tlvl[i][u].id+"").height() > heightMax){
-
-
-
-            heightMax = $("#"+Tlvl[i][u].id+"").height()
-
-
-
-          }
-
-
-
-        }
-
-
-
-      }
-
-
-
-      for ( var e = 0; e < Tlvl[0].length; e++){
-
-
-
-        if ( Tlvl[i][e].vide == true){
-
-
-
-          Tlvl[i][e].height = heightMax
-
-
-
-        }
-
-
-
-      }
-
-
-
-      heightMax = 0;
-
-
-
-    }
-
-
-
-    return Tlvl;
-
-
-
-  },
-
-
-
-  //Retourne le width max d'une colonne à partir du tableau de colonnes
-
-
-
-  GetWidthMax : function (Tcolonne)
-
-
-
-  {
-
-
-
-    var widthMax = 0;
-
-
-
-    for ( var i = 0; i < Tcolonne.length; i++){
-
-
-
-      for ( var u = 0; u < Tcolonne[0].length; u++){
-
-
-
-        if ( Tcolonne[i][u].vide == false){
-
-
-
-          if ( $("#"+Tcolonne[i][u].id+"").width() > widthMax){
-
-
-
-            widthMax = $("#"+Tcolonne[i][u].id+"").width()
-
-
-
-          }
-
-
-
-        }
-
-
-
-      }
-
-
-
-      for ( var e = 0; e < Tcolonne[0].length; e++){
-
-
-
-        if ( Tcolonne[i][e].vide == true){
-
-
-
-          Tcolonne[i][e].width = widthMax
-
-
-
-        }
-
-
-
-      }
-
-
-
-      widthMax = 0;
-
-
-
-    }
-
-
-
-    return Tcolonne;
-
-
-
-  },
-
-
-
-//retourne le width max d'une ligne
-
-   GetWidthMaxNode : function (NbColonne, position)
-
-
-
-  {
-
-
-
-    var widthMax = 0;
-
-
-
-    for ( var z = 0; z < position.length; z++){
-
-
-
-        if ( position[z][NbColonne].vide == false){
-
-
-
-          if ( $("#"+position[z][NbColonne].id+"").width() > widthMax){
-
-
-
-            widthMax = $("#"+position[z][NbColonne].id+"").width()
-
-
-
-          }
-
-        }else {
-
-          if (position[z][NbColonne].width > widthMax){
-
-
-
-            widthMax = position[z][NbColonne].width
-
-          }
-
-        }
-
-
-
-      }
-
-    return widthMax ;
-
-  },
-
-
-
-
-
-  //Recentre chacun des éléments dans la case qui leur est attribuée
-
-
-
-  MajCenterMatrice : function (final)
-
-
-
-  {
-
-
-
-    var ecartVide = 0;
-
-
-
-    var Tinter = []
-
-
-
-    var TinterVide =[]
-
-
-
-    for ( var u = 0; u < final[0].length; u++){
-
-
-
-      if ( final[0][u].vide == false){
-
-
-
-        Tinter.push(final[0][u])
-
-
-
-      }
-
-
-
-    }
-
-
-
-    for ( var t = 0; t != -1; t++ ){
-
-
-
-      if ( final[0][t].vide == false){
-
-
-
-        t = -2
-
-
-
-      }else{
-
-
-
-        TinterVide.push(final[0][t])
-
-
-
-      }
-
-
-
-    }
-
-
-
-    if ( TinterVide.length == 0 ){
-
-
-
-      ecartVide = 0
-
-
-
-    }else{
-
-
-
-      ecartVide =  Tinter[0].left - TinterVide[0].left
-
-
-
-    }
-
-
-
-    var ecartTotal =  (Tinter[Tinter.length-1].left + $("#"+Tinter[Tinter.length-1].id+"").width()) - Tinter[0].left
-
-
-
-    for ( var a = 0; a < final.length; a++){
-
-
-
-      for (var i = 0; i < final[a].length ; i++ ){
-
-
-
-        final[a][i].left = final[a][i].left - ( ecartTotal / 2  + ecartVide )
-
-
-
-      }
-
-
-
-    }
-
-
-
-    return final
-
-
-
-  },
-
-
-
-  //Recentre horizontalement tous les pères au centre de ceux-ci
-
-
-
-  AlignFather : function (position)
-
-
-
-  {
-
-
-
-    for ( var u = position.length -2 ; u >= 0 ; u--){
-
-
-
-      for (var i = 0; i < position[u].length ; i++ ){
-
-
-
-
-
-        var WidthMaxNode = TreeClassification.GetWidthMaxNode(i, position)
-
-
-
-        //console.log(WidthMaxNode)
-
-
-
-
-
-        var TabChilds = TreeClassification.GetChilds(position[u][i].id)
-
-
-
-        if (TabChilds.length == 1  ){
-
-
-
-          if( TabChilds[0].id != "A"){
-
-
-            if ( $("#"+TabChilds[0].id+"").width() > $("#"+position[u][i].id+"").width() )
-
-            {
-
-              position[u][i].left = TabChilds[0].left + ( ( $("#"+TabChilds[0].id+"").width() - $("#"+position[u][i].id+"").width()) / 2)
-
-            }else{
-
-              position[u][i].left = TabChilds[0].left - ( ( $("#"+position[u][i].id+"").width() - $("#"+TabChilds[0].id+"").width() ) / 2)
-
-
-
-            }
-
-
-
-        if ( TabChilds.length == 1 & u == position.length -2 ){
-
-          TabChilds[0].left = TabChilds[0].left + ( ( WidthMaxNode - $("#"+TabChilds[0].id+"").width()) / 2)
-
-        }
-
-        }
-
-        }
-
-        if (TabChilds.length > 1){
-
-
-
-
-
-    position[u][i].left = (TabChilds[0].left + (((TabChilds[TabChilds.length-1].left + $("#"+TabChilds[TabChilds.length-1].id+"").width()) - TabChilds[0].left) / 2)) - ($("#"+position[u][i].id+"").width() / 2)
-
-
-
-
-
-        }
-
-      }
-
-
-
-    }
-
-
-
-    return position
-
-
-
-  },
-
-
-
-  //Crée la liste contenant les éléments existants et leur position finale
-
-
-
-  GetTabFinal : function(tableau){
-
-
-
-    var TabFinal=[];
-
-
-
-    for ( var i = 0; i < tableau.length; i++){
-
-
-
-      for ( var a= 0; a < tableau[i].length; a++){
-
-
-
-        if ( tableau[i][a].vide == false){
-
-
-
-
-
-
-
-          TabFinal.push(tableau[i][a])
-
-        }
-
-      }
-
-    }
-
-    return TabFinal
-
-  },
-
-  //Fonction finale d'alignement horizontal réunissant chacune des fonctions précédentes afin de générer l'arbre généalogique final
-
-  alignHF : function(father, espaceLeftH, espaceTopH, elemen)
-
-  {
-    TreeClassification.elements.length = 0;
-
-    var Tlvl = [];
-
-    var Tcolonne = [];
-
-    TreeClassification.CreateTab(father, elemen)
-
-    //TreeClassification.render(TreeClassification.elements, "red");
-
-    TabAlignAllH = TreeClassification.alignAllH(espaceLeftH, espaceTopH)
-
-    var Tlevel = TreeClassification.GetLevel(TabAlignAllH)
-
-    var lvlmax = TreeClassification.LvlMax(Tlevel)
-
-    TreeClassification.GetTabLevelColonne(Tlevel, Tlvl, Tcolonne, lvlmax)
-
-    var TcolonneW = TreeClassification.GetWidthMax(Tcolonne)
-
-    var TlvlH = TreeClassification.GetHeightMax(Tlvl)
-
-    var dimensionEmptyBloc = TreeClassification.GetDimensionEmptyBloc(TlvlH, TcolonneW)
-
-    var DeltaX = TreeClassification.GetDeltaXH(dimensionEmptyBloc, espaceLeftH)
-
-    var Position = TreeClassification.GetPosition(dimensionEmptyBloc, DeltaX, TcolonneW,Tlvl ,espaceLeftH, espaceTopH)
-
-    var AlignFP= TreeClassification.AlignFather(Position)
-
-    var Final = TreeClassification.MajCenterMatrice(AlignFP)
-
-    TreeClassification.animate(Final)
-
-    var TabFinal = TreeClassification.GetTabFinal(Position)
-
-    return TabFinal
-
-  },
 
 }
+for(e in itin){
+for (var o=1; o<elements.length-1; o++){
+  for (var k=1; k<elements.length-1; k++){
+    if (elements[o].left<elements[k].left){
+      var attente = elements[o]
+      elements[o] = elements[k]
+      elements[k] = attente
+    if (elements[o].left == elements[k].left){
+      elements[o].left = elements[k].left + elements[k].left
+      var attente = elements[o]
+      elements[o] = elements[k]
+      elements[k] = attente
+    }
+      }
+    }
+  }
+}
+return elements
+},
+//Compare le top actuel des éléments avec le left q'ils devraient avoir
+GetTrivertical : function(elements){
+var itin = 2
+var diff = 1
+for (var e=0; e<elements.length-2; e++){
+  if (elements[e].top == elements[e+1].top){
+    elements[e+1] = elements[e+1].top + diff
+    diff = diff +1
+  }
+}
+for(e in itin){
+for (var o=1; o<elements.length-1; o++){
+  for (var k=1; k<elements.length-1; k++){
+    if (elements[o].top>elements[k].top){
+      var attente = elements[o]
+      elements[o] = elements[k]
+      elements[k] = attente
+    if (elements[o].top == elements[k].top){
+      elements[o].top = elements[k].top+elements[k].left
+      var attente = elements[o]
+      elements[o] = elements[k]
+      elements[k] = attente
+    }
+      }
+    }
+  }
+}
+return elements
+},
+//retourne l'objet père d'un élément
+GetFatherreal : function(idelement, root){
+  if (idelement != root){
+  element = TreeClassification.GetElement(idelement)
+  for ( i in TreeClassification.elements){
+    if ( TreeClassification.elements[i].id == element.id_father ){
+      return TreeClassification.elements[i];
+    }
+  }
+}
+},
+//Crée la table "elements" des éléments à aligner et pré-trie les éléments en fonction de leur left 
+BaseTable : function(father, elemen){
+  for ( var i =0; i < elemen.length; i++)
+  {
+    if ( elemen[i].id == father){
+      TreeClassification.elements.push(elemen[i])
+    }
+  }
+  TreeClassification.elements[0].id_father = "";
+  var TabChild = []
+  for ( var e = 0; e < TreeClassification.elements.length; e++)
+  {
+    var TabChild = []
+    for ( var t =0; t < elemen.length; t++)
+    {
+      if ( elemen[t].id_father == TreeClassification.elements[e].id ){
+        TabChild.push(elemen[t])
+      }
+    }
+    TreeClassification.AddBoard(TreeClassification.elements,TabChild)
+  }
+},
+//retourne la 1ere génération d'enfants d'un élément
+GetChilds : function(father){
+  TabChild = [];
+  for ( i in TreeClassification.elements){
+    if ( TreeClassification.elements[i].id_father == father ){
+      TabChild.push(TreeClassification.elements[i])
+    }
+  }
+  return TabChild;
+},
+GetAllChilds : function(father){
+  var TabChild = TreeClassification.GetChilds(father)
+  var TabAllChild = []
+  var TabInterm = []
+//si father a des enfants et tant qu'on en trouve
+while (TabChild.length>0){
+//on parcours tab enfants
+  for (q in TabChild){
+  //on y met ce qu'on y trouve
+    TabAllChild.push(TabChild[q])
+    //Si un enfant a des enfants
+    if (TreeClassification.GetChilds(TabChild[q].id).length > 0){
+      //On fout tout ce bordel dans une table intermédiaire
+      TreeClassification.AddBoard(TabInterm, TreeClassification.GetChilds(TabChild[q].id))
+    }
+  }
+  //on récupère la tab interm en remplaçant la TabChild
+  TabChild = TabInterm
+  //et on vide la tabInterm
+  TabInterm = []
+  //et c'est repartit pour un tour
+}
+return TabAllChild
+},
+//permet d'avoir un tableau des éléments ascendents d'un élément défini jusqu'au root
+GetAscendents : function (oneElement, TabAllChild, root){
+var TabAscendents = [];
+var son = TreeClassification.GetElement(oneElement);
+TabAscendents.push(son)
+if (oneElement == root){
+  return TabAscendents
+}else{
+  var father = TreeClassification.GetFatherreal(oneElement, root)
+  while (son.id_father != root){
+      TabAscendents.push(father)
+      son = father
+        if (son.id_father != root){
+          father = TreeClassification.GetFatherreal(son.id)
+      }      
+    }
+  TabAscendents.push(TreeClassification.GetElement(root))
+}
+return TabAscendents
+},
+//Permet d'obtenir le level d'un élément en comptant le nombre de ses ascendants jusqu'au root
+GetLevel : function (oneElement, TabAllChild, root){
+var level = 0
+var TabAscendents=TreeClassification.GetAscendents(oneElement, TabAllChild, root)
+level = TabAscendents.length-1 ;
+return level;
+},
+//crée une table copiant la table de tous les enfants et ajoutant pour chaque élément son level et le nombre de colonnes que ses feuilles occupent
+GetTabAllInfo : function(TabAllChild, root){
+var TabAllInfo =[];
+  for ( v in TabAllChild){
+    if ( TreeClassification.GetAllFeuilles(TabAllChild[v].id).length < 1){
+      TabAllInfo.push({id : TabAllChild[v].id, id_father : TabAllChild[v].id_father , top: TabAllChild[v].top, left : TabAllChild[v].left, nbrC : 1, lvl : TreeClassification.GetLevel(TabAllChild[v].id, TabAllChild, root)})
+    }else{
+      TabAllInfo.push({id : TabAllChild[v].id, 
+        id_father : TabAllChild[v].id_father , 
+        top: TabAllChild[v].top, 
+        left : TabAllChild[v].left, 
+        nbrC : TreeClassification.GetAllFeuilles(TabAllChild[v].id).length, 
+        lvl : TreeClassification.GetLevel(TabAllChild[v].id, TabAllChild, root)})
+    }
+  }
+return TabAllInfo;
+},
+//permet d'obtenir les feuilles de la 1ere génération d'un élément
+GetFeuilles : function(tableau, TabFeuilles){
+  var TabChildsIntermediaire =[];
+  var TabChilds = tableau;
+  for ( f in TabChilds){
+    var TabChildFeuille = TreeClassification.GetChilds(TabChilds[f].id)
+    if ( TabChildFeuille.length < 1){
+      TabFeuilles.push(TabChilds[f])
+    }else{
+      TreeClassification.AddBoard(TabChildsIntermediaire, TabChildFeuille);
+    }
+  }
+  return TabChildsIntermediaire;
+},
+//permet d'obtenir toutes les feuilles d'un élément
+GetAllFeuilles : function(father){
+  var TabFeuilles =[];
+  var TabDChilds = TreeClassification.GetChilds(father);
+   for ( var f = 0; TabDChilds.length > 0; f++){
+    TabDChilds = TreeClassification.GetFeuilles(TabDChilds, TabFeuilles)
+  }
+return TabFeuilles;
+},
+//FONCTIONS RELATIVES A L ALIGNEMENT HORIZONTAL
+//retourne la largeur d'une première génération d'enfants avec en paramètre la largeur de base entre éléments
+GetWidthChilds : function(father, TabChild, espaceLeftH){
+  var widthChilds = 0
+  var TabChild = TreeClassification.GetChilds(father)
+  if (TabChild.length>0){
+    for (r in TabChild){
+      //si le père d'un fils unique est plus gros, on prend son width à la place de celle du fils (anti-collision)
+           if ( TabChild.length == 1 & $("#"+father+"").width() > $("#"+TabChild[r].id+"").width() ){
+              widthChilds = $("#"+father+"").width() + espaceLeftH
+          }else{
+             widthChilds = widthChilds + $("#"+TabChild[r].id+"").width() + espaceLeftH
+          }
+        }
+    }
+  return widthChilds
+},
+//retourne la largeur de toutes les feuilles d'un élément selon la largeur de base entre éléments
+GetWidthAllFeuilles : function(father, root, TabAllChild, espaceLeftH){
+  var widthAllFeuilles = 0
+  var TabFeuilles = TreeClassification.GetAllFeuilles(father)
+  if (TabFeuilles.length>0){
+    for (r in TabFeuilles){
+      //si le père d'un fils unique est plus gros, on prend son width à la place de celle du fils
+        var TabAscendents = TreeClassification.GetAscendents( TabFeuilles[r].id, TabAllChild, root)
+        var width = 0
+          for (m in TabAscendents){
+           if (TreeClassification.GetChilds(TabAscendents[m]).length == 1 & $("#"+TabAscendents[m].id+"").width() > $("#"+TabFeuilles[r].id+"").width() ){
+              width = $("#"+TabAscendents[m].id+"").width() + espaceLeftH
+            }else{
+              width = $("#"+TabFeuilles[r].id+"").width() + espaceLeftH
+            }
+          }
+        widthAllFeuilles = widthAllFeuilles + width
+    }
+  }
+  return widthAllFeuilles;
+},
+//retourne pour un élément donné le width que toutes ses feuilles occupent 
+GetDeltaXH : function(espaceLeftH, father, TabChild, idChild, root, TabAllInforoot, boolcompact){
+var DeltaXH= $("#"+idChild+"").width() + espaceLeftH ;
+  TabAllChild = TreeClassification.GetAllChilds(idChild)
+    // on cherche la largeur max d'une chaine de fils uniques
+    if (TreeClassification.GetAllFeuilles(idChild).length == 1){
+      var TabChild2 = TreeClassification.GetChilds(idChild)
+      while (TabChild2.length == 1){
+        if ($("#"+TabChild2[0].id+"").width() > $("#"+idChild+"").width() ){
+          DeltaXH = $("#"+TabChild2[0].id+"").width() + espaceLeftH ;
+        }
+      TabChild2 = TreeClassification.GetChilds(TabChild2[0].id)
+      }
+    }
+    if (TreeClassification.GetAllFeuilles(idChild).length>1){
+      DeltaXH = TreeClassification.GetWidthAllFeuilles(idChild, root, TabAllChild, espaceLeftH)
+    }
+return DeltaXH;
+},
+//permet d'obtenir le top de tous les éléments d'une ligne en fonction de l'élément le plus gros du level superieur (anti-collision)
+GetDeltaYHajuste : function(father, espaceTopH, TabAllChild, TabAllInforoot, root){
+  var fatherheightmax = $("#"+father+"").height()
+  for (t in TabAllInforoot){
+    if (TabAllInforoot[t].lvl == TreeClassification.GetLevel(father, TabAllChild, root) & $("#"+TabAllInforoot[t].id+"").height() > fatherheightmax){
+     fatherheightmax =  $("#"+TabAllInforoot[t].id+"").height()
+    }
+  }
+  DeltaYH = fatherheightmax + espaceTopH ;
+  return DeltaYH;
+},
+//utilise les fonctions précédentes pour positionner HORIZONTALEMENT une génération de fils par rapport à leur père
+ChangePositionH : function(father, TabChild, TabAllChild, espaceTopH, espaceLeftH, DeltaYH, root, TabAllInforoot, boolcompact, boolmirror, booldossier, booldossiermirror){
+  if (TabChild.length>0){
+      if (booldossier == false){
+        TabChild[0].left = this.GetElement(father).left + ($("#"+father+"").width() /2) - (TreeClassification.GetDeltaXH(espaceLeftH, father, TabChild, father, root, TabAllInforoot, false) /2)+ (TreeClassification.GetDeltaXH(espaceLeftH, father, TabChild, TabChild[0].id, root, TabAllInforoot, false)/2) - ($("#"+TabChild[0].id+"").width() /2);
+      }else{
+        if (booldossiermirror == false){
+          TabChild[0].left = this.GetElement(father).left
+        }else{
+          TabChild[0].left = this.GetElement(father).left + $("#"+father+"").width() - $("#"+TabChild[0].id+"").width() ;
+        }
+      }
+      if (boolmirror == false){
+        if (boolcompact == false){
+          TabChild[0].top = this.GetElement(father).top + DeltaYH ;
+        }else{
+          TabChild[0].top = this.GetElement(father).top + $("#"+father+"").height() + espaceTopH ;
+          }
+      }else{
+        if (boolcompact == false){
+          var DeltaYHnext = TreeClassification.GetDeltaYHajuste(TabChild[0].id, espaceTopH, TabAllChild, TabAllInforoot, root)
+          TabChild[0].top = this.GetElement(father).top - DeltaYHnext ;
+        }else{
+          TabChild[0].top = this.GetElement(father).top - espaceTopH - $("#"+TabChild[0].id+"").height();
+        }
+      }
+    }
+    for ( j in TabChild){
+      if (j > 0){
+        if (booldossier == false){
+        TabChild[j].left = TabChild[(j-1)].left + ($("#"+TabChild[j-1].id+"").width() /2) + (TreeClassification.GetDeltaXH(espaceLeftH, father, TabChild, TabChild[(j-1)].id, root, TabAllInforoot, boolcompact)/2) + (TreeClassification.GetDeltaXH(espaceLeftH, father, TabChild, TabChild[(j)].id, root, TabAllInforoot, boolcompact)/2) - ($("#"+TabChild[j].id+"").width() /2);
+      }else{
+        if (booldossiermirror == false){
+          TabChild[j].left = TabChild[(j-1)].left + TreeClassification.GetDeltaXH(espaceLeftH, father, TabChild, TabChild[(j-1)].id, root, TabAllInforoot, boolcompact)
+        }else{
+          TabChild[j].left = TabChild[(j-1)].left + $("#"+TabChild[j-1].id+"").width() - TreeClassification.GetDeltaXH(espaceLeftH, father, TabChild, TabChild[(j-1)].id, root, TabAllInforoot, boolcompact) - $("#"+TabChild[j].id+"").width()
+        }
+      }
+        if (boolmirror == false){
+          if (boolcompact == false){
+            TabChild[j].top = this.GetElement(father).top + DeltaYH ;
+          }else{
+            TabChild[j].top = this.GetElement(father).top + $("#"+father+"").height() + espaceTopH ;
+          }
+        }else{
+          if (boolcompact == false){
+            var DeltaYHnext = TreeClassification.GetDeltaYHajuste(TabChild[0].id, espaceTopH, TabAllChild, TabAllInforoot, root)
+            TabChild[j].top = this.GetElement(father).top - DeltaYHnext ;
+          }else{
+            TabChild[j].top = this.GetElement(father).top - espaceTopH - $("#"+TabChild[j].id+"").height() ;
+          }
+        }
+      }
+    }
+  return TabChild;
+},
+//fonctions relatives à l'alignement VERTICAL
+//retourne le résultat de l'addition du width de tous les derniers fils et l'espace entre eux
+GetHeightAllFeuilles : function(father, root, TabAllChild, espaceTopH){
+  var heightAllFeuilles = 0
+  var TabFeuilles = TreeClassification.GetAllFeuilles(father)
+  if (TabFeuilles.length>0){
+    for (r in TabFeuilles){
+      //si le père d'un fils unique est plus haut, on prend son height à la place de celle du fils
+        var TabAscendents = TreeClassification.GetAscendents( TabFeuilles[r].id, TabAllChild, root)
+        var height = 0
+          for (m in TabAscendents){
+           if (TreeClassification.GetChilds(TabAscendents[m]).length == 1 & $("#"+TabAscendents[m].id+"").height() > $("#"+TabFeuilles[r].id+"").height() ){
+              height = $("#"+TabAscendents[m].id+"").height() + espaceTopH
+            }else{
+              height = $("#"+TabFeuilles[r].id+"").height() + espaceTopH
+            }
+          }
+        heightAllFeuilles = heightAllFeuilles + height
+    }
+  }
+  return heightAllFeuilles;
+},
+//retourne l'espace entre 2 lignes par rapport au père
+GetDeltaYV : function(espaceTopH, TabChild, idChild, root){
+  var DeltaYV= $("#"+idChild+"").height() + espaceTopH ;
+  TabAllChild = TreeClassification.GetAllChilds(idChild)
+    if (TreeClassification.GetAllFeuilles(idChild).length == 1){
+      var TabChild2 = TreeClassification.GetChilds(idChild)
+      while (TabChild2.length == 1){
+        if ($("#"+TabChild2[0].id+"").height() > $("#"+idChild+"").height() ){
+          DeltaYV = $("#"+TabChild2[0].id+"").height() + espaceTopH ;
+        }
+      TabChild2 = TreeClassification.GetChilds(TabChild2[0].id)
+      }
+    }
+    if (TreeClassification.GetAllFeuilles(idChild).length>1){
+      DeltaYV = TreeClassification.GetHeightAllFeuilles(idChild, root, TabAllChild, espaceTopH)
+    }
+return DeltaYV;
+},
+//permet d'obtenir le left de tous les éléments d'une ligne en fonction de l'élément le plus gros du level superieur (anti-collision verticale)
+GetDeltaXVajuste : function(father, espaceLeftH, TabChild, TabAllChild, TabAllInforoot, root){
+  var fatherwidthmax = $("#"+father+"").width()
+  for (t in TabAllInforoot){
+    if (TabAllInforoot[t].lvl == TreeClassification.GetLevel(father, TabAllChild, root) & $("#"+TabAllInforoot[t].id+"").width() > fatherwidthmax){
+     fatherwidthmax =  $("#"+TabAllInforoot[t].id+"").width()
+    }
+  }
+  DeltaXV = fatherwidthmax + espaceLeftH ;
+  return DeltaXV;
+},
+//utilise les fonctions précédentes pour positionner VERTICALEMENT une génération de fils par rapport à leur père
+ChangePositionV : function(father, TabChild, TabAllChild, espaceTopH, espaceLeftH, DeltaXV, root, TabAllInforoot, boolcompact, boolmirror, booldossier, booldossiermirror){
+  if (TabChild.length>0){
+    if (booldossier == false){
+      TabChild[0].top = this.GetElement(father).top + ($("#"+father+"").height() /2) - (TreeClassification.GetDeltaYV(espaceTopH, TabChild, father, root) /2)+ (TreeClassification.GetDeltaYV(espaceTopH, TabChild, TabChild[0].id, root)/2) - ($("#"+TabChild[0].id+"").height() /2);
+    }else{
+      if (booldossiermirror == false){
+        TabChild[0].top = this.GetElement(father).top
+      }else{
+        TabChild[0].top = this.GetElement(father).top + $("#"+father+"").height() - $("#"+TabChild[0].id+"").height() ;
+      }
+    }
+        if (boolmirror == false){
+          if (boolcompact == false){
+            TabChild[0].left = this.GetElement(father).left + DeltaXV ;
+          }else{
+            TabChild[0].left = this.GetElement(father).left + $("#"+father+"").width() + espaceLeftH
+          }
+        }else{
+          if(boolcompact == false){
+        TabChild[0].left =  this.GetElement(father).left + $("#"+father+"").width() - DeltaXV - espaceLeftH - $("#"+TabChild[0].id+"").width() ;
+      }else{
+        TabChild[0].left =  this.GetElement(father).left - espaceLeftH - $("#"+TabChild[0].id+"").width() ;
+      }
+         }
+    for ( j in TabChild){
+      if (j > 0){
+        if (booldossier == false){
+          TabChild[j].top = TabChild[(j-1)].top + ($("#"+TabChild[j-1].id+"").height() /2) + (TreeClassification.GetDeltaYV(espaceTopH, TabChild, TabChild[(j-1)].id, root)/2) + (TreeClassification.GetDeltaYV(espaceTopH, TabChild, TabChild[(j)].id, root)/2) - ($("#"+TabChild[j].id+"").height() /2) ;
+        }else{
+            if (booldossiermirror == false){
+              TabChild[j].top = TabChild[(j-1)].top + TreeClassification.GetDeltaYV(espaceTopH, TabChild, TabChild[(j-1)].id, root)
+            }else{
+              TabChild[j].top = TabChild[(j-1)].top + $("#"+TabChild[j-1].id+"").height() - TreeClassification.GetDeltaYV(espaceTopH, TabChild, TabChild[(j-1)].id, root) - $("#"+TabChild[j].id+"").height()
+            }
+        }
+        if (boolmirror == false){
+          if (boolcompact == false){
+            TabChild[j].left = this.GetElement(father).left + DeltaXV ;
+          }else{
+            TabChild[j].left = this.GetElement(father).left + $("#"+father+"").width() + espaceLeftH
+          }
+        }else{
+          if(boolcompact == false){
+            TabChild[j].left = this.GetElement(father).left + $("#"+father+"").width() - DeltaXV - espaceLeftH - $("#"+TabChild[j].id+"").width() ;
+          }else{
+            TabChild[j].left = this.GetElement(father).left - espaceLeftH - $("#"+TabChild[j].id+"").width() ;
+          }
+        }
+      }
+    }
+  }
+  return TabChild;
+},
+//Fonction finale de placement des éléments d'une ligne par rapport à un père
+align : function(father, espaceLeftH, espaceTopH, TabAllChildroot, TabAllInforoot, root, boolcompact, boolvertical, boolmirror, booldossier, booldossiermirror){
+  var TabChild = TreeClassification.GetChilds(father)
+  var TabAllChild = TreeClassification.GetAllChilds(father)
+  var TabAllInfo = TreeClassification.GetTabAllInfo(TabAllChild, father)
+  var TabFeuilles = TreeClassification.GetAllFeuilles(father)
+    if (boolvertical == false){
+      var DeltaYH = TreeClassification.GetDeltaYHajuste(father, espaceTopH, TabAllChild, TabAllInforoot, root)
+      var TabChildPosition = TreeClassification.ChangePositionH(father, TabChild, TabAllChild, espaceTopH, espaceLeftH, DeltaYH, root, TabAllInforoot, boolcompact, boolmirror, booldossier, booldossiermirror)
+    }else{
+      var DeltaXV = TreeClassification.GetDeltaXVajuste(father, espaceTopH, TabChild, TabAllChild, TabAllInforoot, root)
+      var TabChildPosition = TreeClassification.ChangePositionV(father, TabChild, TabAllChild, espaceTopH, espaceLeftH, DeltaXV, root, TabAllInforoot, boolcompact, boolmirror, booldossier, booldossiermirror)
+    }
+  return TabChildPosition
+},
+//Fonction finale de placement itérant chaque ligne en commençant par le root
+//
+//elemen correspond au tableau en entrée
+//le root correspond à l'id du père sans pères à partir ducquel on veut élaborer l'arbre
+//espaceleftH est l'espace horizontal prédéfini entre 2 noeuds
+//espaceTopH est l'espace vertical prédéfini entre 2 noeuds
+//LevelMax prédéfini le nb de générations  max à la construction de l'arbre random
+//CM prédéfini le nb de fils max pour chaque noeuds à la construction de l'arbre random
+//boolcompact(beta) permet d'avoir une arborisation plus dense
+//boolvertical permet de classer verticalement
+//boolmirror permet d'obtenir une symétrie de l'arbre par rapport au root
+//booldossier permet un classement en arborescence classique de dossier
+//booldossiermirror permet un classement en arborescence en dossier mais inversée
+alignAll : function(elemen, root, espaceLeftH, espaceTopH, boolcompact, boolvertical, boolmirror, booldossier, booldossiermirror){
+  TreeClassification.elements.length = 0;
+  TreeClassification.BaseTable(root, elemen)
+console.log(TreeClassification.elements.length)
+if (boolvertical == false){
+  elements = TreeClassification.GetTrihorizontal(TreeClassification.elements)
+}else{
+  elements = TreeClassification.GetTrivertical(TreeClassification.elements)
+}
+console.log(TreeClassification.elements.length)
+  TreeClassification.render(TreeClassification.elements, "red")
+  var Final = []
+  var TabAllChildroot = TreeClassification.GetAllChilds(root)
+  var TabAllInforoot = TreeClassification.GetTabAllInfo(TabAllChildroot, root)
+    if (TabAllChildroot.length == 0) {alert("No childs !")}
+  TabChildPosition = TreeClassification.align(root, espaceLeftH, espaceTopH, TabAllChildroot, TabAllInforoot, root, boolcompact, boolvertical, boolmirror, booldossier, booldossiermirror)
+  TreeClassification.AddBoard(Final, TabChildPosition)
+    for (e in TabAllChildroot){
+      TabChildPosition = TreeClassification.align(TabAllChildroot[e].id, espaceLeftH, espaceTopH, TabAllChildroot, TabAllInforoot, root, boolcompact, boolvertical, boolmirror, booldossier, booldossiermirror)
+      TreeClassification.AddBoard(Final, TabChildPosition)
+    }
+  TreeClassification.animate(Final, "red")
+  return Final;
+},
 
+
+
+}
