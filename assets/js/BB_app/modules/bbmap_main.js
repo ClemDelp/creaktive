@@ -318,6 +318,21 @@ bbmap.Views.Main = Backbone.View.extend({
             bbmap.views.main.instance.repaintEverything();
             bbmap.views.main.svgWindowController();
         },1000);
+        // V2
+        // var compact = false;
+        // var vertical = false;
+        // var mirror = false;
+        // var dossier = false;
+        // var dossier2 = false;
+        // //
+        // var elements = TreeClassification.alignAll(bbmap.views.main.elements.toJSON(),pere,15,15,compact,vertical,mirror,dossier,dossier2);
+        // elements.forEach(function(el){
+        //     bbmap.views.main.elements.get(el.id).save(el)
+        // });
+        // setTimeout(function(){
+        //     bbmap.views.main.instance.repaintEverything();
+        //     bbmap.views.main.svgWindowController();
+        // },1000);
     },
     deleteButton : function(){
         var view = this.nodes_views[this.lastModel.get('id')]
