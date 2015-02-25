@@ -50,7 +50,6 @@ function(username, password, done) {
 
 				for (var i = 0; i < users.length; i++) {
 					var user = users[i];
-					if(!user.confirmed) return done(null,false, {message : "Not confirmed"})
 		        	bcrypt.compare(password, user.pw, function (err, res) {
 			          if (!res)
 			            return done(null, false, {
