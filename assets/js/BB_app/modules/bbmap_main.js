@@ -207,16 +207,18 @@ bbmap.Views.Main = Backbone.View.extend({
         //"click .structureSubTree" : "structureTree",
     },
     svgWindowController : function(){
-        $('body .svg_window').remove();
-        var c_candidats = bbmap.views.main.elements.where({type:"concept",id_father:"none"})
-        var p_candidats = bbmap.views.main.elements.where({type:"poche",id_father:"none"})
-        var peres = _.union(c_candidats,p_candidats)
-        peres.forEach(function(pere){
-            bbmap.views.main.drawSvgWindow(pere);
-        });
-
-        this.statistics.render();
-
+        if(this.init != true){
+            console.log("svgWindowController")
+            $('body .svg_window').remove();
+            var c_candidats = bbmap.views.main.elements.where({type:"concept",id_father:"none"})
+            var p_candidats = bbmap.views.main.elements.where({type:"poche",id_father:"none"})
+            var peres = _.union(c_candidats,p_candidats)
+            peres.forEach(function(pere){
+                bbmap.views.main.drawSvgWindow(pere);
+            });
+            this.statistics.render();    
+        }
+        
     },
     drawSvgWindow : function(pere){
         var elements = api.getTreeChildrenNodes(pere,bbmap.views.main.elements);
@@ -1421,7 +1423,10 @@ bbmap.Views.Stat = Backbone.View.extend({
         var permissions = global.collections.Permissions;
         var currentUser = global.models.current_user;
         var perm = permissions.where({user_id : currentUser.get('id')})
-        if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))) bbmap.views.main.project.save({stats : this.stats});
+        if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))){
+            bbmap.views.main.project.save({stats : this.stats});
+            console.log('project stats updated');
+        } 
         // left stat
         this.left_stats_el.append(this.template_left({
             stats : this.stats
