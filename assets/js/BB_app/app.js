@@ -132,7 +132,6 @@ var global = {
         css : css,
     });
     new_element.save();
-    console.log(new_element)
     // On ajoute le model à la collection
     global.collections.Elements.add(new_element,{from:"client"});
     // Set last model
