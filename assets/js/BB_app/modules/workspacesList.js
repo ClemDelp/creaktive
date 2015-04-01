@@ -80,22 +80,10 @@ workspacesList.Views.Main = Backbone.View.extend({
             $(this.el).append(list_container)
         }else{
             $('.workspaces_container').remove();
-            //////////////////
-            // Starred
-            var starred_ws = workspaces.where({starred : true});
-            var starred_container = $('<div>',{class:'workspaces_container panel large-12 columns'});
-            starred_container.append('<h4><img src="/img/icones/Shape-Star2-32-blue.png" />Starred workspaces</h4>')
-            starred_ws.forEach(function(ws){
-                starred_container.append(new workspacesList.Views.Workspace({
-                    display : _this.display,
-                    model   : ws,
-                }).render().el)
-            });
-            $(this.el).append(starred_container);
             /////////////////
             // All 
             var all_ws_container = $('<div>',{class:'workspaces_container panel large-12 columns'});
-            all_ws_container.append('<h4><img src="/img/icones/User-Profile-32-blue.png" />All workspaces</h4>')
+            // all_ws_container.append('<h4><img src="/img/icones/User-Profile-32-blue.png" />Projects</h4>')
             workspaces.each(function(ws){
                 all_ws_container.append(new workspacesList.Views.Workspace({
                     display : _this.display,
@@ -109,9 +97,12 @@ workspacesList.Views.Main = Backbone.View.extend({
     },
     render : function(){        
         $(this.el).empty();
+
+        
         $(this.el).append(this.template_search({
             display : this.display
         }));
+    
         $(this.el).append(new workspacesList.Views.Formulaire({
             tagName : "div",
             className : "reveal-modal",
@@ -120,6 +111,11 @@ workspacesList.Views.Main = Backbone.View.extend({
             user : this.user
         }).render().el);
         this.render_workspaces();
+
+        if(this.display != "list"){
+            tutos.init({el:"#tutos_container"}); 
+        }
+
         $(document).foundation();
         return this;
     }

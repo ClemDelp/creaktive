@@ -1,4 +1,9 @@
-<div id="workspacesList-container" class="row"></div>
+<br>
+<div class="large-12 medium-12 small-12"></div>
+	<div id="workspacesList-container" class="large-9 medium-9 small-9 columns"></div>
+	<div id="tutos_container" class="large-3 medium-3 small-3 columns"></div>
+</div>
+
 <script type="text/template" id="workspacesList-form-template">
 	<div class="row">
   	  	<fieldset>
@@ -38,21 +43,15 @@
 </script>
 
 <script type="text/template" id="workspacesList-search-template">
-	<br>
-    <div class="large-12 columns">
-      <div class="row expand">
-	        <div class="small-12 large-2 medium-2 columns">
-	        	<a href="/" class="button tiny expand radius"><img title="new workspace" src="/img/icones/Home-24.png"></a>
-	        </div>
-	        <div class="small-12 large-2 medium-2 columns">
-	        	<a href="#" class="button tiny expand radius success" data-reveal-id="new_ws_modal_{{- display }}"><img title="new workspace" src="/img/icones/Add-New-24.png"></a>
-	        </div>
-	        <div class="small-12 large-8 medium-8 columns">
-	          <input type="text" class="search" placeholder="find workspaces by name..." />
-	        </div>
-	    
-      </div>
-    </div>
+        <div class="small-12 large-2 medium-2 columns">
+        	<a href="/" class="button tiny expand radius"><img title="new workspace" src="/img/icones/Home-24.png"></a>
+        </div>
+        <div class="small-12 large-2 medium-2 columns">
+        	<a href="#" class="button tiny expand radius success" data-reveal-id="new_ws_modal_{{- display }}"><img title="new workspace" src="/img/icones/Add-New-24.png"></a>
+        </div>
+        <div class="small-12 large-8 medium-8 columns">
+          <input type="text" class="search" placeholder="find workspaces by name..." />
+        </div>
 </script>
 
 <script type="text/template" id="workspacesList-list-template">
@@ -65,15 +64,20 @@
             <table class="large-12 medium-12 small_12 text-center tableWorkspace">
               <tr>
                 <td width="50" class="text-center">
-                	{{ if(news_nbr>0){ }}<a href="#" class="label tiny success round {{-pulse}}" title="new activities">{{-news_nbr}}</a>{{ } }}
-                  	{{ if(project.starred == true){ }}
-	                  <div class="row">
-	                    <a href="#">
-	                    	<img class="imgNodes" src="/img/icones/Shape-Star2-24.png" />
-	                    </a>
-	                  </div>
-	                {{ } }}
+                  <div class="row">
+                    <div class=" large-12 medium-12 action"> 
+                      <div class="" style="margin-top:10px;">
+                      	{{ if(project.status == 'public'){ }}
+					    	<span class="label success">Public</span>
+					    {{ }else if(project.status == 'exemple'){ }}
+					    	<span class="label">Exemple</span>
+					    {{ }else{ }}
+					    	<span class="label success">Private</span>
+					    {{ } }}
+                    </div>
+                  </div>
                 </td>
+
                 <td width="100" class="text-center">
                   <img class="imgWorkspace max_img max_img-responsive" src="{{-project.author.img}}" alt=""/>
                 </td>
@@ -86,27 +90,17 @@
 
                 <td width="100" class="text-center">
                   <div class="mic-info">
-                    By: <a href="#">{{-project.author.name}}</a> {{-project.date}}
+                    <small>By: <a href="#">{{-project.author.name}}</a> {{-project.date}}</small>
                   </div>
                 </td>
 
                 <td width="50" class="text-center">
-                  <div class="row">
-                    <div class=" large-12 medium-12 action"> 
-                      <div class="" style="margin-top:10px;">
-                      	{{ if(project.status == 'public'){ }}
-					    	<img src="/img/icones/Open-24.png"/>
-					    {{ }else{ }}
-					    	<img src="/img/icones/Lock-24.png"/>
-					    {{ } }}
-                    </div>
-                  </div>
+                	{{ if(news_nbr>0){ }}<a href="#" class="label tiny success round {{-pulse}}" title="new activities">{{-news_nbr}}</a>{{ } }}
+                  	
                 </td>
 
                 <td width="200" class="text-center">
-                	<a title="Graphical mode" class="button tiny secondary radius" href="/bbmap?projectId={{- project.id }}"><img style="width:24px" src="/img/icones/Nodes-128.png" /></a>
-
-	  				<a title="Timeline mode" class="button tiny secondary radius" href="/timela?projectId={{- project.id }}"><img style="width:24px" src="/img/icones/Bullets-128.png" /></a>
+                	<a title="Graphical mode" class="button tiny radius" href="/bbmap?projectId={{- project.id }}">OPEN</a>
                 </td>
               </tr>
             </table>
@@ -119,45 +113,38 @@
 
 <script type="text/template" id="workspacesList-block-template">
 	<ul class="item pricing-table">
-		<li class="price" style="text-align:left">
-			{{ if(news_nbr>0){ }}<a href="#" style="float:right" class="label tiny success round {{-pulse}}" title="new activities">{{-news_nbr}}</a>{{ } }}
-		    {{ if(project.starred == true){ }}
-				<a title="unstarred" style="float:left" href="#" class="round secondary tiny label unstarred" data-id="{{-project.id}}"><img data-id="{{-project.id}}" src="/img/icones/Shape-Star2-24.png" /></a>
-			{{ }else{ }}
-				<a title="starred" style="float:left" href="#" class="round secondary tiny label starred" data-id="{{-project.id}}"><img data-id="{{-project.id}}" src="/img/icones/Shape-Star2-24_white.png" /></a>
+		<li class="price" style="text-align:left;z-index:99;padding:0px">
+			{{ if(news_nbr>0){ }}<a href="#" style="float:right" class="label tiny success round {{-pulse}}" title="new activities">{{-news_nbr}}</a>
 			{{ } }}
-			{{ if(project.status == 'public'){ }}
-		    	<a title="public project" href="#" style="float:left" class="label tiny secondary round"><img data-model-id="{{-project.id}}" src="/img/icones/Open-24.png"/></a>
+		    {{ if(project.status == 'public'){ }}
+		    	<span class="label alert" style="position:absolute; float:left;z-index:99">Private</span>
+		    {{ }else if(project.status == 'exemple'){ }}
+		    	<span class="label">Exemple</span>
 		    {{ }else{ }}
-		    	<a title="private project" href="#" style="float:left" class="label tiny secondary round"><img data-model-id="{{-project.id}}" src="/img/icones/Lock-24.png"/></a>
+		    	<span class="label success" style="position:absolute; float:left;z-index:99">Public</span>
 		    {{ } }}
-		    <br>
-			<h4><b>{{-project.title}}</b></h4>
+			<a title="Open" class="button secondary radius expand" href="/bbmap?projectId={{- project.id }}" style="margin-bottom:0px">
+				<h4><b>{{-project.title}}</b></h4>
+
+			</a>
+			{{ if((c_perc == 0)&&(k_perc == 0)){}else{ }}
+				<div class="progress expand success" style="font-size:10px;background:#1B9DD3;height:45px;margin-bottom:0px">
+				    <b style="color:white;float:left">
+				      {{- c_perc }}%
+				      <img title="Download screenshot" src="/img/icones/Light-Bulb-32-white.png"/>
+				    </b>
+				    <b style="color:white;float:right">
+				        {{- k_perc}}%
+				        <img title="Download screenshot" src="/img/icones/Book-Open-32-white.png"/>
+				    </b>
+				    <span class="meter pulse" style="width: {{- c_perc}}%">
+				    </span>
+				</div>
+	  		{{ } }}
 		</li>
-		<li class="description" style="text-align:left">{{=project.content}}</li>
-		
-		{{ if((c_perc == 0)&&(k_perc == 0)){}else{ }}
-		<li class="bullet-item">	
-			<div class="progress expand success" style="background:#1B9DD3;height:45px;margin-bottom:0px">
-			    <b style="color:white;float:left">
-			      {{- c_perc }}%
-			      <img title="Download screenshot" src="/img/icones/Light-Bulb-32-white.png"/>
-			    </b>
-			    <b style="color:white;float:right">
-			        {{- k_perc}}%
-			        <img title="Download screenshot" src="/img/icones/Book-Open-32-white.png"/>
-			    </b>
-			    <span class="meter pulse" style="width: {{- c_perc}}%">
-			    </span>
-			</div>
-  		</li>
-  		{{ } }}
-		<li class="bullet-item"><em>Created by {{-project.author.name}} at {{-project.date}}</em></li>
-		<li class="cta-button">
-		  <div class="row">
-		  	<a style="margin-bottom:5px" title="Graphical mode" class="button large-6 medium-6 small-6 columns secondary radius" href="/bbmap?projectId={{- project.id }}"><img src="/img/icones/Nodes-128.png" /></a>
-		  	<a style="margin-bottom:5px" title="Timeline mode" class="button large-6 medium-6 small-6 columns secondary radius" href="/timela?projectId={{- project.id }}"><img src="/img/icones/Bullets-128.png" /></a>
-		  </div>
+		<li class="bullet-item" style="padding:0px">
+			<p>{{=project.content}}</p>
+			<small><em>Created by {{-project.author.name}} at {{-project.date}}</em></small>
 		</li>
 	</ul>
 </script>
