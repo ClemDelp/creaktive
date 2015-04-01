@@ -1,9 +1,9 @@
 <script type="text/template" id="actionMenu-template">
   <div class="large-9 medium-9 small-8 columns">
     {{ if(from == "bbmap"){ }}
-      <a style="display:true" href="/timela?projectId={{-project.id}}" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Bullets-32-blue.png" /></a>
+      <a style="display:none" href="/timela?projectId={{-project.id}}" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Bullets-32-blue.png" /></a>
     {{ }else{ }}
-      <a style="display:true" href="/bbmap?projectId={{-project.id}}" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Nodes-32.png" /></a>
+      <a style="display:none" href="/bbmap?projectId={{-project.id}}" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Nodes-32.png" /></a>
     {{ } }}  
 
     {{ if(mode == "edit"){ }}

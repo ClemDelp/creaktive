@@ -36,8 +36,6 @@ workspacesList.Views.Main = Backbone.View.extend({
     },
     events : {
         "keyup .search" : "search",
-        "click .starred" : "starred",
-        "click .unstarred" : "unstarred",
     },
     search : function(e){
         e.preventDefault();
@@ -50,18 +48,6 @@ workspacesList.Views.Main = Backbone.View.extend({
             }
         });
         this.render_workspaces(matched);
-    },
-    starred : function(e){
-        e.preventDefault();
-        var id = e.target.getAttribute("data-id");
-        this.workspaces.get(id).save({starred : true});
-        this.render();
-    },
-    unstarred : function(e){
-        e.preventDefault();
-        var id = e.target.getAttribute("data-id");
-        this.workspaces.get(id).save({starred : false});
-        this.render();
     },
     render_workspaces : function(collection){
         var _this = this;
@@ -98,7 +84,7 @@ workspacesList.Views.Main = Backbone.View.extend({
     render : function(){        
         $(this.el).empty();
 
-        
+        $(this.el).append("<br>");        
         $(this.el).append(this.template_search({
             display : this.display
         }));

@@ -1,4 +1,3 @@
-<br>
 <div class="large-12 medium-12 small-12"></div>
 	<div id="workspacesList-container" class="large-9 medium-9 small-9 columns"></div>
 	<div id="tutos_container" class="large-3 medium-3 small-3 columns"></div>
@@ -72,7 +71,7 @@
 					    {{ }else if(project.status == 'exemple'){ }}
 					    	<span class="label">Exemple</span>
 					    {{ }else{ }}
-					    	<span class="label success">Private</span>
+					    	<span class="label alert">Private</span>
 					    {{ } }}
                     </div>
                   </div>
@@ -96,7 +95,6 @@
 
                 <td width="50" class="text-center">
                 	{{ if(news_nbr>0){ }}<a href="#" class="label tiny success round {{-pulse}}" title="new activities">{{-news_nbr}}</a>{{ } }}
-                  	
                 </td>
 
                 <td width="200" class="text-center">
@@ -117,17 +115,18 @@
 			{{ if(news_nbr>0){ }}<a href="#" style="float:right" class="label tiny success round {{-pulse}}" title="new activities">{{-news_nbr}}</a>
 			{{ } }}
 		    {{ if(project.status == 'public'){ }}
-		    	<span class="label alert" style="position:absolute; float:left;z-index:99">Private</span>
+		    	<span class="label success" style="position:absolute; float:left;z-index:99">Public</span>
 		    {{ }else if(project.status == 'exemple'){ }}
 		    	<span class="label">Exemple</span>
 		    {{ }else{ }}
-		    	<span class="label success" style="position:absolute; float:left;z-index:99">Public</span>
+		    	<span class="label alert" style="position:absolute; float:left;z-index:99">Private</span>
 		    {{ } }}
+			
 			<a title="Open" class="button secondary radius expand" href="/bbmap?projectId={{- project.id }}" style="margin-bottom:0px">
 				<h4><b>{{-project.title}}</b></h4>
-
 			</a>
 			{{ if((c_perc == 0)&&(k_perc == 0)){}else{ }}
+			<span style="display:none">
 				<div class="progress expand success" style="font-size:10px;background:#1B9DD3;height:45px;margin-bottom:0px">
 				    <b style="color:white;float:left">
 				      {{- c_perc }}%
@@ -140,10 +139,16 @@
 				    <span class="meter pulse" style="width: {{- c_perc}}%">
 				    </span>
 				</div>
+			</span>
 	  		{{ } }}
 		</li>
 		<li class="bullet-item" style="padding:0px">
-			<p>{{=project.content}}</p>
+			<br>
+			{{ if(project.content.length > 0){ }}
+				<p>{{=project.content}}</p>
+			{{ }else{ }}
+				<p>no description...</p>
+			{{ } }}
 			<small><em>Created by {{-project.author.name}} at {{-project.date}}</em></small>
 		</li>
 	</ul>
