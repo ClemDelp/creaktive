@@ -112,12 +112,12 @@
 <script type="text/template" id="workspacesList-block-template">
 	<ul class="item pricing-table">
 		<li class="price" style="text-align:left;z-index:99;padding:0px">
-			{{ if(news_nbr>0){ }}<a href="#" style="float:right" class="label tiny success round {{-pulse}}" title="new activities">{{-news_nbr}}</a>
+			{{ if(news_nbr>0){ }}<a href="#" style="position:absolute;float:right" class="label tiny success round {{-pulse}}" title="new activities">{{-news_nbr}}</a>
 			{{ } }}
 		    {{ if(project.status == 'public'){ }}
 		    	<span class="label success" style="position:absolute; float:left;z-index:99">Public</span>
 		    {{ }else if(project.status == 'exemple'){ }}
-		    	<span class="label">Exemple</span>
+		    	<span class="label" style="position:absolute; float:left;z-index:99">Exemple</span>
 		    {{ }else{ }}
 		    	<span class="label alert" style="position:absolute; float:left;z-index:99">Private</span>
 		    {{ } }}

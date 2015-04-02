@@ -28,7 +28,8 @@ tutos.Views.Main = Backbone.View.extend({
         this.template_list = _.template($('#tutos-list-template').html());
     },
     events : {
-        "click .tuto" : "openTuto"
+        "click .tuto" : "openTuto",
+        "click .valid_tuto" : "valid_tuto"
     },
     openTuto : function(e){
         e.preventDefault();
@@ -36,6 +37,11 @@ tutos.Views.Main = Backbone.View.extend({
         var tuto_template = _.template($('#tuto-'+tuto+'-template').html());
         $('#tutosModal_container').html(tuto_template())
         $('#tutosModal').foundation('reveal','open');
+    },
+    valid_tuto : function(e){
+        e.preventDefault();
+        alert('rr')
+        $('#tutosModal').foundation('reveal','close');
     },
     render : function(){        
         $(this.el).empty();
