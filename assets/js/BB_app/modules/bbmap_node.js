@@ -116,22 +116,23 @@ bbmap.Views.Node = Backbone.View.extend({
                 if((abs(oldModel.get('top')-position.top)>=5)||(abs(oldModel.get('left')-position.left)>=5)){
                     if((position.top != 0)&&($(this.el).position().left != 0)){
                         // Si la view n'a pas été supprimée on save
-                        var before_change = this.model.clone();
+                        //var before_change = this.model.clone();
                         this.model.save({
                             top:position.top,
                             left:position.left
                         });   
-                        var after_change = this.model.clone();
-                        //////////////////////////////
-                        var idAlreadyMoved = []; // important!!! Evite de déplacer un element qui a deja ete delpacer et evite ainsi de faire des boucles
-                        this.following(idAlreadyMoved,delta,this.model);
-                        //////////////////////////////
-                        //global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
-                        //console.log(this.model.get('top'),this.model.get('left'))
+                        //var after_change = this.model.clone();
+                        if(this.model.get('type') == "concept"){
+                            var root = api.getRoot(this.model,bbmap.views.main.elements,[]);
+                            bbmap.views.main.treeClassification(root.get('id'));    
+                        }else{
+                            this.following([],delta,this.model);
+                        }
                     }
                     ////console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
                     //bbmap.views.main.reorganizeTree(this.model.get('id'))           
                     bbmap.views.main.svgWindowController();
+                
                 }
                 
             }

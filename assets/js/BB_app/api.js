@@ -308,6 +308,16 @@ var api = {
   //////////////////////////////
   // API Tree manipulation
   //////////////////////////////
+  getRoot : function(node,elements,alreadyDone){
+    var root = node;
+    if(node.get('id_father') != "none"){
+      if(_.indexOf(alreadyDone, node.get('id')) == -1){
+        alreadyDone.unshift(node.get('id'));
+        root = api.getRoot(elements.get(node.get('id_father')),elements,alreadyDone);
+      }
+    }
+    return root;
+  },
   getTreeParentNodes : function(currentNode,tree,alreadyDone){
     // tree have to be a collection of node/model with each an id_father attribute reference to a node father
     // node have to be a model with an id_father attribute reference to a node father

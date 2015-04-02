@@ -195,7 +195,7 @@ bbmap.Views.Main = Backbone.View.extend({
         "mouseover .window" : "showChildrens",
         "mouseleave .window" : "hideChildrens",
         "click .window" : "showIcon", 
-        "click .structureSubTree" : "treeClassification",
+        "click .structureSubTree" : "treeClassification_event",
         //"click .structureSubTree" : "structureTree",
         "click #okjoyride" : "updateLastModelTitle",
         "click .screenshot" : "screenshot",
@@ -203,22 +203,77 @@ bbmap.Views.Main = Backbone.View.extend({
         //"click #showMenu" : "eventMenu",
         "click .prevH" : "backInHistory",
         "click .nextH" : "advanceInHistory",
-         "click .structureSubTree" : "treeClassification",
-        //"click .structureSubTree" : "structureTree",
     },
     svgWindowController : function(){
         if(this.init != true){
             console.log("svgWindowController")
             $('body .svg_window').remove();
-            var c_candidats = bbmap.views.main.elements.where({type:"concept",id_father:"none"})
-            var p_candidats = bbmap.views.main.elements.where({type:"poche",id_father:"none"})
-            var peres = _.union(c_candidats,p_candidats)
-            peres.forEach(function(pere){
-                bbmap.views.main.drawSvgWindow(pere);
-            });
-            this.statistics.render();    
+            this.drawSvgCkLine(function(){
+                var c_candidats = bbmap.views.main.elements.where({type:"concept",id_father:"none"})
+                var p_candidats = bbmap.views.main.elements.where({type:"poche",id_father:"none"})
+                var peres = _.union(c_candidats,p_candidats)
+                peres.forEach(function(pere){
+                    bbmap.views.main.drawSvgWindow(pere);
+                });
+                bbmap.views.main.statistics.render();      
+            }); 
+            
+             
         }
         
+    },
+    drawSvgCkLine : function(cb){
+        $('body .svg_CK_line').remove();
+        var color = "#34495e";
+        var deltaX = 100;
+        var deltaY = 125;
+        var left_max = 0;
+        var top_max = 0;
+        var top_min = 100000000000000000;
+
+        var concepts = this.elements.where({type : "concept"});
+        var knowledges = this.elements.where({type : "knowledge"});
+        var poches = this.elements.where({type : "poche"});
+
+        // La ref sera les concepts, se sera au K et P de se deplace par rapport aux c
+        concepts.forEach(function(c){
+            var w = $("#"+c.get('id')).width();
+            var h = $("#"+c.get('id')).height();
+            var c_left = w + c.get('left') + deltaX;
+
+            if(c_left > left_max) left_max = c_left;
+            if((h + c.get('top')) > top_max) top_max = (h + c.get('top'));
+            if(c.get('top') < top_min) top_min = c.get('top');
+        });
+
+        knowledges.forEach(function(k){
+            var h = $("#"+k.get('id')).height();
+
+            if(k.get('left') < left_max){
+                k.save({left : left_max+100 })
+                $("#"+k.get('id')).animate({left: left_max+100})  
+            }
+            if((h + k.get('top')) > top_max) top_max = (h + k.get('top'));
+            if(k.get('top') < top_min) top_min = k.get('top');
+        });
+
+        poches.forEach(function(p){
+            var h = $("#"+p.get('id')).height();
+
+            if(p.get('left') < left_max){
+                p.save({left : left_max+100 })
+                $("#"+p.get('id')).animate({left: left_max+100})  
+            }
+            if((h + p.get('top')) > top_max) top_max = (h + p.get('top'));
+            if(p.get('top') < top_min) top_min = p.get('top');
+        });
+
+        var longueur = top_max - top_min + deltaY;
+        console.log(top_max,top_min,left_max,longueur);
+        var new_top_min = top_min - 50;
+        this.map_el.append('<svg class="svg_CK_line" style="position:absolute;left:'+left_max+'px;top:'+new_top_min+'px" width="50px" height="'+longueur+'px" xml:lang="fr" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><text x="5px" y="20" font-family="sans-serif" font-size="20px" fill="'+color+'">C</text><text x="30px" y="20" font-family="sans-serif" font-size="20px" fill="'+color+'">K</text><line x1="25" y1="0" x2="20" y2="'+longueur+'" style="stroke:'+color+';stroke-width:3px;stroke-dasharray: 5,3,2" /></svg>');
+        
+        cb();
     },
     drawSvgWindow : function(pere){
         var elements = api.getTreeChildrenNodes(pere,bbmap.views.main.elements);
@@ -309,10 +364,18 @@ bbmap.Views.Main = Backbone.View.extend({
         });
     },
     ///////////////////////////////////////////
-    treeClassification : function(e){
+     treeClassification_event : function(e){
         e.preventDefault();
         var pere = this.lastModel.get('id');
-        var elements = TreeClassification.alignHF(pere,75,75,bbmap.views.main.elements.toJSON());
+        this.treeClassification(pere);
+    },
+    treeClassification : function(pere){
+        var vertical = false
+        var mirror = false
+        var dossier = false
+        var dossier2 = false
+        var compact = false
+        var elements = TreeClassification.alignAll(bbmap.views.main.elements.toJSON(), pere, 50, 100, vertical, mirror, dossier, dossier2, compact);
         elements.forEach(function(el){
             bbmap.views.main.elements.get(el.id).save(el)
         });
@@ -320,22 +383,34 @@ bbmap.Views.Main = Backbone.View.extend({
             bbmap.views.main.instance.repaintEverything();
             bbmap.views.main.svgWindowController();
         },1000);
-        // V2
-        // var compact = false;
-        // var vertical = false;
-        // var mirror = false;
-        // var dossier = false;
-        // var dossier2 = false;
-        // //
-        // var elements = TreeClassification.alignAll(bbmap.views.main.elements.toJSON(),pere,15,15,compact,vertical,mirror,dossier,dossier2);
-        // elements.forEach(function(el){
-        //     bbmap.views.main.elements.get(el.id).save(el)
-        // });
-        // setTimeout(function(){
-        //     bbmap.views.main.instance.repaintEverything();
-        //     bbmap.views.main.svgWindowController();
-        // },1000);
     },
+    // treeClassification : function(e){
+    //     e.preventDefault();
+    //     var pere = this.lastModel.get('id');
+    //     var elements = TreeClassification.alignHF(pere,75,75,bbmap.views.main.elements.toJSON());
+    //     elements.forEach(function(el){
+    //         bbmap.views.main.elements.get(el.id).save(el)
+    //     });
+    //     setTimeout(function(){
+    //         bbmap.views.main.instance.repaintEverything();
+    //         bbmap.views.main.svgWindowController();
+    //     },1000);
+    //     // V2
+    //     // var compact = false;
+    //     // var vertical = false;
+    //     // var mirror = false;
+    //     // var dossier = false;
+    //     // var dossier2 = false;
+    //     // //
+    //     // var elements = TreeClassification.alignAll(bbmap.views.main.elements.toJSON(),pere,15,15,compact,vertical,mirror,dossier,dossier2);
+    //     // elements.forEach(function(el){
+    //     //     bbmap.views.main.elements.get(el.id).save(el)
+    //     // });
+    //     // setTimeout(function(){
+    //     //     bbmap.views.main.instance.repaintEverything();
+    //     //     bbmap.views.main.svgWindowController();
+    //     // },1000);
+    // },
     deleteButton : function(){
         var view = this.nodes_views[this.lastModel.get('id')]
         this.lastModel = new Backbone.Model();
