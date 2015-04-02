@@ -38,11 +38,6 @@ tutos.Views.Main = Backbone.View.extend({
         $('#tutosModal_container').html(tuto_template())
         $('#tutosModal').foundation('reveal','open');
     },
-    valid_tuto : function(e){
-        e.preventDefault();
-        alert('rr')
-        $('#tutosModal').foundation('reveal','close');
-    },
     render : function(){        
         $(this.el).empty();
         $(this.el).append(this.template_list())
