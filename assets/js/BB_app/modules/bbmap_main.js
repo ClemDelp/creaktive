@@ -765,7 +765,35 @@ bbmap.Views.Main = Backbone.View.extend({
             this.setNotificationDisplayOnModel(element);
             this.updateEditor(element);
             if(this.mode == "edit") $("#"+element.get('id')+" .icon").show();
+            this.showDependances(element);
         }
+    },
+    showDependances : function(model){
+        // remove before all other dependances
+        bbmap.views.main.links.each(function(l){
+            try{
+                var source = bbmap.views.main.elements.get(l.get('source'));
+                var target = bbmap.views.main.elements.get(l.get('target'));
+                if(source.get('type') != target.get('type')) bbmap.views.main.removeLinkToView(l,"showDependances");
+
+            }catch(err){
+                //l.destroy(); // clean undelete link!!!!!
+                console.log("Missing element to etablish graphical connection...");
+            }
+        });
+        // display dependance of selected model
+        var links = api.getCKLinksByModelId(bbmap.views.main.links,model.get('id'));
+        links.forEach(function(l){
+            try{
+                var source = bbmap.views.main.elements.get(l.get('source'));
+                var target = bbmap.views.main.elements.get(l.get('target'));
+                if(source.get('type') != target.get('type')) bbmap.views.main.addLinkToView(l);
+
+            }catch(err){
+                //l.destroy(); // clean undelete link!!!!!
+                console.log("Missing element to etablish graphical connection...");
+            }
+        });
     },
     showChildrens : function(e){
         e.preventDefault();
@@ -1259,9 +1287,9 @@ bbmap.Views.Main = Backbone.View.extend({
         var target = model.get('target')
         var connections = this.instance.getAllConnections();
         connections.forEach(function(conn){
-            if((conn.targetId == target)&&(conn.sourceId == source))conn.setVisible(false)//bbmap.views.main.instance.detach({source:source, target:target, fireEvent:false});
+            if((conn.targetId == target)&&(conn.sourceId == source))jsPlumb.detach(conn); //conn.setVisible(false); //bbmap.views.main.instance.detach({source:source, target:target, fireEvent:false});
         });
-        bbmap.views.main.svgWindowController();
+        if(from == 'client') bbmap.views.main.svgWindowController();
         //this.nodes_views[model.get('source')].removeView();    
     },
     /////////////////////////////////////////
@@ -1402,26 +1430,16 @@ bbmap.Views.Main = Backbone.View.extend({
             });
             this.links.each(function(l){
                 try{
-                    bbmap.views.main.addLinkToView(l);
+
+                    var source = bbmap.views.main.elements.get(l.get('source'));
+                    var target = bbmap.views.main.elements.get(l.get('target'));
+                    if(source.get('type') == target.get('type')) bbmap.views.main.addLinkToView(l);
+
                 }catch(err){
                     //l.destroy(); // clean undelete link!!!!!
                     console.log("Missing element to etablish graphical connection...");
                 }
             });
-            // if(this.filter == "c"){
-            //     this.renderConceptsBulle();
-            // }
-            // else if(this.filter == "kp"){
-            //     this.renderKnowledgesBulle();
-            //     //this.renderPochesBulle();   
-            //     this.renderCKLinks();
-            // }
-            // else if(this.filter == "ckp"){
-            //     this.renderConceptsBulle();
-            //     this.renderKnowledgesBulle();
-            //     //this.renderPochesBulle();
-            //     this.renderCKLinks();
-            // }
             ///////////////////////
             if(this.mode == "edit") this.showOverLays();
             else this.hideOverLays();

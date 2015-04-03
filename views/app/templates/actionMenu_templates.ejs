@@ -1,5 +1,5 @@
 <script type="text/template" id="actionMenu-template">
-  <div class="large-9 medium-9 small-8 columns">
+  <div class="large-8 medium-8 small-8 columns">
     {{ if(from == "bbmap"){ }}
       <a style="display:none" href="/timela?projectId={{-project.id}}" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Bullets-32-blue.png" /></a>
     {{ }else{ }}
@@ -70,10 +70,12 @@
     {{ } }}
   </div>
 
-  <div class="large-3 medium-3 small-4 columns">
+  <div class="large-4 medium-4 small-4 columns">
     <ul style="float:right" class="button-group tiny radius">
       {{ if(from == "bbmap"){ }}
-        <li><a style="padding:10px" href="#" class="button secondary magicWand"><img class="pulse" title="magic wand" src="/img/icones/Magic-Wand-24.png"/></a></li>
+        {{ if(mode == "edit"){ }}
+          <li><span class="label tiny round" style="background:#C8D200"><strong>Magic Wand ---></strong></span><a style="padding:10px" href="#" class="button secondary magicWand"><img class="pulse" title="magic wand" src="/img/icones/Magic-Wand-24.png"/></a></li>
+        {{ } }}
         <li><a style="padding:10px" href="#" class="button secondary zoomin"><img title="zoom-out" src="/img/icones/Zoom-Out-24.png"/></a></li>
         <li><a style="padding:10px" href="#" class="button secondary zoomout"><img title="zoom-in" src="/img/icones/Zoom-In-24.png"/></a></li>
         <li><a style="padding:10px" href="#" class="button secondary reset"><img title="reset" src="/img/icones/Fit-To-Size-24.png"/></a></li>
