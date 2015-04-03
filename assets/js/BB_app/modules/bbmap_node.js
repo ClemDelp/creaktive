@@ -122,12 +122,12 @@ bbmap.Views.Node = Backbone.View.extend({
                             left:position.left
                         });   
                         //var after_change = this.model.clone();
-                        if(this.model.get('type') == "concept"){
-                            var root = api.getRoot(this.model,bbmap.views.main.elements,[]);
-                            bbmap.views.main.treeClassification(root.get('id'));    
-                        }else{
+                        // if(this.model.get('type') == "concept"){
+                        //     var root = api.getRoot(this.model,bbmap.views.main.elements,[]);
+                        //     bbmap.views.main.treeClassification(root.get('id'));    
+                        // }else{
                             this.following([],delta,this.model);
-                        }
+                        // }
                     }
                     ////console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
                     //bbmap.views.main.reorganizeTree(this.model.get('id'))           
