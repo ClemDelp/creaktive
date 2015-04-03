@@ -272,10 +272,10 @@ bbmap.Views.Node = Backbone.View.extend({
         $(this.el).empty();
         /////////////////
         // Rules
-        setTimeout(function(){
-            rules.applyLegend(_this.model);
-            _this.applyStyle();
-        },1000);
+        // setTimeout(function(){
+        //     rules.applyLegend(_this.model);
+        //     _this.applyStyle();
+        // },1000);
         /////////////////
         $(this.el).append(this.template_bulle({
             model   : this.model.toJSON(),

@@ -14,6 +14,11 @@ var rules = {
             // });   
         }
     },
+    applyForAll : function(elements){
+        elements.each(function(model){
+            rules.applyLegend(model);
+        }); 
+    },
     //////////////////////////////
     applyLegend : function(model){
         if(global.rules == true){
