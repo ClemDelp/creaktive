@@ -203,6 +203,27 @@ bbmap.Views.Main = Backbone.View.extend({
         //"click #showMenu" : "eventMenu",
         "click .prevH" : "backInHistory",
         "click .nextH" : "advanceInHistory",
+        "click .magicWand" : "magicWand"
+    },
+    magicWand : function(e){
+        e.preventDefault();
+        swal({   
+            title: "Give a magic wand to your project !",   
+            text: "this action will make graphic changes to your project",   
+            type: "warning",   
+            showCancelButton: true,   
+            confirmButtonColor: "#DD6B55",   
+            confirmButtonText: "Magic Wand!",   
+            closeOnConfirm: true,
+            allowOutsideClick : true
+        }, 
+        function(){   
+            rules.applyForAll(bbmap.views.main.elements);
+            bbmap.views.main.elements.each(function(model){
+                bbmap.views.main.nodes_views[model.get('id')].applyStyle();
+            });
+            bbmap.views.main.statistics.render(); 
+        });
     },
     svgWindowController : function(){
         if(this.init != true){
@@ -215,12 +236,8 @@ bbmap.Views.Main = Backbone.View.extend({
                 peres.forEach(function(pere){
                     bbmap.views.main.drawSvgWindow(pere);
                 });
-                bbmap.views.main.statistics.render();      
-            }); 
-            
-             
+            });   
         }
-        
     },
     drawSvgCkLine : function(cb){
         $('body .svg_CK_line').remove();
@@ -1461,6 +1478,7 @@ bbmap.Views.Main = Backbone.View.extend({
         ////////////////////////
         // Draw windows
         this.svgWindowController();
+        bbmap.views.main.statistics.render(); 
         
         return this;
     }

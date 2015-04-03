@@ -41,14 +41,14 @@ module.exports.sockets = {
   //
   // The data store where socket.io will store its message queue 
   // and answer pubsub logic
-  // adapter: 'memory',
+   adapter: 'memory',
   //
   // To enable a remote redis pubsub server: 
-  adapter: 'redis',
-  host: 'cod.redistogo.com',
-  port: 10534,
-  db: 'sails',
-  pass: '673a0a79732ef58f75edeefa612e3881',
+  // adapter: 'redis',
+  // host: 'cod.redistogo.com',
+  // port: 10534,
+  // db: 'sails',
+  // pass: '673a0a79732ef58f75edeefa612e3881',
   // Worth mentioning is that, if `adapter` config is `redis`, 
   // but host/port is left unset, Sails will try to connect to redis 
   // running on localhost via port 6379 

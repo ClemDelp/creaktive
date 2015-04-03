@@ -606,7 +606,7 @@ if (boolvertical == false){
   var Final = []
   var TabAllChildroot = TreeClassification.GetAllChilds(root)
   var TabAllInforoot = TreeClassification.GetTabAllInfo(TabAllChildroot, root)
-    if (TabAllChildroot.length == 0) {alert("No childs !")}
+    if (TabAllChildroot.length == 0) {console.log("No childs !")}
   for (e in TreeClassification.elements){
       TabChildPosition = TreeClassification.align(TreeClassification.elements[e].id, espaceLeftH, espaceTopH, TabAllChildroot, TabAllInforoot, root, boolcompact, boolvertical, boolmirror, booldossier, booldossiermirror)
       TreeClassification.AddBoard(Final, TabChildPosition)
