@@ -16,7 +16,13 @@ module.exports = {
 			Project.find({status : "public"}).done(function(err,projects){
 				req.session.permissions.public = _.pluck(projects,"id");
 				req.session.permissions.all = _.union(req.session.permissions.public,req.session.permissions.all);
-				cb();
+
+				Project.find({status : "exemple"}).done(function(err,projects){
+					req.session.permissions.public = _.pluck(projects,"id");
+					req.session.permissions.all = _.union(req.session.permissions.public,req.session.permissions.all);
+					cb();
+				});
+				
 			});
 
 
