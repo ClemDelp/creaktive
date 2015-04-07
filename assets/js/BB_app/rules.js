@@ -22,28 +22,39 @@ var rules = {
     //////////////////////////////
     applyLegend : function(model){
         if(global.rules == true){
-            console.log("applyLegend")
             var permissions = global.collections.Permissions;
             var currentUser = global.models.current_user;
             var perm = permissions.where({user_id : currentUser.get('id')})
             if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))){
-                
                 if(model.get('type') == "concept"){
-
-                    if((model.get('content') == "")&&(model.get('css') != "c_empty")) model.save({ css : "c_empty" },{silent:true});
-                    else if((model.get('content') != "")&&(model.get('css') != "c_full")) model.save({ css : "c_full"},{silent:true});
-
+                    if((model.get('content') == "")&&(model.get('css') != "c_empty")){
+                        console.log("applyLegend")
+                        model.save({ css : "c_empty" },{silent:true});
+                    }
+                    else if((model.get('content') != "")&&(model.get('css') != "c_full")){
+                        console.log("applyLegend")
+                        model.save({ css : "c_full"},{silent:true});
+                    } 
                 }else if(model.get('type') == "knowledge"){
-
-                    if((model.get('content') == "")&&(model.get('css') != "k_empty")) model.save({ css : "k_empty"},{silent:true});
-                    else if((model.get('content') != "")&&(model.get('css') != "k_full")) model.save({ css : "k_full"},{silent:true});
+                    if((model.get('content') == "")&&(model.get('css') != "k_empty")){
+                        console.log("applyLegend")
+                        model.save({ css : "k_empty"},{silent:true});  
+                    } 
+                    else if((model.get('content') != "")&&(model.get('css') != "k_full")){
+                        console.log("applyLegend")
+                        model.save({ css : "k_full"},{silent:true});
+                    } 
 
                 }else if(model.get('type') == "poche"){
-
                     var elements = api.getTypeLinkedToModel(rules.links,rules.elements,model,"knowledge");
-                    if((elements.length == 0)&&(model.get('css') != "p_empty")) model.save({ css : "p_empty"},{silent:true});
-                    else if((elements.length > 0)&&(model.get('css') != "p_full"))model.save({ css : "p_full"},{silent:true});
-
+                    if((elements.length == 0)&&(model.get('css') != "p_empty")){
+                        console.log("applyLegend")
+                        model.save({ css : "p_empty"},{silent:true});
+                    } 
+                    else if((elements.length > 0)&&(model.get('css') != "p_full")){
+                        console.log("applyLegend");
+                        model.save({ css : "p_full"},{silent:true});   
+                    }
                 }
             }    
         }
