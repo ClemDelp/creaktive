@@ -33,7 +33,12 @@ module.exports.routes = {
   // 
   // (This would also work if you had a file at: `/views/home.ejs`)
 
-  '/': "ManagerController.managerview",
+  '/': {
+    view:"home/index"
+  },
+
+  "/manager" : "ManagerController.managerview",
+  
   '/userManager': "UserController.userview",
 
   '/sparql/query': "SparqlController.query",
