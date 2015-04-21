@@ -1,27 +1,130 @@
-<div class="row">
-    <div class="large-12 small-12 medium-12 columns">
-        <center>
-            <br>
-            <img class="large-5 medium-5 small-5" src="/img/logo.png">
-            <hr>
-            <h1> Login </h1>
-            <form action="/login" method="post">
-                <div class="large-4 medium-8 small-12">
-                    <label>Username:</label>
-                    <input type="text" name="username" placeholder="Email"/>
-                </div>
-                <div class="large-4 medium-8 small-12">
-                    <label>Password:</label>
-                    <input type="password" name="password" placeholder="password"/>
-                </div>
-                <div>
-                    <button class="button round" type="submit">Submit</button>
-                </div>
-            </form>
+<style>
+  .overlay {
+    width: 100%;
+    height: 100%;
+    background:url(img/login_background.png) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    position:relative;
+    }
 
-            <a href="/newuser">Register Now!</a>
-            <br>
-            <a href="/resetpassword">Forgotten your password ?</a>
+    .login {
+        position:absolute;
+        bottom:10px;
+        width:100%;
+    }
+
+    .titre {
+        position:absolute;
+        top:40%;
+        width:100%;
+    }
+  }
+  </style>
+
+<div class="haut overlay">
+    <div class="titre">
+        <center>
+            <h1>CreaKtive</h1>
+            <h2>Un éditeur pour vous, bande de tapettes</h2>
         </center>
     </div>
+
+    <div class="login">
+        <form action="/login" method="post">
+            <div class="row">
+            
+                <div class="large-6 medium-6 small-12 columns">
+                    <input type="text" name="username" placeholder="Email"/>
+                </div>
+                <div class="large-6  medium-6 small-12 columns">
+                    <div class="large-9 medium-9 small-12 columns">
+                        <input type="password" name="password" placeholder="password"/>
+                    </div>
+                    <div class="large-3 medium-3 small-12 columns">
+                        <a href="#" class="button postfix" type="submit">Login</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="row">  
+            <center>
+                <a href="/newuser"><font color="000000">Register Now!</font></a>
+                <br>
+                <a href="/resetpassword"><font color="000000">Forgotten your password ?</font></a>
+            </center>
+        </div>
+    </div>
 </div>
+
+
+<div class="user">
+    
+    <div class="row">
+        <center><h3>Pour Qui ?</h3></center>
+        <div class="large-4 large-offset-1 columns">
+            <h4>Pilote innovation</h4>
+            <p>
+                Vous travaillez avec la théorie CK ?
+                CreaKtive vous propose un éditeur permettant de construire une arborescence de concepts et une structuration de vos bases de connaissances.
+            </p>
+        </div>
+        <div class="large-4 columns">
+            <h4>Consultant</h4> 
+            <p>
+                Vous êtes à la recherche d’un support pour travailler avec vos clients ?
+                CreaKtive vous propose une interface pour administrer vos différents projets avec vos clients.
+            </p>
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="fonctions overlay2" style="background-color: #FFFFFF">
+    <div class="row">
+        <center><h3>Fonctionnalités</h3></center>
+        <div class="large-4 columns">
+            img 
+        </div>
+         <div class="large-8 columns">
+            <h4>Cartographiez des arborescences CK</h4>
+            <p>
+                Construisez une cartographie de vos concepts et de vos connaissances au travers d’une interface ludique et ergonomique
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="large-8 columns">
+            <h4>Collaborez avec vos équipes</h4>
+            <p>
+                Invitez vos collaborateurs à travailler avec vous sur la plateforme. Définissez les rôles et les permissions de chacun sur vos projets.
+            </p>
+        </div>
+         <div class="large-4 columns">
+            img
+        </div>
+    </div>
+    <div class="row">
+        <div class="large-4 columns">
+            img
+        </div>
+         <div class="large-8 columns">
+            <h4>Evaluez votre travail de conception</h4>
+        </div>
+    </div>
+
+</div>
+
+<div class="pricing">
+
+</div>
+
+<div class="footer">
+
+</div>
+
