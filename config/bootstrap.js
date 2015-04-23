@@ -8,24 +8,14 @@
  * http://sailsjs.org/#documentation
  */
 
- var memwatch = require('memwatch');
+
 
 module.exports.bootstrap = function (cb) {
 
 	sails.config.appName =  "CreaKtive";
 
 
-	memwatch.on('leak', function(info) { 
-		console.log("MEMORY LEAK");
-		console.log(info)
 
-	 });
-
-	memwatch.on('stats', function(stats) { 
-		console.log("MEMORY STATS");
-		console.log(stats)
-
-	 });
 
 
   // It's very important to trigger this callack method when you are finished 

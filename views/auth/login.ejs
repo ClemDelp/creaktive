@@ -2,7 +2,7 @@
   .overlay {
     width: 100%;
     height: 100%;
-    background:url(img/login_background.png) no-repeat center center fixed;
+    background:url(http://creaktive.fr/wp-content/uploads/2014/07/banniere2.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -12,7 +12,7 @@
 
     .login {
         position:absolute;
-        bottom:10px;
+        bottom:5%;
         width:100%;
     }
 
@@ -21,18 +21,46 @@
         top:40%;
         width:100%;
     }
+
+    .titre h1 {
+        color: white;
+    }
+
+    .titre h3{
+        color: white;
+    }
+
+    .ul1 {
+
+        margin-left:3rem;
+        color:#c1c21d;
+    }
+
+    .ul2 {
+
+        margin-left:3rem;
+        color:#388AC2;
+    }
+
+    .licontent {
+        color:black;
+    }
+
+    ul.home li.home {
+        
+    }
   }
   </style>
 
 <div class="haut overlay">
     <div class="titre">
         <center>
-            <h1>CreaKtive</h1>
-            <h2>Un éditeur pour vous, bande de tapettes</h2>
+            <h1>L'Editeur CreaKtive</h1>
+            <h3>Le premier outil conçu pour représenter des arborescences C-K</h3>
         </center>
     </div>
 
-    <div class="login">
+    <div class="login" >
         <form action="/login" method="post">
             <div class="row">
             
@@ -44,87 +72,167 @@
                         <input type="password" name="password" placeholder="password"/>
                     </div>
                     <div class="large-3 medium-3 small-12 columns">
-                        <a href="#" class="button postfix" type="submit">Login</a>
+                        <button class="button postfix" type="submit">Login</button>
                     </div>
                 </div>
             </div>
         </form>
         <div class="row">  
             <center>
-                <a href="/newuser"><font color="000000">Register Now!</font></a>
+                <a href="/newuser"><font color="white">Register Now!</font></a>
                 <br>
-                <a href="/resetpassword"><font color="000000">Forgotten your password ?</font></a>
+                <a href="/resetpassword"><font color="white">Forgotten your password ?</font></a>
             </center>
         </div>
     </div>
 </div>
 
 
-<div class="user">
+<div class="user" >
     
-    <div class="row">
-        <center><h3>Pour Qui ?</h3></center>
-        <div class="large-4 large-offset-1 columns">
-            <h4>Pilote innovation</h4>
-            <p>
-                Vous travaillez avec la théorie CK ?
-                CreaKtive vous propose un éditeur permettant de construire une arborescence de concepts et une structuration de vos bases de connaissances.
-            </p>
+    <div class="row" data-equalizer>
+        <br>
+        <div class="panel large-4 large-offset-1 columns" data-equalizer-watch>
+            <center>
+                <h4>Pilote innovation</h4>
+                <p>
+                    Vous travaillez avec la théorie CK ?
+                </p>
+                <br>
+                <p>
+                    CreaKtive vous propose un éditeur permettant de construire une arborescence de concepts et une structuration de vos bases de connaissances.
+                </p>
+            </center>     
         </div>
-        <div class="large-4 columns">
-            <h4>Consultant</h4> 
-            <p>
-                Vous êtes à la recherche d’un support pour travailler avec vos clients ?
-                CreaKtive vous propose une interface pour administrer vos différents projets avec vos clients.
-            </p>
+        <div class="panel large-4 columns" data-equalizer-watch>
+            <center>
+                <h4>Consultant</h4> 
+                <p>
+                    Vous êtes à la recherche d’un support pour travailler avec vos clients ?
+                </p>
+                <br>
+                <p>
+                    CreaKtive vous propose une interface pour administrer vos différents projets avec vos clients.
+                </p>
+            </center>      
         </div>
     </div>
-
+    <br>
 </div>
 
 
 
-<div class="fonctions overlay2" style="background-color: #FFFFFF">
+<div class="fonctions overlay2" style="background-color: #fafafa">
+    <br>
     <div class="row">
-        <center><h3>Fonctionnalités</h3></center>
-        <div class="large-4 columns">
-            img 
+        <center><h3></h3></center>
+        <div class="large-5 columns">
+            <a href="/img/cartographie.png"><img src="/img/cartographie.png" /></a>
         </div>
-         <div class="large-8 columns">
-            <h4>Cartographiez des arborescences CK</h4>
+         <div class="large-7 columns">
+            <h4 style="color:#c1c21d">Cartographiez des arborescences CK</h4>
             <p>
-                Construisez une cartographie de vos concepts et de vos connaissances au travers d’une interface ludique et ergonomique
+                Construisez une cartographie de vos concepts et de vos connaissances au travers d’une interface ludique et ergonomique.
+                <ul class="ul1">
+                    <li><span class="licontent">Créez un arbre de concepts</span></li>
+                    <li><span class="licontent">Créez et organisez des poches de connaissance</span></li> 
+                    <li><span class="licontent">Reliez concepts et connaissances</span></li>  
+                    <li><span class="licontent">Attachez des documents : pdf, image, vidéo à vos concepts ou connaissances</span></li>                  
+                </ul>
             </p>
         </div>
     </div>
-
+    <br>
     <div class="row">
-        <div class="large-8 columns">
-            <h4>Collaborez avec vos équipes</h4>
+        <div class="large-7 columns">
+            <h4 style="color:#388AC5">Collaborez avec vos équipes</h4>
             <p>
-                Invitez vos collaborateurs à travailler avec vous sur la plateforme. Définissez les rôles et les permissions de chacun sur vos projets.
+                Invitez vos collaborateurs à travailler avec vous sur vos arborescences. 
+                <ul class="ul2">
+                    <li><span class="licontent">Définissez les rôles et les permissions de chacun sur vos projets.</span></li>
+                    <li><span class="licontent">Travaillez en temps réél sur des cartographie</span></li> 
+                    <li><span class="licontent">Echangez avec vos partenaires à l'aide de commentaires</span></li>                   
+                </ul>
             </p>
         </div>
-         <div class="large-4 columns">
-            img
+         <div class="large-5 columns">
+            <a href="/img/invitation.png"><img src="/img/invitation.png" /></a>
         </div>
     </div>
+    <br>
     <div class="row">
-        <div class="large-4 columns">
-            img
+        <div class="large-5 columns">
+            <center>
+                <img src="/img/disponible-prochainement.png" />
+            </center>
         </div>
-         <div class="large-8 columns">
-            <h4>Evaluez votre travail de conception</h4>
+         <div class="large-7 columns">
+            <h4 style="color:#c1c21d">Evaluez votre travail de conception</h4>
+            <p>
+                La plateforme intègre un certain nombre de règles pour vous aider à évaluer les critères de : 
+               <ul class="ul1">
+                    <li><span class="licontent">Variété</span></li> 
+                    <li><span class="licontent">Robustesse</span></li>
+                    <li><span class="licontent">Originalité</span></li> 
+                    <li><span class="licontent">Valeur</span></li>                  
+                </ul> 
+            </p>
         </div>
     </div>
-
+    <br>
 </div>
 
+
+<!--
 <div class="pricing">
+    <br>
+    <div class="row">
+        <div class="large-4 medium-4 small-1 columns">
+            <ul class="pricing-table">
+              <li class="title">Starter</li>
+              <li class="price">gratuit</li>
+              <li class="description">Créez vos premières arborescences</li>
+              <li class="bullet-item">20 concepts</li>
+              <li class="bullet-item">20 connaissances</li>
+              <li class="bullet-item">Connexion sécurisée SSL</li>
+              <li class="cta-button"><a class="button" href="#">Commencer</a></li>
+            </ul>
+        </div>
+        <div class="large-4 medium-4 small-1 columns">
+            <ul class="pricing-table">
+              <li class="title">Standard</li>
+              <li class="price">10€ par mois</li>
+              <li class="description">Profitez de toutes les fonctions d'édition</li>
+              <li class="bullet-item">Arborescence illimitées</li>
+              <li class="bullet-item">Envoie de fichier illimitées</li>
+              <li class="bullet-item">Connexion sécurisée SSL</li>
+              <li class="cta-button"><a class="button" href="#">Commencer</a></li>
+            </ul>
+        </div>
+        <div class="large-4 medium-4 small-1 columns">
+            <ul class="pricing-table">
+              <li class="title">Premium</li>
+              <li class="price">30€ par mois</li>
+              <li class="description">Profitez de l'intégralité des fonctions CreaKtive</li>
+                <li class="bullet-item">Arborescence illimitées</li>
+              <li class="bullet-item">Envoie de fichier illimitées</li>
+              <li class="bullet-item">Connexion sécurisée SSL</li>
+              <li class="cta-button"><a class="button" href="www.creakitve.fr/contact">Disponible prochainement</a></li>
+            </ul>
+        </div>
+    </div>
 
 </div>
 
-<div class="footer">
+-->
 
+<div class="footer" style="background-color: #282A2B">
+    <br><br>
+    <div class="row">
+        <p style="color:white">
+            Creaktive 2015, tous droits réservés <a href="#">mentions légales</a>
+        </p>
+    </div>
+    <br>
 </div>
 
