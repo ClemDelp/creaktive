@@ -756,7 +756,9 @@ bbmap.Views.Main = Backbone.View.extend({
     showIcon : function(e){
         e.preventDefault();
         var element = this.elements.get(e.target.id)
-        //console.log("Element details : ",element.toJSON())
+        console.log("Element details : ",element.toJSON())
+        var visible = api.isVisible(bbmap.views.main.links,bbmap.views.main.elements,bbmap.views.main.elements.get(element.get('id')))
+        console.log(visible)
         // close all icones
         this.$(".icon").hide();
         if(e.target.getAttribute("data-type") != "action"){
@@ -1244,34 +1246,34 @@ bbmap.Views.Main = Backbone.View.extend({
         this.nodes_views[model.get('id')].removeView();
         this.svgWindowController();
     },
-    getCKLinkStyle : function(link){
-        var c_color = "#27AE60";
-        var k_color = "#1B9DD3";
-        var p_color = "#E67E22";
-        var source = bbmap.views.main.elements.get(link.get('source'));
-        var target = bbmap.views.main.elements.get(link.get('target'));
-        var style = { strokeStyle : "gray", lineWidth : 1, dashstyle : "2 4"}
-        if(source.get('type') == "concept"){
-            if(target.get('type') == "concept") style = {strokeStyle:c_color,lineWidth:1};
-            else if(target.get('type') == "knowledge") style = {strokeStyle:c_color,lineWidth:1,dashstyle:"2 4"};
-            else if(target.get('type') == "poche") style = {strokeStyle:c_color,lineWidth:1,dashstyle:"2 4"};
-        }
-        else if(source.get('type') == "knowledge"){
-            if(target.get('type') == "concept") style = {strokeStyle:k_color,lineWidth:1,dashstyle:"2 4"};
-            else if(target.get('type') == "knowledge") style = {strokeStyle:k_color,lineWidth:1};
-            else if(target.get('type') == "poche") style = {strokeStyle:k_color,lineWidth:1,dashstyle:"2 4"};
-        }
-        else if(source.get('type') == "poche"){
-            if(target.get('type') == "concept") style = {strokeStyle:p_color,lineWidth:1,dashstyle:"2 4"};
-            else if(target.get('type') == "knowledge") style = {strokeStyle:p_color,lineWidth:1,dashstyle:"2 4"};
-            else if(target.get('type') == "poche") style = {strokeStyle:p_color,lineWidth:1};
-        }
-        return style;
-    },
+    // getCKLinkStyle : function(link){
+    //     var c_color = "#27AE60";
+    //     var k_color = "#1B9DD3";
+    //     var p_color = "#E67E22";
+    //     var source = bbmap.views.main.elements.get(link.get('source'));
+    //     var target = bbmap.views.main.elements.get(link.get('target'));
+    //     var style = { strokeStyle : "gray", lineWidth : 1, dashstyle : "2 4"}
+    //     if(source.get('type') == "concept"){
+    //         if(target.get('type') == "concept") style = {strokeStyle:c_color,lineWidth:1};
+    //         else if(target.get('type') == "knowledge") style = {strokeStyle:c_color,lineWidth:1,dashstyle:"2 4"};
+    //         else if(target.get('type') == "poche") style = {strokeStyle:c_color,lineWidth:1,dashstyle:"2 4"};
+    //     }
+    //     else if(source.get('type') == "knowledge"){
+    //         if(target.get('type') == "concept") style = {strokeStyle:k_color,lineWidth:1,dashstyle:"2 4"};
+    //         else if(target.get('type') == "knowledge") style = {strokeStyle:k_color,lineWidth:1};
+    //         else if(target.get('type') == "poche") style = {strokeStyle:k_color,lineWidth:1,dashstyle:"2 4"};
+    //     }
+    //     else if(source.get('type') == "poche"){
+    //         if(target.get('type') == "concept") style = {strokeStyle:p_color,lineWidth:1,dashstyle:"2 4"};
+    //         else if(target.get('type') == "knowledge") style = {strokeStyle:p_color,lineWidth:1,dashstyle:"2 4"};
+    //         else if(target.get('type') == "poche") style = {strokeStyle:p_color,lineWidth:1};
+    //     }
+    //     return style;
+    // },
     addLinkToView : function(model,from){
         var origin = "client";
         if(from) origin = from;
-        var style = this.getCKLinkStyle(model)
+        var style = rules.link_style_rules(model)
         bbmap.views.main.instance.connect({
             source:bbmap.views.main.nodes_views[model.get('source')].el, 
             target:bbmap.views.main.nodes_views[model.get('target')].el, 
@@ -1306,10 +1308,11 @@ bbmap.Views.Main = Backbone.View.extend({
                     links_to_remove.forEach(function(link){
                         link.destroy();
                     });
-                    var links_to_remove = bbmap.views.main.links.where({source : conn.targetId, target : conn.sourceId});
-                    links_to_remove.forEach(function(link){
-                        link.destroy();
-                    });
+                    // var links_to_remove = bbmap.views.main.links.where({source : conn.targetId, target : conn.sourceId});
+                    // links_to_remove.forEach(function(link){
+                    //     link.destroy();
+                    // });
+                    rules.setTheRightIDFather(bbmap.views.main.links,bbmap.views.main.elements,bbmap.views.main.elements.get(conn.targetId))
 
                     bbmap.views.main.svgWindowController();
                 } 
@@ -1319,10 +1322,9 @@ bbmap.Views.Main = Backbone.View.extend({
         this.instance.bind("click", function(conn) {
             bbmap.views.main.instance.detach(conn);
             // Choise the right new id_father
-            var id_father = api.getTheRightIDFather(bbmap.views.main.links,bbmap.views.main.elements,bbmap.views.main.elements.get(conn.targetId))
-            bbmap.views.main.elements.get(conn.targetId).set({id_father : id_father}).save();
+            
 
-            bbmap.views.main.svgWindowController();            
+            //bbmap.views.main.svgWindowController();            
         });
         ///////////////////////
         // New link process
@@ -1341,7 +1343,7 @@ bbmap.Views.Main = Backbone.View.extend({
                     var target = bbmap.views.main.elements.get(info.targetId);
                     var new_link = global.newLink(source,target,true);
                     // Set the link style
-                    var style = bbmap.views.main.getCKLinkStyle(new_link);
+                    var style = rules.link_style_rules(new_link);
                     info.connection.setPaintStyle(style);
                     // Re-draw windows
                     bbmap.views.main.svgWindowController();
@@ -1423,21 +1425,22 @@ bbmap.Views.Main = Backbone.View.extend({
             ///////////////////////
             // Create graphical element
             this.elements.each(function(model){ 
-                if(!model.get('visibility')) model.save({visibility : "show"}); // par default mettre la valeur à show
-                // try{
-                    bbmap.views.main.addModelToView(model,"render");
-                // }catch(err){console.log("Problem to display element");}
+                try{
+                    if(api.isVisible(bbmap.views.main.links,bbmap.views.main.elements,model)) bbmap.views.main.addModelToView(model,"render");
+                }catch(err){
+                    console.error(err);
+                    console.error("Problem to display element");
+                }
             });
             this.links.each(function(l){
                 try{
-
                     var source = bbmap.views.main.elements.get(l.get('source'));
                     var target = bbmap.views.main.elements.get(l.get('target'));
                     if(source.get('type') == target.get('type')) bbmap.views.main.addLinkToView(l);
 
                 }catch(err){
                     //l.destroy(); // clean undelete link!!!!!
-                    console.log("Missing element to etablish graphical connection...");
+                    console.error("Missing element to etablish graphical connection...");
                 }
             });
             ///////////////////////

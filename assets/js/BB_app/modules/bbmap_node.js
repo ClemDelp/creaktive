@@ -27,7 +27,7 @@ bbmap.Views.Node = Backbone.View.extend({
     /////////////////////////////////////////
     replier : function(e){
         var nodes = api.getTreeChildrenNodes(this.model,bbmap.views.main.concepts);
-        nodes.forEach(function(node){node.save({visibility:"hide"});}); // pour cacher le node
+        nodes.forEach(function(node){node.save({visibility:false});}); // pour cacher le node
         this.model.save({displayChildrens : false}); // pour aficher le nbre de fils cachés
     },
     editBulle : function(e){
