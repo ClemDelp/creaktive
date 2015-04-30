@@ -178,10 +178,10 @@ body{
 	transition:box-shadow 0.25s ease-in;*/
 }
 
-.replier {
+.expcoll {
 	position:absolute;
-	top: -20px;
-	right:-20px;
+	bottom: -30px;
+	right:38%;
 	/*right: 5px;*/
 	width:auto;
 	height:auto;
@@ -211,10 +211,10 @@ body{
 
 
 
-.sup:hover{
+.sup:hover, .expcoll:hover{
 	box-shadow: 0px 0px 6px black;
 	background-color:red;
-	color:white;
+	
 }
 
 .ep:hover{

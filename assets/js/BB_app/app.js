@@ -130,6 +130,7 @@ var global = {
         title: title,
         user: global.models.current_user.get('id'),
         css : css,
+        visibility : true
     });
     new_element.save();
     // On ajoute le model à la collection

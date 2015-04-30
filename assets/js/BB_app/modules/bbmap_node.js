@@ -22,13 +22,26 @@ bbmap.Views.Node = Backbone.View.extend({
         "click .ep" : "addConceptChild",
         "click .ep2" : "addKnowledgeChild",
         "click .ep3" : "editBulle",
-        // "click .replier" : "replier"
+        "click .expcoll" : "expand_collapse"
     },
     /////////////////////////////////////////
-    replier : function(e){
-        var nodes = api.getTreeChildrenNodes(this.model,bbmap.views.main.concepts);
-        nodes.forEach(function(node){node.save({visibility:false});}); // pour cacher le node
-        this.model.save({displayChildrens : false}); // pour aficher le nbre de fils cachés
+    expand_collapse : function(e){
+        var elements = new Backbone.Collection(api.getTreeChildrenNodes(this.model,bbmap.views.main.elements,[]));
+        var links = new Backbone.Collection(api.getCKLinksByModelId(bbmap.views.main.links,this.model.get('id')));
+
+        if(this.model.get('visibility') == true){
+            this.model.save({visibility : false});
+            // remove links
+            bbmap.views.main.removeLinksToView(links,'expand_collapse');
+            // remove elements childs
+            bbmap.views.main.removeModelsToView(elements,'expand_collapse')
+        }else{
+            this.model.save({visibility : true});
+            // display elements childs
+            bbmap.views.main.addModelsToView(elements,'expand_collapse')
+            // display links
+            bbmap.views.main.addLinksToView(links)
+        }         
     },
     editBulle : function(e){
         e.preventDefault();
@@ -148,10 +161,16 @@ bbmap.Views.Node = Backbone.View.extend({
                 idAlreadyMoved.push(f.get('id'));
 
                 var f_view = bbmap.views.main.nodes_views[f.get('id')];
-                var f_position = f_view.getPosition(bbmap.zoom.get('val'));
+                // var f_position = f_view.getPosition(bbmap.zoom.get('val'));
+                var f_position = {left : f.get('left'), top : f.get('top')};
                 var newPosition = api.getNewPositionAfterTranslation(f_position,delta);
 
-                f_view.setPosition(newPosition.left,newPosition.top,0,0,false,'followers',true)
+                // f_view.setPosition(newPosition.left,newPosition.top,0,0,false,'followers',true)
+                f.save({
+                    top: newPosition.top,
+                    left: newPosition.left
+                });
+
                 bbmap.views.main.instance.repaint(f.get('id'));
                 //_this.following(idAlreadyMoved,delta,f)
             }
@@ -278,9 +297,11 @@ bbmap.Views.Node = Backbone.View.extend({
         },1000);
         /////////////////
         $(this.el).append(this.template_bulle({
-            model   : this.model.toJSON(),
-            user    : user.toJSON(),
-            mode    : bbmap.views.main.mode,
+            model       : this.model.toJSON(),
+            user        : user.toJSON(),
+            mode        : bbmap.views.main.mode,
+            childs_nbr  : api.getTreeChildrenNodes(this.model,bbmap.views.main.elements,[]).length
+
         }));
         this.applyStyle();
 
