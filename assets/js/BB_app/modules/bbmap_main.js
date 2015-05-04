@@ -286,7 +286,6 @@ bbmap.Views.Main = Backbone.View.extend({
         });
 
         var longueur = top_max - top_min + deltaY;
-        console.log(top_max,top_min,left_max,longueur);
         var new_top_min = top_min - 50;
         this.map_el.append('<svg class="svg_CK_line" style="position:absolute;left:'+left_max+'px;top:'+new_top_min+'px" width="50px" height="'+longueur+'px" xml:lang="fr" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><text x="5px" y="20" font-family="sans-serif" font-size="20px" fill="'+color+'">C</text><text x="30px" y="20" font-family="sans-serif" font-size="20px" fill="'+color+'">K</text><line x1="25" y1="0" x2="20" y2="'+longueur+'" style="stroke:'+color+';stroke-width:3px;stroke-dasharray: 5,3,2" /></svg>');
         
@@ -758,9 +757,9 @@ bbmap.Views.Main = Backbone.View.extend({
     showIcon : function(e){
         e.preventDefault();
         var element = this.elements.get(e.target.id)
-        console.log("Element details : ",element.toJSON())
+        //console.log("Element details : ",element.toJSON())
         var visible = api.isVisible(bbmap.views.main.links,bbmap.views.main.elements,bbmap.views.main.elements.get(element.get('id')))
-        console.log(visible)
+        //console.log(visible)
         // close all icones
         this.$(".icon").hide();
         if(e.target.getAttribute("data-type") != "action"){
@@ -1211,13 +1210,13 @@ bbmap.Views.Main = Backbone.View.extend({
     addModelsToView : function(elements,from){
         elements.each(function(model){ 
             try{
-                if(api.isVisible(bbmap.views.main.links,bbmap.views.main.elements,model)) bbmap.views.main.addModelToView(model,from);
+                if(api.isVisible(bbmap.views.main.links,bbmap.views.main.elements,model)) bbmap.views.main.addModelToView(model,"addModelsToView");
             }catch(err){
                 console.log(err);
                 console.log("Problem to display element");
             }
         });
-        
+        this.svgWindowController();
     },
     addModelToView : function(model,from){
         var origin = "client";
@@ -1249,23 +1248,24 @@ bbmap.Views.Main = Backbone.View.extend({
         if(origin == "client"){
             this.startJoyride();
         }
-        this.svgWindowController();
+        if(from != "addModelsToView")this.svgWindowController();
     },
     removeModelsToView : function(models,from){
         models.each(function(model){
             try{
-                bbmap.views.main.removeModelToView(model,from);
+                bbmap.views.main.removeModelToView(model,"removeModelsToView");
             }catch(err){
                 console.log(err);
             }
-        })    
+        });
+        this.svgWindowController();
     },
     removeModelToView : function(model,from){
         var origin = "client";
         if(from) origin = from;
         //console.log(this.nodes_views[model.get('id')])
         this.nodes_views[model.get('id')].removeView();
-        this.svgWindowController();
+        if(from != "removeModelsToView") this.svgWindowController();
     },
     addLinksToView : function(links){
         links.each(function(l){

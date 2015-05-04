@@ -274,6 +274,15 @@ var api = {
     });
     return _.compact(modelsLinked);
   },
+  getChildsLinks : function(links,elements,element){
+    var childs_links = api.getCKLinksByModelId(links,element.get('id'));
+    var nodes = api.getTreeChildrenNodes(element,elements,[]);
+    nodes.forEach(function(node){
+      var links2 = api.getCKLinksByModelId(links,node.get('id'));
+      childs_links = _.union(childs_links, links2);
+    });
+    return _.compact(childs_links);
+  },
   getCKLinksByModelId : function(links,id){
     // links have to be a collection a link model
     var ckLinks = [];

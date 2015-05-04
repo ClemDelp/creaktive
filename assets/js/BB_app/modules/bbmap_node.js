@@ -27,7 +27,7 @@ bbmap.Views.Node = Backbone.View.extend({
     /////////////////////////////////////////
     expand_collapse : function(e){
         var elements = new Backbone.Collection(api.getTreeChildrenNodes(this.model,bbmap.views.main.elements,[]));
-        var links = new Backbone.Collection(api.getCKLinksByModelId(bbmap.views.main.links,this.model.get('id')));
+        var links = new Backbone.Collection(api.getChildsLinks(bbmap.views.main.links,bbmap.views.main.elements,this.model))
 
         if(this.model.get('visibility') == true){
             this.model.save({visibility : false});

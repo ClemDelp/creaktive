@@ -156,7 +156,9 @@
   </span>
   {{ }else{ }}
     <span id="{{-model.id}}" data-type="action" style="background:transparent;" class="label secondary round expcoll tiny">
-      <small style="margin-bottom:0px;padding:0 5px 0 5px;color:red" data-type="action" id="{{-model.id}}"><b>{{-childs_nbr}}</b></small>
+      <small style="margin-bottom:0px;padding:0 5px 0 5px;color:red" data-type="action" id="{{-model.id}}">
+        <b data-type="action" id="{{-model.id}}">{{-childs_nbr}}</b>
+      </small>
     </span>
   {{ } }}
   
