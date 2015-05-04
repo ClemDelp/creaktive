@@ -130,6 +130,7 @@ var global = {
         title: title,
         user: global.models.current_user.get('id'),
         css : css,
+        visibility : true
     });
     new_element.save();
     // On ajoute le model à la collection
@@ -161,8 +162,9 @@ var global = {
     new_cklink.save();
     // On l'ajoute à la collection
     global.collections.Links.add(new_cklink,{silent : silent});   
-    // Securité pour avoir des id_father cohérents
-    if((source.get('type') == target.get('type'))||((source.get('type') == "poche")&&(target.get('type') == "knowledge"))) target.save({id_father : source.get('id')});
+    // rules sur les links
+    rules.new_link_rules(new_cklink,source,target);
+    
     return new_cklink; 
   },
 };

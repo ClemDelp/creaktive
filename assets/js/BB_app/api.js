@@ -254,7 +254,8 @@ var api = {
         var target_el = collection.get(target_id);
         if((source_el.get('type') == type1)&&(target_el.get('type') == type2)) elements.push(target_el)
       }catch(err){
-        console.log(err)
+        console.error(err)
+        console.error('link destroyed')
         link.destroy();
       }
     });
@@ -272,6 +273,15 @@ var api = {
       modelsLinked = _.union(modelsLinked, collection.get(link.get('target')))
     });
     return _.compact(modelsLinked);
+  },
+  getChildsLinks : function(links,elements,element){
+    var childs_links = api.getCKLinksByModelId(links,element.get('id'));
+    var nodes = api.getTreeChildrenNodes(element,elements,[]);
+    nodes.forEach(function(node){
+      var links2 = api.getCKLinksByModelId(links,node.get('id'));
+      childs_links = _.union(childs_links, links2);
+    });
+    return _.compact(childs_links);
   },
   getCKLinksByModelId : function(links,id){
     // links have to be a collection a link model
@@ -294,16 +304,15 @@ var api = {
     if(ckLinks.length > 0) is = true;
     return is;
   },
-  getTheRightIDFather : function(links,elements,model){
-    // links have to be a collection a link model
-    var id_father = "none";
-    var ckLinks = links.where({target : model.get('id')});
-    ckLinks.forEach(function(link){
-      var source = elements.get(link.get('source'));
-      var target = model;
-      if((source.get('type') == target.get('type'))||((source.get('type') == "poche")&&(target.get('type') == "knowledge"))) id_father = source.get('id');
-    });
-    return id_father;
+  isVisible : function(links,elements,model){
+    var visibility = true;
+    var parents = api.getTreeParentNodes(model,elements,[]);
+    parents.forEach(function(p){
+      if(p.get('visibility') == false){
+        visibility = false;
+      }
+    })
+    return visibility;
   },
   //////////////////////////////
   // API Tree manipulation
