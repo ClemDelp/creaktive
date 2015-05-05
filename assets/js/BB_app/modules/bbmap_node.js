@@ -22,9 +22,8 @@ bbmap.Views.Node = Backbone.View.extend({
         "click .ep" : "addConceptChild",
         "click .ep2" : "addKnowledgeChild",
         "click .ep3" : "editBulle",
-        "click .expcoll" : "expand_collapse"
+        "click .expcoll" : "expand_collapse",
     },
-    /////////////////////////////////////////
     expand_collapse : function(e){
         var elements = new Backbone.Collection(api.getTreeChildrenNodes(this.model,bbmap.views.main.elements,[]));
         var links = new Backbone.Collection(api.getChildsLinks(bbmap.views.main.links,bbmap.views.main.elements,this.model))
@@ -56,8 +55,14 @@ bbmap.Views.Node = Backbone.View.extend({
         var left = this.model.get('left');
         var top = this.model.get('top');
         var style = 'top:' + top + 'px; left : ' + left + 'px;';// + this.model.get('css');
-        $(this.el).attr('style',style)
-        $(this.el).addClass(this.model.get('css'))
+        $(this.el).attr('style',style);
+        var css = "";
+        // le css manuel est prioritaire sur le css automatique
+        if(this.model.get('css_manu') != undefined) css = this.model.get('css_manu')
+        else if(this.model.get('css_auto') != undefined) css = this.model.get('css_auto')
+        // 
+        $(this.el).removeClass('c_connu c_atteignable c_alternatif c_hamecon k_validees k_encours k_manquante k_indesidable');
+        $(this.el).addClass(css);
         bbmap.views.main.instance.repaint(this.model.get('id'));
     },
     cssPosition : function(top,left){

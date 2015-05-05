@@ -57,6 +57,8 @@ module.exports = {
     PermissionsService.checkPermissions(req,function(err){
       if(err) return res.send({err:err});
       if(_.contains(req.session.permissions.all, req.query.projectId)){
+        
+        ////////////////////////////////////////////////////////////
         Project.findOne(req.query.projectId).done(function(err, project){
           ///////////////////////////////////////////////////
           // Notifications
@@ -98,46 +100,48 @@ module.exports = {
           });
           ///////////////////////////////////////////////////
           News.find({project:project.id, user: req.session.user.id}).done(function(err,news){
-          Notification.find({project:project.id}).done(function(err,notifications){
-          Attachment.find({project:project.id}).done(function(err,attachments){
-          Comment.find({project:project.id}).done(function(err,comments){
-            Element.find({project:project.id}).done(function(err,elements){
-              Project.find({id : req.session.permissions.all, backup : false}).done(function(err,projects){
-                Link.find({project:project.id}).done(function(err,links){
-                  User.find().done(function(err,users){
-                    Screenshot.find({project_id:project.id}).done(function(err, screenshots){
-                      Presentation.find({project_id:project.id}).done(function(err, presentations){
-                        res.view({
-                          news : JSON.stringify(news),
-                          comments : JSON.stringify(comments),
-                          attachments : JSON.stringify(attachments),
-                          elements : JSON.stringify(elements),                    
-                          currentUser : JSON.stringify(req.session.user),
-                          projectTitle : project.title,
-                          projectId : project.id,
-                          currentProject : JSON.stringify(project),
-                          project_users : JSON.stringify(project_users),
-                          users : JSON.stringify(users),
-                          projects : JSON.stringify(projects),
-                          links : JSON.stringify(links),
-                          notifications : JSON.stringify(notifications),
-                          permissions : JSON.stringify(permissions),
-                          backups : JSON.stringify(backups_truncated),
-                          screenshots : JSON.stringify(screenshots),
-                          presentations : JSON.stringify(presentations),
-                          presentationId : JSON.stringify(presentationId)
+            Notification.find({project:project.id}).done(function(err,notifications){
+              Attachment.find({project:project.id}).done(function(err,attachments){
+                Comment.find({project:project.id}).done(function(err,comments){
+                  Element.find({project:project.id}).done(function(err,elements){
+                    Project.find({id : req.session.permissions.all, backup : false}).done(function(err,projects){
+                      Link.find({project:project.id}).done(function(err,links){
+                        User.find().done(function(err,users){
+                          Screenshot.find({project_id:project.id}).done(function(err, screenshots){
+                            Presentation.find({project_id:project.id}).done(function(err, presentations){
+
+                              rules.apply_rules(elements,links,function(){
+                                res.view({
+                                  news : JSON.stringify(news),
+                                  comments : JSON.stringify(comments),
+                                  attachments : JSON.stringify(attachments),
+                                  elements : JSON.stringify(elements),                    
+                                  currentUser : JSON.stringify(req.session.user),
+                                  projectTitle : project.title,
+                                  projectId : project.id,
+                                  currentProject : JSON.stringify(project),
+                                  project_users : JSON.stringify(project_users),
+                                  users : JSON.stringify(users),
+                                  projects : JSON.stringify(projects),
+                                  links : JSON.stringify(links),
+                                  notifications : JSON.stringify(notifications),
+                                  permissions : JSON.stringify(permissions),
+                                  backups : JSON.stringify(backups_truncated),
+                                  screenshots : JSON.stringify(screenshots),
+                                  presentations : JSON.stringify(presentations),
+                                  presentationId : JSON.stringify(presentationId)
+                                });  
+                              });
+                            });
+                          });
                         });
                       });
                     });
                   });
                 });
               });
-              });
             });
           });
-          });
-          });
-
         });
 
       }else{

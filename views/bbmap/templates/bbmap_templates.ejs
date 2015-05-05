@@ -154,32 +154,49 @@
   <span id="{{-model.id}}" data-type="action" style="background:transparent;padding:0" class="label secondary round expcoll tiny icon">
     <img data-type="action" id="{{-model.id}}" title="mode" src="/img/icones/Expand-Collapse-32.png"/>
   </span>
-  {{ }else{ }}
+  {{ }else if(model.visibility == false){ }}
     <span id="{{-model.id}}" data-type="action" style="background:transparent;" class="label secondary round expcoll tiny">
       <small style="margin-bottom:0px;padding:0 5px 0 5px;color:red" data-type="action" id="{{-model.id}}">
         <b data-type="action" id="{{-model.id}}">{{-childs_nbr}}</b>
       </small>
     </span>
   {{ } }}
-  
 
-
-  {{ if( (model.comments.length + model.attachment.length) >0) { }}
-  <span id="{{-model.id}}" data-type="title" class="info top-bar-unread">{{- model.comments.length + model.attachment.length}}</span>
-  {{ } }}
 </script>
 
 <script type="text/template" id="bbmap-bottom-element-template">
   
-  <ul class="button-group tiny radius">
-    <li><a href="#" class="button tiny radius secondary downloadimage"><img title="Download screenshot" src="/img/icones/Download-24.png"/></a></li>
+    <a href="#" class="button tiny radius secondary downloadimage"><img title="Download screenshot" src="/img/icones/Download-24.png"/></a>
+
     {{ if(mode == "edit"){ }}
-      <li><a href="#" class="tiny radius button secondary structureSubTree"><img title="structure sub-tree" src="/img/icones/Network-Drives-24.png"/></a></li>
-      <li><a style="display:none" href="#" class="button tiny radius secondary prevH"><img title="ctrl-Z" src="/img/icones/Arrowhead-Left-24.png"/></a></li>
-      <li><a style="display:none" href="#" class="button tiny radius secondary nextH"><img title="ctrl-Y" src="/img/icones/Arrowhead-Right-24.png"/></a></li>
-  {{ } }}
-  </ul>
-  
+      <a style="display:none" href="#" class="a tiny radius button secondary structureSubTree"><img title="structure sub-tree" src="/img/icones/Network-Drives-24.png"/></a>
+
+      <a style="display:none" href="#" class="button tiny radius secondary prevH"><img title="ctrl-Z" src="/img/icones/Arrowhead-Left-24.png"/></a>
+
+      <a style="display:none" href="#" class="button tiny radius secondary nextH"><img title="ctrl-Y" src="/img/icones/Arrowhead-Right-24.png"/></a>
+
+      <span style="display:true">
+        <small> legend : </small>
+
+        <a style="display:none" href="#" title="Connu: le concept renvoie à un ensemble de solutions techniques connues, dont la performance est également connue" data-tooltip aria-haspopup="true" class="c tip-top round button tiny apply_template c_connu" data-type="c_connu">c</a>
+      
+        <a style="display:none" href="#" title="Atteignable: le concept est à approfondir ou atteignable" data-tooltip aria-haspopup="true" class="c tip-top round button tiny apply_template c_atteignable" data-type="c_atteignable">c</a>
+      
+        <a style="display:none" href="#" title="Alternatif: le concept est éloigné du dominant design et peut faire l'objet d'une démarche de conception dédiée" data-tooltip aria-haspopup="true" class="c tip-top round button tiny apply_template c_alternatif" data-type="c_alternatif">c</a>
+      
+        <a style="display:none" href="#" title="Hameçon: le concept est lié à une rupture de règles et devient un point d'accroche pour de nouveaux K en émergence/expension pure" data-tooltip aria-haspopup="true" class="c tip-top round button tiny apply_template c_hamecon" data-type="c_hamecon">c</a>
+      
+        <a style="display:none" href="#" title="Validée: la connaissance acquise est validée en interne" data-tooltip aria-haspopup="true" class="k tip-top round button tiny apply_template k_validees" data-type="k_validees">k</a>
+      
+        <a style="display:none" href="#" title="En cours: la connaissance est en cours d'acquisition" data-tooltip aria-haspopup="true" class="k tip-top round button tiny apply_template k_encours" data-type="k_encours">k</a>
+
+        <a style="display:none" href="#" title="Manquante : la connaissance est absente ou non actionnable en interne" data-tooltip aria-haspopup="true" class="k tip-top round button tiny apply_template k_manquante" data-type="k_manquante">k</a>
+
+        <a style="display:none" href="#" title="Indécidable : la connaissance est manquante et de surcroit non accessible" data-tooltip aria-haspopup="true" class="k tip-top round button tiny apply_template k_indesidable" data-type="k_indesidable">k</a>
+
+      </span>
+
+  {{ } }}  
 </script>
 
 
