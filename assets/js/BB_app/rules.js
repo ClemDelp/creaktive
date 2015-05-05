@@ -8,30 +8,22 @@ var rules = {
             this.knowledges = global.collections.Elements.where({type : "knowledge"});
             this.poches = global.collections.Elements.where({type : "poche"});   
             //////////////////
-            // Apply legend
-            // this.elements.each(function(model){
-            //     rules.applyLegend(model);
-            // });
-            rules.global_elements_rules();
-            rules.links_id_father_rules(); 
         }
+    },
+    /////////////////////////////////////////////
+    // PERMISSION
+    /////////////////////////////////////////////
+    getPermission : function(){
+        var autorisation = false;
+        var permissions = global.collections.Permissions;
+        var currentUser = global.models.current_user;
+        var perm = permissions.where({user_id : currentUser.get('id')})
+        if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))) perm = true;
+        return autorisation;
     },
     /////////////////////////////////////////////
     // LINKS RULES
     /////////////////////////////////////////////
-    links_id_father_rules : function(){
-        rules.elements.each(function(model){            
-            var models = api.getTreeParentNodes(model,rules.elements,[]);
-            if(models.length == 0){
-                ////////////////////////////
-                // fixe id_father problem
-                if(model.get('id_father') != "none"){
-                    model.save({id_father : "none"});
-                }
-
-            }
-        })
-    },
     new_link_rules : function(link,source,target){
         // si la source et la target sont du mm type
         if(source.get('type') == target.get('type')){
@@ -80,61 +72,37 @@ var rules = {
     /////////////////////////////////////////////
     // ELEMENTS RULES
     /////////////////////////////////////////////
-    global_elements_rules : function(){
-        rules.elements.each(function(model){
-            // ajout ou update de l'atribut visibility
-            try{
-                if(model.get('visibility') == undefined){
-                    model.save({visibility : true}); // par default mettre la valeur à show
-                }else if(model.get('visibility') == "show"){
-                    model.save({visibility : true});  
-                }else if(model.get('visibility') == "hide"){
-                    model.save({visibility : false});
-                }
-            }catch(err){
-                console.log(err);
-            }    
-        })
-    },
-    applyForAll : function(elements){
-        elements.each(function(model){
-            rules.applyLegend(model);
-        }); 
-    },
     applyLegend : function(model){
         if(global.rules == true){
-            var permissions = global.collections.Permissions;
-            var currentUser = global.models.current_user;
-            var perm = permissions.where({user_id : currentUser.get('id')})
-            if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))){
+            if(rules.getPermission()){
                 if(model.get('type') == "concept"){
-                    if((model.get('content') == "")&&(model.get('css') != "c_empty")){
-                        console.log("applyLegend")
-                        model.save({ css : "c_empty" },{silent:true});
+                    if((model.get('content') == "")&&(model.get('css_auto') != "c_empty")){
+                        console.log("legend not found and apply...")
+                        model.save({ css_auto : "c_empty" },{silent:true});
                     }
-                    else if((model.get('content') != "")&&(model.get('css') != "c_full")){
-                        console.log("applyLegend")
-                        model.save({ css : "c_full"},{silent:true});
+                    else if((model.get('content') != "")&&(model.get('css_auto') != "c_full")){
+                        console.log("legend not found and apply...")
+                        model.save({ css_auto : "c_full"},{silent:true});
                     } 
                 }else if(model.get('type') == "knowledge"){
-                    if((model.get('content') == "")&&(model.get('css') != "k_empty")){
-                        console.log("applyLegend")
-                        model.save({ css : "k_empty"},{silent:true});  
+                    if((model.get('content') == "")&&(model.get('css_auto') != "k_empty")){
+                        console.log("legend not found and apply...")
+                        model.save({ css_auto : "k_empty"},{silent:true});  
                     } 
-                    else if((model.get('content') != "")&&(model.get('css') != "k_full")){
-                        console.log("applyLegend")
-                        model.save({ css : "k_full"},{silent:true});
+                    else if((model.get('content') != "")&&(model.get('css_auto') != "k_full")){
+                        console.log("legend not found and apply...")
+                        model.save({ css_auto : "k_full"},{silent:true});
                     } 
 
                 }else if(model.get('type') == "poche"){
                     var elements = api.getTypeLinkedToModel(rules.links,rules.elements,model,"knowledge");
-                    if((elements.length == 0)&&(model.get('css') != "p_empty")){
+                    if((elements.length == 0)&&(model.get('css_auto') != "p_empty")){
                         console.log("applyLegend")
-                        model.save({ css : "p_empty"},{silent:true});
+                        model.save({ css_auto : "p_empty"},{silent:true});
                     } 
-                    else if((elements.length > 0)&&(model.get('css') != "p_full")){
+                    else if((elements.length > 0)&&(model.get('css_auto') != "p_full")){
                         console.log("applyLegend");
-                        model.save({ css : "p_full"},{silent:true});   
+                        model.save({ css_auto : "p_full"},{silent:true});   
                     }
                 }
             }    

@@ -25,15 +25,6 @@ bbmap.router = Backbone.Router.extend({
             else bbmap.views.main.setMode("visu",true);
         }
     },
-    // visu: function() {
-    //     bbmap.views.main.setMode("visu",true);
-    // },
-    // edit: function() {
-    //     bbmap.views.main.setMode("edit",true);
-    // },
-    // timeline: function() {
-    //     bbmap.views.main.setMode("timeline",true);
-    // },
 });
 /////////////////////////////////////////////////
 // MAIN
@@ -203,27 +194,12 @@ bbmap.Views.Main = Backbone.View.extend({
         //"click #showMenu" : "eventMenu",
         "click .prevH" : "backInHistory",
         "click .nextH" : "advanceInHistory",
-        "click .magicWand" : "magicWand"
+        "click .apply_template" : "apply_template",    
     },
-    magicWand : function(e){
+    /////////////////////////////////////////
+    apply_template : function(e){
         e.preventDefault();
-        swal({   
-            title: "Give a magic wand to your project !",   
-            text: "this action will make graphic changes to your project",   
-            type: "warning",   
-            showCancelButton: true,   
-            confirmButtonColor: "#DD6B55",   
-            confirmButtonText: "Magic Wand!",   
-            closeOnConfirm: true,
-            allowOutsideClick : true
-        }, 
-        function(){   
-            rules.applyForAll(bbmap.views.main.elements);
-            bbmap.views.main.elements.each(function(model){
-                bbmap.views.main.nodes_views[model.get('id')].applyStyle();
-            });
-            bbmap.views.main.statistics.render(); 
-        });
+        this.lastModel.save({css_manu : e.target.getAttribute("data-type")});
     },
     svgWindowController : function(){
         if(this.init != true){
@@ -267,8 +243,8 @@ bbmap.Views.Main = Backbone.View.extend({
             var h = $("#"+k.get('id')).height();
 
             if(k.get('left') < left_max){
-                k.save({left : left_max+100 })
-                $("#"+k.get('id')).animate({left: left_max+100})  
+                //k.save({left : left_max+100 })
+                //$("#"+k.get('id')).animate({left: left_max+100})  
             }
             if((h + k.get('top')) > top_max) top_max = (h + k.get('top'));
             if(k.get('top') < top_min) top_min = k.get('top');
@@ -278,8 +254,8 @@ bbmap.Views.Main = Backbone.View.extend({
             var h = $("#"+p.get('id')).height();
 
             if(p.get('left') < left_max){
-                p.save({left : left_max+100 })
-                $("#"+p.get('id')).animate({left: left_max+100})  
+                //p.save({left : left_max+100 })
+                //$("#"+p.get('id')).animate({left: left_max+100})  
             }
             if((h + p.get('top')) > top_max) top_max = (h + p.get('top'));
             if(p.get('top') < top_min) top_min = p.get('top');
@@ -707,6 +683,13 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     setLastModel : function(model){
         this.lastModel = model;
+        if(this.lastModel.get('type') == "poche"){
+            $('.c').hide();$('.k').hide();$('.a').show();
+        }else if(this.lastModel.get('type') == "concept"){
+            $('.c').show();$('.k').hide();$('.a').show();
+        }else if(this.lastModel.get('type') == "knowledge"){
+            $('.c').hide();$('.k').show();$('.a').show();
+        }
     },
     /////////////////////////////////////////
     // Sliding editor bar
@@ -757,7 +740,7 @@ bbmap.Views.Main = Backbone.View.extend({
     showIcon : function(e){
         e.preventDefault();
         var element = this.elements.get(e.target.id)
-        //console.log("Element details : ",element.toJSON())
+        console.log("Element details : ",element.toJSON())
         var visible = api.isVisible(bbmap.views.main.links,bbmap.views.main.elements,bbmap.views.main.elements.get(element.get('id')))
         //console.log(visible)
         // close all icones
@@ -1535,17 +1518,17 @@ bbmap.Views.Stat = Backbone.View.extend({
         this.bottom_stats_el.empty();
         // Set stats
         this.stats = api.statistics(this.elements,this.links);
-        var permissions = global.collections.Permissions;
-        var currentUser = global.models.current_user;
-        var perm = permissions.where({user_id : currentUser.get('id')})
-        if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))){
-            bbmap.views.main.project.save({stats : this.stats});
-            console.log('project stats updated');
-        } 
+        // var permissions = global.collections.Permissions;
+        // var currentUser = global.models.current_user;
+        // var perm = permissions.where({user_id : currentUser.get('id')})
+        // if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))){
+        //     bbmap.views.main.project.save({stats : this.stats});
+        //     console.log('project stats updated');
+        // } 
         // left stat
-        this.left_stats_el.append(this.template_left({
-            stats : this.stats
-        }));
+        // this.left_stats_el.append(this.template_left({
+        //     stats : this.stats
+        // }));
         // bottom stats
         this.bottom_stats_el.append(this.template_bottom({
             c_nbre : this.stats.c_nbre.stat,

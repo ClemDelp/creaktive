@@ -299,4 +299,95 @@ body{
 .po_link{
 	font-family: Arial;color: #D35400;background: transparent;border-bottom: dotted #D35400 2px;text-decoration: none;
 }
+
+/*  legende des mines  */
+.c_connu{
+	-moz-border-radius: 50px;
+	-webkit-border-radius: 50px;
+	border-radius: 50px;
+	
+	font-family: Arial;
+	color: white;
+	background: #2ecc71;
+	border: solid #27ae60 2px;
+	text-decoration: none;
+}
+.c_atteignable{
+	-moz-border-radius: 50px;
+	-webkit-border-radius: 50px;
+	border-radius: 50px;
+	
+	font-family: Arial;
+	color: white;
+	background: #1abc9c;
+	border: solid #16a085 2px;
+	text-decoration: none;
+}
+.c_alternatif{
+	-moz-border-radius: 50px;
+	-webkit-border-radius: 50px;
+	border-radius: 50px;
+	
+	font-family: Arial;
+	color: white;
+	background: #9b59b6;
+	border: solid #8e44ad 2px;
+	text-decoration: none;
+}
+.c_hamecon{
+	-moz-border-radius: 50px;
+	-webkit-border-radius: 50px;
+	border-radius: 50px;
+	
+	font-family: Arial;
+	color: white;
+	background: #34495e;
+	border: solid #2980b9 2px;
+	text-decoration: none;
+}
+.k_validees{
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+
+	font-family: Arial;
+	color: black;
+	background: transparent;
+	border: solid #2c3e50 2px;
+	text-decoration: none;
+}
+.k_encours{
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+
+	font-family: Arial;
+	color: white;
+	background: #f1c40f;
+	border: solid #f39c12 2px;
+	text-decoration: none;
+}
+.k_manquante{
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+
+	font-family: Arial;
+	color: white;
+	background: #e67e22;
+	border: solid #d35400 2px;
+	text-decoration: none;
+}
+.k_indesidable{
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border-radius: 10px;
+
+	font-family: Arial;
+	color: white;
+	background: #e74c3c;
+	border: solid #c0392b 2px;
+	text-decoration: none;
+}
+
       
