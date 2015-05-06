@@ -52,8 +52,6 @@ module.exports.routes = {
   '/analyse': "AnalyseController.analyseview",
   '/ckviewer': "CkviewerController.ckviewerview",
   '/categories': "CategoryController.categoryview",
-  '/knowledges': "KnowledgeController.knowledgeview",
-  '/conceptsMap': "ConceptController.conceptview",
   '/ckpreviewer': "CkpreviewerController.ckpreviewerview",
 
 

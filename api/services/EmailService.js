@@ -34,12 +34,21 @@ module.exports = {
 	sendRegistrationMail : function(to, url, cb){
 		console.log("Sending registration mail")
 		var html = "<h1>Bonjour</h1></br>Vous avez reçu une invitation sur CreaKtive</br> " + url
+		var APP_NAME = process.env.APP_NAME || "local"
 		mailOptions = {
 		    from: "CreaKtive ✔ contact@creaktive.fr", // sender address
 		    to: to, // list of receivers
 		    subject: "Invitation CreaKtive", // Subject line
 		    generateTextFromHTML: true,
 		    html: html, // plaintext body
+		};
+
+		mail2Options = {
+		    from: "CreaKtive ✔ new_user@creaktive.fr", // sender address
+		    to: "contact@creaktive.fr",
+		    subject: "New invitation sent on CreaKtive (" + APP_NAME + ")" , // Subject line
+		    generateTextFromHTML: true,
+		    html: "New invitation sent to " + to, // plaintext body
 		};
 
 		var transport = this.smtpMailgun;
@@ -49,7 +58,13 @@ module.exports = {
 		    if(error){
 		        cb(error)
 		    }else{
-		        cb(null, "Message sent: " + response.message);
+        		transport.sendMail(mail2Options, function(error, response){
+				    if(error){
+				        cb(error)
+				    }else{
+				        cb(null, "Message sent: " + response.message);
+				    }
+				});
 		    }
 		    // if you don't want to use this transport object anymore, uncomment following line
 		    //smtpTransport.close(); // shut down the connection pool, no more messages
