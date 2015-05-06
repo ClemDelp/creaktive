@@ -98,9 +98,9 @@ workspacesList.Views.Main = Backbone.View.extend({
         }).render().el);
         this.render_workspaces();
 
-        if(this.display != "list"){
-            tutos.init({el:"#tutos_container"}); 
-        }
+        // if(this.display != "list"){
+            
+        // }
 
         $(document).foundation();
         return this;
