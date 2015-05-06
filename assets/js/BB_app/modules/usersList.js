@@ -61,6 +61,7 @@ usersList.Views.Main = Backbone.View.extend({
               user_id : user_id_,
               project_id : this.project.id
           });
+          $.post("/user/inviteRegisteredUser", {guest : global.collections.Users.get(user_id_).toJSON(), host: global.models.current_user.toJSON()});
       }else{
         swal("Oups!", "User already linked!", "warning");
       }
@@ -70,8 +71,8 @@ usersList.Views.Main = Backbone.View.extend({
       e.preventDefault();
       var _this = this;
       swal({   
-          title: "Be careful",   
-          text: "Change permission can lead to a ban on project! Confirm?",   
+          title: "Warning",   
+          text: "Are tou sure to perform this action ?",   
           type: "warning",   
           showCancelButton: true,   
           confirmButtonColor: "#DD6B55",   
