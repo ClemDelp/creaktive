@@ -719,6 +719,7 @@ bbmap.Views.Main = Backbone.View.extend({
         e.preventDefault();
         var element = this.elements.get(e.target.id)
         console.log("Element details : ",element.toJSON())
+        console.log("Infinite loop : ",api.isInfiniteLoop(bbmap.views.main.elements,bbmap.views.main.elements.get(e.target.id),[]))
         var visible = api.isVisible(bbmap.views.main.links,bbmap.views.main.elements,bbmap.views.main.elements.get(element.get('id')))
         //console.log(visible)
         // close all icones
