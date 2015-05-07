@@ -63,8 +63,16 @@
     });
   },
 
+  inviteRegisteredUser : function(req,res){
+    console.log("invite registered user on a project")
+    EmailService.sendInvitation(req.body.host, req.body.guest,function(err, msg){
+        if(err) return res.send({err:err});
+
+      });
+  },
+
   inviteUser : function(req,res){
-    console.log("invite user to a project")
+    console.log("invite user on a project")
     User.create({
       img : "/img/default-user-icon-profile.png",
       name : req.body.email.substring(0,req.body.email.indexOf("@")),

@@ -30,14 +30,14 @@ module.exports = {
 		}
 	}),
 
-
-	sendRegistrationMail : function(to, url, cb){
+	sendInvitation : function(host,guest, cb){
 		console.log("Sending registration mail")
-		var html = "<h1>Bonjour</h1></br>Vous avez reçu une invitation sur CreaKtive</br> " + url
+		var html = "<h1>Bonjour</h1></br>Vous avez reçu une invitation sur CreaKtive</br> "
+		var APP_NAME = process.env.APP_NAME || "local"
 		mailOptions = {
-		    from: "CreaKtive ✔ contact@creaktive.fr", // sender address
-		    to: to, // list of receivers
-		    subject: "Invitation CreaKtive", // Subject line
+		    from: "L'éditeur CreaKtive ✔ editor_info@creaktive.fr", // sender address
+		    to: guest.email, // list of receivers
+		    subject: "Invitation from " + host.name + " on CreaKtive" , // Subject line
 		    generateTextFromHTML: true,
 		    html: html, // plaintext body
 		};
@@ -49,7 +49,49 @@ module.exports = {
 		    if(error){
 		        cb(error)
 		    }else{
+        		
 		        cb(null, "Message sent: " + response.message);
+		    }
+		    // if you don't want to use this transport object anymore, uncomment following line
+		    //smtpTransport.close(); // shut down the connection pool, no more messages
+		});
+	},
+
+
+	sendRegistrationMail : function(to, url, cb){
+		console.log("Sending registration mail")
+		var html = "<h1>Bonjour</h1></br>Vous avez reçu une invitation sur CreaKtive</br> " + url
+		var APP_NAME = process.env.APP_NAME || "local"
+		mailOptions = {
+		    from: "L'éditeur CreaKtive ✔ contact@creaktive.fr", // sender address
+		    to: to, // list of receivers
+		    subject: "Invitation CreaKtive", // Subject line
+		    generateTextFromHTML: true,
+		    html: html, // plaintext body
+		};
+
+		mail2Options = {
+		    from: "L'éditeur CreaKtive ✔ new_user@creaktive.fr", // sender address
+		    to: "contact@creaktive.fr",
+		    subject: "New invitation sent on CreaKtive (" + APP_NAME + ")" , // Subject line
+		    generateTextFromHTML: true,
+		    html: "New invitation sent to " + to, // plaintext body
+		};
+
+		var transport = this.smtpMailgun;
+		if(process.env.MAILGUN_SMTP_SERVER) transport = this.smtpTransport
+
+		transport.sendMail(mailOptions, function(error, response){
+		    if(error){
+		        cb(error)
+		    }else{
+        		transport.sendMail(mail2Options, function(error, response){
+				    if(error){
+				        cb(error)
+				    }else{
+				        cb(null, "Message sent: " + response.message);
+				    }
+				});
 		    }
 		    // if you don't want to use this transport object anymore, uncomment following line
 		    //smtpTransport.close(); // shut down the connection pool, no more messages
@@ -61,7 +103,7 @@ module.exports = {
 		var html = "New user added on CreaKtive " + user.name + " " + user.email;  
 		var APP_NAME = process.env.APP_NAME || "local"
 		mailOptions = {
-		    from: "CreaKtive ✔ new_user@creaktive.fr", // sender address
+		    from: "L'éditeur CreaKtive ✔ new_user@creaktive.fr", // sender address
 		    to: "contact@creaktive.fr",
 		    subject: "New user on CreaKtive (" + APP_NAME + ")" , // Subject line
 		    generateTextFromHTML: true,
@@ -70,7 +112,7 @@ module.exports = {
 
 		var html2 = "<h1>Bonjour</h1></br>Votre inscription est validée, vous pouvez maintenant vous connecter à la plateforme</br> "
 		mailToUser = {
-		    from: "CreaKtive ✔ contact@creaktive.fr", // sender address
+		    from: "L'éditeur CreaKtive ✔ contact@creaktive.fr", // sender address
 		    to: user.email,
 		    subject: "CreaKtive account created " , // Subject line
 		    generateTextFromHTML: true,
@@ -104,7 +146,7 @@ module.exports = {
 		console.log("Send password recovery email")
 		var html = "<h1>Bonjour</h1></br>Veuillez suivre le lien suivant pour créer un nouveau mot de passe</br> " + url;
 		mailOptions = {
-		    from: "CreaKtive ✔ contact@creaktive.fr", // sender address
+		    from: "L'éditeur CreaKtive ✔ contact@creaktive.fr", // sender address
 		    to: to, // list of receivers
 		    subject: "Password recovery", // Subject line
 		    generateTextFromHTML: true,
