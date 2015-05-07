@@ -389,6 +389,23 @@ var api = {
 
     return _.compact(result);
   },
+  isInfiniteLoop : function(elements,model,alreadyDone){
+    alreadyDone.unshift(model.get('id'));
+    var loop = false;
+    // Si le model n'a pas de pere on a pas de boucle
+    if(model.get('id_father') == "none"){
+      loop = false;
+    } 
+    // Si le pere est deja passé on a une boucle
+    else if(_.indexOf(alreadyDone, model.get('id_father')) != -1){
+      loop = true;
+    }
+    // Sinon on test le suivant
+    else{
+      loop = api.isInfiniteLoop(elements,elements.get(model.get('id_father')),alreadyDone);
+    }
+    return loop;
+  },
   //////////////////////////////
   // Stats
   statistics : function(elements,links){

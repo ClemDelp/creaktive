@@ -151,6 +151,7 @@ var global = {
     var silent_event = false;
     if(silent) silent_event = silent;
     //////////////////
+    // si ya une boucle infinie avec ce nouveau lien
     var new_cklink = new global.Models.CKLink({
       id :guid(),
       user : global.models.current_user.get('id'),
@@ -164,8 +165,9 @@ var global = {
     global.collections.Links.add(new_cklink,{silent : silent});   
     // rules sur les links
     rules.new_link_rules(new_cklink,source,target);
-    
+
     return new_cklink; 
+    
   },
 };
 //////////////////////////////////////////////

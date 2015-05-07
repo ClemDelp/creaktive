@@ -33,6 +33,15 @@ var rules = {
         else if((source.get('type') == "poche")&&(target.get('type') == "knowledge")){
             target.save({id_father : source.get('id')});   
         }
+        // si ya une boucle infinie avec ce nouveau lien
+        if(api.isInfiniteLoop(rules.elements,rules.elements.get(target.get('id')),[])){
+            alert("You can't create loop!");
+            setTimeout(function(){
+                link.destroy();
+                rules.setTheRightIDFather(rules.links,rules.elements,source);
+                rules.setTheRightIDFather(rules.links,rules.elements,target);
+            },1000);
+        }
     },
     setTheRightIDFather : function(links,elements,model){
         // links have to be a collection a link model
