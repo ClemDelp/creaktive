@@ -237,6 +237,79 @@ body{
 /*.chart-demo .knowledge.dragHover, .chart-demo .concept.dragHover { border:2px solid orange; }
 */
 /* ---------------------- */
+/* ARROW concept */
+.window.concept.arrow:after, .window.concept.arrow:before {
+	left: 102%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.window.concept.arrow:after {
+	border-color: rgba(46, 204, 113, 0);
+	border-left-color: #2ecc71;
+	border-width: 8px;
+	margin-top: -8px;
+}
+.window.concept.arrow:before {
+	border-color: rgba(39, 174, 96, 0);
+	border-left-color: #27ae60;
+	border-width: 11px;
+	margin-top: -11px;
+}
+/* ARROW Knowledge */
+.window.knowledge.arrow:after, .window.knowledge.arrow:before {
+	right: 102%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.window.knowledge.arrow:after {
+	border-color: rgba(52, 152, 219, 0);
+	border-right-color: #3498db;
+	border-width: 8px;
+	margin-top: -8px;
+}
+.window.knowledge.arrow:before {
+	border-color: rgba(41, 128, 185, 0);
+	border-right-color: #2980b9;
+	border-width: 11px;
+	margin-top: -11px;
+}
+/* ARROW Poche */
+.window.poche.arrow:after, .window.poche.arrow:before {
+	right: 102%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+}
+
+.window.poche.arrow:after {
+	border-color: rgba(230, 126, 34, 0);
+	border-right-color: #e67e22;
+	border-width: 8px;
+	margin-top: -8px;
+}
+.window.poche.arrow:before {
+	border-color: rgba(211, 84, 0, 0);
+	border-right-color: #d35400;
+	border-width: 11px;
+	margin-top: -11px;
+}
+/* ---------------------- */
 /* ELement */
 .legend_element{
 	padding: 0 5px 0 5px;
@@ -390,4 +463,4 @@ body{
 	text-decoration: none;
 }
 
-      
+

@@ -72,21 +72,21 @@ bbmap.Views.Node = Backbone.View.extend({
         };
         $(this.el).css( styles );
     },
-    setPosition : function(x, y, sz, h, broadcast, from, notif){
-        var origin = "normal";
-        if(from) origin = from;
-        var before_change = this.model.clone();
-        var left = (x - h);
-        var top  = (y - h);
-        this.cssPosition(top,left);
-        this.model.save({
-            top: top,
-            left: left
-        },{silent:broadcast, notification : notif});
-        var after_change = this.model.clone();
-        // Set old father !!! 
-        //if((origin == "normal")||(origin == "followfather"))global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
-    },
+    // setPosition : function(x, y, sz, h, broadcast, from, notif){
+    //     var origin = "normal";
+    //     if(from) origin = from;
+    //     var before_change = this.model.clone();
+    //     var left = (x - h);
+    //     var top  = (y - h);
+    //     this.cssPosition(top,left);
+    //     this.model.save({
+    //         top: top,
+    //         left: left
+    //     },{silent:broadcast, notification : notif});
+    //     var after_change = this.model.clone();
+    //     // Set old father !!! 
+    //     //if((origin == "normal")||(origin == "followfather"))global.eventAggregator.trigger(this.model.get('id')+"_followme",before_change,after_change)
+    // },
     /////////////////////////////////////////////
     getPosition : function(z){
         var zoom = 1;
@@ -122,7 +122,7 @@ bbmap.Views.Node = Backbone.View.extend({
             // center to element
             var screenCentroid = api.getScreenCentroid();
             var position = {top : $(this.el).offset().top, left :$(this.el).offset().left}
-            if((Math.abs(screenCentroid.top - position.top)>150)||(Math.abs(screenCentroid.left - position.left)>300)) bbmap.views.main.centerToElement(position);
+            //if((Math.abs(screenCentroid.top - position.top)>150)||(Math.abs(screenCentroid.left - position.left)>300)) bbmap.views.main.centerToElement(position);
             //
             if(bbmap.views.main.mode == "edit"){
                 var position = this.getPosition(bbmap.zoom.get('val'));
@@ -309,7 +309,8 @@ bbmap.Views.Node = Backbone.View.extend({
 
         }));
         this.applyStyle();
-
+        
+        $(document).foundation();
         return this;
     }
 });

@@ -18,7 +18,7 @@ var rules = {
         var permissions = global.collections.Permissions;
         var currentUser = global.models.current_user;
         var perm = permissions.where({user_id : currentUser.get('id')})
-        if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))) perm = true;
+        if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))) autorisation = true;
         return autorisation;
     },
     /////////////////////////////////////////////

@@ -311,7 +311,6 @@ bbmap.Views.Main = Backbone.View.extend({
         // Prepar legend
         var legend = this.statistics.getLegend();
         // Def the cadre
-
         var cadre_width = cadre.width;
         var cadre_height = cadre.height;
         //if(cadre_height<400) cadre_height = 400;
@@ -326,8 +325,10 @@ bbmap.Views.Main = Backbone.View.extend({
             $(child).css( "width", el_width+50 );
             cadre.append(child)
         })
-        
-        // Append to body i dont know why 
+        // hide arrow
+        console.log("cadre : ",$(cadre).find(".arrow"))
+        $(cadre).find(".arrow").removeClass("arrow");
+        // Append to body i dont know why
         $('body').prepend(cadre)
         html2canvas($(cadre).get(0), {
             onrendered: function(canvas) {
@@ -349,10 +350,14 @@ bbmap.Views.Main = Backbone.View.extend({
                     ctx.drawSvg(svgTag, left, top);
                 });
                 // canvas is the final rendered <canvas> element
-                //$('#tutu').append(canvas)
-
                 var imgData = canvas.toDataURL("image/png");
-                window.open(imgData);
+                var a = $("<a>")
+                    .attr("href", imgData)
+                    .attr("download", "ck_map.png")
+                    .appendTo("body");
+                a[0].click();
+                a.remove();
+                // window.open(imgData);
                 $("#youhou").remove();
             }
         });
@@ -378,33 +383,6 @@ bbmap.Views.Main = Backbone.View.extend({
             bbmap.views.main.svgWindowController();
         },1000);
     },
-    // treeClassification : function(e){
-    //     e.preventDefault();
-    //     var pere = this.lastModel.get('id');
-    //     var elements = TreeClassification.alignHF(pere,75,75,bbmap.views.main.elements.toJSON());
-    //     elements.forEach(function(el){
-    //         bbmap.views.main.elements.get(el.id).save(el)
-    //     });
-    //     setTimeout(function(){
-    //         bbmap.views.main.instance.repaintEverything();
-    //         bbmap.views.main.svgWindowController();
-    //     },1000);
-    //     // V2
-    //     // var compact = false;
-    //     // var vertical = false;
-    //     // var mirror = false;
-    //     // var dossier = false;
-    //     // var dossier2 = false;
-    //     // //
-    //     // var elements = TreeClassification.alignAll(bbmap.views.main.elements.toJSON(),pere,15,15,compact,vertical,mirror,dossier,dossier2);
-    //     // elements.forEach(function(el){
-    //     //     bbmap.views.main.elements.get(el.id).save(el)
-    //     // });
-    //     // setTimeout(function(){
-    //     //     bbmap.views.main.instance.repaintEverything();
-    //     //     bbmap.views.main.svgWindowController();
-    //     // },1000);
-    // },
     deleteButton : function(){
         var view = this.nodes_views[this.lastModel.get('id')]
         this.lastModel = new Backbone.Model();
@@ -992,55 +970,55 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Tree re-structure
     /////////////////////////////////////////
-    structureTree : function(e){
-        e.preventDefault();
-        //var id = e.target.id.split('_action')[0];
-        var id = this.lastModel.get('id');
-        this.reorganizeTree(id);
-    },
-    reorganizeTree : function(id){
-        var model = this.elements.get(id)
-        var tree = this.buildTree(model.toJSON())
-        // tree = random_tree(3, 2)
-        // Label it with node offsets and get its extent.
-        e = tree.extent()
-        // Retrieve a bounding box [x,y,width,height] from the extent.
-        bb = bounding_box(e)
-        // Label each node with its (x,y) coordinate placing root at given location.
-        //tree.place(-bb[0] + horizontal_gap, -bb[1] + horizontal_gap)
-        var origin = this.nodes_views[model.get('id')].getPosition();
-        tree.place(origin.left , origin.top )
-        // Draw using the labels.
-        this.draw(tree);
-        this.instance.repaintEverything();
-    },
-    buildTree : function(model) {
-        var childs = [];
-        var childrens = this.elements.where({id_father : model.id});
-        if(childrens.length > 0){
-            childrens.forEach(function(child){
-                childs.push(bbmap.views.main.buildTree(child));
-            });    
-        }
-        var tree = new Tree(model.id, childs);
-        return tree;
-    },
-    // Draw a graph node.
-    draw : function (tree) {
-      var n_children = tree.children.length
-      for (var i = 0; i < n_children; i++) {
-        var child = tree.children[i]
-        //arc(this.x, this.y + 0.5 * node_size + 2, child.x, child.y - 0.5 * node_size)
-        this.draw(child)
-      }
-      this.node(tree.lbl, tree.x, tree.y)
-    },
-    node: function(lbl, x, y, sz) {
-        if (!sz) sz = bbmap.node_size()/bbmap.zoom.get('val');
-        var h = sz / 2;
-        var z = bbmap.zoom.get('val');
-        this.nodes_views[lbl].setPosition(x/z, y/z, sz/z, h/z, true, 'structureTree', true);
-    },
+    // structureTree : function(e){
+    //     e.preventDefault();
+    //     //var id = e.target.id.split('_action')[0];
+    //     var id = this.lastModel.get('id');
+    //     this.reorganizeTree(id);
+    // },
+    // reorganizeTree : function(id){
+    //     var model = this.elements.get(id)
+    //     var tree = this.buildTree(model.toJSON())
+    //     // tree = random_tree(3, 2)
+    //     // Label it with node offsets and get its extent.
+    //     e = tree.extent()
+    //     // Retrieve a bounding box [x,y,width,height] from the extent.
+    //     bb = bounding_box(e)
+    //     // Label each node with its (x,y) coordinate placing root at given location.
+    //     //tree.place(-bb[0] + horizontal_gap, -bb[1] + horizontal_gap)
+    //     var origin = this.nodes_views[model.get('id')].getPosition();
+    //     tree.place(origin.left , origin.top )
+    //     // Draw using the labels.
+    //     this.draw(tree);
+    //     this.instance.repaintEverything();
+    // },
+    // buildTree : function(model) {
+    //     var childs = [];
+    //     var childrens = this.elements.where({id_father : model.id});
+    //     if(childrens.length > 0){
+    //         childrens.forEach(function(child){
+    //             childs.push(bbmap.views.main.buildTree(child));
+    //         });    
+    //     }
+    //     var tree = new Tree(model.id, childs);
+    //     return tree;
+    // },
+    // // Draw a graph node.
+    // draw : function (tree) {
+    //   var n_children = tree.children.length
+    //   for (var i = 0; i < n_children; i++) {
+    //     var child = tree.children[i]
+    //     //arc(this.x, this.y + 0.5 * node_size + 2, child.x, child.y - 0.5 * node_size)
+    //     this.draw(child)
+    //   }
+    //   this.node(tree.lbl, tree.x, tree.y)
+    // },
+    // node: function(lbl, x, y, sz) {
+    //     if (!sz) sz = bbmap.node_size()/bbmap.zoom.get('val');
+    //     var h = sz / 2;
+    //     var z = bbmap.zoom.get('val');
+    //     this.nodes_views[lbl].setPosition(x/z, y/z, sz/z, h/z, true, 'structureTree', true);
+    // },
     /////////////////////////////////////////
     // Reset
     /////////////////////////////////////////
@@ -1145,19 +1123,19 @@ bbmap.Views.Main = Backbone.View.extend({
             }
         }
     },
-    moveDataCentroidToMapCentroid : function(){
-        var delta = api.getXYTranslationBtwTwoPoints(api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()),api.getElementCentroid($('#map').width(),$('#map').height()));
-        var k = 10; // coeff de finess
-        if((abs(delta.x) > k)||(abs(delta.y) > k)){
-            for (var id in bbmap.views.main.nodes_views){
-                var view = bbmap.views.main.nodes_views[id];
-                var position = view.getPosition();
-                var x = position.left + delta.x;
-                var y = position.top + delta.y;
-                view.setPosition(x/bbmap.zoom.get('val'),y/bbmap.zoom.get('val'),0,0,true,"restructuration", false);
-            }
-        }
-    },
+    // moveDataCentroidToMapCentroid : function(){
+    //     var delta = api.getXYTranslationBtwTwoPoints(api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()),api.getElementCentroid($('#map').width(),$('#map').height()));
+    //     var k = 10; // coeff de finess
+    //     if((abs(delta.x) > k)||(abs(delta.y) > k)){
+    //         for (var id in bbmap.views.main.nodes_views){
+    //             var view = bbmap.views.main.nodes_views[id];
+    //             var position = view.getPosition();
+    //             var x = position.left + delta.x;
+    //             var y = position.top + delta.y;
+    //             view.setPosition(x/bbmap.zoom.get('val'),y/bbmap.zoom.get('val'),0,0,true,"restructuration", false);
+    //         }
+    //     }
+    // },
     getCoordinatesOfNodesViews : function(){
         var coordinates = [];
         // console.log("size : ",_.toArray(bbmap.views.main.nodes_views).length)
@@ -1204,9 +1182,18 @@ bbmap.Views.Main = Backbone.View.extend({
     addModelToView : function(model,from){
         var origin = "client";
         if(from) origin = from;
+        // set arrow if CK operator connection find
+        var arrow = "";
+        if(model.get('type') == "concept"){
+            if(api.getTypeLinkedToModel(bbmap.views.main.links,bbmap.views.main.elements,model,"knowledge").length > 0) arrow = "arrow";
+            if(api.getTypeLinkedToModel(bbmap.views.main.links,bbmap.views.main.elements,model,"poche").length > 0) arrow = "arrow";
+        }
+        if((model.get('type') == "poche")||(model.get('type') == "knowledge")){
+            if(api.getTypeLinkedToModel(bbmap.views.main.links,bbmap.views.main.elements,model,"concept").length > 0) arrow = "arrow";
+        }
         // create the view
         var new_view = new bbmap.Views.Node({
-            className : "window "+model.get('type')+" bulle",
+            className : "window "+model.get('type')+" bulle "+arrow,
             id : model.get('id'),
             model : model,
         });
@@ -1485,6 +1472,7 @@ bbmap.Views.Main = Backbone.View.extend({
         this.svgWindowController();
         bbmap.views.main.statistics.render(); 
         
+        $(document).foundation();
         return this;
     }
 });
