@@ -3,8 +3,9 @@
 <script src="/js/vendor/jquery.grid-a-licious.js"></script>
 <!-- ******************************** -->
 <!-- Modules to load -->
-<%- partial('../app/templates/activitiesList_templates') %>
-<script type="text/javascript" src="js/BB_app/modules/activitiesList.js?v=<%= sails.config.session.version %>"></script>
+
+<%- partial('../app/templates/dd_templates.ejs') %>
+<script src="js/BB_app/modules/dd.js?v=<%= sails.config.session.version %>"></script>
 
 <%- partial('../app/templates/tutos_templates.ejs') %>
 <script src="js/BB_app/modules/tutos.js?v=<%= sails.config.session.version %>"></script>
@@ -14,6 +15,13 @@
 
 <%- partial('../app/templates/workspacesList_templates.ejs') %>
 <script src="js/BB_app/modules/workspacesList.js?v=<%= sails.config.session.version %>"></script>
+
+<div class="large-12 medium-12 small-12"></div>
+  <div id="workspacesList-container" class="large-9 medium-9 small-9 columns"></div>
+  <div id="dd_container" class="large-3 medium-3 small-3 columns"></div>
+  <div id="tutos_container" class="large-3 medium-3 small-3 columns"></div>
+</div>
+
 
 <script>
   $(document).ready(function () {
@@ -35,7 +43,9 @@
       global.init(json, function(){
         // Modules
         topbar.init({el:"#topbar_container"});
-        workspacesList.init({el:"#workspacesList-container",display:"block"}); 
+        workspacesList.init({el:"#workspacesList-container",display:"block"});
+        tutos.init({el:"#tutos_container"}); 
+        dd.init({el:"#dd_container"}); 
         /*activat of "hashchange events's monitoring"*/
         if(!Backbone.History.started) Backbone.history.start();  
       });
