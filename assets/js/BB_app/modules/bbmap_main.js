@@ -176,7 +176,7 @@ bbmap.Views.Main = Backbone.View.extend({
 
         "click .zoomin"     : "zoomin",
         "click .zoomout"    : "zoomout",
-        "click .reset"      : "resetToCentroid",
+        "click .reset"      : "recadrage",
         "click .edit"       : "editEvent",
         "click .design"     : "designEvent",
         "click .history"    : "historyEvent",
@@ -270,7 +270,7 @@ bbmap.Views.Main = Backbone.View.extend({
     drawSvgWindow : function(pere){
         var elements = api.getTreeChildrenNodes(pere,bbmap.views.main.elements);
         elements.push(pere);
-        var cadre = this.getCadre(elements,100);
+        var cadre = api.getCadre(elements,100);
         var color = "#E67E22";
         if(pere.get('type') == "concept") color = "#C8D400";
         var left = cadre.left_min - 25;
@@ -278,32 +278,13 @@ bbmap.Views.Main = Backbone.View.extend({
         var text = pere.get('title')+" ("+(api.getTreeChildrenNodes(pere,bbmap.views.main.elements).length+1)+" elements)";
         this.map_el.append('<svg class="svg_window" style="position:absolute;left:'+left+'px;top:'+right+'px" width="'+cadre.width+'" height="'+cadre.height+'" pointer-events="none" position="absolute" version="1.1" xmlns="http://www.w3.org/1999/xhtml"><text x="5" y="10" font-family="sans-serif" font-size="10px" fill="'+color+'">'+text+'</text><rect rx="10" ry="10" x="0" y="0" width="'+cadre.width+'" height="'+cadre.height+'" stroke-width="3" stroke="'+color+'" fill="transparent" /></svg>')
     },
-    getCadre : function(elements,offset){
-        var left_min = 10000000000000000000000;
-        var left_max = 0;
-        var top_min = 10000000000000000000000;
-        var top_max = 0;
-        // on prend le cadre
-        elements.forEach(function(el){
-            if(api.isVisible(bbmap.views.main.links,bbmap.views.main.elements,el)){
-                if(el.get('left') < left_min) left_min = el.get('left')
-                if((el.get('left') + $('#'+el.get('id')).width()+offset) > left_max) left_max = el.get('left') + $('#'+el.get('id')).width() + offset;
-                if(el.get('top') < top_min) top_min = el.get('top')
-                if((el.get('top') + $('#'+el.get('id')).height()+offset) > top_max) top_max = el.get('top') + $('#'+el.get('id')).height() + offset;
-            }            
-        });
-        // on definit la hauteur + largeur du cadre
-        var cadre_width = left_max - left_min;
-        var cadre_height = top_max - top_min;
-        return {width:cadre_width,height:cadre_height,left_min:left_min,left_max:left_max,top_min:top_min,top_max:top_max};
-    },
     laurie : function(e){
         e.preventDefault();
         var padding_left = -100;
         var padding_top = -100;
         var offset = 250;
         var childs = [];
-        var cadre = this.getCadre(bbmap.views.main.elements.toArray(),300);
+        var cadre = api.getCadre(bbmap.views.main.elements.toArray(),300);
         var left_min = cadre.left_min + padding_left;
         var left_max = cadre.left_max;
         var top_min = cadre.top_min + padding_top;
@@ -512,7 +493,7 @@ bbmap.Views.Main = Backbone.View.extend({
             model.save();
         }
         else if(((sens == "go")&&(action == "create")&&(type == "Link"))||((sens == "back")&&(action == "remove")&&(type == "Link"))){
-            this.addLinkToView(model);
+            this.addLinkToView(model,"nextPrevActionController");
             model.save();
         }
         else if(((sens == "go")&&(action == "remove")&&(type != "Link"))||((sens == "back")&&(action == "create")&&(type != "Link"))){
@@ -644,8 +625,8 @@ bbmap.Views.Main = Backbone.View.extend({
             } 
         });
     },
-    startJoyride : function(){
-        $("#joyride_id").attr('data-id',this.lastModel.get('id')+'_joyride')
+    startJoyride : function(id){
+        $("#joyride_id").attr('data-id',id+'_joyride')
         $(document).foundation('joyride', 'start');
         this.joyride = true;
     },
@@ -752,7 +733,7 @@ bbmap.Views.Main = Backbone.View.extend({
             try{
                 var source = bbmap.views.main.elements.get(l.get('source'));
                 var target = bbmap.views.main.elements.get(l.get('target'));
-                if(source.get('type') != target.get('type')) bbmap.views.main.addLinkToView(l);
+                if(source.get('type') != target.get('type')) bbmap.views.main.addLinkToView(l,"showDependances");
 
             }catch(err){
                 console.log("Missing element to etablish graphical connection...");
@@ -969,58 +950,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.setZoom(bbmap.zoom.get('val'));
     },
     /////////////////////////////////////////
-    // Tree re-structure
-    /////////////////////////////////////////
-    // structureTree : function(e){
-    //     e.preventDefault();
-    //     //var id = e.target.id.split('_action')[0];
-    //     var id = this.lastModel.get('id');
-    //     this.reorganizeTree(id);
-    // },
-    // reorganizeTree : function(id){
-    //     var model = this.elements.get(id)
-    //     var tree = this.buildTree(model.toJSON())
-    //     // tree = random_tree(3, 2)
-    //     // Label it with node offsets and get its extent.
-    //     e = tree.extent()
-    //     // Retrieve a bounding box [x,y,width,height] from the extent.
-    //     bb = bounding_box(e)
-    //     // Label each node with its (x,y) coordinate placing root at given location.
-    //     //tree.place(-bb[0] + horizontal_gap, -bb[1] + horizontal_gap)
-    //     var origin = this.nodes_views[model.get('id')].getPosition();
-    //     tree.place(origin.left , origin.top )
-    //     // Draw using the labels.
-    //     this.draw(tree);
-    //     this.instance.repaintEverything();
-    // },
-    // buildTree : function(model) {
-    //     var childs = [];
-    //     var childrens = this.elements.where({id_father : model.id});
-    //     if(childrens.length > 0){
-    //         childrens.forEach(function(child){
-    //             childs.push(bbmap.views.main.buildTree(child));
-    //         });    
-    //     }
-    //     var tree = new Tree(model.id, childs);
-    //     return tree;
-    // },
-    // // Draw a graph node.
-    // draw : function (tree) {
-    //   var n_children = tree.children.length
-    //   for (var i = 0; i < n_children; i++) {
-    //     var child = tree.children[i]
-    //     //arc(this.x, this.y + 0.5 * node_size + 2, child.x, child.y - 0.5 * node_size)
-    //     this.draw(child)
-    //   }
-    //   this.node(tree.lbl, tree.x, tree.y)
-    // },
-    // node: function(lbl, x, y, sz) {
-    //     if (!sz) sz = bbmap.node_size()/bbmap.zoom.get('val');
-    //     var h = sz / 2;
-    //     var z = bbmap.zoom.get('val');
-    //     this.nodes_views[lbl].setPosition(x/z, y/z, sz/z, h/z, true, 'structureTree', true);
-    // },
-    /////////////////////////////////////////
     // Reset
     /////////////////////////////////////////
     reset : function(e){
@@ -1042,7 +971,7 @@ bbmap.Views.Main = Backbone.View.extend({
     intelligentRestructuring : function(){
         this.superposeElementCenterToScreenCenter("map",bbmap.zoom.get('val'));
         //this.moveDataCentroidToMapCentroid();
-        this.resetToCentroid();
+        this.recadrage();
         this.instance.repaintEverything();
     },
     // superposeMapCenterToScreenCenter : function(){
@@ -1067,82 +996,39 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Centroid functions
     /////////////////////////////////////////
-    resetToCentroid : function(){
-        if(api.getJsonSize(bbmap.views.main.nodes_views)>5) this.findRightZoom();
-        if(api.getJsonSize(bbmap.views.main.nodes_views)>0) this.findRightCentroid();
+    recadrage : function(){
+        var offset = 100;
+        var window_width = $(window).width();
+        var window_height = $(window).height();
+        var cadre = api.getCadre(bbmap.views.main.elements.toArray(),offset);
+        var zoom_width = window_width/cadre.width;
+        var zoom_height = window_height/cadre.height;
+        var right_zoom = Math.min(zoom_width,zoom_height);        
+        bbmap.views.main.setZoom(right_zoom);
+        console.log("zoom: ",right_zoom)
+        if(api.getJsonSize(bbmap.views.main.nodes_views)>0) this.refocus(cadre);
     },
-    findRightCentroid : function(){
+    refocus : function(cadre){
         var zoom = bbmap.zoom.get('val');
-        var dataCentroid = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()); // coordonnée du barycentre des nodes
         var screenCentroid = api.getScreenCentroid(); // coordonnée du barycentre de l'ecran
         var delta = {}; // distance in x,y that map have to move to center dataCentroid to screen
-        // calcul delta 
+        
+        var dataCentroid = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()); // coordonnée du barycentre des nodes
         delta.top = screenCentroid.top - dataCentroid.top;
         delta.left = screenCentroid.left - dataCentroid.left;
+        console.log("2: ",delta, dataCentroid)
+        
         // superpose data and screen centroid 
         $('#map').animate({ top: delta.top, left: delta.left });
     },
-    findRightZoom : function(Data,Screen){
-        var Data = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()); // coordonnée du barycentre des données
-        var Screen = api.getScreenCentroid(); // coordonnée du barycentre de l'ecran
-        var zoom = bbmap.zoom.get('val');
-        var k = 2; // To manage the offset between screen and nodes
-        if(Data.width>Data.height){
-            // width > height
-            if(Data.width>Screen.width){
-                // dezoom
-                while(k*Data.width>Screen.width){
-                    zoom = zoom - 0.1;
-                    bbmap.views.main.setZoom(zoom);
-                    Data = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews())
-                }
-
-            }else if(Data.width<Screen.width){
-                // zoom
-                while(k*Data.width<Screen.width){
-                    zoom = zoom + 0.1;
-                    bbmap.views.main.setZoom(zoom);
-                    Data = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews())
-                }
-            }
-        }else{
-            // width < height
-            if(Data.height>Screen.height){
-                // dezoom
-                while(k*Data.height>Screen.height){
-                    zoom = zoom - 0.1;
-                    bbmap.views.main.setZoom(zoom);
-                    Data = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews())
-                }
-            }else if(Data.height<Screen.height){
-                // zoom
-                while(k*Data.height<Screen.height){
-                    zoom = zoom + 0.1;
-                    bbmap.views.main.setZoom(zoom);
-                    Data = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews())
-                }
-            }
-        }
-    },
-    // moveDataCentroidToMapCentroid : function(){
-    //     var delta = api.getXYTranslationBtwTwoPoints(api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()),api.getElementCentroid($('#map').width(),$('#map').height()));
-    //     var k = 10; // coeff de finess
-    //     if((abs(delta.x) > k)||(abs(delta.y) > k)){
-    //         for (var id in bbmap.views.main.nodes_views){
-    //             var view = bbmap.views.main.nodes_views[id];
-    //             var position = view.getPosition();
-    //             var x = position.left + delta.x;
-    //             var y = position.top + delta.y;
-    //             view.setPosition(x/bbmap.zoom.get('val'),y/bbmap.zoom.get('val'),0,0,true,"restructuration", false);
-    //         }
-    //     }
-    // },
     getCoordinatesOfNodesViews : function(){
         var coordinates = [];
         // console.log("size : ",_.toArray(bbmap.views.main.nodes_views).length)
         for (var id in bbmap.views.main.nodes_views){
             var position = bbmap.views.main.nodes_views[id].getPosition();
-            coordinates.unshift({'top':position.top,'left':position.left});
+            var width = $("#"+id).width();
+            var height = $("#"+id).height();
+            coordinates.unshift({'width': width,'height': height,'top':position.top,'left':position.left});
         }
         return coordinates;
     },
@@ -1182,7 +1068,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     addModelToView : function(model,from){
         var origin = "client";
-        if(from) origin = from;
+        if(from) if($.type(from) == "string") origin = from;
         // set arrow if CK operator connection find
         var arrow = "";
         if(model.get('type') == "concept"){
@@ -1216,8 +1102,11 @@ bbmap.Views.Main = Backbone.View.extend({
             });
         }
         // On lance le joyride d'édition
-        if(origin == "client"){
-            this.startJoyride();
+        if(origin == "client"){            
+            // on ne peut pas le mettre ici car ca se declancherai aussi pour le real time
+            // setTimeout(function(){
+            //     bbmap.views.main.startJoyride(model.get('id'));
+            // },800); 
         }
         if(from != "addModelsToView")this.svgWindowController();
     },
@@ -1243,7 +1132,7 @@ bbmap.Views.Main = Backbone.View.extend({
             try{
                 var source = bbmap.views.main.elements.get(l.get('source'));
                 var target = bbmap.views.main.elements.get(l.get('target'));
-                if(source.get('type') == target.get('type')) bbmap.views.main.addLinkToView(l);
+                if(source.get('type') == target.get('type')) bbmap.views.main.addLinkToView(l,"addLinksToView");
 
             }catch(err){
                 console.log("Missing element to etablish graphical connection...");
@@ -1252,7 +1141,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     addLinkToView : function(model,from){
         var origin = "client";
-        if(from) origin = from;
+        if(from) if($.type(from) == "string") origin = from;
         var style = rules.link_style_rules(model)
         bbmap.views.main.instance.connect({
             source:bbmap.views.main.nodes_views[model.get('source')].el, 
@@ -1261,6 +1150,16 @@ bbmap.Views.Main = Backbone.View.extend({
             scope : "cklink",
             paintStyle:style
         });
+
+        if(origin == "client"){       
+            var source = bbmap.views.main.elements.get(model.get('source')); 
+            var target = bbmap.views.main.elements.get(model.get('target')); 
+            // if source is not none and element type == concept we reorganise tree
+            if((target.get('type') == "concept")&&(source.get('type') == target.get('type'))){
+                console.log(bbmap.views.main.elements.length)
+                //bbmap.views.main.treeClassification(source.get('id'));
+            }
+        }
     },
     removeLinksToView : function(links,from){
         links.each(function(model){

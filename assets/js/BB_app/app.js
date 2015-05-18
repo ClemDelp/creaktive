@@ -138,9 +138,9 @@ var global = {
     // Set last model
     try{
       bbmap.views.main.setLastModel(new_element,'addModelToView');
-      // joyride
+      //joyride
       setTimeout(function(){
-          bbmap.views.main.startJoyride()
+          bbmap.views.main.startJoyride(new_element.get('id'))
           console.log('startjoyrid')
       },800);  
     }catch(err){}
