@@ -493,7 +493,7 @@ bbmap.Views.Main = Backbone.View.extend({
             model.save();
         }
         else if(((sens == "go")&&(action == "create")&&(type == "Link"))||((sens == "back")&&(action == "remove")&&(type == "Link"))){
-            this.addLinkToView(model);
+            this.addLinkToView(model,"nextPrevActionController");
             model.save();
         }
         else if(((sens == "go")&&(action == "remove")&&(type != "Link"))||((sens == "back")&&(action == "create")&&(type != "Link"))){
@@ -625,8 +625,8 @@ bbmap.Views.Main = Backbone.View.extend({
             } 
         });
     },
-    startJoyride : function(){
-        $("#joyride_id").attr('data-id',this.lastModel.get('id')+'_joyride')
+    startJoyride : function(id){
+        $("#joyride_id").attr('data-id',id+'_joyride')
         $(document).foundation('joyride', 'start');
         this.joyride = true;
     },
@@ -733,7 +733,7 @@ bbmap.Views.Main = Backbone.View.extend({
             try{
                 var source = bbmap.views.main.elements.get(l.get('source'));
                 var target = bbmap.views.main.elements.get(l.get('target'));
-                if(source.get('type') != target.get('type')) bbmap.views.main.addLinkToView(l);
+                if(source.get('type') != target.get('type')) bbmap.views.main.addLinkToView(l,"showDependances");
 
             }catch(err){
                 console.log("Missing element to etablish graphical connection...");
@@ -950,58 +950,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.setZoom(bbmap.zoom.get('val'));
     },
     /////////////////////////////////////////
-    // Tree re-structure
-    /////////////////////////////////////////
-    // structureTree : function(e){
-    //     e.preventDefault();
-    //     //var id = e.target.id.split('_action')[0];
-    //     var id = this.lastModel.get('id');
-    //     this.reorganizeTree(id);
-    // },
-    // reorganizeTree : function(id){
-    //     var model = this.elements.get(id)
-    //     var tree = this.buildTree(model.toJSON())
-    //     // tree = random_tree(3, 2)
-    //     // Label it with node offsets and get its extent.
-    //     e = tree.extent()
-    //     // Retrieve a bounding box [x,y,width,height] from the extent.
-    //     bb = bounding_box(e)
-    //     // Label each node with its (x,y) coordinate placing root at given location.
-    //     //tree.place(-bb[0] + horizontal_gap, -bb[1] + horizontal_gap)
-    //     var origin = this.nodes_views[model.get('id')].getPosition();
-    //     tree.place(origin.left , origin.top )
-    //     // Draw using the labels.
-    //     this.draw(tree);
-    //     this.instance.repaintEverything();
-    // },
-    // buildTree : function(model) {
-    //     var childs = [];
-    //     var childrens = this.elements.where({id_father : model.id});
-    //     if(childrens.length > 0){
-    //         childrens.forEach(function(child){
-    //             childs.push(bbmap.views.main.buildTree(child));
-    //         });    
-    //     }
-    //     var tree = new Tree(model.id, childs);
-    //     return tree;
-    // },
-    // // Draw a graph node.
-    // draw : function (tree) {
-    //   var n_children = tree.children.length
-    //   for (var i = 0; i < n_children; i++) {
-    //     var child = tree.children[i]
-    //     //arc(this.x, this.y + 0.5 * node_size + 2, child.x, child.y - 0.5 * node_size)
-    //     this.draw(child)
-    //   }
-    //   this.node(tree.lbl, tree.x, tree.y)
-    // },
-    // node: function(lbl, x, y, sz) {
-    //     if (!sz) sz = bbmap.node_size()/bbmap.zoom.get('val');
-    //     var h = sz / 2;
-    //     var z = bbmap.zoom.get('val');
-    //     this.nodes_views[lbl].setPosition(x/z, y/z, sz/z, h/z, true, 'structureTree', true);
-    // },
-    /////////////////////////////////////////
     // Reset
     /////////////////////////////////////////
     reset : function(e){
@@ -1062,19 +1010,14 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     refocus : function(cadre){
         var zoom = bbmap.zoom.get('val');
-        var dataCentroid = {top: cadre.height/2,left: cadre.width/2};
         var screenCentroid = api.getScreenCentroid(); // coordonnée du barycentre de l'ecran
         var delta = {}; // distance in x,y that map have to move to center dataCentroid to screen
-        // calcul delta
+        
+        var dataCentroid = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()); // coordonnée du barycentre des nodes
         delta.top = screenCentroid.top - dataCentroid.top;
         delta.left = screenCentroid.left - dataCentroid.left;
-        console.log("1: ",delta, dataCentroid, screenCentroid)
-
-        var dataCentroid = api.getCentroidPointsCloud(bbmap.views.main.elements)
-        delta.top = screenCentroid.top - dataCentroid.top;
-        delta.left = screenCentroid.left - dataCentroid.left;
-        console.log("2: ",delta, dataCentroid, screenCentroid)
-
+        console.log("2: ",delta, dataCentroid)
+        
         // superpose data and screen centroid 
         $('#map').animate({ top: delta.top, left: delta.left });
     },
@@ -1083,7 +1026,9 @@ bbmap.Views.Main = Backbone.View.extend({
         // console.log("size : ",_.toArray(bbmap.views.main.nodes_views).length)
         for (var id in bbmap.views.main.nodes_views){
             var position = bbmap.views.main.nodes_views[id].getPosition();
-            coordinates.unshift({'top':position.top,'left':position.left});
+            var width = $("#"+id).width();
+            var height = $("#"+id).height();
+            coordinates.unshift({'width': width,'height': height,'top':position.top,'left':position.left});
         }
         return coordinates;
     },
@@ -1123,7 +1068,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     addModelToView : function(model,from){
         var origin = "client";
-        if(from) origin = from;
+        if(from) if($.type(from) == "string") origin = from;
         // set arrow if CK operator connection find
         var arrow = "";
         if(model.get('type') == "concept"){
@@ -1157,8 +1102,11 @@ bbmap.Views.Main = Backbone.View.extend({
             });
         }
         // On lance le joyride d'édition
-        if(origin == "client"){
-            this.startJoyride();
+        if(origin == "client"){            
+            // on ne peut pas le mettre ici car ca se declancherai aussi pour le real time
+            // setTimeout(function(){
+            //     bbmap.views.main.startJoyride(model.get('id'));
+            // },800); 
         }
         if(from != "addModelsToView")this.svgWindowController();
     },
@@ -1184,7 +1132,7 @@ bbmap.Views.Main = Backbone.View.extend({
             try{
                 var source = bbmap.views.main.elements.get(l.get('source'));
                 var target = bbmap.views.main.elements.get(l.get('target'));
-                if(source.get('type') == target.get('type')) bbmap.views.main.addLinkToView(l);
+                if(source.get('type') == target.get('type')) bbmap.views.main.addLinkToView(l,"addLinksToView");
 
             }catch(err){
                 console.log("Missing element to etablish graphical connection...");
@@ -1193,7 +1141,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     addLinkToView : function(model,from){
         var origin = "client";
-        if(from) origin = from;
+        if(from) if($.type(from) == "string") origin = from;
         var style = rules.link_style_rules(model)
         bbmap.views.main.instance.connect({
             source:bbmap.views.main.nodes_views[model.get('source')].el, 
@@ -1202,6 +1150,16 @@ bbmap.Views.Main = Backbone.View.extend({
             scope : "cklink",
             paintStyle:style
         });
+
+        if(origin == "client"){       
+            var source = bbmap.views.main.elements.get(model.get('source')); 
+            var target = bbmap.views.main.elements.get(model.get('target')); 
+            // if source is not none and element type == concept we reorganise tree
+            if((target.get('type') == "concept")&&(source.get('type') == target.get('type'))){
+                console.log(bbmap.views.main.elements.length)
+                //bbmap.views.main.treeClassification(source.get('id'));
+            }
+        }
     },
     removeLinksToView : function(links,from){
         links.each(function(model){

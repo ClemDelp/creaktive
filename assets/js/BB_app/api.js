@@ -201,9 +201,9 @@ var api = {
     var leftMin = 1000000000;
     var centroid = {};
     _.each(points,function(point){
-      if(point.top > topMax) topMax = point.top;
+      if((point.top+point.height) > topMax) topMax = point.top+point.height;
       if(point.top < topMin) topMin = point.top;
-      if(point.left > leftMax) leftMax = point.left;
+      if((point.left+point.width) > leftMax) leftMax = point.left+point.width;
       if(point.left < leftMin) leftMin = point.left;
     });
     centroid.top = ((topMax-topMin)/2)+topMin;
