@@ -77,12 +77,13 @@ module.exports = {
 
   destroy : function(req,res){
     console.log('Deleting element');
-
-      Element.destroy(req.body.params.id).done(function(err, elements){
-        if(err) return res.send({err :err});
+    Element.destroy(req.body.params.id).done(function(err, elements){
+      if(err) return res.send({err :err});
+      if(elements){
         req.socket.broadcast.to(elements[0].project).emit("element:remove2", elements[0]);
         Notification.objectRemoved(req,res,"Element", elements[0]);
-      });     
+      }
+    });     
   },
 
   

@@ -176,7 +176,7 @@ bbmap.Views.Main = Backbone.View.extend({
 
         "click .zoomin"     : "zoomin",
         "click .zoomout"    : "zoomout",
-        "click .reset"      : "resetToCentroid",
+        "click .reset"      : "recadrage",
         "click .edit"       : "editEvent",
         "click .design"     : "designEvent",
         "click .history"    : "historyEvent",
@@ -270,7 +270,7 @@ bbmap.Views.Main = Backbone.View.extend({
     drawSvgWindow : function(pere){
         var elements = api.getTreeChildrenNodes(pere,bbmap.views.main.elements);
         elements.push(pere);
-        var cadre = this.getCadre(elements,100);
+        var cadre = api.getCadre(elements,100);
         var color = "#E67E22";
         if(pere.get('type') == "concept") color = "#C8D400";
         var left = cadre.left_min - 25;
@@ -278,32 +278,13 @@ bbmap.Views.Main = Backbone.View.extend({
         var text = pere.get('title')+" ("+(api.getTreeChildrenNodes(pere,bbmap.views.main.elements).length+1)+" elements)";
         this.map_el.append('<svg class="svg_window" style="position:absolute;left:'+left+'px;top:'+right+'px" width="'+cadre.width+'" height="'+cadre.height+'" pointer-events="none" position="absolute" version="1.1" xmlns="http://www.w3.org/1999/xhtml"><text x="5" y="10" font-family="sans-serif" font-size="10px" fill="'+color+'">'+text+'</text><rect rx="10" ry="10" x="0" y="0" width="'+cadre.width+'" height="'+cadre.height+'" stroke-width="3" stroke="'+color+'" fill="transparent" /></svg>')
     },
-    getCadre : function(elements,offset){
-        var left_min = 10000000000000000000000;
-        var left_max = 0;
-        var top_min = 10000000000000000000000;
-        var top_max = 0;
-        // on prend le cadre
-        elements.forEach(function(el){
-            if(api.isVisible(bbmap.views.main.links,bbmap.views.main.elements,el)){
-                if(el.get('left') < left_min) left_min = el.get('left')
-                if((el.get('left') + $('#'+el.get('id')).width()+offset) > left_max) left_max = el.get('left') + $('#'+el.get('id')).width() + offset;
-                if(el.get('top') < top_min) top_min = el.get('top')
-                if((el.get('top') + $('#'+el.get('id')).height()+offset) > top_max) top_max = el.get('top') + $('#'+el.get('id')).height() + offset;
-            }            
-        });
-        // on definit la hauteur + largeur du cadre
-        var cadre_width = left_max - left_min;
-        var cadre_height = top_max - top_min;
-        return {width:cadre_width,height:cadre_height,left_min:left_min,left_max:left_max,top_min:top_min,top_max:top_max};
-    },
     laurie : function(e){
         e.preventDefault();
         var padding_left = -100;
         var padding_top = -100;
         var offset = 250;
         var childs = [];
-        var cadre = this.getCadre(bbmap.views.main.elements.toArray(),300);
+        var cadre = api.getCadre(bbmap.views.main.elements.toArray(),300);
         var left_min = cadre.left_min + padding_left;
         var left_max = cadre.left_max;
         var top_min = cadre.top_min + padding_top;
@@ -1042,7 +1023,7 @@ bbmap.Views.Main = Backbone.View.extend({
     intelligentRestructuring : function(){
         this.superposeElementCenterToScreenCenter("map",bbmap.zoom.get('val'));
         //this.moveDataCentroidToMapCentroid();
-        this.resetToCentroid();
+        this.recadrage();
         this.instance.repaintEverything();
     },
     // superposeMapCenterToScreenCenter : function(){
@@ -1067,76 +1048,36 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Centroid functions
     /////////////////////////////////////////
-    resetToCentroid : function(){
-        if(api.getJsonSize(bbmap.views.main.nodes_views)>5) this.findRightZoom();
-        if(api.getJsonSize(bbmap.views.main.nodes_views)>0) this.findRightCentroid();
+    recadrage : function(){
+        var offset = 100;
+        var window_width = $(window).width();
+        var window_height = $(window).height();
+        var cadre = api.getCadre(bbmap.views.main.elements.toArray(),offset);
+        var zoom_width = window_width/cadre.width;
+        var zoom_height = window_height/cadre.height;
+        var right_zoom = Math.min(zoom_width,zoom_height);        
+        bbmap.views.main.setZoom(right_zoom);
+        console.log("zoom: ",right_zoom)
+        if(api.getJsonSize(bbmap.views.main.nodes_views)>0) this.refocus(cadre);
     },
-    findRightCentroid : function(){
+    refocus : function(cadre){
         var zoom = bbmap.zoom.get('val');
-        var dataCentroid = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()); // coordonnée du barycentre des nodes
+        var dataCentroid = {top: cadre.height/2,left: cadre.width/2};
         var screenCentroid = api.getScreenCentroid(); // coordonnée du barycentre de l'ecran
         var delta = {}; // distance in x,y that map have to move to center dataCentroid to screen
-        // calcul delta 
+        // calcul delta
         delta.top = screenCentroid.top - dataCentroid.top;
         delta.left = screenCentroid.left - dataCentroid.left;
+        console.log("1: ",delta, dataCentroid, screenCentroid)
+
+        var dataCentroid = api.getCentroidPointsCloud(bbmap.views.main.elements)
+        delta.top = screenCentroid.top - dataCentroid.top;
+        delta.left = screenCentroid.left - dataCentroid.left;
+        console.log("2: ",delta, dataCentroid, screenCentroid)
+
         // superpose data and screen centroid 
         $('#map').animate({ top: delta.top, left: delta.left });
     },
-    findRightZoom : function(Data,Screen){
-        var Data = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()); // coordonnée du barycentre des données
-        var Screen = api.getScreenCentroid(); // coordonnée du barycentre de l'ecran
-        var zoom = bbmap.zoom.get('val');
-        var k = 2; // To manage the offset between screen and nodes
-        if(Data.width>Data.height){
-            // width > height
-            if(Data.width>Screen.width){
-                // dezoom
-                while(k*Data.width>Screen.width){
-                    zoom = zoom - 0.1;
-                    bbmap.views.main.setZoom(zoom);
-                    Data = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews())
-                }
-
-            }else if(Data.width<Screen.width){
-                // zoom
-                while(k*Data.width<Screen.width){
-                    zoom = zoom + 0.1;
-                    bbmap.views.main.setZoom(zoom);
-                    Data = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews())
-                }
-            }
-        }else{
-            // width < height
-            if(Data.height>Screen.height){
-                // dezoom
-                while(k*Data.height>Screen.height){
-                    zoom = zoom - 0.1;
-                    bbmap.views.main.setZoom(zoom);
-                    Data = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews())
-                }
-            }else if(Data.height<Screen.height){
-                // zoom
-                while(k*Data.height<Screen.height){
-                    zoom = zoom + 0.1;
-                    bbmap.views.main.setZoom(zoom);
-                    Data = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews())
-                }
-            }
-        }
-    },
-    // moveDataCentroidToMapCentroid : function(){
-    //     var delta = api.getXYTranslationBtwTwoPoints(api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()),api.getElementCentroid($('#map').width(),$('#map').height()));
-    //     var k = 10; // coeff de finess
-    //     if((abs(delta.x) > k)||(abs(delta.y) > k)){
-    //         for (var id in bbmap.views.main.nodes_views){
-    //             var view = bbmap.views.main.nodes_views[id];
-    //             var position = view.getPosition();
-    //             var x = position.left + delta.x;
-    //             var y = position.top + delta.y;
-    //             view.setPosition(x/bbmap.zoom.get('val'),y/bbmap.zoom.get('val'),0,0,true,"restructuration", false);
-    //         }
-    //     }
-    // },
     getCoordinatesOfNodesViews : function(){
         var coordinates = [];
         // console.log("size : ",_.toArray(bbmap.views.main.nodes_views).length)

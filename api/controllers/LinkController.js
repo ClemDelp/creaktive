@@ -62,13 +62,13 @@
     console.log('destroying link')
     Link.findOne(req.body.params.id).done(function(err,link){
       if(err) return res.send({err:err});
-      req.socket.broadcast.to(link.project).emit("link:remove2", link);
-      Notification.objectRemoved(req,res,"Link", link);
       if(link) {
-          link.destroy(function(err){
-            if(err) return res.send({err:err});
-            res.send({msg:"destroyed"})
-          })
+        req.socket.broadcast.to(link.project).emit("link:remove2", link);
+        Notification.objectRemoved(req,res,"Link", link);
+        link.destroy(function(err){
+          if(err) return res.send({err:err});
+          res.send({msg:"destroyed"})
+        });
        }
     });
   },
