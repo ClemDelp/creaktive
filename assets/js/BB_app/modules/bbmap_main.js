@@ -344,7 +344,7 @@ bbmap.Views.Main = Backbone.View.extend({
         });
     },
     ///////////////////////////////////////////
-     treeClassification_event : function(e){
+    treeClassification_event : function(e){
         e.preventDefault();
         var pere = this.lastModel.get('id');
         this.treeClassification(pere);
@@ -1156,7 +1156,7 @@ bbmap.Views.Main = Backbone.View.extend({
             var target = bbmap.views.main.elements.get(model.get('target')); 
             // if source is not none and element type == concept we reorganise tree
             if((target.get('type') == "concept")&&(source.get('type') == target.get('type'))){
-                console.log(bbmap.views.main.elements.length)
+                //console.log(bbmap.views.main.elements.length)
                 //bbmap.views.main.treeClassification(source.get('id'));
             }
         }
