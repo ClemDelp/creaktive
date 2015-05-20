@@ -4,9 +4,6 @@ var rules = {
         if(global.rules == true){
             this.links = global.collections.Links;
             this.elements = global.collections.Elements;
-            this.concepts = global.collections.Elements.where({type : "concept"});
-            this.knowledges = global.collections.Elements.where({type : "knowledge"});
-            this.poches = global.collections.Elements.where({type : "poche"});   
             //////////////////
         }
     },
