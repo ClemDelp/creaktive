@@ -46,36 +46,8 @@ var global = {
     this.collections.Permissions = new this.Collections.PermissionsCollection(json.permissions);
     this.collections.Projects = new this.Collections.ProjectsCollection(json.projects);
     this.collections.Links = new this.Collections.CKLinks(json.links);
-    this.collections.Backups = new this.Collections.Backups(json.backups);
     this.collections.Notifications = new this.Collections.NotificationsCollection(json.notifications);
-    this.collections.Screenshots = new this.Collections.Screenshots(json.screenshots);
-    this.collections.Presentations = new this.Collections.Presentations(json.presentations);
-    this.presentationId = json.presentationId;
-
-    // Dictionaries    
-    // this.ProjectsUsersDictionary = this.Functions.getProjectsUsersDictionary(this.collections.Projects,this.collections.Permissions);// dictionaire pour le nombre d'utilisateur par projet
-    // this.NotificationsDictionary = {};
-    // this.ModelsNotificationsDictionary = {};
-    // this.ProjectsNotificationsDictionary = {};
-    // this.AllNewsNotificationsDictionary = {};
-    // this.AllReadNotificationsDictionary = {};
-
-    //this.ActivityLog = json.activityLog;
     //////////////////////////////////////////////////////////////////
-    // Events
-    //////////////////////////////////////////////////////////////////
-    // this.collections.Poches.on('add',this.prepareNotifications,this);
-    //this.collections.Projects.on('add',this.prepareNotifications,this);
-    // this.collections.Projects.on('remove',this.prepareNotifications,this);
-    // this.collections.Knowledges.on('add',this.prepareNotifications,this);
-    // this.collections.Concepts.on('add',this.prepareNotifications,this);
-    // this.collections.Notifications.on('add',this.prepareNotifications,this);
-    // this.collections.Notifications.on('remove',this.prepareNotifications,this);
-    // this.collections.Notifications.on('change',this.prepareNotifications,this);
-    //////////////////////////////////////////////////////////////////
-    // Init
-    //////////////////////////////////////////////////////////////////
-    //this.prepareNotifications();
     console.log("******* Connected as ", this.models.current_user.get("name"), " on ", this.models.currentProject.get("title"));
     
     /**
@@ -85,7 +57,6 @@ var global = {
     * @param {Object} params The Configuration object to apply
     * @returns {Boolean} True if the configuration was successful.
     */
-
     try{
       trackJs.configure({
         // Custom session identifier.

@@ -35,16 +35,6 @@
 <%- partial('../app/templates/together_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/together.js?v=<%= sails.config.session.version %>"></script>
 
-<%- partial('../app/templates/imagesList_templates') %>
-<%- partial('../app/templates/modelEditor_templates') %>
-<%- partial('../app/templates/css3_templates') %>
-<%- partial('../app/templates/templatesList_templates') %>
-
-<%- partial('../app/templates/nodesMapping_templates') %>
-<%- partial('../app/templates/title_templates') %>
-<%- partial('templates/bbmap_templates') %>
-<%- partial('../app/templates/title_templates') %>
-
 <%- partial('../app/templates/workspaceEditor_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/workspaceEditor.js?v=<%= sails.config.session.version %>"></script>
 
@@ -54,23 +44,16 @@
 <%- partial('../app/templates/usersList_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/usersList.js?v=<%= sails.config.session.version %>"></script>
 
+<%- partial('../app/templates/modelEditor_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/modelEditor.js?v=<%= sails.config.session.version %>"></script>
 
 <%- partial('../app/templates/comments_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/comments.js?v=<%= sails.config.session.version %>"></script>
 
-<%- partial('../app/templates/timela_templates.ejs') %>
-<script src="js/BB_app/modules/timela.js?v=<%= sails.config.session.version %>"></script>
-
 <%- partial('../app/templates/attachment_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/attachment.js?v=<%= sails.config.session.version %>"></script>
 
-<script type="text/javascript" src="js/BB_app/modules/imagesList.js?v=<%= sails.config.session.version %>"></script>
-<script type="text/javascript" src="js/BB_app/modules/css3.js?v=<%= sails.config.session.version %>"></script>
-<script type="text/javascript" src="js/BB_app/modules/templatesList.js?v=<%= sails.config.session.version %>"></script>
-<script type="text/javascript" src="js/BB_app/modules/nodesMapping.js?v=<%= sails.config.session.version %>"></script>
-
-
+<%- partial('templates/bbmap_templates') %>
 <script type="text/javascript" src="js/BB_app/modules/bbmap.js?v=<%= sails.config.session.version %>"></script>
 <script type="text/javascript" src="js/BB_app/modules/bbmap_node.js?v=<%= sails.config.session.version %>"></script>
 <script type="text/javascript" src="js/BB_app/modules/bbmap_main.js?v=<%= sails.config.session.version %>"></script>
@@ -103,7 +86,6 @@
       json.links = <%- links %>;
       json.notifications = <%- notifications %>;
       json.permissions = <%- permissions %>;
-      json.backups = <%- backups %>;
       json.comments = <%- comments %>;
       json.attachments = <%- attachments %>;
 
@@ -112,7 +94,6 @@
         topbar.init({el:"#topbar_container"});
         bbmap.init();
         //together.init();
-        $("#title_page").html(json.project.title);
         /*activat of "hashchange events's monitoring"*/
         if(!Backbone.History.started) Backbone.history.start();
         $(document).foundation();

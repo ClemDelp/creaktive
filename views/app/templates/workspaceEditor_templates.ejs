@@ -1,40 +1,106 @@
-<div id="workspaceEditor-container" class="row"></div>
 
 <script type="text/template" id="workspaceEditor-template">
-	<a style="display:none" href="/backup?projectId={{- workspace.id}}" class="simplePadding button success tiny radius" title="Create a backup"><img src="/img/icones/Save As-24.png" /></a>
-	<a style="display:none" href="/ckpreviewer?projectId={{- workspace.id}}" class="simplePadding button tiny radius" title="Create reports"><img src="/img/icones/Documents-02-24.png" /></a>
-	<a href="#" class="simplePadding button tiny radius alert removeWorkspace" title="Remove this workspace"><img src="/img/icones/Delete-24.png" /> Remove this workspace</a>
-	{{ if(mode == "edit"){ }}<a href="#" class="button small radius success updateWorkspace">Save</a>{{ } }}
-	<font style="text-align : left;">
 	<div class="row">
-		{{ if(mode == "edit"){ }}
-			<div class="large-8 medium-8 small-12 columns">
-				<label>Title
-				<input id="workspaceEditor_title" type="text" class="title" value="{{- workspace.title}}"/></div>
-				</label>
-			<div class="large-4 medium-4 small-12 columns">
-				<label>Visibility
-		        <select id="wk_visibility">
-			      <option value="private">Private</option>
-			      <option value="public">Public</option>
-			    </select>
-				</label>
-		    </div>
-			<div class="large-12 medium-12 small-12 columns">
-				<label>Descriptions</label>
-				<textarea  class="ckeditor2"  name="editor" rows="10" cols="80">{{= workspace.content }}</textarea>
+		<div class="panel">
+			<div class="row">
+				{{ if(mode == "edit"){ }}
+					<div class="large-10 medium-10 small-10 columns">
+						<button data-dropdown="dropdown_create_branche_from_here" aria-controls="dropdown_create_branche_from_here" aria-expanded="false" class="tiny">
+							Create version from here
+						</button>
+
+						{{ if(workspace.backup){ }}
+						<a href="#" class="button tiny convert radius">Transform in Project</a>
+						{{ } }}
+					
+						<a href="#" class="simplePadding button tiny radius alert removeWorkspace" title="Remove this workspace">
+							Remove this workspace
+						</a>
+					</div>
+
+					<div class="large-2 medium-2 small-2 columns">
+						{{ if(mode == "edit"){ }}
+							<select id="wk_visibility">
+						      <option value="private" {{if(workspace.status == "private"){}}selected="selected"{{}}}>Private</option>
+						      <option value="public" {{if(workspace.status == "public"){}}selected="selected"{{}}}>Public</option>
+						    </select>
+						{{ } }}
+					</div>
+
+				{{ } }}
+	
+	
+			
+				{{ if(mode == "edit"){ }}	
+					<div class="large-12 medium-12 small-12 columns">
+						Title
+						<input id="workspaceEditor_title" type="text" class="title" value="{{- workspace.title}}"/>
+						</label>
+					</div>
+					<div class="large-12 medium-12 small-12 columns">
+						<a href="#" class="button tiny radius success updateWorkspace">Save</a>
+					</div>
+
+					<div class="large-12 medium-12 small-12 columns">
+						Descriptions
+						<textarea  class="ckeditor2"  name="editor" rows="10" cols="80">{{= workspace.content }}</textarea>
+					</div>
+					<div class="large-12 medium-12 small-12 columns">
+						<a href="#" class="button tiny radius success updateWorkspace">Save</a>
+					</div>
+
+				{{ }else{ }}
+					<div class="large-12 medium-12 small-12 columns">{{= workspace.content }}</div>
+					<div class="large-12 medium-12 small-12 columns">
+						<center>
+							<small style="color:red">
+								<b>pass in edition mode if you want to update workspace details</b></small>
+						</center>
+					</div>
+				{{ } }}
 			</div>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-	{{ }else{ }}
-		<div class="large-12 medium-12 small-12 columns">{{= workspace.content }}</div>
-		<div class="large-12 medium-12 small-12 columns"><center<small style="color:red"><b>pass in edition mode if you want to update workspace details</b></small></center></div>
-	{{ } }}
+		</div>
 	</div>
-	</font>
+
+	<div id="dropdown_create_branche_from_here" data-dropdown-content class="f-dropdown content" aria-hidden="true" tabindex="-1">
+	  <form>
+	  	<div class="row">
+		  	<div class="large-12 columns">
+		      <label>Node Name
+		        <input id="workspaceEditor_name" type="text" />
+		      </label>
+		    </div>
+		    <div class="large-12 columns">
+		      <label>Node Description
+		        <textarea id="workspaceEditor_description" placeholder=""></textarea>
+		      </label>
+		    </div>
+	    </div>
+
+	    <a href="#" class="button tiny createBranch">Create</a>
+	  </form>
+	  
+	</div>
+
 	<a class="close-reveal-modal">&#215;</a>
+</script>
+
+
+<script type="text/template" id="backup-template">
+	<div class="row">
+		{{ if(currentNode != node.id){ }}
+			<div class="panel">
+				<p>
+					<b>{{- node.title }}</b>
+					<small> ({{- (new Date(node.createdAt)).toLocaleString() }} by {{- node.author.name }})</small>
+				</p>
+				<p>{{-  node.node_description || node.content}}</p>
+				<hr>
+				<a href ="#" class="button tiny radius switch" data-node-id="{{- node.id }}">
+					Switch to <b data-node-id="{{- node.id }}">{{- node.node_name || node.title }}</b>
+				</a>
+				
+			</div>
+		{{ } }}
+	</div>
 </script>

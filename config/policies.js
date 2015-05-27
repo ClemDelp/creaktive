@@ -42,6 +42,9 @@
     "find" : ["authenticated"],
     "update" : ["authenticated", "canCreateProject"],
     "destroy" : ["authenticated","canCreateProject"],
+    "createNode" : ["authenticated","canWrite"],
+    "createFromNode" : ["authenticated","canWrite"],
+    "loadnode" : ["authenticated"],
   }, 
 
   "PermissionController" : {
@@ -55,16 +58,6 @@
   },
 
   "LinkController" : {
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"]
-  },
-
-  "ConceptController" : {
-    "find" : ["authenticated", "canRead"],
-    "*" : ["authenticated", "canWrite"]
-  },
-
-  "KnowledgeController" : {
     "find" : ["authenticated", "canRead"],
     "*" : ["authenticated", "canWrite"]
   },
@@ -92,100 +85,27 @@
   },
 
   /************************************/
-  /*********** Jian ******************/
-  /************************************/
-
-
-  "ScreenshotController" : {
-    "*" : ["authenticated"]
-  },
-
-  "PresentationController" : {
-    "*" : ["authenticated"]
-  },
-
-  "SlideController" : {
-    "*" : ["authenticated"]
-  },
-
-  /************************************/
-  /*********** C'est quoi ces daubes ? :-) ******************/
-  /************************************/
-  "BackupController" : {
-    "*" : ["authenticated"]
-  },
-
-  "ContactController" : {
-    "*" : "authenticated"
-  }, 
-
-  "FileController" : {
-    "*" : "authenticated"
-  },
-
-  "CategoryController" : {
-    "find" : ["authenticated"],
-    "*" : ["authenticated"]
-  },
-  /************************************/
   /*********** VIEWS ******************/
   /************************************/
-  "PublicVisuController" : {
-    // "screenshot" : true,
-    // "publicvisuview" : ["authenticated","forceHTTPs"],
-    "*" : true
-  },
-
-  "PublicMapController" : {
-    // "screenshot" : true,
-    "publicmapview" : ["publicProjects","onlyMobile"],
-    "*" : true
-  },
-
+ 
   "ManagerController" : {
-    "managerview" : ["authenticated","forceHTTPs","onlyMobile"],
+    "managerview" : ["authenticated","forceHTTPs"],
   },
 
   "UserController" : {
     "inviteUser" : ["authenticated", "isAdmin"],
-    "userview" : ["authenticated","forceHTTPs","onlyMobile"],
-    "editprofileview" : ["authenticated", "forceHTTPs","onlyMobile"],
+    "userview" : ["authenticated","forceHTTPs"],
+    "editprofileview" : ["authenticated", "forceHTTPs"],
     "editprofile" : "authenticated",
     "changepassword" :"authenticated",
     "*" : ["authenticated"],
   },
 
   "bbmap" : {
-    "bbmapview" : ["authenticated", "forceHTTPs", "onlyMobile"],
+    "bbmapview" : ["authenticated", "forceHTTPs",],
     "screenshot" : true,
     "removeNews" : true,
     "*" : ["authenticated"],
-  },
-
-  "timela" : {
-    "timela" : ["authenticated", "forceHTTPs", "onlyMobile"],
-    "*" : ["authenticated"],
-  },
-
-  "NotificationController" : {
-    "notificationview" : ["authenticated","forceHTTPs","onlyMobile"],
-    "*" : ["authenticated"],
-  },
-
-  "CkpreviewerController" : {
-    "ckpreviewerview" :["authenticated","forceHTTPs","onlyMobile"],
-    "*" : "authenticated"
-  }, 
-
-  /************************************/
-  /************ MOBILE ****************/
-  /************************************/
-  "MobileInterfaceController" : {
-    "*" : ["authenticated","forceHTTPs"]
-  },
-
-  "MobileManagerController" : {
-    "*" : ["authenticated","forceHTTPs"]
   },
 
 

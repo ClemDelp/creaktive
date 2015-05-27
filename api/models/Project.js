@@ -18,25 +18,6 @@ autoPK : false,
   beforeDestroy : function (values, cb){
     project_id = values.where.id
     console.log(project_id)
-    Presentation.find({
-      project_id : project_id
-    }).done(function(err, pres){
-      _.each(pres, function(p){
-        p.destroy(function(err){
-          if(err) console.log(err)
-        })
-      })
-    })
-
-    Screenshot.find({
-      project_id : project_id
-    }).done(function(err, scrs){
-      _.each(scrs, function(s){
-        s.destroy(function(err){
-          if(err) console.log(err)
-        })
-      })
-    })
     
     Permission.find({
       project_id : project_id
