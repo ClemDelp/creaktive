@@ -80,13 +80,13 @@ module.exports = {
   get: function (req, res) {
   	res.download(req.body.path);
      rimraf('upload/', function(err) {
-       if (err) { //console.log( err); }
+       if (err) cb(err)
      })
   },
 
   destroy : function (req,res){
    rimraf('upload/'+req.body.file.id, function(err) {
-     if (err) { //console.log( err); }
+     if (err) cb(err)
      res.send({msg:"destroyed"})
    })
  },

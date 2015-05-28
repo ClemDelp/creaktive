@@ -52,7 +52,7 @@ module.exports = {
               project_id : project_id,
               date : IdService.getDate()
             }).done(function(err,srcs){
-              if(err) //console.log(err)
+              if(err) cb(err)
             })
             res.send("Screenshot uploaded")
         });

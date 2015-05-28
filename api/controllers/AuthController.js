@@ -112,7 +112,7 @@ var AuthController = {
 		}).done(function(err, user){
 			if(err) return res.redirect("/newuser");
 	      	EmailService.sendNewUserMail(user, function(err, msg){
-		        if(err) //console.log(err)
+		        if(err) cb(err)
 	      	});
 
 	      	res.redirect("/confirmation");

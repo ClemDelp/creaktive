@@ -28,7 +28,7 @@
                 user        : u.id,
                 attachedTo  : json.attachedTo,
               }).done(function(err,n){
-                if(err) //console.log(err);
+                if(err) cb(err);
                 //console.log("news successfully created!!!!")
                 // req.socket.in(req.body.params.project).emit("notification:create", n);
                 // req.socket.broadcast.to(req.body.params.project).emit("notification:create", n);
