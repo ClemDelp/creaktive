@@ -13,7 +13,7 @@ module.exports = {
   }
   */
 find : function (req,res){
-  console.log("fetching permission")
+  //console.log("fetching permission")
     Permission.find({
 
     }).done(function(err,permissions){
@@ -24,7 +24,7 @@ find : function (req,res){
   },
 
 destroy : function(req,res){
-  console.log("destroying permission")
+  //console.log("destroying permission")
     Permission.findOne(req.body.params.id).done(function(err,permission){
       if(err) return res.send({err:err});
       permission.destroy(function(err){
@@ -35,7 +35,7 @@ destroy : function(req,res){
   },
 
 update : function(req,res){
-  console.log('updating permission')
+  //console.log('updating permission')
     Permission.findOne(req.body.params.id).done(function(err, permission){
       if(err) return res.send({err:err});
       if(permission){

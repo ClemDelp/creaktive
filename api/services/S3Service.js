@@ -16,7 +16,7 @@ module.exports = {
 		var s3 = new AWS.S3();
 		var body = {};
 		var key = file.name || IdService.guid().replace(/-/g,"");
-		console.log("Sending " + key + " to S3");
+		//console.log("Sending " + key + " to S3");
 		if(file.path)  body = fs.createReadStream(file.path);
 		else{
 			//Convertit en image et enregistre sur le serveur cf. FileController
@@ -33,7 +33,7 @@ module.exports = {
 
   		s3.putObject(data, function(err, file) {
 		    if(err) return cb(err)
-		    console.log("File pushed on s3", data.Key)
+		    //console.log("File pushed on s3", data.Key)
 		    cb(null,data.Key)    		      
 	    });
 	    //cb(null,key)
@@ -57,7 +57,7 @@ module.exports = {
 	},
 
 	getFile : function(file, cb){
-		console.log(file)
+		//console.log(file)
 				AWS.config.update({
 			accessKeyId : accessKeyId,
 			secretAccessKey : secretAccessKey,

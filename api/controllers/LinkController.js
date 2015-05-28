@@ -14,7 +14,7 @@
   */
 
   find : function (req,res){
-    console.log("Fetching links")
+    //console.log("Fetching links")
     if(req.body.params.project){
       Link.find({
       project : req.body.params.project
@@ -33,7 +33,7 @@
   },
 
   update : function(req, res){
-    console.log("updating links")
+    //console.log("updating links")
   	Link.findOne(req.body.params.id).done(function(err, concept){
   		if(err) return res.send({err:err});
   		if(concept){
@@ -59,7 +59,7 @@
   },
 
   destroy : function(req,res){
-    console.log('destroying link')
+    //console.log('destroying link')
     Link.findOne(req.body.params.id).done(function(err,link){
       if(err) return res.send({err:err});
       if(link) {

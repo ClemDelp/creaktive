@@ -9,7 +9,7 @@ module.exports = function(req, res, next) {
  
 	'use strict';
 
-	console.log(req.body.project)
+	//console.log(req.body.project)
 
 	if(_.indexOf(req.session.permissions.rw, req.body.project) > -1 || 
 		_.indexOf(req.session.permissions.admin, req.body.project) > -1|| 

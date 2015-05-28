@@ -2,7 +2,7 @@
 module.exports = {
   // Creation du Backup
   createNode : function(id_father,currentProject,author,node_name, node_description,cb){
-    console.log("BackupService.createNode")
+    //console.log("BackupService.createNode")
     //On créé un nouveau projet avec comme father_id le projet initial
     var new_Project = currentProject;
     new_Project.id = IdService.guid();
@@ -23,7 +23,7 @@ module.exports = {
   },
   // Creer un backup en projet normal
   createProjectFromNode : function(id_father, title, content, cb){
-    console.log("BackupService.createProjectFromNode")
+    //console.log("BackupService.createProjectFromNode")
     Project.findOne(id_father).done(function(err, father){
       if(err) return cb(err);
       new_project = _.clone(father);
@@ -47,7 +47,7 @@ module.exports = {
   * cb(err,project) : renvoi le nouveau projet créé ou une erreur
   */
   copyData : function(new_Project,id_father, cb){
-    console.log("BackupService.copyData")
+    //console.log("BackupService.copyData")
     Project.create(new_Project).done(function(err,project){
       if(err) return cb(err);
       var all_links = [];
@@ -119,7 +119,7 @@ module.exports = {
             link.target = new_object_target.new.id;
           });
         }catch(e){
-          console.log("error in update cloned link or elements: ",e)
+          //console.log("error in update cloned link or elements: ",e)
           return cb(e);
         }
         ////////////////////////////
@@ -131,8 +131,8 @@ module.exports = {
         ////////////////////////////
         // SAVE LINKS
         ////////////////////////////
-        console.log("links: ",all_links.length)
-        console.log("elements: ",all_elements.length)
+        //console.log("links: ",all_links.length)
+        //console.log("elements: ",all_elements.length)
         Link.create(all_links).done(function(err, links){
           if(err) return cb(err);
         });

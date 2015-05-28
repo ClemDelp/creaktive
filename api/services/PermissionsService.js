@@ -1,7 +1,7 @@
 module.exports = {
 
 	checkPermissions : function(req,cb){
-		console.log('check permission')
+		//console.log('check permission')
 		req.session.permissions = {};
 		
 		Permission.find({user_id : req.session.user.id}).done(function(err, permissions){

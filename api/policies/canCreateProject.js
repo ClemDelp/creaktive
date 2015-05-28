@@ -11,7 +11,7 @@ module.exports = function(req, res, next) {
 	// if(req.session.user.platformAdmin){
 	// 	var suscribing = new Date(req.session.user.suscribing);
 	// 	var today = new Date();
-	// 	console.log(suscribing, "***", today)
+	// 	//console.log(suscribing, "***", today)
 	// 	if(suscribing > today){
 	// 		return next();
 	// 	}else{

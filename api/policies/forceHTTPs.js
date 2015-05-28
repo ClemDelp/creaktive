@@ -9,11 +9,11 @@ module.exports = function(req,res,next){
 	    	var u = req.baseUrl.replace("http","https");
 	    	u = u.slice(0, u.lastIndexOf(":"))
 			var url = u + req.url;
-			console.log("Redirect to ", url )
+			//console.log("Redirect to ", url )
 			res.redirect(url)
 	    }
 	    else{
-	    	console.log("Proceding")
+	    	//console.log("Proceding")
 	      next() /* Continue to other routes if we're not redirecting */
 		}
 	}
