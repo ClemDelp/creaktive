@@ -18,7 +18,6 @@
   },
   createNews : function(req,json){
     Permission.find({project_id:json.project}).done(function(err, ps){
-      console.log(ps)
       User.find().done(function(err,us){
         us.forEach(function(u){
           ps.forEach(function(perm){
