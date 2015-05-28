@@ -53,32 +53,46 @@ workspacesList.Views.Main = Backbone.View.extend({
         var _this = this;
         var workspaces = this.workspaces;
         if(collection) workspaces = collection;
+        var ws_class = "workspaces_container";
         ////////////////////////////
-        if(this.display == "list"){
-            $('.workspaces_container_list').remove();
-            var list_container = $('<div>',{class:'workspaces_container_list large-12 columns'});
-            workspaces.each(function(ws){
-                list_container.append(new workspacesList.Views.Workspace({
-                    display : _this.display,
-                    model   : ws
-                }).render().el)
-            })
-            $(this.el).append(list_container)
-        }else{
-            $('.workspaces_container').remove();
-            /////////////////
-            // All 
-            var all_ws_container = $('<div>',{class:'workspaces_container panel large-12 columns'});
-            // all_ws_container.append('<h4><img src="/img/icones/User-Profile-32-blue.png" />Projects</h4>')
-            workspaces.each(function(ws){
-                all_ws_container.append(new workspacesList.Views.Workspace({
-                    display : _this.display,
-                    model   : ws,
-                }).render().el)
-            })
-            $(this.el).append(all_ws_container);
-            $(".workspaces_container").gridalicious({width: 300});
-        }
+        if(this.display == "list") ws_class = "workspaces_container_list";
+        else ws_class = "workspaces_container";
+        $('.'+ws_class).remove();
+        /////////////////
+        // All 
+        var all_ws_exemple_container = $('<div>',{class:ws_class+' panel large-12 columns'});
+        var all_ws_private_container = $('<div>',{class:ws_class+' panel large-12 columns'});
+        var all_ws_public_container = $('<div>',{class:ws_class+' panel large-12 columns'});
+        // Filter by type
+        var ws_exemple = workspaces.where({status : "exemple"});
+        var ws_private = workspaces.where({status : "private"});
+        var ws_public = workspaces.where({status : "public"});
+        // Append ws to container
+        ws_exemple.forEach(function(ws){
+            all_ws_exemple_container.append(new workspacesList.Views.Workspace({
+                display : _this.display,
+                model   : ws,
+            }).render().el)
+        })
+        ws_private.forEach(function(ws){
+            all_ws_private_container.append(new workspacesList.Views.Workspace({
+                display : _this.display,
+                model   : ws,
+            }).render().el)
+        })
+        ws_public.forEach(function(ws){
+            all_ws_public_container.append(new workspacesList.Views.Workspace({
+                display : _this.display,
+                model   : ws,
+            }).render().el)
+        })
+        // Append containers to el
+        $(this.el).append(all_ws_private_container);
+        $(this.el).append(all_ws_public_container);
+        $(this.el).append(all_ws_exemple_container);
+
+        if(this.display == "block") $(".workspaces_container").gridalicious({width: 300});
+
         $(document).foundation();
     },
     render : function(){        
