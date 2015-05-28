@@ -1,8 +1,8 @@
 module.exports = {
 
   bootstrapmanager : function(req,res){
-    console.log("Bootstraping manager data")
-    console.log('user bootstrapmanager : ',req.session.user)
+    //console.log("Bootstraping manager data")
+    //console.log('user bootstrapmanager : ',req.session.user)
     req.session.user = req.session.user || {id:"999999999", name : "guest", img:"img/default-user-icon-profile.png"}
     PermissionsService.checkPermissions(req,function(err){
       if(err) return res.send({err:err});
@@ -13,7 +13,7 @@ module.exports = {
       Notification.find({
         read : { "!" : req.session.user.id}
       }).done(function(err,unotifications){
-        if(err) console.log(err);
+        if(err) //console.log(err);
         unread_notifications = unotifications;
 
         Notification.find({
@@ -23,7 +23,7 @@ module.exports = {
           },
           limit : 100
         }).done(function(err, rnotifications){
-          if(err) console.log(err)
+          if(err) //console.log(err)
           unread_notifications = rnotifications;
           User.find().done(function(err,users){
           News.find({user: req.session.user.id}).done(function(err,news){
@@ -49,7 +49,7 @@ module.exports = {
   },
 
 	bootstrapdata : function(req,res){
-    console.log("Bootstraping data")
+    //console.log("Bootstraping data")
     req.session.user = req.session.user || {id:"999999999", name : "guest", img:"img/default-user-icon-profile.png"}
     PermissionsService.checkPermissions(req,function(err){
       if(err) return res.send({err:err});

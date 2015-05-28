@@ -28,8 +28,8 @@
                 user        : u.id,
                 attachedTo  : json.attachedTo,
               }).done(function(err,n){
-                if(err) console.log(err);
-                console.log("news successfully created!!!!")
+                if(err) //console.log(err);
+                //console.log("news successfully created!!!!")
                 // req.socket.in(req.body.params.project).emit("notification:create", n);
                 // req.socket.broadcast.to(req.body.params.project).emit("notification:create", n);
               });
@@ -57,7 +57,7 @@
       comparator  : new Date().getTime(),
       attachedTo  : json.attachedTo,
     }).done(function(err,n){
-      if(err) console.log(err);
+      if(err) //console.log(err);
       req.socket.in(req.body.params.project).emit("notification:create", n);
       req.socket.broadcast.to(req.body.params.project).emit("notification:create", n);
     });
@@ -66,7 +66,7 @@
   },
 
   objectCreated : function(req,res, object, to){
-    console.log("Notifications object created")
+    //console.log("Notifications object created")
     if(req.body.action.length == 0) return;
     
     var json = {
@@ -85,7 +85,7 @@
   },
 
   objectUpdated : function(req,res, object, to, old){
-    console.log("Notification object updated")
+    //console.log("Notification object updated")
     var content ="";
 
     if(req.body.action.length == 0) return;
@@ -110,7 +110,7 @@
   },
 
   objectRemoved : function(req,res, object, to){
-    console.log("Notification object removed")
+    //console.log("Notification object removed")
     var json = {
       type        : "remove"+object,
       content     : "model removed",

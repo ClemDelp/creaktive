@@ -31,7 +31,7 @@ module.exports = {
 	}),
 
 	sendInvitation : function(host,guest, cb){
-		console.log("Sending registration mail")
+		//console.log("Sending registration mail")
 		var html = "<h1>Bonjour</h1></br>Vous avez reçu une invitation sur CreaKtive</br> "
 		var APP_NAME = process.env.APP_NAME || "local"
 		mailOptions = {
@@ -59,7 +59,7 @@ module.exports = {
 
 
 	sendRegistrationMail : function(to, url, cb){
-		console.log("Sending registration mail")
+		//console.log("Sending registration mail")
 		var html = "<h1>Bonjour</h1></br>Vous avez reçu une invitation sur CreaKtive</br> " + url
 		var APP_NAME = process.env.APP_NAME || "local"
 		mailOptions = {
@@ -99,7 +99,7 @@ module.exports = {
 	},
 
 	sendNewUserMail : function (user, cb){
-		console.log("Sending invitation")
+		//console.log("Sending invitation")
 		var html = "New user added on CreaKtive " + user.name + " " + user.email;  
 		var APP_NAME = process.env.APP_NAME || "local"
 		mailOptions = {
@@ -143,7 +143,7 @@ module.exports = {
 	},
 
 	sendPasswordRecovery : function(to,url,cb){
-		console.log("Send password recovery email")
+		//console.log("Send password recovery email")
 		var html = "<h1>Bonjour</h1></br>Veuillez suivre le lien suivant pour créer un nouveau mot de passe</br> " + url;
 		mailOptions = {
 		    from: "L'éditeur CreaKtive ✔ contact@creaktive.fr", // sender address

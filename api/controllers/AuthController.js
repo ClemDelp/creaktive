@@ -11,12 +11,12 @@ var xss = require('node-xss').clean;
 var AuthController = {
 
 	resetpassword : function(req,res){
-		console.log("Loading reset password view")
+		//console.log("Loading reset password view")
 		res.view();
 	},
 
 	processResetPassword : function(req,res){
-		console.log("processing reset password")
+		//console.log("processing reset password")
 		var key = ""
 		var url = "";
 
@@ -45,9 +45,9 @@ var AuthController = {
 
 			user.recoveryLink = key;
 			user.save(function (err, u) {
-				if(err) console.log(err)
+				if(err) //console.log(err)
 				EmailService.sendPasswordRecovery(user.email, url,function(err, msg){
-			        if(err) console.log(err)
+			        if(err) //console.log(err)
 
 			      res.redirect("/resetconfirmation")
 			      });
@@ -112,7 +112,7 @@ var AuthController = {
 		}).done(function(err, user){
 			if(err) return res.redirect("/newuser");
 	      	EmailService.sendNewUserMail(user, function(err, msg){
-		        if(err) console.log(err)
+		        if(err) //console.log(err)
 	      	});
 
 	      	res.redirect("/confirmation");
@@ -163,7 +163,7 @@ var AuthController = {
 		req.body = xss(req.body);
 		passport.authenticate('local', function(err, user, info) {
 			if ((err) || (!user)) {
-				console.log("Login error")
+				//console.log("Login error")
 				res.redirect('/login');
 				return;
 			}
@@ -191,7 +191,7 @@ var AuthController = {
 		// 	var connectedUsers = []
 		// 	for (var socketId in sails.io.sockets.sockets) {
 		// 	    sails.io.sockets.sockets[socketId].get('user', function(err, u) {
-		// 	        if(err) console.log(err)
+		// 	        if(err) //console.log(err)
 		// 	    	connectedUsers.push(u);
 		// 	    });
 		// 	}
@@ -201,7 +201,7 @@ var AuthController = {
 		// })
 
 		// req.socket.on("disconnect", function(){
-		// 	console.log("DISCONNECTED")
+		// 	//console.log("DISCONNECTED")
 		// 	req.socket.get('connectedUsers', function(err, connectedUsers){
 		// 		var i = connectedUsers.indexOf(req.session.user.id);
 		// 		delete connectedUsers[i];

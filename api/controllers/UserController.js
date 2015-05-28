@@ -17,7 +17,7 @@
 
 
   find : function (req,res){
-    console.log('fetch users')
+    //console.log('fetch users')
     User.find().done(function(err,users){
       if(err) return res.send({err:err})
       res.send(users)
@@ -26,7 +26,7 @@
 
   
   update : function(req,res){  	
-    console.log("update users")
+    //console.log("update users")
     User.findOne(req.body.params.id).done(function(err, user){
   		if(err) return res.send({err:err});
   		if(user){
@@ -34,7 +34,7 @@
   				if(err) return res.send({err:err});
           //req.session.user = u[0]
           if(req.session.user.id == u[0].id) req.session.user = u[0]
-          //console.log(u[0])
+          ////console.log(u[0])
           req.socket.broadcast.to(req.body.params.project).emit("user:update", u[0]);
           //res.send(u[0]);
         });
@@ -53,7 +53,7 @@
   },
 
   destroy : function(req,res){
-    console.log("destroy user")
+    //console.log("destroy user")
     User.findOne(req.body.params.id).done(function(err,user){
       if(err) return res.send({err:err})
       user.destroy(function(err){
@@ -64,7 +64,7 @@
   },
 
   inviteRegisteredUser : function(req,res){
-    console.log("invite registered user on a project")
+    //console.log("invite registered user on a project")
     EmailService.sendInvitation(req.body.host, req.body.guest,function(err, msg){
         if(err) return res.send({err:err});
 
@@ -72,7 +72,7 @@
   },
 
   inviteUser : function(req,res){
-    console.log("invite user on a project")
+    //console.log("invite user on a project")
     User.create({
       img : "/img/default-user-icon-profile.png",
       name : req.body.email.substring(0,req.body.email.indexOf("@")),
@@ -115,7 +115,7 @@
   },
 
   changepassword : function(req,res){
-    console.log("processing change password")
+    //console.log("processing change password")
     User.findOne(req.session.user.id).done(function(err, user){
       if((req.body.oldpassword != "")&&(req.body.password != "")&&(req.body.confirmPassword != "")){
         bcrypt.compare(req.body.oldpassword, user.pw, function (err, bcrypt_res) {
@@ -142,7 +142,7 @@
   },
 
   editprofile : function(req,res){
-    console.log('processing edit profile')
+    //console.log('processing edit profile')
     User.findOne(req.session.user.id).done(function(err, user){
       if(err) return res.send({err:err});
       user.email = req.body.email;
@@ -159,14 +159,14 @@
   },
 
   editprofileview : function(req,res){
-    console.log("Loading edit profile view")
+    //console.log("Loading edit profile view")
     BootstrapService.bootstrapmanager(req,res);
     //res.view({user : req.session.user});
   },
 
 
   userview : function(req,res){
-    console.log('procesing users manager view')
+    //console.log('procesing users manager view')
     BootstrapService.bootstrapdata(req,res);
   },
 };

@@ -56,7 +56,7 @@ module.exports = {
 
 
   export2pdf : function(req,res){
-    console.log('Processing export to pdf')
+    //console.log('Processing export to pdf')
 
       var html =req.body.data;
       // var images = req.body.images
@@ -64,7 +64,7 @@ module.exports = {
       // $ = cheerio.load(html)
       // $('img').each(function(i,elem){
         
-      //   console.log(elem)
+      //   //console.log(elem)
       // });
       id = IdService.guid(),
       fileName = "export.pdf";
@@ -80,13 +80,13 @@ module.exports = {
   get: function (req, res) {
   	res.download(req.body.path);
      rimraf('upload/', function(err) {
-       if (err) { console.log( err); }
+       if (err) { //console.log( err); }
      })
   },
 
   destroy : function (req,res){
    rimraf('upload/'+req.body.file.id, function(err) {
-     if (err) { console.log( err); }
+     if (err) { //console.log( err); }
      res.send({msg:"destroyed"})
    })
  },
@@ -116,7 +116,7 @@ module.exports = {
       try {
         mkdirp.sync(dirPath, 0755);
       } catch (e) {
-        console.log(e);
+        //console.log(e);
       }
 
       fs.readFile(file.path, function (err, data) {
