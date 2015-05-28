@@ -1,6 +1,9 @@
 .button.drop, .drop{
 	cursor:move;
 }
+.reveal-modal{
+	background-color:#efefef;	
+}
 
 .cursor{
 	border-radius: 50%;

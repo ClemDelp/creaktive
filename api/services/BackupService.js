@@ -1,208 +1,161 @@
 
 module.exports = {
+  // Creation du Backup
+  createNode : function(id_father,currentProject,author,node_name, node_description,cb){
+    console.log("BackupService.createNode")
+    //On créé un nouveau projet avec comme father_id le projet initial
+    var new_Project = currentProject;
+    new_Project.id = IdService.guid();
+    new_Project.author = author;
+    new_Project.date =  IdService.getDate();
+    new_Project.date2 = new Date().getTime();
+    new_Project.id_father =  id_father;
+    new_Project.backup =  true;
+    new_Project.title =  new_Project.title +" - "+node_name;
+    new_Project.node_name =  new_Project.title;
+    new_Project.node_description = node_description;
+    new_Project.content = node_description;
 
-    createProjectFromNode : function(id_father, title, content, cb){
-        Project.findOne(id_father).done(function(err, father){
-            if(err) return cb(err);
-            new_project = _.clone(father);
-            new_project.id = IdService.guid();
-            new_project.project = new_project.id;
-            new_project.backup = false;
-            new_project.node_title = "";
-            new_project.node_description = "";
-            new_project.title = title;
-            new_project.content = content;
+    BackupService.copyData(new_Project, id_father, function(err, project){
+      if(err) return cb(err);
+        cb(null, project);
+    });
+  },
+  // Creer un backup en projet normal
+  createProjectFromNode : function(id_father, title, content, cb){
+    console.log("BackupService.createProjectFromNode")
+    Project.findOne(id_father).done(function(err, father){
+      if(err) return cb(err);
+      new_project = _.clone(father);
+      new_project.id = IdService.guid();
+      new_project.project = new_project.id;
+      new_project.backup = false;
+      new_project.node_title = "";
+      new_project.node_description = "";
+      new_project.title = title;
+      new_project.content = content;
 
-            BackupService.copyData(new_project, id_father, function(err, project){
-                if(err) return cb(err);
-                cb(null, project);
-            });
-        });
-    },
-
-    createNode : function(id_father,currentProject,author,node_name, node_description,cb){
-
-        //On créé un nouveau projet avec comme father_id le projet initial
-        var new_Project = currentProject;
-        new_Project.id = IdService.guid();
-        new_Project.author = author;
-        new_Project.date =  IdService.getDate();
-        new_Project.date2 = new Date().getTime();
-        new_Project.id_father =  id_father;
-        new_Project.backup =  true;
-        new_Project.node_name =  node_name;
-        new_Project.node_description = node_description;
-
-        BackupService.copyData(new_Project, id_father, function(err, project){
+      BackupService.copyData(new_project, id_father, function(err, project){
           if(err) return cb(err);
-            cb(null, project);
-        });
-
-},
-
-    /*copie tous les concepts, connaissances, catégories, liens, permissions et présentations
-    * @new_project : nouveau projet à créer
-    * @id_father : id du projet source 
-    * cb(err,project) : renvoi le nouveau projet créé ou une erreur
-    */
-    copyData : function(new_Project,id_father, cb){
-       Project.create(new_Project).done(function(err,project){
-              if(err) return cb(err);
-
-              var all_links = [];
-              var all_concepts = [];
-              var all_knowledge = [];
-              var all_categories = [];
-
-              // On créé en parallèle tous les nouveaux objets
-            async.parallel([
-                function(callback){ 
-                  // On créé tous les nouveaux liens dans un tableau
-                  // Les targets et source seront traité plus bas
-                  Link.find({
-                    project : id_father
-                }).done(function(err, links){
-                    if(err) return cb(err);       
-                    _.each(links, function(link){
-                      var new_link = link;
-                      new_link.id = IdService.guid();
-                      new_link.project = project.id;
-                      all_links.push(new_link);
-                  });
-                    callback();
-                })
-            },
-                function(callback){
-                      // Créé tous les concepts dans un tableau [{newc_oncept,old_concept}]
-                      // les id_father seront traités plus bas
-                      Concept.find({project:id_father}).done(function(err, concepts){
-                        if(err) return cb(err);
-                        _.each(concepts, function(concept){
-                          var new_concept = _.clone(concept);
-                          new_concept.id = IdService.guid();
-                          new_concept.project = project.id;
-                          all_concepts.push({new : new_concept, old : concept});
-                      });
-                        callback();
-                    }); 
-                  },
-                  function(callback){ 
-                      // Créé toutes les connaissances dans un tableau
-                      Knowledge.find({
-                        project : id_father
-                    }).done(function(err, knowledges){
-                        if(err) return cb(err);
-                        _.each(knowledges, function(knowledge){
-                          var new_knowledge = _.clone(knowledge);
-                          new_knowledge.id = IdService.guid();
-                          new_knowledge.project = project.id;
-                          all_knowledge.push({new : new_knowledge, old : knowledge});
-                      });
-                        callback();
-                    });
-                },
-                function(callback){ 
-                      // Créé toutes les catégories dans un tableau
-                      Poche.find({
-                        project : id_father
-                    }).done(function(err, poches){
-                        if(err) return cb(err);
-                        _.each(poches, function(poche){
-                          var new_poche = _.clone(poche);
-                          new_poche.id = IdService.guid();
-                          new_poche.project = project.id;
-                          all_categories.push({new: new_poche, old : poche});
-                      })
-                        callback();
-                    })
-                },
-                ], 
-                function(err){
-                  try{  
-                    // Attribut pour chaque concept l'id du nouveau père 
-                  _.each(all_concepts, function(concept){
-                    if(concept.old.id_father == "none") concept.new.id_father = "none";
-                    else {
-                      var data = _.find(all_concepts, function(c){
-                        if(c.old.id == concept.old.id_father) return c;
-                      });
-                      concept.new.id_father = data.new.id
-                    }
-                  });
-              //Créé tous les liens
-              _.each(all_links, function(link){
-                // On remplace toutes les sources
-                var new_object_source = _.find(all_concepts.concat(all_knowledge, all_categories), function(obj){
-                  if(obj.old.id == link.source) return obj;
-              })
-                link.source = new_object_source.new.id;
-                // On remplace toutes les target
-                var new_object_target = _.find(all_concepts.concat(all_knowledge, all_categories), function(obj){
-                  if(obj.old.id == link.target) return obj;
-              })
-                link.target = new_object_target.new.id;
+          cb(null, project);
+      });
+    });
+  },
+  /*copie tous les concepts, connaissances, catégories, liens, permissions et présentations
+  * @new_project : nouveau projet à créer
+  * @id_father : id du projet source 
+  * cb(err,project) : renvoi le nouveau projet créé ou une erreur
+  */
+  copyData : function(new_Project,id_father, cb){
+    console.log("BackupService.copyData")
+    Project.create(new_Project).done(function(err,project){
+      if(err) return cb(err);
+      var all_links = [];
+      var all_elements = [];
+      // On créé en parallèle tous les nouveaux objets
+      async.parallel([
+        ////////////////////////////
+        // CLONE LINKS
+        ////////////////////////////  
+        function(callback){ 
+          Link.find({
+            project : id_father
+          }).done(function(err, links){
+            if(err) return cb(err);       
+            _.each(links, function(link){
+              var new_link = _.clone(link);
+              new_link.id = IdService.guid();
+              new_link.project = project.id;
+              all_links.push(new_link);
             });
-            }catch(e){
-              return cb(e);
-            }
-
-
-              Concept.create(_.pluck(all_concepts, "new")).done(function(err,c){
-                  if(err) return cb(err);
-              }); 
-              //Enregistre toutes les connaissances et poches dans la BDD
-              Knowledge.create(_.pluck(all_knowledge,"new")).done(function(err, knowledges){
-                if(err) return cb(err);
-            });
-              //Enregistre toutes les connaissances et poches dans la BDD
-              Poche.create(_.pluck(all_categories,"new")).done(function(err, poches){
-                if(err) return cb(err);
-            });
-              //Enregistre toutes les connaissances et poches dans la BDD
-              Link.create(all_links).done(function(err, links){
-                if(err) return cb(err);
-            });
-
+            callback();
           });
-
-
-
-
-        Presentation.find({
-          project_id : id_father
-        }).done(function(err, presentations){
-          _.each(presentations, function(presentation){
-            Presentation.create({
-              id : IdService.guid(),
-              title : presentation.title,
-              data : presentation.data,
-              project_id : project.id,
-          }).done(function(err, p){
-              if(err) return cb(err)
-          })
-        })
-        });
-
-            Permission.find({
-          project_id : id_father
-        }).done(function(err, permissions){
-          _.each(permissions, function(permission){
-            Permission.create({
-              id : IdService.guid(),
-              user_id : permission.user_id,
-              project_id : project.id,
-              right : permission.right
-          }).done(function(err, p){
-              if(err) return cb(err);
-              cb(null,project)
-          })
-        })
-        });
-
-        
-
+        },
+        ////////////////////////////
+        // CLONE ELEMENTS
+        ////////////////////////////
+        function(callback){
+          // Créé tous les concepts dans un tableau [{newc_oncept,old_concept}]
+          // les id_father seront traités plus bas
+          Element.find({project:id_father}).done(function(err, elements){
+            if(err) return cb(err);
+            _.each(elements, function(element){
+              var new_element = _.clone(element);
+              new_element.id = IdService.guid();
+              new_element.project = project.id;
+              all_elements.push({new : new_element, old : element});
+            });
+            callback();
+          }); 
+        },  
+      ],
+      function(err){
+        try{  
+          ////////////////////////////
+          // UPDATE CLONED ELEMENTS
+          ////////////////////////////
+          _.each(all_elements, function(element){
+            if(element.old.id_father == "none") element.new.id_father = "none";
+            else {
+              var data = _.find(all_elements, function(c){
+                if(c.old.id == element.old.id_father) return c;
+              });
+              element.new.id_father = data.new.id;
+            }
+          });
+          ////////////////////////////
+          // UPDATE CLONED LINKS
+          ////////////////////////////
+          _.each(all_links, function(link){
+            // On remplace toutes les sources
+            var new_object_source = _.find(all_elements, function(obj){
+              if(obj.old.id == link.source) return obj;
+            });
+            link.source = new_object_source.new.id;
+            // On remplace toutes les target
+            var new_object_target = _.find(all_elements, function(obj){
+              if(obj.old.id == link.target) return obj;
+            });
+            link.target = new_object_target.new.id;
+          });
+        }catch(e){
+          console.log("error in update cloned link or elements: ",e)
+          return cb(e);
+        }
+        ////////////////////////////
+        // SAVE ELEMENTS
+        ////////////////////////////
+        Element.create(_.pluck(all_elements, "new")).done(function(err,c){
+            if(err) return cb(err);
         }); 
-    }
-
-
+        ////////////////////////////
+        // SAVE LINKS
+        ////////////////////////////
+        console.log("links: ",all_links.length)
+        console.log("elements: ",all_elements.length)
+        Link.create(all_links).done(function(err, links){
+          if(err) return cb(err);
+        });
+      });
+      ////////////////////////////
+      // GENERATE PERMISSIONS
+      ////////////////////////////
+      Permission.find({
+        project_id : id_father
+      }).done(function(err, permissions){
+        _.each(permissions, function(permission){
+          Permission.create({
+            id : IdService.guid(),
+            user_id : permission.user_id,
+            project_id : project.id,
+            right : permission.right
+          }).done(function(err, p){
+            if(err) return cb(err);
+            cb(null,project)
+          });
+        });
+      });
+      ////////////////////////////
+    }); 
+  }
 }

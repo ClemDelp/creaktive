@@ -1,32 +1,3 @@
-/////////////////////////////////////////////////////////////////////
-/*Explorer*/
-/////////////////////////////////////////////////////////////////////
-global.Models.File = Backbone.Model.extend({
-    defaults : {
-        id : "",
-        name : "",
-        path : "",
-    },
-});
-/***************************************/
-global.Models.Backup = Backbone.Model.extend({
-    defaults : {
-        id : "",
-        knowledges_collection : "",
-        concepts_collection : "",
-        categories_collection : "",
-        cklinks_collection : "",
-        date : "",
-        date2 : "",
-        project_id : ""
-    },
-    initialize : function Poche() {
-        this.urlRoot = "backup";
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    }
-});
 /***************************************/
 global.Models.Filter = Backbone.Model.extend({
     defaults : {
@@ -266,37 +237,5 @@ global.Models.CKLink = Backbone.Model.extend({
     initialize : function Comment() {
         this.urlRoot = "link";
         //console.log('Concept Constructor');
-    }
-});
-
-/***************************************/
-global.Models.Screenshot = Backbone.Model.extend({
-    defaults : {
-        id : "",
-        src : "",
-        project_id : "",
-        date : ""
-    },
-    initialize : function Poche() {
-        this.urlRoot = "screenshot";
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    }
-});
-/***************************************/
-global.Models.Presentation = Backbone.Model.extend({
-    defaults : {
-        id : "",
-        title : "",
-        data : "",
-        project_id : "",
-        user_name : "",
-    },
-    initialize : function Poche() {
-        this.urlRoot = "presentation";
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
     }
 });

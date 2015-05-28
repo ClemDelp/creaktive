@@ -35,25 +35,8 @@ module.exports.routes = {
 
   '/': "ManagerController.managerview",
   '/userManager': "UserController.userview",
-
-  '/sparql/query': "SparqlController.query",
-  // '/backup': "BackupController.create",
-  // '/backup/getData': "BackupController.getData",
-  '/activities': "NotificationController.notificationview",
-  '/contact': "ContactController.contactview",
-
-  '/elasticsearch/ping': "ElasticsearchController.pingServer",
-  '/elasticsearch/searchKnowledge': "ElasticsearchController.searchKnowledge",
   
   '/bbmap': "BBmapController.bbmapview",
-  '/timela': "TimelaController.timelaview",
-  '/mobileInterface': "MobileInterfaceController.mobileInterfaceview",
-  '/mobileManager': "MobileManagerController.mobileManagerview",
-  '/analyse': "AnalyseController.analyseview",
-  '/ckviewer': "CkviewerController.ckviewerview",
-  '/categories': "CategoryController.categoryview",
-  '/ckpreviewer': "CkpreviewerController.ckpreviewerview",
-
 
   'get /login' : 'AuthController.login',
   'post /login' : 'AuthController.process',
@@ -81,9 +64,6 @@ module.exports.routes = {
     action :"getUrl",
     cors : true
   },
-
-  "/backup" : "BackupController.backupview"
-
 
 
   /*

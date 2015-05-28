@@ -155,15 +155,6 @@ global.Collections.LocalHistory = Backbone.Collection.extend({
     }
 });
 /***************************************/
-global.Collections.Backups = Backbone.Collection.extend({
-    model : global.Models.Backup,
-    initialize : function() {
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    }
-});
-/***************************************/
 global.Collections.Filters = Backbone.Collection.extend({
     model : global.Models.Filter,
     initialize : function() {
@@ -216,27 +207,6 @@ global.Collections.ProjectsCollection = Backbone.Collection.extend({
         //console.log('Comments Collection Constructor');
     }
 });  
-
-/***************************************/
-global.Collections.Screenshots = Backbone.Collection.extend({
-    model : global.Models.Screenshot,
-    initialize : function() {
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    }
-}); 
-
-/***************************************/
-global.Collections.Presentations = Backbone.Collection.extend({
-    model : global.Models.Presentation,
-    initialize : function() {
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    }
-}); 
-
 /***************************************/
 global.Collections.Attachments = Backbone.Collection.extend({
     model : global.Models.Attachment,

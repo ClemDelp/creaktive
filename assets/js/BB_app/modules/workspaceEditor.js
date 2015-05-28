@@ -10,10 +10,13 @@ var workspaceEditor = {
   views: {},
   eventAggregator : global.eventAggregator,
   init: function (json) {
+    this.workspaces = new global.Collections.ProjectsCollection();
+    this.workspaces.comparator = "createdAt"
+    this.workspaces.fetch({reset : true, data:{project : global.models.currentProject.get('project')}})
+
     this.views.main = new workspaceEditor.Views.Main({
         el : json.el,
         workspace : global.models.currentProject,
-        workspaces : global.collections.Projects,
         mode : json.mode
     });
     this.views.main.render();
@@ -25,26 +28,25 @@ var workspaceEditor = {
 workspaceEditor.Views.Main = Backbone.View.extend({
     initialize : function(json) {
         _.bindAll(this, 'render');
-        ////////////////////////////
+        // Variables
         this.workspace = json.workspace;
-        this.workspaces = json.workspaces;
         this.mode = json.mode;
-        // Events
+        this.workspaces = workspaceEditor.workspaces;
+        // Events   
+        this.listenTo(this.workspaces,'reset',this.render,this);
+        this.listenTo(this.workspaces,'add',this.render,this);
+        this.listenTo(this.workspaces,'remove',this.render,this);
         // Templates
+        this.backup_template = _.template($('#backup-template').html());
         this.template = _.template($('#workspaceEditor-template').html());
     },
     events : {
-        "click .ckeditor2" : "ckeditor",
         "click .updateWorkspace" : "updateWorkspace",
-        "click .removeWorkspace" : "removeWorkspace"
-    },
-    ckeditor : function(e){
-      if(this.mode == "edit"){
-          // CKEDITOR.replaceAll('ckeditor2');
-          // CKEDITOR.config.toolbar = [
-          //    ['Bold','Italic','Underline','NumberedList','BulletedList','Image','Link','TextColor']
-          // ];       
-      }
+        "click .removeWorkspace" : "removeWorkspace",
+        "click .createBranch" : "createBranch",
+        "click .switch" : "switchBranch",
+        "click .convert" : "convertInProject",
+        "change #wk_visibility" : "updateWorkspace"
     },
     removeWorkspace : function(e){
       e.preventDefault();
@@ -60,10 +62,6 @@ workspaceEditor.Views.Main = Backbone.View.extend({
           allowOutsideClick : true
       }, 
       function(){   
-        // console.log("wooooorkspaceee ",_this.workspaces)
-        //   project_id = _this.workspace.get('id');
-        //   project = _this.workspaces.get(project_id);
-          // project.destroy();
         global.models.currentProject.destroy();
           window.location.href = "/";
       });
@@ -81,19 +79,65 @@ workspaceEditor.Views.Main = Backbone.View.extend({
             date: getDate(),
             date2:new Date().getTime()
         });
-        window.location.href = "/";
+        window.location.href = "/bbmap?projectId="+this.workspace.id;
+    },
+    convertInProject : function(e){
+      e.preventDefault();
+      $.post("/project/createFromNode", {
+        node_id : workspaceEditor.views.main.workspace.get('id'),
+        title : workspaceEditor.views.main.workspace.get('title'),
+        content : workspaceEditor.views.main.workspace.get('content'),
+        project : workspaceEditor.views.main.workspace.get('id'),
+      }, function(data){
+        if(data.err) alert(data.err);
+        else window.location.href = "/bbmap?projectId="+data.id;
+      });
+    },
+    switchBranch : function(e){
+      e.preventDefault();
+      var node_id = e.target.getAttribute("data-node-id");
+      $.post("/project/loadnode", {
+        node_id : node_id,
+        project : workspaceEditor.views.main.workspace.get('id'),
+      }, function(data){
+        document.location.replace("/bbmap?projectId="+data.id)
+      });
+    },
+    createBranch : function(e){
+      e.preventDefault();
+      var _this = this;
+      var name = $('#workspaceEditor_name').val();
+      var description = $('#workspaceEditor_description').val();
+
+      socket.post("/project/createNode", {
+        id_father : workspaceEditor.views.main.workspace.get('id'),
+        node_name : name,
+        node_description : description,
+        project : workspaceEditor.views.main.workspace.get('id'),
+      }, function(data){
+        if(data.err) alert(data.err);
+        else _this.workspaces.add(data);
+      });
     },
     render : function(){        
-        $(this.el).empty();
-        $(this.el).append(this.template({workspace : this.workspace.toJSON(),mode : this.mode}));
-        if(this.mode == "edit"){
-            // CKEDITOR.replaceAll('ckeditor2');
-            // CKEDITOR.config.toolbar = [
-            //    ['Bold','Italic','Underline','NumberedList','BulletedList','Image','Link','TextColor']
-            // ];       
-        }
-        
-        return this;
+      var _this = this;
+      $(this.el).empty();
+      // Edit
+      $(this.el).append(this.template({
+        workspace : this.workspace.toJSON(),
+        mode : this.mode
+      }));
+      // Versionning
+      this.workspaces.each(function(node){
+        $(_this.el).append(_this.backup_template({
+          workspace : _this.workspace.toJSON(),
+          node : node.toJSON(),
+          currentNode : workspaceEditor.views.main.workspace.get('id')
+        }))
+      });
+
+      $(document).foundation();
+      return this;
     }
 });
 /////////////////////////////////////////////////

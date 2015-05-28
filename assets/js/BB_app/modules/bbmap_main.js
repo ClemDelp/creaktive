@@ -38,7 +38,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.bottom_el = $(this.el).find('#bbmap_bottom_ui');
         this.map_el = $(this.el).find('#map');
         this.timeline_el = $(this.el).find('#timeline_container');
-        this.css3Model_el = $(this.el).find('#css3Model');
         this.googleSearchModel_el = $(this.el).find('#googleSearchModel');
         ////////////////////////////////
         // Objects
@@ -178,20 +177,15 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .zoomout"    : "zoomout",
         "click .reset"      : "recadrage",
         "click .edit"       : "editEvent",
-        "click .design"     : "designEvent",
-        "click .history"    : "historyEvent",
-        "click .web"        : "web",
 
         "click .closeSibeBar" : "closeSibeBar",
         "mouseover .window" : "showChildrens",
         "mouseleave .window" : "hideChildrens",
         "click .window" : "showIcon", 
         "click .structureSubTree" : "treeClassification_event",
-        //"click .structureSubTree" : "structureTree",
         "click #okjoyride" : "updateLastModelTitle",
         "click .screenshot" : "screenshot",
         "click .downloadimage" : "laurie",
-        //"click #showMenu" : "eventMenu",
         "click .prevH" : "backInHistory",
         "click .nextH" : "advanceInHistory",
         "click .apply_template" : "apply_template",    
@@ -815,56 +809,10 @@ bbmap.Views.Main = Backbone.View.extend({
             }); 
         // }    
     },
-    designEvent : function(e){
-        e.preventDefault();
-        this.design();
-        this.showMenu();
-    },
-    design : function(){
-        this.moduleSideBar = "design";
-        var model = this.lastModel;
-        $('#sideBar_container').html('');
-        $('#sideBar_container').append($('<div>',{id:'css3Model'}))
-        $('#css3Model').prepend(bbmap.views.templatesList.render().el);
-    },
-    historyEvent : function(e){
-        e.preventDefault();
-        this.history();
-        this.showMenu();
-    },
-    history : function(){
-        this.moduleSideBar = "history";
-        var model = this.lastModel;
-        $('#sideBar_container').html('');
-        $('#sideBar_container').append($('<div>',{id:'activitiesModel'}))
-        // if(activitiesList.views.main != undefined){
-        //     activitiesList.views.main.mode = this.mode;
-        //     activitiesList.views.main.model = model;
-        //     activitiesList.views.main.render();
-        // }else{
-            activitiesList.init({
-                el:"#activitiesModel",
-                model : model,
-                mode: this.mode,
-            }); 
-        // }
-    },
     updateEditor : function(model){
         if(this.mode == "edit"){
             $('#right_buttons').show('slow');
-            //if(bbmap.rules == false) $('.design').show()
             if(this.moduleSideBar == "edit") this.edit();
-            else if(this.moduleSideBar == "design") this.design();
-            else this.history();
-            // Templates list
-            if(bbmap.views.templatesList) bbmap.views.templatesList.close();
-            bbmap.views.templatesList = new templatesList.Views.Main({
-                templates : this.project.get('templates'),
-                mode : this.mode,
-                model : model
-            });
-            // check for template
-            if(!this.project.get('templates')) this.project.save({templates : bbmap.default_templates},{silent:true});
         }
     },
     /////////////////////////////////////////
@@ -1005,7 +953,6 @@ bbmap.Views.Main = Backbone.View.extend({
         var zoom_height = window_height/cadre.height;
         var right_zoom = Math.min(zoom_width,zoom_height);        
         bbmap.views.main.setZoom(right_zoom);
-        console.log("zoom: ",right_zoom)
         if(api.getJsonSize(bbmap.views.main.nodes_views)>0) this.refocus(cadre);
     },
     refocus : function(cadre){
@@ -1015,9 +962,7 @@ bbmap.Views.Main = Backbone.View.extend({
         
         var dataCentroid = api.getCentroidPointsCloud(bbmap.views.main.getCoordinatesOfNodesViews()); // coordonnée du barycentre des nodes
         delta.top = screenCentroid.top - dataCentroid.top;
-        delta.left = screenCentroid.left - dataCentroid.left;
-        console.log("2: ",delta, dataCentroid)
-        
+        delta.left = screenCentroid.left - dataCentroid.left;        
         // superpose data and screen centroid 
         $('#map').animate({ top: delta.top, left: delta.left });
     },
@@ -1322,17 +1267,6 @@ bbmap.Views.Main = Backbone.View.extend({
             this.jsPlumbEventsInit();
             ///////////////////////
             jsPlumb.draggable($('#map'))
-            //$('#map').draggable();
-            // css3 generator
-            if(bbmap.views.css3)bbmap.views.css3.remove();
-            if(this.mode == "edit"){
-                bbmap.views.css3 = new CSS3GENERATOR.Views.Main();
-                // CSS3 Button generator
-                this.css3Model_el.html(bbmap.views.css3.render().el);
-                CSS3GENERATOR.attach_handlers();
-                CSS3GENERATOR.initialize_controls();
-                CSS3GENERATOR.update_styles();   
-            }
             // import data module
             if(importData.views.main)importData.views.main.remove();
             if(this.mode == "edit") importData.init();

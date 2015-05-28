@@ -21,9 +21,6 @@ module.exports = {
    managerview : function (req,res){
    	console.log('Loading manager view')
    	BootstrapService.bootstrapmanager(req,res);
-   
-	  
-
   },
 
   /**
@@ -32,5 +29,4 @@ module.exports = {
    */
   _config: {}
 
-  
 };

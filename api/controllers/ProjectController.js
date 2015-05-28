@@ -80,22 +80,14 @@ module.exports = {
             left: 50000
           }).done(function(err, c0){
             if(err) return res.send({err:err});
-            Presentation.create({
-              id : IdService.guid(),
-              title : project.title,
-              data : "",
+            Permission.create({
+              id: IdService.guid(),
+              user_id : req.session.user.id,
               project_id : project.id,
-            }).done(function(err){
+              right : "admin"
+            }).done(function(err, perm){
               if(err) return res.send({err:err});
-              Permission.create({
-                id: IdService.guid(),
-                user_id : req.session.user.id,
-                project_id : project.id,
-                right : "admin"
-              }).done(function(err, perm){
-                if(err) return res.send({err:err});
-                  res.send(project)
-              })
+                res.send(project)
             });
           });
   			})
@@ -140,15 +132,10 @@ module.exports = {
 
     Project.findOne(node_id).done(function(err,project){
       if(err) return res.send({err:err});
-      if(title != project.title){
       BackupService.createProjectFromNode(node_id, title, content, function(err, proj){
         if(err) return res.send({err:err});
         res.send(proj);
-      })
-      }else{
-        res.send({err : "A project with the same title has already been created"});
-      }
-
+      });
     });
 
   },
@@ -168,21 +155,6 @@ module.exports = {
 
   },
 
-
-  /** Supprime une branche
-  * @node_id : Id du node à supprimer
-  */
-  deleteBranch : function(req,res){
-    console.log("deleting backup")
-    var node_id = req.body.node_id;
-    Project.findOne(node_id).done(function(err, project){
-      if(err) return res.send(err);
-      project.destroy(function(err){
-        res.send("destroyed")
-      });
-    });
-  },
-
   /**
   * Créé une sauvegarde d'un projet. Une sauvegarde est un nouveau projet.
   * @id_father : id du projet père
@@ -196,11 +168,15 @@ module.exports = {
     var author = req.session.user;
     var node_name = req.body.node_name;
     var node_description = req.body.node_description;
-    
-    BackupService.createNode(id_father, currentProject, author,node_name, node_description, function(err,node){
+
+    Project.findOne(req.body.project).done(function(err,currentProject){
+     BackupService.createNode(id_father, currentProject , author,node_name, node_description, function(err,node){
       if(err) return res.send(err);
       res.send(node);
-    });
+    });     
+    })
+    
+
   }
 
 
