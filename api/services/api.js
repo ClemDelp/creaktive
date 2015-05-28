@@ -12,7 +12,7 @@ module.exports = {
         var target_el = Element.findOne(target_id);
         if(target_el.type == type) elements.unshift(target_el)
       }catch(err){
-        console.log(err)
+        //console.log(err)
       }
     });
 
@@ -27,7 +27,7 @@ module.exports = {
     if(currentNode.id_father){
       tree.forEach(function(node){
         if(_.indexOf(parents_id, node.id) == -1){
-          //console.log("current node ",currentNode.id_father," - node ",node.id)
+          ////console.log("current node ",currentNode.id_father," - node ",node.id)
           if(currentNode.id_father == node.id){
             parents.unshift(node);
             parents_id.unshift(node.id);

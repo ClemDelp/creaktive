@@ -15,17 +15,17 @@ module.exports = {
             links.forEach(function(link){
                 var ls = _.where(links,{source : link.source, target : link.target });
                 if(ls.length >1 ){
-                    console.log("find and remove duplicates links...")
+                    //console.log("find and remove duplicates links...")
                     for(var i=0; i<ls.length;i++){
                         if(i>0){
-                            console.log("destroy : ",ls[i].source)
+                            //console.log("destroy : ",ls[i].source)
                             ls[i].destroy(function(err){console.log('error: ',err);});
                         } 
                     }
                 }
             })
         }catch(err){
-            console.log(err);
+            //console.log(err);
         }
     },
     /////////////////////////////////////////////
@@ -82,23 +82,23 @@ module.exports = {
     applyLegend : function(model,elements,links){
         if(model.type == "concept"){
             if((model.content == "")&&(model.css_auto != "c_empty")){
-                console.log("legend not found and apply...")
+                //console.log("legend not found and apply...")
                 model.css_auto = "c_empty";
                 model.save(function (error){console.log("error: ",error)});
             }
             else if((model.content != "")&&(model.css_auto != "c_full")){
-                console.log("legend not found and apply...")
+                //console.log("legend not found and apply...")
                 model.css_auto = "c_full";
                 model.save(function (error){console.log("error: ",error)});
             } 
         }else if(model.type == "knowledge"){
             if((model.content == "")&&(model.css_auto != "k_empty")){
-                console.log("legend not found and apply...")
+                //console.log("legend not found and apply...")
                 model.css_auto = "k_empty";
                 model.save(function (error){console.log("error: ",error)});
             } 
             else if((model.content != "")&&(model.css_auto != "k_full")){
-                console.log("legend not found and apply...")
+                //console.log("legend not found and apply...")
                 model.css_auto = "k_full";
                 model.save(function (error){console.log("error: ",error)});
             } 
@@ -106,12 +106,12 @@ module.exports = {
         }else if(model.type == "poche"){
             var elements = api.getTypeLinkedToModel(links,elements,model,"knowledge");
             if((elements.length == 0)&&(model.css_auto != "p_empty")){
-                console.log("applyLegend")
+                //console.log("applyLegend")
                 model.css_auto = "p_empty";
                 model.save(function (error){console.log("error: ",error)});
             } 
             else if((elements.length > 0)&&(model.css_auto != "p_full")){
-                console.log("applyLegend");
+                //console.log("applyLegend");
                 model.css_auto = "p_full"; 
                 model.save(function (error){console.log("error: ",error)});
             }

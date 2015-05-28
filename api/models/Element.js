@@ -28,7 +28,7 @@ module.exports = {
     }).done(function(err, links){
       _.each(links, function(l){
         l.destroy(function(err){
-          if(err) console.log(err)
+          if(err) cb(err)
         })
       })
     })

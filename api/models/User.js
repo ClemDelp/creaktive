@@ -40,7 +40,6 @@ module.exports = {
       bcrypt.genSalt(10, function(err, salt) {
         bcrypt.hash(user.pw, salt, function(err, hash) {
           if (err) {
-            console.log(err);
             cb(err);
           }else{
             user.pw = hash;
@@ -58,7 +57,7 @@ module.exports = {
     }).done(function(err, perms){
       _.each(perms, function(p){
         p.destroy(function(err){
-          if(err) console.log(err)
+          if(err) cb(err)
         })
       })
     })
@@ -72,11 +71,10 @@ beforeCreate: function(user, cb) {
   }).done(function(err, users){
     if(err) return cb(err);
     if(users.length==0){
-      console.log("SAVE")
+      //console.log("SAVE")
       bcrypt.genSalt(10, function(err, salt) {
         bcrypt.hash(user.pw, salt, function(err, hash) {
           if (err) {
-            console.log(err);
             cb(err);
           }else{
             user.pw = hash;

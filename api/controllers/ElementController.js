@@ -18,7 +18,7 @@
 module.exports = {
   
   find : function (req,res){
-    console.log("Fetch elements");
+    //console.log("Fetch elements");
     if(req.body.params.project){
     Element.find({
       project : req.body.params.project
@@ -43,7 +43,7 @@ module.exports = {
   },
 
   update : function(req, res){
-    console.log("Updating element",req.body.notification)
+    //console.log("Updating element",req.body.notification)
     Element.findOne(req.body.params.id).done(function(err, element){
       if(err) return res.send({err:err});
       if(element){
@@ -76,7 +76,7 @@ module.exports = {
   },
 
   destroy : function(req,res){
-    console.log('Deleting element');
+    //console.log('Deleting element');
     Element.destroy(req.body.params.id).done(function(err, elements){
       if(err) return res.send({err :err});
       if(elements){

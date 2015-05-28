@@ -22,13 +22,13 @@ module.exports = {
 
   removeNews : function(req,res){
     News.destroy({user: req.query.user, project:req.query.project}).exec(function deleteCB(err){
-      console.log('News has been deleted');
+      //console.log('News has been deleted');
     });
     
   },
 
   screenshot : function(req,res){
-    console.log("Processing take screenshot");
+    //console.log("Processing take screenshot");
     ScreenshotService.screenshot(req,res,function(err,filePath){
       if(err) res.send(err);
 
@@ -52,7 +52,7 @@ module.exports = {
               project_id : project_id,
               date : IdService.getDate()
             }).done(function(err,srcs){
-              if(err) console.log(err)
+              if(err) cb(err)
             })
             res.send("Screenshot uploaded")
         });
@@ -62,7 +62,7 @@ module.exports = {
   },
 
   downloadScreenshot : function(req,res){
-    console.log("Processing downloading screenshot")
+    //console.log("Processing downloading screenshot")
      ScreenshotService.screenshot(req,res,function(err,file){
       if(err) res.send(err);
       res.download(file);
@@ -90,7 +90,7 @@ module.exports = {
   //////////////////////////////////////
 
   bbmapview : function(req,res){
-    console.log("Loading bbmap view")
+    //console.log("Loading bbmap view")
     BootstrapService.bootstrapdata(req,res);
   },
 
