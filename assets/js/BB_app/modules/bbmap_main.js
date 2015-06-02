@@ -159,11 +159,6 @@ bbmap.Views.Main = Backbone.View.extend({
                 }, 1000);                
             })
         }
-        ////////////////
-        this.statistics = new bbmap.Views.Stat({
-            elements : this.elements,
-            links : this.links,
-        });
     },
     events : {
         "change #visu_select_mode" : "setVisualMode",
@@ -188,9 +183,31 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .downloadimage" : "laurie",
         "click .prevH" : "backInHistory",
         "click .nextH" : "advanceInHistory",
-        "click .apply_template" : "apply_template",    
+        "click .apply_template" : "apply_template", 
+        "click .getSuggestions" : "getSuggestions", 
     },
     /////////////////////////////////////////
+    exportElementsToString : function(){
+        console.log(JSON.stringify(bbmap.views.main.elements.toJSON()));
+    },
+    exportLinksToString : function(){
+        console.log(JSON.stringify(bbmap.views.main.links.toJSON()));
+    },
+    /////////////////////////////////////////
+    getSuggestions : function(e){
+        e.preventDefault();
+        $.post("/suggestion/getSuggestions",{
+            elemens : bbmap.views.main.elements.toJSON(), 
+            links : bbmap.views.main.links.toJSON()
+        }, function(suggestions,status){
+            $('#suggestions_table').html('');
+            suggestions.forEach(function(suggest){
+                console.log("suggestion ",suggest)
+                $('#suggestions_table').append("<tr><td>"+suggest+"</td></tr>");
+            })
+            $('#suggestions_modal').foundation('reveal', 'open');
+        });
+    },
     apply_template : function(e){
         e.preventDefault();
         this.lastModel.save({css_manu : e.target.getAttribute("data-type")});
@@ -283,8 +300,6 @@ bbmap.Views.Main = Backbone.View.extend({
         var left_max = cadre.left_max;
         var top_min = cadre.top_min + padding_top;
         var top_max = cadre.top_max;
-        // Prepar legend
-        var legend = this.statistics.getLegend();
         // Def the cadre
         var cadre_width = cadre.width;
         var cadre_height = cadre.height;
@@ -1303,64 +1318,8 @@ bbmap.Views.Main = Backbone.View.extend({
         this.setPulse();
         ////////////////////////
         // Draw windows
-        this.svgWindowController();
-        bbmap.views.main.statistics.render(); 
-        
+        this.svgWindowController();        
         $(document).foundation();
         return this;
     }
 });
-/////////////////////////////////////////////////
-bbmap.Views.Stat = Backbone.View.extend({
-    initialize : function(json) { 
-        //console.log("comments view constructor!");
-        _.bindAll(this, 'render');
-        // Variables
-        this.elements = json.elements;
-        this.links = json.links;
-        this.stats = {};
-        this.left_stats_el = $("#stat_left")
-        this.bottom_stats_el = $("#stat_bottom")
-        // Templates
-        this.template_legend = _.template($('#bbmap-legend-template').html());
-        this.template_bottom = _.template($('#bbmap-stat-bottom-template').html());
-        this.template_left = _.template($('#bbmap-stat-left-template').html());
-    },
-    events : {},
-    getStats : function(){
-        return this.stats
-    },
-    getLegend : function(){
-        return this.template_legend({
-            stats : this.stats
-        })
-    },
-    render : function() {
-        this.left_stats_el.empty();
-        this.bottom_stats_el.empty();
-        // Set stats
-        this.stats = api.statistics(this.elements,this.links);
-        // var permissions = global.collections.Permissions;
-        // var currentUser = global.models.current_user;
-        // var perm = permissions.where({user_id : currentUser.get('id')})
-        // if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))){
-        //     bbmap.views.main.project.save({stats : this.stats});
-        //     console.log('project stats updated');
-        // } 
-        // left stat
-        // this.left_stats_el.append(this.template_left({
-        //     stats : this.stats
-        // }));
-        // bottom stats
-        this.bottom_stats_el.append(this.template_bottom({
-            c_nbre : this.stats.c_nbre.stat,
-            c_perc : this.stats.c_perc.stat,
-            k_nbre : this.stats.k_nbre.stat,
-            k_perc : this.stats.k_perc.stat,
-        }));
-
-      return this;
-    }
-});
-/////////////////////////////////////////////////
-

@@ -46,6 +46,10 @@
     "createFromNode" : ["authenticated","canWrite"],
     "loadnode" : ["authenticated"],
   }, 
+  
+  "SuggestionController" : {
+    "*" : ["authenticated"]
+  },
 
   "PermissionController" : {
     "find" : ["authenticated", "canRead"],

@@ -67,7 +67,7 @@
     //console.log("invite registered user on a project")
     EmailService.sendInvitation(req.body.host, req.body.guest,function(err, msg){
         if(err) return res.send({err:err});
-
+        else return res.send('');
       });
   },
 
