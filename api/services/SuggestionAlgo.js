@@ -16,22 +16,6 @@ var SuggestionAlgo = {
       var c_hamecon = _.where(elements,{"type" : "concept", "css_manu" : "c_hamecon"});
       return {"c_connu" : c_connu, "c_atteignable" : c_atteignable, "c_alternatif" : c_alternatif, "c_hamecon" : c_hamecon};
   },
-  //////////////////////////////////////////
-  // MODULE EVALUATION
-  //////////////////////////////////////////
-  // 4 couleurs
-  get_originality_eval_patrick : function(elements){
-      var concepts = SuggestionAlgo.getConceptByStatus(elements);
-      // si il y a 4 couleurs en C
-      var originality = concepts.c_connu.length + concepts.c_atteignable.length + concepts.c_alternatif.length + concepts.c_hamecon.length
-      return originality;
-  },
-  get_originality_eval_mines : function(elements){
-      var concepts = SuggestionAlgo.getConceptByStatus(elements);
-      // partitions expansive/partitions restrictives = (alternative + hamecon)/(dominante design + K atteignable)
-      var originality = (concepts.c_alternatif.length + concepts.c_hamecon.length)/(concepts.c_connu.length + concepts.c_atteignable.length)
-      return originality;
-  },
   // calcul de la valeur (nbre de new K*concepts generated) / K validees
   get_valeur_eval : function(elements,links){
       var knowledges = SuggestionAlgo.getKnowledgeByStatus(elements);
@@ -67,17 +51,26 @@ var SuggestionAlgo = {
       return equilibre;
   },
   //////////////////////////////////////////
-  //////////////////////////////////////////
-  // MODULE SUGGESTION
-  //////////////////////////////////////////
-  //////////////////////////////////////////
+  // ORIGINALITY EVALUATION & SUGGESTION
   get_all_suggestions : function(elements,links,cb){
     var suggestions = [];
     suggestions = _.union(suggestions,SuggestionAlgo.get_originality_suggest(elements))
     cb(suggestions);
   },
   //////////////////////////////////////////
-  // ORIGINALITY SUGGESTION
+  // ORIGINALITY EVALUATION & SUGGESTION
+  get_originality_eval_patrick : function(elements){
+      var concepts = SuggestionAlgo.getConceptByStatus(elements);
+      // si il y a 4 couleurs en C
+      var originality = concepts.c_connu.length + concepts.c_atteignable.length + concepts.c_alternatif.length + concepts.c_hamecon.length
+      return originality;
+  },
+  get_originality_eval_mines : function(elements){
+      var concepts = SuggestionAlgo.getConceptByStatus(elements);
+      // partitions expansive/partitions restrictives = (alternative + hamecon)/(dominante design + K atteignable)
+      var originality = (concepts.c_alternatif.length + concepts.c_hamecon.length)/(concepts.c_connu.length + concepts.c_atteignable.length)
+      return originality;
+  },
   get_originality_suggest : function(elements){
     var suggestions = []; 
     suggestions = _.union(suggestions, SuggestionAlgo.get_originality_patrick_suggest(elements));
