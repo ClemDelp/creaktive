@@ -1,7 +1,15 @@
-var SuggestionAlgo = {
+//SuggestionAlgo = {
+module.exports = {
   //////////////////////////////////////////
-  // UTILITIES
+  get_all_suggestions : function(elements,links,cb){
+    var suggestions = {
+      "level_1" : SuggestionAlgo.get_not_normalize(elements),
+      "level_2" : _.union(SuggestionAlgo.get_originality_suggest(elements),[]),
+    };
+    cb(suggestions);
+  },
   //////////////////////////////////////////
+  // STATUT
   getKnowledgeByStatus : function(elements){
       var k_validees = _.where(elements,{"type" : "knowledge", "css_manu" : "k_validees"});
       var k_encours = _.where(elements,{"type" : "knowledge", "css_manu" : "k_encours"});
@@ -15,47 +23,31 @@ var SuggestionAlgo = {
       var c_alternatif = _.where(elements,{"type" : "concept", "css_manu" : "c_alternatif"});
       var c_hamecon = _.where(elements,{"type" : "concept", "css_manu" : "c_hamecon"});
       return {"c_connu" : c_connu, "c_atteignable" : c_atteignable, "c_alternatif" : c_alternatif, "c_hamecon" : c_hamecon};
-  },
-  // calcul de la valeur (nbre de new K*concepts generated) / K validees
-  get_valeur_eval : function(elements,links){
-      var knowledges = SuggestionAlgo.getKnowledgeByStatus(elements);
-      // nouvelles connaissances = toutes sauf les validees
-      var new_k = _.union(knowledges.k_encours, knowledges.k_manquante, knowledges.k_indesidable);
-      // nombre de concepts générés par les nouvelles K
-      var concepts_generated = [];
-      new_k.forEach(function(k){
-          concepts_generated = _.union(concepts_generated, api.getTypeLinkedToModel(links,elements,k,"concept"));
-      });
-      //
-      var valeur = (new_k.length * concepts_generated.length) / knowledges.k_validees.length;
-      return valeur;
-  },
-  // robustess = k interne / k externe
-  get_robustesse_eval : function(elements){
-      var knowledges = SuggestionAlgo.getKnowledgeByStatus(elements);
-      var k_interne = knowledges.k_validees
-      var k_externe = _.union(knowledges.k_indesidable, knowledges.k_manquante, knowledges.k_encours)
-      //
-      var robustess = k_interne.length / k_externe.length;
-      return robustess;
-  },
-  // Variété = nombre de branches & sous-branches par rapport au dominant design
-  get_variete_eval : function(elements){
-      var concepts = SuggestionAlgo.getConceptByStatus(elements);
-      //
-      var variete = (concepts.c_hamecon.length + concepts.c_alternatif.length + concepts.c_atteignable.length) / concepts.c_connu.length;
-      return variete;
-  },
-  get_equilibre_eval : function(elements){
-      var equilibre = elements.where({type : "concept"}).length / elements.where({type : "knowledge"}).length;
-      return equilibre;
-  },
-  //////////////////////////////////////////
-  // ORIGINALITY EVALUATION & SUGGESTION
-  get_all_suggestions : function(elements,links,cb){
-    var suggestions = [];
-    suggestions = _.union(suggestions,SuggestionAlgo.get_originality_suggest(elements))
-    cb(suggestions);
+  },  
+  get_not_normalize : function(elements){
+    var c = [];
+    var k = [];
+    elements.forEach(function(el){
+      if(el.type == "concept"){
+        if(!el.css_manu) c.unshift(el)
+        else if(el.css_manu == "") c.unshift(el)
+      }
+      else if(el.type == "knowledge"){
+        if(!el.css_manu) k.unshift(el)
+        else if(el.css_manu == "") k.unshift(el)
+      }
+    });
+    var concepts = {
+      "elements" : c,
+      "suggestions" : SuggestionText.s00.fr,
+      "propositions" : SuggestionText.s00.propositions,
+    };
+    var knowledges = {  
+      "elements" : k,
+      "suggestions" : SuggestionText.s01.fr,
+      "propositions" : SuggestionText.s01.propositions,
+    };
+    return {"concepts" : concepts, "knowledges" : knowledges};
   },
   //////////////////////////////////////////
   // ORIGINALITY EVALUATION & SUGGESTION
@@ -119,6 +111,20 @@ var SuggestionAlgo = {
   },
   //////////////////////////////////////////
   // VALEUR SUGGESTION
+  // calcul de la valeur (nbre de new K*concepts generated) / K validees
+  get_valeur_eval : function(elements,links){
+      var knowledges = SuggestionAlgo.getKnowledgeByStatus(elements);
+      // nouvelles connaissances = toutes sauf les validees
+      var new_k = _.union(knowledges.k_encours, knowledges.k_manquante, knowledges.k_indesidable);
+      // nombre de concepts générés par les nouvelles K
+      var concepts_generated = [];
+      new_k.forEach(function(k){
+          concepts_generated = _.union(concepts_generated, api.getTypeLinkedToModel(links,elements,k,"concept"));
+      });
+      //
+      var valeur = (new_k.length * concepts_generated.length) / knowledges.k_validees.length;
+      return valeur;
+  },
   get_valeur_suggest : function(elements){
       var valeur = SuggestionAlgo.get_valeur_eval(elements);
       var suggestions = [];
@@ -127,6 +133,17 @@ var SuggestionAlgo = {
       }else{
           // ???
       }
+  },
+  //////////////////////////////////////////
+  // ROBUSTESS
+  // robustess = k interne / k externe
+  get_robustesse_eval : function(elements){
+      var knowledges = SuggestionAlgo.getKnowledgeByStatus(elements);
+      var k_interne = knowledges.k_validees
+      var k_externe = _.union(knowledges.k_indesidable, knowledges.k_manquante, knowledges.k_encours)
+      //
+      var robustess = k_interne.length / k_externe.length;
+      return robustess;
   },
   get_robustesse_suggest : function(elements){
       var robustess = SuggestionAlgo.get_robustesse_eval(elements);
@@ -138,11 +155,25 @@ var SuggestionAlgo = {
       }
       return suggestions;
   },
+  //////////////////////////////////////////
+  // Variété = nombre de branches & sous-branches par rapport au dominant design
+  get_variete_eval : function(elements){
+      var concepts = SuggestionAlgo.getConceptByStatus(elements);
+      //
+      var variete = (concepts.c_hamecon.length + concepts.c_alternatif.length + concepts.c_atteignable.length) / concepts.c_connu.length;
+      return variete;
+  },
   get_variete_suggest : function(elements){
       var variete = SuggestionAlgo.get_variete_eval(elements)
       var suggestions = [];
       // ???
       return suggestions;
+  },
+  //////////////////////////////////////////
+  // EQUILIBRE
+  get_equilibre_eval : function(elements){
+      var equilibre = elements.where({type : "concept"}).length / elements.where({type : "knowledge"}).length;
+      return equilibre;
   },
   get_equilibre_suggest : function(elements){
       var equilibre = SuggestionAlgo.get_equilibre_eval(elements);
@@ -158,6 +189,8 @@ var SuggestionAlgo = {
       }
       return suggestions;
   },
+  //////////////////////////////////////////
+  // RISQUE
   get_risque_suggest : function(elements){
       var risque = SuggestionAlgo.get_risque_eval(elements);
       var suggestions = [];

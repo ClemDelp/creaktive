@@ -1,7 +1,68 @@
-var SuggestionText = {
+var statut = {
+	///////////////////////////////////////////////////////
+    // STATUT
     ///////////////////////////////////////////////////////
-    // TEXTUAL SUGGESTION
+    // Concept
+    "c_connu" : {
+		"css_manu" : "c_connu",
+		"name" : {"fr" : "Connu", "en" : ""},
+		"desc" : {"fr" : "Le concept renvoie à un ensemble de solutions techniques connues, dont la performance est également connue","en" : ""},
+		"css" : "-moz-border-radius: 50px; -webkit-border-radius: 50px; border-radius: 50px; font-family: Arial; color: white; background: #2ecc71; border: solid #27ae60 2px; text-decoration: none;",
+	},
+    "c_atteignable" : {
+		"css_manu" : "c_atteignable",
+		"name" : {"fr" : "Atteignable", "en" : ""},
+		"desc" : {"fr" : "Le concept est à approfondir ou atteignable","en" : ""},
+		"css" : "-moz-border-radius: 50px; -webkit-border-radius: 50px; border-radius: 50px; font-family: Arial; color: white; background: #1abc9c; border: solid #16a085 2px; text-decoration: none; ",
+	},
+	"c_alternatif" : {
+		"css_manu" : "c_alternatif",
+		"name" : {"fr" : "Alternatif", "en" : ""},
+		"desc" : {"fr" : "Le concept est éloigné du dominant design et peut faire l'objet d'une démarche de conception dédiée","en" : ""},
+		"css" : "-moz-border-radius: 50px; -webkit-border-radius: 50px; border-radius: 50px; font-family: Arial; color: white; background: #9b59b6; border: solid #8e44ad 2px; text-decoration: none;",
+	},
+	"c_hamecon" : {
+		"css_manu" : "c_hamecon",
+		"name" : {"fr" : "Hameçon", "en" : ""},
+		"desc" : {"fr" : "Le concept est lié à une rupture de règles et devient un point d'accroche pour de nouveaux K en émergence/expension pure","en" : ""},
+		"css" : "-moz-border-radius: 50px; -webkit-border-radius: 50px; border-radius: 50px; font-family: Arial; color: white; background: #34495e; border: solid #2980b9 2px; text-decoration: none;",
+	},
+	// Knowledge
+	"k_validees" : {
+		"css_manu" : "k_validees",
+		"name" : {"fr" : "Validées", "en" : ""},
+		"desc" : {"fr" : "La connaissance acquise est validée en interne","en" : ""},
+		"css" : "-moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; font-family: Arial; color: black; background: transparent; border: solid #2c3e50 2px; text-decoration: none;",
+	},	
+	"k_encours" : {
+		"css_manu" : "k_encours",
+		"name" : {"fr" : "En cours", "en" : ""},
+		"desc" : {"fr" : "La connaissance est en coursacquisition","en" : ""},
+		"css" : "-moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; font-family: Arial; color: white; background: #f1c40f; border: solid #f39c12 2px; text-decoration: none;",
+	},	
+	"k_manquante" : {
+		"css_manu" : "k_manquante",
+		"name" : {"fr" : "Manquante", "en" : ""},
+		"desc" : {"fr" : "La connaissance est absente ou non actionnaben interne","en" : ""},
+		"css" : "-moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; font-family: Arial; color: white; background: #e67e22; border: solid #d35400 2px; text-decoration: none;",
+	},	
+	"k_indesidable" : {
+		"css_manu" : "k_indesidable",
+		"name" : {"fr" : "Indésidable", "en" : ""},
+		"desc" : {"fr" : "La connaissance est manquante de surcroit non accessible","en" : ""},
+		"css" : "-moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; font-family: Arial; color: white; background: #e74c3c; border: solid #c0392b 2px; text-decoration: none;",
+	},
+}
+//SuggestionText = {
+module.exports = {
     ///////////////////////////////////////////////////////
+    // suggestion de niveau 1
+    ///////////////////////////////////////////////////////
+	"s00" : { "fr" : "Ce concept n'a pas encore de statut", "en" : "", "propositions" : [statut.c_connu, statut.c_atteignable, statut.c_alternatif, statut.c_hamecon]},
+	"s01" : { "fr" : "Cette connaissance n'a pas encore de statut", "en" : "", "propositions" : [statut.k_validees, statut.k_indesidable, statut.k_manquante, statut.k_encours]},	
+	///////////////////////////////////////////////////////
+	// suggestion de niveau 2
+	///////////////////////////////////////////////////////
 	"s0" : { "fr" : "Suggérer plus d'expansion", "en" : ""},
 	"s1" : { "fr" : "Vous restez trop dans une logique de dominante design", "en" : ""},
 	"s2" : { "fr" : "Il y a un bon partage entre les concepts de rupture et incrémentale", "en" : ""},

@@ -10,6 +10,6 @@ module.exports = {
 		SuggestionAlgo.get_all_suggestions(req.body.elements, req.body.links, function(json){
 			res.send(json);
 		});
-	}
+	},
 };
 
