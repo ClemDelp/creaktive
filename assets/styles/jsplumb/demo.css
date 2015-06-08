@@ -1,6 +1,3 @@
-.actionMenuButton{
-	padding: 10px;
-}
 
 .button.drop, .drop{
 	cursor:move;
@@ -470,4 +467,11 @@ body{
 	text-decoration: none;
 }
 
+
+
+
+.selectedElement{
+	color: red;
+	border: dotted red 4px;
+}
 

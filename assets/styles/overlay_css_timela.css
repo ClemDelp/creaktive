@@ -10,9 +10,6 @@ z-index: 1000;
 border-left: 1px solid #1B9DD3;
 }
 
-
-
-
 .reveal-modal.modalContainer{
 	max-height: 80%;
 	overflow: auto;
@@ -159,6 +156,7 @@ font-size: 1rem;
 
 #top_container .button{
 	margin:0px;
+	padding: 10px;
 }
 
 #top_container{

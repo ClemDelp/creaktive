@@ -65,6 +65,8 @@ bbmap.Views.Main = Backbone.View.extend({
         this.visualMode         = "children"; // children/node/parent respectivly display childrens concept/ parents concepts + knowledges associate / knowledges associate to concept
         this.jeton              = true; // jeton pourevite que le center soit utilisé 2 fois simultanement
         this.moduleSideBar      = "edit";
+        this.selectedElement    = []; // array with all selected elements
+        this.m_selection_mode   = false;
         ////////////////////////////////
         // Timeline & history parameter
         this.timeline_pos       = 0;
@@ -149,8 +151,6 @@ bbmap.Views.Main = Backbone.View.extend({
         }
     },
     events : {
-        "change #visu_select_mode" : "setVisualMode",
-        "change #filterSelection" : "setFilter",
         "mouseup .dropC" : "newConceptUnlinked",
         "mouseup .dropK" : "newKnowledgeUnlinked",
         "mouseup .dropP" : "newPocheUnlinked",
@@ -159,21 +159,48 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .zoomin"     : "zoomin",
         "click .zoomout"    : "zoomout",
         "click .reset"      : "recadrage",
-        "click .edit"       : "editEvent",
 
-        "click .closeSibeBar" : "closeSibeBar",
-        //"mouseover .window" : "showChildrens",
         "mouseleave .window" : "hideChildrens",
-        //"mouseover .window" : "showIcon", 
-        "mouseenter .window" : "showIcon", 
+        "click .window" : "elementSelection",
+        "dblclick .window" : "editBulle",
+        "mouseenter .window" : "overElement", 
         "click .structureSubTree" : "treeClassification_event",
         "click #okjoyride" : "updateLastModelTitle",
         "click .screenshot" : "screenshot",
         "click .downloadimage" : "laurie",
-        "click .prevH" : "backInHistory",
-        "click .nextH" : "advanceInHistory",
         "click .apply_template" : "apply_template", 
         "click .getSuggestions" : "getSuggestions", 
+        "click .multiselection" : "multiselection", 
+        "click .supMultipleElement" : "multisuppression", 
+    },
+    /////////////////////////////////////////
+    multiselection : function(e){
+        e.preventDefault();
+        // initialisation
+        this.selectedElement.length = 0;
+        $('.selectedElement').removeClass('selectedElement');
+        bbmap.views.main.instance.clearDragSelection();
+        $('.supMultipleElement').hide('slow');
+        // switch mode
+        if(this.m_selection_mode){
+            this.m_selection_mode = false;
+            $(".multiselection").addClass("secondary");
+        } else{
+            this.m_selection_mode = true;
+            $(".multiselection").removeClass("secondary");
+        } 
+    },
+    multisuppression : function(e){
+        e.preventDefault();
+        this.selectedElement.forEach(function(el){
+            el.destroy();
+        })
+    },
+    editBulle : function(e){
+        e.preventDefault();
+        var id = e.target.id;
+        bbmap.views.main.setLastModel(bbmap.views.main.elements.get(id),'editBulle');
+        bbmap.views.main.startJoyride(id);
     },
     /////////////////////////////////////////
     exportElementsToString : function(){
@@ -569,18 +596,7 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     setMode : function(mode,initPos){
         this.mode = mode;
-        if(this.lastModel.get('id')) this.updateEditor(this.lastModel);
         this.render(initPos);
-    },
-    setFilter : function(e){
-        e.preventDefault();
-        this.filter = $(e.target).val();
-        this.render();
-    },
-    setVisualMode : function(e){
-        e.preventDefault();
-        this.visualMode = $( "#visu_select_mode option:selected").val();
-        console.log('visual mode set to ',this.visualMode);
     },
     /////////////////////////////////////////
     // Downdloadimage
@@ -672,70 +688,43 @@ bbmap.Views.Main = Backbone.View.extend({
         }
     },
     /////////////////////////////////////////
-    // Sliding editor bar
-    /////////////////////////////////////////
-    showMenu : function(){
-        if(this.isopen == false){
-            $("#map").animate({left: "-=28%"})
-            this.setDeltaX(-20)
-            $("#sideBar").animate({right:"0px"});
-            $("#right_buttons").animate({right:$('#sideBar').width()});
-            //$("#cbp-openimage").attr("src","/img/icones/Arrowhead-Right-48.png");
-            this.isopen=true;    
-        }
-    },
-    hideMenu : function(){
-        if(this.isopen == true){
-            $("#map").animate({left: "+=28%"})
-            this.setDeltaX(0)
-            $("#sideBar").animate({right:"-30%"});
-            $("#right_buttons").animate({right:"0px"});
-            //$("#cbp-openimage").attr("src","/img/icones/Arrowhead-Left-48.png");
-            this.isopen=false;
-            this.autOpen = false;
-        }
-    },
-    setDeltaX : function(pourc){
-        this.deltaX = pourc * $(window).width()/100;
-    },
-    /////////////////////////////////////////
     // Hover bulle effect
     /////////////////////////////////////////
-    setNotificationDisplayOnModel : function(model){
-        // inti
-        var comments = model.get('comments').length
-        var attachments = model.get('attachment').length
-        var description = 0
-        // notif big red button
-        // if(model.get('content') != "") description = 1;
-        //$('#showMenu_notif').html(comments + attachments + description);
-        // notif inside slideBar Menu
-        $('#notifDesc').empty()
-        $('#notifAttach').empty()
-        $('#notifComment').empty()
-        if(comments > 0) $('#notifComment').html('<span class="top-bar-unread">'+comments+'</span>')
-        if(attachments > 0) $('#notifAttach').html('<span class="top-bar-unread">'+attachments+'</span>')
-        //if(description > 0) $('#notifDesc').html('<span class="top-bar-unread">'+description+'</span>')
+    elementSelection : function(e){
+        if(this.m_selection_mode == true){
+            e.preventDefault();
+            $('.supMultipleElement').show('slow');
+            var element = this.elements.get(e.target.id)
+            console.log("Element details : ",element.toJSON())
+            // close all icones
+            this.$(".icon").hide();
+            this.selectedElement.unshift(element);
+            $("#"+element.get('id')).addClass("selectedElement");
+            bbmap.views.main.instance.addToDragSelection($('#'+element.get('id')));
+        }
     },
-    showIcon : function(e){
-        e.preventDefault();
-        var element = this.elements.get(e.target.id)
-        console.log("Element details : ",element.toJSON())
-        //console.log("Infinite loop : ",api.isInfiniteLoop(bbmap.views.main.elements,bbmap.views.main.elements.get(e.target.id),[]))
-        var visible = api.isVisible(bbmap.views.main.links,bbmap.views.main.elements,bbmap.views.main.elements.get(element.get('id')))
-        //console.log(visible)
-        // close all icones
-        this.$(".icon").hide();
-        //if(e.target.getAttribute("data-type") != "action"){
-            // set last model
-            this.setLastModel(element);
-            this.setNotificationDisplayOnModel(element);
-            this.updateEditor(element);
+    overElement : function(e){
+        if(this.m_selection_mode == false){
+            e.preventDefault();
+            var element = this.elements.get(e.target.id)
+            console.log("Element details : ",element.toJSON())
+            //console.log("Infinite loop : ",api.isInfiniteLoop(bbmap.views.main.elements,bbmap.views.main.elements.get(e.target.id),[]))
+            //var visible = api.isVisible(bbmap.views.main.links,bbmap.views.main.elements,bbmap.views.main.elements.get(element.get('id')))
+            // close all icones
+            this.$(".icon").hide();
+            this.setLastModel(element);            
             if(this.mode == "edit") $("#"+element.get('id')+" .icon").show();
             this.showDependances(element);
-        //}
-
-        bbmap.views.main.showChildrens(element);
+            // Show childrens
+            bbmap.views.main.instance.clearDragSelection();
+            if(element.get('visibility') == true){
+                var childs = api.getTreeChildrenNodes(element,this.elements)
+                childs.forEach(function(child){
+                    $('#'+child.get('id')).addClass('windowHover')
+                    bbmap.views.main.instance.addToDragSelection($('#'+child.get('id')));
+                });
+            }
+        }
     },
     showDependances : function(model){
         // remove before all other dependances
@@ -763,16 +752,6 @@ bbmap.Views.Main = Backbone.View.extend({
             }
         });
     },
-    showChildrens : function(element){
-        bbmap.views.main.instance.clearDragSelection();
-        if(element.get('visibility') == true){
-            var childs = api.getTreeChildrenNodes(element,this.elements)
-            childs.forEach(function(child){
-                $('#'+child.get('id')).addClass('windowHover')
-                bbmap.views.main.instance.addToDragSelection($('#'+child.get('id')));
-            });
-        }
-    },
     hideChildrens : function(e){
         e.preventDefault();
         //this.$(".icon").hide();
@@ -783,15 +762,6 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     //////////////////////////////
     // Side bar
-    closeSibeBar : function(e){
-        e.preventDefault();
-        this.hideMenu();
-    },
-    editEvent : function(e){
-        e.preventDefault();
-        this.edit();
-        this.showMenu();
-    },
     edit : function(){
         this.moduleSideBar = "edit";
         var model = this.lastModel;
@@ -800,49 +770,25 @@ bbmap.Views.Main = Backbone.View.extend({
         $('#sideBar_container').append($('<div>',{id:'attachmentPart'}))
         $('#sideBar_container').append($('<div>',{id:'commentPart'}))
         // Comments module
-        // if(comments.views.main != undefined){
-        //     comments.views.main.mode = this.mode;
-        //     comments.views.main.model = model;
-        //     comments.views.main.render();
-        // }else{
-            comments.init({
-                el:"#commentPart",
-                mode: this.mode,
-                model : model,
-                presentation : "bulle"
-            }); 
-        // }
-        // attachment module
-        // if(attachment.views.main != undefined){
-        //     attachment.views.main.mode = this.mode;
-        //     attachment.views.main.model = model;
-        //     attachment.views.main.render();
-        // }else{
-            attachment.init({
-                el:"#attachmentPart",
-                mode: this.mode,
-                model : model,
-            }); 
-        // }
+        comments.init({
+            el:"#commentPart",
+            mode: this.mode,
+            model : model,
+            presentation : "bulle"
+        }); 
+        // Attachment module
+        attachment.init({
+            el:"#attachmentPart",
+            mode: this.mode,
+            model : model,
+        }); 
         // Editor module
-        // if(modelEditor.views.main != undefined){
-        //     modelEditor.views.main.bbmapMode = this.mode;
-        //     modelEditor.views.main.model = model;
-        //     modelEditor.views.main.render();
-        // }else{
-            modelEditor.init({
-                el:"#editorPart",
-                mode: this.mode,
-                ckeditor : false,
-                model : model,
-            }); 
-        // }    
-    },
-    updateEditor : function(model){
-        if(this.mode == "edit"){
-            $('#right_buttons').show('slow');
-            if(this.moduleSideBar == "edit") this.edit();
-        }
+        modelEditor.init({
+            el:"#editorPart",
+            mode: this.mode,
+            ckeditor : false,
+            model : model,
+        }); 
     },
     /////////////////////////////////////////
     // Zoom system

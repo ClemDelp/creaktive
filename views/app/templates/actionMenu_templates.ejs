@@ -11,7 +11,13 @@
       </li>
       {{ if(mode == "edit"){ }}
       <li>
-        <a data-tooltip aria-haspopup="true" title="Algorithme de placement automatique de l'arbre" style="display:none" href="#" class="a tiny radius button secondary structureSubTree"><img title="structure sub-tree" src="/img/icones/Network-Drives-24.png"/></a>
+        <a data-tooltip aria-haspopup="true" title="Basculer en mode multi-selection" href="#" class="tiny radius button secondary multiselection"><img title="Multiselection" src="/img/icones/Selection-Modes-24-blue.png"/></a>
+      </li>
+      <li>
+        <a data-tooltip aria-haspopup="true" style="display:none" title="Basculer en mode multi-selection" href="#" class="tiny radius button secondary supMultipleElement"><img title="Suppression" src="/img/icones/Delete.png"/></a>
+      </li>
+      <li>
+        <a data-tooltip aria-haspopup="true" title="Ré-organisation automatique de l'arbre" style="display:none" href="#" class="a tiny radius button secondary structureSubTree"><img title="structure sub-tree" src="/img/icones/Network-Drives-24.png"/></a>
       </li>
       {{ } }}
       <li>
@@ -70,6 +76,7 @@
     </div>
     
     <small>Offered by the creaktive suggestion algorithm</small>
+    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
   </div>
 
 

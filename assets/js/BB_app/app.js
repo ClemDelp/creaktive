@@ -77,7 +77,7 @@ var global = {
   newElement : function(type,title,top,left,pos){
     // title
     var title = title;
-    if(title == "") title = "new "+type;
+    //if(title == "") title = "new "+type;
     // CSS definition
     var css = global.css_transparent_element;
     // Father definition

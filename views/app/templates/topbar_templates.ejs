@@ -4,12 +4,10 @@
   <div class="row fullWidth topbar bg_blue">
     <div class="large-12 medium-12 small-12">
       <div class="large-3 medium-3 small-3 columns">
-      <a href="#" style="padding:0px;padding-right:10px" class="fullWhite button tiny radius" data-reveal-id="workspaces_dropdown">
-        <img src="/img/icones/Bullets-32.png"/>
-      </a>
-      <div id="workspaces_dropdown" class="modalContainer reveal-modal" data-reveal style="background-color:#efefef;"></div>
-      
-        
+        <a href="#" style="padding:0px;padding-right:10px" class="fullWhite button tiny radius" data-reveal-id="workspaces_dropdown">
+          <img src="/img/icones/Bullets-32.png"/>
+        </a>
+        <div id="workspaces_dropdown" class="modalContainer reveal-modal" data-reveal style="background-color:#efefef;"></div>
       </div>
 
 
@@ -46,7 +44,7 @@
 
 
         {{ if(mode == "edit"){ }}
-          <a href="#" class="button fullWhite simplePadding radius" data-reveal-id="title_project_modal">
+          <a href="#" style="padding:0px;" class="button fullWhite tiny radius" data-reveal-id="title_project_modal">
             <b>
             {{-project.title}}
             {{ if(project.starred){ }}<img data-dropdown="title_project_dropdown"  title="starred project" src="/img/icones/Shape-Star2-32.png" />{{ } }}
