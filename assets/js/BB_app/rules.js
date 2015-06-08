@@ -21,14 +21,21 @@ var rules = {
     /////////////////////////////////////////////
     // LINKS RULES
     /////////////////////////////////////////////
-    new_link_rules : function(link,source,target){
+    strongAssociation : function(source,target){
+        var strong = false;
         // si la source et la target sont du mm type
         if(source.get('type') == target.get('type')){
-            target.save({id_father : source.get('id')});
+            strong = true;
         }
         // si la source est une poche et la target est une connaissance
         else if((source.get('type') == "poche")&&(target.get('type') == "knowledge")){
-            target.save({id_father : source.get('id')});   
+            strong = true; 
+        }
+        return strong;
+    },
+    new_link_rules : function(link,source,target){
+        if(rules.strongAssociation(source,target)){
+            target.save({id_father : source.get('id')});
         }
         // si ya une boucle infinie avec ce nouveau lien
         if(api.isInfiniteLoop(rules.elements,rules.elements.get(target.get('id')),[])){

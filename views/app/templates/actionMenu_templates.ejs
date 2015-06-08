@@ -1,86 +1,76 @@
 <script type="text/template" id="actionMenu-template">
-  <div class="large-8 medium-8 small-8 columns">
-    {{ if(from == "bbmap"){ }}
-      <a style="display:none" href="/timela?projectId={{-project.id}}" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Bullets-32-blue.png" /></a>
-    {{ }else{ }}
-      <a style="display:none" href="/bbmap?projectId={{-project.id}}" class="button secondary tiny radius timelinePresentation"><img src="/img/icones/Nodes-32.png" /></a>
-    {{ } }}  
+  <div class="large-10 medium-10 small-10 columns">
+    <ul class="button-group tiny radius">
+      {{ if(mode == "edit"){ }}
+      <li>
+        <a data-tooltip aria-haspopup="true" title="Bénéficiez d'aides et de suggestions" href="#" class="tiny radius actionMenuButton button secondary getSuggestions"><img title="magic wand" src="/img/icones/Magic-Wand-24.png"/></a>
+      </li>
+      {{ } }} 
+      <li>
+        <a data-tooltip aria-haspopup="true" title="Téléchager votre map en format PNG" href="#" class="tiny button actionMenuButton radius secondary downloadimage"><img title="Download screenshot" src="/img/icones/Download-24.png"/></a>
+      </li>
+      {{ if(mode == "edit"){ }}
+      <li>
+        <a data-tooltip aria-haspopup="true" title="Algorithme de placement automatique de l'arbre" style="display:none" href="#" class="a tiny radius button secondary structureSubTree"><img title="structure sub-tree" src="/img/icones/Network-Drives-24.png"/></a>
+      </li>
+      {{ } }}
+      <li>
+        <a data-tooltip aria-haspopup="true" title="zoom-in" href="#" class="button tiny actionMenuButton secondary zoomin"><img title="zoom-out" src="/img/icones/Zoom-Out-24.png"/></a>
+      </li>
+      <li>
+        <a data-tooltip aria-haspopup="true" title="zoom-out" href="#" class="button tiny actionMenuButton secondary zoomout"><img title="zoom-in" src="/img/icones/Zoom-In-24.png"/></a>
+      </li>
+      <li>
+        <a data-tooltip aria-haspopup="true" title="Recadrer la vue sur la map" href="#" class="button tiny actionMenuButton secondary reset"><img title="reset" src="/img/icones/Fit-To-Size-24.png"/></a>
+      </li>
+      <li>
+        <a data-tooltip aria-haspopup="true" title="Basculer en mode plein écran" href="#" class="button tiny actionMenuButton secondary fullscreen"><img title="full-screen" src="/img/icones/Full-Screen-Expand-24.png"/></a>
+      </li>
+      {{ if(mode == "edit"){ }}
+      <li>
+        <a href="#" id="dropC" style="padding:10px" class="drop dropC button tiny success round" title="Drag & Drop Concept to Map"><img title="Drag & Drop Concept to Map" width="24px" class="drop" src="/img/icones/add-concept-32-white.png"/></a>
+      </li>
+      <li>
+        <a href="#" id="dropP" style="padding:10px"  class="drop dropP button tiny pocheDesign round" title="Drag & Drop Category to Map"><img title="Drag & Drop Category to Map" width="24px" class="drop" src="/img/icones/add-poche-32-white.png"/></a>
+      </li>
+      <li>
+        <a href="#" id="dropK" style="padding:10px"  class="drop dropK button tiny round" title="Drag & Drop Knowledge to Map"><img title="Drag & Drop Knowledge to Map" width="24px" class="drop" src="/img/icones/add-k-32-white.png"/></a>
+      </li>
+    {{ } }} 
+    </ul>  
+  </div>
 
-    {{ if(mode == "edit"){ }}
-
-        <a href="#" class="button secondary simplePadding radius" data-reveal-id="title_project_modal">
-          <b>
-          {{-project.title}}
-          {{ if(project.starred){ }}<img data-dropdown="title_project_dropdown"  title="starred project" src="/img/icones/Shape-Star2-32.png" />{{ } }}
-          {{ if(project.status == 'public'){ }}
-            <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="public project" src="/img/icones/Open-32.png"/>
-          {{ }else{ }}
-            <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="private project" src="/img/icones/Lock-32.png"/>
-          {{ } }}
-          </b>
-        </a>
-        <div id="title_project_modal" class="modalContainer reveal-modal medium" data-reveal></div>
-        
-
-        <a href="#" class="button secondary simplePadding radius" data-reveal-id="members_manager_modal">
-          <b>Members</b><img data-type="action" title="mode" src="/img/icones/Group-Add-32.png"/>
+  <div class="large-2 medium-2 small-2 columns">
+    <span style="float:right">
+      {{ if(mode == "edit"){ }}
+        <a data-tooltip aria-haspopup="true" title="Accès aux utilisateurs du projet" href="#" class="button tiny success radius" data-reveal-id="members_manager_modal">
+          <b>Partager</b>
         </a>
         <div id="members_manager_modal" class="modalContainer reveal-modal medium" data-reveal></div>
-
-    {{ } }}
-
-
-    {{ if(from != "bbmap"){ }}
-      <a class="button simplePadding success radius"><b>Inspiration Wall</b><img data-type="action" title="mode" src="/img/icones/Pencil-32-white.png"/></a> <strong><small>(get inspired with images)</small></strong>
-    {{ } }}
-
-
-
-    {{ if(mode == "visu"){ }}
-      
-
-      {{ if(from == "bbmap"){ }}
-        <a style="display:none" href="#edit" class="button simplePadding alert radius"><b>Edit</b><img data-type="action" title="mode" src="/img/icones/Pencil-32-white.png"/></a>
       {{ } }}
-
-
-    {{ }else if(mode == "edit"){ }}
-      
-
-      {{ if(from == "bbmap"){ }}
-        {{ if((filter == "c")||(filter == "ck")||(filter == "ckp")){ }}
-            <a style="padding:10px" href="#" id="dropC" class="drop dropC button tiny success round" title="Drag & Drop Concept to Map">
-              <img title="Drag & Drop Concept to Map" width="24px" class="drop" src="/img/icones/add-concept-32-white.png"/>
-            </a>
-        {{ } }}
-        {{ if((filter == "p")||(filter == "kp")||(filter == "ckp")){ }}
-          <a style="padding:10px" href="#" id="dropP" class="drop dropP button tiny pocheDesign round" title="Drag & Drop Category to Map">
-            <img title="Drag & Drop Category to Map" width="24px" class="drop" src="/img/icones/add-poche-32-white.png"/>
-          </a>
-        {{ } }}
-        {{ if((filter == "k")||(filter == "ck")||(filter == "ckp")||(filter == "kp")){ }}
-          <a style="padding:10px" href="#" id="dropK" class="drop dropK button tiny round" title="Drag & Drop Knowledge to Map">
-            <img title="Drag & Drop Knowledge to Map" width="24px" class="drop" src="/img/icones/add-k-32-white.png"/>
-          </a>
-        {{ } }}
-
-      {{ } }}
-    {{ } }}
+    </span>
   </div>
 
-  <div class="large-4 medium-4 small-4 columns">
-    <ul style="float:right" class="button-group tiny radius">
-      {{ if(from == "bbmap"){ }}
-        {{ if(mode == "edit"){ }}
-          <li style="display:none"><span class="label tiny round" style="background:#C8D200"><strong>Magic Wand ---></strong></span><a style="padding:10px" href="#" class="button secondary magicWand"><img class="pulse" title="magic wand" src="/img/icones/Magic-Wand-24.png"/></a></li>
-        {{ } }}
-        <li><a style="padding:10px" href="#" class="button secondary zoomin"><img title="zoom-out" src="/img/icones/Zoom-Out-24.png"/></a></li>
-        <li><a style="padding:10px" href="#" class="button secondary zoomout"><img title="zoom-in" src="/img/icones/Zoom-In-24.png"/></a></li>
-        <li><a style="padding:10px" href="#" class="button secondary reset"><img title="reset" src="/img/icones/Fit-To-Size-24.png"/></a></li>
-      {{ } }}
-        <li><a style="padding:10px" href="#" class="button secondary fullscreen"><img title="full-screen" src="/img/icones/Full-Screen-Expand-24.png"/></a></li>
-      <small style="display:none" id="zoom_val"></small>
+  <div id="suggestions_modal" class="modalContainer reveal-modal large" data-reveal>
+    <ul class="tabs" data-tab>
+      <li class="tab-title active"><a href="#panel1">Normalisations</a></li>
+      <li class="tab-title"><a href="#panel2">Evaluations</a></li>
+      <li class="tab-title"><a href="#panel3">Suggestions</a></li>
     </ul>
+    <div class="tabs-content">
+      <div class="content active" id="panel1">
+        <table id="suggestions_1_table" class="suggestions_table" style="width:100%"></table>
+      </div>
+      <div class="content" id="panel2">
+        <table id="suggestions_2_table" class="suggestions_table" style="width:100%"></table>
+      </div>
+      <div class="content" id="panel3">
+        <table id="suggestions_3_table" class="suggestions_table" style="width:100%"></table>    
+      </div>
+    </div>
+    
+    <small>Offered by the creaktive suggestion algorithm</small>
   </div>
+
 
 </script>

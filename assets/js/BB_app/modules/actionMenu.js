@@ -48,19 +48,16 @@ actionMenu.Views.Main = Backbone.View.extend({
             mode    : this.mode,
             project : this.project.toJSON()
         }));
-        /////////////////////////
-        // Workspace editor
-        if(workspaceEditor.views.main != undefined) workspaceEditor.views.main.close();
-        workspaceEditor.init({
-            el:"#title_project_modal",
-            mode:this.mode
-        });
         // Members editor
         if(usersList.views.main != undefined) usersList.views.main.close(); 
         usersList.init({
             el : "#members_manager_modal",
             mode : this.mode
         });
+        // 
+        workspacesList.init({el:"#workspaces_dropdown",display:"list"});
+
+
         return this;
     }
 });

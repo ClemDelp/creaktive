@@ -91,7 +91,10 @@
 
       global.init(json, function(){
         // Modules
-        topbar.init({el:"#topbar_container"});
+        topbar.init({
+          el   : "#topbar_container",
+          page : "editor"
+        });
         bbmap.init();
         //together.init();
         /*activat of "hashchange events's monitoring"*/

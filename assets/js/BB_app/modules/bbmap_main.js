@@ -4,16 +4,11 @@
 bbmap.router = Backbone.Router.extend({
     routes: {
         ""  : "init",
-        //"visu/:zoom/:left/:top/:invisibility": "visuCustom",
         "controller": "controller",
-        // "edit": "edit",
-        // "timeline": "timeline"
     },
     controller : function(){
-        var permissions = global.collections.Permissions;
-        var currentUser = global.models.current_user;
-        var perm = permissions.where({user_id : currentUser.get('id')})
-        if((perm.length > 0)&&((perm[0].get('right') == "admin")||(perm[0].get('right') == "rw"))) bbmap.views.main.setMode("edit",true);
+        var permission = rules.getPermission();
+        if(permission) bbmap.views.main.setMode("edit",true);
         else bbmap.views.main.setMode("visu",true);
     },
     init: function(){
@@ -35,10 +30,7 @@ bbmap.Views.Main = Backbone.View.extend({
         ////////////////////////////
         // el
         this.top_el = $(this.el).find('#top_container');
-        this.bottom_el = $(this.el).find('#bbmap_bottom_ui');
         this.map_el = $(this.el).find('#map');
-        this.timeline_el = $(this.el).find('#timeline_container');
-        this.googleSearchModel_el = $(this.el).find('#googleSearchModel');
         ////////////////////////////////
         // Objects
         this.elements           = json.elements;
@@ -53,7 +45,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.lastModel          = new Backbone.Model();
         this.nodes_views        = {};
         this.mode               = json.mode;
-        this.filter             = json.filter;
         this.notifications      = json.notifications;
         this.init               = json.init; // if true mean launch for the first time
         this.ckOperator         = json.ckOperator;
@@ -65,7 +56,6 @@ bbmap.Views.Main = Backbone.View.extend({
         // Parameters
         this.joyride            = false;
         this.deltaX             = 0;
-        this.invisibility       = false; // if true hide all icone and menu
         this.isopen             = false;
         this.autOpen            = true;
         this.positionRef        = 550;
@@ -86,7 +76,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.presentation       = "graph"; // can be graph/timeline/split
         ////////////////////////////////
         // Templates
-        this.template_bottom = _.template($('#bbmap-bottom-element-template').html());
         this.template_joyride = _.template($('#bbmap-joyride-template').html());
         this.template_tooltip = _.template($('#bbmap-tooltip-notif-template').html());
         ////////////////////////////
@@ -111,7 +100,6 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         ////////////////////////////
         // Events
-        this.listenTo(bbmap.zoom,'change',this.updateZoomDisplay,this);
         // this.listenTo(this.notifications,'add',this.timelineAdd,this);
         // this.listenTo(this.notifications,'remove',this.timelineRemove,this);
         this.listenTo(global.eventAggregator,'notification:add',this.updateLocalHistory,this);
@@ -174,9 +162,10 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .edit"       : "editEvent",
 
         "click .closeSibeBar" : "closeSibeBar",
-        "mouseover .window" : "showChildrens",
+        //"mouseover .window" : "showChildrens",
         "mouseleave .window" : "hideChildrens",
-        "click .window" : "showIcon", 
+        //"mouseover .window" : "showIcon", 
+        "mouseenter .window" : "showIcon", 
         "click .structureSubTree" : "treeClassification_event",
         "click #okjoyride" : "updateLastModelTitle",
         "click .screenshot" : "screenshot",
@@ -732,19 +721,21 @@ bbmap.Views.Main = Backbone.View.extend({
         e.preventDefault();
         var element = this.elements.get(e.target.id)
         console.log("Element details : ",element.toJSON())
-        console.log("Infinite loop : ",api.isInfiniteLoop(bbmap.views.main.elements,bbmap.views.main.elements.get(e.target.id),[]))
+        //console.log("Infinite loop : ",api.isInfiniteLoop(bbmap.views.main.elements,bbmap.views.main.elements.get(e.target.id),[]))
         var visible = api.isVisible(bbmap.views.main.links,bbmap.views.main.elements,bbmap.views.main.elements.get(element.get('id')))
         //console.log(visible)
         // close all icones
         this.$(".icon").hide();
-        if(e.target.getAttribute("data-type") != "action"){
+        //if(e.target.getAttribute("data-type") != "action"){
             // set last model
             this.setLastModel(element);
             this.setNotificationDisplayOnModel(element);
             this.updateEditor(element);
             if(this.mode == "edit") $("#"+element.get('id')+" .icon").show();
             this.showDependances(element);
-        }
+        //}
+
+        bbmap.views.main.showChildrens(element);
     },
     showDependances : function(model){
         // remove before all other dependances
@@ -772,14 +763,14 @@ bbmap.Views.Main = Backbone.View.extend({
             }
         });
     },
-    showChildrens : function(e){
-        e.preventDefault();
-        var element = this.elements.get(e.target.id)
-        if((e.target.getAttribute("data-type") != "action")&&(element.get('visibility') == true)){
+    showChildrens : function(element){
+        bbmap.views.main.instance.clearDragSelection();
+        if(element.get('visibility') == true){
             var childs = api.getTreeChildrenNodes(element,this.elements)
             childs.forEach(function(child){
                 $('#'+child.get('id')).addClass('windowHover')
-            })
+                bbmap.views.main.instance.addToDragSelection($('#'+child.get('id')));
+            });
         }
     },
     hideChildrens : function(e){
@@ -926,12 +917,9 @@ bbmap.Views.Main = Backbone.View.extend({
             el.style["transformOrigin"] = oString;
 
             this.instance.setZoom(zoom);    
-            this.updateZoomDisplay();    
         }
     },
-    updateZoomDisplay : function(zoom){
-        this.top_el.find('#zoom_val').html(bbmap.zoom.get('val'))
-    },
+    
     resetZoom : function(){
         this.setZoom(bbmap.zoom.get('val'));
     },
@@ -1241,21 +1229,9 @@ bbmap.Views.Main = Backbone.View.extend({
         //if(actionMenu.views.main != undefined) actionMenu.views.main.close(); 
         actionMenu.init({
             el : this.top_el,
-            filter : this.filter,
             mode : this.mode,
             from : "bbmap"
         });
-
-        this.bottom_el.empty();
-        // this.top_el.append(this.template_top({
-        //     filter  : this.filter,
-        //     mode    : this.mode,
-        //     project : this.project.toJSON()
-        // }));
-        this.bottom_el.append(this.template_bottom({
-            filter  : this.filter,
-            mode    : this.mode
-        }));
         // this.top_el.find("#zoom_val").html(bbmap.zoom.get('val'));
         $( "#dropC" ).draggable();
         $( "#dropK" ).draggable();
@@ -1329,13 +1305,7 @@ bbmap.Views.Main = Backbone.View.extend({
             // this.intelligentRestructuring();
         }
         
-        ////////////////////////
-        // invisibility
-        if(this.invisibility == 1){
-            $('#topbar_container').hide();
-            $('#top_container').hide();
-            $('#bottom_container').hide();    
-        }
+
         ////////////////////////
         // Set pulse on news
         this.setPulse();
@@ -1346,3 +1316,4 @@ bbmap.Views.Main = Backbone.View.extend({
         return this;
     }
 });
+

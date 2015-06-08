@@ -5,7 +5,7 @@
     <div class="large-12 medium-12 small-12">
       <div class="large-3 medium-3 small-3 columns">
       <a href="#" style="padding:0px;padding-right:10px" class="fullWhite button tiny radius" data-reveal-id="workspaces_dropdown">
-        <img src="/img/icones/Bullets-32.png"/>Workspaces
+        <img src="/img/icones/Bullets-32.png"/>
       </a>
       <div id="workspaces_dropdown" class="modalContainer reveal-modal" data-reveal style="background-color:#efefef;"></div>
       
@@ -18,6 +18,67 @@
       </div>
 
       <div class="large-3 medium-5 small-6 columns">
+        <span style="float:right">
+          <button style="padding:0px;padding-right:50px" href="#" data-dropdown="profil_dropdown" aria-controls="profil_dropdown" aria-expanded="false" class="fullWhite button dropdown tiny">
+            <img width="24" src="{{-user.img }}"/>
+            <b>{{-user.name }}</b>
+          </button>
+          <ul id="profil_dropdown" data-dropdown-content class="f-dropdown" aria-hidden="true" tabindex="-1">
+            <li><a href="/editprofile">Profil</a></li>
+            <li><a href="/logout">Logout</a></li>
+          </ul>
+        </span>
+      </div>
+    </div>
+  </div>
+</script>
+
+<script type="text/template" id="topbar-editor-template">
+  <div class="row fullWidth topbar bg_blue">
+    <div class="large-12 medium-12 small-12">
+      <div class="large-5 medium-5 small-5 columns">
+        
+
+        <a href="#" style="padding:0px;padding-right:10px" class="fullWhite button tiny radius" data-reveal-id="workspaces_dropdown">
+          <img src="/img/icones/Bullets-32.png"/>
+        </a>
+        <div id="workspaces_dropdown" class="modalContainer reveal-modal" data-reveal style="background-color:#efefef;"></div>
+
+
+        {{ if(mode == "edit"){ }}
+          <a href="#" class="button fullWhite simplePadding radius" data-reveal-id="title_project_modal">
+            <b>
+            {{-project.title}}
+            {{ if(project.starred){ }}<img data-dropdown="title_project_dropdown"  title="starred project" src="/img/icones/Shape-Star2-32.png" />{{ } }}
+            {{ if(project.status == 'public'){ }}
+              <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="public project" src="/img/icones/Open-32.png"/>
+            {{ }else{ }}
+              <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="private project" src="/img/icones/Lock-32.png"/>
+            {{ } }}
+            </b>
+          </a>
+          <div id="title_project_modal" class="modalContainer reveal-modal medium" data-reveal></div>
+          
+        {{ }else{ }}
+          <a href="#" class="button fullWhite simplePadding radius">
+            <b>
+            {{-project.title}}
+            {{ if(project.status == 'public'){ }}
+              <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="public project" src="/img/icones/Open-32.png"/>
+            {{ }else{ }}
+              <img data-model-id="{{-project.id}}" data-dropdown="title_project_dropdown"  title="private project" src="/img/icones/Lock-32.png"/>
+            {{ } }}
+            </b>
+          </a>
+        {{ } }}
+
+      </div>
+
+      <div class="large-2 medium-2 small-2 columns">
+        <center><a href="/" title="home"><img width="24" style="vertical-align:middle;" title="logo creaktive" src="/img/icones/logo.png"/> <b style="vertical-align:middle;color:white">CreaKtive</b></a></center>
+      </div>
+
+      <div class="large-5 medium-5 small-5 columns">
         <span style="float:right">
           <button style="padding:0px;padding-right:50px" href="#" data-dropdown="profil_dropdown" aria-controls="profil_dropdown" aria-expanded="false" class="fullWhite button dropdown tiny">
             <img width="24" src="{{-user.img }}"/>

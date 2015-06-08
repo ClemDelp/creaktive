@@ -1,3 +1,7 @@
+.actionMenuButton{
+	padding: 10px;
+}
+
 .button.drop, .drop{
 	cursor:move;
 }
