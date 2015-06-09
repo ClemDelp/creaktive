@@ -2,31 +2,40 @@ module.exports = {
 
     apply_rules : function(elements,links,cb){
         rules.global_elements_rules(elements,links);
-        rules.global_links_rules(links);
+        rules.global_links_rules(elements,links);
 
         if(cb) cb();
     },
     /////////////////////////////////////////////
     // LINKS RULES
     /////////////////////////////////////////////
-    global_links_rules : function(links){
-        // si ya plusieurs fois le mm lien supprimer les doublons
+    global_links_rules : function(elements,links){
+        
         try{
             links.forEach(function(link){
+                /////////////////////////////////////////////////////////
+                // si ya plusieurs fois le mm lien supprimer les doublons
                 var ls = _.where(links,{source : link.source, target : link.target });
                 if(ls.length >1 ){
                     //console.log("find and remove duplicates links...")
                     for(var i=0; i<ls.length;i++){
                         if(i>0){
-                            //console.log("destroy : ",ls[i].source)
                             ls[i].destroy(function(err){console.log('error: ',err);});
-                        } 
+                            console.log("rules : we remove link because it was a clone...")
+                        }
                     }
                 }
+                /////////////////////////////////////////////////////////
+                // si un lien pointe vers un element qui n'existe plus
+                if((_.where(elements, { id : link.source}).length == 0)||(_.where(elements, { id : link.target}).length == 0)){
+                    link.destroy(function(err){console.log('error: ',err);});
+                    console.log("rules : we remove link because her source or target element was not found...")
+                } 
             })
         }catch(err){
-            //console.log(err);
+            console.error(err);
         }
+
     },
     /////////////////////////////////////////////
     // ELEMENTS RULES

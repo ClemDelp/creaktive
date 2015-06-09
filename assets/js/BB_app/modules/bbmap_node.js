@@ -18,11 +18,15 @@ bbmap.Views.Node = Backbone.View.extend({
         this.template_bulle = _.template($('#bbmap-bulle-template').html());
     },
     events : {
-        "click .sup" : "removeModel",
+        "click .sup" : "reorganizeSubTree",
         "click .ep" : "addConceptChild",
         "click .ep2" : "addKnowledgeChild",
         "click .ep3" : "editBulle",
         "click .expcoll" : "expand_collapse",
+    },
+    reorganizeSubTree : function(e){
+        e.preventDefault();
+        bbmap.views.main.treeClassification(this.model.get('id')) 
     },
     expand_collapse : function(e){
         var elements = new Backbone.Collection(api.getTreeChildrenNodes(this.model,bbmap.views.main.elements,[]));
@@ -48,8 +52,6 @@ bbmap.Views.Node = Backbone.View.extend({
         bbmap.views.main.setLastModel(this.model,'editBulle');
         bbmap.views.main.edit();
         $('#modelEditor_modal').foundation('reveal', 'open');
-
-        //bbmap.views.main.startJoyride(this.model.get('id'));
     },
     //////////////////////////////////////////
     // Follow father system
