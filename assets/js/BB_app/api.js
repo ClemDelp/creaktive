@@ -256,7 +256,7 @@ var api = {
         var target_el = collection.get(target_id);
         if(target_el.get('type') == type) elements.push(target_el)
       }catch(err){
-        console.log(err)
+        //console.log(err)
       }
     });
 
@@ -273,8 +273,8 @@ var api = {
         var target_el = collection.get(target_id);
         if((source_el.get('type') == type1)&&(target_el.get('type') == type2)) elements.push(target_el)
       }catch(err){
-        console.error(err)
-        console.error('link destroyed')
+        //console.error(err)
+        //console.error('link destroyed')
         link.destroy();
       }
     });

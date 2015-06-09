@@ -10,7 +10,6 @@ module.exports = {
     // LINKS RULES
     /////////////////////////////////////////////
     global_links_rules : function(elements,links){
-        
         try{
             links.forEach(function(link){
                 /////////////////////////////////////////////////////////
@@ -21,7 +20,7 @@ module.exports = {
                     for(var i=0; i<ls.length;i++){
                         if(i>0){
                             ls[i].destroy(function(err){console.log('error: ',err);});
-                            console.log("rules : we remove link because it was a clone...")
+                            //console.log("rules : we remove link because it was a clone...")
                         }
                     }
                 }
@@ -29,11 +28,11 @@ module.exports = {
                 // si un lien pointe vers un element qui n'existe plus
                 if((_.where(elements, { id : link.source}).length == 0)||(_.where(elements, { id : link.target}).length == 0)){
                     link.destroy(function(err){console.log('error: ',err);});
-                    console.log("rules : we remove link because her source or target element was not found...")
+                    //console.log("rules : we remove link because her source or target element was not found...")
                 } 
             })
         }catch(err){
-            console.error(err);
+            //console.error(err);
         }
 
     },
@@ -52,10 +51,12 @@ module.exports = {
                     if(model.id_father != "none"){
                         model.id_father = "none";
                         model.save(function (error){console.log("error: ",error)});
-                        console.log("problem id_father found and fixed...")
+                        //console.log("problem id_father found and fixed...")
                     }
                 }
-            }catch(err){console.log(err);}
+            }catch(err){
+                //console.log(err);
+            }
             ////////////////////////////////////////////////
             // ajout ou update de l'atribut visibility
             ////////////////////////////////////////////////
@@ -63,19 +64,21 @@ module.exports = {
                 if(model.visibility == undefined){
                     model.visibility = true; // par default mettre la valeur à show
                     model.save(function (error){console.log("error: ",error)});
-                    console.log("problem with visibility found and fixed...")
+                    //console.log("problem with visibility found and fixed...")
                 }
                 else if(model.visibility == "show"){
                     model.visibility = true;
                     model.save(function (error){console.log("error: ",error)});
-                    console.log("problem with visibility found and fixed...")
+                    //console.log("problem with visibility found and fixed...")
                 }
                 else if(model.visibility == "hide"){
                     model.visibility = false;
                     model.save(function (error){console.log("error: ",error)});
-                    console.log("problem with visibility found and fixed...")
+                    //console.log("problem with visibility found and fixed...")
                 }
-            }catch(err){console.log(err);}
+            }catch(err){
+                //console.log(err);
+            }
             ////////////////////////////////////////////////
             // css_auto or css_manu attribute controle
             ////////////////////////////////////////////////
@@ -84,7 +87,9 @@ module.exports = {
                 if((model.css_auto == undefined)&&(model.css_manu == undefined)){
                     rules.applyLegend(model,elements,links)  
                 } 
-            }catch(err){console.log(err);}  
+            }catch(err){
+                //console.log(err);
+            }  
             //////////////////////////////////////////////// 
         });
     },

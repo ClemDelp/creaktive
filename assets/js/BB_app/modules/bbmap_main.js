@@ -131,8 +131,8 @@ bbmap.Views.Main = Backbone.View.extend({
             "on_keydown"        : this.multiselection,
             "on_keyup"          : this.multiselection,
         });
-        this.listener.simple_combo("ctrl z", this.backInHistory);
-        this.listener.simple_combo("ctrl y", this.advanceInHistory);
+        //this.listener.simple_combo("ctrl z", this.backInHistory);
+        //this.listener.simple_combo("ctrl y", this.advanceInHistory);
         this.listener.simple_combo("backspace", this.deleteButton);
         this.listener.simple_combo("delete", this.deleteButton);
         ///////////////////////////////

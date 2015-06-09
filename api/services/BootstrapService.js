@@ -83,6 +83,14 @@ module.exports = {
           ///////////////////////////////////////////////////
           News.find({project:project.id, user: req.session.user.id}).done(function(err,news){
             Notification.find({project:project.id}).done(function(err,notifications){
+              ////////////////////
+              // On vide les notifs car elles servent à rien pour l'instant mais c'est temporaire il faut changer ça !!!!
+              notifications.forEach(function(notif){
+                notif.destroy(function(err){
+                  // console.log('error: ',err);
+                });
+              });
+              ////////////////////
               Attachment.find({project:project.id}).done(function(err,attachments){
                 Comment.find({project:project.id}).done(function(err,comments){
                   Element.find({project:project.id}).done(function(err,elements){
