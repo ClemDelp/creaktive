@@ -26,7 +26,7 @@ bbmap.router = Backbone.Router.extend({
 /////////////////////////////////////////////////
 bbmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
-        _.bindAll(this, 'render','deleteButton','advanceInHistory','backInHistory','updateLastModelTitle','setLastModel','multiselection');
+        _.bindAll(this, 'render','deleteButton','advanceInHistory','backInHistory','updateLastModelTitle','setLastModel','multiselection','duplicate');
         ////////////////////////////
         // el
         this.top_el = $(this.el).find('#top_container');
@@ -67,7 +67,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.moduleSideBar      = "edit";
         this.selectedElement    = []; // array with all selected elements
         this.m_selection_mode   = false;
-        this.mousedown          = false; // to know if mouse is down or not in #map
         ////////////////////////////////
         // Timeline & history parameter
         this.timeline_pos       = 0;
@@ -121,9 +120,7 @@ bbmap.Views.Main = Backbone.View.extend({
             }
             bbmap.views.main.multiple +=1;
         });
-        // Mouse up/down
-        $('#map').mousedown(function(){bbmap.views.main.mousedown = true;}).mouseup(function() {bbmap.views.main.mousedown = false;});
-        $('.window').mousedown(function(){bbmap.views.main.mousedown = true;}).mouseup(function() {bbmap.views.main.mousedown = false;});
+
         /////////////////////////////
         // KEYPRESS
         this.listener.register_combo({
@@ -135,6 +132,7 @@ bbmap.Views.Main = Backbone.View.extend({
         //this.listener.simple_combo("ctrl y", this.advanceInHistory);
         this.listener.simple_combo("backspace", this.deleteButton);
         this.listener.simple_combo("delete", this.deleteButton);
+        this.listener.simple_combo("ctrl c", this.duplicate);
         ///////////////////////////////
         // Prend un screenshot quand on quitte bbmap
         window.onbeforeunload = function (e){
@@ -173,6 +171,47 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .apply_template" : "apply_template", 
         "click .getSuggestions" : "getSuggestions", 
         "click #map" : "deSelection", 
+    },
+    /////////////////////////////////////////
+    duplicate : function(){
+        var id_ref = guid();
+        if(this.selectedElement.length > 0){
+            // Elements
+            this.selectedElement.forEach(function(el){
+                bbmap.views.main.cloneElement(el,id_ref);
+            });
+            // Links
+            this.cloneLinks(id_ref);
+        }else{
+            var model = this.lastModel;
+            this.cloneElement(model,id_ref);
+        }
+    },
+    cloneLinks : function(id_ref){
+        var ids = _.pluck(this.selectedElement,'id');
+        this.links.forEach(function(link){
+            // Si il y a des links entre les elements
+            if((_.indexOf(ids,link.get('target'))>-1)&&(_.indexOf(ids,link.get('source'))>-1)){
+                var source = bbmap.views.main.elements.get(link.get('source')+"-"+id_ref);
+                var target = bbmap.views.main.elements.get(link.get('target')+"-"+id_ref);
+                global.newLink(source,target);
+                // links = _.union(links,link)  
+            } 
+        });
+    },
+    cloneElement : function(element,id_ref){
+        // clone the element
+        var ids = _.pluck(this.selectedElement,'id');
+        var id_father = element.get('id_father')+"-"+id_ref;
+        if(_.indexOf(ids,element.get('id_father')) == -1) id_father = "none"; 
+        var cloned = element.clone();
+        cloned.save({
+            id: cloned.id+"-"+id_ref,
+            id_father : id_father,
+            left : cloned.get('left')+20,
+            top  : cloned.get('top')+20, 
+        });
+        this.elements.add(cloned);
     },
     /////////////////////////////////////////
     editBulle : function(e){
@@ -703,7 +742,6 @@ bbmap.Views.Main = Backbone.View.extend({
     elementSelection : function(e){
         e.preventDefault();
         var element = this.elements.get(e.target.id);
-        bbmap.views.main.mousedown = true; // important pour éviter de sortir du drag&drop par déclanchement d'event de type over
         // Si on a la touche shift enfoncée
         if(this.m_selection_mode == true){
             // close all icones
@@ -724,22 +762,26 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     overElement : function(e){
         e.preventDefault();
-        var element = this.elements.get(e.target.id)
-        if((this.m_selection_mode == false)&&(this.mousedown == false)){    
-            // close all icones
-            this.$(".icon").hide();
-            if(this.mode == "edit") $("#"+element.get('id')+" .icon").show();
-            this.showDependances(element);
-            // Show childrens
-            if(element.get('visibility') == true){
-                var childs = api.getTreeChildrenNodes(element,this.elements)
-                if(bbmap.views.main.selectedElement.length == 0) bbmap.views.main.instance.clearDragSelection();
-                childs.forEach(function(child){
-                    $('#'+child.get('id')).addClass('windowHover')
-                    if(bbmap.views.main.selectedElement.length == 0) bbmap.views.main.instance.addToDragSelection($('#'+child.get('id')));
-                });
-            }
+        // Si buttons == 1 implique qu'on est en train de drag&droper un element il ne faut donc pas déclancher les fonctions de l'over
+        if(e.buttons == 0){
+            var element = this.elements.get(e.target.id)
+            if(this.m_selection_mode == false){    
+                // close all icones
+                this.$(".icon").hide();
+                if(this.mode == "edit") $("#"+element.get('id')+" .icon").show();
+                this.showDependances(element);
+                // Show childrens
+                if(element.get('visibility') == true){
+                    var childs = api.getTreeChildrenNodes(element,this.elements)
+                    if(bbmap.views.main.selectedElement.length == 0) bbmap.views.main.instance.clearDragSelection();
+                    childs.forEach(function(child){
+                        $('#'+child.get('id')).addClass('windowHover')
+                        if(bbmap.views.main.selectedElement.length == 0) bbmap.views.main.instance.addToDragSelection($('#'+child.get('id')));
+                    });
+                }
+            }    
         }
+        
     },
     showDependances : function(model){
         // remove before all other dependances

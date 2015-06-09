@@ -85,28 +85,32 @@
   },
 
   objectUpdated : function(req,res, object, to, old){
-    //console.log("Notification object updated")
-    var content ="";
+    try{
+      //console.log("Notification object updated")
+      var content ="";
 
-    if(req.body.action.length == 0) return;
-    if(_.indexOf(req.body.action, "css") > -1) content = object + " template updated: " + req.body.params.title;
-    if(_.indexOf(req.body.action, "title") > -1) content = object + " title updated: " + req.body.params.title;
-    if(_.indexOf(req.body.action, "attachment") > -1) content = "New document attached to : "+object + ": " + req.body.params.title
-    if(_.indexOf(req.body.action, "content") > -1) content = object + ": "+req.body.params.title + " content updated"
-    if(_.indexOf(req.body.action, "comments") > -1) if(req.body.params.comments[0]) if(req.body.params.comments[0].content != "")content = "Added a comment: " + req.body.params.comments[0].content
+      if(req.body.action.length == 0) return;
+      if(_.indexOf(req.body.action, "css") > -1) content = object + " template updated: " + req.body.params.title;
+      if(_.indexOf(req.body.action, "title") > -1) content = object + " title updated: " + req.body.params.title;
+      if(_.indexOf(req.body.action, "attachment") > -1) content = "New document attached to : "+object + ": " + req.body.params.title
+      if(_.indexOf(req.body.action, "content") > -1) content = object + ": "+req.body.params.title + " content updated"
+      if(_.indexOf(req.body.action, "comments") > -1) if(req.body.params.comments[0]) if(req.body.params.comments[0].content != "")content = "Added a comment: " + req.body.params.comments[0].content
 
-    var json = {
-      type        : "update"+object,
-      content     : content,
-      to          : to,
-      old         : old,
-      attr        : req.body.action,
-      object      : object,
-      action      : "update",
-      project     : req.body.params.project,
-      attachedTo  : to.id,
+      var json = {
+        type        : "update"+object,
+        content     : content,
+        to          : to,
+        old         : old,
+        attr        : req.body.action,
+        object      : object,
+        action      : "update",
+        project     : req.body.params.project,
+        attachedTo  : to.id,
+      }
+      this.newNotification(req,json);
+    }catch(err){
+      //console.log(err);
     }
-    this.newNotification(req,json);
   },
 
   objectRemoved : function(req,res, object, to){
