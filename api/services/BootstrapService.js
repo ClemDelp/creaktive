@@ -38,6 +38,9 @@ module.exports = {
                     activityLog : JSON.stringify(read_notifications),
                     permissions : JSON.stringify(permissions)
                   });
+
+                  unread_notifications.length = 0;
+                  read_notifications.length = 0;
                 });
               });
             });
@@ -58,11 +61,11 @@ module.exports = {
         Project.findOne(req.query.projectId).done(function(err, project){
           ///////////////////////////////////////////////////
           // Notifications
-          all_notifications = [];
-          Notification.find({project_id : project.id}).done(function(err,notifications){
-            if(err) res.send({err:err});
-            all_notifications = notifications;
-          });
+          // all_notifications = [];
+          // Notification.find({project_id : project.id}).done(function(err,notifications){
+          //   if(err) res.send({err:err});
+          //   all_notifications = notifications;
+          // });
           ///////////////////////////////////////////////////
           // Users just those who are permission on project
           var project_users = [];
@@ -106,6 +109,9 @@ module.exports = {
                               notifications : JSON.stringify(notifications),
                               permissions : JSON.stringify(permissions),
                             });
+
+                            project_users.length = 0;
+                            permissions.length = 0;
                           });
                         });
                       });
