@@ -25,6 +25,7 @@ var AuthController = {
             if(err) return res.send({err:err});
             else{
               key = hash;
+              console.log("1")
 
 		User.find({
 			email : req.body.email
@@ -43,12 +44,15 @@ var AuthController = {
 		        url = u + "/newpassword?id="+user.id+"&k=" + key;
 	      	}
 
+	      	console.log("2")
+
 			user.recoveryLink = key;
 			user.save(function (err, u) {
-				if(err) //console.log(err)
+				if(err) console.log(err)
+					console.log("3")
 				EmailService.sendPasswordRecovery(user.email, url,function(err, msg){
-			        if(err) //console.log(err)
-
+			        if(err) console.log(err)
+			        	console.log("4")
 			      res.redirect("/resetconfirmation")
 			      });
 			});
