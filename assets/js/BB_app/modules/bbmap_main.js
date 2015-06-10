@@ -1284,9 +1284,6 @@ bbmap.Views.Main = Backbone.View.extend({
             this.jsPlumbEventsInit();
             ///////////////////////
             jsPlumb.draggable($('#map'))
-            // import data module
-            if(importData.views.main)importData.views.main.remove();
-            if(this.mode == "edit") importData.init();
             // // move DataCentroid To MapCentroid
             // if((this.init == true)&&(this.sens == "init")){
             //     this.moveDataCentroidToMapCentroid();

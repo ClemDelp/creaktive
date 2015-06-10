@@ -7,8 +7,8 @@ module.exports = {
     PermissionsService.checkPermissions(req,function(err){
       if(err) return res.send({err:err});
       ///////////////////////////////////////////////////
-      unread_notifications = [];
-      read_notifications = [];
+      var unread_notifications = [];
+      var read_notifications = [];
       
       Notification.find({
         read : { "!" : req.session.user.id}
@@ -26,8 +26,8 @@ module.exports = {
           if(err) //console.log(err)
           unread_notifications = rnotifications;
           User.find().done(function(err,users){
-          News.find({user: req.session.user.id}).done(function(err,news){
-            Project.find({id : req.session.permissions.all, backup : false}).done(function(err,projects){
+            News.find({user: req.session.user.id}).done(function(err,news){
+              Project.find({id : req.session.permissions.all, backup : false}).done(function(err,projects){
                 Permission.find().done(function(err, permissions){
                   res.view({ 
                     news : JSON.stringify(news),
@@ -47,7 +47,6 @@ module.exports = {
           });
         });
       });
-      ///////////////////////////////////////////////////
     });
   },
 
@@ -59,13 +58,6 @@ module.exports = {
       if(_.contains(req.session.permissions.all, req.query.projectId)){
         ////////////////////////////////////////////////////////////
         Project.findOne(req.query.projectId).done(function(err, project){
-          ///////////////////////////////////////////////////
-          // Notifications
-          // all_notifications = [];
-          // Notification.find({project_id : project.id}).done(function(err,notifications){
-          //   if(err) res.send({err:err});
-          //   all_notifications = notifications;
-          // });
           ///////////////////////////////////////////////////
           // Users just those who are permission on project
           var project_users = [];
