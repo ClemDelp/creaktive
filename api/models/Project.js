@@ -45,7 +45,7 @@ autoPK : false,
     }).done(function(err, elements){
       _.each(elements, function(element){
         Link.find({element : element.id}).done(function(err,links){
-          if(err) //console.log(err)
+          if(err) console.log(err)
             _.each(links, function(l){
               l.destroy(function(err){
                 if(err) cb(err)

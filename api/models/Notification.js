@@ -57,7 +57,7 @@
       comparator  : new Date().getTime(),
       attachedTo  : json.attachedTo,
     }).done(function(err,n){
-      if(err) //console.log(err);
+      if(err) console.log(err);
       req.socket.in(req.body.params.project).emit("notification:create", n);
       req.socket.broadcast.to(req.body.params.project).emit("notification:create", n);
     });

@@ -244,16 +244,17 @@ bbmap.Views.Main = Backbone.View.extend({
                 tr.append("<td>"+concept.title+"</td>");
                 tr.append("<td>"+cs.suggestions+"</td>");
                 cs.propositions.forEach(function(proposition){
-                    tr.append('<td><a href="#" title="'+proposition.desc.fr+'" data-tooltip aria-haspopup="true" class="c tip-top round button tiny zoomin '+proposition.css_manu+'" data-type="'+proposition.css_manu+'">'+proposition.name.fr+'</a></td>');
-                })
-                $(bbmap.views.main.el).append(tr);
+                    tr.append('<td><a href="#" title="'+proposition.desc.fr+'" data-id="'+concept.id+'" data-tooltip aria-haspopup="true" class="c tip-top round button tiny apply_template '+proposition.css_manu+'" data-type="'+proposition.css_manu+'">'+proposition.name.fr+'</a></td>');
+                });
+
+                $('#suggestions_1_table').append(tr);
             });
             ks.elements.forEach(function(knowledge){
                 var tr = $('<tr>');
                 tr.append("<td>"+knowledge.title+"</td>");
                 tr.append("<td>"+ks.suggestions+"</td>");
                 ks.propositions.forEach(function(proposition){
-                    tr.append('<td><a href="#" title="'+proposition.desc.fr+'" data-tooltip aria-haspopup="true" class="c tip-top round button tiny zoomin '+proposition.css_manu+'" data-type="'+proposition.css_manu+'">'+proposition.name.fr+'</a></td>');
+                    tr.append('<td><a href="#" title="'+proposition.desc.fr+'" data-id="'+knowledge.id+'" data-tooltip aria-haspopup="true" class="c tip-top round button tiny apply_template '+proposition.css_manu+'" data-type="'+proposition.css_manu+'">'+proposition.name.fr+'</a></td>');
                 })
                 $('#suggestions_1_table').append(tr);
             });
@@ -263,13 +264,18 @@ bbmap.Views.Main = Backbone.View.extend({
                 $('#suggestions_2_table').append("<tr><td>"+suggest+"</td></tr>");
             });
 
+            $('.apply_template').click(function(e){
+                bbmap.views.main.apply_template(e);
+            });
+
             $('#suggestions_modal').foundation('reveal', 'open');
         });
     },
     apply_template : function(e){
         e.preventDefault();
-        alert('applytemplate')
-        this.lastModel.save({css_manu : e.target.getAttribute("data-type")});
+        var element = bbmap.views.main.elements.get(e.target.getAttribute('data-id'));
+        element.save({css_manu : e.target.getAttribute("data-type")});
+        $(e.target).parent().parent().hide('slow')
     },
     svgWindowController : function(){
         if(this.init != true){

@@ -25,7 +25,6 @@ var AuthController = {
             if(err) return res.send({err:err});
             else{
               key = hash;
-              console.log("1")
 
 		User.find({
 			email : req.body.email
@@ -44,15 +43,12 @@ var AuthController = {
 		        url = u + "/newpassword?id="+user.id+"&k=" + key;
 	      	}
 
-	      	console.log("2")
 
 			user.recoveryLink = key;
 			user.save(function (err, u) {
-				if(err) console.log(err)
-					console.log("3")
+				if(err) console.log(err);
 				EmailService.sendPasswordRecovery(user.email, url,function(err, msg){
-			        if(err) console.log(err)
-			        	console.log("4")
+			        if(err) console.log(err);
 			      res.redirect("/resetconfirmation")
 			      });
 			});
@@ -145,18 +141,13 @@ var AuthController = {
 			user.confirmed = true;
 			user.img = req.body.image || "/img/default-user-icon-profile.png";
 			user.hashPassword(user, function(err, user){
-			user.save(function(err, user){
-				if(err) return res.send({err:err});
-				delete req.session.pendingUser;
-				res.redirect("/login");
+				user.save(function(err, user){
+					if(err) return res.send({err:err});
+					delete req.session.pendingUser;
+					res.redirect("/login");
+				});
 			});
-			})
-
-
-		})
-
-
-		
+		});
 	},
  
 	login: function(req, res) {
@@ -189,31 +180,6 @@ var AuthController = {
 
 	openChannels : function(req,res){
 
-		// req.socket.join("users")
-		
-		// req.socket.set('user', req.session.user.id, function(args){
-		// 	var connectedUsers = []
-		// 	for (var socketId in sails.io.sockets.sockets) {
-		// 	    sails.io.sockets.sockets[socketId].get('user', function(err, u) {
-		// 	        if(err) //console.log(err)
-		// 	    	connectedUsers.push(u);
-		// 	    });
-		// 	}
-		// 	sails.io.sockets.emit("connectedUsers", _.compact(_.uniq(connectedUsers)));
-		// 	req.socket.set('connectedUsers', _.compact( _.uniq(connectedUsers)));
-
-		// })
-
-		// req.socket.on("disconnect", function(){
-		// 	//console.log("DISCONNECTED")
-		// 	req.socket.get('connectedUsers', function(err, connectedUsers){
-		// 		var i = connectedUsers.indexOf(req.session.user.id);
-		// 		delete connectedUsers[i];
-		// 		sails.io.sockets.emit("connectedUsers", _.compact(_.uniq(connectedUsers)));
-		// 	});	
-		// });
-
-
 		Permission.find({
 			user_id : req.session.user.id
 		}).done(function (err, permissions){
@@ -223,10 +189,6 @@ var AuthController = {
 			})	
 		});
 		
-	
-		
-		//res.send({msg:"Channels opened", channels : req.session.allowedProject});
-	
 	},
  
 	logout: function(req, res) {
