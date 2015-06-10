@@ -47,10 +47,10 @@ module.exports = {
 
 		transport.sendMail(mailOptions, function(error, response){
 		    if(error){
-		        cb(error)
+		        return cb(error)
 		    }else{
         		
-		        cb(null, "Message sent: " + response.message);
+		        return cb(null, "Message sent: " + response.message);
 		    }
 		    // if you don't want to use this transport object anymore, uncomment following line
 		    //smtpTransport.close(); // shut down the connection pool, no more messages
@@ -83,13 +83,13 @@ module.exports = {
 
 		transport.sendMail(mailOptions, function(error, response){
 		    if(error){
-		        cb(error)
+		        return cb(error)
 		    }else{
         		transport.sendMail(mail2Options, function(error, response){
 				    if(error){
-				        cb(error)
+				        return cb(error)
 				    }else{
-				        cb(null, "Message sent: " + response.message);
+				        return cb(null, "Message sent: " + response.message);
 				    }
 				});
 		    }
@@ -124,13 +124,13 @@ module.exports = {
 
 		transport.sendMail(mailToUser, function(error, response){
 		    if(error){
-		        cb(error)
+		        return cb(error)
 		    }else{
 		        transport.sendMail(mailOptions, function(error, response){
 				    if(error){
-				        cb(error)
+				        return cb(error)
 				    }else{
-				        cb(null, "Message sent: " + response.message);
+				        return cb(null, "Message sent: " + response.message);
 				    }
 				    // if you don't want to use this transport object anymore, uncomment following line
 				    //smtpTransport.close(); // shut down the connection pool, no more messages
@@ -142,7 +142,7 @@ module.exports = {
 
 	},
 
-	sendPasswordRecovery : function(to,url,cb){
+	sendPasswordRecovery : function(to,url, cb){
 		//console.log("Send password recovery email")
 		var html = "<h1>Bonjour</h1></br>Veuillez suivre le lien suivant pour créer un nouveau mot de passe</br> " + url;
 		mailOptions = {
@@ -158,9 +158,9 @@ module.exports = {
 
 		transport.sendMail(mailOptions, function(error, response){
 		    if(error){
-		        cb(error)
+		         return cb(error)
 		    }else{
-		        cb(null, "Message sent: " + response.message);
+		         return cb(null, "Message sent: " + response.message);
 		    }
 		    // if you don't want to use this transport object anymore, uncomment following line
 		    //smtpTransport.close(); // shut down the connection pool, no more messages

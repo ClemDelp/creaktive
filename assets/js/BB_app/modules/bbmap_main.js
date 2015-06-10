@@ -234,8 +234,8 @@ bbmap.Views.Main = Backbone.View.extend({
             elements : bbmap.views.main.elements.toJSON(), 
             links : bbmap.views.main.links.toJSON()
         }, function(suggestions,status){
+
             $('.suggestions_table').html('');
-            console.log(suggestions)
             var level_1 = suggestions.level_1;
             var cs = level_1.concepts;
             var ks = level_1.knowledges;
@@ -244,16 +244,16 @@ bbmap.Views.Main = Backbone.View.extend({
                 tr.append("<td>"+concept.title+"</td>");
                 tr.append("<td>"+cs.suggestions+"</td>");
                 cs.propositions.forEach(function(proposition){
-                    tr.append('<td><a href="#" title="'+proposition.desc.fr+'" data-tooltip aria-haspopup="true" class="c tip-top round button tiny apply_template '+proposition.css_manu+'" data-type="'+proposition.css_manu+'">'+proposition.name.fr+'</a></td>');
+                    tr.append('<td><a href="#" title="'+proposition.desc.fr+'" data-tooltip aria-haspopup="true" class="c tip-top round button tiny zoomin '+proposition.css_manu+'" data-type="'+proposition.css_manu+'">'+proposition.name.fr+'</a></td>');
                 })
-                $('#suggestions_1_table').append(tr);
+                $(bbmap.views.main.el).append(tr);
             });
             ks.elements.forEach(function(knowledge){
                 var tr = $('<tr>');
                 tr.append("<td>"+knowledge.title+"</td>");
                 tr.append("<td>"+ks.suggestions+"</td>");
                 ks.propositions.forEach(function(proposition){
-                    tr.append('<td><a href="#" title="'+proposition.desc.fr+'" data-tooltip aria-haspopup="true" class="c tip-top round button tiny apply_template '+proposition.css_manu+'" data-type="'+proposition.css_manu+'">'+proposition.name.fr+'</a></td>');
+                    tr.append('<td><a href="#" title="'+proposition.desc.fr+'" data-tooltip aria-haspopup="true" class="c tip-top round button tiny zoomin '+proposition.css_manu+'" data-type="'+proposition.css_manu+'">'+proposition.name.fr+'</a></td>');
                 })
                 $('#suggestions_1_table').append(tr);
             });
@@ -261,12 +261,14 @@ bbmap.Views.Main = Backbone.View.extend({
             var level_2 = suggestions.level_2;
             level_2.forEach(function(suggest){
                 $('#suggestions_2_table').append("<tr><td>"+suggest+"</td></tr>");
-            })
+            });
+
             $('#suggestions_modal').foundation('reveal', 'open');
         });
     },
     apply_template : function(e){
         e.preventDefault();
+        alert('applytemplate')
         this.lastModel.save({css_manu : e.target.getAttribute("data-type")});
     },
     svgWindowController : function(){

@@ -16,7 +16,7 @@ var AuthController = {
 	},
 
 	processResetPassword : function(req,res){
-		//console.log("processing reset password")
+		console.log("processing reset password")
 		var key = ""
 		var url = "";
 
