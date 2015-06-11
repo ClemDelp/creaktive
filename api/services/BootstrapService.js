@@ -7,24 +7,9 @@ module.exports = {
     PermissionsService.checkPermissions(req,function(err){
       if(err) return res.send({err:err});
       ///////////////////////////////////////////////////
-      var unread_notifications = [];
-      var read_notifications = [];
-      
-      Notification.find({
-        read : { "!" : req.session.user.id}
-      }).done(function(err,unotifications){
-        if(err) console.log(err);
-        unread_notifications = unotifications;
 
-        Notification.find({
-          where : {
-            read : req.session.user.id,
-            content : { "!" : ""}
-          },
-          limit : 100
-        }).done(function(err, rnotifications){
-          if(err) console.log(err)
-          unread_notifications = rnotifications;
+      
+
           User.find().done(function(err,users){
             News.find({user: req.session.user.id}).done(function(err,news){
               Project.find({id : req.session.permissions.all, backup : false}).done(function(err,projects){
@@ -34,19 +19,15 @@ module.exports = {
                     currentUser : JSON.stringify(req.session.user),
                     users : JSON.stringify(users),
                     projects : JSON.stringify(projects),
-                    notifications : JSON.stringify(unread_notifications),
-                    activityLog : JSON.stringify(read_notifications),
                     permissions : JSON.stringify(permissions)
                   });
 
-                  unread_notifications.length = 0;
-                  read_notifications.length = 0;
+
                 });
               });
             });
           });
-        });
-      });
+      
     });
   },
 
@@ -77,14 +58,7 @@ module.exports = {
           });
           ///////////////////////////////////////////////////
           News.find({project:project.id, user: req.session.user.id}).done(function(err,news){
-            Notification.find({project:project.id}).done(function(err,notifications){
-              ////////////////////
-              // On vide les notifs car elles servent à rien pour l'instant mais c'est temporaire il faut changer ça !!!!
-              notifications.forEach(function(notif){
-                notif.destroy(function(err){
-                  // console.log('error: ',err);
-                });
-              });
+
               ////////////////////
               Attachment.find({project:project.id}).done(function(err,attachments){
                 Comment.find({project:project.id}).done(function(err,comments){
@@ -106,7 +80,6 @@ module.exports = {
                               users : JSON.stringify(users),
                               projects : JSON.stringify(projects),
                               links : JSON.stringify(links),
-                              notifications : JSON.stringify(notifications),
                               permissions : JSON.stringify(permissions),
                             });
 
@@ -117,7 +90,6 @@ module.exports = {
                       });
                     });
                   });
-                });
               });
             });
           });

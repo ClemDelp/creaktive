@@ -35,7 +35,7 @@ module.exports = {
         }, req.body.params).done(function(err,c){
           if(err) res.send(err);
           //req.socket.broadcast.to(c.project).emit("attachment:update", c[0]);
-          //if(req.body.notification) Notification.objectUpdated(req,res,"Attachment", c[0], attachment);
+
 
           res.send(attachment[0]);
 
@@ -47,7 +47,7 @@ module.exports = {
         Attachment.create(attachment).done(function(err,c){
           if(err) return res.send({err:err});
           req.socket.broadcast.to(c.project).emit("attachment:create", c);
-          //Notification.objectCreated(req,res,"Attachment", c);
+
           res.send(c);
         });
 
@@ -60,7 +60,6 @@ module.exports = {
     Attachment.destroy(req.body.params.id).done(function(err, attachments){
       if(err) return res.send({err :err});
       req.socket.broadcast.to(attachments[0].project).emit("attachment:remove2", attachments[0]);
-      Notification.objectRemoved(req,res,"Attachment", attachments[0]);
     });   
   },
   

@@ -26,7 +26,7 @@ bbmap.router = Backbone.Router.extend({
 /////////////////////////////////////////////////
 bbmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
-        _.bindAll(this, 'render','deleteButton','advanceInHistory','backInHistory','updateLastModelTitle','setLastModel','multiselection','duplicate');
+        _.bindAll(this, 'render','deleteButton','updateLastModelTitle','setLastModel','multiselection','duplicate');
         ////////////////////////////
         // el
         this.top_el = $(this.el).find('#top_container');
@@ -45,7 +45,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.lastModel          = new Backbone.Model();
         this.nodes_views        = {};
         this.mode               = json.mode;
-        this.notifications      = json.notifications;
         this.init               = json.init; // if true mean launch for the first time
         this.ckOperator         = json.ckOperator;
         this.news               = json.news;
@@ -74,12 +73,10 @@ bbmap.Views.Main = Backbone.View.extend({
         this.localHistory       = new global.Collections.LocalHistory();
         this.sens               = "init";
         this.listener           = new window.keypress.Listener();
-        this.flag               = "acceptLastNotif";
         this.presentation       = "graph"; // can be graph/timeline/split
         ////////////////////////////////
         // Templates
         this.template_joyride = _.template($('#bbmap-joyride-template').html());
-        this.template_tooltip = _.template($('#bbmap-tooltip-notif-template').html());
         ////////////////////////////
         // JsPlumb
         this.instance = jsPlumb.getInstance({           
@@ -102,7 +99,6 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         ////////////////////////////
         // Events
-        this.listenTo(global.eventAggregator,'notification:add',this.updateLocalHistory,this);
         this.listenTo(this.elements, 'add', this.addModelToView);
         this.listenTo(this.elements, 'remove', this.removeModelToView);
         this.listenTo(this.links, 'add', this.addLinkToView);
@@ -468,102 +464,7 @@ bbmap.Views.Main = Backbone.View.extend({
         json.top = $('#map').offset().top;
         return json;
     },
-    /////////////////////////////////////////
-    // LocalHistory gestion
-    /////////////////////////////////////////
-    displayHistoric : function(){
-        console.log('nbr: ',this.localHistory.length,' - pos: ',this.history_pos,' - sens: ',this.sens)
-        this.localHistory.each(function(h){
-            console.log(h)           
-        })
-    },
-    updateLocalHistory : function(model,from){
-        var user_id = bbmap.views.main.users.get(model.get('user')).id
-        if((user_id == global.models.current_user.get('id'))&&(this.flag == "acceptLastNotif")){
-            //this.pushNotif(model);
-            if(this.sens != "init"){
-                // on supprime tout ce qui est en dessous de history_pos (si on est à la psoition 2 on supprime 1 et 0)
-                var new_array = _.rest(this.localHistory.toArray(),this.history_pos);
-                this.localHistory.reset(new_array);
-            }
-            if(this.sens == "back"){ // on supprime la case courrant et on la remplace par la nouvelle action
-                var new_array = _.rest(this.localHistory.toArray());
-                this.localHistory.reset(new_array);
-            }
-            // on se remet à la position 0
-            this.history_pos = 0;
-            this.sens = 'init';
-            // on ajoute l'action
-            this.localHistory.unshift(model);
-        }else{
-            $('.qtip').qtip('destroy', true);
-            //$('#'+model.get('to').id+'_tooltip').qtip('destroy', true);
-            setTimeout(function(){
-                var user = bbmap.views.main.users.get(model.get('user'))
-                $('#'+model.get('to').id+'_tooltip').qtip({
-                    content: {
-                        text: bbmap.views.main.template_tooltip({
-                            notif:model.toJSON(),
-                            user : user.toJSON()
-                        })
-                    },
-                    events: {
-                        show: function(event, api) {
-                            setTimeout(function(){$('#'+model.get('to').id+'_tooltip').qtip('destroy', true);},5000);
-                        }
-                    },
-                    show: {
-                        ready: true
-                    },
-                    position: {
-                        my: 'bottom left',  // Position my top left...
-                        at: 'top left', // at the bottom right of...
-                        target: $('#'+model.get('to').id+'_tooltip') // my target
-                    }
-                });
-            },500);
-        }
-        this.flag = "acceptLastNotif";
-    },
-    pushNotif : function(notif){
-        var content = "";
-        var type = 'notice';
-        if(notif.get('attr')[0] == "create"){content = notif.get('object')+" successfully created";type = 'success';}
-        if(notif.get('attr')[0] == "remove"){content = notif.get('object')+" successfully removed";type = 'error';}
-        if(notif.get('attr')[0] == "css") {content = notif.get('object') + " template updated";type = 'warning';}
-        if(notif.get('attr')[0] == "title") {content = notif.get('object') + " title updated";type = 'notice';}
-        if(content != ""){
-            var n = {
-                wrapper:document.body,
-                message:'<p>'+content+'</p>',
-                layout:'growl',
-                effect:'slide',
-                type:type,
-                ttl:2000,
-                archiveButton:false
-            }    
-            nlib.simplePush(n);
-        }
-    },
-    backInHistory : function(e){
-        e.preventDefault();
-        this.flag = "refuseLastNotif"; // IMPORTANT! to not add to local history its own actions
-        if(this.sens == "back") this.history_pos = this.history_pos + 1;
-        else this.sens = "back";
-        // console.log(this.history_pos,this.sens,this.flag)
-        if(this.history_pos >= this.localHistory.length) this.history_pos = this.localHistory.length - 1;
-        else this.nextPrevActionController("back","history");
-    },
-    advanceInHistory : function(e){
-        e.preventDefault();
-        this.flag = "refuseLastNotif"; // IMPORTANT! to not add to local history its own actions
-        if(this.sens == "next") this.history_pos = this.history_pos - 1;
-        else this.sens = "next";
-        // console.log(this.history_pos,this.sens,this.flag)
-        // this.displayHistoric()
-        if(this.history_pos < 0) this.history_pos = 0;
-        else this.nextPrevActionController("go","history");
-    },
+
     /////////////////////////////////////////
     // Action prev/next timeline/history gestion
     /////////////////////////////////////////

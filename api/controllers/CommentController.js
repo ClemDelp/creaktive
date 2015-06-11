@@ -35,7 +35,6 @@ module.exports = {
         }, req.body.params).done(function(err,c){
           if(err) res.send(err);
           //req.socket.broadcast.to(c.project).emit("comment:update", c[0]);
-          //if(req.body.notification) Notification.objectUpdated(req,res,"Comment", c[0], comment);
 
           res.send(c[0]);
 
@@ -47,7 +46,6 @@ module.exports = {
         Comment.create(comment).done(function(err,c){
           if(err) return res.send({err:err});
           req.socket.broadcast.to(c.project).emit("comment:create", c);
-          //Notification.objectCreated(req,res,"Comment", c);
           res.send(c);
         });
 
@@ -61,7 +59,6 @@ module.exports = {
       if(err) return res.send({err:err});
       else{
         //req.socket.broadcast.to(comment.project).emit("comment:remove2", comment);
-        //Notification.objectRemoved(req,res,"Comment", comment);
         comment.destroy(function(err){
           if(err) return res.send({err:err});
           res.send({msg:"destroyed"})

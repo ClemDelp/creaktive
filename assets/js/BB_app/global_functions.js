@@ -53,59 +53,7 @@ global.Functions.getProjectsUsersDictionary = function(projects,permissions){
 	return dictionary;
 }
 
-global.Functions.getNotificationsDictionary = function(user_model,notifications,projects,knowledges,concepts,elements,activityLog){
-	var dictionary = {"projects":{},"models":{},"allNews":{},"allRead":{}};
-	/////////////////////////////
-	// CREATION DES KEYS
-	/////////////////////////////
-	//
-	dictionary.allNews = new Backbone.Collection();
-	dictionary.allRead = new Backbone.Collection();
-	// 
-	elements.each(function(category){
-		dictionary.models[category.get('id')] = {"news" : new Backbone.Collection(),"read" : new Backbone.Collection()};
-	});
-	// 
-	projects.each(function(project){
-		dictionary.projects[project.get('id')] = {"news" : new Backbone.Collection(),"read" : new Backbone.Collection()};
-	});
-	//
-	notifications.each(function(notif){
-		dictionary.models[notif.get('to')] = {"news" : new Backbone.Collection(),"read" : new Backbone.Collection()};
-		dictionary.projects[notif.get('project_id')] = {"news" : new Backbone.Collection(),"read" : new Backbone.Collection()};
-	});
-	/////////////////////////////
-	// CREATION DES VALUES
-	/////////////////////////////
-	notifications.each(function(notif){
-		if((_.indexOf(notif.get('read'), user_model.get('id')) == -1)){
-     try{
-       dictionary.models[notif.get('to').id].news.add(notif);
-       dictionary.projects[notif.get('project_id')].news.add(notif);
-       dictionary.allNews.add(notif);
-    }catch(err){}
-   }else{
-    try{
-      dictionary.models[notif.get('to').id].read.add(notif);		
-      dictionary.projects[notif.get('project_id')].read.add(notif);		
-      dictionary.allRead.add(notif);
-    }catch(err){}
-  }
-});
 
-
-	/////////////////////////////////////////
-	// RECUPERATION DES NOTIFICATIONS LUES
-	/////////////////////////////////////////
-	if(activityLog){
-   projects.each(function(project){
-    dictionary.projects[project.id].read.add(activityLog[project.id]);	
-  });
- }
-
-
- return dictionary;
-}
 
 global.Functions.whatChangeInModel = function(origin_m,new_m){
 	var keys = [];

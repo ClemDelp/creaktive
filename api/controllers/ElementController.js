@@ -43,7 +43,7 @@ module.exports = {
   },
 
   update : function(req, res){
-    //console.log("Updating element",req.body.notification)
+
     Element.findOne(req.body.params.id).done(function(err, element){
       if(err) return res.send({err:err});
       if(element){
@@ -52,7 +52,7 @@ module.exports = {
         }, req.body.params).done(function(err,c){
           if(err) res.send(err);
           req.socket.broadcast.to(c.project).emit("element:update", c[0]);
-          if(req.body.notification) Notification.objectUpdated(req,res,"Element", c[0], element);
+
 
           // res.send(c[0]);
 
@@ -67,7 +67,6 @@ module.exports = {
         Element.create(element).done(function(err,c){
           if(err) return res.send({err:err});
           req.socket.broadcast.to(c.project).emit("element:create", c);
-          Notification.objectCreated(req,res,"Element", c);
           // res.send(c);
         });
 
@@ -81,7 +80,6 @@ module.exports = {
       if(err) return res.send({err :err});
       if(elements){
         req.socket.broadcast.to(elements[0].project).emit("element:remove2", elements[0]);
-        Notification.objectRemoved(req,res,"Element", elements[0]);
       }
     });     
   },

@@ -46,7 +46,6 @@ var global = {
     this.collections.Permissions = new this.Collections.PermissionsCollection(json.permissions);
     this.collections.Projects = new this.Collections.ProjectsCollection(json.projects);
     this.collections.Links = new this.Collections.CKLinks(json.links);
-    this.collections.Notifications = new this.Collections.NotificationsCollection(json.notifications);
     //////////////////////////////////////////////////////////////////
     console.log("******* Connected as ", this.models.current_user.get("name"), " on ", this.models.currentProject.get("title"));
     

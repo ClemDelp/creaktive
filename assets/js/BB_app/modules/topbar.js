@@ -21,7 +21,7 @@ var topbar = {
       mode : mode,
       user : global.models.current_user,
       project : global.models.currentProject,
-      notifications : global.collections.Notifications
+
     });
     this.views.main.render();
   }
@@ -37,7 +37,7 @@ topbar.Views.Main = Backbone.View.extend({
         this.page          = json.page;
         this.mode          = json.mode;
         this.project       = json.project;
-        this.Notifications = json.notifications;
+ 
         // Templates
         this.template = _.template($('#topbar-template').html());
         this.template_editor = _.template($('#topbar-editor-template').html());

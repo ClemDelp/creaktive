@@ -120,31 +120,7 @@ global.Collections.UsersCollection = Backbone.Collection.extend({
         console.log("user removed")
     }
 });
-/***************************************/
-global.Collections.NotificationsCollection = Backbone.Collection.extend({
-    model : global.Models.NotificationModel,
-    initialize : function() {
-        //console.log('Notifications collection Constructor');
-        this.url = "notification";
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-        _.bindAll(this, 'serverCreate');
-        this.ioBind('create', this.serverCreate, this);
-    },
-    comparator: function(m){
-        return -m.get('comparator');
-    },
-    serverCreate : function(model){
-        if(model.project == global.models.currentProject.get('id')){
-            var model = new global.Models.NotificationModel(model);
-            // model.set({read : _.union(model.get('read'),global.models.current_user.get('id'))});
-            // model.save();
-            global.collections.Notifications.add(model);
-            global.eventAggregator.trigger("notification:add",model,"server");// for update local history    
-        }
-    }
-});
+
 /***************************************/
 global.Collections.LocalHistory = Backbone.Collection.extend({
     model : global.Models.Action,

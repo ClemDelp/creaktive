@@ -42,7 +42,6 @@
         }, req.body.params).done(function(err,c){
           if(err) return res.send({err:err});
           // req.socket.broadcast.to(c.project_id).emit("link:update", c[0]);
-          Notification.objectUpdated(req,res,"Link", c[0]);
           res.send(c[0]);   
         });
       }else{
@@ -51,7 +50,6 @@
         Link.create(l).done(function(err,c){
           if(err) return res.send({err:err});
           req.socket.broadcast.to(c.project).emit("link:create", c);
-          Notification.objectCreated(req,res,"Link", c);
           res.send(c);
        })
       }
@@ -64,7 +62,6 @@
       if(err) return res.send({err:err});
       if(link) {
         req.socket.broadcast.to(link.project).emit("link:remove2", link);
-        Notification.objectRemoved(req,res,"Link", link);
         link.destroy(function(err){
           if(err) return res.send({err:err});
           res.send({msg:"destroyed"})

@@ -29,15 +29,7 @@ autoPK : false,
       })
     })
 
-    Notification.find({
-      project_id : project_id
-    }).done(function(err, notifications){
-      _.each(notifications, function(n){
-        n.destroy(function(err){
-          if(err) cb(err)
-        })
-      })
-    });
+
 
     Element.find({
       project : project_id,
