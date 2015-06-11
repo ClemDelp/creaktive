@@ -42,6 +42,7 @@
         }, req.body.params).done(function(err,c){
           if(err) return res.send({err:err});
           // req.socket.broadcast.to(c.project_id).emit("link:update", c[0]);
+          News.createNews(req,c.project, c.id);
           res.send(c[0]);   
         });
       }else{
@@ -50,6 +51,7 @@
         Link.create(l).done(function(err,c){
           if(err) return res.send({err:err});
           req.socket.broadcast.to(c.project).emit("link:create", c);
+          News.createNews(req,c.project, c.id);
           res.send(c);
        })
       }

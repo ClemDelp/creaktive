@@ -35,7 +35,7 @@ module.exports = {
         }, req.body.params).done(function(err,c){
           if(err) res.send(err);
           //req.socket.broadcast.to(c.project).emit("attachment:update", c[0]);
-
+          News.createNews(req,c.project, c.id);
 
           res.send(attachment[0]);
 
@@ -47,7 +47,7 @@ module.exports = {
         Attachment.create(attachment).done(function(err,c){
           if(err) return res.send({err:err});
           req.socket.broadcast.to(c.project).emit("attachment:create", c);
-
+          News.createNews(req,c.project, c.id);
           res.send(c);
         });
 

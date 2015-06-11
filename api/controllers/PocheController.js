@@ -37,6 +37,7 @@ update : function(req, res){
       Poche.update({id: req.body.params.id}, req.body.params).done(function(err,c){
           if(err) return res.send({err:err});
           req.socket.broadcast.to(c.project).emit("poche:update", c[0]);
+          News.createNews(req,c.project, c.id);
           res.send(c[0]);   
       });
     }else{
@@ -47,6 +48,7 @@ update : function(req, res){
       Poche.create(p).done(function(err,c){
         if(err) return res.send({err:err});
         req.socket.broadcast.to(c.project).emit("poche:create", c);
+        News.createNews(req,c.project, c.id);
         res.send(c);
       });
     }

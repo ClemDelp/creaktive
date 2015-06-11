@@ -35,7 +35,7 @@ module.exports = {
         }, req.body.params).done(function(err,c){
           if(err) res.send(err);
           //req.socket.broadcast.to(c.project).emit("comment:update", c[0]);
-
+          News.createNews(req,c.project, c.id);
           res.send(c[0]);
 
       });
@@ -46,6 +46,7 @@ module.exports = {
         Comment.create(comment).done(function(err,c){
           if(err) return res.send({err:err});
           req.socket.broadcast.to(c.project).emit("comment:create", c);
+          News.createNews(req,c.project, c.id);
           res.send(c);
         });
 
