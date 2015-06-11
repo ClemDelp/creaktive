@@ -190,14 +190,14 @@ bbmap.Views.Node = Backbone.View.extend({
         e.preventDefault();
         var top = ($(this.el).position().top + 100) / bbmap.zoom.get('val');
         var left = $(this.el).position().left / bbmap.zoom.get('val');
-        var new_element = global.newElement("concept","",top,left);
+        var new_element = global.collections.Elements.newElement("concept","",top,left);
         bbmap.views.main.newViewAndLink(this.model,new_element,top,left);
     },
     addKnowledgeChild : function(e){
         e.preventDefault();
         var top = ($(this.el).position().top + 100) / bbmap.zoom.get('val');
         var left = $(this.el).position().left / bbmap.zoom.get('val');
-        var new_element = global.newElement("knowledge","",top,left);
+        var new_element = global.collections.Elements.newElement("knowledge","",top,left);
         bbmap.views.main.newViewAndLink(this.model,new_element,top,left);
     },
     /////////////////////////////////////////

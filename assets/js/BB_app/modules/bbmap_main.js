@@ -190,7 +190,7 @@ bbmap.Views.Main = Backbone.View.extend({
             if((_.indexOf(ids,link.get('target'))>-1)&&(_.indexOf(ids,link.get('source'))>-1)){
                 var source = bbmap.views.main.elements.get(link.get('source')+"-"+id_ref);
                 var target = bbmap.views.main.elements.get(link.get('target')+"-"+id_ref);
-                global.newLink(source,target);
+                this.links.newLink(source,target);
                 // links = _.union(links,link)  
             } 
         });
@@ -565,7 +565,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var pos = $('#dropP').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        var new_element = global.newElement("poche","",top,left);
+        var new_element = this.elements.newElement("poche","",top,left);
         this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
     },
@@ -573,7 +573,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var pos = $('#dropC').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        var new_element = global.newElement("concept","",top,left);
+        var new_element = this.elements.newElement("concept","",top,left);
         this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
     },
@@ -581,12 +581,13 @@ bbmap.Views.Main = Backbone.View.extend({
         var pos = $('#dropK').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        var new_element = global.newElement("knowledge","",top,left);
+        var new_element = this.elements.newElement("knowledge","",top,left);
         this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
     },
     newViewAndLink : function(source,target,top,left,pos){
         // On centre la map sur l'element
+        _this = this;
         var position = {top:(top*bbmap.zoom.get('val')) + $('#map').offset().top,left:(left*bbmap.zoom.get('val')) + $('#map').offset().left};
         if(pos) position = pos; // pour prendre la position du drop button
         this.centerToElement(position,function(){
@@ -594,7 +595,7 @@ bbmap.Views.Main = Backbone.View.extend({
             // bbmap.views.main.addModelToView(new_element);
             // LINK
             if(source != "none"){
-                var new_cklink = global.newLink(source,target);
+                var new_cklink = _this.links.newLink(source,target);
                 //bbmap.views.main.addLinkToView(new_cklink)
                 bbmap.views.main.svgWindowController();
             } 
@@ -1112,7 +1113,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 if(info.connection.scope == "cklink"){
                     var source = bbmap.views.main.elements.get(info.sourceId);
                     var target = bbmap.views.main.elements.get(info.targetId);
-                    var new_link = global.newLink(source,target,true);
+                    var new_link = this.links.newLink(source,target,true);
                     // Set the link style
                     var style = rules.link_style_rules(new_link);
                     info.connection.setPaintStyle(style);
