@@ -14,6 +14,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <script src="js/vendor/modernizr.js"></script>
     <script type='text/javascript' src='js/vendor/jquery-1.10.2.js'></script>
+
+    <script src="js/vendor/jquery.browser.js"></script>
+
     <script src="js/vendor/underscore.js"></script>
     <!-- sweet alert lib -->
     <script src="js/vendor/sweetAlert/sweet-alert.js"></script> 
@@ -134,7 +137,8 @@
     <script src="js/BB_app/global_functions.js?v=<%= sails.config.session.version %>"></script>
     <script src="js/BB_app/global_models.js?v=<%= sails.config.session.version %>"></script>
     <script src="js/BB_app/global_collections.js?v=<%= sails.config.session.version %>"></script>
-
+    <!-- ////////////////////// -->
+    <noscript><center><h1>JavaScript is off. Please enable to view full site.</h1></center></noscript>
     <!-- ////////////////////// -->
     <!-- Menu -->
     <%- partial('app/templates/topbar_templates.ejs') %>
@@ -261,34 +265,76 @@
     // Autoprompt for Satisfaction and SmartVote (only displayed under certain conditions)
     UserVoice.push(['autoprompt', {}]);
   </script>
+
+  <!-- Test browser & mobile -->
+
+  <div id="browserTestModal" class="modalContainer reveal-modal large" data-reveal>
+    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+  </div>
+
+  <style type="text/css">#creanav {background: #ccc; color: #000; padding: 20px; text-transform: ;}</style>
   <script>
-  
-    var releases = {
-      //n1 : {
-      //  id :"1",
-      //  pathname:"/",
-      //  wrapper:document.body,
-      //  message:'<b>News !</b><p>Images from the web associated with the name of your project are now visible //below your project description<img title="Images from the web" src="/img/notifs/n1.png"/></p>',
-      //  layout:'attached',
-      //  effect:'flip',
-      //  type:'notice',
-      //  ttl:10000,
-      //  archiveButton:true
-      //},
-      // n2 : {
-      //   id :"2",
-      //   pathname : "/bbmap",
-      //   wrapper:document.body,
-      //   message:'<b>News !</b><p>A new tab in the menu on the right sidebar shows you the web data associated to the selectionned concept<img title="Images from the web" src="/img/notifs/n2.png"/></p>',
-      //   layout:'attached',
-      //   effect:'flip',
-      //   type:'notice',
-      //   ttl:10000,
-      //   archiveButton:true
-      // }
-    };
+    ////////////////////////////////////////////////////////////////////////////////
+    // NEWS
+    ////////////////////////////////////////////////////////////////////////////////
     
-    nlib.showByPathname(releases);
-  </script>
+    var news_html = [];
+    news_html[2] = '<center><h2 dir="ltr"><strong>&Eacute;dition d&rsquo;une cartographie</strong></h2><iframe width="560" height="315" src="https://www.youtube.com/embed/SE3GmYUHSmk" frameborder="0" allowfullscreen></iframe></center>';
+    news_html[1] = "";
+
+    var alertNews = function(tabhtml){
+      var htmlvalidation = '<hr><input type="checkbox" id="cookieAccepted" value="AC" /> Ne plus afficher ce message<span style="float:right"><button id="alert_accept" class="button tiny radius" onclick="ClickAlertNews('+tabhtml.length+')"> OK</button></span>';
+
+      if( $.cookie('alertnews') === undefined || $.cookie('alertnews') < tabhtml.length){
+        var idN = $.cookie('alertnews')
+        if(idN == undefined) idN = tabhtml.length -1;
+        for ( var i = idN ; i <= tabhtml.length -1; i++){
+          $('#browserTestModal').append(tabhtml[i]);
+          
+        }
+        $('#browserTestModal').append(htmlvalidation);
+        $('#browserTestModal').foundation('reveal', 'open');
+        
+      }
+    }
+    var ClickAlertNews = function(tabhtml){
+      var cookieAccepted = document.getElementById('cookieAccepted');
+      if(cookieAccepted.checked == true) document.cookie= ' alertnews ='+tabhtml;
+      $('#browserTestModal').foundation('reveal', 'close');
+    }
+    ////////////////////////////////////////////////////////////////////////////////
+    // Browser
+    ////////////////////////////////////////////////////////////////////////////////
+    var modalInit = function(html){
+        $('#browserTestModal').append(html);
+        $('#browserTestModal').foundation('reveal', 'open');
+    }
+
+    var getBrowser = function(){
+      // Si le navigator est à chier
+      if ($.layout.name=='gecko' && $.layout.version<=9.0 || $.browser.name=='msie' && $.layout.version<=9.0){
+        var html = '<div id="creanav"> <center><h2>Votre navigateur est obsolète</h2> <h4>Veuillez le mettre à jour pour accéder à notre site, ou téléchargez l un de ces navigateurs.</h4> </br> <a target="_blank" href=https://www.google.fr/chrome/browser/desktop/><img src=/img/chromee.png height="100" width="100"></img></a> <a target="_blank" href=https://www.mozilla.org/fr/firefox/new/><img src=/img/firefoxx.png height="100" width="100"></img></a> <a target="_blank" href=http://www.opera.com/fr><img src=/img/operaa.png height="100" width="100"></img></a> <h3>Your browser is deprecated.</h3> <h5>Please update it to access our website or download one of those browsers.</h5> </center> </div>';
+        modalInit(html);
+      }else{
+        alertNews(news_html);
+      }
+    }
+    if (navigator.userAgent.match(/(android|iphone|ipad|blackberry|symbian|symbianos|symbos|netfront|model-orange|javaplatform|iemobile|windows phone|samsung|htc|opera mobile|opera mobi|opera mini|presto|huawei|blazer|bolt|doris|fennec|gobrowser|iris|maemo browser|mib|cldc|minimo|semc-browser|skyfire|teashark|teleca|uzard|uzardweb|meego|nokia|bb10|playbook)/gi)) {
+      // tablette
+      if ( ((screen.width  >= 480) && (screen.height >= 800)) || ((screen.width  >= 800) && (screen.height >= 480)) || navigator.userAgent.match(/ipad/gi) ) {
+        getBrowser();
+      } 
+      // telephone
+      else {
+          var html = "<center><br><br><br><br>CreaKtive editor is not compatible mobile / L'éditeur CreaKtive n'est pas compatible mobile</center>"
+          modalInit(html);
+      }
+    }
+    // PC
+    else {
+       getBrowser();
+    }
+
+    </script>
   </body>
 </html>

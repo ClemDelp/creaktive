@@ -1,3 +1,22 @@
+var k_localisation = {
+	///////////////////////////////////////////////////////
+    // STATUT
+    ///////////////////////////////////////////////////////
+    // Concept
+    "interne" : {
+		"css_manu" : "c_connu",
+		"name" : {"fr" : "Connu", "en" : ""},
+		"desc" : {"fr" : "Le concept renvoie à un ensemble de solutions techniques connues, dont la performance est également connue","en" : ""},
+		"css" : "-moz-border-radius: 50px; -webkit-border-radius: 50px; border-radius: 50px; font-family: Arial; color: white; background: #2ecc71; border: solid #27ae60 2px; text-decoration: none;",
+	},
+    "externe" : {
+		"css_manu" : "c_atteignable",
+		"name" : {"fr" : "Atteignable", "en" : ""},
+		"desc" : {"fr" : "Le concept est à approfondir ou atteignable","en" : ""},
+		"css" : "-moz-border-radius: 50px; -webkit-border-radius: 50px; border-radius: 50px; font-family: Arial; color: white; background: #1abc9c; border: solid #16a085 2px; text-decoration: none; ",
+	},
+}
+
 var statut = {
 	///////////////////////////////////////////////////////
     // STATUT
@@ -53,13 +72,18 @@ var statut = {
 		"css" : "-moz-border-radius: 10px; -webkit-border-radius: 10px; border-radius: 10px; font-family: Arial; color: white; background: #e74c3c; border: solid #c0392b 2px; text-decoration: none;",
 	},
 }
-//SuggestionText = {
-module.exports = {
+var normalisation = {
     ///////////////////////////////////////////////////////
-    // suggestion de niveau 1
+    // Normalisation
     ///////////////////////////////////////////////////////
 	"s00" : { "fr" : "Ce concept n'a pas encore de statut", "en" : "", "propositions" : [statut.c_connu, statut.c_atteignable, statut.c_alternatif, statut.c_hamecon]},
-	"s01" : { "fr" : "Cette connaissance n'a pas encore de statut", "en" : "", "propositions" : [statut.k_validees, statut.k_indesidable, statut.k_manquante, statut.k_encours]},	
+	"s01" : { "fr" : "Cette connaissance n'a pas encore de statut", "en" : "", "propositions" : [statut.k_validees, statut.k_indesidable, statut.k_manquante, statut.k_encours]},
+	
+	"s02" : { "fr" : "Voulez-vous changer le statut de ce concept?", "en" : "", "propositions" : [statut.c_connu, statut.c_atteignable, statut.c_alternatif, statut.c_hamecon]},
+	"s03" : { "fr" : "Voulez-vous changer le statut de cette connaissance?", "en" : "", "propositions" : [statut.k_validees, statut.k_indesidable, statut.k_manquante, statut.k_encours]}
+}
+
+var evaluation = {
 	///////////////////////////////////////////////////////
 	// suggestion de niveau 2
 	///////////////////////////////////////////////////////
@@ -142,4 +166,14 @@ module.exports = {
 	"s74" : { "fr" : "= originalité et du degré d’ouverture (ou de rupture)", "en" : ""},
 	"s75" : { "fr" : "= originalité (et est donc lié au degré d’ouverture)", "en" : ""},
 	"s76" : { "fr" : " traduire un degré douverture.", "en" : ""},
+	
+	"s77" : { "fr" : "Acucune partitions restrictives trouvées, vous n'avez pas encore proposé de dominante design et de concept atteignable", "en" : ""},
+	"s78" : { "fr" : "Acucune partitions expansives trouvées, vous n'avez pas encore proposé de concepts alternatifs ou de concepts hameçons", "en" : ""},
+}
+
+//var CK_text = {
+module.exports = {
+	statut : statut,
+	normalisation : normalisation,
+	evaluation : evaluation,
 }

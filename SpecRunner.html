@@ -15,12 +15,17 @@
   <script src="assets/js/vendor/underscore.js"></script>
 
   <!-- include source files here... -->
-  <script src="api/services/SuggestionText.js"></script>
-  <script src="api/services/SuggestionAlgo.js"></script>
+  <script type="text/javascript">
+    var module = {};
+  </script>
+  <script src="api/services/CK_text.js"></script>
+  <script src="api/services/CK_normalisation.js"></script>
+  <script src="api/services/CK_evaluation.js"></script>
   <script src="src/variables_test.js"></script>
 
   <!-- include spec files here... -->
-  <script src="spec/suggestion_spec.js"></script>
+  <script src="spec/normalisation_spec.js"></script>
+  <script src="spec/evaluation_spec.js"></script>
 
 </head>
 

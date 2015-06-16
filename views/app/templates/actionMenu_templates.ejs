@@ -48,23 +48,28 @@
 
   <div id="suggestions_modal" class="modalContainer reveal-modal large" data-reveal>
     <ul class="tabs" data-tab>
-      <li class="tab-title active"><a href="#panel1">Normalisations</a></li>
-      <li class="tab-title"><a href="#panel2">Evaluations</a></li>
-      <li class="tab-title"><a href="#panel3">Suggestions</a></li>
+      <li class="tab-title active"><a href="#panel1">Choisir un statut</a></li>
+      <li class="tab-title"><a href="#panel2">Changer de statut</a></li>
+      <li class="tab-title" style="display:none"><a href="#panel3">Evaluations</a></li>
+      <li class="tab-title" style="display:none"><a href="#panel4">Suggestions</a></li>
     </ul>
     <div class="tabs-content">
       <div class="content active" id="panel1">
-        <table id="suggestions_1_table" class="suggestions_table" style="width:100%"></table>
+        <table id="normalized_table" class="suggestions_table" style="width:100%"></table>
       </div>
       <div class="content" id="panel2">
-        <table id="suggestions_2_table" class="suggestions_table" style="width:100%"></table>
+        <table id="not_normalized_table" class="suggestions_table" style="width:100%"></table>
       </div>
       <div class="content" id="panel3">
-        <table id="suggestions_3_table" class="suggestions_table" style="width:100%"></table>    
+        <span id="graph_radar_evaluation"></span>
+        <table id="evaluations_table" class="suggestions_table" style="width:100%"></table>
+      </div>
+      <div class="content" id="panel4">
+        <table id="suggestion_table" class="suggestions_table" style="width:100%"></table>    
       </div>
     </div>
     
-    <small>Offered by the creaktive suggestion algorithm</small>
+    <small>CreaKtive suggestion algorithm</small>
     <a class="close-reveal-modal" aria-label="Close">&#215;</a>
   </div>
 
