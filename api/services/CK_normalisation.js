@@ -3,61 +3,55 @@ module.exports = {
   //////////////////////////////////////////
   // STATUT
   ////////////////////////////////////////// 
-  get_normalized : function(elements,links,cb){
-    var c = [];
-    var k = [];
+  get_normalisations : function(elements,cb){
+    var suggestions = [];
     elements.forEach(function(el){
-      if(el.type == "concept"){
-        if(el.css_manu) c.unshift(el)
-        else if(el.css_manu != "") c.unshift(el)
-      }
-      else if(el.type == "knowledge"){
-        if(el.css_manu) k.unshift(el)
-        else if(el.css_manu != "") k.unshift(el)
-      }
+      var new_suggestion = CK_normalisation.get_normalisation(el);
+      suggestions.push(new_suggestion);
     });
-    var concepts = {
-      "elements" : c,
-      "suggestions" : CK_text.normalisation.s02.fr,
-      "propositions" : CK_text.normalisation.s02.propositions,
-    };
-    var knowledges = {  
-      "elements" : k,
-      "suggestions" : CK_text.normalisation.s03.fr,
-      "propositions" : CK_text.normalisation.s03.propositions,
-    };
 
-    var normalized = {"concepts" : concepts, "knowledges" : knowledges};
-    if(cb) cb(normalized);
-    else return normalized;
+
+    
+    if(cb) cb(suggestions);
+    else return suggestions;
   },
-  get_not_normalized : function(elements,links,cb){
-    var c = [];
-    var k = [];
-    elements.forEach(function(el){
-      if(el.type == "concept"){
-        if(!el.css_manu) c.unshift(el)
-        else if(el.css_manu == "") c.unshift(el)
-      }
-      else if(el.type == "knowledge"){
-        if(!el.css_manu) k.unshift(el)
-        else if(el.css_manu == "") k.unshift(el)
-      }
-    });
-    var concepts = {
-      "elements" : c,
-      "suggestions" : CK_text.normalisation.s00.fr,
-      "propositions" : CK_text.normalisation.s00.propositions,
-    };
-    var knowledges = {  
-      "elements" : k,
-      "suggestions" : CK_text.normalisation.s01.fr,
-      "propositions" : CK_text.normalisation.s01.propositions,
-    };
+  get_normalisation : function(element,cb){
+    var suggestion = {};
+    var normalized = false;
 
-    var not_normalized = {"concepts" : concepts, "knowledges" : knowledges};
-    if(cb) cb(not_normalized);
-    else return not_normalized;
+    if(element.type == "concept"){
+      if(!element.css_manu) suggestion = CK_text.suggestions().s00;
+      else if(element.css_manu == "") suggestion = CK_text.suggestions().s00;
+      else{
+        suggestion = CK_text.suggestions().s02;
+        normalized = true;
+      }
+      suggestion.normalized = normalized;
+    }else if(element.type == "knowledge"){
+      if(!element.css_manu) suggestion = CK_text.suggestions().s01;
+      else if(element.css_manu == "") suggestion = CK_text.suggestions().s01;
+      else{
+        suggestion = CK_text.suggestions().s03;
+        normalized = true;
+      }
+      suggestion.normalized = normalized;
+      suggestion.localisation = this.get_localisation(element);
+    }
+    suggestion.element = element;
+
+    if(cb) cb(suggestion);
+    else return suggestion;
+  },
+  get_localisation : function(element,cb){
+    var suggestions = {};
+
+    if(!element.indside) suggestion = CK_text.suggestions().s04;
+    else if(element.inside == "") suggestion = CK_text.suggestions().s04;
+    else if(element.inside == true) suggestion = CK_text.suggestions().s05;
+    else if(element.inside == false) suggestion = CK_text.suggestions().s06;
+
+    if(cb) cb(suggestion);
+    else return suggestion;
   },
   //////////////////////////////////////////
 }

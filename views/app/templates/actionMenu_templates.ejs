@@ -48,22 +48,32 @@
 
   <div id="suggestions_modal" class="modalContainer reveal-modal large" data-reveal>
     <ul class="tabs" data-tab>
-      <li class="tab-title active"><a href="#panel1">Choisir un statut</a></li>
-      <li class="tab-title"><a href="#panel2">Changer de statut</a></li>
-      <li class="tab-title" style="display:none"><a href="#panel3">Evaluations</a></li>
-      <li class="tab-title" style="display:none"><a href="#panel4">Suggestions</a></li>
+      <li class="tab-title active"><a href="#panel1">Actualisation</a></li>
+      <li class="tab-title"><a href="#panel2">Qualification</a></li>
+      <li class="tab-title" style="display:none"><a href="#panel3">Evaluation</a></li>
+      <li class="tab-title" style="display:none"><a href="#panel4">Objectif</a></li>
     </ul>
+
     <div class="tabs-content">
       <div class="content active" id="panel1">
-        <table id="normalized_table" class="suggestions_table" style="width:100%"></table>
+        <b>Concepts qualifications</b>
+        <table id="c_normalized_table" class="suggestions_table expand"></table>
+        <b>Knowledges qualification</b>
+        <table id="k_normalized_table" class="suggestions_table expand"></table>
       </div>
+      
       <div class="content" id="panel2">
-        <table id="not_normalized_table" class="suggestions_table" style="width:100%"></table>
+        <b>Concepts actualisation</b>
+        <table id="c_not_normalized_table" class="suggestions_table" style="width:100%"></table>
+        <b>Knowledges actualisation</b>
+        <table id="k_not_normalized_table" class="suggestions_table" style="width:100%"></table>
       </div>
+      
       <div class="content" id="panel3">
         <span id="graph_radar_evaluation"></span>
         <table id="evaluations_table" class="suggestions_table" style="width:100%"></table>
       </div>
+      
       <div class="content" id="panel4">
         <table id="suggestion_table" class="suggestions_table" style="width:100%"></table>    
       </div>

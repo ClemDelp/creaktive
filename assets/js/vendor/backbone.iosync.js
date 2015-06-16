@@ -103,43 +103,41 @@ Backbone.sync = function (method, model, options) {
 
   var defer = $.Deferred();
 
-  io.emit(action, json, function (data) {
-
-    //console.log("*** SOCKET from ", json.url, "Response ", data, "***")
-
-
-if(data.err){
-      // if(options.error) options.error(data.err);
-      if(options.error) options.error(data.err);
-       if(data.err === "You have read-only permission"){
-         defer.resolve();
-       }else{
-        setTimeout(function(){
-          swal({   
-            title: "Problem!",   
-            text: data.err,   
-            type: "error",   
-            showCancelButton: true,   
-            confirmButtonColor: "#DD6B55",   
-            confirmButtonText: "Ok!",   
-            closeOnConfirm: false 
-          }, 
-          function(isConfirm){
-            location.reload();    
-         });
-        },1000);
-       
-       }
-       defer.reject();
-     }else{
-      if(options.success) options.success(data);
-      if(options.complete) defer.then(options.complete(data));
-      defer.resolve();
-    }
-
-
-
-  });
+  if(navigator.onLine){
+    io.emit(action, json, function (data) {
+      //console.log("*** SOCKET from ", json.url, "Response ", data, "***")
+      if(data.err){
+        // if(options.error) options.error(data.err);
+        if(options.error) options.error(data.err);
+        if(data.err === "You have read-only permission"){
+          defer.resolve();
+        }else{
+          setTimeout(function(){
+            swal({   
+              title: "Problem!",   
+              text: data.err,   
+              type: "error",   
+              showCancelButton: true,   
+              confirmButtonColor: "#DD6B55",   
+              confirmButtonText: "Ok!",   
+              closeOnConfirm: false 
+            }, 
+            function(isConfirm){
+              location.reload();    
+           });
+          },1000);
+         
+        }
+        defer.reject();
+      }else{
+        if(options.success) options.success(data);
+        if(options.complete) defer.then(options.complete(data));
+        defer.resolve();
+      }
+    });
+  }else{
+    swal("Oups!", "Impossible to find an internet connection!", "error")
+  }
   var promise = defer.promise();
   model.trigger('request', model, promise, options);
   return promise;

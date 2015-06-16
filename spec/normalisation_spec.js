@@ -1,13 +1,8 @@
 
 describe('CK Normalisation Tests',function(){
 	
-	beforeEach(function() {
-
-    });
-
-    afterEach(function() {
-
-    });
+	beforeEach(function(){});
+    afterEach(function(){});
 
 	it("Si j'ai 2 C et 3 K non normés CK sur 10 éléments",function(){
 		var c2_k3 = new c2_k3_sur10_non_norme;
