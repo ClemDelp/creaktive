@@ -227,16 +227,21 @@ global.Collections.LocalHistory = Backbone.Collection.extend({
     model : global.Models.Action,
     initialize : function() {
         this.position = -1;
+        this.historySize = 3;
         this.bind("error", function(model, error){
             console.log( error );
         });
     },
     createBackup : function(){
-        console.log("Create Backup")
         //On supprime tous les éléments à droite de la position
         var mem = this.first(this.position+1);
         this.reset();;
         this.add(mem);
+
+        if(this.length>this.historySize){
+            this.remove(this.first());
+            this.position--;
+        }
 
         this.add({
             elements: global.collections.Elements.toJSON(),
@@ -294,7 +299,6 @@ global.Collections.LocalHistory = Backbone.Collection.extend({
     },
     next : function(cb){
         if(this.length>1 && this.position<this.length-1){
-            console.log("Next")
             var todo = this.compareBackup(this.toJSON()[this.position], this.toJSON()[this.position+1], "next");
             this.position++;
             return cb(todo);
@@ -303,7 +307,6 @@ global.Collections.LocalHistory = Backbone.Collection.extend({
     previous : function(cb){
         
         if(this.length>1 && this.position >0){
-            console.log("Previous")
             var todo = this.compareBackup(this.toJSON()[this.position-1], this.toJSON()[this.position],"previous");
             this.position--;
             return cb(todo);
