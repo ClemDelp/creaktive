@@ -49,7 +49,21 @@ global.Collections.CKLinks = Backbone.Collection.extend({
             global.collections.Links.remove(new global.Models.CKLink(model));
             // global.eventAggregator.trigger("link:remove",new global.Models.CKLink(model),"server");
         } 
-    }
+    },
+    historyCreate : function(model){
+        var new_cklink = new global.Models.CKLink(model);
+        new_cklink.save();
+        // On l'ajoute à la collection
+        global.collections.Links.add(new_cklink);   
+        // rules sur les links
+        rules.new_link_rules(new_cklink,source,target);
+
+        return new_cklink;                
+    },
+
+    historyDelete : function(model){
+        this.remove(model.id);
+    },
 });
 /////////////////////////////////////////////////////////////////////
 global.Collections.Elements = Backbone.Collection.extend({
@@ -111,6 +125,25 @@ global.Collections.Elements = Backbone.Collection.extend({
     
     return new_element;
   },
+
+    historyCreate : function(model){
+        // On crée l'object
+        var new_element = new global.Models.Element(model);
+        new_element.save();
+        // On ajoute le model à la collection
+        this.add(new_element,{from:"client"});       
+        return new_element;                 
+    },
+    historyUpdate : function(model){
+        var e =  this.get(model.id);
+        e.set(model);
+        e.save();
+        return e;     
+    },
+    historyDelete : function(model){
+        var model = this.get(model.id);
+        model.destroy();
+    },
     serverCreate : function(model){
         if(model.project == global.models.currentProject.get('id')){
             global.collections.Elements.add(new global.Models.Element(model))
@@ -191,10 +224,91 @@ global.Collections.UsersCollection = Backbone.Collection.extend({
 global.Collections.LocalHistory = Backbone.Collection.extend({
     model : global.Models.Action,
     initialize : function() {
+        this.position = -1;
         this.bind("error", function(model, error){
             console.log( error );
         });
-    }
+    },
+    createBackup : function(){
+        console.log("Create Backup")
+        //On supprime tous les éléments à droite de la position
+        var mem = this.first(this.position+1);
+        this.reset();;
+        this.add(mem);
+
+        this.add({
+            elements: global.collections.Elements.toJSON(),
+            comments :global.collections.Comments.toJSON(),
+            attachments :global.collections.Attachments.toJSON(),
+            links: global.collections.Links.toJSON()
+        });
+        this.position++;  
+        console.log(this.toJSON()); 
+    },
+    compareBackup : function(json1, json2, prevNext){
+        var delta = {};
+        delta = jsondiffpatch.diff(json1, json2);
+        var todo = [];
+
+console.log(delta)
+
+        for (var c in delta){
+            var collection = delta[c];
+            //On traite les elements en premier
+            for (var key in collection){
+
+                var element = collection[key];
+                //Si l'élément est un tableau, c'est un ajout ou une suppression
+                // voir https://github.com/benjamine/jsondiffpatch/blob/master/docs/deltas.md
+                if(element.constructor === Array){
+                    var _element = element[0];
+                    var element_type = global.Functions.getCollection(element[0]);
+                    // var _element_type = 
+                    if(element.length == 1){ //ajout
+                        var action = (prevNext=="previous") ? "delete" : "create";
+                        todo.push({element:_element,element_type:element_type,action:action});
+                    }else if(element.length == 3){ //suppression        
+                        var action = (prevNext=="previous") ? "create" : "delete";
+                        todo.push({element:_element,element_type:element_type,action:action})
+                    }
+                }else{ //C'est une/des modification(s)
+                    if(element !== "a"){ // Ne pas enlever cette ligne, la librairie ajoute un paramètre a pour indiquer qu'on travaille avec des tableauw
+                        var _e = global.collections.Elements.toJSON()[key]; 
+                        var element_type = global.Functions.getCollection(_e);
+                        for(var k in element){
+                            var action = "update";
+                            var data = k;
+                            var value = (prevNext=="previous") ? element[k][0] : element[k][1];
+                            todo.push({action:action, element:_e,element_type:element_type, data:data,value:value})          
+                        };     
+                    };        
+                };
+            };
+        };
+        return todo;
+    },
+    next : function(cb){
+        if(this.length>1 && this.position<this.length-1){
+            console.log("Next")
+            var todo = this.compareBackup(this.toJSON()[this.position], this.toJSON()[this.position+1], "next");
+            this.position++;
+            console.log(todo);
+            return cb(todo);
+        }
+    },
+    previous : function(cb){
+        
+        if(this.length>1 && this.position >0){
+            console.log("Previous")
+            var todo = this.compareBackup(this.toJSON()[this.position-1], this.toJSON()[this.position],"previous");
+            this.position--;
+            console.log(todo);
+            return cb(todo);
+        }
+
+
+    },
+    
 });
 /***************************************/
 global.Collections.Filters = Backbone.Collection.extend({

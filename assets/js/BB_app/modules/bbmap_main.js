@@ -69,7 +69,7 @@ bbmap.Views.Main = Backbone.View.extend({
         ////////////////////////////////
         // Timeline & history parameter
         this.timeline_pos       = 0;
-        this.history_pos        = 0;
+        // this.history_pos        = 0;
         this.localHistory       = new global.Collections.LocalHistory();
         this.sens               = "init";
         this.listener           = new window.keypress.Listener();
@@ -124,8 +124,8 @@ bbmap.Views.Main = Backbone.View.extend({
             "on_keydown"        : this.multiselection,
             "on_keyup"          : this.multiselection,
         });
-        //this.listener.simple_combo("ctrl z", this.backInHistory);
-        //this.listener.simple_combo("ctrl y", this.advanceInHistory);
+        this.listener.simple_combo("ctrl z", this.history_previous);
+        this.listener.simple_combo("ctrl y", this.history_next);
         this.listener.simple_combo("backspace", this.deleteButton);
         this.listener.simple_combo("delete", this.deleteButton);
         this.listener.simple_combo("ctrl c", this.duplicate);
@@ -145,6 +145,8 @@ bbmap.Views.Main = Backbone.View.extend({
                 }, 1000);                
             })
         }
+
+        this.localHistory.createBackup();
     },
     events : {
         "mouseup .dropC" : "newConceptUnlinked",
@@ -167,6 +169,58 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .apply_template" : "apply_template", 
         "click .getSuggestions" : "getSuggestions", 
         "click #map" : "deSelection", 
+    },
+    ///////////////////////////////////////////////////
+    // HISTORY FUNCTIONS
+    ///////////////////////////////////////////////////
+
+    history_next : function(){
+        _this = bbmap.views.main;
+        _this.localHistory.next(_this.history_do);
+    },
+
+    history_previous : function(){
+        _this = bbmap.views.main;
+        _this.localHistory.previous(_this.history_do);
+    },
+
+    history_do : function(todo){
+        _this = bbmap.views.main;
+        _.each(todo, function(action){
+
+
+            if(action.element_type == "Elements"){
+                if(action.action == "create"){
+                    _this.elements.historyCreate(action.element);
+                }else if(action.action == "delete"){
+                    _this.elements.historyDelete(action.element);
+                }else if(action.action == "update"){
+                    var e = action.element;
+                    if(action.data == "title"){
+                        e.title = action.value
+                    }else if(action.data == "top" ){
+                        e.top = action.value;
+                    }else if(action.data == "left"){
+                        e.left = action.value;
+                    }
+
+
+                    _this.elements.historyUpdate(e);
+                }
+            }else if(action.element_type == "Links"){
+                if(action.action == "create"){
+                    _this.links.historyCreate(action.element);
+                }else if(action.action == "delete"){
+                    _this.links.historyDelete(action.element);
+                }else if(action.action == "update"){
+                    _this.links.historyUpdate(action.element);
+                }
+            }else if(action.element_type == "Attachments"){
+
+            }else if(action.element_type == "Comments"){
+
+            }
+        });
     },
     /////////////////////////////////////////
     duplicate : function(){
@@ -432,7 +486,10 @@ bbmap.Views.Main = Backbone.View.extend({
         setTimeout(function(){
             bbmap.views.main.instance.repaintEverything();
             bbmap.views.main.svgWindowController();
+
         },1000);
+
+        this.localHistory.createBackup();
     },
     deleteButton : function(){
         // Si il y a plusieurs éléments selecitonnés
@@ -468,47 +525,47 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // Action prev/next timeline/history gestion
     /////////////////////////////////////////
-    nextPrevActionController : function(sens,from){
-        var historic = this.localHistory.toArray()[this.history_pos];
-        var action = historic.get('action');
-        var type = historic.get('object');
-        var model = this.getTimelineHitoryModel(historic,type,sens,action);
-        // Control sens to chose the right action
-        if(((sens == "go")&&(action == "create")&&(type != "Link"))||((sens == "back")&&(action == "remove")&&(type != "Link"))){
-            this.addModelToView(model,"history");
-            model.save();
-        }
-        else if(((sens == "go")&&(action == "create")&&(type == "Link"))||((sens == "back")&&(action == "remove")&&(type == "Link"))){
-            this.addLinkToView(model,"nextPrevActionController");
-            model.save();
-        }
-        else if(((sens == "go")&&(action == "remove")&&(type != "Link"))||((sens == "back")&&(action == "create")&&(type != "Link"))){
-            this.removeModelToView(model,"history");
-            model.destroy();
-        }
-        else if(((sens == "go")&&(action == "remove")&&(type == "Link"))||((sens == "back")&&(action == "create")&&(type == "Link"))){
-            this.removeLinkToView(model);
-            model.destroy();
-        }
-        else if(action == "update"){
-            var m = bbmap.views.main.elements.get(model.get('id'))
-            m.save(model.toJSON())
-            //global.updateElement(model,model.toJSON())
-        }
-    },
-    getTimelineHitoryModel : function(historic,type,sens,action){
-        // Creation du model
-        // console.log(historic,type,sens,action)
-        var type = type.toLowerCase();
-        var model = new Backbone.Model();
-        if((action == "update")&&(sens == "back")){
-            model = new global.Models.Element(historic.get('old'));
-        }else{
-            if(type == "link") model = new global.Models.CKLink(historic.get('to'));
-            else model = new global.Models.Element(historic.get('to'));
-        }
-        return model;
-    },
+    // nextPrevActionController : function(sens,from){
+    //     var historic = this.localHistory.toArray()[this.history_pos];
+    //     var action = historic.get('action');
+    //     var type = historic.get('object');
+    //     var model = this.getTimelineHitoryModel(historic,type,sens,action);
+    //     // Control sens to chose the right action
+    //     if(((sens == "go")&&(action == "create")&&(type != "Link"))||((sens == "back")&&(action == "remove")&&(type != "Link"))){
+    //         this.addModelToView(model,"history");
+    //         model.save();
+    //     }
+    //     else if(((sens == "go")&&(action == "create")&&(type == "Link"))||((sens == "back")&&(action == "remove")&&(type == "Link"))){
+    //         this.addLinkToView(model,"nextPrevActionController");
+    //         model.save();
+    //     }
+    //     else if(((sens == "go")&&(action == "remove")&&(type != "Link"))||((sens == "back")&&(action == "create")&&(type != "Link"))){
+    //         this.removeModelToView(model,"history");
+    //         model.destroy();
+    //     }
+    //     else if(((sens == "go")&&(action == "remove")&&(type == "Link"))||((sens == "back")&&(action == "create")&&(type == "Link"))){
+    //         this.removeLinkToView(model);
+    //         model.destroy();
+    //     }
+    //     else if(action == "update"){
+    //         var m = bbmap.views.main.elements.get(model.get('id'))
+    //         m.save(model.toJSON())
+    //         //global.updateElement(model,model.toJSON())
+    //     }
+    // },
+    // getTimelineHitoryModel : function(historic,type,sens,action){
+    //     // Creation du model
+    //     // console.log(historic,type,sens,action)
+    //     var type = type.toLowerCase();
+    //     var model = new Backbone.Model();
+    //     if((action == "update")&&(sens == "back")){
+    //         model = new global.Models.Element(historic.get('old'));
+    //     }else{
+    //         if(type == "link") model = new global.Models.CKLink(historic.get('to'));
+    //         else model = new global.Models.Element(historic.get('to'));
+    //     }
+    //     return model;
+    // },
     /////////////////////////////////////////
     // Overlays sur les connections
     /////////////////////////////////////////
@@ -568,6 +625,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var new_element = this.elements.newElement("poche","",top,left);
         this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
+        // this.localHistory.createBackup();
     },
     newConceptUnlinked : function(e){
         var pos = $('#dropC').offset();
@@ -576,6 +634,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var new_element = this.elements.newElement("concept","",top,left);
         this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
+        // this.localHistory.createBackup();
     },
     newKnowledgeUnlinked : function(e){
         var pos = $('#dropK').offset();
@@ -584,6 +643,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var new_element = this.elements.newElement("knowledge","",top,left);
         this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
+        // this.localHistory.createBackup();
     },
     newViewAndLink : function(source,target,top,left,pos){
         // On centre la map sur l'element
@@ -614,6 +674,7 @@ bbmap.Views.Main = Backbone.View.extend({
             if(title == "") this.nodes_views[this.lastModel.get('id')].removeNode();
             else this.lastModel.save({title:title});    
             this.joyride = false; // important pour eviter quand je tape sur entree que le joyride est fermé il sup the lastModel
+            this.localHistory.createBackup();
         }
     },
     setLastModel : function(model){

@@ -3,6 +3,15 @@ function guid() {return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-'
 function getDate(){now=new Date();return now.getDate()+'/'+now.getMonth()+'/'+now.getFullYear()+'-'+now.getHours()+':'+now.getMinutes()+':'+now.getSeconds();}
 
 
+global.Functions.getCollection = function(object){
+  if(object.type) return "Elements";
+  if(object.target) return "Links";
+  if(object.attachedTo && object.url) return "Attachments";
+  if(object.attachedTo) return "Comment";
+};
+
+
+
 global.Functions.uploadScreenshot = function(file,cb){   
 
     $.post('s3/uploadScreenshot', {screenshot : file}, function(data){

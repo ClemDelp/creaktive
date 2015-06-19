@@ -26,7 +26,7 @@ bbmap.Views.Node = Backbone.View.extend({
     },
     reorganizeSubTree : function(e){
         e.preventDefault();
-        bbmap.views.main.treeClassification(this.model.get('id')) 
+        bbmap.views.main.treeClassification(this.model.get('id'))
     },
     expand_collapse : function(e){
         var elements = new Backbone.Collection(api.getTreeChildrenNodes(this.model,bbmap.views.main.elements,[]));
@@ -143,7 +143,8 @@ bbmap.Views.Node = Backbone.View.extend({
                         this.model.save({
                             top:position.top,
                             left:position.left
-                        });   
+                        });  
+                        
                         //var after_change = this.model.clone();
                         // if(this.model.get('type') == "concept"){
                         //     var root = api.getRoot(this.model,bbmap.views.main.elements,[]);
@@ -151,6 +152,7 @@ bbmap.Views.Node = Backbone.View.extend({
                         // }else{
                             this.following([],delta,this.model);
                         // }
+                    bbmap.views.main.localHistory.createBackup();
                     }
                     ////console.log("position : x"+this.model.get('left')+" - y"+this.model.get('top'))
                     //bbmap.views.main.reorganizeTree(this.model.get('id'))           
@@ -192,6 +194,7 @@ bbmap.Views.Node = Backbone.View.extend({
         var left = $(this.el).position().left / bbmap.zoom.get('val');
         var new_element = global.collections.Elements.newElement("concept","",top,left);
         bbmap.views.main.newViewAndLink(this.model,new_element,top,left);
+        // bbmap.views.main.localHistory.createBackup();
     },
     addKnowledgeChild : function(e){
         e.preventDefault();
@@ -199,6 +202,7 @@ bbmap.Views.Node = Backbone.View.extend({
         var left = $(this.el).position().left / bbmap.zoom.get('val');
         var new_element = global.collections.Elements.newElement("knowledge","",top,left);
         bbmap.views.main.newViewAndLink(this.model,new_element,top,left);
+        // bbmap.views.main.localHistory.createBackup();
     },
     /////////////////////////////////////////
     // Remove function
@@ -246,6 +250,7 @@ bbmap.Views.Node = Backbone.View.extend({
         });
         // Remove model
         model.destroy();
+        bbmap.views.main.localHistory.createBackup();
     },
     removeView : function(from){
         var origin = "client";
