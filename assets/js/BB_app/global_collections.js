@@ -58,6 +58,7 @@ global.Collections.CKLinks = Backbone.Collection.extend({
         // rules sur les links
         rules.new_link_rules(new_cklink,source,target);
 
+
         return new_cklink;                
     },
 
@@ -247,7 +248,6 @@ global.Collections.LocalHistory = Backbone.Collection.extend({
     },
     compareBackup : function(json1, json2, prevNext){
         var delta = {};
-        console.log(json1,json2)
         var diffpatch = jsondiffpatch.create({
             objectHash: function(obj, index) {
               // try to find an id property, otherwise just use the index in the array
@@ -297,7 +297,6 @@ global.Collections.LocalHistory = Backbone.Collection.extend({
             console.log("Next")
             var todo = this.compareBackup(this.toJSON()[this.position], this.toJSON()[this.position+1], "next");
             this.position++;
-            console.log(todo)
             return cb(todo);
         }
     },
@@ -307,7 +306,6 @@ global.Collections.LocalHistory = Backbone.Collection.extend({
             console.log("Previous")
             var todo = this.compareBackup(this.toJSON()[this.position-1], this.toJSON()[this.position],"previous");
             this.position--;
-            console.log(todo)
             return cb(todo);
         }
 

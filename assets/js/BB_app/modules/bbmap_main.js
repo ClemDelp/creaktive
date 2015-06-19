@@ -189,15 +189,15 @@ bbmap.Views.Main = Backbone.View.extend({
     history_do : function(todo){
         _this = bbmap.views.main;
         _.each(todo, function(action){
-
-
             if(action.element_type == "Elements"){
                 if(action.action == "create"){
+
                     _this.elements.historyCreate(action.element);
                 }else if(action.action == "delete"){
                     _this.elements.historyDelete(action.element);
                 }else if(action.action == "update"){
                     var e = action.element;
+
                     if(action.data == "title"){
                         e.title = action.value
                     }else if(action.data == "top" ){
@@ -225,6 +225,7 @@ bbmap.Views.Main = Backbone.View.extend({
 
             }
         });
+_this.svgWindowController();
     },
     /////////////////////////////////////////
     // SUGGESTIONS 
