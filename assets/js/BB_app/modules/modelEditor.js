@@ -66,6 +66,7 @@ modelEditor.Views.Main = Backbone.View.extend({
         this.mode = "normal";
         //global.eventAggregator.trigger("updateMap")
         this.render();
+        bbmap.views.main.localHistory.createBackup();
     },
     editMode : function(e){
         e.preventDefault();

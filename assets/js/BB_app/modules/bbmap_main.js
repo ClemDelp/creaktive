@@ -26,7 +26,7 @@ bbmap.router = Backbone.Router.extend({
 /////////////////////////////////////////////////
 bbmap.Views.Main = Backbone.View.extend({
     initialize : function(json) {
-        _.bindAll(this, 'render','deleteButton','advanceInHistory','backInHistory','updateLastModelTitle','setLastModel','multiselection','duplicate');
+        _.bindAll(this, 'render','deleteButton','updateLastModelTitle','setLastModel','multiselection','duplicate');
         ////////////////////////////
         // el
         this.top_el = $(this.el).find('#top_container');
@@ -45,7 +45,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.lastModel          = new Backbone.Model();
         this.nodes_views        = {};
         this.mode               = json.mode;
-        this.notifications      = json.notifications;
         this.init               = json.init; // if true mean launch for the first time
         this.ckOperator         = json.ckOperator;
         this.news               = json.news;
@@ -70,16 +69,14 @@ bbmap.Views.Main = Backbone.View.extend({
         ////////////////////////////////
         // Timeline & history parameter
         this.timeline_pos       = 0;
-        this.history_pos        = 0;
+        // this.history_pos        = 0;
         this.localHistory       = new global.Collections.LocalHistory();
         this.sens               = "init";
         this.listener           = new window.keypress.Listener();
-        this.flag               = "acceptLastNotif";
         this.presentation       = "graph"; // can be graph/timeline/split
         ////////////////////////////////
         // Templates
         this.template_joyride = _.template($('#bbmap-joyride-template').html());
-        this.template_tooltip = _.template($('#bbmap-tooltip-notif-template').html());
         ////////////////////////////
         // JsPlumb
         this.instance = jsPlumb.getInstance({           
@@ -102,7 +99,6 @@ bbmap.Views.Main = Backbone.View.extend({
         });
         ////////////////////////////
         // Events
-        this.listenTo(global.eventAggregator,'notification:add',this.updateLocalHistory,this);
         this.listenTo(this.elements, 'add', this.addModelToView);
         this.listenTo(this.elements, 'remove', this.removeModelToView);
         this.listenTo(this.links, 'add', this.addLinkToView);
@@ -128,9 +124,11 @@ bbmap.Views.Main = Backbone.View.extend({
             "on_keydown"        : this.multiselection,
             "on_keyup"          : this.multiselection,
         });
-        //this.listener.simple_combo("ctrl z", this.backInHistory);
-        //this.listener.simple_combo("ctrl y", this.advanceInHistory);
-        //this.listener.simple_combo("backspace", this.deleteButton);
+
+        this.listener.simple_combo("ctrl z", this.history_previous);
+        this.listener.simple_combo("ctrl y", this.history_next);
+        this.listener.simple_combo("backspace", this.deleteButton);
+
         this.listener.simple_combo("delete", this.deleteButton);
         this.listener.simple_combo("ctrl c", this.duplicate);
         ///////////////////////////////
@@ -149,6 +147,8 @@ bbmap.Views.Main = Backbone.View.extend({
                 }, 1000);                
             })
         }
+
+        this.localHistory.createBackup();
     },
     events : {
         "mouseup .dropC" : "newConceptUnlinked",
@@ -170,6 +170,61 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .downloadimage" : "laurie",
         "click .getSuggestions" : "get_suggestions", 
         "click #map" : "deSelection",
+    },
+    ///////////////////////////////////////////////////
+    // HISTORY FUNCTIONS
+    ///////////////////////////////////////////////////
+
+    history_next : function(){
+        _this = bbmap.views.main;
+        _this.localHistory.next(_this.history_do);
+    },
+
+    history_previous : function(){
+        _this = bbmap.views.main;
+        _this.localHistory.previous(_this.history_do);
+    },
+
+    history_do : function(todo){
+        _this = bbmap.views.main;
+        _.each(todo, function(action){
+            if(action.element_type == "Elements"){
+                if(action.action == "create"){
+
+                    _this.elements.historyCreate(action.element);
+                }else if(action.action == "delete"){
+                    _this.elements.historyDelete(action.element);
+                }else if(action.action == "update"){
+                    var e = action.element;
+
+                    if(action.data == "title"){
+                        e.title = action.value
+                    }else if(action.data == "top" ){
+                        e.top = action.value;
+                    }else if(action.data == "left"){
+                        e.left = action.value;
+                    }
+
+
+                    _this.elements.historyUpdate(e);
+                }
+            }else if(action.element_type == "Links"){
+                if(action.action == "create"){
+                    var source = bbmap.views.main.elements.get(action.element.source);
+                    var target = bbmap.views.main.elements.get(action.element.target);
+                    _this.links.historyCreate(action.element,source,target);
+                }else if(action.action == "delete"){
+                    _this.links.historyDelete(action.element);
+                }else if(action.action == "update"){
+                    _this.links.historyUpdate(action.element);
+                }
+            }else if(action.element_type == "Attachments"){
+
+            }else if(action.element_type == "Comments"){
+
+            }
+        });
+_this.svgWindowController();
     },
     /////////////////////////////////////////
     get_suggestions : function(e){
@@ -200,7 +255,7 @@ bbmap.Views.Main = Backbone.View.extend({
             if((_.indexOf(ids,link.get('target'))>-1)&&(_.indexOf(ids,link.get('source'))>-1)){
                 var source = bbmap.views.main.elements.get(link.get('source')+"-"+id_ref);
                 var target = bbmap.views.main.elements.get(link.get('target')+"-"+id_ref);
-                global.newLink(source,target);
+                this.links.newLink(source,target);
                 // links = _.union(links,link)  
             } 
         });
@@ -236,7 +291,6 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     svgWindowController : function(){
         if(this.init != true){
-            console.log("svgWindowController")
             $('body .svg_window').remove();
             this.drawSvgCkLine(function(){
                 var c_candidats = bbmap.views.main.elements.where({type:"concept",id_father:"none"})
@@ -393,7 +447,10 @@ bbmap.Views.Main = Backbone.View.extend({
         setTimeout(function(){
             bbmap.views.main.instance.repaintEverything();
             bbmap.views.main.svgWindowController();
+
         },1000);
+
+        this.localHistory.createBackup();
     },
     deleteButton : function(){
         // Si il y a plusieurs éléments selecitonnés
@@ -425,146 +482,7 @@ bbmap.Views.Main = Backbone.View.extend({
         json.top = $('#map').offset().top;
         return json;
     },
-    /////////////////////////////////////////
-    // LocalHistory gestion
-    /////////////////////////////////////////
-    displayHistoric : function(){
-        console.log('nbr: ',this.localHistory.length,' - pos: ',this.history_pos,' - sens: ',this.sens)
-        this.localHistory.each(function(h){
-            console.log(h)           
-        })
-    },
-    updateLocalHistory : function(model,from){
-        var user_id = bbmap.views.main.users.get(model.get('user')).id
-        if((user_id == global.models.current_user.get('id'))&&(this.flag == "acceptLastNotif")){
-            //this.pushNotif(model);
-            if(this.sens != "init"){
-                // on supprime tout ce qui est en dessous de history_pos (si on est à la psoition 2 on supprime 1 et 0)
-                var new_array = _.rest(this.localHistory.toArray(),this.history_pos);
-                this.localHistory.reset(new_array);
-            }
-            if(this.sens == "back"){ // on supprime la case courrant et on la remplace par la nouvelle action
-                var new_array = _.rest(this.localHistory.toArray());
-                this.localHistory.reset(new_array);
-            }
-            // on se remet à la position 0
-            this.history_pos = 0;
-            this.sens = 'init';
-            // on ajoute l'action
-            this.localHistory.unshift(model);
-        }else{
-            $('.qtip').qtip('destroy', true);
-            //$('#'+model.get('to').id+'_tooltip').qtip('destroy', true);
-            setTimeout(function(){
-                var user = bbmap.views.main.users.get(model.get('user'))
-                $('#'+model.get('to').id+'_tooltip').qtip({
-                    content: {
-                        text: bbmap.views.main.template_tooltip({
-                            notif:model.toJSON(),
-                            user : user.toJSON()
-                        })
-                    },
-                    events: {
-                        show: function(event, api) {
-                            setTimeout(function(){$('#'+model.get('to').id+'_tooltip').qtip('destroy', true);},5000);
-                        }
-                    },
-                    show: {
-                        ready: true
-                    },
-                    position: {
-                        my: 'bottom left',  // Position my top left...
-                        at: 'top left', // at the bottom right of...
-                        target: $('#'+model.get('to').id+'_tooltip') // my target
-                    }
-                });
-            },500);
-        }
-        this.flag = "acceptLastNotif";
-    },
-    pushNotif : function(notif){
-        var content = "";
-        var type = 'notice';
-        if(notif.get('attr')[0] == "create"){content = notif.get('object')+" successfully created";type = 'success';}
-        if(notif.get('attr')[0] == "remove"){content = notif.get('object')+" successfully removed";type = 'error';}
-        if(notif.get('attr')[0] == "css") {content = notif.get('object') + " template updated";type = 'warning';}
-        if(notif.get('attr')[0] == "title") {content = notif.get('object') + " title updated";type = 'notice';}
-        if(content != ""){
-            var n = {
-                wrapper:document.body,
-                message:'<p>'+content+'</p>',
-                layout:'growl',
-                effect:'slide',
-                type:type,
-                ttl:2000,
-                archiveButton:false
-            }    
-            nlib.simplePush(n);
-        }
-    },
-    backInHistory : function(e){
-        e.preventDefault();
-        this.flag = "refuseLastNotif"; // IMPORTANT! to not add to local history its own actions
-        if(this.sens == "back") this.history_pos = this.history_pos + 1;
-        else this.sens = "back";
-        // console.log(this.history_pos,this.sens,this.flag)
-        if(this.history_pos >= this.localHistory.length) this.history_pos = this.localHistory.length - 1;
-        else this.nextPrevActionController("back","history");
-    },
-    advanceInHistory : function(e){
-        e.preventDefault();
-        this.flag = "refuseLastNotif"; // IMPORTANT! to not add to local history its own actions
-        if(this.sens == "next") this.history_pos = this.history_pos - 1;
-        else this.sens = "next";
-        // console.log(this.history_pos,this.sens,this.flag)
-        // this.displayHistoric()
-        if(this.history_pos < 0) this.history_pos = 0;
-        else this.nextPrevActionController("go","history");
-    },
-    /////////////////////////////////////////
-    // Action prev/next timeline/history gestion
-    /////////////////////////////////////////
-    nextPrevActionController : function(sens,from){
-        var historic = this.localHistory.toArray()[this.history_pos];
-        var action = historic.get('action');
-        var type = historic.get('object');
-        var model = this.getTimelineHitoryModel(historic,type,sens,action);
-        // Control sens to chose the right action
-        if(((sens == "go")&&(action == "create")&&(type != "Link"))||((sens == "back")&&(action == "remove")&&(type != "Link"))){
-            this.addModelToView(model,"history");
-            model.save();
-        }
-        else if(((sens == "go")&&(action == "create")&&(type == "Link"))||((sens == "back")&&(action == "remove")&&(type == "Link"))){
-            this.addLinkToView(model,"nextPrevActionController");
-            model.save();
-        }
-        else if(((sens == "go")&&(action == "remove")&&(type != "Link"))||((sens == "back")&&(action == "create")&&(type != "Link"))){
-            this.removeModelToView(model,"history");
-            model.destroy();
-        }
-        else if(((sens == "go")&&(action == "remove")&&(type == "Link"))||((sens == "back")&&(action == "create")&&(type == "Link"))){
-            this.removeLinkToView(model);
-            model.destroy();
-        }
-        else if(action == "update"){
-            var m = bbmap.views.main.elements.get(model.get('id'))
-            m.save(model.toJSON())
-            //global.updateElement(model,model.toJSON())
-        }
-    },
-    getTimelineHitoryModel : function(historic,type,sens,action){
-        // Creation du model
-        // console.log(historic,type,sens,action)
-        var type = type.toLowerCase();
-        var model = new Backbone.Model();
-        if((action == "update")&&(sens == "back")){
-            model = new global.Models.Element(historic.get('old'));
-        }else{
-            if(type == "link") model = new global.Models.CKLink(historic.get('to'));
-            else model = new global.Models.Element(historic.get('to'));
-        }
-        return model;
-    },
+
     /////////////////////////////////////////
     // Overlays sur les connections
     /////////////////////////////////////////
@@ -621,28 +539,32 @@ bbmap.Views.Main = Backbone.View.extend({
         var pos = $('#dropP').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        var new_element = global.newElement("poche","",top,left);
+        var new_element = this.elements.newElement("poche","",top,left);
         this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
+        // this.localHistory.createBackup();
     },
     newConceptUnlinked : function(e){
         var pos = $('#dropC').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        var new_element = global.newElement("concept","",top,left);
+        var new_element = this.elements.newElement("concept","",top,left);
         this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
+        // this.localHistory.createBackup();
     },
     newKnowledgeUnlinked : function(e){
         var pos = $('#dropK').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        var new_element = global.newElement("knowledge","",top,left);
+        var new_element = this.elements.newElement("knowledge","",top,left);
         this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
+        // this.localHistory.createBackup();
     },
     newViewAndLink : function(source,target,top,left,pos){
         // On centre la map sur l'element
+        _this = this;
         var position = {top:(top*bbmap.zoom.get('val')) + $('#map').offset().top,left:(left*bbmap.zoom.get('val')) + $('#map').offset().left};
         if(pos) position = pos; // pour prendre la position du drop button
         this.centerToElement(position,function(){
@@ -650,7 +572,7 @@ bbmap.Views.Main = Backbone.View.extend({
             // bbmap.views.main.addModelToView(new_element);
             // LINK
             if(source != "none"){
-                var new_cklink = global.newLink(source,target);
+                var new_cklink = _this.links.newLink(source,target);
                 //bbmap.views.main.addLinkToView(new_cklink)
                 bbmap.views.main.svgWindowController();
             } 
@@ -669,6 +591,7 @@ bbmap.Views.Main = Backbone.View.extend({
             if(title == "") this.nodes_views[this.lastModel.get('id')].removeNode();
             else this.lastModel.save({title:title});    
             this.joyride = false; // important pour eviter quand je tape sur entree que le joyride est fermé il sup the lastModel
+            this.localHistory.createBackup();
         }
     },
     setLastModel : function(model){
@@ -715,7 +638,6 @@ bbmap.Views.Main = Backbone.View.extend({
             this.setSelected(element);
             bbmap.views.main.instance.addToDragSelection($('#'+element.get('id')));
         }else{
-            console.log("Element details : ",element.toJSON())
             if(e.target.getAttribute("data-type") != "action") this.setLastModel(element);
         }
     },
@@ -1125,6 +1047,7 @@ bbmap.Views.Main = Backbone.View.extend({
     // jsPlumb
     /////////////////////////////////////////
     jsPlumbEventsInit : function(){
+        _this = this;
         ///////////////////////
         // Remove link process        
         this.instance.bind("beforeDetach", function(conn) {
@@ -1135,6 +1058,7 @@ bbmap.Views.Main = Backbone.View.extend({
                     links_to_remove.forEach(function(link){
                         link.destroy();
                     });
+                    _this.localHistory.createBackup();
                     // var links_to_remove = bbmap.views.main.links.where({source : conn.targetId, target : conn.sourceId});
                     // links_to_remove.forEach(function(link){
                     //     link.destroy();
@@ -1149,7 +1073,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.instance.bind("click", function(conn) {
             bbmap.views.main.instance.detach(conn);
             // Choise the right new id_father
-            
 
             //bbmap.views.main.svgWindowController();            
         });
@@ -1168,12 +1091,13 @@ bbmap.Views.Main = Backbone.View.extend({
                 if(info.connection.scope == "cklink"){
                     var source = bbmap.views.main.elements.get(info.sourceId);
                     var target = bbmap.views.main.elements.get(info.targetId);
-                    var new_link = global.newLink(source,target,true);
+                    var new_link = _this.links.newLink(source,target,true);
                     // Set the link style
                     var style = rules.link_style_rules(new_link);
                     info.connection.setPaintStyle(style);
                     // Re-draw windows
                     bbmap.views.main.svgWindowController();
+                    _this.localHistory.createBackup();
                 }    
             }
         });     

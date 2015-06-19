@@ -25,7 +25,6 @@ var bbmap = {
       users           : global.collections.Users,
       links           : global.collections.Links,
       eventAggregator : global.eventAggregator,
-      notifications   : global.collections.Notifications,
       mode            : global.mode,
       init            : true,
       ckOperator      : global.ckOperator,

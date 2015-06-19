@@ -11,7 +11,6 @@ var manager = {
   init: function () {
     /*Init*/
     this.views.main = new this.Views.Main({
-      projects_notifs : global.ProjectsNotificationsDictionary, // Le dictionnaire des notifications
       users_rec_dic   : global.ProjectsUsersDictionary,
       permissions     : global.collections.Permissions,
       projects        : global.collections.Projects,
@@ -46,7 +45,6 @@ manager.Views.Projects = Backbone.View.extend({
         this.currentSelection   = "_menu_button";
         // Events
         //this.eventAggregator.on('projects_search', this.projectsSearch, this);
-        this.eventAggregator.on('ProjectsNotificationsDictionary', this.actualize, this);
         // Templates
         this.template_project = _.template($('#manager-project-template').html());       
         this.template_search = _.template($('#manager-search-template').html());
@@ -54,11 +52,6 @@ manager.Views.Projects = Backbone.View.extend({
     },
     events : {
         "click .openProjectModal"  : "openProjectModal",
-    },
-    actualize : function(dic){
-        this.projects_notifs = dic;
-        this.render();
-        manager.views.main.formatGrid();
     },
     openProjectModal : function(e){
         e.preventDefault();
@@ -88,7 +81,6 @@ manager.Views.Projects = Backbone.View.extend({
             if(manager.views.main.users_rec_dic[project.get('id')]) userNbr = manager.views.main.users_rec_dic[project.get('id')].length
             // Append the template
             $(_this.el).append(_this.template_project({
-                notifNbr :  _.filter(global.ProjectsNotificationsDictionary[project.get('id')].news.toJSON(), function(n){if(n.content != "")return n }).length,
                 userNbr  : userNbr,
                 project  : project.toJSON(),
             }));

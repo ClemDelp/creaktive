@@ -46,7 +46,6 @@ var global = {
     this.collections.Permissions = new this.Collections.PermissionsCollection(json.permissions);
     this.collections.Projects = new this.Collections.ProjectsCollection(json.projects);
     this.collections.Links = new this.Collections.CKLinks(json.links);
-    this.collections.Notifications = new this.Collections.NotificationsCollection(json.notifications);
     //////////////////////////////////////////////////////////////////
     console.log("******* Connected as ", this.models.current_user.get("name"), " on ", this.models.currentProject.get("title"));
     
@@ -71,73 +70,4 @@ var global = {
     rules.init();
     callback();
   },
-  //////////////////////////////////////////////
-  // New applicaiton model
-  //////////////////////////////////////////////
-  newElement : function(type,title,top,left,pos){
-    // title
-    var title = title;
-    //if(title == "") title = "new "+type;
-    // CSS definition
-    var css = global.css_transparent_element;
-    // Father definition
-    // var father_id = father;
-    // if(father != "none"){
-    //     father_id = father.get('id');
-    // }
-    // Type definition
-    if(type == "concept") css = global.css_concept_default;
-    else if(type == "knowledge") css = global.css_knowledge_default;
-    else css = global.css_poche_default;
-    // On crée l'object
-    var new_element = new global.Models.Element({
-        id : guid(),
-        date : getDate(),
-        type : type,
-        id_father: "none",//father_id
-        top : top,
-        left : left,
-        project: global.models.currentProject.get('id'),
-        title: title,
-        user: global.models.current_user.get('id'),
-        css : css,
-        visibility : true
-    });
-    new_element.save();
-    // On ajoute le model à la collection
-    global.collections.Elements.add(new_element,{from:"client"});
-    // Set last model
-    try{
-      bbmap.views.main.setLastModel(new_element,'addModelToView');
-      //joyride
-      setTimeout(function(){
-          bbmap.views.main.startJoyride(new_element.get('id'))
-          console.log('startjoyrid')
-      },800);  
-    }catch(err){}
-    
-    return new_element;
-  },
-  newLink : function(source,target,silent){
-    var silent_event = false;
-    if(silent) silent_event = silent;
-    //////////////////
-    // si ya une boucle infinie avec ce nouveau lien
-    var new_cklink = new global.Models.CKLink({
-      id :guid(),
-      user : global.models.current_user.get('id'),
-      date : getDate(),
-      source : source.get('id'),
-      target : target.get('id'),
-      project : global.models.currentProject.get('id')
-    });
-    new_cklink.save();
-    // On l'ajoute à la collection
-    global.collections.Links.add(new_cklink,{silent : silent});   
-    // rules sur les links
-    rules.new_link_rules(new_cklink,source,target);
-
-    return new_cklink; 
-  },
-};
-//////////////////////////////////////////////
+  };

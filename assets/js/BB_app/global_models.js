@@ -132,40 +132,9 @@ global.Models.User = Backbone.Model.extend({
         });
     },
 });
-/***************************************/
-global.Models.NotificationModel = Backbone.Model.extend({
-    defaults : {
-        id:"",
-        type:"",
-        object : "",// concept / knowledge / poche / clink / ...
-        action : "",// create / update / remove
-        content : "",//description de la notification: "mise à jour sur le post"
-        to : "", // new model version
-        old : "", // old model version
-        user : "",// Qui est à l'origine: utilisateur, mise à jour, ...
-        date : getDate(),
-        project : "",
-        attachedTo : "",
-    },
-    initialize : function Doc() {
-        //console.log('Notification part Constructor');
-        this.urlRoot = "notification";
-        this.bind("error", function(model, error){
-            console.log( error );
-        });
-    }
-});
+
 /***************************************/
 global.Models.Action = Backbone.Model.extend({
-    defaults : {
-        id:"",
-        object : "",// concept / knowledge / poche / clink / ...
-        action : "",// create / update / remove
-        to : "",// model
-        old : "",
-        date : getDate(),
-        project_id : ""
-    },
     initialize : function Action() {
         this.bind("error", function(model, error){
             console.log( error );
