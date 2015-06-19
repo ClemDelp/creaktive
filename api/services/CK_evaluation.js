@@ -1,12 +1,17 @@
-//SuggestionAlgo = {
+//var CK_evaluation = {
 module.exports = {
   //////////////////////////////////////////
-  get_all_suggestions : function(elements,links,cb){
-    var suggestions = {
-      "level_1" : SuggestionAlgo.get_not_normalize(elements),
-      "level_2" : _.union(SuggestionAlgo.get_originality_suggest(elements),[]),
-    };
-    cb(suggestions);
+  get_all_evaluations : function(elements,links,cb){
+    var evaluation = this.get_originality_suggest(elements);
+    cb(evaluation);
+  },
+  get_evaluations_notes : function(elements,links,cb){
+    var notes = {};
+    notes.originality = (this.get_originality_eval_patrick(elements) + this.get_originality_eval_mines(elements))/2;
+    notes.robustess = this.get_robustesse_eval(elements);
+    notes.variete = this.get_variete_eval(elements);
+    notes.valeur = this.get_valeur_eval(elements);
+    cb(notes);
   },
   //////////////////////////////////////////
   // STATUT
@@ -24,96 +29,85 @@ module.exports = {
       var c_hamecon = _.where(elements,{"type" : "concept", "css_manu" : "c_hamecon"});
       return {"c_connu" : c_connu, "c_atteignable" : c_atteignable, "c_alternatif" : c_alternatif, "c_hamecon" : c_hamecon};
   },  
-  get_not_normalize : function(elements){
-    var c = [];
-    var k = [];
-    elements.forEach(function(el){
-      if(el.type == "concept"){
-        if(!el.css_manu) c.unshift(el)
-        else if(el.css_manu == "") c.unshift(el)
-      }
-      else if(el.type == "knowledge"){
-        if(!el.css_manu) k.unshift(el)
-        else if(el.css_manu == "") k.unshift(el)
-      }
-    });
-    var concepts = {
-      "elements" : c,
-      "suggestions" : SuggestionText.s00.fr,
-      "propositions" : SuggestionText.s00.propositions,
-    };
-    var knowledges = {  
-      "elements" : k,
-      "suggestions" : SuggestionText.s01.fr,
-      "propositions" : SuggestionText.s01.propositions,
-    };
-    return {"concepts" : concepts, "knowledges" : knowledges};
-  },
   //////////////////////////////////////////
   // ORIGINALITY EVALUATION & SUGGESTION
   get_originality_eval_patrick : function(elements){
-      var concepts = SuggestionAlgo.getConceptByStatus(elements);
+      var concepts = this.getConceptByStatus(elements);
       // si il y a 4 couleurs en C
       var originality = concepts.c_connu.length + concepts.c_atteignable.length + concepts.c_alternatif.length + concepts.c_hamecon.length
+      
       return originality;
   },
   get_originality_eval_mines : function(elements){
-      var concepts = SuggestionAlgo.getConceptByStatus(elements);
+      var concepts = this.getConceptByStatus(elements);
       // partitions expansive/partitions restrictives = (alternative + hamecon)/(dominante design + K atteignable)
-      var originality = (concepts.c_alternatif.length + concepts.c_hamecon.length)/(concepts.c_connu.length + concepts.c_atteignable.length)
+      var originality = 0;
+      var partitions_expansives = concepts.c_alternatif.length + concepts.c_hamecon.length;
+      var partitions_restrictives = concepts.c_connu.length + concepts.c_atteignable.length;
+      if((partitions_restrictives == 0)&&(partitions_restrictives == 0)) originality = 0; 
+      else if((partitions_restrictives > 0)&&(partitions_restrictives == 0)) originality = 0;
+      else originality = partitions_expansives/partitions_restrictives;
+
       return originality;
   },
   get_originality_suggest : function(elements){
-    var suggestions = []; 
-    suggestions = _.union(suggestions, SuggestionAlgo.get_originality_patrick_suggest(elements));
-    suggestions = _.union(suggestions, SuggestionAlgo.get_originality_mines_suggest(elements));
-    return suggestions;
+    var evaluations = [];
+    evaluations = _.union(evaluations, this.get_originality_patrick_suggest(elements));
+    evaluations = _.union(evaluations, this.get_originality_mines_suggest(elements));
+    
+    return evaluations;
   },
   get_originality_patrick_suggest : function(elements){
-    var suggestions = [];  
-    var concepts = SuggestionAlgo.getConceptByStatus(elements);
+    var evaluations = [];  
+    var concepts = this.getConceptByStatus(elements);
     // Originality Patrick
-    var originality_patrick = SuggestionAlgo.get_originality_eval_patrick(elements);
+    var originality_patrick = this.get_originality_eval_patrick(elements);
     if(originality_patrick < 4){
-      if(concepts.c_connu.length>0) suggestions.unshift(SuggestionText.s0.fr,SuggestionText.s1.fr);
-      // faire des suggestions avec du contenu web ???
+      if(concepts.c_connu.length>0) evaluations.unshift(CK_text.evaluation.s0.fr,CK_text.evaluation.s1.fr);
+      // faire des evaluations avec du contenu web ???
     }else if(originality_patrick == 4){
-      suggestions.unshift(SuggestionText.s2.fr,SuggestionText.s3.fr);
+      evaluations.unshift(CK_text.evaluation.s2.fr,CK_text.evaluation.s3.fr);
     }
     // Si il n'y a aucun C connu
-    if(concepts.c_connu.length == 0) suggestions.unshift(SuggestionText.s4.fr); 
+    if(concepts.c_connu.length == 0) evaluations.unshift(CK_text.evaluation.s4.fr); 
     // Si il n'y a aucun C atteignable
-    if(concepts.c_atteignable.length == 0) suggestions.unshift(SuggestionText.s5.fr); 
+    if(concepts.c_atteignable.length == 0) evaluations.unshift(CK_text.evaluation.s5.fr); 
     // Si il n'y a aucun C alternatif
-    if(concepts.c_alternatif.length == 0) suggestions.unshift(SuggestionText.s6.fr); 
+    if(concepts.c_alternatif.length == 0) evaluations.unshift(CK_text.evaluation.s6.fr); 
     // Si il n'y a aucun C hamecon
-    if(concepts.c_hamecon.length == 0) suggestions.unshift(SuggestionText.s8.fr); 
+    if(concepts.c_hamecon.length == 0) evaluations.unshift(CK_text.evaluation.s8.fr); 
     // Si il n'y a que des atteignable + alternatif
-    if((concepts.c_connu.length == 0)&&(concepts.c_hamecon.length == 0)&&(concepts.c_atteignable.length > 0)&&(concepts.c_alternatif.length > 0)) suggestions.unshift(SuggestionText.s9.fr); 
+    if((concepts.c_connu.length == 0)&&(concepts.c_hamecon.length == 0)&&(concepts.c_atteignable.length > 0)&&(concepts.c_alternatif.length > 0)) evaluations.unshift(CK_text.evaluation.s9.fr); 
     // Si il n'y a que des alternatif + hamecon
-    if((concepts.c_connu.length == 0)&&(concepts.c_hamecon.length > 0)&&(concepts.c_atteignable.length == 0)&&(concepts.c_alternatif.length > 0)) suggestions.unshift(SuggestionText.s10.fr); 
+    if((concepts.c_connu.length == 0)&&(concepts.c_hamecon.length > 0)&&(concepts.c_atteignable.length == 0)&&(concepts.c_alternatif.length > 0)) evaluations.unshift(CK_text.evaluation.s10.fr); 
 
-    return suggestions;
+    return evaluations;
   },
   get_originality_mines_suggest : function(elements){
-    var suggestions = [];  
-    var concepts = SuggestionAlgo.getConceptByStatus(elements);
+    var evaluations = [];  
+    var concepts = this.getConceptByStatus(elements);
     // Origianlity des Mines
-    var originality_mines = SuggestionAlgo.get_originality_eval_mines(elements);
+    var originality_mines = this.get_originality_eval_mines(elements);
     if(originality_mines > 1){
-      suggestions.unshift(SuggestionText.s11.fr);
+      evaluations.unshift(CK_text.evaluation.s11.fr);
     }else if(originality_mines < 1){
-      suggestions.unshift(SuggestionText.s12.fr);
+      evaluations.unshift(CK_text.evaluation.s12.fr);
     }else{
       // ???
     }
-    return suggestions;
+    ///////
+    var partitions_expansives = concepts.c_alternatif.length + concepts.c_hamecon.length;
+    var partitions_restrictives = concepts.c_connu.length + concepts.c_atteignable.length;
+    if(partitions_expansives == 0) evaluations.unshift(CK_text.evaluation.s78.fr);
+    if(partitions_restrictives == 0) evaluations.unshift(CK_text.evaluation.s77.fr);
+
+    return evaluations;
   },
   //////////////////////////////////////////
   // VALEUR SUGGESTION
   // calcul de la valeur (nbre de new K*concepts generated) / K validees
   get_valeur_eval : function(elements,links){
-      var knowledges = SuggestionAlgo.getKnowledgeByStatus(elements);
+      var knowledges = this.getKnowledgeByStatus(elements);
       // nouvelles connaissances = toutes sauf les validees
       var new_k = _.union(knowledges.k_encours, knowledges.k_manquante, knowledges.k_indesidable);
       // nombre de concepts générés par les nouvelles K
@@ -126,8 +120,8 @@ module.exports = {
       return valeur;
   },
   get_valeur_suggest : function(elements){
-      var valeur = SuggestionAlgo.get_valeur_eval(elements);
-      var suggestions = [];
+      var valeur = this.get_valeur_eval(elements);
+      var evaluations = [];
       if(valeur < 10){ // ???
           // ???
       }else{
@@ -138,7 +132,7 @@ module.exports = {
   // ROBUSTESS
   // robustess = k interne / k externe
   get_robustesse_eval : function(elements){
-      var knowledges = SuggestionAlgo.getKnowledgeByStatus(elements);
+      var knowledges = this.getKnowledgeByStatus(elements);
       var k_interne = knowledges.k_validees
       var k_externe = _.union(knowledges.k_indesidable, knowledges.k_manquante, knowledges.k_encours)
       //
@@ -146,28 +140,28 @@ module.exports = {
       return robustess;
   },
   get_robustesse_suggest : function(elements){
-      var robustess = SuggestionAlgo.get_robustesse_eval(elements);
-      var suggestions = [];
+      var robustess = this.get_robustesse_eval(elements);
+      var evaluations = [];
       if(robustess > 1){ // robust
-          suggestions.unshift(SuggestionText.s7.fr,SuggestionText.s8.fr)
+          evaluations.unshift(CK_text.evaluation.s7.fr,CK_text.evaluation.s8.fr)
       }else{ // not robust enought
-          suggestions.unshift(SuggestionText.s5.fr,SuggestionText.s4.fr)
+          evaluations.unshift(CK_text.evaluation.s5.fr,CK_text.evaluation.s4.fr)
       }
-      return suggestions;
+      return evaluations;
   },
   //////////////////////////////////////////
   // Variété = nombre de branches & sous-branches par rapport au dominant design
   get_variete_eval : function(elements){
-      var concepts = SuggestionAlgo.getConceptByStatus(elements);
+      var concepts = this.getConceptByStatus(elements);
       //
       var variete = (concepts.c_hamecon.length + concepts.c_alternatif.length + concepts.c_atteignable.length) / concepts.c_connu.length;
       return variete;
   },
   get_variete_suggest : function(elements){
-      var variete = SuggestionAlgo.get_variete_eval(elements)
-      var suggestions = [];
+      var variete = this.get_variete_eval(elements)
+      var evaluations = [];
       // ???
-      return suggestions;
+      return evaluations;
   },
   //////////////////////////////////////////
   // EQUILIBRE
@@ -176,24 +170,24 @@ module.exports = {
       return equilibre;
   },
   get_equilibre_suggest : function(elements){
-      var equilibre = SuggestionAlgo.get_equilibre_eval(elements);
+      var equilibre = this.get_equilibre_eval(elements);
       // !!!! inclure par default un pourcentage de l'équilibre en suggestion !!!!!!!!!!!!!!!
-      var suggestions = [];
+      var evaluations = [];
       if(equilibre > 1){ // plus de C que de K
         //vérifier avec les liens !!! Car il peut y avoir un équilibre mais pas de lien
-          suggestions.unshift(SuggestionText.s2.fr)
+          evaluations.unshift(CK_text.evaluation.s2.fr)
       }else if(equilibre < 1){ // plus de K que de C
-          suggestions.unshift(SuggestionText.s3.fr)
+          evaluations.unshift(CK_text.evaluation.s3.fr)
       }else if(equilibre == 1){ // equilibre parfait
 
       }
-      return suggestions;
+      return evaluations;
   },
   //////////////////////////////////////////
   // RISQUE
   get_risque_suggest : function(elements){
-      var risque = SuggestionAlgo.get_risque_eval(elements);
-      var suggestions = [];
-      return suggestions;
+      var risque = this.get_risque_eval(elements);
+      var evaluations = [];
+      return evaluations;
   },
 }

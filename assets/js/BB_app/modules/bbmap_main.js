@@ -124,9 +124,11 @@ bbmap.Views.Main = Backbone.View.extend({
             "on_keydown"        : this.multiselection,
             "on_keyup"          : this.multiselection,
         });
+
         this.listener.simple_combo("ctrl z", this.history_previous);
         this.listener.simple_combo("ctrl y", this.history_next);
         this.listener.simple_combo("backspace", this.deleteButton);
+
         this.listener.simple_combo("delete", this.deleteButton);
         this.listener.simple_combo("ctrl c", this.duplicate);
         ///////////////////////////////
@@ -167,7 +169,7 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .screenshot" : "screenshot",
         "click .downloadimage" : "laurie",
         "click .apply_template" : "apply_template", 
-        "click .getSuggestions" : "getSuggestions", 
+        "click .getSuggestions" : "get_suggestions", 
         "click #map" : "deSelection", 
     },
     ///////////////////////////////////////////////////
@@ -221,6 +223,118 @@ bbmap.Views.Main = Backbone.View.extend({
 
             }
         });
+    },
+    /////////////////////////////////////////
+    // SUGGESTIONS 
+    /////////////////////////////////////////
+    get_suggestions : function(e){
+        e.preventDefault();
+
+        this.get_normalisations();
+        
+        $('#suggestions_modal').foundation('reveal', 'open');
+    },
+    get_normalisations : function(){
+        // init
+        $('#c_normalized_table').html('');
+        $('#k_normalized_table').html('');
+        $('#c_not_normalized_table').html('');
+        $('#k_not_normalized_table').html('');
+        // Get normalisaiton for concepts
+        $.post("/suggestion/get_normalisations",{
+            elements : _.where(bbmap.views.main.elements.toJSON(),{type : "concept"}),
+        }, function(array){
+            console.log(array)
+            array.forEach(function(suggestion){
+                bbmap.views.main.appendNormalisationSuggestionView(suggestion,"concept");
+            })
+            //bbmap.views.main.normalizedView(normalisation,"not_normalized_table")
+        });
+        // Get normalisaiton for knowledges
+        $.post("/suggestion/get_normalisations",{
+            elements : _.where(bbmap.views.main.elements.toJSON(),{type : "knowledge"}),
+        }, function(array){
+            console.log(array)
+            array.forEach(function(suggestion){
+                bbmap.views.main.appendNormalisationSuggestionView(suggestion,"knowledge");
+            })        
+        });
+    },
+    appendNormalisationSuggestionView : function(suggestion,type){
+        var dom_target = ""; // element dom id
+        // set the position
+        if(suggestion.normalized){
+            if(type == "concept") dom_target = "#c_normalized_table";
+            if(type == "knowledge") dom_target = "#k_normalized_table";
+        }else{
+            if(type == "concept") dom_target = "#c_not_normalized_table";
+            if(type == "knowledge") dom_target = "#k_not_normalized_table";
+        }
+
+        // Element + suggestion
+        var td_element = $('<td>');
+        var element_suggestion = "<div class='"+suggestion.element.css_manu+" "+suggestion.element.css_auto+"'>"+suggestion.element.type+"</div><b>"+suggestion.element.title+"</b>";
+        td_element.append(element_suggestion);
+        // Options
+        var td_options = $('<td>');
+        var options_selection = $("<select>");
+        suggestion.options.forEach(function(option){
+            options_selection.append('<option value="'+option.value+'">'+option.name.fr+' : '+option.desc.fr+'</option>');
+        })
+        td_options.append("<p>"+suggestion.suggestion.fr+"</p>");
+        td_options.append(options_selection);
+        // If type == knowledge on ajoute la localisation
+
+        // Global suggestion
+        var tr_container = $('<tr>');
+        tr_container.append(td_element);
+        tr_container.append(td_options);
+        // Append to dom_target
+        $(dom_target).append(tr_container);
+    },
+    normalizedView : function(normalisation,id){
+        $( ".apply_template" ).unbind();
+        var cs = normalisation.concepts;
+        var ks = normalisation.knowledges;
+        cs.elements.forEach(function(concept){
+            var tr = $('<tr>');
+            tr.append("<td>"+concept.title+"</td>");
+            tr.append("<td>"+cs.suggestions+"</td>");
+            cs.propositions.forEach(function(proposition){
+                tr.append('<td><a href="#" title="'+proposition.desc.fr+'" data-id="'+concept.id+'" data-tooltip aria-haspopup="true" class="c tip-top round button tiny apply_template '+proposition.css_manu+'" data-type="'+proposition.css_manu+'">'+proposition.name.fr+'</a></td>');
+            });
+            $('#'+id).append(tr);
+        });
+        ks.elements.forEach(function(knowledge){
+            var tr = $('<tr>');
+            tr.append("<td>"+knowledge.title+"</td>");
+            tr.append("<td>"+ks.suggestions+"</td>");
+            ks.propositions.forEach(function(proposition){
+                tr.append('<td><a href="#" title="'+proposition.desc.fr+'" data-id="'+knowledge.id+'" data-tooltip aria-haspopup="true" class="c tip-top round button tiny apply_template '+proposition.css_manu+'" data-type="'+proposition.css_manu+'">'+proposition.name.fr+'</a></td>');
+            })
+            $('#'+id).append(tr);
+        });
+        $('.apply_template').click(function(e){
+            bbmap.views.main.apply_template(e);
+            bbmap.views.main.getSuggestions();
+        });
+
+        $(document).foundation();
+    },
+    preparEvaluations : function(){
+        $('#evaluations_table').html('');
+
+        $.post("/suggestion/getEvaluations",{
+            elements : bbmap.views.main.elements.toJSON(), 
+            links : bbmap.views.main.links.toJSON()
+        }, function(evaluations){
+            console.log(evaluations)  
+        });
+    },
+    apply_template : function(e){
+        e.preventDefault();
+        var element = bbmap.views.main.elements.get(e.target.getAttribute('data-id'));
+        element.save({css_manu : e.target.getAttribute("data-type")});
     },
     /////////////////////////////////////////
     duplicate : function(){
@@ -278,55 +392,6 @@ bbmap.Views.Main = Backbone.View.extend({
         console.log(JSON.stringify(bbmap.views.main.links.toJSON()));
     },
     /////////////////////////////////////////
-    getSuggestions : function(e){
-        e.preventDefault();
-        $.post("/suggestion/getSuggestions",{
-            elements : bbmap.views.main.elements.toJSON(), 
-            links : bbmap.views.main.links.toJSON()
-        }, function(suggestions,status){
-
-            $('.suggestions_table').html('');
-            var level_1 = suggestions.level_1;
-            var cs = level_1.concepts;
-            var ks = level_1.knowledges;
-            cs.elements.forEach(function(concept){
-                var tr = $('<tr>');
-                tr.append("<td>"+concept.title+"</td>");
-                tr.append("<td>"+cs.suggestions+"</td>");
-                cs.propositions.forEach(function(proposition){
-                    tr.append('<td><a href="#" title="'+proposition.desc.fr+'" data-id="'+concept.id+'" data-tooltip aria-haspopup="true" class="c tip-top round button tiny apply_template '+proposition.css_manu+'" data-type="'+proposition.css_manu+'">'+proposition.name.fr+'</a></td>');
-                });
-
-                $('#suggestions_1_table').append(tr);
-            });
-            ks.elements.forEach(function(knowledge){
-                var tr = $('<tr>');
-                tr.append("<td>"+knowledge.title+"</td>");
-                tr.append("<td>"+ks.suggestions+"</td>");
-                ks.propositions.forEach(function(proposition){
-                    tr.append('<td><a href="#" title="'+proposition.desc.fr+'" data-id="'+knowledge.id+'" data-tooltip aria-haspopup="true" class="c tip-top round button tiny apply_template '+proposition.css_manu+'" data-type="'+proposition.css_manu+'">'+proposition.name.fr+'</a></td>');
-                })
-                $('#suggestions_1_table').append(tr);
-            });
-            //
-            var level_2 = suggestions.level_2;
-            level_2.forEach(function(suggest){
-                $('#suggestions_2_table').append("<tr><td>"+suggest+"</td></tr>");
-            });
-
-            $('.apply_template').click(function(e){
-                bbmap.views.main.apply_template(e);
-            });
-
-            $('#suggestions_modal').foundation('reveal', 'open');
-        });
-    },
-    apply_template : function(e){
-        e.preventDefault();
-        var element = bbmap.views.main.elements.get(e.target.getAttribute('data-id'));
-        element.save({css_manu : e.target.getAttribute("data-type")});
-        $(e.target).parent().parent().hide('slow')
-    },
     svgWindowController : function(){
         if(this.init != true){
             console.log("svgWindowController")
@@ -1131,6 +1196,7 @@ bbmap.Views.Main = Backbone.View.extend({
     // jsPlumb
     /////////////////////////////////////////
     jsPlumbEventsInit : function(){
+        _this = this;
         ///////////////////////
         // Remove link process        
         this.instance.bind("beforeDetach", function(conn) {
@@ -1174,7 +1240,7 @@ bbmap.Views.Main = Backbone.View.extend({
                 if(info.connection.scope == "cklink"){
                     var source = bbmap.views.main.elements.get(info.sourceId);
                     var target = bbmap.views.main.elements.get(info.targetId);
-                    var new_link = this.links.newLink(source,target,true);
+                    var new_link = _this.links.newLink(source,target,true);
                     // Set the link style
                     var style = rules.link_style_rules(new_link);
                     info.connection.setPaintStyle(style);
