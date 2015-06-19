@@ -6,12 +6,12 @@ module.exports = {
   get_normalisations : function(elements,cb){
     var suggestions = [];
     elements.forEach(function(el){
-      var new_suggestion = CK_normalisation.get_normalisation(el);
-      suggestions.push(new_suggestion);
+      if((el.type == "concept")||(el.type == "knowledge")){
+        var new_suggestion = CK_normalisation.get_normalisation(el);
+        suggestions.push(new_suggestion);
+      }
     });
 
-
-    
     if(cb) cb(suggestions);
     else return suggestions;
   },
@@ -45,10 +45,10 @@ module.exports = {
   get_localisation : function(element,cb){
     var suggestions = {};
 
-    if(!element.indside) suggestion = CK_text.suggestions().s04;
+    if(!element.inside) suggestion = CK_text.suggestions().s04;
     else if(element.inside == "") suggestion = CK_text.suggestions().s04;
-    else if(element.inside == true) suggestion = CK_text.suggestions().s05;
-    else if(element.inside == false) suggestion = CK_text.suggestions().s06;
+    else if(element.inside == "inside") suggestion = CK_text.suggestions().s05;
+    else if(element.inside == "outside") suggestion = CK_text.suggestions().s06;
 
     if(cb) cb(suggestion);
     else return suggestion;

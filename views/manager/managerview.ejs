@@ -18,9 +18,10 @@
   <div id="tutos_container" class="large-3 medium-3 small-3 columns"></div>
 </div>
 
+
 <script>
   $(document).ready(function () {
-
+    initialisation_creaktive();
     Backbone.Model.prototype.toJSON = function() {
       return JSON.parse(JSON.stringify(this.attributes));
     };

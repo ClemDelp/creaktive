@@ -1,0 +1,25 @@
+<script type="text/template" id="normalisation-suggestion-template">
+  <tr>
+  	<td>
+  		<div class="{{- suggestion.element.css_manu }} {{- suggestion.element.css_auto }}">
+  		{{- suggestion.element.type }}</div>
+  		<b>{{- suggestion.element.title }}</b>
+  	</td>
+  	<td>
+	  	<p>{{- suggestion.suggestion.fr }}</p>
+	  	<select class="template_selection" data-id="{{-suggestion.element.id}}">
+		    {{ _.each(suggestion.options,function(option){ }}
+		        <option {{ if(option.value == suggestion.element.css_manu){ }}selected="selected"{{ } }} value="{{- option.value }}">{{- option.name.fr }} : {{- option.desc.fr }}</option>
+		  	{{ }); }}
+	  	</select>
+	  	<div>
+	  		{{ if(suggestion.element.type == "knowledge"){ }}
+	  			<p>{{-suggestion.localisation.suggestion.fr}}</p>
+             	{{ _.each(suggestion.localisation.options,function(option){ }}
+			        <a href="#" data-value="{{-option.value}}" data-id="{{-suggestion.element.id}}" title="{{-option.desc.fr}}" class="tiny button radius k_localisation {{ if(option.value == 'inside'){ }}success{{ } }}">{{-option.name.fr}}</a>
+			  	{{ }); }}
+	  		{{ } }}
+	  	</div>
+  	</td>
+  </tr>
+</script>

@@ -26,7 +26,7 @@ var options = {
 	"c_hamecon" : {
 		"value" : "c_hamecon",
 		"name" : {"fr" : "Hameçon", "en" : ""},
-		"desc" : {"fr" : "Le concept est lié à une rupture de règles et devient un point d'accroche pour de nouveaux K en émergence/expension pure","en" : ""},
+		"desc" : {"fr" : "Le concept est lié à une rupture de règles et devient un point d'accroche pour de nouvelles connaissances en émergence/expansion pure","en" : ""},
 	},
 	// Knowledge
 	"k_validees" : {
@@ -37,12 +37,12 @@ var options = {
 	"k_encours" : {
 		"value" : "k_encours",
 		"name" : {"fr" : "En cours", "en" : ""},
-		"desc" : {"fr" : "La connaissance est en coursacquisition","en" : ""},
+		"desc" : {"fr" : "La connaissance est en cours d'acquisition","en" : ""},
 	},	
 	"k_manquante" : {
 		"value" : "k_manquante",
 		"name" : {"fr" : "Manquante", "en" : ""},
-		"desc" : {"fr" : "La connaissance est absente ou non actionnaben interne","en" : ""},
+		"desc" : {"fr" : "La connaissance est absente ou non actionnable en interne","en" : ""},
 	},	
 	"k_indesidable" : {
 		"value" : "k_indesidable",
@@ -50,12 +50,12 @@ var options = {
 		"desc" : {"fr" : "La connaissance est manquante de surcroit non accessible","en" : ""},
 	},
 	"inside" : {
-		"inside" : true,
+		"value" : "inside",
 		"name" : {"fr" : "Interne", "en" : "Inside"},
 		"desc" : {"fr" : "La connaissance est interne à l'entreprise","en" : ""},
 	},
 	"outside" : {
-		"inside" : false,
+		"value" : "outside",
 		"name" : {"fr" : "Externe", "en" : "Outside"},
 		"desc" : {"fr" : "La connaissance est externe à l'entreprise","en" : ""},
 	},
@@ -80,28 +80,28 @@ module.exports = {
 			},
 			
 			"s02" : { 
-				"suggestion" : {"fr" : "Voulez-vous changer le statut de ce concept?", "en" : ""},
+				"suggestion" : {"fr" : "Voulez-vous changer le statut de ce concept ?", "en" : ""},
 				"options" : [options.c_connu, options.c_atteignable, options.c_alternatif, options.c_hamecon],
 				"exemples" : []
 			},
 			"s03" : { 
-				"suggestion" : {"fr" : "Voulez-vous changer le statut de cette connaissance?", "en" : ""},
+				"suggestion" : {"fr" : "Voulez-vous changer le statut de cette connaissance ?", "en" : ""},
 				"options" : [options.k_validees, options.k_indesidable, options.k_manquante, options.k_encours],
 				"exemples" : []
 			},
 			
 			"s04" : { 
-				"suggestion" : {"fr" : "Cette connaissance est-elle interne ou externe à votre entreprise?", "en" : ""},
+				"suggestion" : {"fr" : "Cette connaissance est-elle interne ou externe à votre entreprise ?", "en" : ""},
 			 	"options" : [options.inside, options.outside],
 			 	"exemples" : []
 			},
 			"s05" : { 
-				"suggestion" : {"fr" : "Basculer cette connaissance en interne à mon entreprise?", "en" : ""},
+				"suggestion" : {"fr" : "Basculer cette connaissance en interne à votre entreprise ?", "en" : ""},
 			 	"options" : [options.outside],
 			 	"exemples" : []
 			},
 			"s06" : { 
-				"suggestion" : {"fr" : "Basculer cette connaissance en externe à mon entreprise?", "en" : ""},
+				"suggestion" : {"fr" : "Basculer cette connaissance en externe à votre entreprise ?", "en" : ""},
 			 	"options" : [options.inside],
 			 	"exemples" : []
 			},

@@ -20,12 +20,9 @@ var bbmap = {
     this.views.main = new this.Views.Main({
       el              : "#bbmap_container",
       elements        : global.collections.Elements,
-      concepts        : global.collections.Concepts,
       project         : global.models.currentProject,
       user            : global.models.current_user,
       users           : global.collections.Users,
-      knowledges      : global.collections.Knowledges,
-      poches          : global.collections.Poches,
       links           : global.collections.Links,
       eventAggregator : global.eventAggregator,
       notifications   : global.collections.Notifications,
