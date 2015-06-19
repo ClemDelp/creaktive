@@ -50,7 +50,7 @@ global.Collections.CKLinks = Backbone.Collection.extend({
             // global.eventAggregator.trigger("link:remove",new global.Models.CKLink(model),"server");
         } 
     },
-    historyCreate : function(model){
+    historyCreate : function(model, source, target){
         var new_cklink = new global.Models.CKLink(model);
         new_cklink.save();
         // On l'ajoute à la collection
@@ -62,7 +62,8 @@ global.Collections.CKLinks = Backbone.Collection.extend({
     },
 
     historyDelete : function(model){
-        this.remove(model.id);
+                var model = this.get(model.id);
+        model.destroy();
     },
 });
 /////////////////////////////////////////////////////////////////////
@@ -243,18 +244,21 @@ global.Collections.LocalHistory = Backbone.Collection.extend({
             links: global.collections.Links.toJSON()
         });
         this.position++;  
-        console.log(this.toJSON()); 
     },
     compareBackup : function(json1, json2, prevNext){
         var delta = {};
-        delta = jsondiffpatch.diff(json1, json2);
+        console.log(json1,json2)
+        var diffpatch = jsondiffpatch.create({
+            objectHash: function(obj, index) {
+              // try to find an id property, otherwise just use the index in the array
+              return obj.id;
+            }
+        });
+        delta = diffpatch.diff(json1, json2);
         var todo = [];
-
-console.log(delta)
 
         for (var c in delta){
             var collection = delta[c];
-            //On traite les elements en premier
             for (var key in collection){
 
                 var element = collection[key];
@@ -285,6 +289,7 @@ console.log(delta)
                 };
             };
         };
+
         return todo;
     },
     next : function(cb){
@@ -292,7 +297,7 @@ console.log(delta)
             console.log("Next")
             var todo = this.compareBackup(this.toJSON()[this.position], this.toJSON()[this.position+1], "next");
             this.position++;
-            console.log(todo);
+            console.log(todo)
             return cb(todo);
         }
     },
@@ -302,7 +307,7 @@ console.log(delta)
             console.log("Previous")
             var todo = this.compareBackup(this.toJSON()[this.position-1], this.toJSON()[this.position],"previous");
             this.position--;
-            console.log(todo);
+            console.log(todo)
             return cb(todo);
         }
 

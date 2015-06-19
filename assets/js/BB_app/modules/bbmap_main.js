@@ -211,7 +211,9 @@ bbmap.Views.Main = Backbone.View.extend({
                 }
             }else if(action.element_type == "Links"){
                 if(action.action == "create"){
-                    _this.links.historyCreate(action.element);
+                    var source = bbmap.views.main.elements.get(action.element.source);
+                    var target = bbmap.views.main.elements.get(action.element.target);
+                    _this.links.historyCreate(action.element,source,target);
                 }else if(action.action == "delete"){
                     _this.links.historyDelete(action.element);
                 }else if(action.action == "update"){
@@ -394,7 +396,6 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     svgWindowController : function(){
         if(this.init != true){
-            console.log("svgWindowController")
             $('body .svg_window').remove();
             this.drawSvgCkLine(function(){
                 var c_candidats = bbmap.views.main.elements.where({type:"concept",id_father:"none"})
@@ -588,50 +589,6 @@ bbmap.Views.Main = Backbone.View.extend({
     },
 
     /////////////////////////////////////////
-    // Action prev/next timeline/history gestion
-    /////////////////////////////////////////
-    // nextPrevActionController : function(sens,from){
-    //     var historic = this.localHistory.toArray()[this.history_pos];
-    //     var action = historic.get('action');
-    //     var type = historic.get('object');
-    //     var model = this.getTimelineHitoryModel(historic,type,sens,action);
-    //     // Control sens to chose the right action
-    //     if(((sens == "go")&&(action == "create")&&(type != "Link"))||((sens == "back")&&(action == "remove")&&(type != "Link"))){
-    //         this.addModelToView(model,"history");
-    //         model.save();
-    //     }
-    //     else if(((sens == "go")&&(action == "create")&&(type == "Link"))||((sens == "back")&&(action == "remove")&&(type == "Link"))){
-    //         this.addLinkToView(model,"nextPrevActionController");
-    //         model.save();
-    //     }
-    //     else if(((sens == "go")&&(action == "remove")&&(type != "Link"))||((sens == "back")&&(action == "create")&&(type != "Link"))){
-    //         this.removeModelToView(model,"history");
-    //         model.destroy();
-    //     }
-    //     else if(((sens == "go")&&(action == "remove")&&(type == "Link"))||((sens == "back")&&(action == "create")&&(type == "Link"))){
-    //         this.removeLinkToView(model);
-    //         model.destroy();
-    //     }
-    //     else if(action == "update"){
-    //         var m = bbmap.views.main.elements.get(model.get('id'))
-    //         m.save(model.toJSON())
-    //         //global.updateElement(model,model.toJSON())
-    //     }
-    // },
-    // getTimelineHitoryModel : function(historic,type,sens,action){
-    //     // Creation du model
-    //     // console.log(historic,type,sens,action)
-    //     var type = type.toLowerCase();
-    //     var model = new Backbone.Model();
-    //     if((action == "update")&&(sens == "back")){
-    //         model = new global.Models.Element(historic.get('old'));
-    //     }else{
-    //         if(type == "link") model = new global.Models.CKLink(historic.get('to'));
-    //         else model = new global.Models.Element(historic.get('to'));
-    //     }
-    //     return model;
-    // },
-    /////////////////////////////////////////
     // Overlays sur les connections
     /////////////////////////////////////////
     hideOverLays : function(){
@@ -786,7 +743,6 @@ bbmap.Views.Main = Backbone.View.extend({
             this.setSelected(element);
             bbmap.views.main.instance.addToDragSelection($('#'+element.get('id')));
         }else{
-            console.log("Element details : ",element.toJSON())
             if(e.target.getAttribute("data-type") != "action") this.setLastModel(element);
         }
     },
@@ -1207,6 +1163,7 @@ bbmap.Views.Main = Backbone.View.extend({
                     links_to_remove.forEach(function(link){
                         link.destroy();
                     });
+                    _this.localHistory.createBackup();
                     // var links_to_remove = bbmap.views.main.links.where({source : conn.targetId, target : conn.sourceId});
                     // links_to_remove.forEach(function(link){
                     //     link.destroy();
@@ -1221,7 +1178,6 @@ bbmap.Views.Main = Backbone.View.extend({
         this.instance.bind("click", function(conn) {
             bbmap.views.main.instance.detach(conn);
             // Choise the right new id_father
-            
 
             //bbmap.views.main.svgWindowController();            
         });
@@ -1246,6 +1202,7 @@ bbmap.Views.Main = Backbone.View.extend({
                     info.connection.setPaintStyle(style);
                     // Re-draw windows
                     bbmap.views.main.svgWindowController();
+                    _this.localHistory.createBackup();
                 }    
             }
         });     
