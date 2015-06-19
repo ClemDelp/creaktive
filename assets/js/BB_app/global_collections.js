@@ -227,7 +227,7 @@ global.Collections.LocalHistory = Backbone.Collection.extend({
     model : global.Models.Action,
     initialize : function() {
         this.position = -1;
-        this.historySize = 3;
+        this.historySize = 30;
         this.bind("error", function(model, error){
             console.log( error );
         });
