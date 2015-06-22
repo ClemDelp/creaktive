@@ -63,7 +63,7 @@ bbmap.Views.Node = Backbone.View.extend({
         $(this.el).attr('style',style);
         var css = "";
         // le css manuel est prioritaire sur le css automatique
-        if(this.model.get('css_manu') != undefined) css = this.model.get('css_manu')
+        if((this.model.get('css_manu') != undefined)&&(this.model.get('css_manu') != "")) css = this.model.get('css_manu')
         else if(this.model.get('css_auto') != undefined) css = this.model.get('css_auto')
         // 
         $(this.el).removeClass('c_connu c_atteignable c_alternatif c_hamecon k_validees k_encours k_manquante k_indesidable');

@@ -7,12 +7,17 @@ describe('CK Evaluation Tests',function(){
     ////////////////////////////////////////////////////////////
     it("valeur - 0C with K",function(){
 		var data = new element_generator({"type":"knowledge"});
-		expect(CK_evaluation.get_valeur_eval(data)).toEqual(0);
+		expect(CK_evaluation.get_valeur_eval(data.element)).toEqual(0);
 	});
 
 	it("valeur - 0K with C",function(){
 		var data = new element_generator({"type":"concept"});
-		expect(CK_evaluation.get_valeur_eval(data)).toEqual(0);
+		expect(CK_evaluation.get_valeur_eval(data.element)).toEqual(0);
+	});
+
+	it("valeur - 6C (3 connu, 1 atteign, 1 vierge, 1 hamecon) & 6K (3 inside validee + 2 outside vierge + 1 outside indesidésidable) and k inside connu -> c_connu + 3 new k -> new C",function(){
+		var data = new basic_structure_to_valeur_test();
+		expect(CK_evaluation.get_valeur_eval(data.elements,data.links)).toEqual(0.25);
 	});
     ////////////////////////////////////////////////////////////
     // VARIETE TESTS
@@ -25,14 +30,14 @@ describe('CK Evaluation Tests',function(){
 	it("variete with 1C connu et 1C vierge",function(){
 		var connu = new element_generator({"type":"concept","css_manu":"c_connu"});
 		var vierge = new element_generator({"type":"concept"});
-		var data = _.union(connu,vierge);
+		var data = _.union(connu.element,vierge.element);
 		expect(CK_evaluation.get_variete_eval(data)).toEqual(0);
 	});
 
 	it("variete with just 2C hamecon",function(){
 		var h1 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
 		var h2 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
-		var data = _.union(h1,h2);
+		var data = _.union(h1.element,h2.element);
 		expect(CK_evaluation.get_variete_eval(data)).toEqual(0);
 	});
 
@@ -41,7 +46,7 @@ describe('CK Evaluation Tests',function(){
 		var c2 = new element_generator({"type":"concept","css_manu":"c_connu"});
 		var h1 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
 		var h2 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
-		var data = _.union(c1, c2, h1,h2);
+		var data = _.union(c1.element, c2.element, h1.element,h2.element);
 		expect(CK_evaluation.get_variete_eval(data)).toEqual(1);
 	});
 
@@ -52,7 +57,7 @@ describe('CK Evaluation Tests',function(){
 		var h2 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
 		var h3 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
 		var h4 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
-		var data = _.union(c1,c2,h1,h2,h3,h4);
+		var data = _.union(c1.element,c2.element,h1.element,h2.element,h3.element,h4.element);
 		expect(CK_evaluation.get_variete_eval(data)).toEqual(2);
 	});
 

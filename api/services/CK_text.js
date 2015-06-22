@@ -1,6 +1,4 @@
-var exemples = {
-
-}
+var exemples = {}
 
 
 var options = {
@@ -8,7 +6,12 @@ var options = {
     // STATUT
     ///////////////////////////////////////////////////////
     // Concept
-    "c_connu" : {
+    "empty" : {
+		"value" : "",
+		"name" : {"fr" : "Vide", "en" : "Empty"},
+		"desc" : {"fr" : "L'élément n'a pas de statut","en" : ""},
+	},
+	"c_connu" : {
 		"value" : "c_connu",
 		"name" : {"fr" : "Connu", "en" : ""},
 		"desc" : {"fr" : "Le concept renvoie à un ensemble de solutions techniques connues, dont la performance est également connue","en" : ""},
@@ -70,23 +73,23 @@ module.exports = {
 		    ///////////////////////////////////////////////////////
 			"s00" : { 
 				"suggestion" : {"fr" : "Ce concept n'a pas encore de statut", "en" : ""},
-				"options" : [options.c_connu, options.c_atteignable, options.c_alternatif, options.c_hamecon],
+				"options" : [options.empty, options.c_connu, options.c_atteignable, options.c_alternatif, options.c_hamecon],
 				"exemples" : []
 			},
 			"s01" : { 
 				"suggestion" : {"fr" : "Cette connaissance n'a pas encore de statut", "en" : ""},
-				"options" : [options.k_validees, options.k_indesidable, options.k_manquante, options.k_encours],
+				"options" : [options.empty, options.k_validees, options.k_indesidable, options.k_manquante, options.k_encours],
 				"exemples" : []
 			},
 			
 			"s02" : { 
 				"suggestion" : {"fr" : "Voulez-vous changer le statut de ce concept ?", "en" : ""},
-				"options" : [options.c_connu, options.c_atteignable, options.c_alternatif, options.c_hamecon],
+				"options" : [options.empty, options.c_connu, options.c_atteignable, options.c_alternatif, options.c_hamecon],
 				"exemples" : []
 			},
 			"s03" : { 
 				"suggestion" : {"fr" : "Voulez-vous changer le statut de cette connaissance ?", "en" : ""},
-				"options" : [options.k_validees, options.k_indesidable, options.k_manquante, options.k_encours],
+				"options" : [options.empty, options.k_validees, options.k_indesidable, options.k_manquante, options.k_encours],
 				"exemples" : []
 			},
 			

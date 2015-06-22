@@ -20,14 +20,22 @@ module.exports = {
       var k_encours = _.where(elements,{"type" : "knowledge", "css_manu" : "k_encours"});
       var k_manquante = _.where(elements,{"type" : "knowledge", "css_manu" : "k_manquante"});
       var k_indesidable = _.where(elements,{"type" : "knowledge", "css_manu" : "k_indesidable"});
-      return {"k_validees" : k_validees, "k_encours" : k_encours, "k_manquante" : k_manquante, "k_indesidable" : k_indesidable};
+      var k_empty = _.where(elements,{"type" : "knowledge", "css_manu" : ""});
+      _.forEach(elements,function(element){
+        if((element.css_manu == undefined)&&(element.type == "knowledge")) k_empty = _.union(k_empty,[element]); 
+      })
+      return {"k_empty" : k_empty, "k_validees" : k_validees, "k_encours" : k_encours, "k_manquante" : k_manquante, "k_indesidable" : k_indesidable};
   },
   getConceptByStatus : function(elements){
       var c_connu = _.where(elements,{"type" : "concept", "css_manu" : "c_connu"});
       var c_atteignable = _.where(elements,{"type" : "concept", "css_manu" : "c_atteignable"});
       var c_alternatif = _.where(elements,{"type" : "concept", "css_manu" : "c_alternatif"});
       var c_hamecon = _.where(elements,{"type" : "concept", "css_manu" : "c_hamecon"});
-      return {"c_connu" : c_connu, "c_atteignable" : c_atteignable, "c_alternatif" : c_alternatif, "c_hamecon" : c_hamecon};
+      var c_empty = _.where(elements,{"type" : "concept", "css_manu" : ""});
+      _.forEach(elements,function(element){
+        if((element.css_manu == undefined)&&(element.type == "concept")) c_empty = _.union(c_empty,[element]);
+      })
+      return {"c_empty" : c_empty, "c_connu" : c_connu, "c_atteignable" : c_atteignable, "c_alternatif" : c_alternatif, "c_hamecon" : c_hamecon};
   },  
   //////////////////////////////////////////
   // ORIGINALITY EVALUATION & SUGGESTION
@@ -110,14 +118,14 @@ module.exports = {
       var knowledges = this.getKnowledgeByStatus(elements);
       var concepts = this.getConceptByStatus(elements);
       var valeur = 0;
-      var new_k = _.union(knowledges.k_encours, knowledges.k_manquante, knowledges.k_indesidable);
+      var new_k = _.union(knowledges.k_empty, knowledges.k_encours, knowledges.k_manquante, knowledges.k_indesidable);
       var concepts_generated = [];
       new_k.forEach(function(k){
         // nombre de concepts générés par les nouvelles K
         concepts_generated = _.union(concepts_generated, api.getTypeLinkedToModel(links,elements,k,"concept"));
       });
-      var all_k = knowledges.length;
-      var all_c = concepts.length;
+      var all_k = knowledges.k_empty.length + knowledges.k_encours.length + knowledges.k_manquante.length + knowledges.k_indesidable.length + knowledges.k_validees.length ;
+      var all_c = concepts.c_empty.length + concepts.c_connu.length + concepts.c_atteignable.length + concepts.c_hamecon.length + concepts.c_alternatif.length;
       // CALCULS
       if(all_k == 0) valeur = 0;
       else if(all_c == 0) valeur = 0;

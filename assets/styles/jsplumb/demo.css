@@ -325,31 +325,80 @@ body{
 }
 
 .c_empty{
-	-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #27AE60;background: #ffffff;border: solid #27AE60 2px;text-decoration: none;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+	font-family: Arial;
+	color: #27AE60;
+	background: #ffffff;
+	border: solid #27AE60 2px;
+	text-decoration: none;
 }
 
 .c_full{
-	-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #ffffff;background: #2ECC71;border: solid #27AE60 2px;text-decoration: none;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+	font-family: Arial;
+	color: #ffffff;
+	background: #2ECC71;
+	border: solid #27AE60 2px;
+	text-decoration: none;
 }
 
 .k_empty{
-	-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #2980B9;background: #ffffff;border: solid #2980B9 2px;text-decoration: none;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+	font-family: Arial;
+	color: #2980B9;
+	background: #ffffff;
+	border: solid #2980B9 2px;
+	text-decoration: none;
 }
 
 .k_full{
-	-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #ffffff;background: #3498DB;border: solid #2980B9 2px;text-decoration: none;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+	font-family: Arial;
+	color: #ffffff;
+	background: #3498DB;
+	border: solid #2980B9 2px;
+	text-decoration: none;
 }
 
 .p_empty{
-	-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #D35400;background: #ffffff;border: solid #D35400 2px;text-decoration: none;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+	font-family: Arial;
+	color: #D35400;
+	background: #ffffff;
+	border: solid #D35400 2px;
+	text-decoration: none;
 }
 
 .p_full{
-	-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #ffffff;background: #E67E22;border: solid #D35400 2px;text-decoration: none;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+	font-family: Arial;
+	color: #ffffff;
+	background: #E67E22;
+	border: solid #D35400 2px;
+	text-decoration: none;
 }
 
 .other{
-	-webkit-border-radius: 28;-moz-border-radius: 28;border-radius: 28px;font-family: Arial;color: #ffffff;background: #E74C3C;border: dotted #C0392B 2px;text-decoration: none;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+	font-family: Arial;
+	color: #ffffff;
+	background: #E74C3C;
+	border: dotted #C0392B 2px;
+	text-decoration: none;
 }
 /* ------------ */
 /* Links */
@@ -379,9 +428,9 @@ body{
 
 /*  legende des mines  */
 .c_connu{
-	-moz-border-radius: 50px;
-	-webkit-border-radius: 50px;
-	border-radius: 50px;
+	/*-moz-border-radius: 50px;*/
+	/*-webkit-border-radius: 50px;*/
+	/*border-radius: 50px;*/
 	
 	font-family: Arial;
 	color: white;
@@ -390,9 +439,9 @@ body{
 	text-decoration: none;
 }
 .c_atteignable{
-	-moz-border-radius: 50px;
-	-webkit-border-radius: 50px;
-	border-radius: 50px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	border-radius: 20px;
 	
 	font-family: Arial;
 	color: white;
@@ -401,9 +450,9 @@ body{
 	text-decoration: none;
 }
 .c_alternatif{
-	-moz-border-radius: 50px;
-	-webkit-border-radius: 50px;
-	border-radius: 50px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	border-radius: 20px;
 	
 	font-family: Arial;
 	color: white;
@@ -412,9 +461,9 @@ body{
 	text-decoration: none;
 }
 .c_hamecon{
-	-moz-border-radius: 50px;
-	-webkit-border-radius: 50px;
-	border-radius: 50px;
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	border-radius: 20px;
 	
 	font-family: Arial;
 	color: white;
