@@ -63,23 +63,23 @@ module.exports = {
     // Originality Patrick
     var originality_patrick = this.get_originality_eval_patrick(elements);
     if(originality_patrick < 4){
-      if(concepts.c_connu.length>0) evaluations.unshift(CK_text.evaluation.s0.fr,CK_text.evaluation.s1.fr);
+      if(concepts.c_connu.length>0) evaluations.unshift(CK_text.suggestions().s0.fr,CK_text.suggestions().s1.fr);
       // faire des evaluations avec du contenu web ???
     }else if(originality_patrick == 4){
-      evaluations.unshift(CK_text.evaluation.s2.fr,CK_text.evaluation.s3.fr);
+      evaluations.unshift(CK_text.suggestions().s2.fr,CK_text.suggestions().s3.fr);
     }
     // Si il n'y a aucun C connu
-    if(concepts.c_connu.length == 0) evaluations.unshift(CK_text.evaluation.s4.fr); 
+    if(concepts.c_connu.length == 0) evaluations.unshift(CK_text.suggestions().s4.fr); 
     // Si il n'y a aucun C atteignable
-    if(concepts.c_atteignable.length == 0) evaluations.unshift(CK_text.evaluation.s5.fr); 
+    if(concepts.c_atteignable.length == 0) evaluations.unshift(CK_text.suggestions().s5.fr); 
     // Si il n'y a aucun C alternatif
-    if(concepts.c_alternatif.length == 0) evaluations.unshift(CK_text.evaluation.s6.fr); 
+    if(concepts.c_alternatif.length == 0) evaluations.unshift(CK_text.suggestions().s6.fr); 
     // Si il n'y a aucun C hamecon
-    if(concepts.c_hamecon.length == 0) evaluations.unshift(CK_text.evaluation.s8.fr); 
+    if(concepts.c_hamecon.length == 0) evaluations.unshift(CK_text.suggestions().s8.fr); 
     // Si il n'y a que des atteignable + alternatif
-    if((concepts.c_connu.length == 0)&&(concepts.c_hamecon.length == 0)&&(concepts.c_atteignable.length > 0)&&(concepts.c_alternatif.length > 0)) evaluations.unshift(CK_text.evaluation.s9.fr); 
+    if((concepts.c_connu.length == 0)&&(concepts.c_hamecon.length == 0)&&(concepts.c_atteignable.length > 0)&&(concepts.c_alternatif.length > 0)) evaluations.unshift(CK_text.suggestions().s9.fr); 
     // Si il n'y a que des alternatif + hamecon
-    if((concepts.c_connu.length == 0)&&(concepts.c_hamecon.length > 0)&&(concepts.c_atteignable.length == 0)&&(concepts.c_alternatif.length > 0)) evaluations.unshift(CK_text.evaluation.s10.fr); 
+    if((concepts.c_connu.length == 0)&&(concepts.c_hamecon.length > 0)&&(concepts.c_atteignable.length == 0)&&(concepts.c_alternatif.length > 0)) evaluations.unshift(CK_text.suggestions().s10.fr); 
 
     return evaluations;
   },
@@ -89,17 +89,17 @@ module.exports = {
     // Origianlity des Mines
     var originality_mines = this.get_originality_eval_mines(elements);
     if(originality_mines > 1){
-      evaluations.unshift(CK_text.evaluation.s11.fr);
+      evaluations.unshift(CK_text.suggestions().s11.fr);
     }else if(originality_mines < 1){
-      evaluations.unshift(CK_text.evaluation.s12.fr);
+      evaluations.unshift(CK_text.suggestions().s12.fr);
     }else{
       // ???
     }
     ///////
     var partitions_expansives = concepts.c_alternatif.length + concepts.c_hamecon.length;
     var partitions_restrictives = concepts.c_connu.length + concepts.c_atteignable.length;
-    if(partitions_expansives == 0) evaluations.unshift(CK_text.evaluation.s78.fr);
-    if(partitions_restrictives == 0) evaluations.unshift(CK_text.evaluation.s77.fr);
+    if(partitions_expansives == 0) evaluations.unshift(CK_text.suggestions().s78.fr);
+    if(partitions_restrictives == 0) evaluations.unshift(CK_text.suggestions().s77.fr);
 
     return evaluations;
   },
@@ -132,20 +132,22 @@ module.exports = {
   // ROBUSTESS
   // robustess = k interne / k externe
   get_robustesse_eval : function(elements){
-      var knowledges = this.getKnowledgeByStatus(elements);
-      var k_interne = knowledges.k_validees
-      var k_externe = _.union(knowledges.k_indesidable, knowledges.k_manquante, knowledges.k_encours)
-      //
-      var robustess = k_interne.length / k_externe.length;
+      var robustess = 0;
+      var k_inside = _.where(elements,{type: "knowledge", inside : "inside"});
+      var k_outside = _.where(elements,{type: "knowledge", inside : "outside"});
+      if((k_inside.length == 0)&&(k_outside.length == 0)) robustess = 0;
+      else if(k_outside.length == 0) robustess = 0;
+      else robustess = k_inside.length / k_outside.length;
+
       return robustess;
   },
   get_robustesse_suggest : function(elements){
       var robustess = this.get_robustesse_eval(elements);
       var evaluations = [];
       if(robustess > 1){ // robust
-          evaluations.unshift(CK_text.evaluation.s7.fr,CK_text.evaluation.s8.fr)
+          evaluations.unshift(CK_text.suggestions().s7.fr,CK_text.suggestions().s8.fr)
       }else{ // not robust enought
-          evaluations.unshift(CK_text.evaluation.s5.fr,CK_text.evaluation.s4.fr)
+          evaluations.unshift(CK_text.suggestions().s5.fr,CK_text.suggestions().s4.fr)
       }
       return evaluations;
   },
@@ -175,9 +177,9 @@ module.exports = {
       var evaluations = [];
       if(equilibre > 1){ // plus de C que de K
         //vérifier avec les liens !!! Car il peut y avoir un équilibre mais pas de lien
-          evaluations.unshift(CK_text.evaluation.s2.fr)
+          evaluations.unshift(CK_text.suggestions().s2.fr)
       }else if(equilibre < 1){ // plus de K que de C
-          evaluations.unshift(CK_text.evaluation.s3.fr)
+          evaluations.unshift(CK_text.suggestions().s3.fr)
       }else if(equilibre == 1){ // equilibre parfait
 
       }

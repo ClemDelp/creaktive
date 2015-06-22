@@ -176,17 +176,17 @@ bbmap.Views.Main = Backbone.View.extend({
     ///////////////////////////////////////////////////
 
     history_next : function(){
-        _this = bbmap.views.main;
+        var _this = bbmap.views.main;
         _this.localHistory.next(_this.history_do);
     },
 
     history_previous : function(){
-        _this = bbmap.views.main;
+        var _this = bbmap.views.main;
         _this.localHistory.previous(_this.history_do);
     },
 
     history_do : function(todo){
-        _this = bbmap.views.main;
+        var _this = bbmap.views.main;
         _.each(todo, function(action){
             if(action.element_type == "Elements"){
                 if(action.action == "create"){
@@ -224,13 +224,12 @@ bbmap.Views.Main = Backbone.View.extend({
 
             }
         });
-_this.svgWindowController();
+        _this.svgWindowController();
     },
     /////////////////////////////////////////
     get_suggestions : function(e){
         e.preventDefault();
         ckSuggestion.init();
-        
         $('#suggestions_modal').foundation('reveal', 'open');
     },
     /////////////////////////////////////////
@@ -283,7 +282,12 @@ _this.svgWindowController();
     },
     /////////////////////////////////////////
     exportElementsToString : function(){
-        console.log(JSON.stringify(bbmap.views.main.elements.toJSON()));
+        var json = bbmap.views.main.elements.toJSON();
+        var clear_json = [];
+        bbmap.views.main.elements.forEach(function(el){
+            clear_json.push(_.pick(el.toJSON(), 'id', 'id_father', 'project', 'status', 'title', 'type', 'css_auto', 'css_manu', 'content', 'inside'));      
+        })
+        console.log(JSON.stringify(clear_json));
     },
     exportLinksToString : function(){
         console.log(JSON.stringify(bbmap.views.main.links.toJSON()));
@@ -293,7 +297,8 @@ _this.svgWindowController();
         if(this.init != true){
             $('body .svg_window').remove();
             this.drawSvgCkLine(function(){
-                var c_candidats = bbmap.views.main.elements.where({type:"concept",id_father:"none"})
+                //var c_candidats = bbmap.views.main.elements.where({type:"concept",id_father:"none"})
+                var c_candidats = [];
                 var p_candidats = bbmap.views.main.elements.where({type:"poche",id_father:"none"})
                 var peres = _.union(c_candidats,p_candidats)
                 peres.forEach(function(pere){
@@ -595,6 +600,7 @@ _this.svgWindowController();
         }
     },
     setLastModel : function(model){
+        console.log(model.toJSON())
         this.lastModel = model;
         this.clearMultiSimpleSelection();
         this.setSelected(model);
