@@ -84,7 +84,7 @@ module.exports = {
             ////////////////////////////////////////////////
             try{
                 // si le model ni d'attribu css_auto ni css_manu alors on lui applique un css_auto
-                if((model.css_auto == undefined)&&(model.css_manu == undefined)){
+                if((model.css_auto == undefined)||(model.css_manu == undefined)){
                     rules.applyLegend(model,elements,links)  
                 } 
             }catch(err){
@@ -119,6 +119,7 @@ module.exports = {
 
         }else if(model.type == "poche"){
             var elements = api.getTypeLinkedToModel(links,elements,model,"knowledge");
+            console.log("tutu : ",elements)
             if((elements.length == 0)&&(model.css_auto != "p_empty")){
                 //console.log("applyLegend")
                 model.css_auto = "p_empty";

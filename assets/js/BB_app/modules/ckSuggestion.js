@@ -13,6 +13,7 @@ var ckSuggestion = {
     el_k_normalized : "#k_normalized_table",
     el_c_not_normalized : "#c_not_normalized_table",
     el_k_not_normalized : "#k_not_normalized_table",
+    el_evaluation_radar : "#evaluationRadar_container",
     init: function (json) {
         this.views.main = new this.Views.Main({
             el : "#suggestions_modal",
@@ -42,6 +43,29 @@ ckSuggestion.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     // ACTIONS
     /////////////////////////////////////////
+    setEvaluationRadar : function(){
+        var canvas = $('<canvas>',{id:"myEvaluationChart"});
+        $(ckSuggestion.el_evaluation_radar).append(canvas);
+        var data = {
+            labels: ["originalité", "variété", "valeur", "robustesse"],
+            datasets: [
+                {
+                    label: "My First dataset",
+                    fillColor: "rgba(220,220,220,0.2)",
+                    strokeColor: "rgba(220,220,220,1)",
+                    pointColor: "rgba(220,220,220,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(220,220,220,1)",
+                    data: [65, 59, 90, 81]
+                }
+            ]
+        };
+        var ctx = document.getElementById("myEvaluationChart").getContext("2d");
+        ctx.canvas.width  = $('#evaluationRadar_container').width();
+        ctx.canvas.height = $('#evaluationRadar_container').height();
+        var myRadarChart = new Chart(ctx).Radar(data);
+    },
     k_localisation : function(e){
         e.preventDefault();
         var element = this.elements.get(e.target.getAttribute('data-id'));

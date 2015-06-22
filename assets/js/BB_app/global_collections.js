@@ -95,9 +95,9 @@ global.Collections.Elements = Backbone.Collection.extend({
     //     father_id = father.get('id');
     // }
     // Type definition
-    if(type == "concept") css = global.css_concept_default;
-    else if(type == "knowledge") css = global.css_knowledge_default;
-    else css = global.css_poche_default;
+    // if(type == "concept") css = global.css_concept_default;
+    // else if(type == "knowledge") css = global.css_knowledge_default;
+    // else css = global.css_poche_default;
     // On crée l'object
     var new_element = new global.Models.Element({
         id : guid(),
@@ -109,8 +109,9 @@ global.Collections.Elements = Backbone.Collection.extend({
         project: global.models.currentProject.get('id'),
         title: title,
         user: global.models.current_user.get('id'),
-        css : css,
-        visibility : true
+        visibility : true,
+        css_auto : "",
+        css_manu : ""
     });
     new_element.save();
     // On ajoute le model à la collection

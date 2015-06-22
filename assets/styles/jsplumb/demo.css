@@ -428,9 +428,9 @@ body{
 
 /*  legende des mines  */
 .c_connu{
-	/*-moz-border-radius: 50px;*/
-	/*-webkit-border-radius: 50px;*/
-	/*border-radius: 50px;*/
+	-moz-border-radius: 20px;
+	-webkit-border-radius: 20px;
+	border-radius: 20px;
 	
 	font-family: Arial;
 	color: white;
