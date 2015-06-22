@@ -127,7 +127,7 @@ bbmap.Views.Main = Backbone.View.extend({
 
         this.listener.simple_combo("ctrl z", this.history_previous);
         this.listener.simple_combo("ctrl y", this.history_next);
-        this.listener.simple_combo("backspace", this.deleteButton);
+        //this.listener.simple_combo("backspace", this.deleteButton);
 
         this.listener.simple_combo("delete", this.deleteButton);
         this.listener.simple_combo("ctrl c", this.duplicate);
@@ -285,7 +285,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var json = bbmap.views.main.elements.toJSON();
         var clear_json = [];
         bbmap.views.main.elements.forEach(function(el){
-            clear_json.push(_.pick(el.toJSON(), 'id', 'id_father', 'project', 'status', 'title', 'type', 'css_auto', 'css_manu', 'content', 'inside'));      
+            clear_json.push(_.pick(el.toJSON(), 'id', 'id_father', 'project', 'title', 'type', 'css_auto', 'css_manu', 'content', 'inside'));      
         })
         console.log(JSON.stringify(clear_json));
     },

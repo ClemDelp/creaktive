@@ -105,18 +105,24 @@ module.exports = {
   },
   //////////////////////////////////////////
   // VALEUR SUGGESTION
-  // calcul de la valeur (nbre de new K*concepts generated) / K validees
+  // valeur = (new K / all K)*(new C generee par les new K / all C)
   get_valeur_eval : function(elements,links){
       var knowledges = this.getKnowledgeByStatus(elements);
-      // nouvelles connaissances = toutes sauf les validees
+      var concepts = this.getConceptByStatus(elements);
+      var valeur = 0;
       var new_k = _.union(knowledges.k_encours, knowledges.k_manquante, knowledges.k_indesidable);
-      // nombre de concepts générés par les nouvelles K
       var concepts_generated = [];
       new_k.forEach(function(k){
-          concepts_generated = _.union(concepts_generated, api.getTypeLinkedToModel(links,elements,k,"concept"));
+        // nombre de concepts générés par les nouvelles K
+        concepts_generated = _.union(concepts_generated, api.getTypeLinkedToModel(links,elements,k,"concept"));
       });
-      //
-      var valeur = (new_k.length * concepts_generated.length) / knowledges.k_validees.length;
+      var all_k = knowledges.length;
+      var all_c = concepts.length;
+      // CALCULS
+      if(all_k == 0) valeur = 0;
+      else if(all_c == 0) valeur = 0;
+      else valeur = (new_k.length * concepts_generated.length) / (all_k * all_c);
+
       return valeur;
   },
   get_valeur_suggest : function(elements){
@@ -155,8 +161,13 @@ module.exports = {
   // Variété = nombre de branches & sous-branches par rapport au dominant design
   get_variete_eval : function(elements){
       var concepts = this.getConceptByStatus(elements);
-      //
-      var variete = (concepts.c_hamecon.length + concepts.c_alternatif.length + concepts.c_atteignable.length) / concepts.c_connu.length;
+      var variete = 0;
+      var no_dd = (concepts.c_hamecon.length + concepts.c_alternatif.length + concepts.c_atteignable.length);
+      var dd = concepts.c_connu.length;
+      if(concepts.length == 0) variete = 0;
+      else if(dd == 0) variete = 0;
+      else if(no_dd == 0) variete = 0;
+      else variete =  no_dd / dd;
       return variete;
   },
   get_variete_suggest : function(elements){

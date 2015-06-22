@@ -3,6 +3,18 @@ describe('CK Evaluation Tests',function(){
 	beforeEach(function(){expect(1).toEqual(1);});
     afterEach(function(){expect(1).toEqual(1);});
     ////////////////////////////////////////////////////////////
+    // VALEUR TESTS
+    ////////////////////////////////////////////////////////////
+    it("valeur - 0C with K",function(){
+		var data = new element_generator({"type":"knowledge"});
+		expect(CK_evaluation.get_valeur_eval(data)).toEqual(0);
+	});
+
+	it("valeur - 0K with C",function(){
+		var data = new element_generator({"type":"concept"});
+		expect(CK_evaluation.get_valeur_eval(data)).toEqual(0);
+	});
+    ////////////////////////////////////////////////////////////
     // VARIETE TESTS
     ////////////////////////////////////////////////////////////
     it("variete with 0C",function(){
@@ -11,23 +23,37 @@ describe('CK Evaluation Tests',function(){
 	});
 
 	it("variete with 1C connu et 1C vierge",function(){
-		var data = new c_1_hamecon;
-		expect(CK_evaluation.get_variete_eval(data.elements)).toEqual(0);
+		var connu = new element_generator({"type":"concept","css_manu":"c_connu"});
+		var vierge = new element_generator({"type":"concept"});
+		var data = _.union(connu,vierge);
+		expect(CK_evaluation.get_variete_eval(data)).toEqual(0);
 	});
 
-	it("variete with 0C connu et 2C hamecon",function(){
-		var data = new c_1_hamecon;
-		expect(CK_evaluation.get_variete_eval(data.elements)).toEqual(0);
+	it("variete with just 2C hamecon",function(){
+		var h1 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
+		var h2 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
+		var data = _.union(h1,h2);
+		expect(CK_evaluation.get_variete_eval(data)).toEqual(0);
 	});
 
 	it("variete with 2C connu et 2C hamecon",function(){
-		var data = new c_1_hamecon;
-		expect(CK_evaluation.get_variete_eval(data.elements)).toEqual(1);
+		var c1 = new element_generator({"type":"concept","css_manu":"c_connu"});
+		var c2 = new element_generator({"type":"concept","css_manu":"c_connu"});
+		var h1 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
+		var h2 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
+		var data = _.union(c1, c2, h1,h2);
+		expect(CK_evaluation.get_variete_eval(data)).toEqual(1);
 	});
 
 	it("variete with 2C connu et 4C hamecon",function(){
-		var data = new c_1_hamecon;
-		expect(CK_evaluation.get_variete_eval(data.elements)).toEqual(1);
+		var c1 = new element_generator({"type":"concept","css_manu":"c_connu"});
+		var c2 = new element_generator({"type":"concept","css_manu":"c_connu"});
+		var h1 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
+		var h2 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
+		var h3 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
+		var h4 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
+		var data = _.union(c1,c2,h1,h2,h3,h4);
+		expect(CK_evaluation.get_variete_eval(data)).toEqual(2);
 	});
 
     ////////////////////////////////////////////////////////////
