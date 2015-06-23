@@ -119,9 +119,7 @@ module.exports = {
 
         }else if(model.type == "poche"){
             var elements = api.getTypeLinkedToModel(links,elements,model,"knowledge");
-            console.log("tutu : ",elements)
             if((elements.length == 0)&&(model.css_auto != "p_empty")){
-                //console.log("applyLegend")
                 model.css_auto = "p_empty";
                 model.save(function (error){console.log("error: ",error)});
             } 

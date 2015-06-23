@@ -88,7 +88,7 @@ global.Collections.Elements = Backbone.Collection.extend({
     var title = title;
     //if(title == "") title = "new "+type;
     // CSS definition
-    var css = global.css_transparent_element;
+    //var css = global.css_transparent_element;
     // Father definition
     // var father_id = father;
     // if(father != "none"){
