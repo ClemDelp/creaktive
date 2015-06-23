@@ -340,7 +340,8 @@ body{
 	-moz-border-radius: 20px;
 	border-radius: 20px;
 	font-family: Arial;
-	color: #ffffff;
+	color: #27AE60;
+	/*color: #ffffff;*/
 	background: #ffffff;
 	/*background: #2ECC71;*/
 	border: solid #27AE60 2px;
@@ -363,7 +364,8 @@ body{
 	-moz-border-radius: 20px;
 	border-radius: 20px;
 	font-family: Arial;
-	color: #ffffff;
+	color: #2980B9;
+	/*color: #ffffff;*/
 	background: #ffffff;
 	/*background: #3498DB;*/
 	border: solid #2980B9 2px;
@@ -386,7 +388,8 @@ body{
 	-moz-border-radius: 20px;
 	border-radius: 20px;
 	font-family: Arial;
-	color: #ffffff;
+	color: #D35400;
+	/*color: #ffffff;*/
 	background: #ffffff;
 	/*background: #E67E22;*/
 	border: solid #D35400 2px;
