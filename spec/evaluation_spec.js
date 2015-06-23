@@ -3,42 +3,73 @@ describe('CK Evaluation Tests',function(){
 	beforeEach(function(){expect(1).toEqual(1);});
     afterEach(function(){expect(1).toEqual(1);});
     ////////////////////////////////////////////////////////////
+	// Evaluation
+	////////////////////////////////////////////////////////////
+	it("evaluation eval - originality",function(){
+		var data = new basic_structure_to_valeur_test();
+		var evaluation = CK_evaluation.get_evaluation_eval(data.elements,data.links);
+		
+		expect(evaluation.originality.options[0].value).toEqual(0.25);
+		
+	});
+	it("evaluation eval - variety",function(){
+		var data = new basic_structure_to_valeur_test();
+		var evaluation = CK_evaluation.get_evaluation_eval(data.elements,data.links);
+
+		expect(evaluation.variety.options[0].value).toEqual(0.67);
+		
+	});
+	it("evaluation eval - value",function(){
+		var data = new basic_structure_to_valeur_test();
+		var evaluation = CK_evaluation.get_evaluation_eval(data.elements,data.links);
+		
+		expect(evaluation.value.options[0].value).toEqual(0.25);
+		
+	});
+	it("evaluation eval - strength",function(){
+		var data = new basic_structure_to_valeur_test();
+		var evaluation = CK_evaluation.get_evaluation_eval(data.elements,data.links);
+		
+		expect(evaluation.strength.options[0].value).toEqual(2);
+	
+	});
+    ////////////////////////////////////////////////////////////
     // VALEUR TESTS
     ////////////////////////////////////////////////////////////
     it("valeur - 0C with K",function(){
 		var data = new element_generator({"type":"knowledge"});
-		expect(CK_evaluation.get_valeur_eval(data.element)).toEqual(0);
+		expect(CK_evaluation.get_valeur_eval(data.element).options[0].value).toEqual(0);
 	});
 
 	it("valeur - 0K with C",function(){
 		var data = new element_generator({"type":"concept"});
-		expect(CK_evaluation.get_valeur_eval(data.element)).toEqual(0);
+		expect(CK_evaluation.get_valeur_eval(data.element).options[0].value).toEqual(0);
 	});
 
 	it("valeur - 6C (3 connu, 1 atteign, 1 vierge, 1 hamecon) & 6K (3 inside validee + 2 outside vierge + 1 outside indesidésidable) and k inside connu -> c_connu + 3 new k -> new C",function(){
 		var data = new basic_structure_to_valeur_test();
-		expect(CK_evaluation.get_valeur_eval(data.elements,data.links)).toEqual(0.25);
+		expect(CK_evaluation.get_valeur_eval(data.elements,data.links).options[0].value).toEqual(0.25);
 	});
     ////////////////////////////////////////////////////////////
     // VARIETE TESTS
     ////////////////////////////////////////////////////////////
     it("variete with 0C",function(){
 		var data = [];
-		expect(CK_evaluation.get_variete_eval(data)).toEqual(0);
+		expect(CK_evaluation.get_variete_eval(data).options[0].value).toEqual(0);
 	});
 
 	it("variete with 1C connu et 1C vierge",function(){
 		var connu = new element_generator({"type":"concept","css_manu":"c_connu"});
 		var vierge = new element_generator({"type":"concept"});
 		var data = _.union(connu.element,vierge.element);
-		expect(CK_evaluation.get_variete_eval(data)).toEqual(0);
+		expect(CK_evaluation.get_variete_eval(data).options[0].value).toEqual(0);
 	});
 
 	it("variete with just 2C hamecon",function(){
 		var h1 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
 		var h2 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
 		var data = _.union(h1.element,h2.element);
-		expect(CK_evaluation.get_variete_eval(data)).toEqual(0);
+		expect(CK_evaluation.get_variete_eval(data).options[0].value).toEqual(0);
 	});
 
 	it("variete with 2C connu et 2C hamecon",function(){
@@ -47,7 +78,7 @@ describe('CK Evaluation Tests',function(){
 		var h1 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
 		var h2 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
 		var data = _.union(c1.element, c2.element, h1.element,h2.element);
-		expect(CK_evaluation.get_variete_eval(data)).toEqual(1);
+		expect(CK_evaluation.get_variete_eval(data).options[0].value).toEqual(1);
 	});
 
 	it("variete with 2C connu et 4C hamecon",function(){
@@ -58,7 +89,7 @@ describe('CK Evaluation Tests',function(){
 		var h3 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
 		var h4 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
 		var data = _.union(c1.element,c2.element,h1.element,h2.element,h3.element,h4.element);
-		expect(CK_evaluation.get_variete_eval(data)).toEqual(2);
+		expect(CK_evaluation.get_variete_eval(data).options[0].value).toEqual(2);
 	});
 
     ////////////////////////////////////////////////////////////
@@ -66,42 +97,42 @@ describe('CK Evaluation Tests',function(){
     ////////////////////////////////////////////////////////////
     it("robustess value with 0 c color",function(){
 		var c_0 = [];
-		expect(CK_evaluation.get_robustesse_eval(c_0.elements)).toEqual(0);
+		expect(CK_evaluation.get_robustesse_eval(c_0.elements).options[0].value).toEqual(0);
 	});
 
 	it("robustess value with 2 c color",function(){
 		var c_2 = new c_2_connu_atteignable;
-		expect(CK_evaluation.get_robustesse_eval(c_2.elements)).toEqual(0);
+		expect(CK_evaluation.get_robustesse_eval(c_2.elements).options[0].value).toEqual(0);
 	});
 
 	it("robustess value with 2 k vierge",function(){
 		var k_2 = new k2_vierge
-		expect(CK_evaluation.get_robustesse_eval(k_2.elements)).toEqual(0);
+		expect(CK_evaluation.get_robustesse_eval(k_2.elements).options[0].value).toEqual(0);
 	});
 
 	it("robustess value with 1 k intern & 1 k extern",function(){
 		var data = new k1_inside_k1_outside;
-		expect(CK_evaluation.get_robustesse_eval(data.elements)).toEqual(1);
+		expect(CK_evaluation.get_robustesse_eval(data.elements).options[0].value).toEqual(1);
 	});
 
 	it("robustess value with 1 k intern & 1 k vierge",function(){
 		var data = new k1_inside_k1_vierge;
-		expect(CK_evaluation.get_robustesse_eval(data.elements)).toEqual(0);
+		expect(CK_evaluation.get_robustesse_eval(data.elements).options[0].value).toEqual(0);
 	});
 
 	it("robustess value with 1 k vierge & 1 k extern",function(){
 		var data = new k1_outside_k1_vierge;
-		expect(CK_evaluation.get_robustesse_eval(data.elements)).toEqual(0);
+		expect(CK_evaluation.get_robustesse_eval(data.elements).options[0].value).toEqual(0);
 	});
 	
 	it("robustess value with 2 inside & 1 outside",function(){
 		var data = new k2_inside_k1_outside;
-		expect(CK_evaluation.get_robustesse_eval(data.elements)).toEqual(2);
+		expect(CK_evaluation.get_robustesse_eval(data.elements).options[0].value).toEqual(2);
 	});
 
 	it("robustess value with 2 outside & 1 inside",function(){
 		var data = new k2_outside_k1_inside;
-		expect(CK_evaluation.get_robustesse_eval(data.elements)).toEqual(0.5);
+		expect(CK_evaluation.get_robustesse_eval(data.elements).options[0].value).toEqual(0.5);
 	});
     ////////////////////////////////////////////////////////////
     // ORIGINALITE TESTS
@@ -133,27 +164,27 @@ describe('CK Evaluation Tests',function(){
 	////////////////////////////////////////////////////////////
 	it("originality_eval_mines - with 0 c color",function(){
 		var c_0 = [];
-		expect(CK_evaluation.get_originality_eval_mines(c_0)).toEqual(0);
+		expect(CK_evaluation.get_originality_eval_mines(c_0).options[0].value).toEqual(0);
 	});
 	
 	it("originality_eval_mines - with 1 c color",function(){
 		var c_1 = new c_1_hamecon;
-		expect(CK_evaluation.get_originality_eval_mines(c_1.elements)).toEqual(0);
+		expect(CK_evaluation.get_originality_eval_mines(c_1.elements).options[0].value).toEqual(0);
 	});
 
 	it("originality_eval_mines - with 2 c color",function(){
 		var c_2 = new c_2_connu_atteignable;
-		expect(CK_evaluation.get_originality_eval_mines(c_2.elements)).toEqual(0);
+		expect(CK_evaluation.get_originality_eval_mines(c_2.elements).options[0].value).toEqual(0);
 	});
 
 	it("originality_eval_mines - with 3 c color",function(){
 		var c_3 = new c_3_connu_atteignable_alternatif;
-		expect(CK_evaluation.get_originality_eval_mines(c_3.elements)).toEqual(0.5);
+		expect(CK_evaluation.get_originality_eval_mines(c_3.elements).options[0].value).toEqual(0.5);
 	});
 
 	it("originality_eval_mines - with 4 c color",function(){
 		var c_4 = new c_4_color;
-		expect(CK_evaluation.get_originality_eval_mines(c_4.elements)).toEqual(1);
+		expect(CK_evaluation.get_originality_eval_mines(c_4.elements).options[0].value).toEqual(1);
 	});
 	////////////////////////////////////////////////////////////
 	it("Si j'ai une originalité < 4 avec un arbre de concepts (connu + atteignable + alternatif)",function(){
@@ -179,10 +210,11 @@ describe('CK Evaluation Tests',function(){
     ////////////////////////////////////////////////////////////
     // CONCEPTS TREE TESTS
     ////////////////////////////////////////////////////////////
-	it("Si il n'y as pas de partition expansive (alternatif + hamecon)",function(){
-		var c_2 = new c_2_connu_atteignable;
-		// originalité < 4
-		expect(CK_evaluation.get_originality_suggest(c_2.elements)).toContain(CK_text.suggestions().s78.fr);
+	it("Si il n'y as aucune connaissances internes",function(){
+		expect(0).toEqual(0);
+	});
+	it("Si il n'y a aucune connaissances externes",function(){
+		expect(0).toEqual(0);
 	});
 	it("Si il n'y as pas de partition restrictive (connu + atteignable)",function(){
 		var c_1_alt = new c_1_alternatif;

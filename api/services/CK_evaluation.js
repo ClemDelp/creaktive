@@ -1,17 +1,92 @@
-//var CK_evaluation = {
-module.exports = {
+var CK_evaluation = {
+//module.exports = {
   //////////////////////////////////////////
-  get_all_evaluations : function(elements,links,cb){
+  get_evaluation_suggest : function(elements,links,cb){
     var evaluation = this.get_originality_suggest(elements);
     cb(evaluation);
   },
-  get_evaluations_notes : function(elements,links,cb){
-    var notes = {};
-    notes.originality = (this.get_originality_eval_patrick(elements) + this.get_originality_eval_mines(elements))/2;
-    notes.robustess = this.get_robustesse_eval(elements);
-    notes.variete = this.get_variete_eval(elements);
-    notes.valeur = this.get_valeur_eval(elements);
-    cb(notes);
+  get_evaluation_eval : function(elements,links,cb){
+    
+    var evaluation = {
+      "originality" : CK_evaluation.get_originality_eval_mines(elements),
+      "variety" : CK_evaluation.get_variete_eval(elements),
+      "strength" : CK_evaluation.get_robustesse_eval(elements),
+      "value" : CK_evaluation.get_valeur_eval(elements,links) 
+    }
+
+    if(cb) cb(evaluation);
+    else return evaluation;
+  },
+  //////////////////////////////////////////
+  // EVALUATION EVAL
+
+  // partitions expansive/partitions restrictives = (alternative + hamecon)/(dominante design + C atteignable)
+  get_originality_eval_mines : function(elements){
+      var concepts = this.getConceptByStatus(elements);
+      var originality = CK_text.suggestions().s_originality;
+      var option = originality.options[0];
+
+      var partitions_expansives = concepts.c_alternatif.length + concepts.c_hamecon.length;
+      var partitions_restrictives = concepts.c_connu.length + concepts.c_atteignable.length;
+
+      if((partitions_restrictives == 0)&&(partitions_restrictives == 0)) option.value = 0; 
+      else if((partitions_restrictives > 0)&&(partitions_restrictives == 0)) option.value = 0;
+      else option.value = Math.round((partitions_expansives/partitions_restrictives)*100)/100;
+
+      return originality;
+  },
+  // valeur = (new K / all K)*(new C generee par les new K / all C)
+  get_valeur_eval : function(elements,links){
+      var valeur = CK_text.suggestions().s_value;
+      var option = valeur.options[0];
+
+      var knowledges = this.getKnowledgeByStatus(elements);
+      var concepts = this.getConceptByStatus(elements);
+
+      var new_k = _.union(knowledges.k_empty, knowledges.k_encours, knowledges.k_manquante, knowledges.k_indesidable);
+      var concepts_generated = [];
+      new_k.forEach(function(k){
+        // nombre de concepts générés par les nouvelles K
+        concepts_generated = _.union(concepts_generated, api.getTypeLinkedToModel(links,elements,k,"concept"));
+      });
+      var all_k = knowledges.k_empty.length + knowledges.k_encours.length + knowledges.k_manquante.length + knowledges.k_indesidable.length + knowledges.k_validees.length ;
+      var all_c = concepts.c_empty.length + concepts.c_connu.length + concepts.c_atteignable.length + concepts.c_hamecon.length + concepts.c_alternatif.length;
+      // CALCULS
+      if(all_k == 0) option.value = 0;
+      else if(all_c == 0) option.value = 0;
+      else option.value = Math.round(((new_k.length * concepts_generated.length) / (all_k * all_c))*100)/100;
+
+      return valeur;
+  },
+  // robustess = k interne / k externe
+  get_robustesse_eval : function(elements){
+      var strength = CK_text.suggestions().s_strength;
+      var option = strength.options[0];
+
+      var k_inside = _.where(elements,{type: "knowledge", inside : "inside"});
+      var k_outside = _.where(elements,{type: "knowledge", inside : "outside"});
+      if((k_inside.length == 0)&&(k_outside.length == 0)) option.value = 0;
+      else if(k_outside.length == 0) option.value = 0;
+      else option.value = Math.round((k_inside.length / k_outside.length)*100)/100;
+      
+      return strength;
+  },
+  // Variété = nombre de branches & sous-branches par rapport au dominant design
+  get_variete_eval : function(elements){
+      var concepts = this.getConceptByStatus(elements);
+      
+      var variete = CK_text.suggestions().s_variety;
+      var option = variete.options[0];
+
+      var no_dd = (concepts.c_hamecon.length + concepts.c_alternatif.length + concepts.c_atteignable.length);
+      var dd = concepts.c_connu.length;
+      // calculs
+      if(concepts.length == 0) option.value = 0;
+      else if(dd == 0) option.value = 0;
+      else if(no_dd == 0) option.value = 0;
+      else option.value =  Math.round((no_dd/dd)*100)/100;
+
+      return variete;
   },
   //////////////////////////////////////////
   // STATUT
@@ -38,26 +113,28 @@ module.exports = {
       return {"c_empty" : c_empty, "c_connu" : c_connu, "c_atteignable" : c_atteignable, "c_alternatif" : c_alternatif, "c_hamecon" : c_hamecon};
   },  
   //////////////////////////////////////////
-  // ORIGINALITY EVALUATION & SUGGESTION
-  get_originality_eval_patrick : function(elements){
-      var concepts = this.getConceptByStatus(elements);
-      // si il y a 4 couleurs en C
-      var originality = concepts.c_connu.length + concepts.c_atteignable.length + concepts.c_alternatif.length + concepts.c_hamecon.length
-      
-      return originality;
-  },
-  get_originality_eval_mines : function(elements){
-      var concepts = this.getConceptByStatus(elements);
-      // partitions expansive/partitions restrictives = (alternative + hamecon)/(dominante design + K atteignable)
-      var originality = 0;
-      var partitions_expansives = concepts.c_alternatif.length + concepts.c_hamecon.length;
-      var partitions_restrictives = concepts.c_connu.length + concepts.c_atteignable.length;
-      if((partitions_restrictives == 0)&&(partitions_restrictives == 0)) originality = 0; 
-      else if((partitions_restrictives > 0)&&(partitions_restrictives == 0)) originality = 0;
-      else originality = partitions_expansives/partitions_restrictives;
+  // SUGGESTION
+  get_originality_mines_suggest : function(elements){
+    var evaluations = [];  
+    var concepts = this.getConceptByStatus(elements);
+    // Origianlity des Mines
+    var originality_mines = this.get_originality_eval_mines(elements);
+    if(originality_mines > 1){
+      evaluations.unshift(CK_text.suggestions().s11.fr);
+    }else if(originality_mines < 1){
+      evaluations.unshift(CK_text.suggestions().s12.fr);
+    }else{
+      // ???
+    }
+    ///////
+    var partitions_expansives = concepts.c_alternatif.length + concepts.c_hamecon.length;
+    var partitions_restrictives = concepts.c_connu.length + concepts.c_atteignable.length;
+    if(partitions_expansives == 0) evaluations.unshift(CK_text.suggestions().s78.fr);
+    if(partitions_restrictives == 0) evaluations.unshift(CK_text.suggestions().s77.fr);
 
-      return originality;
+    return evaluations;
   },
+
   get_originality_suggest : function(elements){
     var evaluations = [];
     evaluations = _.union(evaluations, this.get_originality_patrick_suggest(elements));
@@ -65,8 +142,45 @@ module.exports = {
     
     return evaluations;
   },
+  // VALEUR 
+  get_valeur_suggest : function(elements,links){
+      var valeur = this.get_valeur_eval(elements,links);
+      var evaluations = [];
+      if(valeur < 10){ // ???
+          // ???
+      }else{
+          // ???
+      }
+  },
+  // ROBUSTESS
+  get_robustesse_suggest : function(elements){
+      var robustess = this.get_robustesse_eval(elements).options[0].value;
+      var evaluations = [];
+      if(robustess > 1){ // robust
+          evaluations.unshift(CK_text.suggestions().s7.fr,CK_text.suggestions().s8.fr)
+      }else{ // not robust enought
+          evaluations.unshift(CK_text.suggestions().s5.fr,CK_text.suggestions().s4.fr)
+      }
+      return evaluations;
+  },
+  // VARIETE
+  get_variete_suggest : function(elements){
+      var variete = this.get_variete_eval(elements)
+      var evaluations = [];
+      // ???
+      return evaluations;
+  },
+  //////////////////////////////////////////
+  // Originality patrick
+  get_originality_eval_patrick : function(elements){
+      var concepts = this.getConceptByStatus(elements);
+      // si il y a 4 couleurs en C
+      var originality = concepts.c_connu.length + concepts.c_atteignable.length + concepts.c_alternatif.length + concepts.c_hamecon.length
+      
+      return originality;
+  },
   get_originality_patrick_suggest : function(elements){
-    var evaluations = [];  
+    var evaluations = [];
     var concepts = this.getConceptByStatus(elements);
     // Originality Patrick
     var originality_patrick = this.get_originality_eval_patrick(elements);
@@ -90,99 +204,6 @@ module.exports = {
     if((concepts.c_connu.length == 0)&&(concepts.c_hamecon.length > 0)&&(concepts.c_atteignable.length == 0)&&(concepts.c_alternatif.length > 0)) evaluations.unshift(CK_text.suggestions().s10.fr); 
 
     return evaluations;
-  },
-  get_originality_mines_suggest : function(elements){
-    var evaluations = [];  
-    var concepts = this.getConceptByStatus(elements);
-    // Origianlity des Mines
-    var originality_mines = this.get_originality_eval_mines(elements);
-    if(originality_mines > 1){
-      evaluations.unshift(CK_text.suggestions().s11.fr);
-    }else if(originality_mines < 1){
-      evaluations.unshift(CK_text.suggestions().s12.fr);
-    }else{
-      // ???
-    }
-    ///////
-    var partitions_expansives = concepts.c_alternatif.length + concepts.c_hamecon.length;
-    var partitions_restrictives = concepts.c_connu.length + concepts.c_atteignable.length;
-    if(partitions_expansives == 0) evaluations.unshift(CK_text.suggestions().s78.fr);
-    if(partitions_restrictives == 0) evaluations.unshift(CK_text.suggestions().s77.fr);
-
-    return evaluations;
-  },
-  //////////////////////////////////////////
-  // VALEUR SUGGESTION
-  // valeur = (new K / all K)*(new C generee par les new K / all C)
-  get_valeur_eval : function(elements,links){
-      var knowledges = this.getKnowledgeByStatus(elements);
-      var concepts = this.getConceptByStatus(elements);
-      var valeur = 0;
-      var new_k = _.union(knowledges.k_empty, knowledges.k_encours, knowledges.k_manquante, knowledges.k_indesidable);
-      var concepts_generated = [];
-      new_k.forEach(function(k){
-        // nombre de concepts générés par les nouvelles K
-        concepts_generated = _.union(concepts_generated, api.getTypeLinkedToModel(links,elements,k,"concept"));
-      });
-      var all_k = knowledges.k_empty.length + knowledges.k_encours.length + knowledges.k_manquante.length + knowledges.k_indesidable.length + knowledges.k_validees.length ;
-      var all_c = concepts.c_empty.length + concepts.c_connu.length + concepts.c_atteignable.length + concepts.c_hamecon.length + concepts.c_alternatif.length;
-      // CALCULS
-      if(all_k == 0) valeur = 0;
-      else if(all_c == 0) valeur = 0;
-      else valeur = (new_k.length * concepts_generated.length) / (all_k * all_c);
-
-      return valeur;
-  },
-  get_valeur_suggest : function(elements){
-      var valeur = this.get_valeur_eval(elements);
-      var evaluations = [];
-      if(valeur < 10){ // ???
-          // ???
-      }else{
-          // ???
-      }
-  },
-  //////////////////////////////////////////
-  // ROBUSTESS
-  // robustess = k interne / k externe
-  get_robustesse_eval : function(elements){
-      var robustess = 0;
-      var k_inside = _.where(elements,{type: "knowledge", inside : "inside"});
-      var k_outside = _.where(elements,{type: "knowledge", inside : "outside"});
-      if((k_inside.length == 0)&&(k_outside.length == 0)) robustess = 0;
-      else if(k_outside.length == 0) robustess = 0;
-      else robustess = k_inside.length / k_outside.length;
-
-      return robustess;
-  },
-  get_robustesse_suggest : function(elements){
-      var robustess = this.get_robustesse_eval(elements);
-      var evaluations = [];
-      if(robustess > 1){ // robust
-          evaluations.unshift(CK_text.suggestions().s7.fr,CK_text.suggestions().s8.fr)
-      }else{ // not robust enought
-          evaluations.unshift(CK_text.suggestions().s5.fr,CK_text.suggestions().s4.fr)
-      }
-      return evaluations;
-  },
-  //////////////////////////////////////////
-  // Variété = nombre de branches & sous-branches par rapport au dominant design
-  get_variete_eval : function(elements){
-      var concepts = this.getConceptByStatus(elements);
-      var variete = 0;
-      var no_dd = (concepts.c_hamecon.length + concepts.c_alternatif.length + concepts.c_atteignable.length);
-      var dd = concepts.c_connu.length;
-      if(concepts.length == 0) variete = 0;
-      else if(dd == 0) variete = 0;
-      else if(no_dd == 0) variete = 0;
-      else variete =  no_dd / dd;
-      return variete;
-  },
-  get_variete_suggest : function(elements){
-      var variete = this.get_variete_eval(elements)
-      var evaluations = [];
-      // ???
-      return evaluations;
   },
   //////////////////////////////////////////
   // EQUILIBRE

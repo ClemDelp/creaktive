@@ -62,10 +62,43 @@ var options = {
 		"name" : {"fr" : "Externe", "en" : "Outside"},
 		"desc" : {"fr" : "La connaissance est externe à l'entreprise","en" : ""},
 	},
+	///////////////
+	"originality" : {
+		"value" : 0,
+		"name" : {"fr" : "Originalité", "en" : "Originality"},
+		"desc" : {
+			"fr" : "Capacité de l'espace C à s'éloigner du dominant design",
+			"en" : ""
+		},
+	},
+	"variety" : {
+		"value" : 0,
+		"name" : {"fr" : "Variété", "en" : "Variety"},
+		"desc" : {
+			"fr" : "Capacité d'options que l'espace C peut offrir",
+			"en" : ""
+		},
+	},
+	"value" : {
+		"value" : 0,
+		"name" : {"fr" : "Valeur", "en" : "Value"},
+		"desc" : {
+			"fr" : "Capacité d'évolution de la connaissance et de son impact sur la génération de nouveau concept",
+			"en" : ""
+		},
+	},
+	"strength" : {
+		"value" : 0,
+		"name" : {"fr" : "Robustesse", "en" : "Strength"},
+		"desc" : {
+			"fr" : "Capacité de maîtrise des connaissance en interne",
+			"en" : ""
+		},
+	},
 }
 
-//var CK_text = {
-module.exports = {
+var CK_text = {
+//module.exports = {
 	suggestions : function(){
 		return {
 		    ///////////////////////////////////////////////////////
@@ -99,12 +132,12 @@ module.exports = {
 			 	"exemples" : []
 			},
 			"s05" : { 
-				"suggestion" : {"fr" : "Basculer cette connaissance en interne à votre entreprise ?", "en" : ""},
+				"suggestion" : {"fr" : "Basculer cette connaissance en externe à votre entreprise ?", "en" : ""},
 			 	"options" : [options.outside],
 			 	"exemples" : []
 			},
 			"s06" : { 
-				"suggestion" : {"fr" : "Basculer cette connaissance en externe à votre entreprise ?", "en" : ""},
+				"suggestion" : {"fr" : "Basculer cette connaissance en interne à votre entreprise ?", "en" : ""},
 			 	"options" : [options.inside],
 			 	"exemples" : []
 			},
@@ -112,6 +145,26 @@ module.exports = {
 			///////////////////////////////////////////////////////
 			// EVALUATIONS
 			///////////////////////////////////////////////////////
+			"s_originality" : { 
+				"suggestion" : {"fr" : "Evaluation de l'originalité","en" : ""},
+			 	"options" : [options.originality],
+			 	"exemples" : []
+			},
+			"s_value" : { 
+				"suggestion" : {"fr" : "Evaluation de la valeur","en" : ""},
+			 	"options" : [options.value],
+			 	"exemples" : []
+			},
+			"s_strength" : { 
+				"suggestion" : {"fr" : "Evaluation de la robustesse","en" : ""},
+			 	"options" : [options.strength],
+			 	"exemples" : []
+			},
+			"s_variety" : { 
+				"suggestion" : {"fr" : "Evaluation de la variété","en" : ""},
+			 	"options" : [options.variety],
+			 	"exemples" : []
+			},
 			"s0" : { "fr" : "Suggérer plus d'expansion", "en" : ""},
 			"s1" : { "fr" : "Vous restez trop dans une logique de dominante design", "en" : ""},
 			"s2" : { "fr" : "Il y a un bon partage entre les concepts de rupture et incrémentale", "en" : ""},

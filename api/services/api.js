@@ -1,5 +1,5 @@
-//var api = {
-module.exports = {
+var api = {
+//module.exports = {
   //////////////////////////////
   // API BBMAP
   //////////////////////////////

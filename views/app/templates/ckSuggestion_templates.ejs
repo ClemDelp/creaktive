@@ -24,5 +24,23 @@
   </tr>
 </script>
 
+<script type="text/template" id="evaluation-suggestion-template">
+  <tr>
+  	<td>
+	  	<p>{{- suggestion.suggestion.fr }}</p>
+  	</td>
+  </tr>
+</script>
+
 <script type="text/template" id="evaluation-radar-template">
+	<div id="" class="large-8 medium-8 small-8 columns">
+		<canvas id="myEvaluationChart"></canvas>
+	</div>
+	<div class="large-4 medium-4 small-4 columns">
+		<table style="width:100%">
+			{{ _.each(evalations,function(evaluation){ }} 
+				<tr><td>{{- evaluation.name.fr }}</td><td>{{- evaluation.desc.fr }}</td></tr>
+			{{ }); }}
+		</table>
+	</div>
 </script>

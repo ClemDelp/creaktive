@@ -86,7 +86,7 @@ module.exports = {
                 // si le model ni d'attribu css_auto ni css_manu alors on lui applique un css_auto
                 if((model.css_auto == undefined)||(model.css_manu == undefined)){
                     rules.applyLegend(model,elements,links)  
-                } 
+                }
             }catch(err){
                 //console.log(err);
             }  
