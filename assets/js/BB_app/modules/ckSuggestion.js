@@ -140,8 +140,8 @@ ckSuggestion.Views.Main = Backbone.View.extend({
                     ]
                 };
                 var ctx = document.getElementById("myEvaluationChart").getContext("2d");
-                ctx.canvas.width  = $("#radar_graph_container").width() - 50;
-                ctx.canvas.height = $("#radar_detail_container").height() - 50;
+                ctx.canvas.width  = $("#radar_graph_container").width() - 25;
+                ctx.canvas.height = $("#radar_detail_container").height() - 25;
                 console.log(ctx.canvas.width,ctx.canvas.height)
                 var myRadarChart = new Chart(ctx).Radar(data);
 

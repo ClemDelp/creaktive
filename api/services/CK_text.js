@@ -49,7 +49,7 @@ var options = {
 	},	
 	"k_indesidable" : {
 		"value" : "k_indesidable",
-		"name" : {"fr" : "Indésidable", "en" : ""},
+		"name" : {"fr" : "Indécidable", "en" : ""},
 		"desc" : {"fr" : "La connaissance est manquante de surcroit non accessible","en" : ""},
 	},
 	"inside" : {
@@ -192,31 +192,27 @@ var CK_text = {
 				options : [],
 				exemples : [],
 			},
-			"s4" : { 
-				suggestion : {"fr" : "Il faut d'avantage travailler en K", "en" : ""},
+			work_in_k : { 
+				suggestion : {"fr" : "Il faut d'avantage travailler en K (cause la plus probable: il n'y a aucun concept connu)", "en" : ""},
 				options : [],
 				exemples : [],
 			},
 			"s5" : { 
-				suggestion : {"fr" : "On est dans une volonté de rupture: il faut reprendre le travail en divergence et renforcer le travail en expansion", "en" : ""},
+				suggestion : {"fr" : "On est dans une volonté de rupture: il faut reprendre le travail en divergence et renforcer le travail en expansion (cause la plus probable: il n'y a aucun concept atteignable)", "en" : ""},
 				options : [],
 				exemples : [],
 			},
 			"s6" : { 
-				suggestion : {"fr" : "Reprendre le travail d'expansion et de divergence", "en" : ""},
-				options : [],
-				exemples : [],
-			},
-			"s7" : { 
-				suggestion : {"fr" : "", "en" : ""},
+				suggestion : {"fr" : "Reprendre le travail d'expansion et de divergence (cause la plus probable: il n'y a aucun concept alternatif)", "en" : ""},
 				options : [],
 				exemples : [],
 			},
 			"s8" : { 
-				suggestion : {"fr" : "Reprendre le travail d’expansion et de divergence mais avec un travail sur les K encore plus fort notamment avec le lien sur les K indécidables", "en" : ""},
+				suggestion : {"fr" : "Reprendre le travail d’expansion et de divergence mais avec un travail sur les K encore plus fort notamment avec le lien sur les K indécidables (cause la plus probable: il n'y a aucun concept hameçon)", "en" : ""},
 				options : [],
 				exemples : [],
 			},
+
 			"s9" : { 
 				suggestion : {"fr" : "on renforce l’originalité de manière forte", "en" : ""},
 				options : [],
@@ -357,7 +353,11 @@ var CK_text = {
 			"s45" : { "fr" : "Votre base de connaissance est robuste", "en" : ""},
 			"s46" : { "fr" : "Le risque est plus faible", "en" : ""},
 			"s47" : { "fr" : "capacité d’absorption de nouveau K voir KSOR", "en" : ""},
-			"s48" : { "fr" : "c hamecon + c indessidable = le plus en rupture scientifiquement ", "en" : ""},
+			s48 : { 
+				suggestion : {"fr" : "c hamecon + c indessidable = le plus en rupture scientifiquement ", "en" : ""},
+				options : [],
+				exemples : [],
+			},
 			"s49" : { "fr" : "aller voir les bulles les première suggestion (avec ou sans description)", "en" : ""},
 			"s50" : { "fr" : "j’ai un delta C plus fort et un delta K plus faible notamment pour des K existant > K nouvelle", "en" : ""},
 			"s51" : { "fr" : "petit delta C avec des grd delta K", "en" : ""},

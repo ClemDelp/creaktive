@@ -23,6 +23,8 @@ var CK_evaluation = {
     suggestions.push(CK_evaluation.get_miss_color_suggestions(concepts));
     // MISS ELEMENT TYPE
     suggestions.push(CK_evaluation.get_miss_element_type_suggestions(elements));
+    // SPECIFIC C CONFIGURATION
+    suggestions.push(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges));
     // VALEUR
     if(value < 10){ // ???
         // ???
@@ -34,7 +36,7 @@ var CK_evaluation = {
     if(strength > 1){ // robust
         suggestions.push(CK_text.suggestions().s7,CK_text.suggestions().s8)
     }else{ // not robust enought
-        suggestions.push(CK_text.suggestions().s5,CK_text.suggestions().s4)
+        suggestions.push(CK_text.suggestions().s5,CK_text.suggestions().work_in_k)
     }
     
     suggestions = _.union(_.compact(_.flatten(suggestions)));
@@ -167,6 +169,28 @@ var CK_evaluation = {
   },
   //////////////////////////////////////////
   // SUGGESTION
+  get_specific_confirguration_suggestions : function(concepts,knowledges){
+    var suggestions = [];
+    // aucun c connu
+    if(concepts.c_connu.length == 0) suggestions.push(CK_text.suggestions().work_in_k)
+    // aucun c atteignable
+    if(concepts.c_atteignable.length == 0) suggestions.push(CK_text.suggestions().s5)
+    // aucun c alternatif
+    if(concepts.c_alternatif.length == 0) suggestions.push(CK_text.suggestions().s6)
+    // aucun c hamecon
+    if(concepts.c_hamecon.length == 0) suggestions.push(CK_text.suggestions().s8)
+    // que des c atteignable + c alternatif
+    if((concepts.c_connu.length == 0)&&(concepts.c_atteignable.length > 0)&&(concepts.c_alternatif.length > 0)&&(concepts.c_hamecon.length == 0)) suggestions.push(CK_text.suggestions().s9)
+    // que des c alternatif + hamecon
+    if((concepts.c_connu.length == 0)&&(concepts.c_atteignable.length == 0)&&(concepts.c_alternatif.length > 0)&&(concepts.c_hamecon.length > 0)) suggestions.push(CK_text.suggestions().s10)
+    // que des k indecidable + c hamecon
+    if((concepts.c_connu.length == 0)&&(concepts.c_atteignable.length == 0)&&(concepts.c_alternatif.length == 0)&&(concepts.c_hamecon.length > 0)){
+      if((knowledges.k_encours.length == 0)&&(knowledges.k_manquante.length == 0)&&(knowledges.k_indesidable.length > 0)&&(knowledges.k_validees.length == 0)){
+        suggestions.push(CK_text.suggestions().s48)
+      }
+    }
+    return suggestions;
+  },
   get_miss_element_type_suggestions : function(elements){
     var suggestions = [];
     if(_.where(elements,{type:"knowledge"}).length == 0) suggestions.push(CK_text.suggestions().no_knowledge);
@@ -214,7 +238,7 @@ var CK_evaluation = {
   get_miss_color_suggestions : function(concepts){
     var suggestions = [];
     // Si il n'y a aucun C connu
-    if(concepts.c_connu.length == 0) suggestions.push(CK_text.suggestions().s4); 
+    if(concepts.c_connu.length == 0) suggestions.push(CK_text.suggestions().work_in_k); 
     // Si il n'y a aucun C atteignable
     if(concepts.c_atteignable.length == 0) suggestions.push(CK_text.suggestions().s5); 
     // Si il n'y a aucun C alternatif

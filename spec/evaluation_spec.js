@@ -221,38 +221,65 @@ describe('CK Evaluation Tests',function(){
 		expect(CK_evaluation.get_partitions_expansives_suggestions(partitions_expansives)).toContain(CK_text.suggestions().no_expansive);
 	});
 	////////////////////////////////////////////////////////////
-	it("Si j'ai aucun C connu avec un arbre de concepts avec seulement un hamecon",function(){
-		var c_1_h = new c_1_hamecon;
-		// aucun c connu
-		expect(CK_evaluation.get_evaluation_suggestions(c_1_h.elements)).toContain(CK_text.suggestions().s4.fr);
+	it("Si il n'y a aucun C connu",function(){
+		var c1 = new element_generator({"type":"concept"});
+		var data = _.union(c1.element);
+		var concepts = CK_evaluation.get_concept_by_statut(data);
+		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().work_in_k);
 	});
-	it("Si j'ai aucun c atteignable avec un arbre de concepts avec seulement un hamecon",function(){
-		var c_1_h = new c_1_hamecon;
-		expect(CK_evaluation.get_evaluation_suggestions(c_1_h.elements)).toContain(CK_text.suggestions().s5.fr);
+	it("Si il n'y a aucun C atteignable",function(){
+		var c1 = new element_generator({"type":"concept"});
+		var data = _.union(c1.element);
+		var concepts = CK_evaluation.get_concept_by_statut(data);
+		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().s5);
 	});
-	it("Si j'ai aucun c alternatif avec un arbre de concepts avec seulement un hamecon",function(){
-		var c_1_h = new c_1_hamecon;
-		expect(CK_evaluation.get_evaluation_suggestions(c_1_h.elements)).toContain(CK_text.suggestions().s6.fr);
+	it("Si il n'y a aucun C alternatif",function(){
+		var c1 = new element_generator({"type":"concept"});
+		var data = _.union(c1.element);
+		var concepts = CK_evaluation.get_concept_by_statut(data);
+		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().s6);
 	});
-	it("Si j'ai aucun c hamecon avec un arbres de concepts (connu + atteignable)",function(){
-		var c_2 = new c_2_connu_atteignable;
-		expect(CK_evaluation.get_evaluation_suggestions(c_2.elements)).toContain(CK_text.suggestions().s8.fr);
+	it("Si il n'y a aucun C hamecon",function(){
+		var c1 = new element_generator({"type":"concept"});
+		var data = _.union(c1.element);
+		var concepts = CK_evaluation.get_concept_by_statut(data);
+		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().s6);
 	});
+
 	it("Si j'ai que des C atteignable + alternatif",function(){
-		var c_1_al = new c_1_alternatif;
-		var c_1_at = new c_1_atteignable;
-		var c_2_aa = _.union(c_1_al.elements,c_1_at.elements);
-		expect(CK_evaluation.get_evaluation_suggestions(c_2_aa)).toContain(CK_text.suggestions().s9.fr);
+		var c1 = new element_generator({"type":"concept","css_manu":"c_alternatif"});
+		var c2 = new element_generator({"type":"concept","css_manu":"c_atteignable"});
+		var data = _.union(c1.element,c2.element);
+		var concepts = CK_evaluation.get_concept_by_statut(data);
+		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().s9);
 	});
 	it("Si j'ai que des C alternatif + hamecon",function(){
-		var c_1_al = new c_1_alternatif;
-		var c_1_h = new c_1_hamecon;
-		var c_2_ah = _.union(c_1_al.elements,c_1_h.elements);
-		expect(CK_evaluation.get_evaluation_suggestions(c_2_ah)).toContain(CK_text.suggestions().s10.fr);
+		var c1 = new element_generator({"type":"concept","css_manu":"c_alternatif"});
+		var c2 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
+		var data = _.union(c1.element,c2.element);
+		var concepts = CK_evaluation.get_concept_by_statut(data);
+		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().s10);
 	});
+
 	it("Si il n'y a que des C hamecon + K indécidable",function(){
-		expect(1).toEqual(2);
+		var c1 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
+		var k1 = new element_generator({"type":"knowledge","css_manu":"k_indesidable"});
+		var data = _.union(c1.element,k1.element);
+		var concepts = CK_evaluation.get_concept_by_statut(data);
+		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().s48);
+
 	});
+
+
+
+
 
 	it("Si il n'y a aucune K validée",function(){expect(1).toEqual(2);});
 	it("Si il n'y a aucune K en cours",function(){expect(1).toEqual(2);});
