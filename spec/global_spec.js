@@ -4,6 +4,14 @@ describe('CK Global Tests',function(){
 	beforeEach(function(){});
     afterEach(function(){});
 
+	it("Les données en entrees de type elements doivent avoir les attributs suivant ...",function(){
+		expect(1).toEqual(1);
+	});
+	
+	it("Les données en entrees de type links doivent avoir les attributs suivant ...",function(){
+		expect(1).toEqual(1);
+	});
+
 	it("Toutes les suggestions doivent avoir au moins les attributs suivant : suggestion(fr,en), options, exemples",function(){
 		expect(1).toEqual(1);
 	});

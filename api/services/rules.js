@@ -90,6 +90,18 @@ module.exports = {
             }catch(err){
                 //console.log(err);
             }  
+            ////////////////////////////////////////////////
+            // INSIDE ATTRIBUTE
+            ////////////////////////////////////////////////
+            try{
+                // si le model ni d'attribu css_auto ni css_manu alors on lui applique un css_auto
+                if(model.inside == undefined){
+                    model.inside = "";
+                    model.save(function (error){console.log("error: ",error)});
+                }
+            }catch(err){
+                //console.log(err);
+            }  
             //////////////////////////////////////////////// 
         });
     },

@@ -1,19 +1,22 @@
 var CK_normalisation = {
-//module.exports = {
   //////////////////////////////////////////
   // STATUT
   ////////////////////////////////////////// 
   get_normalisations : function(elements,cb){
-    var suggestions = [];
+    var normalisations = {};
+    // Color / statut
+    normalisations.statuts = [];
     elements.forEach(function(el){
-      if((el.type == "concept")||(el.type == "knowledge")){
-        var new_suggestion = CK_normalisation.get_normalisation(el);
-        suggestions.push(new_suggestion);
-      }
+      if((el.type == "concept")||(el.type == "knowledge")) normalisations.statuts.push(CK_normalisation.get_normalisation(el));
+    });
+    // Knowledge localisation
+    normalisations.localisations = [];
+    elements.forEach(function(el){
+      if(el.type == "knowledge") normalisations.localisations.push(CK_normalisation.get_localisation(el));
     });
 
-    if(cb) cb(suggestions);
-    else return suggestions;
+    if(cb) cb(normalisations);
+    else return normalisations;
   },
   get_normalisation : function(element,cb){
     var suggestion = {};
@@ -35,7 +38,6 @@ var CK_normalisation = {
         normalized = true;
       }
       suggestion.normalized = normalized;
-      suggestion.localisation = this.get_localisation(element);
     }
     suggestion.element = element;
 
@@ -50,8 +52,12 @@ var CK_normalisation = {
     else if(element.inside == "inside") suggestion = CK_text.suggestions().s05;
     else if(element.inside == "outside") suggestion = CK_text.suggestions().s06;
 
+    suggestion.element = element;
+    
     if(cb) cb(suggestion);
     else return suggestion;
   },
   //////////////////////////////////////////
 }
+
+module.exports = Object.create(CK_normalisation);

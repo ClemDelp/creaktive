@@ -6,7 +6,7 @@ var options = {
     // STATUT
     ///////////////////////////////////////////////////////
     // Concept
-    "empty" : {
+    "statut_empty" : {
 		"value" : "",
 		"name" : {"fr" : "Vide", "en" : "Empty"},
 		"desc" : {"fr" : "L'élément n'a pas de statut","en" : ""},
@@ -95,106 +95,249 @@ var options = {
 			"en" : ""
 		},
 	},
+	"localisation_empty" : {
+		"value" : 0,
+		"name" : {"fr" : "Vide", "en" : "Empty"},
+		"desc" : {
+			"fr" : "L'élément n'a pas de localisation",
+			"en" : ""
+		},
+	},
 }
 
 var CK_text = {
-//module.exports = {
 	suggestions : function(){
 		return {
 		    ///////////////////////////////////////////////////////
 		    // NORMALISATION
 		    ///////////////////////////////////////////////////////
 			"s00" : { 
-				"suggestion" : {"fr" : "Ce concept n'a pas encore de statut", "en" : ""},
-				"options" : [options.empty, options.c_connu, options.c_atteignable, options.c_alternatif, options.c_hamecon],
-				"exemples" : []
+				suggestion : {"fr" : "Ce concept n'a pas encore de statut", "en" : ""},
+				options : [options.statut_empty, options.c_connu, options.c_atteignable, options.c_alternatif, options.c_hamecon],
+				exemples : []
 			},
 			"s01" : { 
-				"suggestion" : {"fr" : "Cette connaissance n'a pas encore de statut", "en" : ""},
-				"options" : [options.empty, options.k_validees, options.k_indesidable, options.k_manquante, options.k_encours],
-				"exemples" : []
+				suggestion : {"fr" : "Cette connaissance n'a pas encore de statut", "en" : ""},
+				options : [options.statut_empty, options.k_validees, options.k_indesidable, options.k_manquante, options.k_encours],
+				exemples : []
 			},
 			
 			"s02" : { 
-				"suggestion" : {"fr" : "Voulez-vous changer le statut de ce concept ?", "en" : ""},
-				"options" : [options.empty, options.c_connu, options.c_atteignable, options.c_alternatif, options.c_hamecon],
-				"exemples" : []
+				suggestion : {"fr" : "Voulez-vous changer le statut de ce concept ?", "en" : ""},
+				options : [options.statut_empty, options.c_connu, options.c_atteignable, options.c_alternatif, options.c_hamecon],
+				exemples : []
 			},
 			"s03" : { 
-				"suggestion" : {"fr" : "Voulez-vous changer le statut de cette connaissance ?", "en" : ""},
-				"options" : [options.empty, options.k_validees, options.k_indesidable, options.k_manquante, options.k_encours],
-				"exemples" : []
+				suggestion : {"fr" : "Voulez-vous changer le statut de cette connaissance ?", "en" : ""},
+				options : [options.statut_empty, options.k_validees, options.k_indesidable, options.k_manquante, options.k_encours],
+				exemples : []
 			},
-			
+			////////////////
+			// Localisation
 			"s04" : { 
-				"suggestion" : {"fr" : "Cette connaissance est-elle interne ou externe à votre entreprise ?", "en" : ""},
-			 	"options" : [options.inside, options.outside],
-			 	"exemples" : []
+				suggestion : {"fr" : "Cette connaissance est-elle interne ou externe à votre entreprise ?", "en" : ""},
+			 	options : [options.inside, options.outside, options.localisation_empty],
+			 	exemples : []
 			},
 			"s05" : { 
-				"suggestion" : {"fr" : "Basculer cette connaissance en externe à votre entreprise ?", "en" : ""},
-			 	"options" : [options.outside],
-			 	"exemples" : []
+				suggestion : {"fr" : "Basculer cette connaissance en externe à votre entreprise ?", "en" : ""},
+			 	options : [options.inside, options.outside, options.localisation_empty],
+			 	exemples : []
 			},
 			"s06" : { 
-				"suggestion" : {"fr" : "Basculer cette connaissance en interne à votre entreprise ?", "en" : ""},
-			 	"options" : [options.inside],
-			 	"exemples" : []
+				suggestion : {"fr" : "Basculer cette connaissance en interne à votre entreprise ?", "en" : ""},
+			 	options : [options.inside, options.outside, options.localisation_empty],
+			 	exemples : []
 			},
-
 			///////////////////////////////////////////////////////
 			// EVALUATIONS
 			///////////////////////////////////////////////////////
 			"s_originality" : { 
-				"suggestion" : {"fr" : "Evaluation de l'originalité","en" : ""},
-			 	"options" : [options.originality],
-			 	"exemples" : []
+				suggestion : {"fr" : "Evaluation de l'originalité","en" : ""},
+			 	options : [options.originality],
+			 	exemples : []
 			},
 			"s_value" : { 
-				"suggestion" : {"fr" : "Evaluation de la valeur","en" : ""},
-			 	"options" : [options.value],
-			 	"exemples" : []
+				suggestion : {"fr" : "Evaluation de la valeur","en" : ""},
+			 	options : [options.value],
+			 	exemples : []
 			},
 			"s_strength" : { 
-				"suggestion" : {"fr" : "Evaluation de la robustesse","en" : ""},
-			 	"options" : [options.strength],
-			 	"exemples" : []
+				suggestion : {"fr" : "Evaluation de la robustesse","en" : ""},
+			 	options : [options.strength],
+			 	exemples : []
 			},
 			"s_variety" : { 
-				"suggestion" : {"fr" : "Evaluation de la variété","en" : ""},
-			 	"options" : [options.variety],
-			 	"exemples" : []
+				suggestion : {"fr" : "Evaluation de la variété","en" : ""},
+			 	options : [options.variety],
+			 	exemples : []
 			},
-			"s0" : { "fr" : "Suggérer plus d'expansion", "en" : ""},
-			"s1" : { "fr" : "Vous restez trop dans une logique de dominante design", "en" : ""},
-			"s2" : { "fr" : "Il y a un bon partage entre les concepts de rupture et incrémentale", "en" : ""},
-			"s3" : { "fr" : "Ca va nous aider à structurer les roadMap court, moyen et long terme", "en" : ""},
-			"s4" : { "fr" : "Il faut d'avantage travailler en K", "en" : ""},
-			"s5" : { "fr" : "On est dans une volonté de rupture: il faut reprendre le travail en divergence et renforcer le travail en expansion", "en" : ""},
-			"s6" : { "fr" : "Reprendre le travail d'expansion et de divergence", "en" : ""},
-			"s7" : { "fr" : "", "en" : ""},
-			"s8" : { "fr" : "Reprendre le travail d’expansion et de divergence mais avec un travail sur les K encore plus fort notamment avec le lien sur les K indécidables", "en" : ""},
-			"s9" : { "fr" : "on renforce l’originalité de manière forte", "en" : ""},
-			"s10" : { "fr" : "on renforce l’originalité de manière très forte", "en" : ""},
+			"s0" : { 
+				suggestion : {"fr" : "Suggérer plus d'expansion", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s1" : { 
+				suggestion : {"fr" : "Vous restez trop dans une logique de dominante design", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s2" : { 
+				suggestion : {"fr" : "Il y a un bon partage entre les concepts de rupture et incrémentale", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s3" : { 
+				suggestion : {"fr" : "Ca va nous aider à structurer les roadMap court, moyen et long terme", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s4" : { 
+				suggestion : {"fr" : "Il faut d'avantage travailler en K", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s5" : { 
+				suggestion : {"fr" : "On est dans une volonté de rupture: il faut reprendre le travail en divergence et renforcer le travail en expansion", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s6" : { 
+				suggestion : {"fr" : "Reprendre le travail d'expansion et de divergence", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s7" : { 
+				suggestion : {"fr" : "", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s8" : { 
+				suggestion : {"fr" : "Reprendre le travail d’expansion et de divergence mais avec un travail sur les K encore plus fort notamment avec le lien sur les K indécidables", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s9" : { 
+				suggestion : {"fr" : "on renforce l’originalité de manière forte", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s10" : { 
+				suggestion : {"fr" : "on renforce l’originalité de manière très forte", "en" : ""},
+				options : [],
+				exemples : [],
+			},
 			
-			"s11" : { "fr" : "plus j’ai des partition expansive plus je vais vers de la rupture", "en" : ""},
-			"s12" : { "fr" : "plus j’ai des partition restrictive plus je vais vers de l’incrémentale ", "en" : ""},
-			"s13" : { "fr" : "toutes vos connaissances sont manquantes il faut aller les chercher à l’extérieur, avez vous la capacité à absorber de nouvelle connaissance?", "en" : ""},
-			"s14" : { "fr" : "il faut qu’elle embauche", "en" : ""},
-			"s15" : { "fr" : "qu’elle achète la connaissance en externe", "en" : ""},
-			"s16" : { "fr" : "quelle fasse appel à un expert", "en" : ""},
-			"s17" : { "fr" : "voir évaluation KSOR", "en" : ""},
-			"s18" : { "fr" : "il n’y a pas de programme de recherche ou d’innovation en cour", "en" : ""},
-			"s19" : { "fr" : "il faut lancer des programmes de recherche et d’innovation", "en" : ""},
-			"s20" : { "fr" : "identifier les connaissances à acquérir et à valider en fonction des concepts (faire le lien avec le web)", "en" : ""},
-			"s21" : { "fr" : "j’ai toute les K pour répondre à de nouveaux C", "en" : ""},
-			"s22" : { "fr" : "vous aide dans une situation de moyen et grd delta C et de petit delta K", "en" : ""},
-			"s23" : { "fr" : "vous pouvez aller assez vite pour mettre en place l’innovation", "en" : ""},
-			"s24" : { "fr" : "(voir ex chaine de produit fluidisé ALCAN)", "en" : ""},
-			"s25" : { "fr" : "diminue fortement le risque", "en" : ""},
-			"s26" : { "fr" : "générer de nouveau concept pour produire du K", "en" : ""},
-			"s27" : { "fr" : "il faut remonter sur les C hamecon developper des C hamecon", "en" : ""},
-			"s28" : { "fr" : "proposer des crazy concepts", "en" : ""},
+			"s11" : { 
+				suggestion : {"fr" : "plus j’ai des partition expansive plus je vais vers de la rupture", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s12" : { 
+				suggestion : {"fr" : "plus j’ai des partition restrictive plus je vais vers de l’incrémentale ", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s13" : { 
+				suggestion : {"fr" : "toutes vos connaissances sont manquantes il faut aller les chercher à l’extérieur, avez vous la capacité à absorber de nouvelle connaissance?", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s14" : { 
+				suggestion : {"fr" : "il faut qu’elle embauche", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s15" : { 
+				suggestion : {"fr" : "qu’elle achète la connaissance en externe", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s16" : { 
+				suggestion : {"fr" : "quelle fasse appel à un expert", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s17" : { 
+				suggestion : {"fr" : "voir évaluation KSOR", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s18" : { 
+				suggestion : {"fr" : "il n’y a pas de programme de recherche ou d’innovation en cour", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s19" : { 
+				suggestion : {"fr" : "il faut lancer des programmes de recherche et d’innovation", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s20" : { 
+				suggestion : {"fr" : "identifier les connaissances à acquérir et à valider en fonction des concepts (faire le lien avec le web)", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s21" : { 
+				suggestion : {"fr" : "j’ai toute les K pour répondre à de nouveaux C", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s22" : { 
+				suggestion : {"fr" : "vous aide dans une situation de moyen et grd delta C et de petit delta K", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s23" : { 
+				suggestion : {"fr" : "vous pouvez aller assez vite pour mettre en place l’innovation", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s24" : { 
+				suggestion : {"fr" : "(voir ex chaine de produit fluidisé ALCAN)", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s25" : { 
+				suggestion : {"fr" : "diminue fortement le risque", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s26" : { 
+				suggestion : {"fr" : "générer de nouveau concept pour produire du K", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s27" : { 
+				suggestion : {"fr" : "il faut remonter sur les C hamecon developper des C hamecon", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			"s28" : { 
+				suggestion : {"fr" : "proposer des crazy concepts", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			no_inside : { 
+				suggestion : {"fr" : "Aucune connaissances internes à votre entreprise trouvées", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			no_outside : { 
+				suggestion : {"fr" : "Aucune connaissances externe à votre entreprise trouvées", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			no_concept : { 
+				suggestion : {"fr" : "Aucuns concepts trouvés", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+			no_knowledge : { 
+				suggestion : {"fr" : "Aucunes connaissances trouvées", "en" : ""},
+				options : [],
+				exemples : [],
+			},
 			"s29" : { "fr" : "augmente le niveau de risque ", "en" : ""},
 			"s30" : { "fr" : "faire une cotation KSOR", "en" : ""},
 			"s31" : { "fr" : "grd delta C petit delta K peu de risque", "en" : ""},
@@ -245,8 +388,18 @@ var CK_text = {
 			"s75" : { "fr" : "= originalité (et est donc lié au degré d’ouverture)", "en" : ""},
 			"s76" : { "fr" : " traduire un degré douverture.", "en" : ""},
 			
-			"s77" : { "fr" : "Acucune partitions restrictives trouvées, vous n'avez pas encore spécifiez de dominante design et de concepts atteignable", "en" : ""},
-			"s78" : { "fr" : "Acucune partitions expansives trouvées, vous n'avez pas encore proposé de concepts alternatifs ou de concepts hameçons", "en" : ""},
+			no_restrictive : { 
+				suggestion : {"fr" : "Acucune partitions restrictives trouvées, vous n'avez pas encore spécifiez de dominante design et de concepts atteignable", "en" : ""},
+				options : [],
+				exemples : []
+			},
+			no_expansive : { 
+				suggestion : {"fr" : "Acucune partitions expansives trouvées, vous n'avez pas encore proposé de concepts alternatifs ou de concepts hameçons", "en" : ""},
+				options : [],
+				exemples : []
+			},
 		}
 	}
 }
+
+module.exports = Object.create(CK_text);

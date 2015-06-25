@@ -4,14 +4,59 @@ describe('CK Normalisation Tests',function(){
 	beforeEach(function(){});
     afterEach(function(){});
 
-	it("Si j'ai 2 C et 3 K non normés CK sur 10 éléments",function(){
-		// var c2_k3 = new c2_k3_sur10_non_norme;
-		// console.log(CK_normalisation.get_normalisations(c2_k3.elements))
-		// expect(CK_normalisation.get_normalisations(c2_k3.elements).concepts.elements.length).toEqual(2);
-		// expect(CK_normalisation.get_normalisations(c2_k3.elements).concepts.suggestions).toContain(CK_text.normalisation.s00.fr);
-		// expect(CK_normalisation.get_normalisations(c2_k3.elements).knowledges.elements.length).toEqual(3);	
-		// expect(CK_normalisation.get_normalisations(c2_k3.elements).knowledges.suggestions).toContain(CK_text.normalisation.s01.fr);
-		expect(1).toEqual(1);
+	it("normalisation satut - C not categorized",function(){
+		var data = new element_generator({"type":"concept"});
+		var normalisations = CK_normalisation.get_normalisations(data.element);
+		var statut = normalisations.statuts;
+		expect(statut[0].suggestion).toEqual(CK_text.suggestions().s00.suggestion);
+		expect(statut[0].options.length).toEqual(5);
+	});
 
+	it("normalisation satut - C categorized",function(){
+		var data = new element_generator({"type":"concept","css_manu" : "c_connu"});
+		var normalisations = CK_normalisation.get_normalisations(data.element);
+		var statut = normalisations.statuts;
+		expect(statut[0].suggestion).toEqual(CK_text.suggestions().s02.suggestion);
+		expect(statut[0].options.length).toEqual(5);
+	});
+
+	it("normalisation satut - K not categorized",function(){
+		var data = new element_generator({"type":"knowledge"});
+		var normalisations = CK_normalisation.get_normalisations(data.element);
+		var statut = normalisations.statuts;
+		expect(statut[0].suggestion).toEqual(CK_text.suggestions().s01.suggestion);
+		expect(statut[0].options.length).toEqual(5);
+	});
+
+	it("normalisation satut - K categorized",function(){
+		var data = new element_generator({"type":"knowledge","css_manu" : "k_encours"});
+		var normalisations = CK_normalisation.get_normalisations(data.element);
+		var statut = normalisations.statuts;
+		expect(statut[0].suggestion).toEqual(CK_text.suggestions().s03.suggestion);
+		expect(statut[0].options.length).toEqual(5);
+	});
+
+	it("normalisation localisation - K vierge",function(){
+		var data = new element_generator({"type":"knowledge"});
+		var normalisations = CK_normalisation.get_normalisations(data.element);
+		var localisation = normalisations.localisations;
+		expect(localisation[0].suggestion).toEqual(CK_text.suggestions().s04.suggestion);
+		expect(localisation[0].options.length).toEqual(3);
+	});
+
+	it("normalisation localisation - K inside",function(){
+		var data = new element_generator({"type":"knowledge","inside" : "inside"});
+		var normalisations = CK_normalisation.get_normalisations(data.element);
+		var localisation = normalisations.localisations;
+		expect(localisation[0].suggestion).toEqual(CK_text.suggestions().s05.suggestion);
+		expect(localisation[0].options.length).toEqual(3);
+	});
+
+	it("normalisation localisation - K outside",function(){
+		var data = new element_generator({"type":"knowledge","inside" : "outside"});
+		var normalisations = CK_normalisation.get_normalisations(data.element);
+		var localisation = normalisations.localisations;
+		expect(localisation[0].suggestion).toEqual(CK_text.suggestions().s06.suggestion);
+		expect(localisation[0].options.length).toEqual(3);
 	});
 })

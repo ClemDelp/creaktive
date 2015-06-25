@@ -1,27 +1,38 @@
 <script type="text/template" id="normalisation-suggestion-template">
   <tr>
-  	<td>
-  		<div class="{{- suggestion.element.css_manu }} {{- suggestion.element.css_auto }}">
-  		{{- suggestion.element.type }}</div>
-  		<b>{{- suggestion.element.title }}</b>
+  	<td width="20%">
+  		<div class="{{- suggestion.element.css_manu }} {{- suggestion.element.css_auto }}" style="padding:10px;">
+  			<center><b>{{- suggestion.element.title }}</b></center>
+  		</div>
   	</td>
-  	<td>
+  	<td width="80%">
 	  	<p>{{- suggestion.suggestion.fr }}</p>
 	  	<select class="template_selection" data-id="{{-suggestion.element.id}}">
 		    {{ _.each(suggestion.options,function(option){ }}
 		        <option {{ if(option.value == suggestion.element.css_manu){ }}selected="selected"{{ } }} value="{{- option.value }}">{{- option.name.fr }} : {{- option.desc.fr }}</option>
 		  	{{ }); }}
 	  	</select>
-	  	<div>
-	  		{{ if(suggestion.element.type == "knowledge"){ }}
-	  			<p>{{-suggestion.localisation.suggestion.fr}}</p>
-             	{{ _.each(suggestion.localisation.options,function(option){ }}
-			        <a href="#" data-value="{{-option.value}}" data-id="{{-suggestion.element.id}}" title="{{-option.desc.fr}}" class="tiny button radius k_localisation {{ if(option.value == 'inside'){ }}success{{ } }}">{{-option.name.fr}}</a>
-			  	{{ }); }}
-	  		{{ } }}
-	  	</div>
   	</td>
   </tr>
+</script>
+
+<script type="text/template" id="normalisation-localisation-template">
+  	<tr>
+	  	<td width="20%">
+	  		<div class="{{- localisation.element.css_manu }} {{- localisation.element.css_auto }}" style="padding:10px;">
+	  			<center><b>{{- localisation.element.title }}</b></center>
+	  		</div>
+	  	</td>
+	  	<td width="80%">
+		  	<p>{{-localisation.suggestion.fr}}</p>
+		  	<select class="k_localisation" data-id="{{-localisation.element.id}}">
+             	{{ _.each(localisation.options,function(option){ }}
+			        <option {{ if(option.value == localisation.element.inside){ }}selected="selected"{{ } }} value="{{- option.value }}">{{- option.name.fr }} : {{- option.desc.fr }}</option>
+			  	{{ }); }}
+		  	</select>
+	  	</td>
+	</tr>
+
 </script>
 
 <script type="text/template" id="evaluation-suggestion-template">
@@ -32,15 +43,10 @@
   </tr>
 </script>
 
-<script type="text/template" id="evaluation-radar-template">
-	<div id="" class="large-8 medium-8 small-8 columns">
-		<canvas id="myEvaluationChart"></canvas>
-	</div>
-	<div class="large-4 medium-4 small-4 columns">
-		<table style="width:100%">
-			{{ _.each(evalations,function(evaluation){ }} 
-				<tr><td>{{- evaluation.name.fr }}</td><td>{{- evaluation.desc.fr }}</td></tr>
-			{{ }); }}
-		</table>
-	</div>
+<script type="text/template" id="radar-detail-template">
+	<table style="width:100%">
+		{{ _.each(evaluations,function(evaluation){ }} 
+			<tr><td><b>{{- evaluation.options[0].name.fr }} -  <span class="label tiny round">{{- evaluation.options[0].value }}</span></b><br><small>{{- evaluation.options[0].desc.fr }}</small></td></tr>
+		{{ }); }}
+	</table>
 </script>

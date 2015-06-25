@@ -59,7 +59,7 @@ global.Models.News = Backbone.Model.extend({
         id          : "",
         project     : "",//id
         attachedTo  : "",// id
-        user        : "", // id
+        user        : "",// id
     },
     initialize : function News() {
         this.urlRoot = "news";

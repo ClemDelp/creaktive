@@ -1,5 +1,4 @@
 var api = {
-//module.exports = {
   //////////////////////////////
   // API BBMAP
   //////////////////////////////
@@ -43,3 +42,5 @@ var api = {
     return parents;
   },
 }
+
+module.exports = Object.create(api);

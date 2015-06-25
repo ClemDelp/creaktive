@@ -1,3 +1,4 @@
+
 <script type="text/template" id="actionMenu-template">
   <div class="large-10 medium-10 small-10 columns">
     <ul class="button-group tiny radius">
@@ -48,34 +49,56 @@
 
   <div id="suggestions_modal" class="modalContainer reveal-modal large" data-reveal>
     <ul class="tabs" data-tab>
-      <li class="tab-title active"><a href="#panel1">Not Categorized</a></li>
-      <li class="tab-title"><a href="#panel2">Categorized</a></li>
-      <li class="tab-title" style="display:none"><a href="#panel3">Evaluation</a></li>
-      <li class="tab-title" style="display:none"><a href="#panel4">Objectif</a></li>
+      <li class="tab-title active" style="display:true"><a href="#panel1">Not Categorized</a></li>
+      <li class="tab-title" style="display:true"><a href="#panel2">Categorized</a></li>
+      <li class="tab-title" style="display:true"><a href="#localisation_tab">Localisation</a></li>
+      <li class="tab-title" style="display:true"><a href="#evaluation_tab">Evaluation</a></li>
+      <li class="tab-title" style="display:none"><a href="#panel5">Objectif</a></li>
     </ul>
 
     <div class="tabs-content">
       <div class="content active" id="panel1">
         <b>Concepts actualisation</b>
-        <table id="c_not_normalized_table" class="suggestions_table" style="width:100%"></table>
+        <table id="c_not_normalized_table" style="width:100%"></table>
         <b>Knowledges actualisation</b>
-        <table id="k_not_normalized_table" class="suggestions_table" style="width:100%"></table>
+        <table id="k_not_normalized_table" style="width:100%"></table>
       </div>
       
       <div class="content" id="panel2">
         <b>Concepts qualifications</b>
-        <table id="c_normalized_table" class="suggestions_table" style="width:100%"></table>
+        <table id="c_normalized_table" style="width:100%"></table>
         <b>Knowledges qualification</b>
-        <table id="k_normalized_table" class="suggestions_table" style="width:100%"></table>
+        <table id="k_normalized_table" style="width:100%"></table>
       </div>
       
-      <div class="content" id="panel3">
-        <div id="graph_radar_evaluation"></div>
-        <table id="evaluations_table" class="suggestions_table" style="width:100%"></table>
+      <div class="content" id="localisation_tab">
+        <table id="localisation_table" style="width:100%"></table>
+      </div>
+
+      <div class="content" id="evaluation_tab">
+        <div class="row">
+          <div id="radar_graph_container" class="large-7 medium-12 small-12 columns">
+            <canvas id="myEvaluationChart"></canvas>
+          </div>
+          <div id="radar_detail_container" class="large-5 medium-12 small-12 columns panel"></div>
+        </div>
+        <div class="row">
+          <div class="large-12 medium-12 small-12 panel">
+            <table style="width:100%">
+                <thead>
+                  <tr>
+                    <th>Suggestions</th>
+                  </tr>
+                </thead>
+                <tbody id="evaluations_table">
+                </tbody>
+            </table>
+          </div>
+        </div>
       </div>
       
-      <div class="content" id="panel4">
-        <table id="suggestion_table" class="suggestions_table" style="width:100%"></table>    
+      <div class="content" id="panel5">
+        <table id="suggestion_table" style="width:100%"></table>    
       </div>
     </div>
     <small>CreaKtive suggestion algorithm</small>
