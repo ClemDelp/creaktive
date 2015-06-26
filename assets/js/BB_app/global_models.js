@@ -30,7 +30,9 @@ global.Models.Element = Backbone.Model.extend({
         left:"",
         project:"",
         status : "private",
-        css : "",
+        css_auto : "",
+        css_manu : "",
+        inside : "",
         displayChildrens : true,
         visibility : "show"
     },

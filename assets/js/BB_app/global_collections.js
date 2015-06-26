@@ -111,7 +111,8 @@ global.Collections.Elements = Backbone.Collection.extend({
         user: global.models.current_user.get('id'),
         visibility : true,
         css_auto : "",
-        css_manu : ""
+        css_manu : "",
+        inside : ""
     });
     new_element.save();
     // On ajoute le model à la collection

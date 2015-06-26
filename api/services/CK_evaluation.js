@@ -27,25 +27,12 @@ var CK_evaluation = {
     suggestions.push(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges));
     // VARIETE
     suggestions.push(CK_evaluation.get_variety_suggestions(variety.options[0].value));
-    // VARIETE
-    suggestions.push(CK_evaluation.get_value_suggestions(variety.options[0].value));
+    // VALUE
+    suggestions.push(CK_evaluation.get_value_suggestions(value.options[0].value));
+    // STRENGTH
+    suggestions.push(CK_evaluation.get_strength_suggestions(strength.options[0].value));
     
-
-
-    // VALEUR
-    if(value < 10){ // ???
-        // ???
-    }else{
-        // ???
-    }
     ////////////////////////////////////
-    // ROBUSTESSE
-    if(strength > 1){ // robust
-        suggestions.push(CK_text.suggestions().s7,CK_text.suggestions().s8)
-    }else{ // not robust enought
-        suggestions.push(CK_text.suggestions().s5,CK_text.suggestions().work_in_k)
-    }
-    
     suggestions = _.union(_.compact(_.flatten(suggestions)));
     if(cb) cb(suggestions);
     else return suggestions;
@@ -56,6 +43,13 @@ var CK_evaluation = {
   ////////////////////////////
   // SUGGESTION DETAIL
   ////////////////////////////
+  get_strength_suggestions : function(strength){
+    var suggestions = [];
+    if(strength < 2) suggestions.push(CK_text.suggestions().strength_low);
+    if(strength > 2) suggestions.push(CK_text.suggestions().strength_strength);
+    //if(strength == 2) suggestions.push(CK_text.suggestions().);
+    return suggestions;
+  },
   get_variety_suggestions : function(variety){
     var suggestions = [];
     // Variete faible
@@ -240,7 +234,10 @@ var CK_evaluation = {
   //////////////////////////////////////////
   //////////////////////////////////////////
   // EVALUATION EVAL
-
+  cross_product : function(max,value){
+    var echelle_max = 4;
+    return Math.round((((value * echelle_max)/max))*100)/100;
+  },
   // partitions expansive/partitions restrictives = (alternative + hamecon)/(dominante design + C atteignable)
   get_originality_eval : function(elements){
       var concepts = this.get_concept_by_statut(elements);
@@ -248,13 +245,14 @@ var CK_evaluation = {
       var option = originality.options[0];
       // Eval Patrick
       var originality_P = CK_evaluation.get_c_colors_number(concepts);
+      originality_P = CK_evaluation.cross_product(4,originality_P);
       // Eval Mines
       var originality_M = 0;
       var partitions_expansives = CK_evaluation.get_partitions_expansives(concepts);
       var partitions_restrictives = CK_evaluation.get_partitions_restrictives(concepts);
       if((partitions_restrictives == 0)&&(partitions_restrictives == 0)) originality_M = 0; 
       else if((partitions_restrictives > 0)&&(partitions_restrictives == 0)) originality_M = 0;
-      else originality_M = (partitions_expansives/partitions_restrictives);
+      else originality_M = CK_evaluation.cross_product((partitions_expansives+partitions_restrictives),(partitions_expansives/partitions_restrictives));
       // Moyenne des originalities
       option.value = Math.round(((originality_M+originality_P)/2)*100)/100;
 
@@ -279,8 +277,8 @@ var CK_evaluation = {
       // CALCULS
       if(all_k == 0) option.value = 0;
       else if(all_c == 0) option.value = 0;
-      else option.value = Math.round(((new_k.length * concepts_generated.length) / (all_k * all_c))*100)/100;
-
+      else option.value = CK_evaluation.cross_product(1,((new_k.length * concepts_generated.length) / (all_k * all_c)));
+      
       return valeur;
   },
   // robustess = k interne / k externe
@@ -292,8 +290,8 @@ var CK_evaluation = {
       var k_outside = _.where(elements,{type: "knowledge", inside : "outside"});
       if((k_inside.length == 0)&&(k_outside.length == 0)) option.value = 0;
       else if(k_outside.length == 0) option.value = 0;
-      else option.value = Math.round((k_inside.length / k_outside.length)*100)/100;
-
+      else option.value = CK_evaluation.cross_product((k_inside.length + k_outside.length),(k_inside.length / k_outside.length));
+  
       return strength;
   },
   // Variété = nombre de branches & sous-branches par rapport au dominant design
@@ -309,8 +307,8 @@ var CK_evaluation = {
       if(concepts.length == 0) option.value = 0;
       else if(dd == 0) option.value = 0;
       else if(no_dd == 0) option.value = 0;
-      else option.value =  Math.round((no_dd/dd)*100)/100;
-
+      else option.value = CK_evaluation.cross_product((no_dd+dd),no_dd/dd);
+      
       return variete;
   },
   get_equilibre_eval : function(elements){

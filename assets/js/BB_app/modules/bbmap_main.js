@@ -125,6 +125,12 @@ bbmap.Views.Main = Backbone.View.extend({
             "on_keyup"          : this.multiselection,
         });
 
+        this.listener.register_combo({
+            "keys"              : "ctrl",
+            "on_keydown"        : this.multiselection,
+            "on_keyup"          : this.multiselection,
+        });
+
         this.listener.simple_combo("ctrl z", this.history_previous);
         this.listener.simple_combo("ctrl y", this.history_next);
         //this.listener.simple_combo("backspace", this.deleteButton);
@@ -248,13 +254,14 @@ bbmap.Views.Main = Backbone.View.extend({
         }
     },
     cloneLinks : function(id_ref){
+        var _this = this;
         var ids = _.pluck(this.selectedElement,'id');
         this.links.forEach(function(link){
             // Si il y a des links entre les elements
             if((_.indexOf(ids,link.get('target'))>-1)&&(_.indexOf(ids,link.get('source'))>-1)){
                 var source = bbmap.views.main.elements.get(link.get('source')+"-"+id_ref);
                 var target = bbmap.views.main.elements.get(link.get('target')+"-"+id_ref);
-                this.links.newLink(source,target);
+                _this.links.newLink(source,target);
                 // links = _.union(links,link)  
             } 
         });
@@ -569,7 +576,7 @@ bbmap.Views.Main = Backbone.View.extend({
     },
     newViewAndLink : function(source,target,top,left,pos){
         // On centre la map sur l'element
-        _this = this;
+        var _this = this;
         var position = {top:(top*bbmap.zoom.get('val')) + $('#map').offset().top,left:(left*bbmap.zoom.get('val')) + $('#map').offset().left};
         if(pos) position = pos; // pour prendre la position du drop button
         this.centerToElement(position,function(){
@@ -1053,7 +1060,7 @@ bbmap.Views.Main = Backbone.View.extend({
     // jsPlumb
     /////////////////////////////////////////
     jsPlumbEventsInit : function(){
-        _this = this;
+        var _this = this;
         ///////////////////////
         // Remove link process        
         this.instance.bind("beforeDetach", function(conn) {

@@ -176,6 +176,11 @@ var options = {
 		name : {fr:"",en:""},
 		desc : {fr : "Etes vous en mesure de faire une conjonction ou une preuve de concept?", en : ""},
 		value : 0	
+	},
+	partenariat : {
+		name : {fr:"",en:""},
+		desc : {fr : "Il faut monter des partenariats", en : ""},
+		value : 0	
 	}
 }
 
@@ -359,6 +364,11 @@ var CK_text = {
 				options : [],
 				exemples : [],
 			},
+			risk_strong : { 
+				suggestion : {"fr" : "Le risque est plus important", "en" : ""},
+				options : [],
+				exemples : [],
+			},
 
 			only_k_manq_indec :{ 
 				suggestion : {"fr" : "Il n'y a que des connaissances manquantes et indécidables", "en" : ""},
@@ -410,6 +420,19 @@ var CK_text = {
 				exemples : [],
 			},
 
+			/////////////////////////
+			/////////////////////////
+			// STRENGTH
+			strength_low : {
+				suggestion : {fr:"La robustesse de votre base de connaissance est faible, le risque est important",en:""},
+				options : [],
+				exemples : [options.partenariat]
+			},
+			strength_strength : {
+				suggestion : {fr:"Votre base de connaissances est ronbuste, le risque est faible",en:""},
+				options : [],
+				exemples : []
+			},			
 			/////////////////////////
 			/////////////////////////
 			// VALUE

@@ -13,7 +13,9 @@ var ckSuggestion = {
     el_k_normalized : "#k_normalized_table",
     el_c_not_normalized : "#c_not_normalized_table",
     el_k_not_normalized : "#k_not_normalized_table",
-    el_k_localisation : "#localisation_table",
+    el_k_localized : "#k_localized_table",
+    el_k_not_localized : "#k_not_localized_table",
+
     el_radar_detail : "#radar_detail_container",
 
     el_evaluation_suggestion : "#evaluations_table",
@@ -91,7 +93,15 @@ ckSuggestion.Views.Main = Backbone.View.extend({
             ckSuggestion.views.main.render_c_not_normalized(c_not_normalized);
             ckSuggestion.views.main.render_k_not_normalized(k_not_normalized);
             // LOCALISATION
-            ckSuggestion.views.main.render_localisations(normalisations.localisations);
+            var k_localized = [];
+            var k_not_localized = [];
+            normalisations.localisations.forEach(function(localisation){
+                if(localisation.element.inside != "") k_localized.push(localisation);
+                if(localisation.element.inside == "") k_not_localized.push(localisation);
+            });
+
+            ckSuggestion.views.main.render_k_localized(k_localized);
+            ckSuggestion.views.main.render_k_not_localized(k_not_localized);
             
         });
         // Get evaluation suggestions
@@ -154,10 +164,16 @@ ckSuggestion.Views.Main = Backbone.View.extend({
             $(ckSuggestion.el_evaluation_suggestion).append(ckSuggestion.views.main.evaluation_tr({suggestion : suggestion}));
         });
     },
-    render_localisations : function(localisations){
-        $(ckSuggestion.el_k_localisation).empty();
+    render_k_localized : function(localisations){
+        $(ckSuggestion.el_k_localized).empty();
         localisations.forEach(function(localisation){
-            $(ckSuggestion.el_k_localisation).append(ckSuggestion.views.main.localisation_tr({localisation : localisation}));
+            $(ckSuggestion.el_k_localized).append(ckSuggestion.views.main.localisation_tr({localisation : localisation}));
+        });
+    },
+    render_k_not_localized : function(localisations){
+        $(ckSuggestion.el_k_not_localized).empty();
+        localisations.forEach(function(localisation){
+            $(ckSuggestion.el_k_not_localized).append(ckSuggestion.views.main.localisation_tr({localisation : localisation}));
         });
     },
     render_c_normalized : function(suggestions){
