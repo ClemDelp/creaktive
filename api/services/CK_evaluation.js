@@ -25,6 +25,13 @@ var CK_evaluation = {
     suggestions.push(CK_evaluation.get_miss_element_type_suggestions(elements));
     // SPECIFIC C CONFIGURATION
     suggestions.push(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges));
+    // VARIETE
+    suggestions.push(CK_evaluation.get_variety_suggestions(variety.options[0].value));
+    // VARIETE
+    suggestions.push(CK_evaluation.get_value_suggestions(variety.options[0].value));
+    
+
+
     // VALEUR
     if(value < 10){ // ???
         // ???
@@ -43,6 +50,146 @@ var CK_evaluation = {
     if(cb) cb(suggestions);
     else return suggestions;
   },
+  ////////////////////////////
+  ////////////////////////////
+  ////////////////////////////
+  ////////////////////////////
+  // SUGGESTION DETAIL
+  ////////////////////////////
+  get_variety_suggestions : function(variety){
+    var suggestions = [];
+    // Variete faible
+    if(variety < 2) suggestions.push(CK_text.suggestions().variety_low);
+    // variete forte
+    if(variety == 4) suggestions.push(CK_text.suggestions().variety_strength);
+
+    return suggestions;
+  },
+  get_value_suggestions : function(value){
+    var suggestions = [];
+    // Variete faible
+    if(value < 2) suggestions.push(CK_text.suggestions().value_low);
+    // variete forte
+    if(value == 4) suggestions.push(CK_text.suggestions().value_strength);
+
+    return suggestions;
+  },
+  get_specific_confirguration_suggestions : function(concepts,knowledges){
+    var suggestions = [];
+    // aucun c connu
+    if(concepts.c_connu.length == 0) suggestions.push(CK_text.suggestions().work_in_k)
+    // aucun c atteignable
+    if(concepts.c_atteignable.length == 0) suggestions.push(CK_text.suggestions().s5)
+    // aucun c alternatif
+    if(concepts.c_alternatif.length == 0) suggestions.push(CK_text.suggestions().s6)
+    // aucun c hamecon
+    if(concepts.c_hamecon.length == 0) suggestions.push(CK_text.suggestions().s8)
+    // que des c atteignable + c alternatif
+    if((concepts.c_connu.length == 0)&&(concepts.c_atteignable.length > 0)&&(concepts.c_alternatif.length > 0)&&(concepts.c_hamecon.length == 0)) suggestions.push(CK_text.suggestions().s9)
+    // que des c alternatif + hamecon
+    if((concepts.c_connu.length == 0)&&(concepts.c_atteignable.length == 0)&&(concepts.c_alternatif.length > 0)&&(concepts.c_hamecon.length > 0)) suggestions.push(CK_text.suggestions().s10)
+    // que des k indecidable + c hamecon
+    if((concepts.c_connu.length == 0)&&(concepts.c_atteignable.length == 0)&&(concepts.c_alternatif.length == 0)&&(concepts.c_hamecon.length > 0)){
+      if((knowledges.k_encours.length == 0)&&(knowledges.k_manquante.length == 0)&&(knowledges.k_indesidable.length > 0)&&(knowledges.k_validees.length == 0)){
+        suggestions.push(CK_text.suggestions().s48)
+      }
+    }
+    // Aucune K validee
+    if(knowledges.k_validees.length == 0) suggestions.push(CK_text.suggestions().no_k_validee)
+    // Aucune K en cours
+    if(knowledges.k_encours.length == 0) suggestions.push(CK_text.suggestions().no_k_encours);
+    // Aucune K manquante
+    if(knowledges.k_manquante.length == 0) suggestions.push(CK_text.suggestions().no_k_manquante, CK_text.suggestions().gdc_pdk, CK_text.suggestions().fast_innov, CK_text.suggestions().risk_less);
+    // Aucune K indecidable
+    if(knowledges.k_indesidable.length == 0) suggestions.push(CK_text.suggestions().no_k_indecidable);
+    // que des K manquante + indecidable
+    if((knowledges.k_encours.length == 0)&&(knowledges.k_manquante.length > 0)&&(knowledges.k_indesidable.length > 0)&&(knowledges.k_validees.length == 0)){
+      suggestions.push(CK_text.suggestions().risk_up, CK_text.suggestions().only_k_manq_indec);
+    }
+    // que des en cours + valiées
+    if((knowledges.k_encours.length > 0)&&(knowledges.k_manquante.length == 0)&&(knowledges.k_indesidable.length == 0)&&(knowledges.k_validees.length > 0)){
+      suggestions.push(CK_text.suggestions().gdc_pdk,CK_text.suggestions().risk_less,CK_text.suggestions().roadmap_cmt);
+    }
+    return suggestions;
+  },
+  get_miss_element_type_suggestions : function(elements){
+    var suggestions = [];
+    if(_.where(elements,{type:"knowledge"}).length == 0) suggestions.push(CK_text.suggestions().no_knowledge);
+    if(_.where(elements,{type:"concept"}).length == 0) suggestions.push(CK_text.suggestions().no_concept);
+    return suggestions;
+  },
+  get_localisation_suggestions : function(knowledges){
+    var suggestions = [];
+    var inside = [];
+    var outside = [];
+    knowledges.forEach(function(knowledge){
+      if(knowledge.inside == "inside") inside.push(knowledge);
+      else if(knowledge.inside == "outside") outside.push(knowledge);
+    });
+    if(inside.length == 0) suggestions.push(CK_text.suggestions().no_inside)
+    if(outside.length == 0) suggestions.push(CK_text.suggestions().no_outside)
+
+    return suggestions;
+  },
+  get_partitions_expansives_suggestions : function(p_expansives){
+    var suggestions = [];
+    if(p_expansives == 0) suggestions.push(CK_text.suggestions().no_expansive);
+    return suggestions;
+  },
+  get_partitions_restrictives_suggestions : function(p_restrictives){
+    var suggestions = [];
+    if(p_restrictives == 0) suggestions.push(CK_text.suggestions().no_restrictive);
+    return suggestions;
+  },
+  get_originality_suggestions : function(originality,c_connu){
+    var suggestions = [];
+    if(originality < 4){
+      suggestions.push(CK_text.suggestions().s12);
+      if(c_connu > 0) suggestions.push(CK_text.suggestions().s0,CK_text.suggestions().s1);
+      // faire des evaluations avec du contenu web ???
+    }
+    if(originality > 1){
+      suggestions.push(CK_text.suggestions().s11);
+    }
+    if(originality == 4){
+      suggestions.push(CK_text.suggestions().s2,CK_text.suggestions().s3);
+    }
+    return suggestions;
+  },
+  get_miss_color_suggestions : function(concepts){
+    var suggestions = [];
+    // Si il n'y a aucun C connu
+    if(concepts.c_connu.length == 0) suggestions.push(CK_text.suggestions().work_in_k); 
+    // Si il n'y a aucun C atteignable
+    if(concepts.c_atteignable.length == 0) suggestions.push(CK_text.suggestions().s5); 
+    // Si il n'y a aucun C alternatif
+    if(concepts.c_alternatif.length == 0) suggestions.push(CK_text.suggestions().s6); 
+    // Si il n'y a aucun C hamecon
+    if(concepts.c_hamecon.length == 0) suggestions.push(CK_text.suggestions().s8); 
+    // Si il n'y a que des atteignable + alternatif
+    if((concepts.c_connu.length == 0)&&(concepts.c_hamecon.length == 0)&&(concepts.c_atteignable.length > 0)&&(concepts.c_alternatif.length > 0)) evaluations.unshift(CK_text.suggestions().s9); 
+    // Si il n'y a que des alternatif + hamecon
+    if((concepts.c_connu.length == 0)&&(concepts.c_hamecon.length > 0)&&(concepts.c_atteignable.length == 0)&&(concepts.c_alternatif.length > 0)) evaluations.unshift(CK_text.suggestions().s10);
+    
+    return suggestions;
+  },
+  get_equilibre_suggest : function(elements){
+      var equilibre = this.get_equilibre_eval(elements);
+      // !!!! inclure par default un pourcentage de l'équilibre en suggestion !!!!!!!!!!!!!!!
+      var evaluations = [];
+      if(equilibre > 1){ // plus de C que de K
+        //vérifier avec les liens !!! Car il peut y avoir un équilibre mais pas de lien
+          evaluations.unshift(CK_text.suggestions().s2)
+      }else if(equilibre < 1){ // plus de K que de C
+          evaluations.unshift(CK_text.suggestions().s3)
+      }else if(equilibre == 1){ // equilibre parfait
+
+      }
+      return evaluations;
+  },
+
+  ////////////////////////////
+  ////////////////////////////
   get_evaluation_eval : function(elements,links,cb){
     
     var evaluation = {
@@ -88,6 +235,9 @@ var CK_evaluation = {
       })
       return {"c_empty" : c_empty, "c_connu" : c_connu, "c_atteignable" : c_atteignable, "c_alternatif" : c_alternatif, "c_hamecon" : c_hamecon};
   },
+  //////////////////////////////////////////
+  //////////////////////////////////////////
+  //////////////////////////////////////////
   //////////////////////////////////////////
   // EVALUATION EVAL
 
@@ -166,105 +316,6 @@ var CK_evaluation = {
   get_equilibre_eval : function(elements){
       var equilibre = _.where(elements,{type : "concept"}).length / _.where(elements,{type : "knowledge"}).length;
       return equilibre;
-  },
-  //////////////////////////////////////////
-  // SUGGESTION
-  get_specific_confirguration_suggestions : function(concepts,knowledges){
-    var suggestions = [];
-    // aucun c connu
-    if(concepts.c_connu.length == 0) suggestions.push(CK_text.suggestions().work_in_k)
-    // aucun c atteignable
-    if(concepts.c_atteignable.length == 0) suggestions.push(CK_text.suggestions().s5)
-    // aucun c alternatif
-    if(concepts.c_alternatif.length == 0) suggestions.push(CK_text.suggestions().s6)
-    // aucun c hamecon
-    if(concepts.c_hamecon.length == 0) suggestions.push(CK_text.suggestions().s8)
-    // que des c atteignable + c alternatif
-    if((concepts.c_connu.length == 0)&&(concepts.c_atteignable.length > 0)&&(concepts.c_alternatif.length > 0)&&(concepts.c_hamecon.length == 0)) suggestions.push(CK_text.suggestions().s9)
-    // que des c alternatif + hamecon
-    if((concepts.c_connu.length == 0)&&(concepts.c_atteignable.length == 0)&&(concepts.c_alternatif.length > 0)&&(concepts.c_hamecon.length > 0)) suggestions.push(CK_text.suggestions().s10)
-    // que des k indecidable + c hamecon
-    if((concepts.c_connu.length == 0)&&(concepts.c_atteignable.length == 0)&&(concepts.c_alternatif.length == 0)&&(concepts.c_hamecon.length > 0)){
-      if((knowledges.k_encours.length == 0)&&(knowledges.k_manquante.length == 0)&&(knowledges.k_indesidable.length > 0)&&(knowledges.k_validees.length == 0)){
-        suggestions.push(CK_text.suggestions().s48)
-      }
-    }
-    return suggestions;
-  },
-  get_miss_element_type_suggestions : function(elements){
-    var suggestions = [];
-    if(_.where(elements,{type:"knowledge"}).length == 0) suggestions.push(CK_text.suggestions().no_knowledge);
-    if(_.where(elements,{type:"concept"}).length == 0) suggestions.push(CK_text.suggestions().no_concept);
-    return suggestions;
-  },
-  get_localisation_suggestions : function(knowledges){
-    var suggestions = [];
-    var inside = [];
-    var outside = [];
-    knowledges.forEach(function(knowledge){
-      if(knowledge.inside == "inside") inside.push(knowledge);
-      else if(knowledge.inside == "outside") outside.push(knowledge);
-    });
-    if(inside.length == 0) suggestions.push(CK_text.suggestions().no_inside)
-    if(outside.length == 0) suggestions.push(CK_text.suggestions().no_outside)
-
-    return suggestions;
-  },
-  get_partitions_expansives_suggestions : function(p_expansives){
-    var suggestions = [];
-    if(p_expansives == 0) suggestions.push(CK_text.suggestions().no_expansive);
-    return suggestions;
-  },
-  get_partitions_restrictives_suggestions : function(p_restrictives){
-    var suggestions = [];
-    if(p_restrictives == 0) suggestions.push(CK_text.suggestions().no_restrictive);
-    return suggestions;
-  },
-  get_originality_suggestions : function(originality,c_connu){
-    var suggestions = [];
-    if(originality < 4){
-      suggestions.push(CK_text.suggestions().s12);
-      if(c_connu > 0) suggestions.push(CK_text.suggestions().s0,CK_text.suggestions().s1);
-      // faire des evaluations avec du contenu web ???
-    }
-    if(originality > 1){
-      suggestions.push(CK_text.suggestions().s11);
-    }
-    if(originality == 4){
-      suggestions.push(CK_text.suggestions().s2,CK_text.suggestions().s3);
-    }
-    return suggestions;
-  },
-  get_miss_color_suggestions : function(concepts){
-    var suggestions = [];
-    // Si il n'y a aucun C connu
-    if(concepts.c_connu.length == 0) suggestions.push(CK_text.suggestions().work_in_k); 
-    // Si il n'y a aucun C atteignable
-    if(concepts.c_atteignable.length == 0) suggestions.push(CK_text.suggestions().s5); 
-    // Si il n'y a aucun C alternatif
-    if(concepts.c_alternatif.length == 0) suggestions.push(CK_text.suggestions().s6); 
-    // Si il n'y a aucun C hamecon
-    if(concepts.c_hamecon.length == 0) suggestions.push(CK_text.suggestions().s8); 
-    // Si il n'y a que des atteignable + alternatif
-    if((concepts.c_connu.length == 0)&&(concepts.c_hamecon.length == 0)&&(concepts.c_atteignable.length > 0)&&(concepts.c_alternatif.length > 0)) evaluations.unshift(CK_text.suggestions().s9); 
-    // Si il n'y a que des alternatif + hamecon
-    if((concepts.c_connu.length == 0)&&(concepts.c_hamecon.length > 0)&&(concepts.c_atteignable.length == 0)&&(concepts.c_alternatif.length > 0)) evaluations.unshift(CK_text.suggestions().s10);
-    
-    return suggestions;
-  },
-  get_equilibre_suggest : function(elements){
-      var equilibre = this.get_equilibre_eval(elements);
-      // !!!! inclure par default un pourcentage de l'équilibre en suggestion !!!!!!!!!!!!!!!
-      var evaluations = [];
-      if(equilibre > 1){ // plus de C que de K
-        //vérifier avec les liens !!! Car il peut y avoir un équilibre mais pas de lien
-          evaluations.unshift(CK_text.suggestions().s2)
-      }else if(equilibre < 1){ // plus de K que de C
-          evaluations.unshift(CK_text.suggestions().s3)
-      }else if(equilibre == 1){ // equilibre parfait
-
-      }
-      return evaluations;
   },
   //////////////////////////////////////////
   // RISQUE

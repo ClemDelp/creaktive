@@ -180,7 +180,6 @@ describe('CK Evaluation Tests',function(){
 		var originality = 2;
 		var c_connu = 1;
 		expect(CK_evaluation.get_originality_suggestions(originality,c_connu)).toContain(CK_text.suggestions().s11);
-		expect(CK_evaluation.get_originality_suggestions(originality,c_connu)).toContain(CK_text.suggestions().s11);
 	});
 
 	it("Si j'ai une originalité = 4 avec un arbre de concepts de tous les types with c_connu == 0",function(){
@@ -278,18 +277,79 @@ describe('CK Evaluation Tests',function(){
 	});
 
 
+	it("Si il n'y a aucune K validée",function(){
+		var data = new element_generator({"type":"knowledge"});
+		var concepts = CK_evaluation.get_concept_by_statut(data.element);
+		var knowledges = CK_evaluation.get_knowledge_by_statut(data.element);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().no_k_validee);
+	});
+
+	it("Si il n'y a aucune K en cours",function(){
+		var data = new element_generator({"type":"knowledge"});
+		var concepts = CK_evaluation.get_concept_by_statut(data.element);
+		var knowledges = CK_evaluation.get_knowledge_by_statut(data.element);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().no_k_encours);
+
+	});
+	it("Si il n'y a aucune K manquante",function(){
+		var data = new element_generator({"type":"knowledge"});
+		var concepts = CK_evaluation.get_concept_by_statut(data.element);
+		var knowledges = CK_evaluation.get_knowledge_by_statut(data.element);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().no_k_manquante);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().gdc_pdk);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().fast_innov);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().risk_less)
+	});
+	it("Si il n'y a aucune K indécidable",function(){
+		var data = new element_generator({"type":"knowledge"});
+		var concepts = CK_evaluation.get_concept_by_statut(data.element);
+		var knowledges = CK_evaluation.get_knowledge_by_statut(data.element);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().no_k_indecidable);
+		// TESTER LES OPTIONS !!!!!!!!!
+	});
 
 
+	it("Si il n'y a que des K manquante et indécidable",function(){
+		var k1 = new element_generator({"type":"knowledge","css_manu" : "k_manquante"});
+		var k2 = new element_generator({"type":"knowledge","css_manu" : "k_indesidable"});
+		var data = _.union(k1.element,k2.element);
+		var concepts = CK_evaluation.get_concept_by_statut(data);
+		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().risk_up);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().only_k_manq_indec);
+	});
 
-	it("Si il n'y a aucune K validée",function(){expect(1).toEqual(2);});
-	it("Si il n'y a aucune K en cours",function(){expect(1).toEqual(2);});
-	it("Si il n'y a aucune K manquante",function(){expect(1).toEqual(2);});
-	it("Si il n'y a aucune K indésirable",function(){expect(1).toEqual(2);});
-	it("Si il n'y a que des K manquante et indécidable",function(){expect(1).toEqual(2);});
-	it("Si il n'y a que des K en cours + validée",function(){expect(1).toEqual(2);});
+
+	it("Si il n'y a que des K en cours + validée",function(){
+		var k1 = new element_generator({"type":"knowledge","css_manu" : "k_encours"});
+		var k2 = new element_generator({"type":"knowledge","css_manu" : "k_validees"});
+		var data = _.union(k1.element,k2.element);
+		var concepts = CK_evaluation.get_concept_by_statut(data);
+		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().gdc_pdk);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().risk_less);
+		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().roadmap_cmt);
+	});
 	
-	it("Si j'ai une variété faible avec un arbre composé de ...",function(){expect(1).toEqual(2);});
-	it("Si j'ai une variété forte avec un arbre composé de ...",function(){expect(1).toEqual(2);});
+	it("Si j'ai une variété faible < 2",function(){
+		var variety = 1;
+		expect(CK_evaluation.get_variety_suggestions(variety)).toContain(CK_text.suggestions().variety_low);
+	});
+	
+	it("Si j'ai une variété forte = 4",function(){
+		var variety = 4;
+		expect(CK_evaluation.get_variety_suggestions(variety)).toContain(CK_text.suggestions().variety_strength);
+	});
+	
+	it("Si j'ai une valeur faible < 2",function(){
+		var value = 1;
+		expect(CK_evaluation.get_value_suggestions(value)).toContain(CK_text.suggestions().value_low);
+	});
+	
+	it("Si j'ai une valeur forte = 4",function(){
+		var value = 4;
+		expect(CK_evaluation.get_value_suggestions(value)).toContain(CK_text.suggestions().value_strength);
+	});
 
 	it("Si j'ai robustesse < 1 avec un arbre composé de ...",function(){expect(1).toEqual(2);});
 	it("Si j'ai robustesse > 1 avec un arbre composé de ...",function(){expect(1).toEqual(2);});

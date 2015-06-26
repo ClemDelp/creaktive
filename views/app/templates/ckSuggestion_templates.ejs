@@ -39,6 +39,13 @@
   <tr>
   	<td>
 	  	<p>{{- suggestion.suggestion.fr }}</p>
+	  	{{ if(suggestion.options.length > 0){ }} 
+	  		<ul class="panel">
+		  		{{ _.each(suggestion.options,function(option){ }}  
+		  			<li>{{-option.name.fr}} - {{-option.desc.fr}}</li>
+		  		{{ }); }}
+	  		</ul>
+	  	{{ } }}
   	</td>
   </tr>
 </script>

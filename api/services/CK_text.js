@@ -1,4 +1,9 @@
-var exemples = {}
+var exemples = {
+	chaines_alcan : {
+		exemple : {fr : "voir ex chaine de produit fluidisé ALCAN", en: ""}
+	}
+	
+}
 
 
 var options = {
@@ -103,6 +108,75 @@ var options = {
 			"en" : ""
 		},
 	},
+	embauche : { 
+		name : {"fr":"Si non","en":"If no"},
+		desc : {"fr" : "Embaucher un expert", "en" : ""},
+		value : 0,
+	},
+	achete_k : { 
+		name : {"fr":"Si non","en":"If no"},
+		desc : {"fr" : "Achèter de la connaissance en externe", "en" : ""},
+		value : 0,
+	},
+	expert_call : { 
+		name : {"fr":"Si non","en":"If no"},
+		desc : {"fr" : "Faire appel à un expert", "en" : ""},
+		value : 0,
+	},
+	k_identification : { 
+		name : {"fr":"","en":"If no"},
+		desc : {"fr" : "Identifier les connaissances à acquérir et à valider en fonction des concepts", "en" : ""},
+		value : 0,
+	},
+	c_generation : {
+		name : {fr:"",en:""},
+		desc : {fr : "générer de nouveaux concepts pour produire plus de connaissances",en:""},
+		value : 0
+	},
+	dev_c_hamecon : {
+		name : {fr:"",en:""},
+		desc : {fr : "Il faut remonter sur les concepts hameçons, développer des concepts hameçons",en:""},
+		value : 0
+	},
+	crazy_concept : {
+		name : {fr:"",en:""},
+		desc : {fr : "proposer des crazy concepts",en:""},
+		value : 0
+	},
+	//////////////////////
+	// KSOR
+	ksor_eval : { 
+		name : {"fr":"Si non","en":"If no"},
+		desc : {"fr" : "Voir évaluation KSOR", "en" : ""},
+		value : 0,
+	},
+	ksor_cotation : { 
+		name : {fr:"",en:""},
+		desc : {fr : "faire une cotation KSOR", en : ""},
+		value : 0
+	},
+	/////////////////////
+	w_divergence : { 
+		name : {fr:"",en:""},
+		desc : {fr : "Reprendre le travail de divergence pour forcer l’expansion", en : ""},
+		value : 0
+	},
+	search_new_k : { 
+		name : {fr:"",en:""},
+		desc : {fr : "Rechercher de nouvelles connaissances et travailler avec de nouveau expert ", en : ""},
+		value : 0
+	},
+	/////////////////////
+	search_new_competence : { 
+		name : {fr:"",en:""},
+		desc : {fr : "Il faut aller chercher des compétences extérieurs", en : ""},
+		value : 0
+	},
+	conjonction : {
+		name : {fr:"",en:""},
+		desc : {fr : "Etes vous en mesure de faire une conjonction ou une preuve de concept?", en : ""},
+		value : 0	
+	}
 }
 
 var CK_text = {
@@ -234,86 +308,72 @@ var CK_text = {
 				options : [],
 				exemples : [],
 			},
-			"s13" : { 
-				suggestion : {"fr" : "toutes vos connaissances sont manquantes il faut aller les chercher à l’extérieur, avez vous la capacité à absorber de nouvelle connaissance?", "en" : ""},
+			no_k_validee : { 
+				suggestion : {"fr" : "Toutes vos connaissances sont manquantes il faut aller les chercher à l’extérieur. Avez-vous la capacité à absorber de nouvelles connaissances ?", "en" : ""},
+				options : [options.embauche,options.achete_k,options.expert_call,options.ksor_eval],
+				exemples : [],
+			},
+			no_k_encours : { 
+				suggestion : {"fr" : "Il n’y a pas de programme de recherche ou d’innovation en cour", "en" : ""},
+				options : [options.k_identification],
+				exemples : [],
+			},
+			
+
+
+			no_k_manquante : { 
+				suggestion : {"fr" : "Aucunes connaissances manquantes : j’ai toute les connaissances pour répondre à de nouveaux concepts", "en" : ""},
+				options : [],
+				exemples : [exemples.chaines_alcan],
+			},
+			// DELTA_C DELTA_K
+			gdc_pdk : { 
+				suggestion : {"fr" : "vous êtes dans une situation de moyen et grd delta C et de petit delta K", "en" : ""},
 				options : [],
 				exemples : [],
 			},
-			"s14" : { 
-				suggestion : {"fr" : "il faut qu’elle embauche", "en" : ""},
+
+
+			// ROAD MAP
+			roadmap_cmt : { 
+				suggestion : {"fr" : "Roadmap cour et moyen terme", "en" : ""},
 				options : [],
 				exemples : [],
 			},
-			"s15" : { 
-				suggestion : {"fr" : "qu’elle achète la connaissance en externe", "en" : ""},
-				options : [],
-				exemples : [],
-			},
-			"s16" : { 
-				suggestion : {"fr" : "quelle fasse appel à un expert", "en" : ""},
-				options : [],
-				exemples : [],
-			},
-			"s17" : { 
-				suggestion : {"fr" : "voir évaluation KSOR", "en" : ""},
-				options : [],
-				exemples : [],
-			},
-			"s18" : { 
-				suggestion : {"fr" : "il n’y a pas de programme de recherche ou d’innovation en cour", "en" : ""},
-				options : [],
-				exemples : [],
-			},
-			"s19" : { 
-				suggestion : {"fr" : "il faut lancer des programmes de recherche et d’innovation", "en" : ""},
-				options : [],
-				exemples : [],
-			},
-			"s20" : { 
-				suggestion : {"fr" : "identifier les connaissances à acquérir et à valider en fonction des concepts (faire le lien avec le web)", "en" : ""},
-				options : [],
-				exemples : [],
-			},
-			"s21" : { 
-				suggestion : {"fr" : "j’ai toute les K pour répondre à de nouveaux C", "en" : ""},
-				options : [],
-				exemples : [],
-			},
-			"s22" : { 
-				suggestion : {"fr" : "vous aide dans une situation de moyen et grd delta C et de petit delta K", "en" : ""},
-				options : [],
-				exemples : [],
-			},
-			"s23" : { 
+			
+			//
+
+			fast_innov : { 
 				suggestion : {"fr" : "vous pouvez aller assez vite pour mettre en place l’innovation", "en" : ""},
 				options : [],
 				exemples : [],
 			},
-			"s24" : { 
-				suggestion : {"fr" : "(voir ex chaine de produit fluidisé ALCAN)", "en" : ""},
+
+			risk_less : { 
+				suggestion : {"fr" : "Le risque est fortement diminué (cause la plus probable : aucunes connaissances manquantes)", "en" : ""},
 				options : [],
 				exemples : [],
 			},
-			"s25" : { 
-				suggestion : {"fr" : "diminue fortement le risque", "en" : ""},
+			risk_up : { 
+				suggestion : {"fr" : "Le niveau de risque augmente (cause la plus probable : que des connaissances manquantes et indécidables)", "en" : ""},
 				options : [],
 				exemples : [],
 			},
-			"s26" : { 
-				suggestion : {"fr" : "générer de nouveau concept pour produire du K", "en" : ""},
+
+			only_k_manq_indec :{ 
+				suggestion : {"fr" : "Il n'y a que des connaissances manquantes et indécidables", "en" : ""},
 				options : [],
+				exemples : [options.ksor_cotation],
+			},
+
+			no_k_indecidable : { 
+				suggestion : {"fr" : "Aucune connaissances indécidables", "en" : ""},
+				options : [options.c_generation,options.dev_c_hamecon,options.crazy_concept],
 				exemples : [],
 			},
-			"s27" : { 
-				suggestion : {"fr" : "il faut remonter sur les C hamecon developper des C hamecon", "en" : ""},
-				options : [],
-				exemples : [],
-			},
-			"s28" : { 
-				suggestion : {"fr" : "proposer des crazy concepts", "en" : ""},
-				options : [],
-				exemples : [],
-			},
+			
+
+
 			no_inside : { 
 				suggestion : {"fr" : "Aucune connaissances internes à votre entreprise trouvées", "en" : ""},
 				options : [],
@@ -334,11 +394,41 @@ var CK_text = {
 				options : [],
 				exemples : [],
 			},
-			"s29" : { "fr" : "augmente le niveau de risque ", "en" : ""},
-			"s30" : { "fr" : "faire une cotation KSOR", "en" : ""},
-			"s31" : { "fr" : "grd delta C petit delta K peu de risque", "en" : ""},
-			"s32" : { "fr" : "roadmap cour et moyen terme", "en" : ""},
+			
+			/////////////////////////
+			/////////////////////////
+			// VARIETY
+			variety_low : { 
+				suggestion : {"fr" : "La variété de votre espace de concepts est faible", "en" : ""},
+				options : [],
+				exemples : [options.w_divergence, options.search_new_k],
+			},
+
+			variety_strength : { 
+				suggestion : {"fr" : "La variété de votre espace de concepts est forte ce qui est une bonne indication sur les possibilités de structurer des roadmaps pour l’exploration", "en" : ""},
+				options : [],
+				exemples : [],
+			},
+
+			/////////////////////////
+			/////////////////////////
+			// VALUE
+			value_low : { 
+				suggestion : {"fr" : "La valeur de votre espace de connaissances est faible", "en" : ""},
+				options : [],
+				exemples : [options.search_new_competence],
+			},
+
+			value_strength : { 
+				suggestion : {"fr" : "La valeur de votre espace de connaissances est forte ce qui augmente l'intérêt du projet innovant et renvoi très certainement vers une expansion de concept et/ou une conjonction", "en" : ""},
+				options : [],
+				exemples : [options.conjonction],
+			},
+			
+
 			"s33" : { "fr" : "voir les règles d’expansion en C", "en" : ""},
+			
+
 			"s34" : { "fr" : "reprendre le travail de divergence pour forcer l’expansion", "en" : ""},
 			"s35" : { "fr" : "rechercher de nouvelles connaissances et travailler avec de nouveau expert ", "en" : ""},
 			"s36" : { "fr" : "bonne indication sur les possibilités de structurer des road map pour l’exploration", "en" : ""},
