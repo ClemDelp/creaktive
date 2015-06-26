@@ -121,7 +121,7 @@ var options = {
 	/////////////////////////////////
 	/////////////////////////////////
 	embauche : { 
-		name : {"fr","en":""},
+		name : {"fr":"","en":""},
 		desc : {"fr" : "Embaucher un expert", "en" : ""},
 		value : 0,
 	},
