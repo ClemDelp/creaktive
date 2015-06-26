@@ -53,7 +53,7 @@
 <script type="text/template" id="radar-detail-template">
 	<table style="width:100%">
 		{{ _.each(evaluations,function(evaluation){ }} 
-			<tr><td><b>{{- evaluation.options[0].name.fr }} -  <span class="label tiny round">{{- evaluation.options[0].value }}</span></b><br><small>{{- evaluation.options[0].desc.fr }}</small></td></tr>
+			<tr><td><b>{{- evaluation.options[0].name.fr }} -  <span class="label tiny round">{{- evaluation.options[0].value }} <small>/ 4</small></span></b><br><small>{{- evaluation.options[0].desc.fr }}</small></td></tr>
 		{{ }); }}
 	</table>
 </script>

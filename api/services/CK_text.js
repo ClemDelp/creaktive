@@ -7,100 +7,73 @@ var exemples = {
 
 
 var options = {
-	///////////////////////////////////////////////////////
-    // STATUT
-    ///////////////////////////////////////////////////////
+    /////////////////////////////////
+	/////////////////////////////////
+	/////////////////////////////////
+	// Statut
+
     // Concept
-    "statut_empty" : {
+    statut_empty : {
 		"value" : "",
 		"name" : {"fr" : "Vide", "en" : "Empty"},
 		"desc" : {"fr" : "L'élément n'a pas de statut","en" : ""},
 	},
-	"c_connu" : {
+	c_connu : {
 		"value" : "c_connu",
 		"name" : {"fr" : "Connu", "en" : ""},
 		"desc" : {"fr" : "Le concept renvoie à un ensemble de solutions techniques connues, dont la performance est également connue","en" : ""},
 	},
-    "c_atteignable" : {
+    c_atteignable : {
 		"value" : "c_atteignable",
 		"name" : {"fr" : "Atteignable", "en" : ""},
 		"desc" : {"fr" : "Le concept est à approfondir ou atteignable","en" : ""},
 	},
-	"c_alternatif" : {
+	c_alternatif : {
 		"value" : "c_alternatif",
 		"name" : {"fr" : "Alternatif", "en" : ""},
 		"desc" : {"fr" : "Le concept est éloigné du dominant design et peut faire l'objet d'une démarche de conception dédiée","en" : ""},
 	},
-	"c_hamecon" : {
+	c_hamecon : {
 		"value" : "c_hamecon",
 		"name" : {"fr" : "Hameçon", "en" : ""},
 		"desc" : {"fr" : "Le concept est lié à une rupture de règles et devient un point d'accroche pour de nouvelles connaissances en émergence/expansion pure","en" : ""},
 	},
 	// Knowledge
-	"k_validees" : {
+	k_validees : {
 		"value" : "k_validees",
 		"name" : {"fr" : "Validées", "en" : ""},
 		"desc" : {"fr" : "La connaissance acquise est validée en interne","en" : ""},
 	},	
-	"k_encours" : {
+	k_encours : {
 		"value" : "k_encours",
 		"name" : {"fr" : "En cours", "en" : ""},
 		"desc" : {"fr" : "La connaissance est en cours d'acquisition","en" : ""},
 	},	
-	"k_manquante" : {
+	k_manquante : {
 		"value" : "k_manquante",
 		"name" : {"fr" : "Manquante", "en" : ""},
 		"desc" : {"fr" : "La connaissance est absente ou non actionnable en interne","en" : ""},
 	},	
-	"k_indesidable" : {
+	k_indesidable : {
 		"value" : "k_indesidable",
 		"name" : {"fr" : "Indécidable", "en" : ""},
 		"desc" : {"fr" : "La connaissance est manquante de surcroit non accessible","en" : ""},
 	},
-	"inside" : {
+	/////////////////////////////////
+	/////////////////////////////////
+	/////////////////////////////////
+	// Localisation
+	inside : {
 		"value" : "inside",
 		"name" : {"fr" : "Interne", "en" : "Inside"},
 		"desc" : {"fr" : "La connaissance est interne à l'entreprise","en" : ""},
 	},
-	"outside" : {
+	outside : {
 		"value" : "outside",
 		"name" : {"fr" : "Externe", "en" : "Outside"},
 		"desc" : {"fr" : "La connaissance est externe à l'entreprise","en" : ""},
 	},
-	///////////////
-	"originality" : {
-		"value" : 0,
-		"name" : {"fr" : "Originalité", "en" : "Originality"},
-		"desc" : {
-			"fr" : "Capacité de l'espace C à s'éloigner du dominant design",
-			"en" : ""
-		},
-	},
-	"variety" : {
-		"value" : 0,
-		"name" : {"fr" : "Variété", "en" : "Variety"},
-		"desc" : {
-			"fr" : "Capacité d'options que l'espace C peut offrir",
-			"en" : ""
-		},
-	},
-	"value" : {
-		"value" : 0,
-		"name" : {"fr" : "Valeur", "en" : "Value"},
-		"desc" : {
-			"fr" : "Capacité d'évolution de la connaissance et de son impact sur la génération de nouveau concept",
-			"en" : ""
-		},
-	},
-	"strength" : {
-		"value" : 0,
-		"name" : {"fr" : "Robustesse", "en" : "Strength"},
-		"desc" : {
-			"fr" : "Capacité de maîtrise des connaissance en interne",
-			"en" : ""
-		},
-	},
-	"localisation_empty" : {
+	localisation_empty : {
 		"value" : 0,
 		"name" : {"fr" : "Vide", "en" : "Empty"},
 		"desc" : {
@@ -108,18 +81,57 @@ var options = {
 			"en" : ""
 		},
 	},
+	/////////////////////////////////
+	/////////////////////////////////
+	/////////////////////////////////
+	// 4 critere d'évaluation
+	originality : {
+		"value" : 0,
+		"name" : {"fr" : "Originalité", "en" : "Originality"},
+		"desc" : {
+			"fr" : "A quel point les idées proposées sont en rupture par rapport à ce qu’il se fait aujourd’hui",
+			"en" : ""
+		},
+	},
+	variety : {
+		"value" : 0,
+		"name" : {"fr" : "Variété", "en" : "Variety"},
+		"desc" : {
+			"fr" : "Le nombre de propositions d’idées et d’alternatives",
+			"en" : ""
+		},
+	},
+	value : {
+		"value" : 0,
+		"name" : {"fr" : "Valeur", "en" : "Value"},
+		"desc" : {
+			"fr" : "L'évolution de la connaissance mobilisée et de son impact sur la génération de nouveaux concepts",
+			"en" : ""
+		},
+	},
+	strength : {
+		"value" : 0,
+		"name" : {"fr" : "Robustesse", "en" : "Strength"},
+		"desc" : {
+			"fr" : "La capacité de maîtrise des connaissances mobilisées",
+			"en" : ""
+		},
+	},
+	/////////////////////////////////
+	/////////////////////////////////
+	/////////////////////////////////
 	embauche : { 
-		name : {"fr":"Si non","en":"If no"},
+		name : {"fr","en":""},
 		desc : {"fr" : "Embaucher un expert", "en" : ""},
 		value : 0,
 	},
 	achete_k : { 
-		name : {"fr":"Si non","en":"If no"},
+		name : {"fr":"","en":""},
 		desc : {"fr" : "Achèter de la connaissance en externe", "en" : ""},
 		value : 0,
 	},
 	expert_call : { 
-		name : {"fr":"Si non","en":"If no"},
+		name : {"fr":"","en":""},
 		desc : {"fr" : "Faire appel à un expert", "en" : ""},
 		value : 0,
 	},
@@ -130,7 +142,7 @@ var options = {
 	},
 	c_generation : {
 		name : {fr:"",en:""},
-		desc : {fr : "générer de nouveaux concepts pour produire plus de connaissances",en:""},
+		desc : {fr : "Générer de nouveaux concepts pour produire plus de connaissances",en:""},
 		value : 0
 	},
 	dev_c_hamecon : {
@@ -140,7 +152,7 @@ var options = {
 	},
 	crazy_concept : {
 		name : {fr:"",en:""},
-		desc : {fr : "proposer des crazy concepts",en:""},
+		desc : {fr : "Proposer des crazy concepts",en:""},
 		value : 0
 	},
 	//////////////////////
@@ -152,7 +164,7 @@ var options = {
 	},
 	ksor_cotation : { 
 		name : {fr:"",en:""},
-		desc : {fr : "faire une cotation KSOR", en : ""},
+		desc : {fr : "Faire une cotation KSOR", en : ""},
 		value : 0
 	},
 	/////////////////////
@@ -163,7 +175,7 @@ var options = {
 	},
 	search_new_k : { 
 		name : {fr:"",en:""},
-		desc : {fr : "Rechercher de nouvelles connaissances et travailler avec de nouveau expert ", en : ""},
+		desc : {fr : "Rechercher de nouvelles connaissances et travailler avec de nouveaux experts", en : ""},
 		value : 0
 	},
 	/////////////////////
@@ -174,7 +186,7 @@ var options = {
 	},
 	conjonction : {
 		name : {fr:"",en:""},
-		desc : {fr : "Etes vous en mesure de faire une conjonction ou une preuve de concept?", en : ""},
+		desc : {fr : "Etes vous en mesure de faire une conjonction ou une preuve de concept ?", en : ""},
 		value : 0	
 	},
 	partenariat : {
@@ -287,39 +299,39 @@ var CK_text = {
 				exemples : [],
 			},
 			"s8" : { 
-				suggestion : {"fr" : "Reprendre le travail d’expansion et de divergence mais avec un travail sur les K encore plus fort notamment avec le lien sur les K indécidables (cause la plus probable: il n'y a aucun concept hameçon)", "en" : ""},
+				suggestion : {"fr" : "Reprendre le travail d’expansion et de divergence mais avec un travail sur les connaissances encore plus fort notamment avec le lien sur les connaissances indécidables (cause la plus probable: il n'y a aucun concept hameçon)", "en" : ""},
 				options : [],
 				exemples : [],
 			},
 
 			"s9" : { 
-				suggestion : {"fr" : "on renforce l’originalité de manière forte", "en" : ""},
+				suggestion : {"fr" : "On renforce l’originalité de manière forte", "en" : ""},
 				options : [],
 				exemples : [],
 			},
 			"s10" : { 
-				suggestion : {"fr" : "on renforce l’originalité de manière très forte", "en" : ""},
+				suggestion : {"fr" : "On renforce l’originalité de manière très forte", "en" : ""},
 				options : [],
 				exemples : [],
 			},
 			
 			"s11" : { 
-				suggestion : {"fr" : "plus j’ai des partition expansive plus je vais vers de la rupture", "en" : ""},
+				suggestion : {"fr" : "Plus j’ai des partitions expansives plus je vais vers de la rupture", "en" : ""},
 				options : [],
 				exemples : [],
 			},
 			"s12" : { 
-				suggestion : {"fr" : "plus j’ai des partition restrictive plus je vais vers de l’incrémentale ", "en" : ""},
+				suggestion : {"fr" : "Plus j’ai des partitions restrictives plus je vais vers de l’incrémentale ", "en" : ""},
 				options : [],
 				exemples : [],
 			},
 			no_k_validee : { 
-				suggestion : {"fr" : "Toutes vos connaissances sont manquantes il faut aller les chercher à l’extérieur. Avez-vous la capacité à absorber de nouvelles connaissances ?", "en" : ""},
+				suggestion : {"fr" : "Toutes vos connaissances sont manquantes il faut aller les chercher à l’extérieur. Il faut absorber de nouvelles connaissances ?", "en" : ""},
 				options : [options.embauche,options.achete_k,options.expert_call,options.ksor_eval],
 				exemples : [],
 			},
 			no_k_encours : { 
-				suggestion : {"fr" : "Il n’y a pas de programme de recherche ou d’innovation en cour", "en" : ""},
+				suggestion : {"fr" : "Apparament il n'y a pas de programme de recherche ou d’innovation en cour", "en" : ""},
 				options : [options.k_identification],
 				exemples : [],
 			},
@@ -333,7 +345,7 @@ var CK_text = {
 			},
 			// DELTA_C DELTA_K
 			gdc_pdk : { 
-				suggestion : {"fr" : "vous êtes dans une situation de moyen et grd delta C et de petit delta K", "en" : ""},
+				suggestion : {"fr" : "Vous êtes dans une situation de moyen et grand delta C et de petit delta K", "en" : ""},
 				options : [],
 				exemples : [],
 			},
@@ -349,7 +361,7 @@ var CK_text = {
 			//
 
 			fast_innov : { 
-				suggestion : {"fr" : "vous pouvez aller assez vite pour mettre en place l’innovation", "en" : ""},
+				suggestion : {"fr" : "Vous pouvez aller assez vite pour mettre en place l’innovation", "en" : ""},
 				options : [],
 				exemples : [],
 			},
@@ -377,7 +389,7 @@ var CK_text = {
 			},
 
 			no_k_indecidable : { 
-				suggestion : {"fr" : "Aucune connaissances indécidables", "en" : ""},
+				suggestion : {"fr" : "Aucunes connaissances indécidables", "en" : ""},
 				options : [options.c_generation,options.dev_c_hamecon,options.crazy_concept],
 				exemples : [],
 			},
@@ -385,12 +397,12 @@ var CK_text = {
 
 
 			no_inside : { 
-				suggestion : {"fr" : "Aucune connaissances internes à votre entreprise trouvées", "en" : ""},
+				suggestion : {"fr" : "Aucunes connaissances internes à votre entreprise trouvées", "en" : ""},
 				options : [],
 				exemples : [],
 			},
 			no_outside : { 
-				suggestion : {"fr" : "Aucune connaissances externe à votre entreprise trouvées", "en" : ""},
+				suggestion : {"fr" : "Aucunes connaissances externe à votre entreprise trouvées", "en" : ""},
 				options : [],
 				exemples : [],
 			},
@@ -443,7 +455,7 @@ var CK_text = {
 			},
 
 			value_strength : { 
-				suggestion : {"fr" : "La valeur de votre espace de connaissances est forte ce qui augmente l'intérêt du projet innovant et renvoi très certainement vers une expansion de concept et/ou une conjonction", "en" : ""},
+				suggestion : {"fr" : "La valeur de votre espace de connaissances est forte ce qui augmente l'intérêt du projet innovant et renvoie très certainement vers une expansion de concept et/ou une conjonction", "en" : ""},
 				options : [],
 				exemples : [options.conjonction],
 			},

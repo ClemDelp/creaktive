@@ -254,7 +254,7 @@ var CK_evaluation = {
       else if((partitions_restrictives > 0)&&(partitions_restrictives == 0)) originality_M = 0;
       else originality_M = CK_evaluation.cross_product((partitions_expansives+partitions_restrictives),(partitions_expansives/partitions_restrictives));
       // Moyenne des originalities
-      option.value = Math.round(((originality_M+originality_P)/2)*100)/100;
+      option.value = CK_evaluation.cross_product(4,((originality_M+originality_P)/2));
 
       return originality;
   },
@@ -278,7 +278,7 @@ var CK_evaluation = {
       if(all_k == 0) option.value = 0;
       else if(all_c == 0) option.value = 0;
       else option.value = CK_evaluation.cross_product(1,((new_k.length * concepts_generated.length) / (all_k * all_c)));
-      
+
       return valeur;
   },
   // robustess = k interne / k externe

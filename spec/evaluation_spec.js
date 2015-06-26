@@ -143,7 +143,7 @@ describe('CK Evaluation Tests',function(){
 
 	it("originality eval - with 3 c color",function(){
 		var c_3 = new c_3_connu_atteignable_alternatif;
-		expect(CK_evaluation.get_originality_eval(c_3.elements).options[0].value).toEqual(1.75);
+		expect(CK_evaluation.get_originality_eval(c_3.elements).options[0].value).toEqual(1.84);
 	});
 
 	it("originality eval - with 4 c color",function(){
@@ -154,7 +154,7 @@ describe('CK Evaluation Tests',function(){
 		var data = new basic_structure_to_valeur_test();
 		var evaluation = CK_evaluation.get_evaluation_eval(data.elements,data.links);
 		expect(evaluation.originality).toEqual(CK_text.suggestions().s_originality);
-		expect(evaluation.originality.options[0].value).toEqual(2.63);
+		expect(evaluation.originality.options[0].value).toEqual(2.6);
 	});
 	////////////////////////////////////////////////////////////
     // Evaluation Suggestion
