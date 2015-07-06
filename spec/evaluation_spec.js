@@ -150,11 +150,17 @@ describe('CK Evaluation Tests',function(){
 		var c_4 = new c_4_color;
 		expect(CK_evaluation.get_originality_eval(c_4.elements).options[0].value).toEqual(2.5);
 	});
+
 	it("originality eval - with basic_structure_to_valeur_test",function(){
 		var data = new basic_structure_to_valeur_test();
 		var evaluation = CK_evaluation.get_evaluation_eval(data.elements,data.links);
 		expect(evaluation.originality).toEqual(CK_text.suggestions().s_originality);
 		expect(evaluation.originality.options[0].value).toEqual(2.6);
+	});
+
+	it("originality eval - with_originilaty_bug",function(){
+		var data = new with_originilaty_bug();
+		expect(CK_evaluation.get_originality_eval(data.elements).options[0].value).toEqual(2.06);
 	});
 	////////////////////////////////////////////////////////////
     // Evaluation Suggestion

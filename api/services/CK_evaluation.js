@@ -205,7 +205,16 @@ var CK_evaluation = {
     return (concepts.c_connu.length + concepts.c_atteignable.length);
   },
   get_c_colors_number : function(concepts){
-    return (concepts.c_connu.length + concepts.c_atteignable.length + concepts.c_alternatif.length + concepts.c_hamecon.length);
+    c_connu = 0;
+    c_atteignable = 0;
+    c_alternatif = 0;
+    c_hamecon = 0;
+    if(concepts.c_connu.length>0) c_connu = 1;
+    if(concepts.c_atteignable.length>0) c_atteignable = 1;
+    if(concepts.c_alternatif.length>0) c_alternatif = 1;
+    if(concepts.c_hamecon.length>0) c_hamecon = 1;
+
+    return c_connu + c_atteignable + c_alternatif + c_hamecon;
   },
   get_knowledge_by_statut : function(elements){
       var k_validees = _.where(elements,{"type" : "knowledge", "css_manu" : "k_validees"});
@@ -236,7 +245,9 @@ var CK_evaluation = {
   // EVALUATION EVAL
   cross_product : function(max,value){
     var echelle_max = 4;
-    return Math.round((((value * echelle_max)/max))*100)/100;
+    var val = value*echelle_max/max;
+    return Math.round(val*100)/100;
+    // return Math.round((((value * echelle_max)/max))*100)/100;
   },
   // partitions expansive/partitions restrictives = (alternative + hamecon)/(dominante design + C atteignable)
   get_originality_eval : function(elements){
@@ -250,11 +261,13 @@ var CK_evaluation = {
       var originality_M = 0;
       var partitions_expansives = CK_evaluation.get_partitions_expansives(concepts);
       var partitions_restrictives = CK_evaluation.get_partitions_restrictives(concepts);
-      if((partitions_restrictives == 0)&&(partitions_restrictives == 0)) originality_M = 0; 
+      if((partitions_restrictives == undefined)&&(partitions_restrictives == 0)) originality_M = 0; 
+      else if((partitions_restrictives == 0)&&(partitions_restrictives == 0)) originality_M = 0; 
       else if((partitions_restrictives > 0)&&(partitions_restrictives == 0)) originality_M = 0;
       else originality_M = CK_evaluation.cross_product((partitions_expansives+partitions_restrictives),(partitions_expansives/partitions_restrictives));
       // Moyenne des originalities
-      option.value = CK_evaluation.cross_product(4,((originality_M+originality_P)/2));
+      console.log(originality_M,originality_P)
+      option.value = Math.round(((originality_M+originality_P)/2)*100)/100;
 
       return originality;
   },
