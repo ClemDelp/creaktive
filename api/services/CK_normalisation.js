@@ -45,12 +45,12 @@ var CK_normalisation = {
     else return suggestion;
   },
   get_localisation : function(element,cb){
-    var suggestions = {};
+    var suggestion = {};
 
     if(!element.inside) suggestion = CK_text.suggestions().s04;
-    else if(element.inside == "") suggestion = CK_text.suggestions().s04;
     else if(element.inside == "inside") suggestion = CK_text.suggestions().s05;
     else if(element.inside == "outside") suggestion = CK_text.suggestions().s06;
+    else suggestion = CK_text.suggestions().s04;
 
     suggestion.element = element;
     

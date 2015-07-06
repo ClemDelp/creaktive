@@ -8,18 +8,17 @@ var ckSuggestion = {
     collections: {},
     models: {},
     views: {},
+
     eventAggregator : global.eventAggregator,
+    el_actions_perc : "#actions_percentage",
     el_c_normalized : "#c_normalized_table",
     el_k_normalized : "#k_normalized_table",
     el_c_not_normalized : "#c_not_normalized_table",
     el_k_not_normalized : "#k_not_normalized_table",
     el_k_localized : "#k_localized_table",
     el_k_not_localized : "#k_not_localized_table",
-
     el_radar_detail : "#radar_detail_container",
-
     el_evaluation_suggestion : "#evaluations_table",
-
 
     init: function (json) {
         this.views.main = new this.Views.Main({
@@ -37,18 +36,19 @@ ckSuggestion.Views.Main = Backbone.View.extend({
         _.bindAll(this, 'render');
         // Variables
         this.elements = json.elements;    
-        //this.mode    = json.mode;
         this.project = global.models.currentProject;
         // Templates
         this.normalisation_tr = _.template($('#normalisation-suggestion-template').html());
         this.localisation_tr = _.template($('#normalisation-localisation-template').html());
         this.evaluation_tr = _.template($('#evaluation-suggestion-template').html());
         this.radar_detail = _.template($('#radar-detail-template').html());
+        this.actions_perc = _.template($('#actions-percentage-template').html());
         // Events
     },
     events : {
         "change .k_localisation" : "k_localisation",
-        "change .template_selection" : "apply_template", 
+        "change .template_selection" : "apply_template",
+        "click .refresh" : "get_normalisations",
     },
     /////////////////////////////////////////
     // ACTIONS
@@ -71,6 +71,7 @@ ckSuggestion.Views.Main = Backbone.View.extend({
         $.post("/suggestion/get_normalisations",{
             elements : bbmap.views.main.elements.toJSON(),
         }, function(normalisations){
+            console.log(normalisations)
             // STATUT
             var statuts = normalisations.statuts;
             var c_normalized = [];
@@ -97,12 +98,20 @@ ckSuggestion.Views.Main = Backbone.View.extend({
             var k_not_localized = [];
             normalisations.localisations.forEach(function(localisation){
                 if(localisation.element.inside != "") k_localized.push(localisation);
-                if(localisation.element.inside == "") k_not_localized.push(localisation);
+                else k_not_localized.push(localisation);
             });
 
             ckSuggestion.views.main.render_k_localized(k_localized);
             ckSuggestion.views.main.render_k_not_localized(k_not_localized);
-            
+            // Action menu render
+            ckSuggestion.views.main.render_actions_perc({
+                c_normalized : c_normalized,
+                k_normalized : k_normalized,
+                c_not_normalized : c_not_normalized,
+                k_not_normalized : k_not_normalized,
+                k_localized : k_localized,
+                k_not_localized : k_not_localized
+            });
         });
         // Get evaluation suggestions
         $.post("/suggestion/get_evaluations",{
@@ -111,6 +120,7 @@ ckSuggestion.Views.Main = Backbone.View.extend({
         }, function(json){
             ckSuggestion.views.main.render_evaluation(json)
         });
+        
     },
     ///////////////////////////////////
     render_evaluation : function(json){
@@ -163,6 +173,17 @@ ckSuggestion.Views.Main = Backbone.View.extend({
         suggestions.forEach(function(suggestion){
             $(ckSuggestion.el_evaluation_suggestion).append(ckSuggestion.views.main.evaluation_tr({suggestion : suggestion}));
         });
+    },
+    render_actions_perc : function(json){
+
+        var all = json.c_normalized.length + json.k_normalized.length + json.c_not_normalized.length + json.k_not_normalized.length + json.k_localized.length + json.k_not_localized.length
+        var done =  json.c_normalized.length + json.k_normalized.length + json.k_localized.length;
+        var perc = 0;
+
+        if(all != 0) perc = Math.round((done*100/all)*100)/100;
+
+        $(ckSuggestion.el_actions_perc).empty();
+        $(ckSuggestion.el_actions_perc).append(this.actions_perc({perc : perc}));
     },
     render_k_localized : function(localisations){
         $(ckSuggestion.el_k_localized).empty();

@@ -1,3 +1,4 @@
+
 /***************************************/
 global.Models.Filter = Backbone.Model.extend({
     defaults : {

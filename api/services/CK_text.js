@@ -74,7 +74,7 @@ var options = {
 		"desc" : {"fr" : "La connaissance est externe à l'entreprise","en" : ""},
 	},
 	localisation_empty : {
-		"value" : 0,
+		"value" : "",
 		"name" : {"fr" : "Vide", "en" : "Empty"},
 		"desc" : {
 			"fr" : "L'élément n'a pas de localisation",
