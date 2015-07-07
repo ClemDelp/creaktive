@@ -68,3 +68,25 @@
 		{{ }); }}
 	</table>
 </script>
+
+<script type="text/template" id="objectif-sliders-template">
+	<table style="width:100%">
+		{{ _.each(parameters,function(parameter){ }}
+		<tr>
+			<div class="row">
+			  <div class="small-10 medium-10 large-10 columns">
+			  	<b>{{-parameter.name.fr}}</b>
+			    <div id="{{-parameter.name.en}}_objectif" class="range-slider round" data-slider data-options="start: 0; end: 4;initial: {{-parameter.value}};display_selector: #{{-parameter.name.en}}_slider;">
+			      <span class="range-slider-handle" role="slider" tabindex="0"></span>
+			      <span class="range-slider-active-segment"></span>
+			    </div>
+			  </div>
+			  <div class="small-2 medium-2 large-2 columns">
+			    <span id="{{-parameter.name.en}}_slider" class="label tiny round success"></span>
+			  </div>
+			</div>
+		</tr>
+		{{ }); }}
+	</table>
+	<a href="#" title="validation" class="tiny button success updateObjectifCanvas">Valider</a>
+</script>

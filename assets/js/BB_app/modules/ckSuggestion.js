@@ -17,9 +17,14 @@ var ckSuggestion = {
     el_k_not_normalized : "#k_not_normalized_table",
     el_k_localized : "#k_localized_table",
     el_k_not_localized : "#k_not_localized_table",
+    
     el_radar_detail : "#radar_detail_container",
     el_evaluation_suggestion : "#evaluations_table",
 
+    el_objectif_radar : "#objectif_radar",
+    el_objectif_sliders_container : "#objectif_sliders_container",
+    el_objectif_suggestion_table : "#objectif_suggestion_table",
+    
     init: function (json) {
         this.views.main = new this.Views.Main({
             el : "#suggestions_modal",
@@ -35,7 +40,9 @@ ckSuggestion.Views.Main = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
         // Variables
-        this.elements = json.elements;    
+        this.elements = json.elements; 
+        this.normalisations = {};
+        this.evaluations = {};   
         this.project = global.models.currentProject;
         // Templates
         this.normalisation_tr = _.template($('#normalisation-suggestion-template').html());
@@ -43,12 +50,15 @@ ckSuggestion.Views.Main = Backbone.View.extend({
         this.evaluation_tr = _.template($('#evaluation-suggestion-template').html());
         this.radar_detail = _.template($('#radar-detail-template').html());
         this.actions_perc = _.template($('#actions-percentage-template').html());
+
+        this.objectif_slider = _.template($('#objectif-sliders-template').html());
         // Events
     },
     events : {
         "change .k_localisation" : "k_localisation",
         "change .template_selection" : "apply_template",
         "click .refresh" : "get_normalisations",
+        "click .updateObjectifCanvas" : "updateObjectifCanvas"
     },
     /////////////////////////////////////////
     // ACTIONS
@@ -71,6 +81,7 @@ ckSuggestion.Views.Main = Backbone.View.extend({
         $.post("/suggestion/get_normalisations",{
             elements : bbmap.views.main.elements.toJSON(),
         }, function(normalisations){
+            ckSuggestion.views.main.normalisations = normalisations;
             console.log(normalisations)
             // STATUT
             var statuts = normalisations.statuts;
@@ -117,23 +128,86 @@ ckSuggestion.Views.Main = Backbone.View.extend({
         $.post("/suggestion/get_evaluations",{
             elements : bbmap.views.main.elements.toJSON(),
             links : bbmap.views.main.links.toJSON(),
-        }, function(json){
-            ckSuggestion.views.main.render_evaluation(json)
+        }, function(evaluations){
+            ckSuggestion.views.main.evaluations = evaluations;
+            console.log(evaluations)
+            // render
+            ckSuggestion.views.main.render_evaluation(evaluations);
+            ckSuggestion.views.main.render_suggestions(evaluations);
         });
         
     },
     ///////////////////////////////////
-    render_evaluation : function(json){
-        var suggestions = json.suggestions;
+    updateObjectifCanvas : function(e){
+        e.preventDefault();
+        var evaluations = ckSuggestion.views.main.evaluations.evaluations;
+        var data = {
+            labels: [
+                evaluations.originality.options[0].name.fr, 
+                evaluations.variety.options[0].name.fr,
+                evaluations.value.options[0].name.fr,
+                evaluations.strength.options[0].name.fr
+            ],
+            datasets: [
+                {
+                    label: "Objectf",
+                    fillColor: "rgba(151,187,205,0.2)",
+                    strokeColor: "#C8D200",//"rgba(151,187,205,1)",
+                    pointColor: "#C8D200",//"rgba(151,187,205,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(151,187,205,1)",
+                    data: [
+                        $("#Originality_objectif").attr('data-slider'), 
+                        $("#Variety_objectif").attr('data-slider'), 
+                        $("#Value_objectif").attr('data-slider'),
+                        $("#Strength_objectif").attr('data-slider')
+                    ]
+                },
+                {
+                    label: "Evaluation",
+                    fillColor: "rgba(151,187,205,0.2)",
+                    strokeColor: "#1B9DD3",//"rgba(151,187,205,1)",
+                    pointColor: "#1B9DD3",//"rgba(151,187,205,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(151,187,205,1)",
+                    data: [
+                        evaluations.originality.options[0].value, 
+                        evaluations.variety.options[0].value, 
+                        evaluations.value.options[0].value, 
+                        evaluations.strength.options[0].value
+                    ]
+                }
+            ]
+        };
+
+        ckSuggestion.views.main.generateChart(data,"objectif_radar_canvas",$("#objectif_radar").width(),$("#objectif_sliders_container").height());
+
+    },
+    generateChart : function(data,id,width,height){
+        console.log(data,id,width,height)
+        var ctx = document.getElementById(id).getContext("2d");
+        ctx.canvas.width  = width;
+        ctx.canvas.height = height;
+        var myRadarChart = new Chart(ctx).Radar(data);
+    },
+    ///////////////////////////////////
+    render_suggestions : function(json){
         var evaluations = json.evaluations;
         // init
-        $(ckSuggestion.el_radar_detail).empty();
-        $(ckSuggestion.el_evaluation_suggestion).empty();
-        // RADAR
-        $(ckSuggestion.el_radar_detail).append(this.radar_detail({evaluations : evaluations}));
+        $(ckSuggestion.el_objectif_sliders_container).empty();
+        // objectif sliders
+        var parameters = [
+            evaluations.originality.options[0],
+            evaluations.variety.options[0],
+            evaluations.value.options[0],
+            evaluations.strength.options[0]
+        ]
+        $(ckSuggestion.el_objectif_sliders_container).append(this.objectif_slider({parameters : parameters}));
         
         var x = setInterval(function(){
-            if($("#radar_detail_container").height() > 100){
+            if($("#objectif_sliders_container").height() > 0){
                 var data = {
                     labels: [
                         evaluations.originality.options[0].name.fr, 
@@ -143,10 +217,25 @@ ckSuggestion.Views.Main = Backbone.View.extend({
                     ],
                     datasets: [
                         {
+                            label: "Objectf",
+                            fillColor: "rgba(151,187,205,0.2)",
+                            strokeColor: "#C8D200",//"rgba(151,187,205,1)",
+                            pointColor: "#C8D200",//"rgba(151,187,205,1)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(151,187,205,1)",
+                            data: [
+                                evaluations.originality.options[0].value, 
+                                evaluations.variety.options[0].value, 
+                                evaluations.value.options[0].value, 
+                                evaluations.strength.options[0].value
+                            ]
+                        },
+                        {
                             label: "Evaluation",
                             fillColor: "rgba(151,187,205,0.2)",
-                            strokeColor: "rgba(151,187,205,1)",
-                            pointColor: "rgba(151,187,205,1)",
+                            strokeColor: "#1B9DD3",//"rgba(151,187,205,1)",
+                            pointColor: "#1B9DD3",//"rgba(151,187,205,1)",
                             pointStrokeColor: "#fff",
                             pointHighlightFill: "#fff",
                             pointHighlightStroke: "rgba(151,187,205,1)",
@@ -159,12 +248,52 @@ ckSuggestion.Views.Main = Backbone.View.extend({
                         }
                     ]
                 };
-                var ctx = document.getElementById("myEvaluationChart").getContext("2d");
-                ctx.canvas.width  = $("#radar_graph_container").width() - 25;
-                ctx.canvas.height = $("#radar_detail_container").height() - 25;
-                console.log(ctx.canvas.width,ctx.canvas.height)
-                var myRadarChart = new Chart(ctx).Radar(data);
 
+                ckSuggestion.views.main.generateChart(data,"objectif_radar_canvas",$("#objectif_radar").width(),$("#objectif_sliders_container").height());
+
+                $(document).foundation();
+                clearInterval(x);   
+            }
+        }, 1000);
+    },
+    ///////////////////////////////////
+    render_evaluation : function(json){
+        var suggestions = json.suggestions;
+        var evaluations = json.evaluations;
+        // init
+        $(ckSuggestion.el_radar_detail).empty();
+        $(ckSuggestion.el_evaluation_suggestion).empty();
+        // RADAR
+        $(ckSuggestion.el_radar_detail).append(this.radar_detail({evaluations : evaluations}));
+        
+        var x = setInterval(function(){
+            if($("#radar_detail_container").height() > 0){
+                var data = {
+                    labels: [
+                        evaluations.originality.options[0].name.fr, 
+                        evaluations.variety.options[0].name.fr,
+                        evaluations.value.options[0].name.fr,
+                        evaluations.strength.options[0].name.fr
+                    ],
+                    datasets: [
+                        {
+                            label: "Evaluation",
+                            fillColor: "rgba(151,187,205,0.2)",
+                            strokeColor: "#1B9DD3",//"rgba(151,187,205,1)",
+                            pointColor: "#1B9DD3",//"rgba(151,187,205,1)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(151,187,205,1)",
+                            data: [
+                                evaluations.originality.options[0].value, 
+                                evaluations.variety.options[0].value, 
+                                evaluations.value.options[0].value, 
+                                evaluations.strength.options[0].value
+                            ]
+                        }
+                    ]
+                };
+                ckSuggestion.views.main.generateChart(data,"myEvaluationChart",$("#radar_graph_container").width(),$("#radar_detail_container").height());
                 clearInterval(x);
             }
         }, 1000);

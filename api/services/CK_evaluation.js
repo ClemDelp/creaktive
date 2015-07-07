@@ -266,7 +266,6 @@ var CK_evaluation = {
       else if((partitions_restrictives > 0)&&(partitions_restrictives == 0)) originality_M = 0;
       else originality_M = CK_evaluation.cross_product((partitions_expansives+partitions_restrictives),(partitions_expansives/partitions_restrictives));
       // Moyenne des originalities
-      console.log(originality_M,originality_P)
       option.value = Math.round(((originality_M+originality_P)/2)*100)/100;
 
       return originality;

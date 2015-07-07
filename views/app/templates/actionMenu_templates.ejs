@@ -53,7 +53,7 @@
       <li class="tab-title active" style="display:true"><a href="#categorization">Categorization</a></li>
       <li class="tab-title" style="display:true"><a href="#localisation_tab">Localisation</a></li>
       <li class="tab-title" style="display:true"><a href="#evaluation_tab">Evaluation</a></li>
-      <li class="tab-title" style="display:none"><a href="#panel5">Objectif</a></li>
+      <li class="tab-title" style="display:true"><a href="#objectif_tab">Objectif</a></li>
     </ul>
 
     <div class="tabs-content">
@@ -112,9 +112,28 @@
         </div>
       </div>
       
-      <div class="content" id="panel5">
-        <table id="suggestion_table" style="width:100%"></table>    
+      <div class="content" id="objectif_tab">
+        <div class="row">
+          <div id="objectif_radar" class="large-7 medium-12 small-12 columns">
+            <canvas id="objectif_radar_canvas"></canvas>
+          </div>
+          <div id="objectif_sliders_container" class="large-5 medium-12 small-12 columns panel"></div>
+        </div>
+        <div class="row">
+          <div class="large-12 medium-12 small-12 panel">
+            <table style="width:100%">
+                <thead>
+                  <tr>
+                    <th>Suggestions</th>
+                  </tr>
+                </thead>
+                <tbody id="objectif_suggestion_table">
+                </tbody>
+            </table>
+          </div>
+        </div>
       </div>
+
     </div>
     <small>CreaKtive suggestion algorithm</small>
     <a class="close-reveal-modal" aria-label="Close">&#215;</a>
