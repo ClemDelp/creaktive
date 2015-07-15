@@ -192,7 +192,13 @@ bbmap.Views.Node = Backbone.View.extend({
         e.preventDefault();
         var top = ($(this.el).position().top + 100) / bbmap.zoom.get('val');
         var left = $(this.el).position().left / bbmap.zoom.get('val');
-        var new_element = global.collections.Elements.newElement("concept","",top,left);
+        var json = {
+            type: "concept",
+            title: "",
+            top: top,
+            left: left,
+        }
+        var new_element = global.collections.Elements.newElement(json);
         bbmap.views.main.newViewAndLink(this.model,new_element,top,left);
         // bbmap.views.main.localHistory.createBackup();
     },
@@ -200,7 +206,13 @@ bbmap.Views.Node = Backbone.View.extend({
         e.preventDefault();
         var top = ($(this.el).position().top + 100) / bbmap.zoom.get('val');
         var left = $(this.el).position().left / bbmap.zoom.get('val');
-        var new_element = global.collections.Elements.newElement("knowledge","",top,left);
+        var json = {
+            type: "knowledge",
+            title: "",
+            top: top,
+            left: left,
+        }
+        var new_element = global.collections.Elements.newElement(json);
         bbmap.views.main.newViewAndLink(this.model,new_element,top,left);
         // bbmap.views.main.localHistory.createBackup();
     },

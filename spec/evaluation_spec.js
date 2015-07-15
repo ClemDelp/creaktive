@@ -3,6 +3,12 @@ describe('CK Evaluation Tests',function(){
 	beforeEach(function(){});
     afterEach(function(){});
     ////////////////////////////////////////////////////////////
+    it("Test de l'algo d'analyse d'exploration",function(){
+		var elements = [{"id":"84ff2886-e591-2506-0950-c7d03d572b9c","id_father":"none","project":"3c50fe03-07e1-2e90-640b-0b8986641a24","title":"c0 : demo arbo ","type":"concept","css_auto":"c_empty","css_manu":"","content":"","inside":""},{"id":"6aa8e2c0-0bd7-1ec4-d37a-42e2c34a3832","id_father":"84ff2886-e591-2506-0950-c7d03d572b9c","project":"3c50fe03-07e1-2e90-640b-0b8986641a24","title":"sd","type":"concept","css_auto":"c_empty","css_manu":"c_connu","content":"","inside":""},{"id":"39381749-071c-bc70-9a14-e06ff415dcc4","id_father":"84ff2886-e591-2506-0950-c7d03d572b9c","project":"3c50fe03-07e1-2e90-640b-0b8986641a24","title":"df","type":"concept","css_auto":"c_empty","css_manu":"c_atteignable","content":"","inside":""},{"id":"69d9e562-793a-3207-8a5c-a94b664a5e5f","id_father":"84ff2886-e591-2506-0950-c7d03d572b9c","project":"3c50fe03-07e1-2e90-640b-0b8986641a24","title":"er","type":"concept","css_auto":"c_empty","css_manu":"c_connu","content":"","inside":""},{"id":"1e8e1443-0f32-390f-a2a0-b07229b9b409","id_father":"6aa8e2c0-0bd7-1ec4-d37a-42e2c34a3832","project":"3c50fe03-07e1-2e90-640b-0b8986641a24","title":"df","type":"concept","css_auto":"c_empty","css_manu":"c_connu","content":"","inside":""},{"id":"35da0495-c4d7-5fa4-269f-2ca2843c460f","id_father":"39381749-071c-bc70-9a14-e06ff415dcc4","project":"3c50fe03-07e1-2e90-640b-0b8986641a24","title":"aze","type":"concept","css_auto":"c_empty","css_manu":"c_alternatif","content":"","inside":""},{"id":"ed19be33-ed24-f1cb-a877-2fa7521bb6b6","id_father":"39381749-071c-bc70-9a14-e06ff415dcc4","project":"3c50fe03-07e1-2e90-640b-0b8986641a24","title":"vc","type":"concept","css_auto":"c_empty","css_manu":"c_hamecon","content":"","inside":""},{"id":"c922cbb7-c9f7-8a2d-e4e6-64d75d5b1ad8","id_father":"69d9e562-793a-3207-8a5c-a94b664a5e5f","project":"3c50fe03-07e1-2e90-640b-0b8986641a24","title":"sss","type":"concept","css_auto":"c_empty","css_manu":"c_alternatif","content":"","inside":""},{"id":"9b4ca466-b28d-73d0-d47f-286eadba8d0b","id_father":"c922cbb7-c9f7-8a2d-e4e6-64d75d5b1ad8","project":"3c50fe03-07e1-2e90-640b-0b8986641a24","title":"sd","type":"concept","css_auto":"c_empty","css_manu":"c_connu","content":"","inside":""},{"id":"1228dba8-572e-4632-ed78-ecdf0326ff7f","id_father":"c922cbb7-c9f7-8a2d-e4e6-64d75d5b1ad8","project":"3c50fe03-07e1-2e90-640b-0b8986641a24","title":"aze","type":"concept","css_auto":"c_empty","css_manu":"c_connu","content":"","inside":""}];
+	    var tree = _.where(elements,{type:"concept"});
+	    expect(api.findExplorationWay(tree)).toContain(3);
+	});
+    ////////////////////////////////////////////////////////////
     // VALEUR TESTS
     ////////////////////////////////////////////////////////////
     it("valeur - 0C with K",function(){
@@ -229,29 +235,29 @@ describe('CK Evaluation Tests',function(){
 	it("Si il n'y a aucun C connu",function(){
 		var c1 = new element_generator({"type":"concept"});
 		var data = _.union(c1.element);
-		var concepts = CK_evaluation.get_concept_by_statut(data);
-		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		var concepts = api.get_concept_by_statut(data);
+		var knowledges = api.get_knowledge_by_statut(data);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().work_in_k);
 	});
 	it("Si il n'y a aucun C atteignable",function(){
 		var c1 = new element_generator({"type":"concept"});
 		var data = _.union(c1.element);
-		var concepts = CK_evaluation.get_concept_by_statut(data);
-		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		var concepts = api.get_concept_by_statut(data);
+		var knowledges = api.get_knowledge_by_statut(data);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().s5);
 	});
 	it("Si il n'y a aucun C alternatif",function(){
 		var c1 = new element_generator({"type":"concept"});
 		var data = _.union(c1.element);
-		var concepts = CK_evaluation.get_concept_by_statut(data);
-		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		var concepts = api.get_concept_by_statut(data);
+		var knowledges = api.get_knowledge_by_statut(data);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().s6);
 	});
 	it("Si il n'y a aucun C hamecon",function(){
 		var c1 = new element_generator({"type":"concept"});
 		var data = _.union(c1.element);
-		var concepts = CK_evaluation.get_concept_by_statut(data);
-		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		var concepts = api.get_concept_by_statut(data);
+		var knowledges = api.get_knowledge_by_statut(data);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().s6);
 	});
 
@@ -259,16 +265,16 @@ describe('CK Evaluation Tests',function(){
 		var c1 = new element_generator({"type":"concept","css_manu":"c_alternatif"});
 		var c2 = new element_generator({"type":"concept","css_manu":"c_atteignable"});
 		var data = _.union(c1.element,c2.element);
-		var concepts = CK_evaluation.get_concept_by_statut(data);
-		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		var concepts = api.get_concept_by_statut(data);
+		var knowledges = api.get_knowledge_by_statut(data);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().s9);
 	});
 	it("Si j'ai que des C alternatif + hamecon",function(){
 		var c1 = new element_generator({"type":"concept","css_manu":"c_alternatif"});
 		var c2 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
 		var data = _.union(c1.element,c2.element);
-		var concepts = CK_evaluation.get_concept_by_statut(data);
-		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		var concepts = api.get_concept_by_statut(data);
+		var knowledges = api.get_knowledge_by_statut(data);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().s10);
 	});
 
@@ -276,8 +282,8 @@ describe('CK Evaluation Tests',function(){
 		var c1 = new element_generator({"type":"concept","css_manu":"c_hamecon"});
 		var k1 = new element_generator({"type":"knowledge","css_manu":"k_indesidable"});
 		var data = _.union(c1.element,k1.element);
-		var concepts = CK_evaluation.get_concept_by_statut(data);
-		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		var concepts = api.get_concept_by_statut(data);
+		var knowledges = api.get_knowledge_by_statut(data);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().s48);
 
 	});
@@ -285,22 +291,22 @@ describe('CK Evaluation Tests',function(){
 
 	it("Si il n'y a aucune K validée",function(){
 		var data = new element_generator({"type":"knowledge"});
-		var concepts = CK_evaluation.get_concept_by_statut(data.element);
-		var knowledges = CK_evaluation.get_knowledge_by_statut(data.element);
+		var concepts = api.get_concept_by_statut(data.element);
+		var knowledges = api.get_knowledge_by_statut(data.element);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().no_k_validee);
 	});
 
 	it("Si il n'y a aucune K en cours",function(){
 		var data = new element_generator({"type":"knowledge"});
-		var concepts = CK_evaluation.get_concept_by_statut(data.element);
-		var knowledges = CK_evaluation.get_knowledge_by_statut(data.element);
+		var concepts = api.get_concept_by_statut(data.element);
+		var knowledges = api.get_knowledge_by_statut(data.element);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().no_k_encours);
 
 	});
 	it("Si il n'y a aucune K manquante",function(){
 		var data = new element_generator({"type":"knowledge"});
-		var concepts = CK_evaluation.get_concept_by_statut(data.element);
-		var knowledges = CK_evaluation.get_knowledge_by_statut(data.element);
+		var concepts = api.get_concept_by_statut(data.element);
+		var knowledges = api.get_knowledge_by_statut(data.element);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().no_k_manquante);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().gdc_pdk);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().fast_innov);
@@ -308,8 +314,8 @@ describe('CK Evaluation Tests',function(){
 	});
 	it("Si il n'y a aucune K indécidable",function(){
 		var data = new element_generator({"type":"knowledge"});
-		var concepts = CK_evaluation.get_concept_by_statut(data.element);
-		var knowledges = CK_evaluation.get_knowledge_by_statut(data.element);
+		var concepts = api.get_concept_by_statut(data.element);
+		var knowledges = api.get_knowledge_by_statut(data.element);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().no_k_indecidable);
 		// TESTER LES OPTIONS !!!!!!!!!
 	});
@@ -319,8 +325,8 @@ describe('CK Evaluation Tests',function(){
 		var k1 = new element_generator({"type":"knowledge","css_manu" : "k_manquante"});
 		var k2 = new element_generator({"type":"knowledge","css_manu" : "k_indesidable"});
 		var data = _.union(k1.element,k2.element);
-		var concepts = CK_evaluation.get_concept_by_statut(data);
-		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		var concepts = api.get_concept_by_statut(data);
+		var knowledges = api.get_knowledge_by_statut(data);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().risk_up);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().only_k_manq_indec);
 	});
@@ -330,8 +336,8 @@ describe('CK Evaluation Tests',function(){
 		var k1 = new element_generator({"type":"knowledge","css_manu" : "k_encours"});
 		var k2 = new element_generator({"type":"knowledge","css_manu" : "k_validees"});
 		var data = _.union(k1.element,k2.element);
-		var concepts = CK_evaluation.get_concept_by_statut(data);
-		var knowledges = CK_evaluation.get_knowledge_by_statut(data);
+		var concepts = api.get_concept_by_statut(data);
+		var knowledges = api.get_knowledge_by_statut(data);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().gdc_pdk);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().risk_less);
 		expect(CK_evaluation.get_specific_confirguration_suggestions(concepts,knowledges)).toContain(CK_text.suggestions().roadmap_cmt);

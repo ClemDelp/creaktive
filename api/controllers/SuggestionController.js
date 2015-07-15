@@ -6,17 +6,36 @@
  */
 
 module.exports = {
-	get_normalisations : function(req,res){
-		CK_normalisation.get_normalisations(req.body.elements,function(normalisations){
-			res.send(normalisations);
+	get_statuts : function(req,res){
+		CK_analyse.get_statuts(req.body.elements,function(statuts){
+			res.send(statuts);
 		});
 	},
-	get_evaluations : function(req,res){
-		// evaluation
-		CK_evaluation.get_evaluation_eval(req.body.elements, req.body.links, function(evaluations){
-			CK_evaluation.get_all_evaluation_suggestions(req.body.elements, req.body.links, function(suggestions){
-				res.send({"evaluations":evaluations,"suggestions":suggestions});
-			});
+	get_localisations : function(req,res){
+		CK_analyse.get_localisations(req.body.elements,function(localisations){
+			res.send(localisations);
+		});
+	},
+	get_v2or_values : function(req,res){
+		CK_analyse.get_v2or_values(req.body.elements, req.body.links, function(v2or_values){
+			res.send(v2or_values);
+		});
+
+	},
+	get_v2or_analyse : function(req,res){
+		CK_analyse.get_v2or_analyse(req.body.elements, req.body.links, function(analyses){
+			res.send(analyses);
+		});
+
+	},
+	get_explorations_analyse : function(req,res){
+		CK_analyse.get_exploration_suggestions(req.body.elements, function(explorations){
+			res.send(explorations);
+		});
+	},
+	analyse_cadrage_keywords : function(req,res){
+		CK_analyse.analyse_cadrage_keywords(req.body.elements, function(analyse){
+			res.send(analyse);
 		});
 	},
 };

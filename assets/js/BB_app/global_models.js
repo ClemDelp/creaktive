@@ -47,6 +47,16 @@ global.Models.Element = Backbone.Model.extend({
 });
 /***************************************/
 global.Models.ProjectModel = Backbone.Model.extend({
+    defaults : {
+        // objectif
+        // goal : {
+        //     strength        : 0,
+        //     variety         : 0,
+        //     originality     : 0,
+        //     value           : 0,
+        // },
+        step            : 1, // 1 : cadrage, 2 : c0k0validated, 3 : ddAndConceptProjecteur
+    },
     initialize : function Doc() {
         //console.log('Project Constructor');
         this.urlRoot = "project";

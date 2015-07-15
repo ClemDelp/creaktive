@@ -1,3 +1,60 @@
+<script type="text/template" id="ck-cadrage-keywords-template">
+	<p>Mots clefs pour le cadrage de la problématique</p>
+	<table style="width:100%">
+		{{ _.each(keyWords,function(word){ }} 
+		<tr>
+			{{ if(word.tagged.length > 0 ){ }}
+				<td width="20%"><span class="tiny success label round">{{-word.tagged.length}}</span><b>{{-word.title.fr}}</b></td>
+				<td><table style="width:100%"><tr><td><ul>
+				{{ _.each(word.tagged,function(element){ }}
+					<li style="list-style-type: disc;">{{-element.title}}</li>
+				{{ });}} 
+				</ul></td></tr></table></td>
+				<td>
+					<div class="row collapse">
+				        <div class="small-10 columns">
+				          	<input id="{{-word.tag.en}}_value" type="text" placeholder="{{-word.found.fr}}">
+				        </div>
+				        <div class="small-2 columns">
+				          	<a href="#" data-tag="{{- word.tag.en}}" class="button postfix success new_cadrage">+</a>
+				        </div>
+				    </div>
+				</td>
+			{{ }else{ }}
+				<td width="20%"><b>{{-word.title.fr}}</b></td>
+				<td colspan="2">
+					<div class="row collapse">
+				        <div class="small-10 columns">
+				          	<input id="{{-word.tag.en}}_value" type="text" placeholder="{{-word.notFound.fr}}">
+				        </div>
+				        <div class="small-2 columns">
+				          <a href="#" data-tag="{{- word.tag.en}}" class="button postfix new_cadrage">+</a>
+				        </div>
+				    </div>
+				</td>
+			{{ } }}
+		</tr>
+		{{ }); }} 
+	</table>
+</script>
+
+<script type="text/template" id="ck-explorations-template">
+	<p>Classement du moins risqué (de lincrementale) au plus risqué (vers de la rupture)</p>
+	<table style="width:100%">
+		{{ for(var i=0;i<evaluations.length;i++){ }} 
+		<tr>
+			<td>{{-evaluations[i]}}</td>
+			<td>
+				{{ _.each(branches[i],function(node){ }} 
+					{{-node.title}} ->
+				{{ }); }}
+				<b>?</b>
+			</td>
+		</tr>
+		{{ } }}
+	</table>
+</script>
+
 <script type="text/template" id="actions-percentage-template">
 	<div class="large-10 medium-10 small-10 columns">
 		<div class="progress radius" style="background:white">
@@ -30,15 +87,15 @@
 <script type="text/template" id="normalisation-localisation-template">
   	<tr>
 	  	<td width="20%">
-	  		<div class="{{- localisation.element.css_manu }} {{- localisation.element.css_auto }}" style="padding:10px;">
-	  			<center><b>{{- localisation.element.title }}</b></center>
+	  		<div class="{{- localisation.knowledge.css_manu }} {{- localisation.knowledge.css_auto }}" style="padding:10px;">
+	  			<center><b>{{- localisation.knowledge.title }}</b></center>
 	  		</div>
 	  	</td>
 	  	<td width="80%">
 		  	<p>{{-localisation.suggestion.fr}}</p>
-		  	<select class="k_localisation" data-id="{{-localisation.element.id}}">
+		  	<select class="k_localisation" data-id="{{-localisation.knowledge.id}}">
              	{{ _.each(localisation.options,function(option){ }}
-			        <option {{ if(option.value == localisation.element.inside){ }}selected="selected"{{ } }} value="{{- option.value }}">{{- option.name.fr }} : {{- option.desc.fr }}</option>
+			        <option {{ if(option.value == localisation.knowledge.inside){ }}selected="selected"{{ } }} value="{{- option.value }}">{{- option.name.fr }} : {{- option.desc.fr }}</option>
 			  	{{ }); }}
 		  	</select>
 	  	</td>
@@ -46,9 +103,8 @@
 
 </script>
 
-<script type="text/template" id="evaluation-suggestion-template">
-  <tr>
-  	<td>
+<script type="text/template" id="ck-v2or-analyse-template">
+	<div class="large-12 medium-12 small-12 panel">
 	  	<p>{{- suggestion.suggestion.fr }}</p>
 	  	{{ if(suggestion.options.length > 0){ }} 
 	  		<ul class="panel">
@@ -57,8 +113,7 @@
 		  		{{ }); }}
 	  		</ul>
 	  	{{ } }}
-  	</td>
-  </tr>
+  	</div>
 </script>
 
 <script type="text/template" id="radar-detail-template">

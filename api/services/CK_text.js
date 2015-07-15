@@ -10,8 +10,24 @@ var options = {
     /////////////////////////////////
 	/////////////////////////////////
 	/////////////////////////////////
-	// Statut
+	// Steps
+	step_1 : {
+		name : {fr: "Phase 1", en: "Step 1"},
+		desc : {fr: "CADRAGE de la problématique et du projet", en: ""},
+		value : 0
+	},
 
+	step_2 : {
+		name : {fr: "Phase 2", en: "Step 2"},
+		desc : {fr: "On estime que le C0 et K0 sont validés", en: ""},
+		value : 0
+	},
+
+	step_3 : {
+		name : {fr: "Phase 3", en: "Step 3"},
+		desc : {fr: "On a déterminé un ou plusieurs DD et des concepts projecteurs", en: ""},
+		value : 0
+	},
     // Concept
     statut_empty : {
 		"value" : "",
@@ -75,9 +91,9 @@ var options = {
 	},
 	localisation_empty : {
 		"value" : "",
-		"name" : {"fr" : "Vide", "en" : "Empty"},
+		"name" : {"fr" : "", "en" : ""},
 		"desc" : {
-			"fr" : "L'élément n'a pas de localisation",
+			"fr" : "",
 			"en" : ""
 		},
 	},
@@ -193,15 +209,192 @@ var options = {
 		name : {fr:"",en:""},
 		desc : {fr : "Il faut monter des partenariats", en : ""},
 		value : 0	
+	},
+
+	//////////////////////////////
+	bcp_de_part_exp : {
+		type : "element",
+		name : {fr:"car",en:""},
+		desc : {fr : "il y a de nombreuse partitions expansives", en : ""},
+		value : []
 	}
 }
 
 var CK_text = {
+	localisations : function(){
+		return {
+			////////////////
+			// Localisation
+			interne_ou_externe : { 
+				suggestion : {"fr" : "Cette connaissance est soit interne, soit externe à votre entreprise ?", "en" : ""},
+			 	knowledge : {},
+			 	options : [options.inside, options.outside, options.localisation_empty],
+			 	exemples : []
+			},
+			externe : { 
+				suggestion : {"fr" : "Basculer cette connaissance en externe à votre entreprise ?", "en" : ""},
+			 	knowledge : {},
+			 	options : [options.inside, options.outside],
+			 	exemples : []
+			},
+			interne : { 
+				suggestion : {"fr" : "Basculer cette connaissance en interne à votre entreprise ?", "en" : ""},
+			 	knowledge : {},
+			 	options : [options.inside, options.outside],
+			 	exemples : []
+			},
+		};
+	},
+	cadrage : function(){
+		return {
+			// CADRAGE de la problématique et du projet
+			need : {
+				title : {fr:"Le besoin",en:""},
+				prefix : "tag_",
+				notFound : {fr : "Quel est le besoin ?", en: ""},
+				found : {fr : "Ajouter un autre besoin ?", en: ""},
+				tag : {fr:['le besoin'],en:['need']},
+				exemples : [],	
+				v2or : {strength : 2, variety : 0, value : 1, originality : 0},
+				tagged : []
+			},
+			needLess : {
+				title : {fr:"Element perturbateur",en:""},
+				prefix : "tag_",
+				notFound : {fr : "Qu’est ce qui peut faire disparaître le besoin?", en: ""},
+				found : {fr : "Définir un autre élément qui pourrait faire disparaître le besoin?", en: ""},
+				tag : {fr:[],en:['need_less']},
+				exemples : [],	
+				v2or : {strength : 1, variety : 0, value : 3, originality : 0},
+				tagged : []
+			},
+			target : {
+				title : {fr:"Les cible",en:""},
+				prefix : "tag_",
+				notFound : {fr : "A qui ça s’adresse? (j’ai pas forcément la réponse au départ)", en: ""},
+				found : {fr : "Une nouvelle cible ?", en: ""},
+				tag : {fr:[],en:['target']},
+				exemples : [],
+				v2or : {strength : 0, variety : 1, value : 1, originality : 1},
+				tagged : []
+			},
+			impact : {
+				title : {fr:"Les impacts",en:""},
+				prefix : "tag_",
+				notFound : {fr : "Sur quoi ça agit?", en: ""},
+				found : {fr : "Un autre élément sur lequel ça agit ?", en: ""},
+				tag : {fr:[],en:['impact_on']},
+				exemples : [],	
+				v2or : {strength : 0, variety : 1, value : 2, originality : 3},
+				tagged : []
+			},
+			actor : {
+				title : {fr:"Les acteurs",en:""},
+				prefix : "tag_",
+				notFound : {fr : "Quelles sont les parties prenante?", en: ""},
+				found : {fr : "Une autre partie prenante ?", en: ""},
+				tag : {fr:[],en:['actor']},
+				exemples : [],	
+				v2or : {strength : 4, variety : 0, value : 3, originality : 0},
+				tagged : []
+			},
+			implantation : {
+				title : {fr:"Implantation",en:""},
+				prefix : "tag_",
+				notFound : {fr : "Comment ça s’intègre avec l’existant?", en: ""},
+				found : {fr : "Une autre intégration avec l’existant?", en: ""},
+				tag : {fr:['implantation'],en:['implantation']},
+				exemples : [],	
+				v2or : {strength : 1, variety : 1, value : 1, originality : 1},
+				tagged : []
+			},
+			C0 : {
+				title : {fr:"C0 - concept initial",en:""},
+				prefix : "tag_",
+				notFound : {fr : "Définir C0", en: ""},
+				found : {fr : "Définir un autre C0", en: ""},
+				tag : {fr:['c0'],en:['c0']},
+				exemples : [],	
+				v2or : {strength : 0, variety : 4, value : 0, originality : 4},
+				tagged : []
+			},
+			K0 : {
+				title : {fr:"K0 - connaissances initiales",en:""},
+				prefix : "tag_",
+				notFound : {fr : "Définir K0", en: ""},
+				found : {fr : "Définir un autre K0", en: ""},
+				tag : {fr:['k0'],en:['k0']},
+				exemples : [],	
+				v2or : {strength : 4, variety : 0, value : 4, originality : 0},
+				tagged : []
+			},
+			// iteration : {
+			// 	notFound : {fr : "Itérer entre C0 et K0 afin de fixer le/les C0 (l’enlever quand le C0 est fixer et quand le system d’éval définit tous les critère au moins à deux)", en: ""},
+			//  Found : {fr : "Itérer entre C0 et K0 afin de fixer le/les C0 (l’enlever quand le C0 est fixer et quand le system d’éval définit tous les critère au moins à deux)", en: ""},
+			// 	tag : {fr:['iteration'],en:['iteration']},
+			// 	options : [],
+			// 	exemples : [],	
+			// 	v2or : {strength : 2, variety : 2, value : 2, originality : 2},
+			// 	tagged : []
+			// },
+			
+		}
+	},
+	// On estime que le C0 et K0 sont validés
+	c0_k0_validated : function(){
+		return {
+			analogy : {
+				suggestion : {fr : "Faire des recherches par analogies", en: ""},
+				tag : {fr:['analogie'],en:['analogy']},
+				options : [],
+				exemples : [],	
+				v2or : {strength : 0, variety : 4, value : 0, originality : 4},
+			},
+			homonyme : {
+				suggestion : {fr : "Faire des recherches par homonyme", en: ""},
+				tag : {fr:['homonyme'],en:['homonym']},
+				options : [],
+				exemples : [],	
+				v2or : {strength : 0, variety : 2, value : 0, originality : 2},
+			},
+			thematic : {
+				suggestion : {fr : "Définir les mots clefs associés à un concept, les grandes thématiques, générer ses noms communs", en: ""},
+				tag : {fr:['thématique'],en:['thematic']},
+				options : [],
+				exemples : [],	
+				v2or : {strength : 3, variety : 0, value : 3, originality : 0},
+			},
+			// formaliser le Dominant Design
+			// Partenaires possibles? Qui peut nous aider en interne/externe? Parainer les poches K par des experts en interne/externe
+			// Quelles valeurs sociales? Quelle valeurs pour un tel projet?
+			// suggérer de la K à partir de K, exemple définir "l’open source » par rapport à une liste de modèles économiques
+			// Pour chaque poche K identifiée aller chercher des infos automatiquement sur internet et compléter les poches K et idées de concepts
+			// les faire travailler sur Google image/moteur de recherche metaphorique/...
+			// Pour chaque poche C identifiée aller chercher des infos automatiquement sur internet et compléterles poches K et idées de concepts
+			// les faire travailler sur Google image/moteur de recherche metaphorique/...
+		}
+	},
+	// On a déterminer un ou plusieurs DD et des concepts projecteurs
+	dd_cp_determinated : function(){
+		return {
+			// Imposer une recherche d’alternatives, d’identification d’hypothèses différentes : ne pas aller sur une solution = branche restrictive! -> l’outil propose systématiquement une branche « autre »
+			// logique de forcing : demander à l’utilisateur de décomposer ses C en fonction de ses caractéristiques et proposer des extrèmes (un chaise avec 3 pied, 4 pieds,...., 1000 pieds, 0 pieds)
+			// travailler en retro conception trouver le C macro, travailler en abstraction par rapport au DD
+			// demander/proposer l’inverse d’un C (une chaise avec ou sans pieds -> A vs non A)
+			// A partir de la génération d’un “autre” quel est l’impact de celui-ci sur le DD? Est ce qu’il amène à remonter sur des niveau du DD supérieur ex: BM, Ecosystem industriel, ...
+			// stimuler la créativité/l’imagination de l’utilisateur avec des images, son, vidéos, citations, métaphores, … agir sur les “sens” de l’utilisateur
+		}
+	},
 	suggestions : function(){
 		return {
 		    ///////////////////////////////////////////////////////
 		    // NORMALISATION
 		    ///////////////////////////////////////////////////////
+			originalite_faible : { 
+				suggestion : {"fr" : "Votre originalité est plutôt faible", "en" : ""},
+				options : [options.bcp_de_part_exp],
+				exemples : []
+			},
 			"s00" : { 
 				suggestion : {"fr" : "Ce concept n'a pas encore de statut", "en" : ""},
 				options : [options.statut_empty, options.c_connu, options.c_atteignable, options.c_alternatif, options.c_hamecon],
@@ -222,23 +415,6 @@ var CK_text = {
 				suggestion : {"fr" : "Voulez-vous changer le statut de cette connaissance ?", "en" : ""},
 				options : [options.statut_empty, options.k_validees, options.k_indesidable, options.k_manquante, options.k_encours],
 				exemples : []
-			},
-			////////////////
-			// Localisation
-			"s04" : { 
-				suggestion : {"fr" : "Cette connaissance est-elle interne ou externe à votre entreprise ?", "en" : ""},
-			 	options : [options.inside, options.outside, options.localisation_empty],
-			 	exemples : []
-			},
-			"s05" : { 
-				suggestion : {"fr" : "Basculer cette connaissance en externe à votre entreprise ?", "en" : ""},
-			 	options : [options.inside, options.outside, options.localisation_empty],
-			 	exemples : []
-			},
-			"s06" : { 
-				suggestion : {"fr" : "Basculer cette connaissance en interne à votre entreprise ?", "en" : ""},
-			 	options : [options.inside, options.outside, options.localisation_empty],
-			 	exemples : []
 			},
 			///////////////////////////////////////////////////////
 			// EVALUATIONS
@@ -523,6 +699,7 @@ var CK_text = {
 				options : [],
 				exemples : []
 			},
+
 		}
 	}
 }

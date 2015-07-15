@@ -551,7 +551,13 @@ bbmap.Views.Main = Backbone.View.extend({
         var pos = $('#dropP').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        var new_element = this.elements.newElement("poche","",top,left);
+        var json = {
+            type: "poche",
+            title: "",
+            top: top,
+            left: left,
+        }
+        var new_element = this.elements.newElement(json);
         this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
         // this.localHistory.createBackup();
@@ -560,7 +566,14 @@ bbmap.Views.Main = Backbone.View.extend({
         var pos = $('#dropC').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        var new_element = this.elements.newElement("concept","",top,left);
+        //
+        var json = {
+            type: "concept",
+            title: "",
+            top: top,
+            left: left,
+        }
+        var new_element = this.elements.newElement(json);
         this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
         // this.localHistory.createBackup();
@@ -569,7 +582,14 @@ bbmap.Views.Main = Backbone.View.extend({
         var pos = $('#dropK').offset();
         var left = (pos.left - $('#map').offset().left)/bbmap.zoom.get('val');
         var top = (pos.top - $('#map').offset().top)/bbmap.zoom.get('val');
-        var new_element = this.elements.newElement("knowledge","",top,left);
+        //
+        var json = {
+            type: "knowledge",
+            title: "",
+            top: top,
+            left: left,
+        }
+        var new_element = this.elements.newElement(json);
         this.newViewAndLink("none",new_element,top,left,pos);
         this.renderActionBar();
         // this.localHistory.createBackup();
