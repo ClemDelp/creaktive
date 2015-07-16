@@ -2,23 +2,34 @@ var underscore = require("underscore");
 
 var CK_analyse = {
   //////////////////////////////////////////
-  analyse_cadrage_keywords : function(elements,cb){
+  keywordsDefine : function(words,elements){
     var keywords = [];
-    // Cadrage
-    var cadrage_key_words = _.values(CK_text.cadrage());
-    cadrage_key_words.forEach(function(word){
+    words.forEach(function(word){
       elements.forEach(function(element){
-        // si l'element est a le tag en attribut
-        if(_.has(element, word.prefix+word.tag.en)){
+        // si l'element a le tag en attribut
+        if(_.has(element, word.prefix+word.tag)){
           // si la valeur du tag/attribut n'est pas vide
-          if(underscore.propertyOf(element)(word.prefix+word.tag.en) == word.tag.en){
+          if(underscore.propertyOf(element)(word.prefix+word.tag) == word.tag){
             // on ajoute lelement comme deja taggé
-            word.tagged.push(element);
+            if(element.type != "poche") word.tagged.push(element);
+            else word.poche = element;
           }
         }
       });
       keywords.push(word)
     });
+    return keywords;
+  },
+  //////////////////////////////////////////
+  analyse_dd_keywords : function(elements,cb){
+    // Cadrage
+    var keywords = CK_analyse.keywordsDefine(_.values(CK_text.define_dd()),elements);
+    if(cb) cb(keywords);
+    else return keywords;
+  },
+  //////////////////////////////////////////
+  analyse_cadrage_keywords : function(elements,cb){
+    var keywords = CK_analyse.keywordsDefine(_.values(CK_text.cadrage()),elements);
     if(cb) cb(keywords);
     else return keywords;
   },

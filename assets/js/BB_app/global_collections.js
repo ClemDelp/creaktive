@@ -84,7 +84,6 @@ global.Collections.Elements = Backbone.Collection.extend({
         this.ioBind('remove2', this.serverRemove, this);
     },
     newElement : function(json,joyride){
-        alert(joyride)
         // on desactive le joyride 
         var joyrideLaunch = true;
         if(joyride != undefined) joyrideLaunch = joyride

@@ -1,7 +1,62 @@
+<script type="text/template" id="ck-analyse-keywords-template">
+	<p>{{-sentence_init}}</p>
+	<table style="width:100%">
+		{{ _.each(keywords,function(word){ }} 
+		<tr>
+			{{ if(word.tagged.length > 0 ){ }}
+				<td width="20%">
+					<span class="tiny success label round">{{-word.tagged.length}}</span>
+					{{ if(word.poche != undefined){ }}
+						<div class="{{-word.poche.css_auto}}" style="padding:10px;">{{-word.poche.title}}</div>
+					{{ }else{ }}
+						<b>{{-word.title.fr}}</b>
+					{{ } }}
+					
+				</td>
+				<td><table style="width:100%"><tr><td><ul>
+				{{ _.each(word.tagged,function(element){ }}
+					<li style="list-style-type: disc;"><div class="{{-element.css_auto}} {{-element.css_manu}}" style="padding:10px;">{{-element.title}}</li>
+				{{ });}} 
+				</ul></td></tr></table></td>
+				<td>
+					<div class="row collapse">
+				        <div class="small-10 columns">
+				          	<input id="{{-word.tag}}_value" type="text" placeholder="{{-word.found.fr}}">
+				        </div>
+				        <div class="small-2 columns">
+				          	<a href="#" data-tag="{{- word.tag}}" class="button postfix success new_cadrage">+</a>
+				        </div>
+				    </div>
+				</td>
+			{{ }else{ }}
+				<td width="20%">
+					{{ if(word.poche != undefined){ }}
+						<div class="{{-word.poche.css_auto}}" style="padding:10px;">{{-word.poche.title}}</div>
+					{{ }else{ }}
+						<b>{{-word.title.fr}}</b>
+					{{ } }}
+				</td>
+				<td colspan="2">
+					<div class="row collapse">
+				        <div class="small-10 columns">
+				          	<input id="{{-word.tag}}_value" type="text" placeholder="{{-word.notFound.fr}}">
+				        </div>
+				        <div class="small-2 columns">
+				          <a href="#" data-tag="{{- word.tag}}" class="button postfix new_cadrage">+</a>
+				        </div>
+				    </div>
+				</td>
+			{{ } }}
+		</tr>
+		{{ }); }} 
+	</table>
+</script>
+
+
 <script type="text/template" id="ck-cadrage-keywords-template">
 	<p>Mots clefs pour le cadrage de la problématique</p>
 	<table style="width:100%">
-		{{ _.each(keyWords,function(word){ }} 
+		{{ _.each(keywords,function(word){ }} 
 		<tr>
 			{{ if(word.tagged.length > 0 ){ }}
 				<td width="20%"><span class="tiny success label round">{{-word.tagged.length}}</span><b>{{-word.title.fr}}</b></td>
@@ -13,10 +68,10 @@
 				<td>
 					<div class="row collapse">
 				        <div class="small-10 columns">
-				          	<input id="{{-word.tag.en}}_value" type="text" placeholder="{{-word.found.fr}}">
+				          	<input id="{{-word.tag}}_value" type="text" placeholder="{{-word.found.fr}}">
 				        </div>
 				        <div class="small-2 columns">
-				          	<a href="#" data-tag="{{- word.tag.en}}" class="button postfix success new_cadrage">+</a>
+				          	<a href="#" data-tag="{{- word.tag}}" class="button postfix success new_cadrage">+</a>
 				        </div>
 				    </div>
 				</td>
@@ -25,10 +80,10 @@
 				<td colspan="2">
 					<div class="row collapse">
 				        <div class="small-10 columns">
-				          	<input id="{{-word.tag.en}}_value" type="text" placeholder="{{-word.notFound.fr}}">
+				          	<input id="{{-word.tag}}_value" type="text" placeholder="{{-word.notFound.fr}}">
 				        </div>
 				        <div class="small-2 columns">
-				          <a href="#" data-tag="{{- word.tag.en}}" class="button postfix new_cadrage">+</a>
+				          <a href="#" data-tag="{{- word.tag}}" class="button postfix new_cadrage">+</a>
 				        </div>
 				    </div>
 				</td>

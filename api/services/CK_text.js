@@ -285,80 +285,88 @@ var CK_text = {
 				prefix : "tag_",
 				notFound : {fr : "Quel est le besoin ?", en: ""},
 				found : {fr : "Ajouter un autre besoin ?", en: ""},
-				tag : {fr:['le besoin'],en:['need']},
+				tag : 'need',
 				exemples : [],	
 				v2or : {strength : 2, variety : 0, value : 1, originality : 0},
-				tagged : []
+				tagged : [],
+				poche : undefined
 			},
 			needLess : {
 				title : {fr:"Element perturbateur",en:""},
 				prefix : "tag_",
 				notFound : {fr : "Qu’est ce qui peut faire disparaître le besoin?", en: ""},
 				found : {fr : "Définir un autre élément qui pourrait faire disparaître le besoin?", en: ""},
-				tag : {fr:[],en:['need_less']},
+				tag : 'need_less',
 				exemples : [],	
 				v2or : {strength : 1, variety : 0, value : 3, originality : 0},
-				tagged : []
+				tagged : [],
+				poche : undefined
 			},
 			target : {
 				title : {fr:"Les cible",en:""},
 				prefix : "tag_",
 				notFound : {fr : "A qui ça s’adresse? (j’ai pas forcément la réponse au départ)", en: ""},
 				found : {fr : "Une nouvelle cible ?", en: ""},
-				tag : {fr:[],en:['target']},
+				tag : 'target',
 				exemples : [],
 				v2or : {strength : 0, variety : 1, value : 1, originality : 1},
-				tagged : []
+				tagged : [],
+				poche : undefined
 			},
 			impact : {
 				title : {fr:"Les impacts",en:""},
 				prefix : "tag_",
 				notFound : {fr : "Sur quoi ça agit?", en: ""},
 				found : {fr : "Un autre élément sur lequel ça agit ?", en: ""},
-				tag : {fr:[],en:['impact_on']},
+				tag : 'impact_on',
 				exemples : [],	
 				v2or : {strength : 0, variety : 1, value : 2, originality : 3},
-				tagged : []
+				tagged : [],
+				poche : undefined
 			},
 			actor : {
 				title : {fr:"Les acteurs",en:""},
 				prefix : "tag_",
 				notFound : {fr : "Quelles sont les parties prenante?", en: ""},
 				found : {fr : "Une autre partie prenante ?", en: ""},
-				tag : {fr:[],en:['actor']},
+				tag : 'actor',
 				exemples : [],	
 				v2or : {strength : 4, variety : 0, value : 3, originality : 0},
-				tagged : []
+				tagged : [],
+				poche : undefined
 			},
 			implantation : {
 				title : {fr:"Implantation",en:""},
 				prefix : "tag_",
 				notFound : {fr : "Comment ça s’intègre avec l’existant?", en: ""},
 				found : {fr : "Une autre intégration avec l’existant?", en: ""},
-				tag : {fr:['implantation'],en:['implantation']},
+				tag : 'implantation',
 				exemples : [],	
 				v2or : {strength : 1, variety : 1, value : 1, originality : 1},
-				tagged : []
+				tagged : [],
+				poche : undefined
 			},
 			C0 : {
 				title : {fr:"C0 - concept initial",en:""},
 				prefix : "tag_",
 				notFound : {fr : "Définir C0", en: ""},
 				found : {fr : "Définir un autre C0", en: ""},
-				tag : {fr:['c0'],en:['c0']},
+				tag : 'c0',
 				exemples : [],	
 				v2or : {strength : 0, variety : 4, value : 0, originality : 4},
-				tagged : []
+				tagged : [],
+				poche : undefined
 			},
 			K0 : {
 				title : {fr:"K0 - connaissances initiales",en:""},
 				prefix : "tag_",
 				notFound : {fr : "Définir K0", en: ""},
 				found : {fr : "Définir un autre K0", en: ""},
-				tag : {fr:['k0'],en:['k0']},
+				tag : 'k0',
 				exemples : [],	
 				v2or : {strength : 4, variety : 0, value : 4, originality : 0},
-				tagged : []
+				tagged : [],
+				poche : undefined
 			},
 			// iteration : {
 			// 	notFound : {fr : "Itérer entre C0 et K0 afin de fixer le/les C0 (l’enlever quand le C0 est fixer et quand le system d’éval définit tous les critère au moins à deux)", en: ""},
@@ -376,19 +384,23 @@ var CK_text = {
 	c0_k0_validated : function(){
 		return {
 			analogy : {
-				suggestion : {fr : "Faire des recherches par analogies", en: ""},
+				title : {fr:"Analogies",en:""},
+				prefix : "tag_",
+				conditions : ["c0"], // to debloc this suggestion we need to have a C0
+				notFound : {fr : "Faire des recherches par analogie", en: ""},
+				found : {fr : "Faire d'autres analogies", en: ""},
 				tag : {fr:['analogie'],en:['analogy']},
-				options : [],
 				exemples : [],	
-				v2or : {strength : 0, variety : 4, value : 0, originality : 4},
+				v2or : {strength : 4, variety : 0, value : 4, originality : 0},
+				tagged : []
 			},
-			homonyme : {
-				suggestion : {fr : "Faire des recherches par homonyme", en: ""},
-				tag : {fr:['homonyme'],en:['homonym']},
-				options : [],
-				exemples : [],	
-				v2or : {strength : 0, variety : 2, value : 0, originality : 2},
-			},
+			// homonyme : {
+			// 	suggestion : {fr : "Faire des recherches par homonyme", en: ""},
+			// 	tag : {fr:['homonyme'],en:['homonym']},
+			// 	options : [],
+			// 	exemples : [],	
+			// 	v2or : {strength : 0, variety : 2, value : 0, originality : 2},
+			// },
 			thematic : {
 				suggestion : {fr : "Définir les mots clefs associés à un concept, les grandes thématiques, générer ses noms communs", en: ""},
 				tag : {fr:['thématique'],en:['thematic']},
@@ -404,6 +416,69 @@ var CK_text = {
 			// les faire travailler sur Google image/moteur de recherche metaphorique/...
 			// Pour chaque poche C identifiée aller chercher des infos automatiquement sur internet et compléterles poches K et idées de concepts
 			// les faire travailler sur Google image/moteur de recherche metaphorique/...
+		}
+	},
+	define_dd : function(){
+		return {
+			// dd : {
+			// 	title : {fr:"Dominant design",en:""},
+			// 	prefix : "tag_",
+			// 	tag : {fr:['analogie'],en:['analogy']},
+			// 	conditions : ["c0","k0"], // to debloc this suggestion we need to have a C0
+			// 	notFound : {fr : "Formaliser un Dominant Design", en: ""},
+			// 	//found : {fr : "Formaliser un Dominant Design", en: ""},
+			// 	exemples : [],	
+			// 	// v2or : {strength : 4, variety : 0, value : 4, originality : 0},
+			// 	tagged : []
+			// },
+			dim_business : {
+				title : {fr:"Dimension business",en:""},
+				prefix : "tag_",
+				conditions : ["c0"], // to debloc this suggestion we need to have a C0
+				notFound : {fr : "Comment l'objet/service est valorisé économiquement ?", en: ""},
+				found : {fr : "Proposer une autre valeur économique ?", en: ""},
+				tag : 'dim_bsn',
+				exemples : [],	
+				// v2or : {strength : 4, variety : 0, value : 4, originality : 0},
+				tagged : [],
+				poche : undefined
+			},
+			dim_usage_valeur : {
+				title : {fr:"Dimension usage / valeur",en:""},
+				prefix : "tag_",
+				conditions : ["dim_bsn"], // to debloc this suggestion we need to have a C0
+				notFound : {fr : "Ce qu'apporte l'objet/service à l'utilisateur ?", en: ""},
+				found : {fr : "Proposer un autre apport ?", en: ""},
+				tag : 'dim_usg_val',
+				exemples : [],	
+				// v2or : {strength : 4, variety : 0, value : 4, originality : 0},
+				tagged : [],
+				poche : undefined
+			},
+			dim_fonctionnel : {
+				title : {fr:"Dimension fonctionnelles",en:""},
+				prefix : "tag_",
+				conditions : ["dim_usg_val"], // to debloc this suggestion we need to have a C0
+				notFound : {fr : "Ce que fait l'objet/service ? (techniquement)", en: ""},
+				found : {fr : "Proposer une autre fonctionnalité ?", en: ""},
+				tag : 'dim_fct',
+				exemples : [],	
+				// v2or : {strength : 4, variety : 0, value : 4, originality : 0},
+				tagged : [],
+				poche : undefined
+			},
+			dim_technique : {
+				title : {fr:"Dimension technique",en:""},
+				prefix : "tag_",
+				conditions : ["dim_fct"], // to debloc this suggestion we need to have a C0
+				notFound : {fr : "Comment l'objet/service fonctionne ? (techniquement)", en: ""},
+				found : {fr : "Proposer une autre fonction technique ?", en: ""},
+				tag : 'dim_tech',
+				exemples : [],	
+				// v2or : {strength : 4, variety : 0, value : 4, originality : 0},
+				tagged : [],
+				poche : undefined
+			},
 		}
 	},
 	// On a déterminer un ou plusieurs DD et des concepts projecteurs

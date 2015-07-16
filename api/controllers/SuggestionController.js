@@ -20,13 +20,11 @@ module.exports = {
 		CK_analyse.get_v2or_values(req.body.elements, req.body.links, function(v2or_values){
 			res.send(v2or_values);
 		});
-
 	},
 	get_v2or_analyse : function(req,res){
 		CK_analyse.get_v2or_analyse(req.body.elements, req.body.links, function(analyses){
 			res.send(analyses);
 		});
-
 	},
 	get_explorations_analyse : function(req,res){
 		CK_analyse.get_exploration_suggestions(req.body.elements, function(explorations){
@@ -35,6 +33,11 @@ module.exports = {
 	},
 	analyse_cadrage_keywords : function(req,res){
 		CK_analyse.analyse_cadrage_keywords(req.body.elements, function(analyse){
+			res.send(analyse);
+		});
+	},
+	analyse_dd_keywords : function(req,res){
+		CK_analyse.analyse_dd_keywords(req.body.elements, function(analyse){
 			res.send(analyse);
 		});
 	},

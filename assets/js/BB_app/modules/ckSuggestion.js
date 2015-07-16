@@ -21,6 +21,7 @@ var ckSuggestion = {
     explorations_el : "#explorations_container",
     v2or_analyse_el : "#v2or_analyse_container",
     cadrage_keywords_el : "#cadrage_keywords_container",
+    dd_keywords_el : "#dd_keywords_container",
 
 
     el_radar_detail : "#radar_detail_container",
@@ -50,6 +51,10 @@ ckSuggestion.Views.Main = Backbone.View.extend({
         this.normalisations = {};
         this.evaluations = {};   
         this.project = global.models.currentProject;
+        
+        this.cadrage_analyses = [];
+        this.dd_analyses = [];
+
         // Templates
         this.normalisation_tr = _.template($('#normalisation-suggestion-template').html());
         this.localisation_tr = _.template($('#normalisation-localisation-template').html());
@@ -60,7 +65,7 @@ ckSuggestion.Views.Main = Backbone.View.extend({
 
         this.explorations_template = _.template($('#ck-explorations-template').html());
         this.v2or_analyse_template = _.template($('#ck-v2or-analyse-template').html());
-        this.cadrage_keywords_template = _.template($('#ck-cadrage-keywords-template').html());
+        this.analyse_keywords_template = _.template($('#ck-analyse-keywords-template').html());
         // Events
     },
     events : {
@@ -74,17 +79,27 @@ ckSuggestion.Views.Main = Backbone.View.extend({
     new_cadrage_keywords : function(e){
         e.preventDefault();
         var tag = e.target.getAttribute('data-tag');
-        console.log($("#"+tag+"_value").val());
-        //
+        // create poche if needed
+        this.cadrage_analyses.forEach(function(analyse){
+            if((analyse.tag == tag)&&(analyse.poche == undefined)) ckSuggestion.views.main.create_new_tagged_element("poche",analyse.title.fr+" / "+analyse.title.en,analyse.tag);
+        });
+        // create poche if needed
+        this.dd_analyses.forEach(function(analyse){
+            if((analyse.tag == tag)&&(analyse.poche == undefined)) ckSuggestion.views.main.create_new_tagged_element("poche",analyse.title.fr+" / "+analyse.title.en,analyse.tag);
+        });
+        this.create_new_tagged_element("knowledge",$("#"+tag+"_value").val(),tag)
+    },
+    create_new_tagged_element : function(type,title,tag){
         var json = {
-            type: "knowledge",
-            title: $("#"+tag+"_value").val(),
+            type: type,
+            title: title,
         }
         var newElement = this.elements.newElement(json,false);
         // on ajoute le tag en attribut de l'element
         var json = {};
         json["tag_"+tag] = tag;
         newElement.save(json)
+        return newElement;
     },
     /////////////////////////////////////////
     // ACTIONS
@@ -174,7 +189,6 @@ ckSuggestion.Views.Main = Backbone.View.extend({
             elements : bbmap.views.main.elements.toJSON(),
             links : bbmap.views.main.links.toJSON(),
         }, function(explorations){
-            console.log(explorations)
             ckSuggestion.views.main.render_explorations(explorations);
         });
         /////////////////////////////////////
@@ -212,14 +226,37 @@ ckSuggestion.Views.Main = Backbone.View.extend({
         /////////////////////////////////////   
         $.post("/suggestion/analyse_cadrage_keywords",{
             elements : bbmap.views.main.elements.toJSON(),
-        }, function(analyse){
-            ckSuggestion.views.main.render_cadrage_analyse_key_words(analyse);
+        }, function(analyses){
+            console.log("cadrage:",analyses)
+            ckSuggestion.views.main.cadrage_analyses = analyses;
+            ckSuggestion.views.main.render_cadrage_analyse_key_words(analyses);
+        });
+        /////////////////////////////////////
+        // CADRAGE KEYWORDS ANALYSE
+        /////////////////////////////////////   
+        $.post("/suggestion/analyse_dd_keywords",{
+            elements : bbmap.views.main.elements.toJSON(),
+        }, function(analyses){
+            console.log("dd:",analyses)
+            ckSuggestion.views.main.dd_analyses = analyses;
+            ckSuggestion.views.main.render_dd_analyse_key_words(analyses);
         });
     },
     ///////////////////////////////////
-    render_cadrage_analyse_key_words : function(cadrage_keywords){
+    render_dd_analyse_key_words : function(keywords){
+        $(ckSuggestion.dd_keywords_el).empty();
+        $(ckSuggestion.dd_keywords_el).append(this.analyse_keywords_template({
+            sentence_init : "Definir le dominante design de votre produit/service",
+            keywords : keywords
+        }))
+    },
+    ///////////////////////////////////
+    render_cadrage_analyse_key_words : function(keywords){
         $(ckSuggestion.cadrage_keywords_el).empty();
-        $(ckSuggestion.cadrage_keywords_el).append(this.cadrage_keywords_template({keyWords : cadrage_keywords}))
+        $(ckSuggestion.cadrage_keywords_el).append(this.analyse_keywords_template({
+            sentence_init : "Cadrage de la problématique",
+            keywords : keywords
+        }))
     },
     ///////////////////////////////////
     generateChart : function(data,id,width,height){
