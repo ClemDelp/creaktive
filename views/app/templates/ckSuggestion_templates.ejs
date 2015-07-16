@@ -39,19 +39,31 @@
 </script>
 
 <script type="text/template" id="ck-explorations-template">
-	<p>Classement du moins risqué (de lincrementale) au plus risqué (vers de la rupture)</p>
+	<p>Nous avons trouvé {{-explorations.length}} piste(s) conceptuelle(s) explorable(s).</p>
 	<table style="width:100%">
-		{{ for(var i=0;i<evaluations.length;i++){ }} 
-		<tr>
-			<td>{{-evaluations[i]}}</td>
-			<td>
-				{{ _.each(branches[i],function(node){ }} 
-					{{-node.title}} ->
-				{{ }); }}
-				<b>?</b>
-			</td>
-		</tr>
-		{{ } }}
+		<thead>
+		    <tr>
+		      <th>Degrés - risque</th>
+		      <th>Branche concepts</th>
+		    </tr>
+	  	</thead>
+	  	<tbody>
+			{{_.each(explorations,function(exploration){ }}
+			<tr>
+				<td>
+					<span class="label {{-exploration.style}} round tiny" title="{{-exploration.desc.fr}}">
+						{{-exploration.title.fr}} - {{-exploration.value}}<small>/3</small>
+					</span>
+				</td>
+				<td>
+					{{_.each(exploration.branche,function(node){ }}
+					{{-node.title}} <b>-></b>
+					{{ }); }}
+					<font style="color:red">?</font>
+				</td>
+			</tr>
+			{{ }); }}
+		</tbody>
 	</table>
 </script>
 
@@ -119,7 +131,7 @@
 <script type="text/template" id="radar-detail-template">
 	<table style="width:100%">
 		{{ _.each(evaluations,function(evaluation){ }} 
-			<tr><td><b>{{- evaluation.options[0].name.fr }} -  <span class="label tiny round">{{- evaluation.options[0].value }} <small>/ 4</small></span></b><br><small>{{- evaluation.options[0].desc.fr }}</small></td></tr>
+			<tr><td><b>{{- evaluation.options[0].name.fr }} -  <span class="label tiny round">{{- evaluation.options[0].value }} <small>/ 4</small></span></b><br><p>{{- evaluation.options[0].desc.fr }}</p></td></tr>
 		{{ }); }}
 	</table>
 </script>

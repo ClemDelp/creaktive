@@ -18,18 +18,15 @@ var ckSuggestion = {
     el_k_localized : "#k_localized_table",
     el_k_not_localized : "#k_not_localized_table",
 
-    el_radar_detail : "#radar_detail_container",
-    
     explorations_el : "#explorations_container",
     v2or_analyse_el : "#v2or_analyse_container",
     cadrage_keywords_el : "#cadrage_keywords_container",
 
 
+    el_radar_detail : "#radar_detail_container",
 
     el_evaluation_suggestion : "#evaluations_table",
 
-    el_objectif_sliders_container : "#objectif_sliders_container",
-    el_objectif_suggestion_table : "#objectif_suggestion_table",
     
     init: function (json) {
         if(ckSuggestion.views.main == undefined){
@@ -177,6 +174,7 @@ ckSuggestion.Views.Main = Backbone.View.extend({
             elements : bbmap.views.main.elements.toJSON(),
             links : bbmap.views.main.links.toJSON(),
         }, function(explorations){
+            console.log(explorations)
             ckSuggestion.views.main.render_explorations(explorations);
         });
         /////////////////////////////////////
@@ -234,8 +232,7 @@ ckSuggestion.Views.Main = Backbone.View.extend({
     render_explorations : function(explorations){
         $(ckSuggestion.explorations_el).empty();
         $(ckSuggestion.explorations_el).append(this.explorations_template({
-            evaluations : explorations.evaluations,
-            branches : explorations.branches
+            explorations : explorations
         }));
     },
     ///////////////////////////////////
@@ -246,37 +243,37 @@ ckSuggestion.Views.Main = Backbone.View.extend({
         // RADAR
         $(ckSuggestion.el_radar_detail).append(this.radar_detail({evaluations : values}));
         
-        var x = setInterval(function(){
-            if($("#radar_detail_container").height() > 0){
-                var data = {
-                    labels: [
-                        values.originality.options[0].name.fr, 
-                        values.variety.options[0].name.fr,
-                        values.value.options[0].name.fr,
-                        values.strength.options[0].name.fr
-                    ],
-                    datasets: [
-                        {
-                            label: "Evaluation",
-                            fillColor: "rgba(151,187,205,0.2)",
-                            strokeColor: "#1B9DD3",//"rgba(151,187,205,1)",
-                            pointColor: "#1B9DD3",//"rgba(151,187,205,1)",
-                            pointStrokeColor: "#fff",
-                            pointHighlightFill: "#fff",
-                            pointHighlightStroke: "rgba(151,187,205,1)",
-                            data: [
-                                values.originality.options[0].value, 
-                                values.variety.options[0].value, 
-                                values.value.options[0].value, 
-                                values.strength.options[0].value
-                            ]
-                        }
-                    ]
-                };
-                ckSuggestion.views.main.generateChart(data,"myEvaluationChart",$("#radar_graph_container").width(),$("#radar_detail_container").height());
-                clearInterval(x);
-            }
-        }, 1000);
+        // var x = setInterval(function(){
+        //     if($("#radar_detail_container").height() > 0){
+        //         var data = {
+        //             labels: [
+        //                 values.originality.options[0].name.fr, 
+        //                 values.variety.options[0].name.fr,
+        //                 values.value.options[0].name.fr,
+        //                 values.strength.options[0].name.fr
+        //             ],
+        //             datasets: [
+        //                 {
+        //                     label: "Evaluation",
+        //                     fillColor: "rgba(151,187,205,0.2)",
+        //                     strokeColor: "#1B9DD3",//"rgba(151,187,205,1)",
+        //                     pointColor: "#1B9DD3",//"rgba(151,187,205,1)",
+        //                     pointStrokeColor: "#fff",
+        //                     pointHighlightFill: "#fff",
+        //                     pointHighlightStroke: "rgba(151,187,205,1)",
+        //                     data: [
+        //                         values.originality.options[0].value, 
+        //                         values.variety.options[0].value, 
+        //                         values.value.options[0].value, 
+        //                         values.strength.options[0].value
+        //                     ]
+        //                 }
+        //             ]
+        //         };
+        //         ckSuggestion.views.main.generateChart(data,"myEvaluationChart",$("#radar_graph_container").width(),$("#radar_detail_container").height());
+        //         clearInterval(x);
+        //     }
+        // }, 1000);
     },
     render_v2or_analyse : function(analyses){
         // Suggestion tables

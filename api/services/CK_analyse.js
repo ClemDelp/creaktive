@@ -87,10 +87,25 @@ var CK_analyse = {
   //////////////////////////////////////////
   //////////////////////////////////////////
   get_exploration_suggestions : function(elements,cb){
+    var analyses = [];
     var tree = _.where(elements,{type:"concept"});
     var exploration = api.findExplorationWay(tree);
-    if(cb) cb(exploration);
-    else return exploration;
+    for(var i=0;i<exploration.evaluations.length;i++){
+      var eval = exploration.evaluations[i];
+      var analyse = {};
+      if(eval<=1) analyse = CK_text.explorations().risk_small;
+      else if((eval>1)&&(eval<=2)) analyse = CK_text.explorations().risk_medium;
+      else if((eval>2)&&(eval<=3)) analyse = CK_text.explorations().risk_important;
+      else analyse = CK_text.explorations().risk_undefined;
+      // on rajoute les branches
+      analyse.branche = exploration.branches[i];
+      // on rajoute la valeur
+      analyse.value = exploration.evaluations[i];
+      // on l'ajoute à la liste des analyses
+      analyses.push(analyse);
+    }
+    if(cb) cb(analyses);
+    else return analyses;
   },
   //////////////////////////////////////////
   get_v2or_values : function(elements,links,cb){
@@ -341,7 +356,7 @@ var CK_analyse = {
       var option = strength.options[0];
 
       var k_inside = _.where(elements,{type: "knowledge", inside : "inside"});
-      var k_outside = _.where(elements,{type: "knowledge", inside : "outside"});
+      var k_outside = _.union(_.where(elements,{type: "knowledge", inside : "outside"}),_.where(elements,{type: "knowledge", inside : ""}));
       if((k_inside.length == 0)&&(k_outside.length == 0)) option.value = 0;
       else if(k_outside.length == 0) option.value = 0;
       else option.value = api.cross_product(4,(k_inside.length + k_outside.length),(k_inside.length / k_outside.length));

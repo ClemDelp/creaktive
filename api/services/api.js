@@ -19,20 +19,27 @@ var api = {
       var leaves = api.getAllLeaves(tree);
       //console.log(leaves)
       _.each(leaves,function(leave){
-        var branche = _.union(leave, api.getTreeParentNodes(leave,tree,[]));
+        var branche = _.union([leave], api.getTreeParentNodes(leave,tree,[]));
+        var branche = branche.reverse(); // on renverse le tableau
+        // si la feuille n'est pas seul
         if(branche.length > 0){
           explorations.branches.push(branche);
           explorations.evaluations.push(api.getBrancheEvaluation(branche));
         }
       });
-
     });
     return explorations;
   },
   getBrancheEvaluation : function(branche){
     var eval = 0;
     var stat = api.get_concept_by_statut(branche);
-    eval = (stat.c_connu.length * 1)+(stat.c_atteignable.length * 2)+(stat.c_alternatif.length * 3)+(stat.c_hamecon.length * 4);
+    // on fixe le niveau de risque et le degres d'innov (on fixe un seuille et on pondère par rapport à la proportion d'un statut / au nbre d'element totale)
+    if(stat.c_hamecon.length > 0) eval = (2 + api.cross_product(1,branche.length,stat.c_hamecon.length));
+    else if(stat.c_alternatif.length > 0) eval = (1 + api.cross_product(1,branche.length,stat.c_alternatif.length));
+    else if(stat.c_atteignable.length > 0) eval = (0 + api.cross_product(1,branche.length,stat.c_atteignable.length));
+    // eval = (stat.c_connu.length * 0)+(stat.c_atteignable.length * 2)+(stat.c_alternatif.length * 4)+(stat.c_hamecon.length * 10);
+    // on ramene à une echelle de 0 à 3
+    //eval = api.cross_product(3,branche.length*10,eval)
     return eval;
   },
   //////////////////////////////@

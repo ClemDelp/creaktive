@@ -221,6 +221,38 @@ var options = {
 }
 
 var CK_text = {
+	explorations : function(){
+		return {
+			risk_important : { 
+				style : "alert",
+			 	branche : [],
+			 	value : 0, // entre 2 et 3
+			 	title : {fr:"Rupture",en:""},
+			 	desc : {fr:"Le risque est important, on est dans des logiques d'innovation de rupture",en:""},
+			},
+			risk_small : { 
+				style : "success",
+			 	branche : [],
+			 	value : 0, // entre 2 et 3
+			 	title : {fr:"Incrementale",en:""},
+			 	desc : {fr:"Le risque est faible, on est dans des logiques d'innovation incrémentale",en:""},
+			},
+			risk_medium : { 
+				style : "",
+			 	branche : [],
+			 	value : 0, // entre 2 et 3
+			 	title : {fr:"Alternatif",en:""},
+			 	desc : {fr:"Le risque est moyen, on est dans des logiques d'innovation alternative",en:""},
+			},
+			risk_undefined : { 
+				style : "secondary",
+			 	branche : [],
+			 	value : 0, // entre 2 et 3
+			 	title : {fr:"Undefined",en:""},
+			 	desc : {fr:"Impossible d'établir un diagnostic",en:""},
+			},
+		};
+	},
 	localisations : function(){
 		return {
 			////////////////
