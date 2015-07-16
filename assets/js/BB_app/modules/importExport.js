@@ -75,6 +75,7 @@ importExport.Views.Main = Backbone.View.extend({
                 global.collections.Links.add(new_cklink,{silent : false}); 
             });
             bbmap.views.main.recadrage();
+            
         }catch(err){
             alert("improper code");
         }
