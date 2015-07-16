@@ -1,12 +1,28 @@
 
+<script type="text/template" id="import-export-template">
+    <div class="row panel">
+      <div class="large-12 columns">
+        <a href="#" class="tiny button radius ckExport">Export your CK</a>
+        <textarea id="ck_to_export" placeholder="Click on 'Export' button above and copy the following generated code"></textarea>
+      </div>
+    </div>
+
+    <div class="row panel">
+      <div class="large-12 columns">
+          <textarea id="ck_to_import" placeholder="Paste here a generated code from an other project and then click on 'Import' button below"></textarea>
+        <a id="export_text_area" href="#" class="tiny button radius success ckImport">Import a CK</a>
+      </div>
+    </div>
+</script>
+
 <script type="text/template" id="actionMenu-template">
-  <div class="large-10 medium-10 small-10 columns">
+  <div class="large-8 medium-8 small-8 columns">
     <ul class="button-group tiny radius">
       {{ if(mode == "edit"){ }}
       <li>
         <a data-tooltip aria-haspopup="true" title="Bénéficiez d'aides et de suggestions" href="#" class="tiny radius actionMenuButton button secondary getSuggestions"><img title="magic wand" src="/img/icones/Magic-Wand-24.png"/></a>
       </li>
-      {{ } }} 
+      {{ } }}
       <li>
         <a data-tooltip aria-haspopup="true" title="Téléchager votre map en format PNG" href="#" class="tiny button actionMenuButton radius secondary downloadimage"><img title="Download screenshot" src="/img/icones/Download-24.png"/></a>
       </li>
@@ -36,13 +52,19 @@
     </ul>  
   </div>
 
-  <div class="large-2 medium-2 small-2 columns">
+  <div class="large-4 medium-4 small-4 columns">
     <span style="float:right">
       {{ if(mode == "edit"){ }}
+        <a data-tooltip aria-haspopup="true" title="Import / export your CK" href="#" class="importExport button tiny secondary radius" data-reveal-id="import_export_modal">
+          <b>Import/export</b>
+        </a>
+        <div id="import_export_modal" class="modalContainer reveal-modal medium" data-reveal></div>
+
         <a data-tooltip aria-haspopup="true" title="Accès aux utilisateurs du projet" href="#" class="button tiny success radius" data-reveal-id="members_manager_modal">
           <b>Partager</b>
         </a>
         <div id="members_manager_modal" class="modalContainer reveal-modal medium" data-reveal></div>
+
       {{ } }}
     </span>
   </div>

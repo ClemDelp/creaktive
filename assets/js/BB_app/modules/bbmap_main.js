@@ -176,6 +176,8 @@ bbmap.Views.Main = Backbone.View.extend({
         "click .downloadimage" : "laurie",
         "click .getSuggestions" : "get_suggestions", 
         "click #map" : "deSelection",
+
+ 
     },
     ///////////////////////////////////////////////////
     // HISTORY FUNCTIONS
@@ -286,18 +288,6 @@ bbmap.Views.Main = Backbone.View.extend({
         var id = e.target.id;
         this.setLastModel(bbmap.views.main.elements.get(id),'editBulle');
         this.startJoyride(id);
-    },
-    /////////////////////////////////////////
-    exportElementsToString : function(){
-        var json = bbmap.views.main.elements.toJSON();
-        var clear_json = [];
-        bbmap.views.main.elements.forEach(function(el){
-            clear_json.push(_.pick(el.toJSON(), 'id', 'id_father', 'project', 'title', 'type', 'css_auto', 'css_manu', 'content', 'inside'));      
-        })
-        console.log(JSON.stringify(clear_json));
-    },
-    exportLinksToString : function(){
-        console.log(JSON.stringify(bbmap.views.main.links.toJSON()));
     },
     /////////////////////////////////////////
     svgWindowController : function(){

@@ -31,11 +31,13 @@ actionMenu.Views.Main = Backbone.View.extend({
         this.project = global.models.currentProject;
         // Templates
         this.template = _.template($('#actionMenu-template').html());
+        this.import_export_template = _.template($('#import-export-template').html());
         // Events
     },
     events : {
         "click .fullscreen" : "putInFullScreen",
     },
+    /////////////////////////////////////////
     putInFullScreen : function(e){
         e.preventDefault();
         if (screenfull.enabled) screenfull.request();
@@ -57,6 +59,7 @@ actionMenu.Views.Main = Backbone.View.extend({
         // 
         workspacesList.init({el:"#workspaces_dropdown",display:"list"});
 
+        importExport.init({el:"#import_export_modal"});
 
         return this;
     }
