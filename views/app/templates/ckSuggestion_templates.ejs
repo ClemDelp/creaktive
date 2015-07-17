@@ -28,43 +28,46 @@
 			{{ _.each(keywords,function(word){ }} 
 			<tr>
 				
-					<td width="30%">
-						{{ if(word.poche != undefined){ }}
-							<div class="{{-word.poche.css_auto}}" style="padding:10px;">
-								<center>
-									<span style="float:left" class="tiny {{ if(word.tagged.length > 0 ){ }}success{{ } }} label round">
-										{{-word.tagged.length}}
-									</span>
-									<b>{{-word.poche.title}}</b>
-								</center>
-							</div>
-						{{ }else{ }}
-							<span class="tiny {{ if(word.tagged.length > 0 ){ }}success{{ } }} label round">
-								{{-word.tagged.length}}
-							</span>
-							<b>{{-word.title.fr}}</b>
-						{{ } }}
-						
-					</td>
-					<td>
-						{{ if(word.tagged.length > 0 ){ }}
-							<div class="row" style="padding:20px">						
-								{{ _.each(word.tagged,function(element){ }}
-									<span class="{{-element.css_auto}} {{-element.css_manu}}" style="padding:10px;">{{-element.title}}</span>
-								{{ });}}
-							</div>
-						{{ } }}
-						<div class="row collapse">
-					        <div class="small-10 columns">
-					          	<input id="{{-word.tag}}_value" type="text" placeholder="{{-word.found.fr}}">
-					        </div>
-					        <div class="small-2 columns">
-					          	<a href="#" data-tag="{{- word.tag}}" class="button postfix {{ if(word.tagged.length > 0 ){ }}success{{ } }} new_cadrage">+</a>
-					        </div>
-					    </div>
-					    <hr>
-					</td>
-				
+				<td width="30%">
+					{{ if(word.poche != undefined){ }}
+						<div class="{{-word.poche.css_auto}}" style="padding:10px;">
+							<center>
+								<span style="float:left" class="tiny {{ if(word.tagged.length > 0 ){ }}success{{ } }} label round">
+									{{-word.tagged.length}}
+								</span>
+								<b>{{-word.poche.title}}</b>
+							</center>
+						</div>
+					{{ }else{ }}
+						<span class="tiny {{ if(word.tagged.length > 0 ){ }}success{{ } }} label round">
+							{{-word.tagged.length}}
+						</span>
+						<b>{{-word.title.fr}}</b>
+					{{ } }}
+					
+				</td>
+				<td>
+					{{ if(word.tagged.length > 0 ){ }}
+						<div class="row" style="padding:20px">						
+							{{ _.each(word.tagged,function(element){ }}
+								<span class="{{-element.css_auto}} {{-element.css_manu}}" style="padding:10px;">{{-element.title}}</span>
+							{{ });}}
+						</div>
+					{{ } }}
+					<div class="row collapse">
+				        <div class="small-10 columns">
+				          	{{ if(word.tagged.length > 0 ){ }}
+				          		<input id="{{-word.tag}}_value" type="text" placeholder="{{-word.found.fr}}">
+				          	{{ }else{ }}
+				          		<input id="{{-word.tag}}_value" type="text" placeholder="{{-word.notFound.fr}}">
+				          	{{ } }}
+				        </div>
+				        <div class="small-2 columns">
+				          	<a href="#" data-tag="{{- word.tag}}" class="button postfix {{ if(word.tagged.length > 0 ){ }}success{{ } }} new_cadrage">+</a>
+				        </div>
+				    </div>
+				    <hr>
+				</td>
 			</tr>
 			{{ }); }} 
 		</tbody>

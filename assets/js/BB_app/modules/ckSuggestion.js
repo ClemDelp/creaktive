@@ -165,7 +165,6 @@ ckSuggestion.Views.Cadrage = Backbone.View.extend({
         "click .new_cadrage" : "new_cadrage_keywords", 
     },
     new_cadrage_keywords : function(e){
-        alert('new cadrage')
         e.preventDefault();
         var tag = e.target.getAttribute('data-tag');
         // create poche if needed
