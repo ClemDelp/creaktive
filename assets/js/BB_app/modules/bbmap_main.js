@@ -237,7 +237,11 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     get_suggestions : function(e){
         e.preventDefault();
-        ckSuggestion.init();
+        if(ckSuggestion.views.main != undefined){
+            ckSuggestion.views.main.render();
+        }else{
+            ckSuggestion.init({el:"#suggestions_modal"});
+        }
         $('#suggestions_modal').foundation('reveal', 'open');
     },
     /////////////////////////////////////////

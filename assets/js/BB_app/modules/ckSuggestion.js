@@ -10,36 +10,14 @@ var ckSuggestion = {
     views: {},
 
     eventAggregator : global.eventAggregator,
-    el_actions_perc : "#actions_percentage",
-    el_c_normalized : "#c_normalized_table",
-    el_k_normalized : "#k_normalized_table",
-    el_c_not_normalized : "#c_not_normalized_table",
-    el_k_not_normalized : "#k_not_normalized_table",
-    el_k_localized : "#k_localized_table",
-    el_k_not_localized : "#k_not_localized_table",
-
-    explorations_el : "#explorations_container",
-    v2or_analyse_el : "#v2or_analyse_container",
-    cadrage_keywords_el : "#cadrage_keywords_container",
-    dd_keywords_el : "#dd_keywords_container",
-
-
-    el_radar_detail : "#radar_detail_container",
-
-    el_evaluation_suggestion : "#evaluations_table",
-
-    
+    ///////////////////////
     init: function (json) {
-        if(ckSuggestion.views.main == undefined){
-            this.views.main = new this.Views.Main({
-                el : "#suggestions_modal",
-                elements : global.collections.Elements,
-                //mode    : json.mode,
-                project : global.models.currentProject,
-            });
-            
-        }
-        this.views.main.get_creaktive_analyses();
+        this.views.main = new this.Views.Main({
+            el : json.el,
+            elements : global.collections.Elements,
+            project : global.models.currentProject,
+        });
+        this.views.main.render();
     }
 };
 /***************************************/
@@ -51,43 +29,10 @@ ckSuggestion.Views.Main = Backbone.View.extend({
         this.normalisations = {};
         this.evaluations = {};   
         this.project = global.models.currentProject;
-        
-        this.cadrage_analyses = [];
-        this.dd_analyses = [];
-
-        // Templates
-        this.normalisation_tr = _.template($('#normalisation-suggestion-template').html());
-        this.localisation_tr = _.template($('#normalisation-localisation-template').html());
-        this.radar_detail = _.template($('#radar-detail-template').html());
-        this.actions_perc = _.template($('#actions-percentage-template').html());
-
-        this.objectif_slider = _.template($('#objectif-sliders-template').html());
-
-        this.explorations_template = _.template($('#ck-explorations-template').html());
-        this.v2or_analyse_template = _.template($('#ck-v2or-analyse-template').html());
-        this.analyse_keywords_template = _.template($('#ck-analyse-keywords-template').html());
-        // Events
+        // Template
     },
     events : {
-        "change .k_localisation" : "k_localisation",
-        "change .template_selection" : "apply_template",
-        "click .refresh" : "get_creaktive_analyses",
-        // "click .updateObjectifCanvas" : "updateObjectifCanvas",
-        "click .new_cadrage" : "new_cadrage_keywords", 
-    },
-    /////////////////////////////////////////
-    new_cadrage_keywords : function(e){
-        e.preventDefault();
-        var tag = e.target.getAttribute('data-tag');
-        // create poche if needed
-        this.cadrage_analyses.forEach(function(analyse){
-            if((analyse.tag == tag)&&(analyse.poche == undefined)) ckSuggestion.views.main.create_new_tagged_element("poche",analyse.title.fr+" / "+analyse.title.en,analyse.tag);
-        });
-        // create poche if needed
-        this.dd_analyses.forEach(function(analyse){
-            if((analyse.tag == tag)&&(analyse.poche == undefined)) ckSuggestion.views.main.create_new_tagged_element("poche",analyse.title.fr+" / "+analyse.title.en,analyse.tag);
-        });
-        this.create_new_tagged_element("knowledge",$("#"+tag+"_value").val(),tag)
+
     },
     create_new_tagged_element : function(type,title,tag){
         var json = {
@@ -101,62 +46,355 @@ ckSuggestion.Views.Main = Backbone.View.extend({
         newElement.save(json)
         return newElement;
     },
-    /////////////////////////////////////////
-    // ACTIONS
-    /////////////////////////////////////////
-    k_localisation : function(e){
+    render : function(){
+        /////////////////////
+        // Normalisation
+        if(ckSuggestion.views.normalisation == undefined){
+            ckSuggestion.views.normalisation = new ckSuggestion.Views.Normalisation({
+                el : "#ck_normalisation_container",
+                elements : this.elements
+            });
+        }
+        ckSuggestion.views.normalisation.analyse();
+        /////////////////////
+        // Localisation
+        if(ckSuggestion.views.localisation == undefined){
+            ckSuggestion.views.localisation = new ckSuggestion.Views.Localisation({
+                el : "#ck_localisation_container",
+                elements : this.elements
+            });
+        }
+        ckSuggestion.views.localisation.analyse();
+        /////////////////////
+        // Localisation
+        if(ckSuggestion.views.evaluation == undefined){
+            ckSuggestion.views.evaluation = new ckSuggestion.Views.Evaluation({
+                el : "#ck_evaluation_container",
+                elements : this.elements
+            });
+        }
+        ckSuggestion.views.evaluation.analyse();
+        /////////////////////
+        // Cadrage
+        if(ckSuggestion.views.cadrage == undefined){
+            ckSuggestion.views.cadrage = new ckSuggestion.Views.Cadrage({
+                el : "#ck_cadrage_container",
+                elements : this.elements
+            });
+        }
+        ckSuggestion.views.cadrage.analyse();
+        /////////////////////
+        // DD
+        if(ckSuggestion.views.dd == undefined){
+            ckSuggestion.views.dd = new ckSuggestion.Views.DD({
+                el : "#ck_dd_container",
+                elements : this.elements
+            });
+        }
+        ckSuggestion.views.dd.analyse();
+    },
+});
+/***************************************/
+ckSuggestion.Views.DD = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        // Variables
+        this.dd_analyses = [];
+        this.elements = json.elements;
+        // Templates
+        this.dd_template = _.template($('#ck-analyse-keywords-template').html());
+        this.header_template = _.template($('#ck-header-perc-template').html());
+    },
+    events : {
+        "click .new_cadrage" : "new_cadrage_keywords", 
+    },
+    new_cadrage_keywords : function(e){
         e.preventDefault();
-        var element = this.elements.get(e.target.getAttribute('data-id'));
-        var value = $(e.target).find("option:selected").val();
-        element.save({inside : value});
+        var tag = e.target.getAttribute('data-tag');
+        // // create poche if needed
+        this.dd_analyses.forEach(function(analyse){
+            if((analyse.tag == tag)&&(analyse.poche == undefined)) ckSuggestion.views.main.create_new_tagged_element("poche",analyse.title.fr+" / "+analyse.title.en,analyse.tag);
+        });
+        //Create the element
+        ckSuggestion.views.main.create_new_tagged_element("knowledge",$("#"+tag+"_value").val(),tag);
+        this.analyse();
+    },
+    analyse : function(){
+        $(this.el).empty();
+        /////////////////////////////////////
+        // CADRAGE KEYWORDS ANALYSE
+        /////////////////////////////////////   
+        $.post("/suggestion/analyse_dd_keywords",{
+            elements : bbmap.views.main.elements.toJSON(),
+        }, function(analyses){
+            ckSuggestion.views.dd.dd_analyses = analyses;
+            ckSuggestion.views.dd.render(analyses);
+        });
+    },
+    render : function(analyses){
+        // perc
+        var all = analyses.length;
+        var done = 0;
+        analyses.forEach(function(analyse){
+            if(analyse.tagged.length > 0) done++;
+        });
+        var perc = done*100/all;
+        $(this.el).append(this.header_template({
+            sentence : "Definir le dominante design de votre produit/service",
+            perc : perc
+        }));
+        // append
+        $(this.el).append(this.dd_template({
+            keywords : analyses
+        }));
+    }
+
+});
+/***************************************/
+ckSuggestion.Views.Cadrage = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        // Variables
+        this.cadrage_analyses = [];
+        this.elements = json.elements;
+        // Templates
+        this.cadrage_template = _.template($('#ck-analyse-keywords-template').html());
+        this.header_template = _.template($('#ck-header-perc-template').html());
+    },
+    events : {
+        "click .new_cadrage" : "new_cadrage_keywords", 
+    },
+    new_cadrage_keywords : function(e){
+        alert('new cadrage')
+        e.preventDefault();
+        var tag = e.target.getAttribute('data-tag');
+        // create poche if needed
+        this.cadrage_analyses.forEach(function(analyse){
+            if((analyse.tag == tag)&&(analyse.poche == undefined)) ckSuggestion.views.main.create_new_tagged_element("poche",analyse.title.fr+" / "+analyse.title.en,analyse.tag);
+        });
+        // Create the element
+        ckSuggestion.views.main.create_new_tagged_element("knowledge",$("#"+tag+"_value").val(),tag);
+        this.analyse();
+    },
+    analyse : function(){
+        $(this.el).empty();
+        /////////////////////////////////////
+        // CADRAGE KEYWORDS ANALYSE
+        /////////////////////////////////////   
+        $.post("/suggestion/analyse_cadrage_keywords",{
+            elements : bbmap.views.main.elements.toJSON(),
+        }, function(analyses){
+            ckSuggestion.views.cadrage.cadrage_analyses = analyses;
+            ckSuggestion.views.cadrage.render(analyses);
+        });
+    },
+    render : function(analyses){
+        // perc
+        var all = analyses.length;
+        var done = 0;
+        analyses.forEach(function(analyse){
+            if(analyse.tagged.length > 0) done++;
+        });
+        var perc = done*100/all;
+        $(this.el).append(this.header_template({
+            sentence : "Cadrage de la problématique",
+            perc : perc
+        }));
+        // append
+        $(this.el).append(this.cadrage_template({
+            keywords : analyses
+        }));
+    }
+
+});
+/***************************************/
+ckSuggestion.Views.Evaluation = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        // Variables
+        this.evaluations = [];
+        this.elements = json.elements;
+        // Templates
+        this.explorations_template = _.template($('#ck-explorations-template').html());
+        this.v2or_analyses_template = _.template($('#ck-v2or-analyses-template').html());    
+        this.v2or_values_template = _.template($('#ck-v2or-values-template').html());  
+        this.header_template = _.template($('#ck-header-perc-template').html());  
+    },
+    events : {
+
+    },
+    analyse : function(){
+        $(this.el).empty();
+        /////////////////////////////////////
+        // EXPLORATION ANALYSE
+        ///////////////////////////////////// 
+        $.post("/suggestion/get_explorations_analyse",{
+            elements : bbmap.views.main.elements.toJSON(),
+            links : bbmap.views.main.links.toJSON(),
+        }, function(explorations){
+            ckSuggestion.views.evaluation.render_explorations(explorations);
+        });
+        /////////////////////////////////////
+        // V2OR VALUES
+        ///////////////////////////////////// 
+        $.post("/suggestion/get_v2or_values",{
+            elements : bbmap.views.main.elements.toJSON(),
+            links : bbmap.views.main.links.toJSON(),
+        }, function(values){
+            ckSuggestion.views.evaluation.evaluations = values;
+            // update project if it's the first time
+            if(ckSuggestion.views.main.project.get("goal") == undefined){
+                ckSuggestion.views.main.project.save({
+                    goal : {
+                        strength: values.strength.options[0].value,
+                        variety: values.variety.options[0].value,
+                        originality: values.originality.options[0].value,
+                        value: values.value.options[0].value
+                    }           
+                });
+            }
+            ckSuggestion.views.evaluation.render_v2or_values(values)
+        });
+        /////////////////////////////////////
+        // EVALUATION
+        /////////////////////////////////////   
+        $.post("/suggestion/get_v2or_analyse",{
+            elements : bbmap.views.main.elements.toJSON(),
+            links : bbmap.views.main.links.toJSON(),
+        }, function(analyses){
+            ckSuggestion.views.evaluation.render_v2or_analyse(analyses);
+        });
+    },
+    render_explorations : function(explorations){
+        $(this.el).append(this.explorations_template({
+            explorations : explorations
+        }));
+    },
+    render_v2or_values : function(values){
+        $(this.el).append(this.v2or_values_template({
+            evaluations : values
+        }));
+    },
+    render_v2or_analyse : function(analyses){
+        var _this = this;
+        analyses.forEach(function(analyse){
+            $(_this.el).append(_this.v2or_analyses_template({
+                suggestion : analyse
+            }));    
+        });
+    }
+
+});
+/***************************************/
+ckSuggestion.Views.Normalisation = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        // Variables
+        this.normalisations = {};
+        this.elements = json.elements;
+        // Templates
+        this.normalisation_template = _.template($('#normalisation-template').html());
+        this.header_template = _.template($('#ck-header-perc-template').html());
+        
+    },
+    events : {
+        "change .template_selection" : "apply_template",
     },
     apply_template : function(e){
         e.preventDefault();
         var element = this.elements.get(e.target.getAttribute('data-id'));
         var value = $(e.target).find("option:selected").val();
         element.save({css_manu : value});
+        this.analyse();
     },
-    /////////////////////////////////////////
-    get_creaktive_analyses : function(){
+    analyse : function(){
         /////////////////////////////////////
         // STATUT
         /////////////////////////////////////   
         $.post("/suggestion/get_statuts",{
-            elements : bbmap.views.main.elements.toJSON(),
+            elements : ckSuggestion.views.normalisation.elements.toJSON(),
         }, function(normalisations){
-            ckSuggestion.views.main.normalisations = normalisations;
+            ckSuggestion.views.normalisation.normalisations = normalisations;
             //console.log(normalisations)
             // STATUT
-            var c_normalized = [];
-            var k_normalized = [];
-            var c_not_normalized = [];
-            var k_not_normalized = [];
-
+            var json = {
+                c_normalized : [],
+                k_normalized : [],
+                c_not_normalized : [],
+                k_not_normalized : []
+            }
             normalisations.forEach(function(statut){
                 // set the target
                 var type = statut.element.type;
                 if(statut.normalized){
-                    if(type == "concept") c_normalized.push(statut);
-                    if(type == "knowledge") k_normalized.push(statut);
+                    if(type == "concept") json.c_normalized.push(statut);
+                    if(type == "knowledge") json.k_normalized.push(statut);
                 }else{
-                    if(type == "concept") c_not_normalized.push(statut);
-                    if(type == "knowledge") k_not_normalized.push(statut);
+                    if(type == "concept") json.c_not_normalized.push(statut);
+                    if(type == "knowledge") json.k_not_normalized.push(statut);
                 }
             });
-            ckSuggestion.views.main.render_c_normalized(c_normalized);
-            ckSuggestion.views.main.render_k_normalized(k_normalized);
-            ckSuggestion.views.main.render_c_not_normalized(c_not_normalized);
-            ckSuggestion.views.main.render_k_not_normalized(k_not_normalized);
-            // Action menu render
-            ckSuggestion.views.main.render_actions_perc({
-                // c_normalized : c_normalized,
-                // k_normalized : k_normalized,
-                // c_not_normalized : c_not_normalized,
-                // k_not_normalized : k_not_normalized,
-                // k_localized : k_localized,
-                // k_not_localized : k_not_localized
-            });
+            ckSuggestion.views.normalisation.render(json);
         });
+    },
+    render : function(json){
+        $(this.el).empty();
+        // perc
+        var all = (json.c_not_normalized.length + json.k_not_normalized.length + json.c_normalized.length + json.k_normalized.length);
+        var done = json.c_normalized.length + json.k_normalized.length;
+        var perc = done*100/all;
+        $(this.el).append(this.header_template({
+            sentence : "Categorisation CK",
+            perc : perc
+        }));
+        // other
+        $(this.el).append(this.normalisation_template({
+            anchor : "cnc",
+            sentence : "Concepts no categorized",
+            suggestions : json.c_not_normalized
+        }));
+
+        $(this.el).append(this.normalisation_template({
+            anchor : "knc",
+            sentence : "Knowledges no categorized",
+            suggestions : json.k_not_normalized
+        }));
+    
+        $(this.el).append(this.normalisation_template({
+            anchor : "cc",
+            sentence : "Concepts categorized",
+            suggestions : json.c_normalized
+        }));
+
+        $(this.el).append(this.normalisation_template({
+            anchor : "kc",
+            sentence : "Knowledges categorized",
+            suggestions : json.k_normalized
+        }));
+    }
+});
+/***************************************/
+ckSuggestion.Views.Localisation = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        // Variables
+        this.localisations = {};
+        this.elements = json.elements;
+        // Templates
+        this.localisation_template = _.template($('#localisation-template').html());
+        this.header_template = _.template($('#ck-header-perc-template').html());
+    },
+    events : {
+        "change .k_localisation" : "k_localisation",
+    },
+    k_localisation : function(e){
+        e.preventDefault();
+        var element = this.elements.get(e.target.getAttribute('data-id'));
+        var value = $(e.target).find("option:selected").val();
+        element.save({inside : value});
+        this.analyse();
+    },
+    analyse : function(){
         /////////////////////////////////////
         // LOCALISATION   
         /////////////////////////////////////   
@@ -178,316 +416,34 @@ ckSuggestion.Views.Main = Backbone.View.extend({
                 if(localisation.knowledge.inside != "") k_localized.push(localisation);
                 else k_not_localized.push(localisation);
             });
-            ckSuggestion.views.main.render_k_localized(k_localized);
-            ckSuggestion.views.main.render_k_not_localized(k_not_localized);
-
-        });
-        /////////////////////////////////////
-        // EXPLORATION ANALYSE
-        ///////////////////////////////////// 
-        $.post("/suggestion/get_explorations_analyse",{
-            elements : bbmap.views.main.elements.toJSON(),
-            links : bbmap.views.main.links.toJSON(),
-        }, function(explorations){
-            ckSuggestion.views.main.render_explorations(explorations);
-        });
-        /////////////////////////////////////
-        // V2OR VALUES
-        ///////////////////////////////////// 
-        $.post("/suggestion/get_v2or_values",{
-            elements : bbmap.views.main.elements.toJSON(),
-            links : bbmap.views.main.links.toJSON(),
-        }, function(values){
-            ckSuggestion.views.main.evaluations = values;
-            // update project if it's the first time
-            if(ckSuggestion.views.main.project.get("goal") == undefined){
-                ckSuggestion.views.main.project.save({
-                    goal : {
-                        strength: values.strength.options[0].value,
-                        variety: values.variety.options[0].value,
-                        originality: values.originality.options[0].value,
-                        value: values.value.options[0].value
-                    }           
-                });
+            var json = {
+                k_localized : k_localized,
+                k_not_localized : k_not_localized
             }
-            ckSuggestion.views.main.render_v2or_values(values)
-        });
-        /////////////////////////////////////
-        // EVALUATION
-        /////////////////////////////////////   
-        $.post("/suggestion/get_v2or_analyse",{
-            elements : bbmap.views.main.elements.toJSON(),
-            links : bbmap.views.main.links.toJSON(),
-        }, function(analyses){
-            ckSuggestion.views.main.render_v2or_analyse(analyses);
-        });
-        /////////////////////////////////////
-        // CADRAGE KEYWORDS ANALYSE
-        /////////////////////////////////////   
-        $.post("/suggestion/analyse_cadrage_keywords",{
-            elements : bbmap.views.main.elements.toJSON(),
-        }, function(analyses){
-            console.log("cadrage:",analyses)
-            ckSuggestion.views.main.cadrage_analyses = analyses;
-            ckSuggestion.views.main.render_cadrage_analyse_key_words(analyses);
-        });
-        /////////////////////////////////////
-        // CADRAGE KEYWORDS ANALYSE
-        /////////////////////////////////////   
-        $.post("/suggestion/analyse_dd_keywords",{
-            elements : bbmap.views.main.elements.toJSON(),
-        }, function(analyses){
-            console.log("dd:",analyses)
-            ckSuggestion.views.main.dd_analyses = analyses;
-            ckSuggestion.views.main.render_dd_analyse_key_words(analyses);
+            ckSuggestion.views.localisation.render(json);
         });
     },
-    ///////////////////////////////////
-    render_dd_analyse_key_words : function(keywords){
-        $(ckSuggestion.dd_keywords_el).empty();
-        $(ckSuggestion.dd_keywords_el).append(this.analyse_keywords_template({
-            sentence_init : "Definir le dominante design de votre produit/service",
-            keywords : keywords
-        }))
-    },
-    ///////////////////////////////////
-    render_cadrage_analyse_key_words : function(keywords){
-        $(ckSuggestion.cadrage_keywords_el).empty();
-        $(ckSuggestion.cadrage_keywords_el).append(this.analyse_keywords_template({
-            sentence_init : "Cadrage de la problématique",
-            keywords : keywords
-        }))
-    },
-    ///////////////////////////////////
-    generateChart : function(data,id,width,height){
-        var ctx = document.getElementById(id).getContext("2d");
-        ctx.canvas.width  = width;
-        ctx.canvas.height = height;
-        var myRadarChart = new Chart(ctx).Radar(data);
-    },
-    ///////////////////////////////////
-    render_explorations : function(explorations){
-        $(ckSuggestion.explorations_el).empty();
-        $(ckSuggestion.explorations_el).append(this.explorations_template({
-            explorations : explorations
+    render : function(json){
+        $(this.el).empty();
+        // perc
+        var all = 10;
+        var done = 1;
+        var perc = done*100/all;
+        $(this.el).append(this.header_template({
+            sentence : "Localisation de la connaissance",
+            perc : perc
         }));
-    },
-    ///////////////////////////////////
-    render_v2or_values : function(values){
-        // init
-        $(ckSuggestion.el_radar_detail).empty();
-        $(ckSuggestion.el_evaluation_suggestion).empty();
-        // RADAR
-        $(ckSuggestion.el_radar_detail).append(this.radar_detail({evaluations : values}));
-        
-        // var x = setInterval(function(){
-        //     if($("#radar_detail_container").height() > 0){
-        //         var data = {
-        //             labels: [
-        //                 values.originality.options[0].name.fr, 
-        //                 values.variety.options[0].name.fr,
-        //                 values.value.options[0].name.fr,
-        //                 values.strength.options[0].name.fr
-        //             ],
-        //             datasets: [
-        //                 {
-        //                     label: "Evaluation",
-        //                     fillColor: "rgba(151,187,205,0.2)",
-        //                     strokeColor: "#1B9DD3",//"rgba(151,187,205,1)",
-        //                     pointColor: "#1B9DD3",//"rgba(151,187,205,1)",
-        //                     pointStrokeColor: "#fff",
-        //                     pointHighlightFill: "#fff",
-        //                     pointHighlightStroke: "rgba(151,187,205,1)",
-        //                     data: [
-        //                         values.originality.options[0].value, 
-        //                         values.variety.options[0].value, 
-        //                         values.value.options[0].value, 
-        //                         values.strength.options[0].value
-        //                     ]
-        //                 }
-        //             ]
-        //         };
-        //         ckSuggestion.views.main.generateChart(data,"myEvaluationChart",$("#radar_graph_container").width(),$("#radar_detail_container").height());
-        //         clearInterval(x);
-        //     }
-        // }, 1000);
-    },
-    render_v2or_analyse : function(analyses){
-        // Suggestion tables
-        analyses.forEach(function(analyse){
-            $(ckSuggestion.v2or_analyse_el).append(ckSuggestion.views.main.v2or_analyse_template({suggestion : analyse}));
-        });
-    },
-    render_actions_perc : function(json){
+        // append
+        $(this.el).append(this.localisation_template({
+            anchor : "knl",
+            sentence : "Knowledge not localized",
+            suggestions : json.k_not_localized
+        }));
 
-        // var all = json.c_normalized.length + json.k_normalized.length + json.c_not_normalized.length + json.k_not_normalized.length + json.k_localized.length + json.k_not_localized.length
-        // var done =  json.c_normalized.length + json.k_normalized.length + json.k_localized.length;
-        var perc = 0;
-
-        //if(all != 0) perc = Math.round((done*100/all)*100)/100;
-
-        $(ckSuggestion.el_actions_perc).empty();
-        $(ckSuggestion.el_actions_perc).append(this.actions_perc({perc : perc}));
-    },
-    render_k_localized : function(localisations){
-        $(ckSuggestion.el_k_localized).empty();
-        localisations.forEach(function(localisation){
-            $(ckSuggestion.el_k_localized).append(ckSuggestion.views.main.localisation_tr({localisation : localisation}));
-        });
-    },
-    render_k_not_localized : function(localisations){
-        $(ckSuggestion.el_k_not_localized).empty();
-        localisations.forEach(function(localisation){
-            $(ckSuggestion.el_k_not_localized).append(ckSuggestion.views.main.localisation_tr({localisation : localisation}));
-        });
-    },
-    render_c_normalized : function(suggestions){
-        $(ckSuggestion.el_c_normalized).empty();
-        suggestions.forEach(function(suggestion){
-            $(ckSuggestion.el_c_normalized).append(ckSuggestion.views.main.normalisation_tr({suggestion : suggestion}));
-        });
-    },
-    render_c_not_normalized : function(suggestions){
-        $(ckSuggestion.el_c_not_normalized).empty();
-        suggestions.forEach(function(suggestion){
-            $(ckSuggestion.el_c_not_normalized).append(ckSuggestion.views.main.normalisation_tr({suggestion : suggestion}));
-        });
-    },
-    render_k_normalized : function(suggestions){
-        $(ckSuggestion.el_k_normalized).empty();
-        suggestions.forEach(function(suggestion){
-            $(ckSuggestion.el_k_normalized).append(ckSuggestion.views.main.normalisation_tr({suggestion : suggestion}));
-        });
-    },
-    render_k_not_normalized : function(suggestions){
-        $(ckSuggestion.el_k_not_normalized).empty();
-        suggestions.forEach(function(suggestion){
-            $(ckSuggestion.el_k_not_normalized).append(ckSuggestion.views.main.normalisation_tr({suggestion : suggestion}));
-        }); 
-    }
+        $(this.el).append(this.localisation_template({
+            anchor : "kl",
+            sentence : "Knowledge localized",
+            suggestions : json.k_localized
+        }));    }
 });
-/**************************************/
-///////////////////////////////////
-    // render_suggestions : function(json){
-    //     var evaluations = json.evaluations;
-    //     // init
-    //     $(ckSuggestion.el_objectif_sliders_container).empty();
-    //     // objectif sliders
-    //     var parameters = [
-    //         evaluations.originality.options[0],
-    //         evaluations.variety.options[0],
-    //         evaluations.value.options[0],
-    //         evaluations.strength.options[0]
-    //     ]
-    //     $(ckSuggestion.el_objectif_sliders_container).append(this.objectif_slider({parameters : parameters}));
-        
-    //     var x = setInterval(function(){
-    //         if($("#objectif_sliders_container").height() > 0){
-    //             var data = {
-    //                 labels: [
-    //                     evaluations.originality.options[0].name.fr, 
-    //                     evaluations.variety.options[0].name.fr,
-    //                     evaluations.value.options[0].name.fr,
-    //                     evaluations.strength.options[0].name.fr
-    //                 ],
-    //                 datasets: [
-    //                     {
-    //                         label: "Objectf",
-    //                         fillColor: "rgba(151,187,205,0.2)",
-    //                         strokeColor: "#C8D200",//"rgba(151,187,205,1)",
-    //                         pointColor: "#C8D200",//"rgba(151,187,205,1)",
-    //                         pointStrokeColor: "#fff",
-    //                         pointHighlightFill: "#fff",
-    //                         pointHighlightStroke: "rgba(151,187,205,1)",
-    //                         data: [
-    //                             ckSuggestion.views.main.project.get('goal').originality, 
-    //                             ckSuggestion.views.main.project.get('goal').variety, 
-    //                             ckSuggestion.views.main.project.get('goal').value, 
-    //                             ckSuggestion.views.main.project.get('goal').strength
-    //                         ]
-    //                     },
-    //                     {
-    //                         label: "Evaluation",
-    //                         fillColor: "rgba(151,187,205,0.2)",
-    //                         strokeColor: "#1B9DD3",//"rgba(151,187,205,1)",
-    //                         pointColor: "#1B9DD3",//"rgba(151,187,205,1)",
-    //                         pointStrokeColor: "#fff",
-    //                         pointHighlightFill: "#fff",
-    //                         pointHighlightStroke: "rgba(151,187,205,1)",
-    //                         data: [
-    //                             evaluations.originality.options[0].value, 
-    //                             evaluations.variety.options[0].value, 
-    //                             evaluations.value.options[0].value, 
-    //                             evaluations.strength.options[0].value
-    //                         ]
-    //                     }
-    //                 ]
-    //             };
-
-    //             ckSuggestion.views.main.generateChart(data,"objectif_radar_canvas",$("#objectif_radar").width(),$("#objectif_sliders_container").height());
-
-    //             $(document).foundation();
-    //             clearInterval(x);   
-    //         }
-    //     }, 1000);
-    // },
-
-    // updateObjectifCanvas : function(e){
-    //     e.preventDefault();
-    //     // get objectif value 
-    //     var originiality_objectif = $("#Originality_objectif").attr('data-slider');
-    //     var variety_objectif = $("#Variety_objectif").attr('data-slider'); 
-    //     var value_objectif = $("#Value_objectif").attr('data-slider');
-    //     var strength_objectif = $("#Strength_objectif").attr('data-slider');
-    //     // 
-    //     var evaluations = ckSuggestion.views.main.evaluations;
-    //     // update the current Project with news objectifs
-    //     this.project.save({
-    //         goal : {strength: strength_objectif,variety: variety_objectif,originality: originiality_objectif,value: value_objectif},
-    //         step : 1,
-    //     });
-    //     // prepar data for chart
-    //     var data = {
-    //         labels: [
-    //             evaluations.originality.options[0].name.fr, 
-    //             evaluations.variety.options[0].name.fr,
-    //             evaluations.value.options[0].name.fr,
-    //             evaluations.strength.options[0].name.fr
-    //         ],
-    //         datasets: [
-    //             {
-    //                 label: "Objectf",
-    //                 fillColor: "rgba(151,187,205,0.2)",
-    //                 strokeColor: "#C8D200",//"rgba(151,187,205,1)",
-    //                 pointColor: "#C8D200",//"rgba(151,187,205,1)",
-    //                 pointStrokeColor: "#fff",
-    //                 pointHighlightFill: "#fff",
-    //                 pointHighlightStroke: "rgba(151,187,205,1)",
-    //                 data: [
-    //                     originiality_objectif,
-    //                     variety_objectif,
-    //                     value_objectif,
-    //                     strength_objectif,
-    //                 ]
-    //             },
-    //             {
-    //                 label: "Evaluation",
-    //                 fillColor: "rgba(151,187,205,0.2)",
-    //                 strokeColor: "#1B9DD3",//"rgba(151,187,205,1)",
-    //                 pointColor: "#1B9DD3",//"rgba(151,187,205,1)",
-    //                 pointStrokeColor: "#fff",
-    //                 pointHighlightFill: "#fff",
-    //                 pointHighlightStroke: "rgba(151,187,205,1)",
-    //                 data: [
-    //                     evaluations.originality.options[0].value, 
-    //                     evaluations.variety.options[0].value, 
-    //                     evaluations.value.options[0].value, 
-    //                     evaluations.strength.options[0].value
-    //                 ]
-    //             }
-    //         ]
-    //     };
-
-    //     ckSuggestion.views.main.generateChart(data,"objectif_radar_canvas",$("#objectif_radar").width(),$("#objectif_sliders_container").height());
-
-    // },
+/***************************************/
