@@ -303,7 +303,7 @@ var CK_text = {
 				poche : undefined
 			},
 			target : {
-				title : {fr:"Les cible",en:""},
+				title : {fr:"Les cibles",en:""},
 				prefix : "tag_",
 				notFound : {fr : "A qui ça s’adresse? (j’ai pas forcément la réponse au départ)", en: ""},
 				found : {fr : "Une nouvelle cible ?", en: ""},
@@ -346,28 +346,39 @@ var CK_text = {
 				tagged : [],
 				poche : undefined
 			},
-			C0 : {
-				title : {fr:"C0 - concept initial",en:""},
+			keyword : {
+				title : {fr:"Element clef",en:"Keyword"},
 				prefix : "tag_",
-				notFound : {fr : "Définir C0", en: ""},
-				found : {fr : "Définir un autre C0", en: ""},
-				tag : 'c0',
+				notFound : {fr : "Quels sont les éléments clefs de la problématique (thème, objet, service) ?", en: ""},
+				found : {fr : "Un autre élément clef ?", en: ""},
+				tag : 'keyword',
 				exemples : [],	
-				v2or : {strength : 0, variety : 4, value : 0, originality : 4},
+				v2or : {strength : 1, variety : 1, value : 1, originality : 1},
 				tagged : [],
 				poche : undefined
 			},
-			K0 : {
-				title : {fr:"K0 - connaissances initiales",en:""},
-				prefix : "tag_",
-				notFound : {fr : "Définir K0", en: ""},
-				found : {fr : "Définir un autre K0", en: ""},
-				tag : 'k0',
-				exemples : [],	
-				v2or : {strength : 4, variety : 0, value : 4, originality : 0},
-				tagged : [],
-				poche : undefined
-			},
+			// C0 : {
+			// 	title : {fr:"C0 - concept initial",en:""},
+			// 	prefix : "tag_",
+			// 	notFound : {fr : "Définir C0", en: ""},
+			// 	found : {fr : "Définir un autre C0", en: ""},
+			// 	tag : 'c0',
+			// 	exemples : [],	
+			// 	v2or : {strength : 0, variety : 4, value : 0, originality : 4},
+			// 	tagged : [],
+			// 	poche : undefined
+			// },
+			// K0 : {
+			// 	title : {fr:"K0 - connaissances initiales",en:""},
+			// 	prefix : "tag_",
+			// 	notFound : {fr : "Définir K0", en: ""},
+			// 	found : {fr : "Définir un autre K0", en: ""},
+			// 	tag : 'k0',
+			// 	exemples : [],	
+			// 	v2or : {strength : 4, variety : 0, value : 4, originality : 0},
+			// 	tagged : [],
+			// 	poche : undefined
+			// },
 			// iteration : {
 			// 	notFound : {fr : "Itérer entre C0 et K0 afin de fixer le/les C0 (l’enlever quand le C0 est fixer et quand le system d’éval définit tous les critère au moins à deux)", en: ""},
 			//  Found : {fr : "Itérer entre C0 et K0 afin de fixer le/les C0 (l’enlever quand le C0 est fixer et quand le system d’éval définit tous les critère au moins à deux)", en: ""},

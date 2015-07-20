@@ -37,6 +37,7 @@ module.exports.routes = {
   '/userManager': "UserController.userview",
   
   '/bbmap': "BBmapController.bbmapview",
+  '/analyse': "SuggestionController.analyseview",
 
   'get /login' : 'AuthController.login',
   'post /login' : 'AuthController.process',

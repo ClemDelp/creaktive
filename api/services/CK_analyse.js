@@ -2,18 +2,26 @@ var underscore = require("underscore");
 
 var CK_analyse = {
   //////////////////////////////////////////
-  keywordsDefine : function(words,elements){
+  checkAttributElementDefine : function(prefix,attribut,element){
+    var check = false;
+    // si l'element a le tag en attribut
+    if(_.has(element, prefix+attribut)){
+      // si la valeur du tag/attribut n'est pas vide
+      if(underscore.propertyOf(element)(prefix+attribut) == attribut) check = true;
+    }
+    return check
+  },
+  keywordsDefine : function(words,elements,element){
     var keywords = [];
     words.forEach(function(word){
+      var prefix = word.prefix;
+      // Si le mot clef doit etre associé à un element
+      if(element) prefix = prefix+element.id+"_";
       elements.forEach(function(element){
-        // si l'element a le tag en attribut
-        if(_.has(element, word.prefix+word.tag)){
-          // si la valeur du tag/attribut n'est pas vide
-          if(underscore.propertyOf(element)(word.prefix+word.tag) == word.tag){
-            // on ajoute lelement comme deja taggé
-            if(element.type != "poche") word.tagged.push(element);
-            else word.poche = element;
-          }
+        if(CK_analyse.checkAttributElementDefine(prefix,word.tag,element)){
+          // on ajoute lelement comme deja taggé
+          if(element.type != "poche") word.tagged.push(element);
+          else word.poche = element;
         }
       });
       keywords.push(word)
@@ -23,9 +31,16 @@ var CK_analyse = {
   //////////////////////////////////////////
   analyse_dd_keywords : function(elements,cb){
     // Cadrage
-    var keywords = CK_analyse.keywordsDefine(_.values(CK_text.define_dd()),elements);
-    if(cb) cb(keywords);
-    else return keywords;
+    var dd_per_keyword = [];
+    elements.forEach(function(element){
+      // si on trouve des mots clef on associe un DD par mot clef
+      if((CK_analyse.checkAttributElementDefine("tag_","keyword",element))&&(element.type != "poche")){
+        var new_dd = {element : element, dd : CK_analyse.keywordsDefine(_.values(CK_text.define_dd()),elements,element)}
+        dd_per_keyword.push(new_dd);
+      }
+    });
+    if(cb) cb(dd_per_keyword);
+    else return dd_per_keyword;
   },
   //////////////////////////////////////////
   analyse_cadrage_keywords : function(elements,cb){

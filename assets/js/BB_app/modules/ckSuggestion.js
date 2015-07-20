@@ -1,4 +1,4 @@
-/**************************************/
+/*************************************/
 var ckSuggestion = {
     // Classes
     Collections: {},
@@ -15,6 +15,7 @@ var ckSuggestion = {
         this.views.main = new this.Views.Main({
             el : json.el,
             elements : global.collections.Elements,
+            links : global.collections.Links,
             project : global.models.currentProject,
         });
         this.views.main.render();
@@ -25,6 +26,7 @@ ckSuggestion.Views.Main = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
         // Variables
+        this.links = json.links;
         this.elements = json.elements; 
         this.normalisations = {};
         this.evaluations = {};   
@@ -34,17 +36,23 @@ ckSuggestion.Views.Main = Backbone.View.extend({
     events : {
 
     },
-    create_new_tagged_element : function(type,title,tag){
-        var json = {
-            type: type,
-            title: title,
-        }
-        var newElement = this.elements.newElement(json,false);
-        // on ajoute le tag en attribut de l'element
-        var json = {};
-        json["tag_"+tag] = tag;
-        newElement.save(json)
-        return newElement;
+    create_new_tagged_element : function(json){
+        // pour eviter le duplicate key dans mongo si on crée une poche associée
+        // setTimeout(function(){
+            var data = {
+                type: json.type,
+                title: json.title,
+            }
+            // on ajoute le tag en attribut de l'element
+            data[json.prefix+json.tag] = json.tag;
+            var newElement = ckSuggestion.views.main.elements.newElement(data,false);
+            console.log("new element created : ",newElement)
+            
+            //newElement.save(json);
+            //this.elements.add(newElement);
+            //return newElement;
+        // },2000);
+        if(json.cb) json.cb();   
     },
     render : function(){
         /////////////////////
@@ -85,17 +93,58 @@ ckSuggestion.Views.Main = Backbone.View.extend({
         ckSuggestion.views.cadrage.analyse();
         /////////////////////
         // DD
-        if(ckSuggestion.views.dd == undefined){
-            ckSuggestion.views.dd = new ckSuggestion.Views.DD({
+        if(ckSuggestion.views.dds == undefined){
+            ckSuggestion.views.dds = new ckSuggestion.Views.DDs({
                 el : "#ck_dd_container",
                 elements : this.elements
             });
         }
-        ckSuggestion.views.dd.analyse();
+        ckSuggestion.views.dds.analyse();
     },
 });
 /***************************************/
-ckSuggestion.Views.DD = Backbone.View.extend({
+ckSuggestion.Views.Ideation = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        // Variables
+        this.dd_analyses = [];
+        this.elements = json.elements;
+        // Templates
+        this.kws_template = _.template($('#ck-analyse-keywords-template').html());
+        this.header_template = _.template($('#ck-header-perc-template').html());
+    },
+    analyse : function(){
+        /////////////////////////////////////
+        // CADRAGE KEYWORDS ANALYSE
+        /////////////////////////////////////   
+        $.post("/suggestion/analyse_dd_keywords",{
+            elements : ckSuggestion.views.main.elements.toJSON(),
+        }, function(dd_per_keyword){
+            console.log(dd_per_keyword);
+            ckSuggestion.views.dds.dd_analyses = dd_per_keyword;
+            ckSuggestion.views.dds.render(dd_per_keyword);
+        });
+    },
+    render : function(dd_per_keyword){
+        $(this.el).empty();
+        var _this = this;
+        // each dd
+        if(dd_per_keyword.length == 0){
+            $(_this.el).append("<div class='row'>No keywords found</div>")
+        }else{
+            dd_per_keyword.forEach(function(dds){
+                $(_this.el).append(new ckSuggestion.Views.DD({
+                    element : dds.element,
+                    dd : dds.dd
+                }).render().el)
+            })    
+        }
+        
+    }
+
+});
+/***************************************/
+ckSuggestion.Views.DDs = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
         // Variables
@@ -105,50 +154,96 @@ ckSuggestion.Views.DD = Backbone.View.extend({
         this.dd_template = _.template($('#ck-analyse-keywords-template').html());
         this.header_template = _.template($('#ck-header-perc-template').html());
     },
-    events : {
-        "click .new_cadrage" : "new_cadrage_keywords", 
-    },
-    new_cadrage_keywords : function(e){
-        e.preventDefault();
-        var tag = e.target.getAttribute('data-tag');
-        // // create poche if needed
-        this.dd_analyses.forEach(function(analyse){
-            if((analyse.tag == tag)&&(analyse.poche == undefined)) ckSuggestion.views.main.create_new_tagged_element("poche",analyse.title.fr+" / "+analyse.title.en,analyse.tag);
-        });
-        //Create the element
-        ckSuggestion.views.main.create_new_tagged_element("knowledge",$("#"+tag+"_value").val(),tag);
-        this.analyse();
-    },
     analyse : function(){
-        $(this.el).empty();
         /////////////////////////////////////
         // CADRAGE KEYWORDS ANALYSE
         /////////////////////////////////////   
         $.post("/suggestion/analyse_dd_keywords",{
-            elements : bbmap.views.main.elements.toJSON(),
-        }, function(analyses){
-            ckSuggestion.views.dd.dd_analyses = analyses;
-            ckSuggestion.views.dd.render(analyses);
+            elements : ckSuggestion.views.main.elements.toJSON(),
+        }, function(dd_per_keyword){
+            console.log(dd_per_keyword);
+            ckSuggestion.views.dds.dd_analyses = dd_per_keyword;
+            ckSuggestion.views.dds.render(dd_per_keyword);
         });
     },
-    render : function(analyses){
-        // perc
-        var all = analyses.length;
-        var done = 0;
-        analyses.forEach(function(analyse){
-            if(analyse.tagged.length > 0) done++;
-        });
-        var perc = done*100/all;
-        $(this.el).append(this.header_template({
-            sentence : "Definir le dominante design de votre produit/service",
-            perc : perc
-        }));
-        // append
-        $(this.el).append(this.dd_template({
-            keywords : analyses
-        }));
+    render : function(dd_per_keyword){
+        $(this.el).empty();
+        var _this = this;
+        // each dd
+        if(dd_per_keyword.length == 0){
+            $(_this.el).append("<div class='row'>No keywords found</div>")
+        }else{
+            dd_per_keyword.forEach(function(dds){
+                $(_this.el).append(new ckSuggestion.Views.DD({
+                    element : dds.element,
+                    dd : dds.dd
+                }).render().el)
+            })    
+        }
+        
     }
 
+});
+
+ckSuggestion.Views.DD = Backbone.View.extend({
+    initialize : function(json){
+        _.bindAll(this, 'render');
+        // Variables
+        this.element = json.element;
+        this.dd = json.dd;
+        // Templates
+        this.dd_template = _.template($('#ck-analyse-keywords-template').html());
+        this.header_template = _.template($('#ck-header-perc-template').html());
+    },
+    events : {
+        "click .new_cadrage" : "new_dd_element", 
+    },
+    new_dd_element : function(e){
+        e.preventDefault();
+        var tag = e.target.getAttribute('data-tag');
+        // // create poche if needed
+        var _this = this;
+        this.dd.forEach(function(analyse){
+            if((analyse.tag == tag)&&(analyse.poche == undefined)){
+                var json = {
+                    type : "poche",
+                    title : analyse.title.fr+" / "+analyse.title.en,
+                    prefix : "tag_"+_this.element.id+"_",
+                    tag : analyse.tag,
+                }
+                ckSuggestion.views.main.create_new_tagged_element(json);  
+            }
+        });
+        //Create the element
+        var json = {
+            type : "knowledge",
+            title : $(this.el).find("#"+tag+"_value").val(),
+            tag : tag,
+            prefix : "tag_"+_this.element.id+"_",
+            cb : ckSuggestion.views.dds.analyse
+        }
+        ckSuggestion.views.main.create_new_tagged_element(json); 
+    },
+    render : function(){
+        $(this.el).empty();
+        // perc
+        var all = this.dd.length;
+        var done = 0;
+        this.dd.forEach(function(analyse){
+            if(analyse.tagged.length > 0) done++;
+        });
+        var perc = Math.round(done*100/all);
+        // Append
+        $(this.el).append(this.header_template({
+            sentence : "<p>Could be interesting to do the dominante design of <b>"+this.element.title+"</b></p>",
+            perc : perc
+        }));
+        $(this.el).append(this.dd_template({
+            keywords : this.dd
+        }));
+
+        return this;
+    }
 });
 /***************************************/
 ckSuggestion.Views.Cadrage = Backbone.View.extend({
@@ -160,6 +255,7 @@ ckSuggestion.Views.Cadrage = Backbone.View.extend({
         // Templates
         this.cadrage_template = _.template($('#ck-analyse-keywords-template').html());
         this.header_template = _.template($('#ck-header-perc-template').html());
+        // Events
     },
     events : {
         "click .new_cadrage" : "new_cadrage_keywords", 
@@ -169,32 +265,50 @@ ckSuggestion.Views.Cadrage = Backbone.View.extend({
         var tag = e.target.getAttribute('data-tag');
         // create poche if needed
         this.cadrage_analyses.forEach(function(analyse){
-            if((analyse.tag == tag)&&(analyse.poche == undefined)) ckSuggestion.views.main.create_new_tagged_element("poche",analyse.title.fr+" / "+analyse.title.en,analyse.tag);
+            if((analyse.tag == tag)&&(analyse.poche == undefined)){
+                var json = {
+                    type : "poche",
+                    title : analyse.title.fr+" / "+analyse.title.en,
+                    tag : analyse.tag,
+                    prefix : "tag_"
+                }
+                ckSuggestion.views.main.create_new_tagged_element(json);
+            }
         });
         // Create the element
-        ckSuggestion.views.main.create_new_tagged_element("knowledge",$("#"+tag+"_value").val(),tag);
-        this.analyse();
+        var json = {
+            type : "knowledge",
+            title : $("#"+tag+"_value").val(),
+            tag : tag,
+            prefix : "tag_",
+            cb : function(){
+              ckSuggestion.views.cadrage.analyse();  
+              ckSuggestion.views.dds.analyse();  
+            } 
+        }
+        ckSuggestion.views.main.create_new_tagged_element(json);
+        //this.analyse();
     },
     analyse : function(){
-        $(this.el).empty();
         /////////////////////////////////////
         // CADRAGE KEYWORDS ANALYSE
         /////////////////////////////////////   
         $.post("/suggestion/analyse_cadrage_keywords",{
-            elements : bbmap.views.main.elements.toJSON(),
+            elements : ckSuggestion.views.cadrage.elements.toJSON(),
         }, function(analyses){
             ckSuggestion.views.cadrage.cadrage_analyses = analyses;
             ckSuggestion.views.cadrage.render(analyses);
         });
     },
     render : function(analyses){
+        $(this.el).empty();
         // perc
         var all = analyses.length;
         var done = 0;
         analyses.forEach(function(analyse){
             if(analyse.tagged.length > 0) done++;
         });
-        var perc = done*100/all;
+        var perc = Math.round(done*100/all);
         $(this.el).append(this.header_template({
             sentence : "Cadrage de la problématique",
             perc : perc
@@ -228,8 +342,8 @@ ckSuggestion.Views.Evaluation = Backbone.View.extend({
         // EXPLORATION ANALYSE
         ///////////////////////////////////// 
         $.post("/suggestion/get_explorations_analyse",{
-            elements : bbmap.views.main.elements.toJSON(),
-            links : bbmap.views.main.links.toJSON(),
+            elements : ckSuggestion.views.main.elements.toJSON(),
+            links : ckSuggestion.views.main.links.toJSON(),
         }, function(explorations){
             ckSuggestion.views.evaluation.render_explorations(explorations);
         });
@@ -237,8 +351,8 @@ ckSuggestion.Views.Evaluation = Backbone.View.extend({
         // V2OR VALUES
         ///////////////////////////////////// 
         $.post("/suggestion/get_v2or_values",{
-            elements : bbmap.views.main.elements.toJSON(),
-            links : bbmap.views.main.links.toJSON(),
+            elements : ckSuggestion.views.main.elements.toJSON(),
+            links : ckSuggestion.views.main.links.toJSON(),
         }, function(values){
             ckSuggestion.views.evaluation.evaluations = values;
             // update project if it's the first time
@@ -258,8 +372,8 @@ ckSuggestion.Views.Evaluation = Backbone.View.extend({
         // EVALUATION
         /////////////////////////////////////   
         $.post("/suggestion/get_v2or_analyse",{
-            elements : bbmap.views.main.elements.toJSON(),
-            links : bbmap.views.main.links.toJSON(),
+            elements : ckSuggestion.views.main.elements.toJSON(),
+            links : ckSuggestion.views.main.links.toJSON(),
         }, function(analyses){
             ckSuggestion.views.evaluation.render_v2or_analyse(analyses);
         });
@@ -341,7 +455,7 @@ ckSuggestion.Views.Normalisation = Backbone.View.extend({
         // perc
         var all = (json.c_not_normalized.length + json.k_not_normalized.length + json.c_normalized.length + json.k_normalized.length);
         var done = json.c_normalized.length + json.k_normalized.length;
-        var perc = done*100/all;
+        var perc = Math.round(done*100/all);
         $(this.el).append(this.header_template({
             sentence : "Categorisation CK",
             perc : perc
@@ -398,8 +512,8 @@ ckSuggestion.Views.Localisation = Backbone.View.extend({
         // LOCALISATION   
         /////////////////////////////////////   
         $.post("/suggestion/get_localisations",{
-            elements : bbmap.views.main.elements.toJSON(),
-            links : bbmap.views.main.links.toJSON(),
+            elements : ckSuggestion.views.main.elements.toJSON(),
+            links : ckSuggestion.views.main.links.toJSON(),
         }, function(localisations){
             var auto = localisations.auto;
             var manu = localisations.manu;
@@ -427,7 +541,7 @@ ckSuggestion.Views.Localisation = Backbone.View.extend({
         // perc
         var all = 10;
         var done = 1;
-        var perc = done*100/all;
+        var perc = Math.round(done*100/all);
         $(this.el).append(this.header_template({
             sentence : "Localisation de la connaissance",
             perc : perc
@@ -445,4 +559,7 @@ ckSuggestion.Views.Localisation = Backbone.View.extend({
             suggestions : json.k_localized
         }));    }
 });
-/***************************************/
+/**************************************/
+
+
+

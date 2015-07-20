@@ -211,14 +211,14 @@ var api = {
     centroid.height = topMax - topMin;
     return centroid;
   },
-  getCadre : function(elements,offset){
+  getCadre : function(links,elements,offset){
       var left_min = 10000000000000000000000;
       var left_max = 0;
       var top_min = 10000000000000000000000;
       var top_max = 0;
       // on prend le cadre
       elements.forEach(function(el){
-          if(api.isVisible(bbmap.views.main.links,bbmap.views.main.elements,el)){
+          if(api.isVisible(links,global.collections.Elements,el)){
               if(el.get('left') < left_min) left_min = el.get('left')
               if((el.get('left') + $('#'+el.get('id')).width()+offset) > left_max) left_max = el.get('left') + $('#'+el.get('id')).width() + offset;
               if(el.get('top') < top_min) top_min = el.get('top')

@@ -3,7 +3,7 @@
 <script type="text/template" id="ck-header-perc-template">
 	<table style="width:100%">
 		<tr>
-			<td width="30%"><p>{{-sentence}}</p></td>
+			<td width="30%">{{=sentence}}</td>
 			<td>
 				<b>{{-perc}}% done !</b>
 				<div class="progress small-12 medium-12 large-12 radius">
@@ -165,7 +165,8 @@
 	<table style="width:100%">
 		<thead>
 		    <tr>
-		      <th>Degrés - risque</th>
+		      <th>Degrés</th>
+		      <th>Risque</th>
 		      <th>Branche concepts</th>
 		    </tr>
 	  	</thead>
@@ -174,7 +175,12 @@
 			<tr>
 				<td>
 					<span class="label {{-exploration.style}} round tiny" title="{{-exploration.desc.fr}}">
-						{{-exploration.title.fr}} - {{-exploration.value}}<small>/3</small>
+						{{-exploration.title.fr}}
+					</span>
+				</td>
+				<td>
+					<span class="label {{-exploration.style}} round tiny" title="{{-exploration.desc.fr}}">
+						<b>{{-exploration.value}}<small> / 3</small></b>
 					</span>
 				</td>
 				<td>

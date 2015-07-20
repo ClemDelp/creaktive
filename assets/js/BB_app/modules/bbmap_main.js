@@ -363,7 +363,7 @@ bbmap.Views.Main = Backbone.View.extend({
     drawSvgWindow : function(pere){
         var elements = api.getTreeChildrenNodes(pere,bbmap.views.main.elements);
         elements.push(pere);
-        var cadre = api.getCadre(elements,100);
+        var cadre = api.getCadre(bbmap.views.main.links,elements,100);
         var color = "#E67E22";
         if(pere.get('type') == "concept") color = "#C8D400";
         var left = cadre.left_min - 25;
@@ -377,7 +377,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var padding_top = -100;
         var offset = 250;
         var childs = [];
-        var cadre = api.getCadre(bbmap.views.main.elements.toArray(),300);
+        var cadre = api.getCadre(bbmap.views.main.links,bbmap.views.main.elements.toArray(),300);
         var left_min = cadre.left_min + padding_left;
         var left_max = cadre.left_max;
         var top_min = cadre.top_min + padding_top;
@@ -891,7 +891,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var offset = 100;
         var window_width = $(window).width();
         var window_height = $(window).height();
-        var cadre = api.getCadre(bbmap.views.main.elements.toArray(),offset);
+        var cadre = api.getCadre(bbmap.views.main.links,bbmap.views.main.elements.toArray(),offset);
         var zoom_width = window_width/cadre.width;
         var zoom_height = window_height/cadre.height;
         var right_zoom = Math.min(zoom_width,zoom_height);        

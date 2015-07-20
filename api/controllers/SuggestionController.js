@@ -41,5 +41,12 @@ module.exports = {
 			res.send(analyse);
 		});
 	},
+	////////////////////////////
+	// VIEW
+	////////////////////////////
+	analyseview : function(req,res){
+	    //console.log("Loading bbmap view")
+	    BootstrapService.bootstrapdata(req,res);
+	},
 };
 
