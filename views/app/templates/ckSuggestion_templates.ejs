@@ -96,7 +96,7 @@
 				  	<p>{{- suggestion.suggestion.fr }}</p>
 				  	<select class="template_selection" data-id="{{-suggestion.element.id}}">
 					    {{ _.each(suggestion.options,function(option){ }}
-					        <option {{ if(option.value == suggestion.element.css_manu){ }}selected="selected"{{ } }} value="{{- option.value }}">{{- option.name.fr }} : {{- option.desc.fr }}</option>
+					        <option {{ if(option.value == suggestion.element.css_manu){ }}selected="selected"{{ } }} value="{{- option.value }}">{{- option.title.fr }} : {{- option.desc.fr }}</option>
 					  	{{ }); }}
 				  	</select>
 			  	</td>
@@ -128,7 +128,7 @@
 		  		  	<p>{{-localisation.suggestion.fr}}</p>
 				  	<select class="k_localisation" data-id="{{-localisation.knowledge.id}}">
 			         	{{ _.each(localisation.options,function(option){ }}
-					        <option {{ if(option.value == localisation.knowledge.inside){ }}selected="selected"{{ } }} value="{{- option.value }}">{{- option.name.fr }} : {{- option.desc.fr }}</option>
+					        <option {{ if(option.value == localisation.knowledge.inside){ }}selected="selected"{{ } }} value="{{- option.value }}">{{- option.title.fr }} : {{- option.desc.fr }}</option>
 					  	{{ }); }}
 				  	</select>
 			  	</td>
@@ -138,14 +138,14 @@
 </script>
 
 <!-- EVALUATION -->
-
+<!-- 
 <script type="text/template" id="ck-v2or-analyses-template">
 	<div class="large-12 medium-12 small-12 panel">
 	  	<p>{{- suggestion.suggestion.fr }}</p>
 	  	{{ if(suggestion.options.length > 0){ }} 
 	  		<ul class="panel">
 		  		{{ _.each(suggestion.options,function(option){ }}  
-		  			<li>{{-option.name.fr}} - {{-option.desc.fr}}</li>
+		  			<li>{{-option.title.fr}} - {{-option.desc.fr}}</li>
 		  		{{ }); }}
 	  		</ul>
 	  	{{ } }}
@@ -155,10 +155,50 @@
 <script type="text/template" id="ck-v2or-values-template">
 	<table style="width:100%">
 		{{ _.each(evaluations,function(evaluation){ }} 
-			<tr><td><b>{{- evaluation.options[0].name.fr }} -  <span class="label tiny round">{{- evaluation.options[0].value }} <small>/ 4</small></span></b><br><p>{{- evaluation.options[0].desc.fr }}</p></td></tr>
+			<tr><td><b>{{- evaluation.options[0].title.fr }} -  <span class="label tiny round">{{- evaluation.options[0].value }} <small>/ 4</small></span></b><br><p>{{- evaluation.options[0].desc.fr }}</p></td></tr>
 		{{ }); }}
 	</table>
 </script>
+ -->
+<script type="text/template" id="ck-v2or-analyse-template">
+	<table style="width:100%">
+		<thead>
+		    <tr><th>
+		    	<div class="large-2 medium-2 small-2 columns"><h3>{{- analyse.def.title.fr }}</h3></div>
+		    	<div class="large-10 medium-10 small-10 columns">
+		    		<div class="progress medium-12 small-12 large-12 {{-color}} radius" style="background:white">
+						<span class="meter" style="width: {{-perc}}%"></span>
+					</div>
+		    	</div>
+		    	<div class="large-12 medium-12 small-12 columns">
+		    		<b><span class="label tiny {{-color}} round">{{- analyse.value }} <small>/ 3</small></span> {{- analyse.suggestion.fr }}</b>
+		    	</div>
+		    </th></tr>
+	  	</thead>
+		<tr><td><p>{{- analyse.def.desc.fr }}</p></td>
+		</tr>
+		<tr>
+			<td>
+				<table style="width:100%">
+					<thead>
+					    <tr>
+					    	<th>titre</th>
+					    	<th>analyse</th>
+					    </tr>
+				  	</thead>
+					{{_.each(analyse.options,function(option){ }}
+					<tr>
+						<td><b>{{-option.title.fr}}</b></td>
+						<td>{{-option.desc.fr}}</td>
+					</tr>
+					{{ }); }}
+				</table>
+			</td>
+		</tr>
+	</table>
+</script>
+
+<!-- Exploration -->
 
 <script type="text/template" id="ck-explorations-template">
 	<p>Nous avons trouvé {{-explorations.length}} piste(s) conceptuelle(s) explorable(s).</p>

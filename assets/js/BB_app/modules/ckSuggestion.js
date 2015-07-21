@@ -46,7 +46,6 @@ ckSuggestion.Views.Main = Backbone.View.extend({
             // on ajoute le tag en attribut de l'element
             data[json.prefix+json.tag] = json.tag;
             var newElement = ckSuggestion.views.main.elements.newElement(data,false);
-            console.log("new element created : ",newElement)
             
             //newElement.save(json);
             //this.elements.add(newElement);
@@ -103,47 +102,6 @@ ckSuggestion.Views.Main = Backbone.View.extend({
     },
 });
 /***************************************/
-ckSuggestion.Views.Ideation = Backbone.View.extend({
-    initialize : function(json){
-        _.bindAll(this, 'render');
-        // Variables
-        this.dd_analyses = [];
-        this.elements = json.elements;
-        // Templates
-        this.kws_template = _.template($('#ck-analyse-keywords-template').html());
-        this.header_template = _.template($('#ck-header-perc-template').html());
-    },
-    analyse : function(){
-        /////////////////////////////////////
-        // CADRAGE KEYWORDS ANALYSE
-        /////////////////////////////////////   
-        $.post("/suggestion/analyse_dd_keywords",{
-            elements : ckSuggestion.views.main.elements.toJSON(),
-        }, function(dd_per_keyword){
-            console.log(dd_per_keyword);
-            ckSuggestion.views.dds.dd_analyses = dd_per_keyword;
-            ckSuggestion.views.dds.render(dd_per_keyword);
-        });
-    },
-    render : function(dd_per_keyword){
-        $(this.el).empty();
-        var _this = this;
-        // each dd
-        if(dd_per_keyword.length == 0){
-            $(_this.el).append("<div class='row'>No keywords found</div>")
-        }else{
-            dd_per_keyword.forEach(function(dds){
-                $(_this.el).append(new ckSuggestion.Views.DD({
-                    element : dds.element,
-                    dd : dds.dd
-                }).render().el)
-            })    
-        }
-        
-    }
-
-});
-/***************************************/
 ckSuggestion.Views.DDs = Backbone.View.extend({
     initialize : function(json){
         _.bindAll(this, 'render');
@@ -161,7 +119,6 @@ ckSuggestion.Views.DDs = Backbone.View.extend({
         $.post("/suggestion/analyse_dd_keywords",{
             elements : ckSuggestion.views.main.elements.toJSON(),
         }, function(dd_per_keyword){
-            console.log(dd_per_keyword);
             ckSuggestion.views.dds.dd_analyses = dd_per_keyword;
             ckSuggestion.views.dds.render(dd_per_keyword);
         });
@@ -329,8 +286,9 @@ ckSuggestion.Views.Evaluation = Backbone.View.extend({
         this.elements = json.elements;
         // Templates
         this.explorations_template = _.template($('#ck-explorations-template').html());
-        this.v2or_analyses_template = _.template($('#ck-v2or-analyses-template').html());    
-        this.v2or_values_template = _.template($('#ck-v2or-values-template').html());  
+        // this.v2or_analyses_template = _.template($('#ck-v2or-analyses-template').html());    
+        // this.v2or_values_template = _.template($('#ck-v2or-values-template').html());  
+        this.v2or_analyse_template = _.template($('#ck-v2or-analyse-template').html());  
         this.header_template = _.template($('#ck-header-perc-template').html());  
     },
     events : {
@@ -350,53 +308,112 @@ ckSuggestion.Views.Evaluation = Backbone.View.extend({
         /////////////////////////////////////
         // V2OR VALUES
         ///////////////////////////////////// 
-        $.post("/suggestion/get_v2or_values",{
+        // $.post("/suggestion/get_v2or_values",{
+        //     elements : ckSuggestion.views.main.elements.toJSON(),
+        //     links : ckSuggestion.views.main.links.toJSON(),
+        // }, function(values){
+        //     ckSuggestion.views.evaluation.evaluations = values;
+        //     // update project if it's the first time
+        //     if(ckSuggestion.views.main.project.get("goal") == undefined){
+        //         ckSuggestion.views.main.project.save({
+        //             goal : {
+        //                 strength: values.strength.options[0].value,
+        //                 variety: values.variety.options[0].value,
+        //                 originality: values.originality.options[0].value,
+        //                 value: values.value.options[0].value
+        //             }           
+        //         });
+        //     }
+        //     ckSuggestion.views.evaluation.render_v2or_values(values)
+        // });
+        /////////////////////////////////////
+        // RISK ANALYSE
+        /////////////////////////////////////   
+        $.post("/suggestion/get_risk_analyse",{
             elements : ckSuggestion.views.main.elements.toJSON(),
             links : ckSuggestion.views.main.links.toJSON(),
-        }, function(values){
-            ckSuggestion.views.evaluation.evaluations = values;
-            // update project if it's the first time
-            if(ckSuggestion.views.main.project.get("goal") == undefined){
-                ckSuggestion.views.main.project.save({
-                    goal : {
-                        strength: values.strength.options[0].value,
-                        variety: values.variety.options[0].value,
-                        originality: values.originality.options[0].value,
-                        value: values.value.options[0].value
-                    }           
-                });
-            }
-            ckSuggestion.views.evaluation.render_v2or_values(values)
+        }, function(analyse){
+            ckSuggestion.views.evaluation.render_risk_analyse(analyse);
         });
         /////////////////////////////////////
-        // EVALUATION
+        // ORIGINALITY V2OR ANALYSE
         /////////////////////////////////////   
-        $.post("/suggestion/get_v2or_analyse",{
+        $.post("/suggestion/get_originality_v2or_analyse",{
             elements : ckSuggestion.views.main.elements.toJSON(),
             links : ckSuggestion.views.main.links.toJSON(),
-        }, function(analyses){
-            ckSuggestion.views.evaluation.render_v2or_analyse(analyses);
+        }, function(analyse){
+            ckSuggestion.views.evaluation.render_v2or_analyse(analyse);
         });
+        /////////////////////////////////////
+        // VARIETY V2OR ANALYSE
+        /////////////////////////////////////   
+        $.post("/suggestion/get_variety_v2or_analyse",{
+            elements : ckSuggestion.views.main.elements.toJSON(),
+            links : ckSuggestion.views.main.links.toJSON(),
+        }, function(analyse){
+            ckSuggestion.views.evaluation.render_v2or_analyse(analyse);
+        });
+        /////////////////////////////////////
+        // VALUE V2OR ANALYSE
+        /////////////////////////////////////   
+        $.post("/suggestion/get_value_v2or_analyse",{
+            elements : ckSuggestion.views.main.elements.toJSON(),
+            links : ckSuggestion.views.main.links.toJSON(),
+        }, function(analyse){
+            ckSuggestion.views.evaluation.render_v2or_analyse(analyse);
+        });
+        /////////////////////////////////////
+        // STRENGTH V2OR ANALYSE
+        /////////////////////////////////////   
+        $.post("/suggestion/get_strength_v2or_analyse",{
+            elements : ckSuggestion.views.main.elements.toJSON(),
+            links : ckSuggestion.views.main.links.toJSON(),
+        }, function(analyse){
+            ckSuggestion.views.evaluation.render_v2or_analyse(analyse);
+        });
+
     },
     render_explorations : function(explorations){
         $(this.el).append(this.explorations_template({
             explorations : explorations
         }));
     },
-    render_v2or_values : function(values){
-        $(this.el).append(this.v2or_values_template({
-            evaluations : values
+    render_v2or_analyse : function(analyse){
+        // perc
+        var value = analyse.value;
+        var all = 3;
+        var done = analyse.value;
+        var perc = Math.round(done*100/all);
+        // color
+        var color = "";
+        if(value<=1) color = "alert";
+        else if((value>1)&&(value<=2)) color = "";
+        else if((value>2)&&(value<=3)) color = "success";
+        // append
+        $(this.el).append(this.v2or_analyse_template({
+            analyse : analyse,
+            perc : perc,
+            color : color
         }));
     },
-    render_v2or_analyse : function(analyses){
-        var _this = this;
-        analyses.forEach(function(analyse){
-            $(_this.el).append(_this.v2or_analyses_template({
-                suggestion : analyse
-            }));    
-        });
+    render_risk_analyse : function(analyse){
+        // perc
+        var value = analyse.value;
+        var all = 3;
+        var done = analyse.value;
+        var perc = Math.round(done*100/all);
+        // color
+        var color = "";
+        if(value<=1) color = "success";
+        else if((value>1)&&(value<=2)) color = "";
+        else if((value>2)&&(value<=3)) color = "alert";
+        // append
+        $(this.el).append(this.v2or_analyse_template({
+            analyse : analyse,
+            perc : perc,
+            color : color
+        }));
     }
-
 });
 /***************************************/
 ckSuggestion.Views.Normalisation = Backbone.View.extend({

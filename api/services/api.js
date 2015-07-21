@@ -87,12 +87,27 @@ var api = {
     c_atteignable = 0;
     c_alternatif = 0;
     c_hamecon = 0;
+
     if(concepts.c_connu.length>0) c_connu = 1;
     if(concepts.c_atteignable.length>0) c_atteignable = 1;
     if(concepts.c_alternatif.length>0) c_alternatif = 1;
     if(concepts.c_hamecon.length>0) c_hamecon = 1;
+    
     var color = c_connu + c_atteignable + c_alternatif + c_hamecon;
-    //console.log(concepts, color)
+    return color;
+  },
+  get_k_colors_number : function(knowledges){
+    k_validees = 0;
+    k_encours = 0;
+    k_manquante = 0;
+    k_indesidable = 0;
+
+    if(knowledges.k_validees.length>0) k_validees = 1;
+    if(knowledges.k_encours.length>0) k_encours = 1;
+    if(knowledges.k_manquante.length>0) k_manquante = 1;
+    if(knowledges.k_indesidable.length>0) k_indesidable = 1;
+
+    var color = k_validees + k_encours + k_manquante + k_indesidable;
     return color;
   },
   get_knowledge_by_statut : function(elements){

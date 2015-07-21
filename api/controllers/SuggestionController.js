@@ -16,16 +16,35 @@ module.exports = {
 			res.send(localisations);
 		});
 	},
-	get_v2or_values : function(req,res){
-		CK_analyse.get_v2or_values(req.body.elements, req.body.links, function(v2or_values){
-			res.send(v2or_values);
+	////////////////////////
+	// V2OR ANALYSES
+	////////////////////////
+	get_originality_v2or_analyse : function(req,res){
+		CK_analyse.get_originality_v2or(req.body.elements, req.body.links, function(analyse){
+			res.send(analyse);
 		});
 	},
-	get_v2or_analyse : function(req,res){
-		CK_analyse.get_v2or_analyse(req.body.elements, req.body.links, function(analyses){
-			res.send(analyses);
+	get_variety_v2or_analyse : function(req,res){
+		CK_analyse.get_variety_v2or(req.body.elements, req.body.links, function(analyse){
+			res.send(analyse);
 		});
 	},
+	get_value_v2or_analyse : function(req,res){
+		CK_analyse.get_value_v2or(req.body.elements, req.body.links, function(analyse){
+			res.send(analyse);
+		});
+	},
+	get_strength_v2or_analyse : function(req,res){
+		CK_analyse.get_strength_v2or(req.body.elements, req.body.links, function(analyse){
+			res.send(analyse);
+		});
+	},
+	get_risk_analyse : function(req,res){
+		CK_analyse.get_risk_analyse(req.body.elements, req.body.links, function(analyse){
+			res.send(analyse);
+		});
+	},
+	////////////////////////
 	get_explorations_analyse : function(req,res){
 		CK_analyse.get_exploration_suggestions(req.body.elements, function(explorations){
 			res.send(explorations);
