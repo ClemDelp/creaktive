@@ -37,4 +37,12 @@ module.exports = {
 			"en" : ""
 		},
 	},
+	//////////////////
+	innovation_frugale : {
+		title : {"fr" : "Innovation frugale", "en" : ""},
+		desc : {
+			"fr" : "L'innovation frugale est une démarche consistant à répondre à un besoin de la manière la plus simple et efficace possible en utilisant un minimum de moyens. Elle est souvent résumée par le fait de fournir des solutions de qualité à bas coût1 ou d'innover mieux avec moins",
+			"en" : ""
+		},
+	},
 }

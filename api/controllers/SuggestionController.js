@@ -61,6 +61,12 @@ module.exports = {
 		});
 	},
 	////////////////////////////
+	get_frugale_concepts : function(req,res){
+		CK_generator.get_frugale_concepts(req.body.keyword,req.body.level, function(concepts){
+			res.send(concepts);
+		});
+	},
+	////////////////////////////
 	// VIEW
 	////////////////////////////
 	analyseview : function(req,res){

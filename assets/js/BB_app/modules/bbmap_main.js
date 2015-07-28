@@ -180,9 +180,43 @@ bbmap.Views.Main = Backbone.View.extend({
  
     },
     ///////////////////////////////////////////////////
+    binpacking_poche : function(){
+        var blocks = [];
+        var top_min = 100000000000000;
+        var left_min = 100000000000000;
+        var peres = bbmap.views.main.elements.where({type:"poche",id_father:"none"})
+        var poches = [];
+        peres.forEach(function(pere){
+            var elements = api.getTreeChildrenNodes(pere,bbmap.views.main.elements);
+            elements.push(pere);
+            var cadre = api.getCadre(bbmap.views.main.links,elements,100)
+            poches.push({elements : elements, cadre : cadre});
+            if(cadre.top_min < top_min) top_min = cadre.top_min;
+            if(cadre.left_min < left_min) left_min = cadre.left_min;
+            blocks.push({ w: cadre.width, h: cadre.height });
+        });
+        var positions = api.binpacking(blocks);
+        // On actualise les positions
+        var n = 0;
+        poches.forEach(function(poche){
+            var delta_left = positions[n].x;
+            var delta_top = positions[n].y;
+            poche.elements.forEach(function(element){
+                var top = (top_min+delta_top)+(element.get('top')-poche.cadre.top_min)
+                var left = (left_min+delta_left)+(element.get('left')-poche.cadre.left_min)
+                $("#"+element.id).animate({ top: top, left: left });
+                element.save({top:top,left:left});
+                bbmap.views.main.instance.repaintEverything();
+                bbmap.views.main.svgWindowController();
+            });
+            n++;
+        });
+
+        return positions;
+    },
+    ///////////////////////////////////////////////////
     // HISTORY FUNCTIONS
     ///////////////////////////////////////////////////
-
     history_next : function(){
         var _this = bbmap.views.main;
         _this.localHistory.next(_this.history_do);

@@ -1,5 +1,20 @@
 var api = {
   //////////////////////////////
+  binpacking : function(blocks){
+    var positions = [];
+    var packer = new GrowingPacker(1000000000, 1000000000);
+    blocks.sort(function(a,b) { return (b.h > a.h); }); // sort inputs for best results
+    packer.fit(blocks);
+    for(var n = 0 ; n < blocks.length ; n++) {
+      var block = blocks[n];
+      if (block.fit) {
+        positions.push({x:block.fit.x, y:block.fit.y, w:block.w, h:block.h})
+        //DrawRectangle(block.fit.x, block.fit.y, block.w, block.h);
+      }
+    }
+    return positions;
+  },
+  //////////////////////////////
   // WIKIPEDIA
   //////////////////////////////
   // One query, example code:
