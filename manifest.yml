@@ -1,5 +1,5 @@
 ---
 applications:
 - name: editor_creaktive
-  memory: 128
+  memory: 128M
   instances: 1
