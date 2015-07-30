@@ -1,5 +1,6 @@
 ---
 applications:
-- name: editor_creaktive
+- host: editor_creaktive
+  name: editor_creaktive
   memory: 128M
   instances: 1
