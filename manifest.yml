@@ -1,9 +1,5 @@
 ---
-# this manifest deploys two applications
-# apps are in flame and spark directories
-# flame and spark are in fireplace
-# cf push should be run from fireplace
 applications:
-- name: editor-creaktive
+- name: editor_creaktive
   memory: 128
   instances: 1
