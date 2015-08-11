@@ -29,7 +29,7 @@ module.exports.adapters = {
   mongo: {
     module: 'sails-mongo',
     schema: false,
-    url: 'mongodb://IbmCloud_kt04o8sp_n940r6ij_lc90kbh1:svuVN24eox4yLz5PQgj0Q6SZfmWAHLDs@ds041190.mongolab.com:41190/IbmCloud_kt04o8sp_n940r6ij' //process.env.MONGOLAB_URI ||process.env.MONGOHQ_URL || 'mongodb://localhost:27017/creaktive'
+    url: 'mongodb://IbmCloud_kt04o8sp_b7ckgfdf_sa6kbct9:T68KM_Mnbq8LJg_nODcYio1ZNJ9mpdjW@ds027613.mongolab.com:27613/IbmCloud_kt04o8sp_b7ckgfdf'
   },
   //
 
