@@ -1,6 +1,8 @@
 ---
 applications:
-- host: editor_creaktive
-  name: editor_creaktive
+- host: editorcreaktive
+  name: editorcreaktive
   memory: 512M
   instances: 1
+  env:
+  - NODE_ENV: production
