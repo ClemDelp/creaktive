@@ -45,7 +45,7 @@ module.exports.adapters = {
   mongo: {
     module: 'sails-mongo',
     schema: false,
-    url: 'mongodb://IbmCloud_kt04o8sp_b7ckgfdf_sa6kbct9:T68KM_Mnbq8LJg_nODcYio1ZNJ9mpdjW@ds027613.mongolab.com:27613/IbmCloud_kt04o8sp_b7ckgfdf'
+    url: JSON.parse(process.env.VCAP_SERVICES).mongolab[0].credentials.uri//'mongodb://IbmCloud_kt04o8sp_b7ckgfdf_sa6kbct9:T68KM_Mnbq8LJg_nODcYio1ZNJ9mpdjW@ds027613.mongolab.com:27613/IbmCloud_kt04o8sp_b7ckgfdf'
   },
   //
 
