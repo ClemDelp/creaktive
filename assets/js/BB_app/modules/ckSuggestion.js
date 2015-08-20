@@ -109,8 +109,8 @@ ckSuggestion.Views.DDs = Backbone.View.extend({
         this.dd_analyses = [];
         this.elements = json.elements;
         // Templates
-        this.dd_template = _.template($('#ck-analyse-keywords-template').html());
-        this.header_template = _.template($('#ck-header-perc-template').html());
+        // this.dd_template = _.template($('#ck-analyse-keywords-template').html());
+        // this.header_template = _.template($('#ck-header-perc-template').html());
     },
     analyse : function(){
         /////////////////////////////////////

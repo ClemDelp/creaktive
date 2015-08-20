@@ -161,6 +161,9 @@
     <%- partial('app/templates/importExport_templates') %>
     <script type="text/javascript" src="js/BB_app/modules/importExport.js?v=<%= sails.config.session.version %>"></script>
 
+    <%- partial('app/templates/news_init_templates.ejs') %>
+    <script type="text/javascript" src="js/BB_app/modules/news_init.js?v=<%= sails.config.session.version %>"></script>
+
     <%- body %>
     
     <script>
@@ -276,12 +279,8 @@
 
   <!-- Test browser & mobile -->
 
-  <div id="browserTestModal" class="modalContainer reveal-modal medium" data-reveal>
-    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
-  </div>
+  
 
-  <style type="text/css">#creanav {background: #ccc; color: #000; padding: 20px; text-transform: ;}</style>
-  <script type="text/javascript" src="js/BB_app/init.js?v=<%= sails.config.session.version %>"></script>
 
   </body>
 </html>

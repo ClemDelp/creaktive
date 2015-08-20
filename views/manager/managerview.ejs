@@ -21,7 +21,8 @@
 
 <script>
   $(document).ready(function () {
-    initialisation_creaktive();
+
+
     Backbone.Model.prototype.toJSON = function() {
       return JSON.parse(JSON.stringify(this.attributes));
     };
@@ -32,10 +33,12 @@
       json.users = <%- users %>;
       json.user = <%- currentUser %>;
       json.projects = <%- projects %>;
-      json.permissions = <%- permissions %>;
+      json.projects = <%- projects %>;
+      json.alfred = <%- alfred %>;
       
       global.init(json, function(){
         // Modules
+        creaktiveInit.init(json.alfred)
         topbar.init({el:"#topbar_container"});
         workspacesList.init({el:"#workspacesList-container",display:"block"});
         tutos.init({el:"#tutos_container"}); 

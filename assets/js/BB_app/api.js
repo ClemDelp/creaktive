@@ -1,5 +1,16 @@
 var api = {
   //////////////////////////////
+  formatDateFr : function(date){
+
+      var connection = date.toLocaleDateString();
+      var tabconnection = connection.split('/')
+      var tableauMois =new Array("Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre");
+      var mois = tableauMois[tabconnection[1]-1]
+      var newFormatDateDerniereConnnection = tabconnection[0]+" "+mois+" "+tabconnection[2];
+
+      return newFormatDateDerniereConnnection
+    },
+    //////////////////////////////
   binpacking : function(blocks){
     var positions = [];
     var packer = new GrowingPacker(1000000000, 1000000000);

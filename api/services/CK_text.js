@@ -6,7 +6,7 @@ var CK_text = {
 			 	title : {fr:"frugale",en:""},
 			 	level : 0,
 			 	ref : [],
-			 	desc : {fr:"Le risque est important, on est dans des logiques d'innovation de rupture",en:""},
+			 	desc : {fr:"",en:""},
 			},
 		};
 	},
