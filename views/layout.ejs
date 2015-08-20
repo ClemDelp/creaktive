@@ -32,6 +32,7 @@
     <script src="js/vendor/notifications/notificationFx.js"></script>
     <script src="js/vendor/notifications/snap.svg-min.js"></script>
     <script src="js/vendor/notifications/notif.js?v=<%= sails.config.session.version %>"></script>
+    <script src="js/vendor/packer.growing.js"></script>
     <!-- chartjs -->
     <script src="chart/Chart.js"></script>
     <!-- foundation lib -->
@@ -73,7 +74,7 @@
     <script>
       window._trackJs = {
         // Whether to send errors to TrackJS
-        enabled: true,// <---------------------------- here put a true in production
+        enabled: false,// <---------------------------- here put a true in production
         // Custom error callback
         onError: function () { return true; },
         // Custom object serialization
@@ -100,7 +101,7 @@
           // Pass console messages through to the browser
           display: true,
           // Transmit console errors to TrackJS
-          error: true, // <---------------------------- here put a true in production
+          error: false, // <---------------------------- here put a true in production
           // Names of console functions to watch
           watch: ["log","debug","info","warn","error"]
         },
@@ -159,6 +160,9 @@
 
     <%- partial('app/templates/importExport_templates') %>
     <script type="text/javascript" src="js/BB_app/modules/importExport.js?v=<%= sails.config.session.version %>"></script>
+
+    <%- partial('app/templates/news_init_templates.ejs') %>
+    <script type="text/javascript" src="js/BB_app/modules/news_init.js?v=<%= sails.config.session.version %>"></script>
 
     <%- body %>
     
@@ -275,12 +279,8 @@
 
   <!-- Test browser & mobile -->
 
-  <div id="browserTestModal" class="modalContainer reveal-modal medium" data-reveal>
-    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
-  </div>
+  
 
-  <style type="text/css">#creanav {background: #ccc; color: #000; padding: 20px; text-transform: ;}</style>
-  <script type="text/javascript" src="js/BB_app/init.js?v=<%= sails.config.session.version %>"></script>
 
   </body>
 </html>

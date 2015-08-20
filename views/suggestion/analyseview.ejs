@@ -1,0 +1,103 @@
+<!-- ******************************** -->
+<link rel="stylesheet" href="styles/jsplumb/demo.css?v=<%= sails.config.session.version %>">
+<!-- ******************************** -->
+<!-- Modules to load -->
+<%- partial('../app/templates/workspaceEditor_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/workspaceEditor.js?v=<%= sails.config.session.version %>"></script>
+
+<%- partial('../app/templates/usersList_templates') %>
+<script type="text/javascript" src="js/BB_app/modules/usersList.js?v=<%= sails.config.session.version %>"></script>
+<!-- ******************************** -->
+<div id="suggestions_container" class="row panel">
+    <ul class="tabs" data-tab>
+      <li class="tab-title active" style="display:true"><a href="#categorization">Categorization</a></li>
+      <li class="tab-title" style="display:true"><a href="#localisation_tab">Localisation</a></li>
+      <li class="tab-title" style="display:true"><a href="#evaluation_tab">Evaluation</a></li>
+      <li class="tab-title" style="display:true"><a href="#cadrage_tab">Cadrage</a></li>
+      <li class="tab-title" style="display:true"><a href="#dd_tab">DD</a></li>
+      <li class="tab-title" style="display:true"><a href="#ideation_tab">Ideation</a></li>
+    </ul>
+
+    <div class="tabs-content">
+      <div class="content active" id="categorization">
+        <ul class="menu_modal button-group show-for-large-up">
+          <li><a href="#cnc" class="button tiny secondary">Concept not categorized</a></li>
+          <li><a href="#knc" class="button tiny secondary">Knowledge not categorized</a></li>
+          <li><a href="#cc" class="button tiny secondary">Concept categorized</a></li>
+          <li><a href="#kc" class="button tiny secondary">Knowledge categorized</a></li>
+        </ul>
+        
+        <div id="ck_normalisation_container"></div>
+      </div>
+      
+      <div class="content" id="localisation_tab">
+        <ul class="menu_modal button-group show-for-large-up">
+          <li><a href="#knl" class="button tiny secondary">Knowledge not localized</a></li>
+          <li><a href="#kl" class="button tiny secondary">Knowledge localized</a></li>
+        </ul>
+
+        <div id="ck_localisation_container"></div>
+        
+      </div>
+
+      <div class="content" id="evaluation_tab">
+          <div id="ck_evaluation_container"></div>
+      </div>
+      
+      <div class="content" id="cadrage_tab">
+          <div id="ck_cadrage_container"></div>
+      </div>
+
+      <div class="content" id="dd_tab">
+          <div id="ck_dd_container"></div>
+      </div>
+
+      <div class="content" id="ideation_tab">
+          <div id="ck_ideation_container"></div>
+      </div>
+
+    </div>
+    <small>CreaKtive algorithm</small>
+  </div>
+<!-- ******************************** -->
+<!-- Script -->
+<script>
+
+   ///////////////////////////////////////////////////
+  $(document).ready(function () { 
+    ////////////////////////////////////////
+    Backbone.Model.prototype.toJSON = function() {
+      return JSON.parse(JSON.stringify(this.attributes));
+    };
+    ////////////////////////////////////////
+    rt(io, function(){
+      var json = {};
+      json.project = <%- currentProject %>;
+      json.project_users = <%- project_users %>;
+      json.users = <%- users %>;
+      json.user = <%- currentUser %>;
+      json.projects = <%- projects %>;
+      json.news = <%- news %>;
+      json.elements = <%- elements %>;      
+      json.links = <%- links %>;
+      json.permissions = <%- permissions %>;
+      json.comments = <%- comments %>;
+      json.attachments = <%- attachments %>;
+      $('body').css({"background-color":"rgb(239, 239, 239)"})
+      global.init(json, function(){
+        // Modules
+        topbar.init({
+          el   : "#topbar_container",
+          page : "editor"
+        });
+        ckSuggestion.init({el:"#suggestions_modal"});
+        /*activat of "hashchange events's monitoring"*/
+        if(!Backbone.History.started) Backbone.history.start();
+        $(document).foundation();
+        
+      });
+    });
+
+  });
+
+</script>

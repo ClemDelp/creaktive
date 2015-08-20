@@ -204,11 +204,11 @@ path, ._jsPlumb_endpoint { cursor:pointer; }
   color:#FF2300;
 }
 
-.label {
+/*.label {
   font-size:13px; 
   padding:8px;
   padding:8px;
-}
+}*/
 
 .component { 
   border:1px solid #346789; 

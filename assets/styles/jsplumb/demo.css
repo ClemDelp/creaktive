@@ -1,21 +1,10 @@
-  .menu_modal {
-    position: fixed;
-    right: 0;
-    top: 40%;
-    width: 5%;
-    margin-top: -2.5em;
-  }
-
-    .perc_action_bar {
-    position: fixed;
-    right : 0;
-    left : 0;
-    top: 0;
-    margin : auto;
-    width: 50%;
-  }
-
-
+.menu_modal {
+	position: fixed;
+	right: 0;
+	top: 40%;
+	width: 5%;
+	margin-top: -2.5em;
+}
 
 .button.drop, .drop{
 	cursor:move;
@@ -406,10 +395,10 @@ body{
 	-moz-border-radius: 20px;
 	border-radius: 20px;
 	font-family: Arial;
-	color: #D35400;
-	/*color: #ffffff;*/
-	background: #ffffff;
-	/*background: #E67E22;*/
+	/*color: #D35400;*/
+	color: #ffffff;
+	/*background: #ffffff;*/
+	background: #E67E22;
 	border: solid #D35400 2px;
 	text-decoration: none;
 }

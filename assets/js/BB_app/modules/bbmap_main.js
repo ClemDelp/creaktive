@@ -180,9 +180,43 @@ bbmap.Views.Main = Backbone.View.extend({
  
     },
     ///////////////////////////////////////////////////
+    binpacking_poche : function(){
+        var blocks = [];
+        var top_min = 100000000000000;
+        var left_min = 100000000000000;
+        var peres = bbmap.views.main.elements.where({type:"poche",id_father:"none"})
+        var poches = [];
+        peres.forEach(function(pere){
+            var elements = api.getTreeChildrenNodes(pere,bbmap.views.main.elements);
+            elements.push(pere);
+            var cadre = api.getCadre(bbmap.views.main.links,elements,100)
+            poches.push({elements : elements, cadre : cadre});
+            if(cadre.top_min < top_min) top_min = cadre.top_min;
+            if(cadre.left_min < left_min) left_min = cadre.left_min;
+            blocks.push({ w: cadre.width, h: cadre.height });
+        });
+        var positions = api.binpacking(blocks);
+        // On actualise les positions
+        var n = 0;
+        poches.forEach(function(poche){
+            var delta_left = positions[n].x;
+            var delta_top = positions[n].y;
+            poche.elements.forEach(function(element){
+                var top = (top_min+delta_top)+(element.get('top')-poche.cadre.top_min)
+                var left = (left_min+delta_left)+(element.get('left')-poche.cadre.left_min)
+                $("#"+element.id).animate({ top: top, left: left });
+                element.save({top:top,left:left});
+                bbmap.views.main.instance.repaintEverything();
+                bbmap.views.main.svgWindowController();
+            });
+            n++;
+        });
+
+        return positions;
+    },
+    ///////////////////////////////////////////////////
     // HISTORY FUNCTIONS
     ///////////////////////////////////////////////////
-
     history_next : function(){
         var _this = bbmap.views.main;
         _this.localHistory.next(_this.history_do);
@@ -237,7 +271,11 @@ bbmap.Views.Main = Backbone.View.extend({
     /////////////////////////////////////////
     get_suggestions : function(e){
         e.preventDefault();
-        ckSuggestion.init();
+        if(ckSuggestion.views.main != undefined){
+            ckSuggestion.views.main.render();
+        }else{
+            ckSuggestion.init({el:"#suggestions_modal"});
+        }
         $('#suggestions_modal').foundation('reveal', 'open');
     },
     /////////////////////////////////////////
@@ -359,7 +397,7 @@ bbmap.Views.Main = Backbone.View.extend({
     drawSvgWindow : function(pere){
         var elements = api.getTreeChildrenNodes(pere,bbmap.views.main.elements);
         elements.push(pere);
-        var cadre = api.getCadre(elements,100);
+        var cadre = api.getCadre(bbmap.views.main.links,elements,100);
         var color = "#E67E22";
         if(pere.get('type') == "concept") color = "#C8D400";
         var left = cadre.left_min - 25;
@@ -373,7 +411,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var padding_top = -100;
         var offset = 250;
         var childs = [];
-        var cadre = api.getCadre(bbmap.views.main.elements.toArray(),300);
+        var cadre = api.getCadre(bbmap.views.main.links,bbmap.views.main.elements.toArray(),300);
         var left_min = cadre.left_min + padding_left;
         var left_max = cadre.left_max;
         var top_min = cadre.top_min + padding_top;
@@ -887,7 +925,7 @@ bbmap.Views.Main = Backbone.View.extend({
         var offset = 100;
         var window_width = $(window).width();
         var window_height = $(window).height();
-        var cadre = api.getCadre(bbmap.views.main.elements.toArray(),offset);
+        var cadre = api.getCadre(bbmap.views.main.links,bbmap.views.main.elements.toArray(),offset);
         var zoom_width = window_width/cadre.width;
         var zoom_height = window_height/cadre.height;
         var right_zoom = Math.min(zoom_width,zoom_height);        

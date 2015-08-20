@@ -84,14 +84,14 @@ global.Collections.Elements = Backbone.Collection.extend({
         this.ioBind('remove2', this.serverRemove, this);
     },
     newElement : function(json,joyride){
-        alert(joyride)
+        var new_element = new global.Models.Element(json);
         // on desactive le joyride 
         var joyrideLaunch = true;
         if(joyride != undefined) joyrideLaunch = joyride
         // if no top or left define one
         if((json.top == undefined)||(json.left == undefined)){
             var elements = global.collections.Elements;
-            var cadre = api.getCadre(elements,150);
+            var cadre = api.getCadre(global.collections.Links,elements,150);
             json.top = cadre.top_min;
             if(json.type != "concept"){
                 json.left = cadre.left_max;    
@@ -100,15 +100,15 @@ global.Collections.Elements = Backbone.Collection.extend({
             }
         }
         //
-        var new_element = new global.Models.Element({
+        new_element.set({
             id : guid(),
             date : getDate(),
-            type : json.type,
+            //type : json.type,
             id_father: "none",//father_id
             top : json.top,
             left : json.left,
             project: global.models.currentProject.get('id'),
-            title: json.title,
+            //title: json.title,
             user: global.models.current_user.get('id'),
             visibility : true,
             css_auto : "",

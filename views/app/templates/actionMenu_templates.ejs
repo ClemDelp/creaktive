@@ -71,68 +71,55 @@
 
   <div id="suggestions_modal" class="modalContainer reveal-modal large" data-reveal>
     
-    <div id="actions_percentage" style="display:none" class="panel row perc_action_bar" style="padding-bottom: 0;"></div>
 
     <ul class="tabs" data-tab>
       <li class="tab-title active" style="display:true"><a href="#categorization">Categorization</a></li>
       <li class="tab-title" style="display:true"><a href="#localisation_tab">Localisation</a></li>
       <li class="tab-title" style="display:none"><a href="#evaluation_tab">Evaluation</a></li>
       <li class="tab-title" style="display:none"><a href="#cadrage_tab">Cadrage</a></li>
+      <li class="tab-title" style="display:none"><a href="#dd_tab">DD</a></li>
     </ul>
 
     <div class="tabs-content">
       <div class="content active" id="categorization">
-        <ul class="menu_modal button-group">
+        <ul class="menu_modal button-group show-for-large-up">
           <li><a href="#cnc" class="button tiny secondary">Concept not categorized</a></li>
           <li><a href="#knc" class="button tiny secondary">Knowledge not categorized</a></li>
           <li><a href="#cc" class="button tiny secondary">Concept categorized</a></li>
           <li><a href="#kc" class="button tiny secondary">Knowledge categorized</a></li>
         </ul>
           
-        <b id="cnc">Concepts no categorized</b>
-        <table id="c_not_normalized_table" style="width:100%"></table>
-        <b id="knc">Knowledges no categorized</b>
-        <table id="k_not_normalized_table" style="width:100%"></table>
-        <hr>
-        <b id="cc">Concepts categorized</b>
-        <table id="c_normalized_table" style="width:100%"></table>
-        <b id="kc">Knowledges categorized</b>
-        <table id="k_normalized_table" style="width:100%"></table>
+        <div id="ck_normalisation_container"></div>
       </div>
       
       <div class="content" id="localisation_tab">
-        <ul class="menu_modal button-group">
-          <li><a href="#kl" class="button tiny secondary">Knowledge not localized</a></li>
-          <li><a href="#knl" class="button tiny secondary">Knowledge localized</a></li>
+        <ul class="menu_modal button-group show-for-large-up">
+          <li><a href="#knl" class="button tiny secondary">Knowledge not localized</a></li>
+          <li><a href="#kl" class="button tiny secondary">Knowledge localized</a></li>
         </ul>
 
-        <b id="kl">Knowledge not localized</b>
-        <table id="k_not_localized_table" style="width:100%"></table>
-        <b id="knl">Knowledge localized</b>
-        <table id="k_localized_table" style="width:100%"></table>
+        <div id="ck_localisation_container"></div>
         
       </div>
 
       <div class="content" id="evaluation_tab">
-        <div class="row">
-          <div id="radar_detail_container" class="large-12 medium-12 small-12 columns panel"></div>
-        </div>
-        <div class="row">
-
-          <div id="explorations_container" class="large-12 medium-12 small-12 panel"></div>
-          <div id="v2or_analyse_container"></div>
-        
-        </div>
+          <div id="ck_evaluation_container"></div>
       </div>
       
       <div class="content" id="cadrage_tab">
         <div class="row">
-          <div id="cadrage_keywords_container" class="large-12 medium-12 small-12 panel"></div>
+          <div id="ck_cadrage_container" class="large-12 medium-12 small-12 panel"></div>
+        </div>
+      </div>
+
+      <div class="content" id="dd_tab">
+        <div class="row">
+          <div id="ck_dd_container" class="large-12 medium-12 small-12 panel"></div>
         </div>
       </div>
 
     </div>
-    <small>CreaKtive suggestion algorithm</small>
+    <small>CreaKtive algorithm</small>
     <a class="close-reveal-modal" aria-label="Close">&#215;</a>
   </div>
 

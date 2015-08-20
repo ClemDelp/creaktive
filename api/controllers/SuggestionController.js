@@ -16,18 +16,35 @@ module.exports = {
 			res.send(localisations);
 		});
 	},
-	get_v2or_values : function(req,res){
-		CK_analyse.get_v2or_values(req.body.elements, req.body.links, function(v2or_values){
-			res.send(v2or_values);
+	////////////////////////
+	// V2OR ANALYSES
+	////////////////////////
+	get_originality_v2or_analyse : function(req,res){
+		CK_analyse.get_originality_v2or(req.body.elements, req.body.links, function(analyse){
+			res.send(analyse);
 		});
-
 	},
-	get_v2or_analyse : function(req,res){
-		CK_analyse.get_v2or_analyse(req.body.elements, req.body.links, function(analyses){
-			res.send(analyses);
+	get_variety_v2or_analyse : function(req,res){
+		CK_analyse.get_variety_v2or(req.body.elements, req.body.links, function(analyse){
+			res.send(analyse);
 		});
-
 	},
+	get_value_v2or_analyse : function(req,res){
+		CK_analyse.get_value_v2or(req.body.elements, req.body.links, function(analyse){
+			res.send(analyse);
+		});
+	},
+	get_strength_v2or_analyse : function(req,res){
+		CK_analyse.get_strength_v2or(req.body.elements, req.body.links, function(analyse){
+			res.send(analyse);
+		});
+	},
+	get_risk_analyse : function(req,res){
+		CK_analyse.get_risk_analyse(req.body.elements, req.body.links, function(analyse){
+			res.send(analyse);
+		});
+	},
+	////////////////////////
 	get_explorations_analyse : function(req,res){
 		CK_analyse.get_exploration_suggestions(req.body.elements, function(explorations){
 			res.send(explorations);
@@ -37,6 +54,24 @@ module.exports = {
 		CK_analyse.analyse_cadrage_keywords(req.body.elements, function(analyse){
 			res.send(analyse);
 		});
+	},
+	analyse_dd_keywords : function(req,res){
+		CK_analyse.analyse_dd_keywords(req.body.elements, function(analyse){
+			res.send(analyse);
+		});
+	},
+	////////////////////////////
+	get_frugale_concepts : function(req,res){
+		CK_generator.get_frugale_concepts(req.body.keyword,req.body.level, function(concepts){
+			res.send(concepts);
+		});
+	},
+	////////////////////////////
+	// VIEW
+	////////////////////////////
+	analyseview : function(req,res){
+	    //console.log("Loading bbmap view")
+	    BootstrapService.bootstrapdata(req,res);
 	},
 };
 

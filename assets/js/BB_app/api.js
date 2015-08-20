@@ -1,5 +1,31 @@
 var api = {
   //////////////////////////////
+  formatDateFr : function(date){
+
+      var connection = date.toLocaleDateString();
+      var tabconnection = connection.split('/')
+      var tableauMois =new Array("Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre");
+      var mois = tableauMois[tabconnection[1]-1]
+      var newFormatDateDerniereConnnection = tabconnection[0]+" "+mois+" "+tabconnection[2];
+
+      return newFormatDateDerniereConnnection
+    },
+    //////////////////////////////
+  binpacking : function(blocks){
+    var positions = [];
+    var packer = new GrowingPacker(1000000000, 1000000000);
+    blocks.sort(function(a,b) { return (b.h > a.h); }); // sort inputs for best results
+    packer.fit(blocks);
+    for(var n = 0 ; n < blocks.length ; n++) {
+      var block = blocks[n];
+      if (block.fit) {
+        positions.push({x:block.fit.x, y:block.fit.y, w:block.w, h:block.h})
+        //DrawRectangle(block.fit.x, block.fit.y, block.w, block.h);
+      }
+    }
+    return positions;
+  },
+  //////////////////////////////
   // WIKIPEDIA
   //////////////////////////////
   // One query, example code:
@@ -211,14 +237,14 @@ var api = {
     centroid.height = topMax - topMin;
     return centroid;
   },
-  getCadre : function(elements,offset){
+  getCadre : function(links,elements,offset){
       var left_min = 10000000000000000000000;
       var left_max = 0;
       var top_min = 10000000000000000000000;
       var top_max = 0;
       // on prend le cadre
       elements.forEach(function(el){
-          if(api.isVisible(bbmap.views.main.links,bbmap.views.main.elements,el)){
+          if(api.isVisible(links,global.collections.Elements,el)){
               if(el.get('left') < left_min) left_min = el.get('left')
               if((el.get('left') + $('#'+el.get('id')).width()+offset) > left_max) left_max = el.get('left') + $('#'+el.get('id')).width() + offset;
               if(el.get('top') < top_min) top_min = el.get('top')
