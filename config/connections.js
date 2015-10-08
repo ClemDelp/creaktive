@@ -29,7 +29,7 @@ module.exports.adapters = {
   mongo: {
     module: 'sails-mongo',
     schema: false,
-    url: process.env.MONGOLAB_URI ||process.env.MONGOHQ_URL || 'mongodb://localhost:27017/creaktive'
+    url: process.env.MONGOLAB_URI 
   },
   //
 
